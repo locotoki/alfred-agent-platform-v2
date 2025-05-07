@@ -20,13 +20,8 @@ The `alfred-agent-platform` repository serves as the main repository that ties t
 
 3. **alfred-agent-orchestrator** (submodule)
    - Agent Orchestrator UI service
-   - User interface for managing agent workflows
+   - User interface for managing agent workflows and mission control
    - GitHub Repository: https://github.com/locotoki/alfred-agent-orchestrator.git
-
-4. **alfred-mission-control** (symlink)
-   - Mission Control UI service
-   - Advanced dashboard for monitoring and managing agents
-   - Location: `/home/locotoki/alfred-mission-control`
 
 ## Working with the Repository
 
@@ -88,11 +83,7 @@ For local development, the components are set up as follows:
 
 3. **alfred-agent-orchestrator** - Agent Orchestrator UI
    - Connected to GitHub via submodule
-   - UI for agent workflows
-
-4. **alfred-mission-control** - Mission Control UI
-   - Managed via Git locally
-   - Advanced dashboard UI
+   - UI for agent workflows and mission control
 
 ## CI/CD Integration
 
@@ -104,6 +95,5 @@ When CI/CD is configured, it should:
 
 ## Future Improvements
 
-1. Convert the symbolic links to proper submodules once their repositories are properly set up on GitHub
-2. Implement a unified build and deployment process via the main repository
-3. Add CI/CD workflows that respect the submodule structure
+1. Implement a unified build and deployment process via the main repository
+2. Add CI/CD workflows that respect the submodule structure

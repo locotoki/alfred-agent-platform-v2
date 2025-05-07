@@ -7,7 +7,6 @@ This is the main repository for the Alfred Agent Platform project. It contains t
 - `alfred-agent-platform-v2`: Main implementation of the Alfred Agent Platform (submodule)
 - `alfred-docs-repo`: Documentation repository for the project (submodule)
 - `alfred-agent-orchestrator`: Agent Orchestrator UI (submodule)
-- `alfred-mission-control`: Mission Control UI (symlink to local repository)
 
 ## Quick Start
 
