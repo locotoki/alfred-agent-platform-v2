@@ -1,0 +1,6 @@
+[submodule "alfred-docs-repo"]
+	path = alfred-docs-repo
+	url = https://github.com/locotoki/alfred-docs-repo.git
+[submodule "alfred-agent-orchestrator"]
+	path = alfred-agent-orchestrator
+	url = https://github.com/locotoki/alfred-agent-orchestrator.git
