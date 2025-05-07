@@ -4,3 +4,6 @@
 [submodule "alfred-agent-orchestrator"]
 	path = alfred-agent-orchestrator
 	url = https://github.com/locotoki/alfred-agent-orchestrator.git
+[submodule "alfred-agent-platform-v2"]
+	path = alfred-agent-platform-v2
+	url = https://github.com/locotoki/alfred-agent-platform-v2.git

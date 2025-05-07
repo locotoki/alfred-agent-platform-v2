@@ -8,10 +8,10 @@ The `alfred-agent-platform` repository serves as the main repository that ties t
 
 ### Components
 
-1. **alfred-agent-platform-v2** (symlink)
+1. **alfred-agent-platform-v2** (submodule)
    - Main implementation of the Alfred Agent Platform
    - Contains all core services, libraries, and agents
-   - Location: `/home/locotoki/projects/alfred-agent-platform-v2`
+   - GitHub Repository: https://github.com/locotoki/alfred-agent-platform-v2.git
 
 2. **alfred-docs-repo** (submodule)
    - Documentation repository for the project
