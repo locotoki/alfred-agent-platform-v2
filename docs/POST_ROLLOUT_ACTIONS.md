@@ -10,3 +10,33 @@
 - Add a GitHub Issue linking back to each row here for reminders.
 - For secret rotation, run scripts/rotate_secrets.sh (to be created).
 - Remember to update Prometheus alert receivers if tokens change.
+
+## Deprecation Notice
+
+> 🚨 **IMPORTANT**: The client-side Levenshtein transformation in the Social-Intel proxy will be removed once the upstream service (SI) ships its parameter-aware scorer.
+
+### Transformation Logic to be Removed:
+
+The following components will be deleted after SI-243 is resolved:
+
+1. **File**: `/services/mission-control/src/pages/api/social-intel/proxy-helper.ts`
+   - `applyLevenshteinTransformation()` function
+   - Associated tests in `/tests/unit/proxy-helper.test.ts`
+
+2. **File**: `/services/mission-control-simplified/integrate-with-social-intel.js`
+   - `transformResults()` function at line ~120
+   - The related filtering logic in the `/niche-scout` handler
+
+3. **Pull Request**: Create a PR with the following title and branch after upstream fix is deployed:
+   ```
+   fix: remove client-side Levenshtein transform (SI-243 resolved)
+   ```
+   Branch: `remove-levenshtein-transform`
+
+### Verification Steps:
+
+Before removing the transformation:
+1. Confirm with SI team that parameter-aware scoring is live
+2. Verify API returns properly filtered results for the same query/category
+3. Run side-by-side comparison to ensure result quality is identical or better
+4. Update documentation to reflect the removal of this workaround
