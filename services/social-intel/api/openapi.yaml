@@ -1,0 +1,837 @@
+openapi: 3.0.3
+info:
+  title: Social Intelligence Service API
+  description: |
+    Social Intelligence Service provides trend analysis and social media monitoring capabilities,
+    with a focus on YouTube niche discovery and channel strategy generation.
+    
+    ## Features
+    
+    - **Niche Scout**: Identifies high-potential YouTube niches with opportunity scoring
+    - **Seed to Blueprint**: Generates channel strategy blueprints from seed videos
+    - **Workflow Management**: Schedule and manage analysis workflows
+  version: 1.0.0
+  contact:
+    name: Alfred Agent Platform Team
+    url: https://github.com/your-org/alfred-agent-platform
+  license:
+    name: Proprietary
+    url: https://github.com/your-org/alfred-agent-platform/blob/main/LICENSE
+servers:
+  - url: http://localhost:9000
+    description: Local development server
+  - url: http://social-intel:9000
+    description: Docker container endpoint
+tags:
+  - name: status
+    description: Service status information
+  - name: niche-scout
+    description: YouTube niche analysis and opportunity scoring
+  - name: seed-to-blueprint
+    description: Channel strategy generation
+  - name: workflows
+    description: Workflow management and scheduling
+
+security:
+  - ApiKeyAuth: []
+
+paths:
+  /status:
+    get:
+      summary: Get service status
+      description: Returns information about the service status, version, and capabilities
+      operationId: getStatus
+      tags:
+        - status
+      responses:
+        '200':
+          description: Service status information
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+        '401':
+          description: Unauthorized - API key is missing or invalid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  
+  /niche-scout:
+    get:
+      summary: Run Niche-Scout workflow
+      description: |
+        Identifies high-potential YouTube niches based on query, category, and subcategory parameters.
+        Returns trending niches with opportunity scores and relevant metrics.
+      operationId: runNicheScout
+      tags:
+        - niche-scout
+      parameters:
+        - name: query
+          in: query
+          description: Optional query to focus the niche analysis
+          required: false
+          schema:
+            type: string
+            example: "gaming"
+        - name: category
+          in: query
+          description: Main content category
+          required: false
+          schema:
+            type: string
+            example: "tech"
+        - name: subcategory
+          in: query
+          description: Specific subcategory for more targeted results
+          required: false
+          schema:
+            type: string
+            example: "tech.gaming"
+      responses:
+        '200':
+          description: Successful analysis with niche results
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NicheScoutResult'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  
+  /youtube/niche-scout:
+    get:
+      summary: Alternative endpoint for Niche-Scout workflow
+      description: Identical functionality to /niche-scout
+      operationId: runNicheScoutAlt1
+      tags:
+        - niche-scout
+      parameters:
+        - name: query
+          in: query
+          description: Optional query to focus the niche analysis
+          required: false
+          schema:
+            type: string
+        - name: category
+          in: query
+          description: Main content category
+          required: false
+          schema:
+            type: string
+        - name: subcategory
+          in: query
+          description: Specific subcategory for more targeted results
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful analysis with niche results
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NicheScoutResult'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  
+  /api/youtube/niche-scout:
+    get:
+      summary: Alternative endpoint for Niche-Scout workflow
+      description: Identical functionality to /niche-scout
+      operationId: runNicheScoutAlt2
+      tags:
+        - niche-scout
+      parameters:
+        - name: query
+          in: query
+          description: Optional query to focus the niche analysis
+          required: false
+          schema:
+            type: string
+        - name: category
+          in: query
+          description: Main content category
+          required: false
+          schema:
+            type: string
+        - name: subcategory
+          in: query
+          description: Specific subcategory for more targeted results
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful analysis with niche results
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NicheScoutResult'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  
+  /seed-to-blueprint:
+    post:
+      summary: Run Seed-to-Blueprint workflow
+      description: |
+        Creates a channel strategy blueprint based on a seed video or niche.
+        Returns competitor analysis, content gaps, and channel strategy recommendations.
+      operationId: runSeedToBlueprint
+      tags:
+        - seed-to-blueprint
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                seed_phrase:
+                  type: string
+                  description: The seed phrase to analyze
+                  example: "Mobile Gaming Tips"
+              required:
+                - seed_phrase
+      parameters:
+        - name: video_url
+          in: query
+          description: URL of the seed video to analyze
+          required: false
+          schema:
+            type: string
+            example: "https://www.youtube.com/watch?v=example123"
+        - name: niche
+          in: query
+          description: Niche to analyze if no seed video is provided
+          required: false
+          schema:
+            type: string
+            example: "tech reviews"
+      responses:
+        '200':
+          description: Successful blueprint generation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BlueprintResult'
+        '400':
+          description: Bad request - either video_url or niche must be provided
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  
+  /workflow-result/{result_id}:
+    get:
+      summary: Retrieve workflow results
+      description: Retrieves previously generated workflow results by their ID
+      operationId: getWorkflowResult
+      tags:
+        - workflows
+      parameters:
+        - name: result_id
+          in: path
+          description: ID of the workflow result to retrieve
+          required: true
+          schema:
+            type: string
+        - name: type
+          in: query
+          description: Type of workflow result to retrieve
+          required: true
+          schema:
+            type: string
+            enum: [niche-scout, seed-to-blueprint]
+      responses:
+        '200':
+          description: Workflow result
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/NicheScoutResult'
+                  - $ref: '#/components/schemas/BlueprintResult'
+        '404':
+          description: Result not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  
+  /workflow-history:
+    get:
+      summary: Retrieve workflow history
+      description: Get history of previously executed workflows
+      operationId: getWorkflowHistory
+      tags:
+        - workflows
+      responses:
+        '200':
+          description: List of workflow history entries
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/WorkflowHistoryEntry'
+        '401':
+          description: Unauthorized - API key is missing or invalid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  
+  /scheduled-workflows:
+    get:
+      summary: Retrieve scheduled workflows
+      description: Get list of scheduled workflows
+      operationId: getScheduledWorkflows
+      tags:
+        - workflows
+      responses:
+        '200':
+          description: List of scheduled workflows
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ScheduledWorkflow'
+        '401':
+          description: Unauthorized - API key is missing or invalid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  
+  /schedule-workflow:
+    post:
+      summary: Schedule a new workflow
+      description: Schedule a new workflow to be executed at a specific time
+      operationId: scheduleWorkflow
+      tags:
+        - workflows
+      requestBody:
+        description: Workflow scheduling parameters
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ScheduleWorkflowRequest'
+      responses:
+        '200':
+          description: Workflow scheduled successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScheduledWorkflow'
+        '400':
+          description: Invalid request parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+  schemas:
+    Status:
+      type: object
+      properties:
+        agent:
+          type: string
+          description: Name of the agent
+          example: "social-intel"
+        version:
+          type: string
+          description: Version of the service
+          example: "1.0.0"
+        status:
+          type: string
+          description: Current status of the service
+          enum: [running, stopped]
+          example: "running"
+        supported_intents:
+          type: array
+          description: List of supported intents
+          items:
+            type: string
+          example: ["TREND_ANALYSIS", "SOCIAL_MONITOR", "SENTIMENT_ANALYSIS"]
+      required:
+        - agent
+        - version
+        - status
+        - supported_intents
+    
+    NicheScoutResult:
+      type: object
+      properties:
+        run_date:
+          type: string
+          format: date-time
+          description: Date and time when the analysis was run
+          example: "2025-05-01T12:34:56.789Z"
+        query:
+          type: string
+          description: Query used for the analysis
+          example: "gaming"
+        category:
+          type: string
+          description: Main category used for the analysis
+          example: "tech"
+        subcategory:
+          type: string
+          description: Subcategory used for the analysis
+          example: "tech.gaming"
+        trending_niches:
+          type: array
+          description: List of trending niches
+          items:
+            $ref: '#/components/schemas/NicheData'
+        top_niches:
+          type: array
+          description: List of top niches by opportunity score
+          items:
+            $ref: '#/components/schemas/NicheData'
+        visualization_url:
+          type: string
+          description: URL to visualization of the results
+          example: "https://example.com/visualization"
+        actual_cost:
+          type: number
+          description: Cost of running the analysis
+          example: 0.10
+        actual_processing_time:
+          type: number
+          description: Processing time in milliseconds
+          example: 5.5
+        _id:
+          type: string
+          description: Unique ID for result retrieval
+          example: "niche-scout-1589567890"
+        _files:
+          type: object
+          description: Paths to result files
+          properties:
+            json_report:
+              type: string
+              description: Path to JSON report
+              example: "/app/data/niche_scout/niche_analysis_1589567890.json"
+            report_file:
+              type: string
+              description: Path to HTML report
+              example: "/app/data/niche_scout/niche_analysis_1589567890.html"
+      required:
+        - run_date
+        - trending_niches
+        - top_niches
+        - _id
+    
+    NicheData:
+      type: object
+      properties:
+        query:
+          type: string
+          description: The niche keyword or phrase
+          example: "Mobile Gaming Tips"
+        view_sum:
+          type: integer
+          description: Sum of views
+          example: 875000
+        rsv:
+          type: number
+          description: Relative search volume
+          example: 0.85
+        view_rank:
+          type: integer
+          description: Rank by views
+          example: 1
+        rsv_rank:
+          type: integer
+          description: Rank by search volume
+          example: 2
+        score:
+          type: number
+          description: Opportunity score
+          example: 1.2346
+        x:
+          type: number
+          description: X coordinate for visualization
+          example: 10
+        y:
+          type: number
+          description: Y coordinate for visualization
+          example: 85
+        niche:
+          type: integer
+          description: Niche category ID
+          example: 1
+      required:
+        - query
+        - score
+    
+    BlueprintResult:
+      type: object
+      properties:
+        date:
+          type: string
+          format: date
+          description: Date of the analysis
+          example: "2025-05-01"
+        seed_type:
+          type: string
+          description: Type of seed used (video or niche)
+          enum: [video, niche]
+          example: "niche"
+        seed_value:
+          type: string
+          description: Value of the seed (URL or niche name)
+          example: "Mobile Gaming Tips"
+        analyzed_niche:
+          type: string
+          description: The niche that was analyzed
+          example: "Mobile Gaming Tips"
+        competitor_analysis:
+          type: array
+          description: Analysis of competing channels
+          items:
+            $ref: '#/components/schemas/CompetitorAnalysis'
+        content_gaps:
+          type: array
+          description: Content gaps identified
+          items:
+            type: string
+          example: ["Beginner-friendly tutorials", "Cross-game skill development"]
+        channel_strategy:
+          $ref: '#/components/schemas/ChannelStrategy'
+        execution_plan:
+          $ref: '#/components/schemas/ExecutionPlan'
+        _id:
+          type: string
+          description: Unique ID for result retrieval
+          example: "blueprint-1589567890"
+        _files:
+          type: object
+          description: Paths to result files
+          properties:
+            json_report:
+              type: string
+              description: Path to JSON report
+              example: "/app/data/builder/blueprint_1589567890.json"
+            report_file:
+              type: string
+              description: Path to HTML report
+              example: "/app/data/builder/blueprint_1589567890.html"
+      required:
+        - date
+        - analyzed_niche
+        - competitor_analysis
+        - channel_strategy
+        - execution_plan
+        - _id
+    
+    CompetitorAnalysis:
+      type: object
+      properties:
+        channel:
+          type: string
+          description: Name of the competing channel
+          example: "GameShorts"
+        subscribers:
+          type: integer
+          description: Number of subscribers
+          example: 4700000
+        avg_views:
+          type: integer
+          description: Average views per video
+          example: 875000
+        engagement_rate:
+          type: number
+          description: Engagement rate as a percentage
+          example: 8.2
+        posting_frequency:
+          type: string
+          description: How often they post
+          example: "daily"
+        top_video_topics:
+          type: array
+          description: Top topics for their videos
+          items:
+            type: string
+          example: ["PUBG Mobile tactics", "Minecraft builds", "Roblox secrets"]
+        strengths:
+          type: array
+          description: Channel strengths
+          items:
+            type: string
+          example: ["Consistent daily uploads", "Strong thumbnails", "Clear audio"]
+        weaknesses:
+          type: array
+          description: Channel weaknesses
+          items:
+            type: string
+          example: ["Long intros", "Repetitive content", "Limited audience interaction"]
+      required:
+        - channel
+        - subscribers
+        - avg_views
+    
+    ChannelStrategy:
+      type: object
+      properties:
+        channel_name_ideas:
+          type: array
+          description: Suggested channel names
+          items:
+            type: string
+          example: ["Gaming60", "QuickGaming", "GamingMaster"]
+        content_pillars:
+          type: array
+          description: Content pillars for the channel
+          items:
+            type: object
+            properties:
+              name:
+                type: string
+                example: "Mobile Gaming Tips Basics"
+              description:
+                type: string
+                example: "Foundational content for beginners"
+              frequency:
+                type: string
+                example: "2x weekly"
+              example_topics:
+                type: array
+                items:
+                  type: string
+                example: ["Getting started", "Essential knowledge", "Common mistakes"]
+        posting_schedule:
+          type: object
+          properties:
+            cadence:
+              type: string
+              example: "4x weekly"
+            optimal_days:
+              type: array
+              items:
+                type: string
+              example: ["Monday", "Wednesday", "Friday", "Saturday"]
+            optimal_times:
+              type: array
+              items:
+                type: string
+              example: ["2:00 PM", "6:00 PM"]
+        growth_tactics:
+          type: array
+          items:
+            type: string
+          example: ["Collaborate with complementary channels", "Create consistent intro/outro template"]
+    
+    ExecutionPlan:
+      type: object
+      properties:
+        "30_day_plan":
+          type: array
+          items:
+            type: string
+          example: ["Week 1: Channel setup and first 7 videos production"]
+        "90_day_plan":
+          type: array
+          items:
+            type: string
+          example: ["Establish consistent 4x weekly posting schedule"]
+        success_metrics:
+          type: array
+          items:
+            type: string
+          example: ["View-to-subscriber conversion rate > 5%"]
+    
+    WorkflowHistoryEntry:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique ID of the workflow execution
+          example: "niche-scout-1589567890"
+        workflow_type:
+          type: string
+          description: Type of workflow
+          enum: [niche-scout, seed-to-blueprint]
+          example: "niche-scout"
+        parameters:
+          type: object
+          description: Parameters used for the workflow
+          additionalProperties: true
+          example: {"query": "mobile gaming"}
+        status:
+          type: string
+          description: Status of the workflow
+          enum: [completed, failed, in-progress]
+          example: "completed"
+        started_at:
+          type: string
+          format: date-time
+          description: Start time of the workflow
+          example: "2025-05-01T12:00:00Z"
+        completed_at:
+          type: string
+          format: date-time
+          description: Completion time of the workflow
+          example: "2025-05-01T12:05:00Z"
+        result_url:
+          type: string
+          description: URL to retrieve the result
+          example: "/workflow-result/niche-scout-1589567890?type=niche-scout"
+        user_id:
+          type: string
+          description: ID of the user who initiated the workflow
+          example: "user-1"
+      required:
+        - id
+        - workflow_type
+        - parameters
+        - status
+        - started_at
+    
+    ScheduledWorkflow:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique ID of the scheduled workflow
+          example: "sched-1589567890"
+        workflow_type:
+          type: string
+          description: Type of workflow
+          enum: [niche-scout, seed-to-blueprint]
+          example: "niche-scout"
+        parameters:
+          type: object
+          description: Parameters to use for the workflow
+          additionalProperties: true
+          example: {"query": "gaming"}
+        frequency:
+          type: string
+          description: How often to run the workflow
+          enum: [daily, weekly, monthly, once]
+          example: "daily"
+        next_run:
+          type: string
+          format: date-time
+          description: Next scheduled run time
+          example: "2025-05-02T12:00:00Z"
+        status:
+          type: string
+          description: Status of the scheduled workflow
+          enum: [scheduled, paused, completed]
+          example: "scheduled"
+        created_at:
+          type: string
+          format: date-time
+          description: When the schedule was created
+          example: "2025-05-01T12:00:00Z"
+        updated_at:
+          type: string
+          format: date-time
+          description: When the schedule was last updated
+          example: "2025-05-01T12:00:00Z"
+        user_id:
+          type: string
+          description: ID of the user who created the schedule
+          example: "user-1"
+      required:
+        - id
+        - workflow_type
+        - parameters
+        - frequency
+        - next_run
+        - status
+    
+    ScheduleWorkflowRequest:
+      type: object
+      properties:
+        workflow_type:
+          type: string
+          description: Type of workflow to schedule
+          enum: [niche-scout, seed-to-blueprint]
+          example: "niche-scout"
+        parameters:
+          type: object
+          description: Parameters to use for the workflow
+          additionalProperties: true
+          example: {"query": "gaming"}
+        frequency:
+          type: string
+          description: How often to run the workflow
+          enum: [daily, weekly, monthly, once]
+          example: "daily"
+        next_run:
+          type: string
+          format: date-time
+          description: Next scheduled run time
+          example: "2025-05-02T12:00:00Z"
+      required:
+        - workflow_type
+        - parameters
+        - frequency
+        - next_run
+    
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Error type
+          example: "Internal Server Error"
+        detail:
+          type: string
+          description: Detailed error message
+          example: "An unexpected error occurred during processing"
+      required:
+        - error
