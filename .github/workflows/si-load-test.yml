@@ -1,0 +1,92 @@
+name: Social-Intel Load Test
+
+on:
+  pull_request:
+    paths:
+      - 'services/social-intel/**'
+      - '.github/workflows/si-load-test.yml'
+
+jobs:
+  load-test:
+    name: Performance Regression Check
+    runs-on: ubuntu-latest
+    
+    services:
+      postgres:
+        image: postgres:14
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: social_intel_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+      
+      redis:
+        image: redis:alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: services/social-intel/package-lock.json
+
+      - name: Install k6
+        run: |
+          curl -L https://github.com/grafana/k6/releases/download/v0.46.0/k6-v0.46.0-linux-amd64.tar.gz | tar xz
+          sudo mv k6-v0.46.0-linux-amd64/k6 /usr/local/bin/
+
+      - name: Install dependencies
+        run: |
+          cd services/social-intel
+          npm ci
+          pip install -r requirements.txt
+
+      - name: Set up database
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/social_intel_test
+        run: |
+          cd services/social-intel
+          npm run migrate
+          npm run db:seed
+
+      - name: Start Social-Intel service
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/social_intel_test
+          REDIS_URL: redis://localhost:6379/0
+        run: |
+          cd services/social-intel
+          python -m uvicorn app.main:app --host 0.0.0.0 --port 9000 &
+          sleep 5  # Allow service to start up
+
+      - name: Run k6 load test
+        run: |
+          cd services/social-intel
+          k6 run scripts/si_load.js
+
+      - name: Analyze test results
+        run: |
+          cd services/social-intel
+          node scripts/assert_k6_si.js
+
+      - name: Upload results as artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: load-test-results
+          path: services/social-intel/k6-results.json
