@@ -1,6 +1,8 @@
-# Social Intelligence Service
+# Social Intelligence Service (v1.0.0)
 
-The Social Intelligence service provides niche analysis, YouTube trend monitoring, and content strategy generation through a REST API.
+The Social Intelligence service provides niche analysis, YouTube trend monitoring, and content strategy generation through a REST API. 
+
+**Current Status**: ✅ Phase 2 Complete, Production Ready
 
 ## Features
 
@@ -8,7 +10,10 @@ The Social Intelligence service provides niche analysis, YouTube trend monitorin
 - **Seed to Blueprint**: Generates channel strategy blueprints from seed videos
 - **Workflow Management**: Schedule and manage analysis workflows
 - **Persistence**: PostgreSQL storage with materialized views for fast access
-- **Metrics**: Prometheus metrics for monitoring performance and traffic
+- **Metrics**: Prometheus metrics with optimized latency buckets for monitoring
+- **Documentation**: OpenAPI specification with interactive Swagger UI
+- **Testing**: Comprehensive unit, integration, and load testing with k6
+- **Monitoring**: Prometheus alerts for latency, error rates, and data quality
 
 ## Getting Started
 
@@ -133,7 +138,7 @@ npm run score:nightly
 
 ### Load Testing
 
-The service includes a GitHub Actions workflow to automatically validate performance on every PR:
+The service includes a GitHub Actions workflow that automatically validates performance on every PR and blocks merges if performance thresholds are exceeded:
 
 ```bash
 # Load test prerequisites
@@ -210,6 +215,33 @@ The OpenAPI specification is available at:
 │ API Client  │     │ Cache       │     │ Metrics      │
 └─────────────┘     └─────────────┘     └──────────────┘
 ```
+
+## Deployment
+
+The service is deployed using a canary release process:
+
+1. **Database Schema**: Deployed and validated first
+2. **Service Container**: Built and deployed with health checks
+3. **Canary Testing**: Initial deployment routes 10% of traffic
+4. **Monitoring**: 24-hour monitoring period with alerting
+5. **Full Deployment**: Promoted to 100% after successful monitoring
+
+Deployment scripts are available in the `/scripts` directory:
+- `social-intel-rollout.sh`: Initial canary deployment
+- `monitor-social-intel.sh`: Monitoring during canary phase
+- `promote-social-intel.sh`: Promotion to 100% traffic
+
+## Version History
+
+See [VERSION.md](./VERSION.md) for version history and [CHANGELOG.md](./CHANGELOG.md) for detailed change information.
+
+## Implementation Status
+
+See [IMPLEMENTATION-STATUS.md](./IMPLEMENTATION-STATUS.md) for detailed implementation status.
+
+## Post-Rollout Actions
+
+See [../docs/POST_ROLLOUT_ACTIONS.md](../docs/POST_ROLLOUT_ACTIONS.md) for post-deployment follow-up tasks.
 
 ## License
 
