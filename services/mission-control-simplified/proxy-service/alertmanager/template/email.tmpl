@@ -1,0 +1,152 @@
+{{ define "email.niche_scout.html" }}
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>{{ if eq .Status "firing" }}🔥{{ else }}✅{{ end }} Niche-Scout Alert</title>
+  <style>
+    body {
+      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      color: #333333;
+      font-size: 14px;
+      line-height: 1.6;
+      margin: 0;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      border: 1px solid #e1e1e8;
+      border-radius: 4px;
+      padding: 20px;
+      background-color: #f9f9f9;
+    }
+
+    h2 {
+      margin-top: 0;
+      color: {{ if eq .Status "firing" }}#cc0000{{ else }}#00cc66{{ end }};
+    }
+
+    .alert {
+      margin-bottom: 20px;
+      padding: 15px;
+      border: 1px solid transparent;
+      border-radius: 4px;
+    }
+
+    .alert-firing {
+      background-color: #f2dede;
+      border-color: #ebccd1;
+    }
+
+    .alert-resolved {
+      background-color: #dff0d8;
+      border-color: #d6e9c6;
+    }
+
+    .alert-details {
+      margin-top: 10px;
+      background-color: white;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      padding: 10px;
+    }
+
+    .metric {
+      font-family: monospace;
+      background-color: #f5f5f5;
+      padding: 2px 4px;
+      border-radius: 3px;
+    }
+
+    table {
+      border-collapse: collapse;
+      width: 100%;
+    }
+
+    table, th, td {
+      border: 1px solid #ddd;
+    }
+
+    th, td {
+      text-align: left;
+      padding: 8px;
+    }
+
+    th {
+      background-color: #f2f2f2;
+    }
+
+    .footer {
+      margin-top: 20px;
+      font-size: 12px;
+      color: #777;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>{{ if eq .Status "firing" }}🔥 ALERT FIRING{{ else }}✅ ALERT RESOLVED{{ end }}</h2>
+    <p>
+      {{ if eq .Status "firing" }}
+        There are <strong>{{ .Alerts.Firing | len }}</strong> alert(s) firing in Niche-Scout Proxy Service.
+      {{ else }}
+        All alerts have been resolved in Niche-Scout Proxy Service.
+      {{ end }}
+    </p>
+
+    {{ if gt (len .Alerts.Firing) 0 }}
+    <h3>Firing Alerts</h3>
+    {{ range .Alerts.Firing }}
+    <div class="alert alert-firing">
+      <h4>{{ .Labels.alertname }}</h4>
+      <strong>Severity:</strong> {{ .Labels.severity }}<br>
+      <strong>Started:</strong> {{ .StartsAt.Format "2006-01-02 15:04:05 MST" }}<br>
+      <strong>Description:</strong> {{ .Annotations.description }}<br>
+      
+      <div class="alert-details">
+        <h5>Alert Details</h5>
+        <p><strong>Value:</strong> <span class="metric">{{ .Annotations.value }}</span></p>
+        
+        <h5>Labels</h5>
+        <table>
+          <tr>
+            <th>Name</th>
+            <th>Value</th>
+          </tr>
+          {{ range .Labels.SortedPairs }}
+          <tr>
+            <td>{{ .Name }}</td>
+            <td>{{ .Value }}</td>
+          </tr>
+          {{ end }}
+        </table>
+      </div>
+    </div>
+    {{ end }}
+    {{ end }}
+
+    {{ if gt (len .Alerts.Resolved) 0 }}
+    <h3>Resolved Alerts</h3>
+    {{ range .Alerts.Resolved }}
+    <div class="alert alert-resolved">
+      <h4>{{ .Labels.alertname }}</h4>
+      <strong>Severity:</strong> {{ .Labels.severity }}<br>
+      <strong>Started:</strong> {{ .StartsAt.Format "2006-01-02 15:04:05 MST" }}<br>
+      <strong>Resolved:</strong> {{ .EndsAt.Format "2006-01-02 15:04:05 MST" }}<br>
+      <strong>Duration:</strong> {{ duration (sub .EndsAt.Unix .StartsAt.Unix) }}<br>
+      <strong>Description:</strong> {{ .Annotations.description }}
+    </div>
+    {{ end }}
+    {{ end }}
+
+    <div class="footer">
+      <p>This is an automated alert from the Niche-Scout monitoring system.</p>
+      <p>View the <a href="http://localhost:3000/d/niche-scout-alerts">Alert Dashboard</a> for more details.</p>
+    </div>
+  </div>
+</body>
+</html>
+{{ end }}

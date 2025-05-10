@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Seed-to-Blueprint Workflow</title>
+  <style>
+    body {font-family:system-ui,-apple-system,sans-serif; margin:0; padding:0; background:#f5f7fa;}
+    header {background:#fff; box-shadow:0 1px 3px rgba(0,0,0,0.1); padding:1rem; display:flex; justify-content:space-between; align-items:center;}
+    h1 {font-size:1.5rem; margin:0;}
+    a.logo {display:flex; align-items:center; text-decoration:none; color:inherit;}
+    .logo-img {height:2rem; margin-right:0.5rem;}
+    .app-nav {display:flex; gap:1.5rem;}
+    .app-nav a {color:#4b5563; text-decoration:none; font-weight:500;}
+    .app-nav a:hover {color:#3b82f6;}
+    main {max-width:1200px; margin:0 auto; padding:1.5rem;}
+    .card {background:#fff; border-radius:0.5rem; box-shadow:0 2px 4px rgba(0,0,0,0.05); padding:1.5rem; margin-bottom:1.5rem;}
+    h2 {font-size:1.25rem; margin-top:0; color:#1f2937;}
+    .grid-2 {display:grid; grid-template-columns:repeat(1, 1fr); gap:1.5rem;}
+    @media (min-width:768px) {.grid-2 {grid-template-columns:repeat(2, 1fr);}}
+    label {display:block; font-weight:500; margin-bottom:0.5rem; color:#4b5563;}
+    input, select, textarea {width:100%; padding:0.625rem; border:1px solid #d1d5db; border-radius:0.375rem; font-size:0.875rem; margin-bottom:1rem;}
+    input:focus, select:focus, textarea:focus {outline:none; ring:2px; ring-color:#3b82f6; border-color:#3b82f6;}
+    textarea {min-height:6rem; resize:vertical;}
+    
+    /* Wizard Progress */
+    .steps {display:flex; margin-bottom:2rem; position:relative;}
+    .steps::before {content:""; position:absolute; top:14px; left:24px; right:24px; height:2px; background:#e2e8f0; z-index:0;}
+    .step {flex:1; display:flex; flex-direction:column; align-items:center; position:relative; z-index:1;}
+    .step-circle {width:30px; height:30px; border-radius:50%; display:flex; align-items:center; justify-content:center; margin-bottom:0.5rem; background:#fff; border:2px solid #e2e8f0; color:#64748b; font-weight:600;}
+    .step.active .step-circle, .step.completed .step-circle {background:#3b82f6; border-color:#3b82f6; color:#fff;}
+    .step-text {font-size:0.875rem; color:#64748b; font-weight:500;}
+    
+    .button-group {display:flex; justify-content:space-between; margin-top:1.5rem;}
+    button {padding:0.625rem 1.25rem; border:none; border-radius:0.375rem; font-weight:500; cursor:pointer;}
+    button.primary {background:#3b82f6; color:white;}
+    button.primary:hover {background:#2563eb;}
+    button.secondary {background:#f3f4f6; color:#374151;}
+    button.secondary:hover {background:#e5e7eb;}
+    button:disabled {opacity:0.5; cursor:not-allowed;}
+
+    /* Results Tabs */
+    .tabs {display:flex; border-bottom:1px solid #e2e8f0; margin-bottom:1.5rem;}
+    .tab {padding:0.75rem 1.5rem; cursor:pointer; font-weight:500; color:#64748b;}
+    .tab.active {color:#3b82f6; border-bottom:2px solid #3b82f6; margin-bottom:-1px;}
+    .tab-content {display:none;}
+    .tab-content.active {display:block;}
+
+    /* Video recommendations */
+    .video-list {display:grid; grid-template-columns:repeat(1, 1fr); gap:1rem;}
+    @media (min-width:640px) {.video-list {grid-template-columns:repeat(2, 1fr);}}
+    @media (min-width:1024px) {.video-list {grid-template-columns:repeat(3, 1fr);}}
+    .video-card {border:1px solid #e5e7eb; border-radius:0.5rem; overflow:hidden;}
+    .video-thumbnail {width:100%; height:auto; aspect-ratio:16/9; object-fit:cover;}
+    .video-info {padding:1rem;}
+    .video-title {font-weight:600; margin-bottom:0.5rem; color:#1f2937; font-size:0.875rem; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;}
+    .video-meta {display:flex; justify-content:space-between; font-size:0.75rem; color:#6b7280;}
+
+    /* Blueprint box */
+    .blueprint-box {border:1px solid #e5e7eb; border-radius:0.5rem; padding:1.5rem; background:#f9fafb; margin-bottom:1.5rem;}
+    .blueprint-section {margin-bottom:1.5rem;}
+    .blueprint-section h3 {margin-top:0; margin-bottom:0.625rem; font-size:1rem; color:#1f2937;}
+    .blueprint-list {margin:0; padding-left:1.5rem;}
+    .blueprint-list li {margin-bottom:0.5rem;}
+    .stat-grid {display:grid; grid-template-columns:repeat(2, 1fr); gap:1rem; margin-bottom:1rem;}
+    @media (min-width:768px) {.stat-grid {grid-template-columns:repeat(4, 1fr);}}
+    .stat-box {background:white; border:1px solid #e5e7eb; border-radius:0.5rem; padding:1rem; text-align:center;}
+    .stat-value {font-size:1.5rem; font-weight:600; color:#1f2937; margin-bottom:0.25rem;}
+    .stat-label {font-size:0.75rem; color:#6b7280;}
+
+    /* Loader */
+    .loader-container {display:flex; justify-content:center; align-items:center; padding:3rem 0;}
+    .loader {border:3px solid #f3f3f3; border-radius:50%; border-top:3px solid #3b82f6; width:2rem; height:2rem; animation:spin 1s linear infinite;}
+    @keyframes spin {0% {transform:rotate(0deg);} 100% {transform:rotate(360deg);}}
+
+    /* Success/Error alerts */
+    .alert {padding:1rem; border-radius:0.375rem; margin-bottom:1rem;}
+    .alert.success {background:#f0fdf4; border:1px solid #bbf7d0; color:#166534;}
+    .alert.error {background:#fef2f2; border:1px solid #fecaca; color:#b91c1c;}
+
+    /* Tables */
+    table {width:100%; border-collapse:collapse; font-size:0.875rem;}
+    th {text-align:left; padding:0.75rem; background:#f9fafb; border-bottom:1px solid #e5e7eb; font-weight:500; color:#4b5563;}
+    td {padding:0.75rem; border-bottom:1px solid #e5e7eb;}
+    tr:hover td {background:#f9fafb;}
+  </style>
+</head>
+<body>
+  <header>
+    <a href="/" class="logo">
+      <span style="color:#3b82f6; font-weight:bold;">ALFRED</span>
+      <span style="margin-left:0.25rem;">Mission Control</span>
+    </a>
+    <nav class="app-nav">
+      <a href="/">Dashboard</a>
+      <a href="#" style="color:#3b82f6;">Workflows</a>
+      <a href="#">Agents</a>
+      <a href="#">Reports</a>
+    </nav>
+  </header>
+
+  <main id="app">
+    <!-- Wizard Form Section -->
+    <section id="wizard-section">
+      <h2>Seed-to-Blueprint Workflow</h2>
+      <p>Generate a comprehensive YouTube channel strategy and content roadmap based on a seed video or niche.</p>
+      
+      <div class="card">
+        <div class="steps">
+          <div class="step active" id="step1">
+            <div class="step-circle">1</div>
+            <div class="step-text">Input Selection</div>
+          </div>
+          <div class="step" id="step2">
+            <div class="step-circle">2</div>
+            <div class="step-text">Parameters</div>
+          </div>
+          <div class="step" id="step3">
+            <div class="step-circle">3</div>
+            <div class="step-text">Review</div>
+          </div>
+        </div>
+
+        <!-- Step 1: Input Selection -->
+        <div id="step1-content">
+          <h3>Select Input Type</h3>
+          <div class="grid-2">
+            <div>
+              <label>
+                <input type="radio" name="input-type" value="video" checked> Use a Seed Video
+              </label>
+              <div id="video-input">
+                <label for="video-url">YouTube Video URL</label>
+                <input type="text" id="video-url" placeholder="https://www.youtube.com/watch?v=..." />
+                <p style="font-size:0.875rem; color:#6b7280; margin-top:-0.5rem;">Enter a URL to a YouTube video that represents your desired content strategy.</p>
+              </div>
+            </div>
+
+            <div>
+              <label>
+                <input type="radio" name="input-type" value="niche"> Use a Niche
+              </label>
+              <div id="niche-input" style="display:none;">
+                <label for="niche-category">Category</label>
+                <select id="niche-category">
+                  <option value="">Select a category</option>
+                  <option value="tech">Technology</option>
+                  <option value="gaming">Gaming</option>
+                  <option value="education">Education</option>
+                  <option value="entertainment">Entertainment</option>
+                  <option value="business">Business & Finance</option>
+                  <option value="lifestyle">Lifestyle</option>
+                </select>
+
+                <label for="niche-subcategory">Subcategory</label>
+                <select id="niche-subcategory">
+                  <option value="">Select a subcategory</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="button-group">
+            <div></div> <!-- Empty div for spacing -->
+            <button class="primary" onclick="nextStep(1)">Next</button>
+          </div>
+        </div>
+
+        <!-- Step 2: Parameters -->
+        <div id="step2-content" style="display:none;">
+          <h3>Set Blueprint Parameters</h3>
+          
+          <div class="grid-2">
+            <div>
+              <label for="audience">Target Audience</label>
+              <select id="audience">
+                <option value="general">General Audience</option>
+                <option value="beginners">Beginners</option>
+                <option value="intermediate">Intermediate</option>
+                <option value="advanced">Advanced/Professional</option>
+              </select>
+
+              <label for="content-depth">Content Depth</label>
+              <select id="content-depth">
+                <option value="introductory">Introductory (high-level overviews)</option>
+                <option value="comprehensive" selected>Comprehensive (detailed exploration)</option>
+                <option value="expert">Expert (in-depth analysis)</option>
+              </select>
+            </div>
+
+            <div>
+              <label for="content-format">Preferred Content Formats</label>
+              <select id="content-format" multiple style="height:100px">
+                <option value="tutorials" selected>Tutorials</option>
+                <option value="explainers">Explainers</option>
+                <option value="reviews">Reviews</option>
+                <option value="case-studies">Case Studies</option>
+                <option value="interviews">Interviews</option>
+                <option value="commentary">Commentary</option>
+              </select>
+              <p style="font-size:0.875rem; color:#6b7280; margin-top:-0.5rem;">Hold Ctrl/Cmd to select multiple options</p>
+
+              <label for="custom-notes">Additional Notes (Optional)</label>
+              <textarea id="custom-notes" placeholder="Any specific focus areas or requirements?"></textarea>
+            </div>
+          </div>
+
+          <div class="button-group">
+            <button class="secondary" onclick="prevStep(2)">Back</button>
+            <button class="primary" onclick="nextStep(2)">Next</button>
+          </div>
+        </div>
+
+        <!-- Step 3: Review -->
+        <div id="step3-content" style="display:none;">
+          <h3>Review Your Blueprint Request</h3>
+          
+          <div class="blueprint-box">
+            <div class="blueprint-section">
+              <h3>Input</h3>
+              <div id="review-input-type"></div>
+              <div id="review-input-value"></div>
+            </div>
+
+            <div class="blueprint-section">
+              <h3>Parameters</h3>
+              <ul class="blueprint-list">
+                <li><strong>Target Audience:</strong> <span id="review-audience"></span></li>
+                <li><strong>Content Depth:</strong> <span id="review-content-depth"></span></li>
+                <li><strong>Content Formats:</strong> <span id="review-content-format"></span></li>
+              </ul>
+              <div id="review-notes-section" style="display:none;">
+                <h3>Additional Notes</h3>
+                <p id="review-notes" style="margin-top:0;"></p>
+              </div>
+            </div>
+          </div>
+
+          <div id="error-message" class="alert error" style="display:none;"></div>
+
+          <div class="button-group">
+            <button class="secondary" onclick="prevStep(3)">Back</button>
+            <button class="primary" id="generate-button" onclick="generateBlueprint()">Generate Blueprint</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Results Section (initially hidden) -->
+    <section id="results-section" style="display:none;">
+      <div class="button-group" style="margin-bottom:1rem;">
+        <button class="secondary" onclick="backToWizard()">← Back to Form</button>
+        <button class="secondary" onclick="downloadBlueprint()">Download Blueprint</button>
+      </div>
+
+      <div class="card">
+        <h2>YouTube Channel Blueprint</h2>
+        <div id="blueprint-header"></div>
+
+        <div class="tabs">
+          <div class="tab active" onclick="showTab('overview')">Overview</div>
+          <div class="tab" onclick="showTab('content-strategy')">Content Strategy</div>
+          <div class="tab" onclick="showTab('video-ideas')">Video Ideas</div>
+          <div class="tab" onclick="showTab('recommendations')">Recommendations</div>
+        </div>
+
+        <!-- Overview Tab -->
+        <div id="overview" class="tab-content active">
+          <div class="stat-grid">
+            <div class="stat-box">
+              <div class="stat-value">4.2M</div>
+              <div class="stat-label">Potential Audience</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-value">82%</div>
+              <div class="stat-label">Growth Potential</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-value">76/100</div>
+              <div class="stat-label">Competition Score</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-value">24</div>
+              <div class="stat-label">Video Ideas</div>
+            </div>
+          </div>
+
+          <div class="blueprint-section">
+            <h3>Channel Vision</h3>
+            <p>Based on your seed input, we recommend a YouTube channel focused on <span id="overview-focus"></span>. This growing niche has strong engagement metrics and moderate competition, providing excellent opportunities for channel growth.</p>
+          </div>
+
+          <div class="blueprint-section">
+            <h3>Channel Positioning</h3>
+            <p id="overview-positioning"></p>
+          </div>
+
+          <div class="blueprint-section">
+            <h3>Growth Strategy</h3>
+            <ul class="blueprint-list" id="overview-strategy">
+              <!-- Will be populated dynamically -->
+            </ul>
+          </div>
+        </div>
+
+        <!-- Content Strategy Tab -->
+        <div id="content-strategy" class="tab-content">
+          <div class="blueprint-section">
+            <h3>Content Pillars</h3>
+            <p>Your channel should focus on these core content pillars:</p>
+            <ul class="blueprint-list" id="content-pillars">
+              <!-- Will be populated dynamically -->
+            </ul>
+          </div>
+
+          <div class="blueprint-section">
+            <h3>Content Mix Recommendations</h3>
+            <p>For optimal engagement and growth, we suggest the following content mix:</p>
+            <ul class="blueprint-list" id="content-mix">
+              <!-- Will be populated dynamically -->
+            </ul>
+          </div>
+          
+          <div class="blueprint-section">
+            <h3>Publishing Schedule</h3>
+            <p>Based on audience analytics, we recommend this publishing schedule:</p>
+            <table>
+              <thead>
+                <tr>
+                  <th>Day</th>
+                  <th>Content Type</th>
+                  <th>Optimal Time</th>
+                  <th>Engagement Potential</th>
+                </tr>
+              </thead>
+              <tbody id="schedule-table">
+                <!-- Will be populated dynamically -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Video Ideas Tab -->
+        <div id="video-ideas" class="tab-content">
+          <div class="blueprint-section">
+            <h3>Video Concepts</h3>
+            <p>We've generated 24 unique video ideas aligned with your channel strategy:</p>
+            <table>
+              <thead>
+                <tr>
+                  <th>Title Concept</th>
+                  <th>Content Pillar</th>
+                  <th>Format</th>
+                  <th>Priority</th>
+                </tr>
+              </thead>
+              <tbody id="video-ideas-table">
+                <!-- Will be populated dynamically -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Recommendations Tab -->
+        <div id="recommendations" class="tab-content">
+          <div class="blueprint-section">
+            <h3>Trending Topics</h3>
+            <p>These topics are currently trending in your niche and make excellent content opportunities:</p>
+            <ul class="blueprint-list" id="trending-topics">
+              <!-- Will be populated dynamically -->
+            </ul>
+          </div>
+
+          <div class="blueprint-section">
+            <h3>Channel Examples</h3>
+            <p>These existing channels offer inspiration for your content strategy:</p>
+            <table>
+              <thead>
+                <tr>
+                  <th>Channel</th>
+                  <th>Subscribers</th>
+                  <th>Content Focus</th>
+                  <th>Key Takeaways</th>
+                </tr>
+              </thead>
+              <tbody id="channel-examples">
+                <!-- Will be populated dynamically -->
+              </tbody>
+            </table>
+          </div>
+
+          <div class="blueprint-section">
+            <h3>SEO Recommendations</h3>
+            <div class="blueprint-box">
+              <p><strong>High-Performing Keywords:</strong> <span id="seo-keywords"></span></p>
+              <p><strong>Recommended Tags:</strong> <span id="seo-tags"></span></p>
+              <p><strong>Title Structure:</strong> <span id="seo-title"></span></p>
+              <p><strong>Description Structure:</strong> <span id="seo-description"></span></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Loading State -->
+    <div id="loading-section" style="display:none;">
+      <div class="card">
+        <div class="loader-container">
+          <div class="loader"></div>
+        </div>
+        <p style="text-align:center; color:#6b7280;">Generating your YouTube channel blueprint...</p>
+        <p style="text-align:center; font-size:0.875rem; color:#9ca3af;">This may take up to 30 seconds as we analyze trending data.</p>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // Dynamic subcategories based on main category
+    const subcategories = {
+      tech: ['Programming', 'AI & Machine Learning', 'Web Development', 'Mobile Apps', 'Hardware Reviews'],
+      gaming: ['Mobile Gaming', 'Console Gaming', 'PC Gaming', 'Game Development', 'Gaming News'],
+      education: ['Academic', 'Professional Skills', 'Self-Improvement', 'Language Learning', 'Science'],
+      entertainment: ['Comedy', 'Vlogs', 'Reactions', 'Challenges', 'Reviews'],
+      business: ['Entrepreneurship', 'Marketing', 'Finance', 'Investing', 'Career Development'],
+      lifestyle: ['Fitness', 'Food & Cooking', 'Fashion', 'Travel', 'Home Decor']
+    };
+
+    // Toggle input sections based on selection
+    document.querySelectorAll('input[name="input-type"]').forEach(radio => {
+      radio.addEventListener('change', function() {
+        document.getElementById('video-input').style.display = this.value === 'video' ? 'block' : 'none';
+        document.getElementById('niche-input').style.display = this.value === 'niche' ? 'block' : 'none';
+      });
+    });
+
+    // Populate subcategories when category changes
+    document.getElementById('niche-category').addEventListener('change', function() {
+      const subcategorySelect = document.getElementById('niche-subcategory');
+      const category = this.value;
+      
+      // Clear current options
+      subcategorySelect.innerHTML = '<option value="">Select a subcategory</option>';
+      
+      // Add new options if category selected
+      if (category && subcategories[category]) {
+        subcategories[category].forEach(sub => {
+          const option = document.createElement('option');
+          option.value = sub.toLowerCase().replace(/\s+/g, '-');
+          option.textContent = sub;
+          subcategorySelect.appendChild(option);
+        });
+      }
+    });
+
+    // Step navigation
+    function nextStep(currentStep) {
+      // Basic validation
+      if (currentStep === 1) {
+        const inputType = document.querySelector('input[name="input-type"]:checked').value;
+        if (inputType === 'video' && !document.getElementById('video-url').value) {
+          alert('Please enter a YouTube video URL');
+          return;
+        } else if (inputType === 'niche' && !document.getElementById('niche-subcategory').value) {
+          alert('Please select both a category and subcategory');
+          return;
+        }
+      }
+
+      // Hide current step
+      document.getElementById(`step${currentStep}-content`).style.display = 'none';
+      
+      // Show next step
+      document.getElementById(`step${currentStep+1}-content`).style.display = 'block';
+      
+      // Update step indicators
+      document.getElementById(`step${currentStep}`).classList.remove('active');
+      document.getElementById(`step${currentStep}`).classList.add('completed');
+      document.getElementById(`step${currentStep+1}`).classList.add('active');
+
+      // If moving to step 3 (review), populate review info
+      if (currentStep === 2) {
+        populateReview();
+      }
+    }
+
+    function prevStep(currentStep) {
+      // Hide current step
+      document.getElementById(`step${currentStep}-content`).style.display = 'none';
+      
+      // Show previous step
+      document.getElementById(`step${currentStep-1}-content`).style.display = 'block';
+      
+      // Update step indicators
+      document.getElementById(`step${currentStep}`).classList.remove('active');
+      document.getElementById(`step${currentStep-1}`).classList.remove('completed');
+      document.getElementById(`step${currentStep-1}`).classList.add('active');
+    }
+
+    function populateReview() {
+      const inputType = document.querySelector('input[name="input-type"]:checked').value;
+      let inputValue = "";
+      
+      if (inputType === 'video') {
+        inputValue = document.getElementById('video-url').value;
+        document.getElementById('review-input-type').textContent = 'Seed Video:';
+        document.getElementById('review-input-value').textContent = inputValue;
+      } else {
+        const category = document.getElementById('niche-category');
+        const subcategory = document.getElementById('niche-subcategory');
+        inputValue = `${category.options[category.selectedIndex].text} > ${subcategory.options[subcategory.selectedIndex].text}`;
+        document.getElementById('review-input-type').textContent = 'Niche:';
+        document.getElementById('review-input-value').textContent = inputValue;
+      }
+      
+      const audience = document.getElementById('audience');
+      document.getElementById('review-audience').textContent = audience.options[audience.selectedIndex].text;
+      
+      const contentDepth = document.getElementById('content-depth');
+      document.getElementById('review-content-depth').textContent = contentDepth.options[contentDepth.selectedIndex].text;
+      
+      // Handle multiple selected content formats
+      const contentFormat = document.getElementById('content-format');
+      const selectedFormats = Array.from(contentFormat.options)
+        .filter(option => option.selected)
+        .map(option => option.text)
+        .join(', ');
+      document.getElementById('review-content-format').textContent = selectedFormats;
+      
+      // Handle notes if present
+      const notes = document.getElementById('custom-notes').value;
+      if (notes.trim()) {
+        document.getElementById('review-notes').textContent = notes;
+        document.getElementById('review-notes-section').style.display = 'block';
+      } else {
+        document.getElementById('review-notes-section').style.display = 'none';
+      }
+    }
+
+    function generateBlueprint() {
+      // Hide wizard and show loading
+      document.getElementById('wizard-section').style.display = 'none';
+      document.getElementById('loading-section').style.display = 'block';
+      
+      // Get input values
+      const inputType = document.querySelector('input[name="input-type"]:checked').value;
+      const params = {
+        input_type: inputType
+      };
+      
+      if (inputType === 'video') {
+        params.video_url = document.getElementById('video-url').value;
+      } else {
+        params.niche_category = document.getElementById('niche-category').value;
+        params.niche_subcategory = document.getElementById('niche-subcategory').value;
+      }
+      
+      // Add other parameters
+      params.audience = document.getElementById('audience').value;
+      params.content_depth = document.getElementById('content-depth').value;
+      
+      // Get selected content formats
+      const contentFormatSelect = document.getElementById('content-format');
+      params.content_formats = Array.from(contentFormatSelect.selectedOptions).map(option => option.value);
+      
+      // Add custom notes if any
+      const notes = document.getElementById('custom-notes').value;
+      if (notes.trim()) {
+        params.notes = notes;
+      }
+      
+      console.log('Sending parameters to API:', params);
+      
+      // Call the API endpoint
+      fetch('/api/workflows/seed-to-blueprint', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(params)
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log('Received API data:', data);
+        
+        // Check if this is mock data
+        if (data._mock) {
+          console.log('Received mock data from fallback mechanism');
+        }
+        
+        // Hide loading and show results
+        document.getElementById('loading-section').style.display = 'none';
+        document.getElementById('results-section').style.display = 'block';
+        
+        // Populate results with the API response data
+        populateResults(data);
+      })
+      .catch(error => {
+        console.error('Error calling Seed-to-Blueprint API:', error);
+        
+        // Show error but continue with mock data
+        alert(`Error: ${error.message}. Falling back to mock data.`);
+        
+        // Hide loading and show results
+        document.getElementById('loading-section').style.display = 'none';
+        document.getElementById('results-section').style.display = 'block';
+        
+        // Populate with mock data
+        populateResults();
+      });
+    }
+
+    function backToWizard() {
+      document.getElementById('results-section').style.display = 'none';
+      document.getElementById('wizard-section').style.display = 'block';
+    }
+
+    function showTab(tabId) {
+      // Hide all tabs
+      document.querySelectorAll('.tab-content').forEach(tab => {
+        tab.classList.remove('active');
+      });
+      
+      // Show selected tab
+      document.getElementById(tabId).classList.add('active');
+      
+      // Update tab indicators
+      document.querySelectorAll('.tab').forEach(tab => {
+        tab.classList.remove('active');
+      });
+      document.querySelector(`.tab[onclick="showTab('${tabId}')"]`).classList.add('active');
+    }
+
+    function downloadBlueprint() {
+      alert('Blueprint download functionality would be implemented here.');
+    }
+
+    function populateResults(apiData) {
+      let data;
+      
+      // If API data was provided and contains channel_blueprint, use it
+      if (apiData && apiData.result && apiData.result.channel_blueprint) {
+        console.log('Using API data for results');
+        data = apiData.result.channel_blueprint;
+      } else {
+        // Otherwise fall back to mock data
+        console.log('No API data available, using mock data');
+        // Different mock data based on input type
+        const inputType = document.querySelector('input[name="input-type"]:checked').value;
+        
+        if (inputType === 'video') {
+          const videoUrl = document.getElementById('video-url').value;
+          // Mock data for video input
+          data = {
+          focus: "programming tutorials and coding guides",
+          positioning: "Your channel should position itself as a go-to resource for practical coding skills with a focus on real-world applications rather than just theory. The emphasis should be on helping viewers build projects they can add to their portfolios.",
+          strategy: [
+            "Focus on tutorial series that build complete projects from scratch",
+            "Create beginner-friendly content that assumes minimal prior knowledge",
+            "Implement a consistent visual style with clear code explanations",
+            "Engage with comments to build community and gather video ideas",
+            "Cross-promote content on relevant programming forums and communities"
+          ],
+          contentPillars: [
+            "Web Development Fundamentals (HTML, CSS, JavaScript)",
+            "Framework Tutorials (React, Vue, Angular)",
+            "Backend Development (Node.js, Express)",
+            "Database Integration (SQL, MongoDB)",
+            "Deployment and DevOps for Beginners"
+          ],
+          contentMix: [
+            "50% Step-by-step tutorials (15-25 minutes)",
+            "20% Code-along project builds (30-45 minutes)",
+            "15% Technology explanations and comparisons (8-12 minutes)",
+            "10% Career advice and industry insights (10-15 minutes)",
+            "5% Q&A and community engagement (variable length)"
+          ],
+          schedule: [
+            { day: "Monday", type: "Tutorial", time: "6:00 PM EST", engagement: "High" },
+            { day: "Wednesday", type: "Project Build", time: "6:00 PM EST", engagement: "Very High" },
+            { day: "Friday", type: "Tech Explanation", time: "12:00 PM EST", engagement: "Medium" },
+            { day: "Saturday", type: "Career/Q&A", time: "10:00 AM EST", engagement: "Medium-High" }
+          ],
+          videoIdeas: [
+            { title: "Build a Full-Stack App with React and Node.js (Step by Step)", pillar: "Web Development", format: "Project Build", priority: "High" },
+            { title: "JavaScript Arrays: Methods You Need to Know", pillar: "Web Development", format: "Tutorial", priority: "High" },
+            { title: "CSS Grid vs Flexbox: When to Use Each", pillar: "Web Development", format: "Explanation", priority: "Medium" },
+            { title: "Building Your First API with Express and MongoDB", pillar: "Backend Development", format: "Tutorial", priority: "High" },
+            { title: "React Hooks Explained: useEffect, useState and Custom Hooks", pillar: "Framework Tutorials", format: "Tutorial", priority: "High" },
+            { title: "Deploying Your App to Heroku: Complete Guide", pillar: "Deployment", format: "Tutorial", priority: "Medium" },
+            { title: "Modern JavaScript Features You Should Be Using", pillar: "Web Development", format: "Explanation", priority: "Medium" },
+            { title: "Build a Responsive Portfolio Website (HTML/CSS)", pillar: "Web Development", format: "Project Build", priority: "High" }
+          ],
+          trendingTopics: [
+            "Serverless Functions and Architecture",
+            "Web Assembly and Performance Optimization",
+            "State Management with React Context vs Redux",
+            "TypeScript for JavaScript Developers",
+            "API Security Best Practices"
+          ],
+          channelExamples: [
+            { name: "Traversy Media", subscribers: "1.8M", focus: "Web Development Tutorials", takeaways: "Clear explanations, project-based approach" },
+            { name: "The Net Ninja", subscribers: "1.2M", focus: "Framework Tutorials", takeaways: "Series-based content, consistent publishing" },
+            { name: "Web Dev Simplified", subscribers: "980K", focus: "JavaScript and Web Concepts", takeaways: "Shorter, focused videos on specific concepts" }
+          ],
+          seo: {
+            keywords: "javascript tutorial, web development, learn coding, react tutorial, node.js",
+            tags: "#webdevelopment #javascript #coding #programming #learntocode",
+            title: "Action-Oriented Main Keyword | Secondary Keyword (Benefit)",
+            description: "Specific outcome + timeframe in first line. Main points covered in bullets. Call-to-action and relevant links at end."
+          }
+        };
+      } else {
+        // Mock data for niche input
+        const category = document.getElementById('niche-category');
+        const subcategory = document.getElementById('niche-subcategory');
+        const nicheCategory = category.options[category.selectedIndex].text;
+        const nicheSubcategory = subcategory.options[subcategory.selectedIndex].text;
+        
+        data = {
+          focus: `${nicheSubcategory} within the ${nicheCategory} space`,
+          positioning: `Your channel should position itself as an authority on ${nicheSubcategory} content that appeals to both enthusiasts and newcomers. Focus on providing a mix of entertaining and informative content that showcases your unique perspective and expertise.`,
+          strategy: [
+            `Create in-depth reviews and analysis of new ${nicheSubcategory} releases and trends`,
+            "Develop a recognizable intro and consistent branding across all videos",
+            "Collaborate with established creators in the same niche",
+            "Create shareable clips for social media promotion",
+            "Engage with community comments and incorporate viewer suggestions"
+          ],
+          contentPillars: [
+            `${nicheSubcategory} Reviews and First Impressions`,
+            `${nicheSubcategory} Tutorials and How-To Guides`,
+            `${nicheSubcategory} News and Industry Updates`,
+            "Community Showcase and Audience Engagement",
+            "Deep Dives and Analysis"
+          ],
+          contentMix: [
+            "40% Reviews and impressions (10-15 minutes)",
+            "25% Tutorials and guides (15-20 minutes)",
+            "15% News and updates (8-10 minutes)",
+            "10% Community content (variable length)",
+            "10% Deep dive analysis (20-30 minutes)"
+          ],
+          schedule: [
+            { day: "Tuesday", type: "News/Updates", time: "4:00 PM EST", engagement: "Medium-High" },
+            { day: "Thursday", type: "Review/First Look", time: "6:00 PM EST", engagement: "High" },
+            { day: "Saturday", type: "Tutorial/Guide", time: "12:00 PM EST", engagement: "Very High" },
+            { day: "Sunday", type: "Deep Dive/Analysis", time: "3:00 PM EST", engagement: "Medium" }
+          ],
+          videoIdeas: [
+            { title: `Top 10 ${nicheSubcategory} Trends for 2025`, pillar: "News and Updates", format: "List", priority: "High" },
+            { title: `Beginner's Guide to ${nicheSubcategory}: Everything You Need to Know`, pillar: "Tutorials", format: "Guide", priority: "High" },
+            { title: `${nicheSubcategory} Review: Is It Worth Your Time?`, pillar: "Reviews", format: "Review", priority: "High" },
+            { title: `Hidden Gems in ${nicheSubcategory} You've Probably Missed`, pillar: "Deep Dives", format: "Analysis", priority: "Medium" },
+            { title: `How to Get Started with ${nicheSubcategory} (Complete Walkthrough)`, pillar: "Tutorials", format: "Tutorial", priority: "High" },
+            { title: `${nicheSubcategory} Community Showcase - Viewer Submissions`, pillar: "Community", format: "Showcase", priority: "Medium" },
+            { title: `The History and Evolution of ${nicheSubcategory}`, pillar: "Deep Dives", format: "Analysis", priority: "Medium" },
+            { title: `${nicheSubcategory} vs Alternative Options: Which is Better?`, pillar: "Reviews", format: "Comparison", priority: "High" }
+          ],
+          trendingTopics: [
+            `New ${nicheSubcategory} Releases and Updates`,
+            `${nicheSubcategory} Optimization Techniques`,
+            `Budget-Friendly ${nicheSubcategory} Options`,
+            `${nicheSubcategory} Community Events and Meetups`,
+            `${nicheSubcategory} Industry Controversies and Discussions`
+          ],
+          channelExamples: [
+            { name: "Channel A", subscribers: "560K", focus: `${nicheSubcategory} Reviews`, takeaways: "Consistent branding, high production value" },
+            { name: "Channel B", subscribers: "340K", focus: `${nicheSubcategory} Tutorials`, takeaways: "Clear step-by-step instructions, helpful graphics" },
+            { name: "Channel C", subscribers: "220K", focus: `${nicheSubcategory} Community`, takeaways: "Strong audience engagement, user-generated content" }
+          ],
+          seo: {
+            keywords: `${nicheSubcategory.toLowerCase()}, ${nicheCategory.toLowerCase()}, how to, tutorial, review, guide`,
+            tags: `#${nicheSubcategory.replace(/\s+/g, '')} #${nicheCategory.replace(/\s+/g, '')} #guide #tutorial #review`,
+            title: `Main ${nicheSubcategory} Keyword | Secondary Appeal (Year/Version)`,
+            description: `Clear value proposition in first line. What viewers will learn. Experience level mention. Call-to-action for engagement.`
+          }
+        };
+      }
+      
+      // Populate blueprint header
+      const currentInputType = document.querySelector('input[name="input-type"]:checked').value;
+      const inputTypeText = currentInputType === 'video' ? 'Seed Video' : 'Niche';
+      const inputValueText = currentInputType === 'video' 
+        ? document.getElementById('video-url').value 
+        : `${document.getElementById('niche-category').options[document.getElementById('niche-category').selectedIndex].text} > ${document.getElementById('niche-subcategory').options[document.getElementById('niche-subcategory').selectedIndex].text}`;
+      
+      document.getElementById('blueprint-header').innerHTML = `
+        <p><strong>${inputTypeText}:</strong> ${inputValueText}</p>
+        <p><strong>Generated:</strong> ${new Date().toLocaleString()}</p>
+      `;
+      
+      // Overview tab
+      document.getElementById('overview-focus').textContent = data.focus;
+      document.getElementById('overview-positioning').textContent = data.positioning;
+      
+      const strategyList = document.getElementById('overview-strategy');
+      strategyList.innerHTML = '';
+      data.strategy.forEach(item => {
+        const li = document.createElement('li');
+        li.textContent = item;
+        strategyList.appendChild(li);
+      });
+      
+      // Content Strategy tab
+      const contentPillarsList = document.getElementById('content-pillars');
+      contentPillarsList.innerHTML = '';
+      data.contentPillars.forEach(pillar => {
+        const li = document.createElement('li');
+        li.textContent = pillar;
+        contentPillarsList.appendChild(li);
+      });
+      
+      const contentMixList = document.getElementById('content-mix');
+      contentMixList.innerHTML = '';
+      data.contentMix.forEach(mix => {
+        const li = document.createElement('li');
+        li.textContent = mix;
+        contentMixList.appendChild(li);
+      });
+      
+      const scheduleTable = document.getElementById('schedule-table');
+      scheduleTable.innerHTML = '';
+      data.schedule.forEach(item => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${item.day}</td>
+          <td>${item.type}</td>
+          <td>${item.time}</td>
+          <td>${item.engagement}</td>
+        `;
+        scheduleTable.appendChild(tr);
+      });
+      
+      // Video Ideas tab
+      const videoIdeasTable = document.getElementById('video-ideas-table');
+      videoIdeasTable.innerHTML = '';
+      data.videoIdeas.forEach(idea => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${idea.title}</td>
+          <td>${idea.pillar}</td>
+          <td>${idea.format}</td>
+          <td>${idea.priority}</td>
+        `;
+        videoIdeasTable.appendChild(tr);
+      });
+      
+      // Recommendations tab
+      const trendingTopicsList = document.getElementById('trending-topics');
+      trendingTopicsList.innerHTML = '';
+      data.trendingTopics.forEach(topic => {
+        const li = document.createElement('li');
+        li.textContent = topic;
+        trendingTopicsList.appendChild(li);
+      });
+      
+      const channelExamplesTable = document.getElementById('channel-examples');
+      channelExamplesTable.innerHTML = '';
+      data.channelExamples.forEach(channel => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${channel.name}</td>
+          <td>${channel.subscribers}</td>
+          <td>${channel.focus}</td>
+          <td>${channel.takeaways}</td>
+        `;
+        channelExamplesTable.appendChild(tr);
+      });
+      
+      document.getElementById('seo-keywords').textContent = data.seo.keywords;
+      document.getElementById('seo-tags').textContent = data.seo.tags;
+      document.getElementById('seo-title').textContent = data.seo.title;
+      document.getElementById('seo-description').textContent = data.seo.description;
+    }
+  </script>
+</body>
+</html>

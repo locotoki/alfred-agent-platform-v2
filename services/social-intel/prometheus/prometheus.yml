@@ -1,0 +1,23 @@
+# Social Intelligence Service Prometheus Configuration
+
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+# Load rules from the alert rules file
+rule_files:
+  - "/etc/prometheus/social-intel/prom_alert_rules.yml"
+
+# Scrape the Social Intelligence service metrics
+scrape_configs:
+  - job_name: "social-intel"
+    metrics_path: "/health/metrics"
+    static_configs:
+      - targets: ["social-intel:9000"]
+
+# Alert manager configuration
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+            - "alertmanager:9093"

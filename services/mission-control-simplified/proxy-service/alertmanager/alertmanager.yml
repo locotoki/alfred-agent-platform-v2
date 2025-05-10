@@ -1,0 +1,51 @@
+global:
+  resolve_timeout: 5m
+  smtp_smarthost: 'smtp.gmail.com:587'
+  smtp_from: 'niche-scout-alerts@example.com'
+  smtp_auth_username: '${SMTP_USERNAME}'
+  smtp_auth_password: '${SMTP_PASSWORD}'
+  smtp_require_tls: true
+
+# Define notification routes
+route:
+  group_by: ['alertname']
+  group_wait: 10s
+  group_interval: 10s
+  repeat_interval: 1h
+  receiver: 'email-notifications'
+  
+  # Define specific route for critical alerts
+  routes:
+    - match:
+        severity: critical
+      group_wait: 0s
+      repeat_interval: 15m
+      receiver: 'email-notifications'
+
+# Define notification receivers
+receivers:
+  - name: 'email-notifications'
+    email_configs:
+      - to: '${ALERT_EMAIL}'
+        send_resolved: true
+        html: '{{ template "email.niche_scout.html" . }}'
+        headers:
+          subject: '[{{ .Status | toUpper }}{{ if eq .Status "firing" }}:{{ .Alerts.Firing | len }}{{ end }}] Niche-Scout Alert: {{ range .Alerts }}{{ .Labels.alertname }} {{ end }}'
+          
+  # Optional webhook receiver for integrating with other systems
+  - name: 'webhook'
+    webhook_configs:
+      - url: 'http://127.0.0.1:5001/'
+        send_resolved: true
+
+# Define templates for notifications
+templates:
+  - '/etc/alertmanager/template/*.tmpl'
+
+# Inhibition rules let you mute notifications
+inhibit_rules:
+  - source_match:
+      severity: 'critical'
+    target_match:
+      severity: 'warning'
+    equal: ['alertname', 'instance']

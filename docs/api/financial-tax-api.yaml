@@ -1,0 +1,378 @@
+openapi: 3.0.0
+info:
+  title: Financial-Tax Agent API
+  version: 1.0.0
+  description: API for tax calculations, financial analysis, and compliance checking
+
+servers:
+  - url: http://localhost:9003/api/v1
+    description: Development server
+  - url: https://api.alfred-platform.com/v1
+    description: Production server
+
+security:
+  - BearerAuth: []
+
+paths:
+  /financial-tax/calculate-tax:
+    post:
+      summary: Calculate tax liability
+      description: Calculate tax liability based on income, deductions, and credits
+      tags:
+        - Tax Calculation
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaxCalculationRequest'
+      responses:
+        '200':
+          description: Tax calculation successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaxCalculationResponse'
+        '400':
+          description: Invalid request data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal server error
+
+  /financial-tax/analyze-financials:
+    post:
+      summary: Perform financial analysis
+      description: Analyze financial statements and provide insights
+      tags:
+        - Financial Analysis
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FinancialAnalysisRequest'
+      responses:
+        '200':
+          description: Financial analysis successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FinancialAnalysisResponse'
+        '400':
+          description: Invalid request data
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal server error
+
+  /financial-tax/check-compliance:
+    post:
+      summary: Check tax compliance
+      description: Perform compliance check on transactions
+      tags:
+        - Compliance
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ComplianceCheckRequest'
+      responses:
+        '200':
+          description: Compliance check successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ComplianceCheckResponse'
+        '400':
+          description: Invalid request data
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal server error
+
+  /financial-tax/tax-rates/{jurisdiction}:
+    get:
+      summary: Get tax rates
+      description: Retrieve tax rates for specified jurisdiction
+      tags:
+        - Tax Rates
+      parameters:
+        - name: jurisdiction
+          in: path
+          required: true
+          schema:
+            type: string
+            enum: [US-FED, US-CA, US-NY, US-TX, US-FL, UK, EU, CA, AU, SG, JP, IN]
+        - name: tax_year
+          in: query
+          schema:
+            type: integer
+            default: 2024
+        - name: entity_type
+          in: query
+          schema:
+            type: string
+            enum: [individual, corporation, partnership, trust, non_profit]
+            default: individual
+      responses:
+        '200':
+          description: Tax rates retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaxRateResponse'
+        '400':
+          description: Invalid parameters
+        '401':
+          description: Unauthorized
+        '404':
+          description: Jurisdiction not found
+        '500':
+          description: Internal server error
+
+  /financial-tax/task/{task_id}:
+    get:
+      summary: Get task status
+      description: Retrieve status of a specific task
+      tags:
+        - Task Management
+      parameters:
+        - name: task_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Task status retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskStatus'
+        '401':
+          description: Unauthorized
+        '404':
+          description: Task not found
+        '500':
+          description: Internal server error
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    TaxCalculationRequest:
+      type: object
+      required:
+        - income
+        - jurisdiction
+        - tax_year
+        - entity_type
+      properties:
+        income:
+          type: number
+          description: Gross income amount
+        deductions:
+          type: object
+          additionalProperties:
+            type: number
+          description: Itemized deductions
+        credits:
+          type: object
+          additionalProperties:
+            type: number
+          description: Tax credits
+        jurisdiction:
+          type: string
+          enum: [US-FED, US-CA, US-NY, US-TX, US-FL, UK, EU, CA, AU, SG, JP, IN]
+        tax_year:
+          type: integer
+          description: Tax year
+        entity_type:
+          type: string
+          enum: [individual, corporation, partnership, trust, non_profit]
+        additional_info:
+          type: object
+          description: Additional information
+
+    TaxCalculationResponse:
+      type: object
+      properties:
+        gross_income:
+          type: number
+        total_deductions:
+          type: number
+        taxable_income:
+          type: number
+        tax_liability:
+          type: number
+        effective_tax_rate:
+          type: number
+        marginal_tax_rate:
+          type: number
+        credits_applied:
+          type: number
+        net_tax_due:
+          type: number
+        breakdown:
+          type: object
+          additionalProperties:
+            type: number
+        calculation_details:
+          type: array
+          items:
+            type: string
+
+    FinancialAnalysisRequest:
+      type: object
+      required:
+        - financial_statements
+        - analysis_type
+        - period
+      properties:
+        financial_statements:
+          type: object
+          description: Financial statements data
+        analysis_type:
+          type: string
+          description: Type of analysis to perform
+        period:
+          type: string
+          description: Analysis period
+        industry:
+          type: string
+          description: Industry for benchmarking
+        custom_metrics:
+          type: array
+          items:
+            type: string
+          description: Custom metrics to calculate
+
+    FinancialAnalysisResponse:
+      type: object
+      properties:
+        summary:
+          type: object
+        key_metrics:
+          type: object
+          additionalProperties:
+            type: number
+        trends:
+          type: object
+        insights:
+          type: array
+          items:
+            type: string
+        recommendations:
+          type: array
+          items:
+            type: string
+        visualizations:
+          type: object
+        benchmark_comparison:
+          type: object
+
+    ComplianceCheckRequest:
+      type: object
+      required:
+        - entity_type
+        - transactions
+        - jurisdiction
+        - tax_year
+      properties:
+        entity_type:
+          type: string
+          enum: [individual, corporation, partnership, trust, non_profit]
+        transactions:
+          type: array
+          items:
+            type: object
+        jurisdiction:
+          type: string
+          enum: [US-FED, US-CA, US-NY, US-TX, US-FL, UK, EU, CA, AU, SG, JP, IN]
+        tax_year:
+          type: integer
+        compliance_areas:
+          type: array
+          items:
+            type: string
+
+    ComplianceCheckResponse:
+      type: object
+      properties:
+        compliance_status:
+          type: string
+        issues_found:
+          type: array
+          items:
+            type: object
+        recommendations:
+          type: array
+          items:
+            type: string
+        risk_level:
+          type: string
+        detailed_findings:
+          type: object
+
+    TaxRateResponse:
+      type: object
+      properties:
+        jurisdiction:
+          type: string
+        tax_year:
+          type: integer
+        entity_type:
+          type: string
+        tax_brackets:
+          type: array
+          items:
+            type: object
+        standard_deduction:
+          type: number
+        exemptions:
+          type: object
+        special_rates:
+          type: object
+        additional_info:
+          type: object
+
+    TaskStatus:
+      type: object
+      properties:
+        task_id:
+          type: string
+          format: uuid
+        status:
+          type: string
+          enum: [pending, processing, completed, failed, cancelled]
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        result:
+          type: object
+        error_message:
+          type: string
+
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+        status_code:
+          type: integer
+        detail:
+          type: string

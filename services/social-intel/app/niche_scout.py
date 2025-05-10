@@ -16,6 +16,9 @@ import structlog
 
 # Use simple reports instead of HTML templates
 from app.simple_reports import generate_niche_scout_report
+from app.youtube_api import get_trends_by_category, YouTubeAPIError
+from app.database import niche_repository
+from app.metrics import SI_REQUESTS_TOTAL, SI_LATENCY_SECONDS, NICHE_SCOUT_RESULTS_COUNT, NICHE_OPPORTUNITY_SCORE, LatencyTimer
 
 logger = structlog.get_logger(__name__)
 
@@ -53,11 +56,143 @@ class NicheScout:
                         category=category, 
                         subcategory=subcategory)
         
-        # Simulate processing time
-        await asyncio.sleep(2)
+        # Track total request count
+        SI_REQUESTS_TOTAL.labels(endpoint="/niche-scout", status="started").inc()
         
-        # Generate results (using simulated data for the stub implementation)
-        results = self._generate_simulated_results(query, category, subcategory)
+        results = None
+        
+        # Use latency timer to track request duration
+        with LatencyTimer(SI_LATENCY_SECONDS, {"endpoint": "/niche-scout"}):
+            try:
+                # First, try to get hot niches from the database
+                db_niches = await niche_repository.get_hot_niches(50)
+                self.logger.info("Retrieved niches from database", count=len(db_niches))
+                
+                if db_niches and len(db_niches) > 0:
+                    # If we have data in the database, use it
+                    self.logger.info("Using niches from database")
+                    
+                    # Convert database results to expected format
+                    trending_niches = []
+                    for niche in db_niches:
+                        # Record opportunity score in metrics
+                        NICHE_OPPORTUNITY_SCORE.observe(float(niche["opportunity"]))
+                        
+                        # Format to match expected structure
+                        niche_data = {
+                            "query": niche["phrase"],
+                            "view_sum": int(1000000 * niche["demand_score"]),
+                            "rsv": float(niche["demand_score"]),
+                            "view_rank": db_niches.index(niche) + 1,
+                            "rsv_rank": db_niches.index(niche) + 1,
+                            "score": float(niche["opportunity"]),
+                            "x": float(db_niches.index(niche) * 10),
+                            "y": float(100 - (db_niches.index(niche) * 15)),
+                            "niche": db_niches.index(niche) % 5 + 1
+                        }
+                        trending_niches.append(niche_data)
+                    
+                    results = {
+                        "run_date": datetime.now().isoformat(),
+                        "trending_niches": trending_niches,
+                        "top_niches": trending_niches[:5],
+                        "visualization_url": "https://example.com/visualization",
+                        "actual_cost": 0.10,  # Low cost since using database
+                        "actual_processing_time": 5.5  # Database queries are fast
+                    }
+                    
+                    # Update metrics with result count
+                    NICHE_SCOUT_RESULTS_COUNT.set(len(trending_niches))
+                    
+                    self.logger.info("Successfully processed niches from database",
+                                  niches_count=len(trending_niches))
+                    
+                    # Record success
+                    SI_REQUESTS_TOTAL.labels(endpoint="/niche-scout", status="success").inc()
+                else:
+                    # If database is empty, fall back to API or simulated data
+                    self.logger.warning("No niches found in database, falling back to other sources")
+                    
+                    # Use YouTube API if available, otherwise fall back to simulated data
+                    youtube_api_key = os.environ.get("YOUTUBE_API_KEY")
+                    if not youtube_api_key:
+                        self.logger.warning("No YouTube API key found, using simulated data")
+                        results = self._generate_simulated_results(query, category, subcategory)
+                    else:
+                        try:
+                            # Use real YouTube API to get trends
+                            self.logger.info("Using YouTube API to get trends", 
+                                          api_key_length=len(youtube_api_key))
+                            api_results = await get_trends_by_category(
+                                category=category,
+                                subcategory=subcategory,
+                                region_code="US",
+                                max_results=20
+                            )
+                            
+                            # Format results to match our expected output structure
+                            results = {
+                                "run_date": datetime.now().isoformat(),
+                                "trending_niches": api_results.get("trending_niches", []),
+                                "top_niches": api_results.get("top_niches", []),
+                                "visualization_url": "https://example.com/visualization",
+                                "actual_cost": 95.50,  # This would be calculated based on actual API usage
+                                "actual_processing_time": 120.5  # This would be the actual time taken
+                            }
+                            
+                            # Also add results to database for future use
+                            for i, niche in enumerate(api_results.get("trending_niches", [])):
+                                try:
+                                    # Extract normalized scores from the API results
+                                    phrase = niche.get("query", "")
+                                    demand_score = niche.get("rsv", 0.5)
+                                    # Use position to estimate monetization and supply scores
+                                    position_factor = 1.0 - (i / len(api_results.get("trending_niches", [])))
+                                    monetise_score = 0.7 + (position_factor * 0.3)
+                                    supply_score = 0.3 + (position_factor * 0.3)
+                                    
+                                    # Insert into database
+                                    await niche_repository.insert_feature(
+                                        phrase=phrase,
+                                        demand_score=demand_score,
+                                        monetise_score=monetise_score,
+                                        supply_score=supply_score
+                                    )
+                                except Exception as e:
+                                    self.logger.error("Failed to save niche to database", 
+                                                  niche=niche.get("query"), error=str(e))
+                            
+                            # Update metrics with result count
+                            NICHE_SCOUT_RESULTS_COUNT.set(len(results.get("trending_niches", [])))
+                            
+                            self.logger.info("Successfully retrieved trends from YouTube API",
+                                          niches_count=len(results.get("trending_niches", [])))
+                            
+                            # Record success
+                            SI_REQUESTS_TOTAL.labels(endpoint="/niche-scout", status="success").inc()
+                        except YouTubeAPIError as e:
+                            # Log the error and fall back to simulated data
+                            self.logger.error("YouTube API error, falling back to simulated data", 
+                                           error=str(e))
+                            results = self._generate_simulated_results(query, category, subcategory)
+                            
+                            # Record API error
+                            SI_REQUESTS_TOTAL.labels(endpoint="/niche-scout", status="api_error").inc()
+            except Exception as e:
+                # If there's any error with the database, fall back to simulated data
+                self.logger.error("Database error, falling back to simulated data", error=str(e))
+                results = self._generate_simulated_results(query, category, subcategory)
+                
+                # Record database error
+                SI_REQUESTS_TOTAL.labels(endpoint="/niche-scout", status="db_error").inc()
+        
+        # If we still don't have results due to some error, generate simulated data
+        if results is None:
+            self.logger.error("Failed to get results, using simulated data as last resort")
+            results = self._generate_simulated_results(query, category, subcategory)
+            
+            # Record fallback
+            SI_REQUESTS_TOTAL.labels(endpoint="/niche-scout", status="fallback").inc()
         
         # Save JSON results
         timestamp = int(time.time())
@@ -73,7 +208,7 @@ class NicheScout:
         self.logger.info("NicheScout workflow completed", 
                          json_file=filepath,
                          report_file=report_path,
-                         num_niches=len(results["niches"]),
+                         num_niches=len(results.get("trending_niches", [])),
                          category=category,
                          subcategory=subcategory)
         

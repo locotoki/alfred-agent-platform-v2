@@ -1,0 +1,74 @@
+groups:
+  - name: extended_platform_alerts
+    rules:
+      - alert: SlowTaskProcessing
+        expr: histogram_quantile(0.95, rate(task_processing_duration_seconds_bucket[5m])) > 60
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: Slow task processing in {{ $labels.agent }}
+          description: 95th percentile task processing time exceeds 60s for {{ $labels.agent }}
+
+      - alert: HighTaskRejectionRate
+        expr: sum(rate(tasks_rejected_total[5m])) by (agent) / sum(rate(tasks_total[5m])) by (agent) > 0.05
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: High task rejection rate in {{ $labels.agent }}
+          description: Task rejection rate exceeds 5% in {{ $labels.agent }}
+
+      - alert: AgentNotProcessingTasks
+        expr: rate(tasks_total[15m]) > 0 and rate(tasks_completed_total[15m]) == 0
+        for: 15m
+        labels:
+          severity: critical
+        annotations:
+          summary: Agent {{ $labels.agent }} not completing tasks
+          description: Tasks being sent but none completing for 15 minutes
+
+      - alert: DatabaseSlowQueries
+        expr: rate(pg_stat_activity_max_tx_duration{datname='postgres'}[5m]) > 30
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: Slow database queries detected
+          description: Database queries taking longer than 30s
+
+      - alert: RedisMemoryPressure
+        expr: redis_memory_used_bytes / redis_memory_max_bytes > 0.8
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: Redis memory pressure
+          description: Redis memory usage above 80% for 5 minutes
+
+      - alert: PubSubDeliveryDelay
+        expr: pubsub_subscription_oldest_unacked_message_age_seconds > 60
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: Pub/Sub message delivery delay
+          description: Messages older than 60s in subscription {{ $labels.subscription }}
+          
+      - alert: LowAgentSuccessRate
+        expr: sum(rate(tasks_completed_total[30m])) by (agent) / sum(rate(tasks_total[30m])) by (agent) < 0.9
+        for: 30m
+        labels:
+          severity: warning
+        annotations:
+          summary: Low success rate for {{ $labels.agent }}
+          description: Success rate below 90% for 30 minutes in {{ $labels.agent }}
+          
+      - alert: QdrantServiceSlow
+        expr: histogram_quantile(0.95, rate(qdrant_query_duration_seconds_bucket[5m])) > 1
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: Slow Qdrant query performance
+          description: 95th percentile Qdrant query time exceeds 1s

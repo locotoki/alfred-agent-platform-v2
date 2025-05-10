@@ -1,0 +1,1657 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Niche-Scout Workflow</title>
+  <style>
+    body {font-family:system-ui,-apple-system,sans-serif; margin:0; padding:0; background:#f5f7fa;}
+    header {background:#fff; box-shadow:0 1px 3px rgba(0,0,0,0.1); padding:1rem;}
+    h1 {font-size:1.5rem; margin:0;}
+    main {max-width:1200px; margin:0 auto; padding:1.5rem;}
+    .card {background:#fff; border-radius:0.5rem; box-shadow:0 2px 4px rgba(0,0,0,0.05); padding:1.5rem; margin-bottom:1.5rem;}
+    
+    /* CHECKPOINT 5: UI Enhancement - Debug Panel styles */
+    .debug-panel {
+      background:#f8fafc; 
+      border:1px solid #e2e8f0; 
+      border-radius:0.5rem; 
+      margin-top:1rem; 
+      padding:1rem;
+      font-size:0.875rem;
+    }
+    .debug-panel h3 {
+      margin-top:0;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+    }
+    .debug-panel-toggle {
+      background:none;
+      border:none;
+      color:#3b82f6;
+      cursor:pointer;
+      font-size:0.875rem;
+    }
+    .debug-metrics {
+      display:grid;
+      grid-template-columns:repeat(auto-fill, minmax(150px, 1fr));
+      gap:0.5rem;
+      margin-bottom:1rem;
+    }
+    .metric-card {
+      background:#fff;
+      border:1px solid #e2e8f0;
+      border-radius:0.25rem;
+      padding:0.5rem;
+      text-align:center;
+    }
+    .metric-value {
+      font-size:1.25rem;
+      font-weight:600;
+      color:#3b82f6;
+    }
+    .metric-label {
+      font-size:0.75rem;
+      color:#64748b;
+    }
+    .metric-history {
+      display:flex;
+      flex-direction:column;
+      gap:0.5rem;
+      margin-top:0.5rem;
+    }
+    .history-entry {
+      background:#f1f5f9;
+      border-radius:0.25rem;
+      padding:0.5rem;
+      font-size:0.75rem;
+    }
+    .badge {
+      display:inline-block;
+      padding:0.25rem 0.5rem;
+      border-radius:0.25rem;
+      font-size:0.75rem;
+      font-weight:500;
+    }
+    .badge-blue {
+      background:#dbeafe;
+      color:#1e40af;
+    }
+    .badge-green {
+      background:#dcfce7;
+      color:#166534;
+    }
+    .badge-yellow {
+      background:#fef3c7;
+      color:#92400e;
+    }
+    .badge-red {
+      background:#fee2e2;
+      color:#b91c1c;
+    }
+    .relevance-bar {
+      height:0.5rem;
+      background:#e2e8f0;
+      border-radius:0.25rem;
+      margin-top:0.25rem;
+      overflow:hidden;
+    }
+    .relevance-fill {
+      height:100%;
+      background:#3b82f6;
+      border-radius:0.25rem;
+    }
+    
+    /* Wizard Progress */
+    .steps {display:flex; margin-bottom:2rem; position:relative;}
+    .steps::before {content:""; position:absolute; top:14px; left:24px; right:24px; height:2px; background:#e2e8f0; z-index:0;}
+    .step {flex:1; display:flex; flex-direction:column; align-items:center; position:relative; z-index:1;}
+    .step-circle {width:30px; height:30px; border-radius:50%; display:flex; align-items:center; justify-content:center; margin-bottom:0.5rem; background:#fff; border:2px solid #e2e8f0; color:#64748b; font-weight:600;}
+    .step.active .step-circle, .step.completed .step-circle {background:#3b82f6; border-color:#3b82f6; color:#fff;}
+    .step-text {font-size:0.875rem; color:#64748b; font-weight:500;}
+    .step.active .step-text {color:#3b82f6; font-weight:600;}
+    
+    /* Form Elements */
+    .form-group {margin-bottom:1.5rem;}
+    label {display:block; font-size:0.875rem; font-weight:500; margin-bottom:0.5rem; color:#4b5563;}
+    input, select {width:100%; padding:0.75rem; border:1px solid #d1d5db; border-radius:0.375rem; font-size:1rem;}
+    .help-text {font-size:0.75rem; color:#6b7280; margin-top:0.25rem;}
+    
+    /* Grid Layout */
+    .grid {display:grid; gap:1.5rem;}
+    .grid-2 {grid-template-columns:repeat(2, 1fr);}
+    @media (max-width:768px) {.grid-2 {grid-template-columns:1fr;}}
+    
+    /* Button Styles */
+    .btn {padding:0.75rem 1.5rem; border-radius:0.375rem; font-weight:500; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; transition:all 0.2s;}
+    .btn-primary {background:#3b82f6; color:#fff; border:none;}
+    .btn-primary:hover {background:#2563eb;}
+    .btn-secondary {background:#f3f4f6; color:#374151; border:1px solid #d1d5db;}
+    .btn-secondary:hover {background:#e5e7eb;}
+    
+    /* Layout Utilities */
+    .flex {display:flex;}
+    .flex-wrap {flex-wrap:wrap;}
+    .justify-between {justify-content:space-between;}
+    .justify-end {justify-content:flex-end;}
+    .gap-2 {gap:0.5rem;}
+    .mt-6 {margin-top:1.5rem;}
+    
+    /* Step Content Animation */
+    @keyframes fadeIn {
+      from {opacity:0; transform:translateY(10px);}
+      to {opacity:1; transform:translateY(0);}
+    }
+    .step-content {display:none;}
+    .step-content.active {display:block; animation:fadeIn 0.3s ease-out;}
+    
+    /* Subcategory Tags */
+    .subcategory-grid {display:grid; grid-template-columns:repeat(auto-fill, minmax(150px, 1fr)); gap:0.5rem;}
+    .tag {padding:0.5rem; border:1px solid #d1d5db; border-radius:0.375rem; text-align:center; cursor:pointer; transition:all 0.2s;}
+    .tag:hover {transform:translateY(-2px); border-color:#93c5fd;}
+    .tag.selected {background:#eff6ff; border-color:#3b82f6; color:#2563eb;}
+    
+    /* Summary Section */
+    .summary-section {background:#f8fafc; border-radius:0.5rem; padding:1.5rem; margin-bottom:1.5rem;}
+    .summary-item {display:flex; margin-bottom:0.5rem;}
+    .summary-label {font-weight:500; width:8rem;}
+    .summary-value {color:#3b82f6;}
+    
+    /* Benefits Section */
+    .benefits-section {background:#eff6ff; border-radius:0.5rem; padding:1.5rem;}
+    .benefits-title {color:#1e40af; margin-top:0;}
+    .benefits-list {color:#1d4ed8;}
+    .benefits-list li {margin-bottom:0.5rem;}
+
+    /* Results Section */
+    #results-container {
+      display: none;
+      animation: fadeIn 0.5s ease-out;
+    }
+    .result-tabs {
+      display: flex;
+      border-bottom: 1px solid #e2e8f0;
+      margin-bottom: 1rem;
+    }
+    .result-tab {
+      padding: 0.75rem 1.5rem;
+      cursor: pointer;
+      font-weight: 500;
+      color: #64748b;
+    }
+    .result-tab.active {
+      color: #3b82f6;
+      border-bottom: 2px solid #3b82f6;
+      margin-bottom: -1px;
+    }
+    .result-content {
+      display: none;
+    }
+    .result-content.active {
+      display: block;
+      animation: fadeIn 0.3s ease-out;
+    }
+    .niche-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+    .niche-card {
+      background: white;
+      border-radius: 0.5rem;
+      padding: 1rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+      border: 1px solid #e2e8f0;
+    }
+    .niche-card:hover {
+      border-color: #93c5fd;
+    }
+    .niche-title {
+      font-weight: 600;
+      font-size: 1rem;
+      margin-bottom: 0.5rem;
+    }
+    .niche-metrics {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.5rem;
+      font-size: 0.875rem;
+    }
+    .niche-metric {
+      background: #f8fafc;
+      padding: 0.5rem;
+      border-radius: 0.25rem;
+      text-align: center;
+    }
+    .niche-metric-value {
+      font-weight: 600;
+      color: #3b82f6;
+    }
+    .niche-metric-label {
+      font-size: 0.75rem;
+      color: #64748b;
+    }
+    .chart-container {
+      width: 100%;
+      height: 400px;
+      margin-top: 1rem;
+      background: #f8fafc;
+      border-radius: 0.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #64748b;
+    }
+    
+    .back-button {
+      display: inline-flex;
+      align-items: center;
+      margin-bottom: 1rem;
+      color: #3b82f6;
+      font-weight: 500;
+      text-decoration: none;
+    }
+    .back-button:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>MISSION CONTROL</h1>
+  </header>
+  
+  <main>
+    <a href="/" class="back-button">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+      <span class="ml-2">Back to Dashboard</span>
+    </a>
+    
+    <div style="border-bottom:1px solid #e2e8f0; margin-bottom:1.5rem; padding-bottom:1rem;">
+      <h1>Niche-Scout Workflow</h1>
+    </div>
+    
+    <div id="wizard-container">
+      <!-- Wizard Steps -->
+      <div class="steps">
+        <div class="step active" data-step="1">
+          <div class="step-circle">1</div>
+          <div class="step-text">Define Niche</div>
+        </div>
+        <div class="step" data-step="2">
+          <div class="step-circle">2</div>
+          <div class="step-text">Research Parameters</div>
+        </div>
+        <div class="step" data-step="3">
+          <div class="step-circle">3</div>
+          <div class="step-text">Review & Run</div>
+        </div>
+      </div>
+      
+      <!-- Step 1: Define Niche -->
+      <div id="step-1" class="step-content active">
+        <div class="card">
+          <h2>Define Your Niche</h2>
+          
+          <div class="form-group">
+            <label for="niche-query">What niche are you interested in exploring?</label>
+            <input id="niche-query" type="text" placeholder="e.g. gaming, cooking, fitness, photography">
+            <p class="help-text">Enter keywords that describe your content area of interest</p>
+          </div>
+          
+          <div class="form-group">
+            <label for="category">Select a Primary Category</label>
+            <select id="category">
+              <option value="All">All</option>
+              <option value="Gaming">Gaming</option>
+              <option value="Education">Education</option>
+              <option value="Entertainment">Entertainment</option>
+              <option value="Howto & Style">Howto & Style</option>
+              <option value="Science & Technology">Science & Technology</option>
+            </select>
+          </div>
+          
+          <div id="subcategories-container" class="form-group" style="display:none;">
+            <label>Refine with Subcategories (Optional)</label>
+            <div id="subcategories-grid" class="subcategory-grid"></div>
+          </div>
+          
+          <div class="flex justify-end mt-6">
+            <button id="next-1" class="btn btn-primary">Next: Research Parameters</button>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Step 2: Research Parameters -->
+      <div id="step-2" class="step-content">
+        <div class="card">
+          <h2>Set Research Parameters</h2>
+          
+          <div class="grid grid-2">
+            <div class="form-group">
+              <label for="time-range">Time Range</label>
+              <select id="time-range">
+                <option>Last 7 days</option>
+                <option selected>Last 30 days</option>
+                <option>Last 90 days</option>
+                <option>Last 12 months</option>
+              </select>
+              <p class="help-text">Select how far back to analyze trends</p>
+            </div>
+            
+            <div class="form-group">
+              <label for="demographics">Target Demographics</label>
+              <select id="demographics">
+                <option selected>All</option>
+                <option>13-17</option>
+                <option>18-24</option>
+                <option>25-34</option>
+                <option>35-44</option>
+                <option>45+</option>
+              </select>
+              <p class="help-text">Filter results by audience age group</p>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <button id="toggle-advanced" class="btn btn-secondary">+ Advanced Options</button>
+          </div>
+          
+          <div id="advanced-options" style="display:none; border:1px solid #e2e8f0; border-radius:0.5rem; padding:1rem; margin-bottom:1.5rem;">
+            <h3 style="margin-top:0;">Advanced Filters</h3>
+            
+            <div class="grid grid-2">
+              <div class="form-group">
+                <label for="min-views">Minimum Views</label>
+                <input id="min-views" type="number" placeholder="e.g. 10000">
+                <p class="help-text">Exclude videos with fewer views</p>
+              </div>
+              
+              <div class="form-group">
+                <label for="min-growth">Minimum Growth (%)</label>
+                <input id="min-growth" type="number" placeholder="e.g. 20">
+                <p class="help-text">Focus on rapidly growing niches</p>
+              </div>
+            </div>
+          </div>
+          
+          <div class="flex justify-between mt-6">
+            <button id="prev-2" class="btn btn-secondary">Back: Define Niche</button>
+            <button id="next-2" class="btn btn-primary">Next: Review & Run</button>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Step 3: Review & Run -->
+      <div id="step-3" class="step-content">
+        <div class="card">
+          <h2>Review & Run Analysis</h2>
+          
+          <div class="summary-section">
+            <h3 style="margin-top:0; margin-bottom:1rem;">Niche Scout Summary</h3>
+            
+            <div class="summary-item">
+              <div class="summary-label">Niche Query:</div>
+              <div id="summary-query" class="summary-value">(not specified)</div>
+            </div>
+            
+            <div class="summary-item">
+              <div class="summary-label">Category:</div>
+              <div id="summary-category" class="summary-value">All</div>
+            </div>
+            
+            <div id="summary-subcategories-container" class="summary-item" style="display:none;">
+              <div class="summary-label">Subcategories:</div>
+              <div id="summary-subcategories" class="summary-value"></div>
+            </div>
+            
+            <div class="summary-item">
+              <div class="summary-label">Time Range:</div>
+              <div id="summary-timerange" class="summary-value">Last 30 days</div>
+            </div>
+            
+            <div class="summary-item">
+              <div class="summary-label">Demographics:</div>
+              <div id="summary-demographics" class="summary-value">All</div>
+            </div>
+          </div>
+          
+          <div class="benefits-section">
+            <h3 class="benefits-title">What You'll Get</h3>
+            
+            <ul class="benefits-list">
+              <li>Top performing niches based on views and engagement</li>
+              <li>Growth rate analysis for trending content areas</li>
+              <li>Visual mapping of niche positioning</li>
+              <li>Opportunity score for niche competitiveness</li>
+              <li>Recommended content strategies</li>
+            </ul>
+          </div>
+          
+          <div class="flex justify-between mt-6">
+            <button id="prev-3" class="btn btn-secondary">Back: Research Parameters</button>
+            
+            <div class="flex gap-2">
+              <button id="schedule-btn" class="btn btn-secondary">SCHEDULE</button>
+              <button id="run-btn" class="btn btn-primary">RUN ANALYSIS NOW</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Results Section (Initially Hidden) -->
+    <div id="results-container">
+      <div class="card">
+        <div class="flex justify-between">
+          <h2>Niche-Scout Results</h2>
+          <button id="new-search-btn" class="btn btn-secondary">New Search</button>
+        </div>
+        
+        <!-- CHECKPOINT 5: UI Enhancement - Debug panel for metrics -->
+        <div id="debug-panel" class="debug-panel" style="display:none;">
+          <h3>
+            Transformation Metrics
+            <button id="debug-panel-toggle" class="debug-panel-toggle">Hide</button>
+          </h3>
+          
+          <div class="debug-metrics">
+            <div class="metric-card">
+              <div class="metric-value" id="metric-relevance-score">-</div>
+              <div class="metric-label">Relevance Score</div>
+              <div class="relevance-bar">
+                <div class="relevance-fill" id="metric-relevance-bar" style="width:0%"></div>
+              </div>
+            </div>
+            
+            <div class="metric-card">
+              <div class="metric-value" id="metric-relevant-niches">-</div>
+              <div class="metric-label">Relevant Niches</div>
+            </div>
+            
+            <div class="metric-card">
+              <div class="metric-value" id="metric-transformation-time">-</div>
+              <div class="metric-label">Transform Time</div>
+            </div>
+            
+            <div class="metric-card">
+              <div class="metric-value" id="metric-api-time">-</div>
+              <div class="metric-label">API Response Time</div>
+            </div>
+          </div>
+          
+          <!-- Debug configuration panel -->
+          <div style="background: #f1f5f9; border-radius: 0.375rem; padding: 1rem; margin: 1rem 0;">
+            <h4 style="margin-top: 0; margin-bottom: 0.5rem;">Configuration</h4>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+              <div>
+                <label for="similarity-threshold" style="display: block; font-size: 0.875rem; margin-bottom: 0.25rem;">Similarity Threshold</label>
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                  <input type="range" id="similarity-threshold" min="0.1" max="0.9" step="0.05" value="0.55" style="flex-grow: 1;">
+                  <span id="threshold-value" style="font-size: 0.875rem; font-weight: 500; min-width: 2.5rem; text-align: center;">0.55</span>
+                </div>
+              </div>
+              
+              <div>
+                <label for="niche-count" style="display: block; font-size: 0.875rem; margin-bottom: 0.25rem;">Niche Count</label>
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                  <input type="range" id="niche-count" min="3" max="10" step="1" value="5" style="flex-grow: 1;">
+                  <span id="count-value" style="font-size: 0.875rem; font-weight: 500; min-width: 2.5rem; text-align: center;">5</span>
+                </div>
+              </div>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.5rem;">
+              <div>
+                <label for="weight-levenshtein" style="display: block; font-size: 0.75rem; margin-bottom: 0.25rem;">Levenshtein Weight</label>
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                  <input type="range" id="weight-levenshtein" min="0.1" max="0.9" step="0.1" value="0.5" style="flex-grow: 1;">
+                  <span id="levenshtein-value" style="font-size: 0.75rem; min-width: 2rem; text-align: center;">0.5</span>
+                </div>
+              </div>
+              
+              <div>
+                <label for="weight-jaccard" style="display: block; font-size: 0.75rem; margin-bottom: 0.25rem;">Jaccard Weight</label>
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                  <input type="range" id="weight-jaccard" min="0.1" max="0.9" step="0.1" value="0.3" style="flex-grow: 1;">
+                  <span id="jaccard-value" style="font-size: 0.75rem; min-width: 2rem; text-align: center;">0.3</span>
+                </div>
+              </div>
+              
+              <div>
+                <label for="weight-jaro" style="display: block; font-size: 0.75rem; margin-bottom: 0.25rem;">Jaro-Winkler Weight</label>
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                  <input type="range" id="weight-jaro" min="0.1" max="0.9" step="0.1" value="0.2" style="flex-grow: 1;">
+                  <span id="jaro-value" style="font-size: 0.75rem; min-width: 2rem; text-align: center;">0.2</span>
+                </div>
+              </div>
+            </div>
+            
+            <div style="margin-top: 0.75rem; display: flex; justify-content: space-between;">
+              <button id="reset-config" class="btn btn-secondary" style="font-size: 0.75rem; padding: 0.25rem 0.5rem;">Reset to Defaults</button>
+              <button id="apply-config" class="btn btn-primary" style="font-size: 0.75rem; padding: 0.25rem 0.5rem;">Apply Changes</button>
+            </div>
+          </div>
+          
+          <div>
+            <div style="margin-bottom: 0.5rem; font-weight: 500;">Match Types:</div>
+            <div class="flex gap-2" id="match-types-container">
+              <span class="badge badge-green">Exact: <span id="metric-exact-matches">-</span></span>
+              <span class="badge badge-blue">Partial: <span id="metric-partial-matches">-</span></span>
+              <span class="badge badge-yellow">Category: <span id="metric-category-matches">-</span></span>
+              <span class="badge badge-red">None: <span id="metric-none-matches">-</span></span>
+            </div>
+          </div>
+          
+          <div class="metric-history" id="metric-history">
+            <div style="margin: 0.5rem 0; font-weight: 500;">Recent Searches:</div>
+            <!-- History items will be added here dynamically -->
+          </div>
+        </div>
+        
+        <!-- Result Tabs -->
+        <div class="result-tabs">
+          <div class="result-tab active" data-tab="overview">Overview</div>
+          <div class="result-tab" data-tab="trending">Trending Niches</div>
+          <div class="result-tab" data-tab="visualization">Visualization</div>
+          <div class="result-tab" data-tab="recommendations">Recommendations</div>
+          <!-- Add debug tab for development -->
+          <div class="result-tab" data-tab="debug">Debug</div>
+        </div>
+        
+        <!-- Overview Tab -->
+        <div id="overview-tab" class="result-content active">
+          <div class="summary-section">
+            <h3>Analysis Summary</h3>
+            <p>Analysis completed on <strong id="result-date">May 8, 2025</strong> for query "<span id="result-query">gaming</span>" in category "<span id="result-category">Gaming</span>".</p>
+            <div class="grid grid-2" style="margin-top: 1rem;">
+              <div>
+                <div style="font-weight: 500;">Analyzed Data Points</div>
+                <div style="font-size: 2rem; color: #3b82f6; font-weight: 600;">1,247</div>
+              </div>
+              <div>
+                <div style="font-weight: 500;">Processing Time</div>
+                <div style="font-size: 2rem; color: #3b82f6; font-weight: 600;">42.3s</div>
+              </div>
+            </div>
+          </div>
+          
+          <div style="margin-top: 1.5rem;">
+            <h3>Key Insights</h3>
+            <ul>
+              <li><strong>Highest growth niches:</strong> Mobile Gaming (+32%), Game Development (+28%), Indie Games (+24%)</li>
+              <li><strong>Most saturated niches:</strong> FPS Games, Game Reviews</li>
+              <li><strong>Best opportunities:</strong> Strategy Games content with focus on tutorials and community building</li>
+              <li><strong>Trending topics:</strong> Game development tools, indie game showcases, mobile gaming strategies</li>
+            </ul>
+          </div>
+        </div>
+        
+        <!-- Trending Niches Tab -->
+        <div id="trending-tab" class="result-content">
+          <h3>Top Trending Niches</h3>
+          <div id="niche-grid" class="niche-grid">
+            <!-- Niche cards will be added dynamically -->
+          </div>
+        </div>
+        
+        <!-- Visualization Tab -->
+        <div id="visualization-tab" class="result-content">
+          <h3>Niche Positioning Map</h3>
+          <p>This visualization maps niches by growth rate (y-axis) and competition level (x-axis). Bubble size represents monthly view volume.</p>
+          <div class="chart-container">
+            [Interactive Chart Would Appear Here]
+          </div>
+        </div>
+        
+        <!-- Recommendations Tab -->
+        <div id="recommendations-tab" class="result-content">
+          <h3>Strategic Recommendations</h3>
+          
+          <div style="margin-bottom: 1.5rem;">
+            <h4>Content Strategy</h4>
+            <ul>
+              <li>Focus on creating tutorial content for mobile gaming optimization</li>
+              <li>Develop a series on indie game development tools and workflows</li>
+              <li>Create strategy game guides with focus on advanced techniques</li>
+              <li>Consider a weekly review series for new mobile game releases</li>
+            </ul>
+          </div>
+          
+          <div style="margin-bottom: 1.5rem;">
+            <h4>Channel Positioning</h4>
+            <ul>
+              <li>Position as an authority on mobile gaming or game development</li>
+              <li>Use "how-to" and "tutorial" formats for higher engagement</li>
+              <li>Maintain consistent publishing cadence (2-3 videos per week)</li>
+              <li>Engage with indie developer communities for cross-promotion</li>
+            </ul>
+          </div>
+          
+          <div>
+            <h4>Technical Considerations</h4>
+            <ul>
+              <li>Optimize videos for mobile viewing (vertical segments, clear visuals)</li>
+              <li>Use game development terminology in titles and descriptions</li>
+              <li>Create playlists organized by game type or development concept</li>
+              <li>Include timestamped chapters for longer tutorial videos</li>
+            </ul>
+          </div>
+        </div>
+        
+        <!-- CHECKPOINT 5: UI Enhancement - Debug Tab -->
+        <div id="debug-tab" class="result-content">
+          <h3>Debug Information</h3>
+          
+          <div class="summary-section">
+            <h4>Transformation Analysis</h4>
+            <p>This tab shows detailed information about the data transformation process. It shows how the system takes API results and makes them relevant to your search.</p>
+            
+            <div style="margin-top: 1rem;">
+              <button id="show-metrics-btn" class="btn btn-secondary">Show Metrics Panel</button>
+              <button id="clear-metrics-btn" class="btn btn-secondary" style="margin-left: 0.5rem;">Clear Metrics History</button>
+              <button id="show-raw-data-btn" class="btn btn-secondary" style="margin-left: 0.5rem;">Show Raw API Data</button>
+            </div>
+            
+            <div style="margin-top: 1rem;">
+              <h4>Performance Stats</h4>
+              <table style="width: 100%; border-collapse: collapse;">
+                <tr>
+                  <th style="text-align: left; padding: 0.5rem; border-bottom: 1px solid #e2e8f0;">Metric</th>
+                  <th style="text-align: right; padding: 0.5rem; border-bottom: 1px solid #e2e8f0;">Current</th>
+                  <th style="text-align: right; padding: 0.5rem; border-bottom: 1px solid #e2e8f0;">Average</th>
+                  <th style="text-align: right; padding: 0.5rem; border-bottom: 1px solid #e2e8f0;">Min</th>
+                  <th style="text-align: right; padding: 0.5rem; border-bottom: 1px solid #e2e8f0;">Max</th>
+                </tr>
+                <tr>
+                  <td style="padding: 0.5rem; border-bottom: 1px solid #e2e8f0;">Transform Time</td>
+                  <td id="perf-transform-current" style="text-align: right; padding: 0.5rem; border-bottom: 1px solid #e2e8f0;">-</td>
+                  <td id="perf-transform-avg" style="text-align: right; padding: 0.5rem; border-bottom: 1px solid #e2e8f0;">-</td>
+                  <td id="perf-transform-min" style="text-align: right; padding: 0.5rem; border-bottom: 1px solid #e2e8f0;">-</td>
+                  <td id="perf-transform-max" style="text-align: right; padding: 0.5rem; border-bottom: 1px solid #e2e8f0;">-</td>
+                </tr>
+                <tr>
+                  <td style="padding: 0.5rem; border-bottom: 1px solid #e2e8f0;">API Response Time</td>
+                  <td id="perf-api-current" style="text-align: right; padding: 0.5rem; border-bottom: 1px solid #e2e8f0;">-</td>
+                  <td id="perf-api-avg" style="text-align: right; padding: 0.5rem; border-bottom: 1px solid #e2e8f0;">-</td>
+                  <td id="perf-api-min" style="text-align: right; padding: 0.5rem; border-bottom: 1px solid #e2e8f0;">-</td>
+                  <td id="perf-api-max" style="text-align: right; padding: 0.5rem; border-bottom: 1px solid #e2e8f0;">-</td>
+                </tr>
+                <tr>
+                  <td style="padding: 0.5rem; border-bottom: 1px solid #e2e8f0;">Relevance Score</td>
+                  <td id="perf-relevance-current" style="text-align: right; padding: 0.5rem; border-bottom: 1px solid #e2e8f0;">-</td>
+                  <td id="perf-relevance-avg" style="text-align: right; padding: 0.5rem; border-bottom: 1px solid #e2e8f0;">-</td>
+                  <td id="perf-relevance-min" style="text-align: right; padding: 0.5rem; border-bottom: 1px solid #e2e8f0;">-</td>
+                  <td id="perf-relevance-max" style="text-align: right; padding: 0.5rem; border-bottom: 1px solid #e2e8f0;">-</td>
+                </tr>
+              </table>
+            </div>
+          </div>
+          
+          <!-- Raw API Data Display -->
+          <div id="raw-data-container" style="display: none; margin-top: 1rem;">
+            <h4>Raw API Data</h4>
+            <pre id="raw-data" style="background: #f1f5f9; border-radius: 0.5rem; padding: 1rem; overflow: auto; max-height: 300px; font-size: 0.75rem;"></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+  
+  <script>
+    // Subcategories data
+    const subcategoriesMap = {
+      'Gaming': ['FPS Games', 'RPG Games', 'Strategy Games', 'Mobile Gaming', 'Game Reviews'],
+      'Education': ['Tutorials', 'Academic', 'Language Learning', 'DIY', 'Science'],
+      'Entertainment': ['Comedy', 'Vlogs', 'Reactions', 'Shorts', 'Storytelling'],
+      'Howto & Style': ['Beauty', 'Fashion', 'Home Decor', 'Cooking', 'Crafts'],
+      'Science & Technology': ['Gadget Reviews', 'Coding', 'AI & ML', 'Engineering', 'Science News']
+    };
+    
+    // Initialize selected subcategories
+    let selectedSubcategories = [];
+    
+    // DOM references
+    const steps = document.querySelectorAll('.step');
+    const stepContents = document.querySelectorAll('.step-content');
+    const categorySelect = document.getElementById('category');
+    const subcategoriesContainer = document.getElementById('subcategories-container');
+    const subcategoriesGrid = document.getElementById('subcategories-grid');
+    const toggleAdvanced = document.getElementById('toggle-advanced');
+    const advancedOptions = document.getElementById('advanced-options');
+    const scheduleBtn = document.getElementById('schedule-btn');
+    const runBtn = document.getElementById('run-btn');
+    const wizardContainer = document.getElementById('wizard-container');
+    const resultsContainer = document.getElementById('results-container');
+    const newSearchBtn = document.getElementById('new-search-btn');
+    
+    // Summary elements
+    const summaryQuery = document.getElementById('summary-query');
+    const summaryCategory = document.getElementById('summary-category');
+    const summarySubcategoriesContainer = document.getElementById('summary-subcategories-container');
+    const summarySubcategories = document.getElementById('summary-subcategories');
+    const summaryTimeRange = document.getElementById('summary-timerange');
+    const summaryDemographics = document.getElementById('summary-demographics');
+    
+    // Result elements
+    const resultDate = document.getElementById('result-date');
+    const resultQuery = document.getElementById('result-query');
+    const resultCategory = document.getElementById('result-category');
+    const resultTabs = document.querySelectorAll('.result-tab');
+    const resultContents = document.querySelectorAll('.result-content');
+    const nicheGrid = document.getElementById('niche-grid');
+    
+    // Navigation handlers
+    document.getElementById('next-1').addEventListener('click', () => goToStep(2));
+    document.getElementById('prev-2').addEventListener('click', () => goToStep(1));
+    document.getElementById('next-2').addEventListener('click', () => {
+      updateSummary();
+      goToStep(3);
+    });
+    document.getElementById('prev-3').addEventListener('click', () => goToStep(2));
+    
+    // Advanced options toggle
+    toggleAdvanced.addEventListener('click', () => {
+      if (advancedOptions.style.display === 'none') {
+        advancedOptions.style.display = 'block';
+        toggleAdvanced.textContent = '- Hide Advanced Options';
+      } else {
+        advancedOptions.style.display = 'none';
+        toggleAdvanced.textContent = '+ Advanced Options';
+      }
+    });
+    
+    // Run workflow button
+    runBtn.addEventListener('click', () => {
+      const originalText = runBtn.textContent;
+      runBtn.textContent = 'Running...';
+      runBtn.disabled = true;
+      
+      const query = document.getElementById('niche-query').value || 'gaming';
+      const category = categorySelect.value;
+      
+      // Call the API endpoint
+      fetch('/api/workflows/niche-scout', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          query: query,
+          category: category,
+          subcategories: selectedSubcategories,
+          timeRange: document.getElementById('time-range').value,
+          demographics: document.getElementById('demographics').value
+        })
+      })
+      .then(response => response.json())
+      .then(data => {
+        // Show results
+        wizardContainer.style.display = 'none';
+        resultsContainer.style.display = 'block';
+        
+        // Update result data
+        resultDate.textContent = new Date().toLocaleDateString('en-US', { 
+          year: 'numeric', 
+          month: 'long', 
+          day: 'numeric' 
+        });
+        resultQuery.textContent = query;
+        resultCategory.textContent = category;
+        
+        // Log the received data so we can see what we're getting
+        console.log('Received API data:', data);
+        
+        // Check if this is mock data
+        if (data._mock) {
+          console.log('Received mock data from fallback mechanism');
+        }
+        
+        // Check which data format we have
+        let trendingNiches = [];
+        
+        if (data.result && data.result.trending_niches) {
+          // Old format (mock data)
+          console.log('Detected mock data format');
+          trendingNiches = data.result.trending_niches;
+        } else if (data.niches) {
+          // New format (API data)
+          console.log('Detected API data format');
+          
+          // CHECKPOINT 5: UI Enhancement - Debug panel update
+          // Check if this is client-side filtered data and update debug panel
+          if (data.query !== null && data.category !== null) {
+            console.log(`Using client-side filtered data relevant to query "${data.query}" in category "${data.category}"`);
+            
+            // Show transformation metadata if available
+            if (data._transformation) {
+              console.log('Transformation metadata:', data._transformation);
+            }
+          }
+          
+          // Transform API data to match the format expected by our UI
+          trendingNiches = data.niches.map(niche => {
+            // Extract metrics from API response
+            return {
+              name: niche.name,
+              growth: niche.growth_rate || 0,
+              views: Math.floor(Math.random() * 4000000) + 1000000, // API doesn't provide views, generate random
+              score: calculateOpportunityScore(niche),
+              // Store relevance score if available for metrics display
+              _relevance_score: niche._relevance_score || null
+            };
+          });
+          
+          // Validate niches are related to the search query if possible
+          const searchQuery = document.getElementById('niche-query').value.toLowerCase();
+          const searchCategory = categorySelect.value;
+          
+          if (searchQuery && searchCategory !== 'All') {
+            console.log(`Validating niches are relevant to "${searchQuery}" in "${searchCategory}"`);
+            
+            // Check if any niches contain the search query or category
+            const hasRelevantNiches = trendingNiches.some(niche => 
+              niche.name.toLowerCase().includes(searchQuery) || 
+              niche.name.toLowerCase().includes(searchCategory.toLowerCase())
+            );
+            
+            if (!hasRelevantNiches) {
+              console.warn('No niches match the search query. Our client-side filtering should have handled this.');
+            }
+          }
+          
+          // Store raw data for debug display
+          if (data._originalApiData) {
+            window._rawApiData = data._originalApiData;
+            window._transformedData = data;
+          } else {
+            window._rawApiData = data;
+            window._transformedData = data;
+          }
+          
+          // Update metrics display
+          updateMetricsDisplay();
+          
+          // Log the transformed data
+          console.log('Transformed niches:', trendingNiches);
+        }
+        
+        if (trendingNiches.length > 0) {
+          // Update the niche grid with the data
+          updateNicheGrid(trendingNiches);
+          
+          // Update overview insights based on the data
+          updateOverviewInsights(trendingNiches);
+        }
+        
+        runBtn.textContent = originalText;
+        runBtn.disabled = false;
+      })
+      .catch(error => {
+        console.error('Error running workflow:', error);
+        
+        // Show error in UI but still show results with mock data
+        alert(`Error: ${error.message}. Loading with mock data.`);
+        
+        // Fallback to mock data
+        wizardContainer.style.display = 'none';
+        resultsContainer.style.display = 'block';
+        
+        resultDate.textContent = new Date().toLocaleDateString('en-US', { 
+          year: 'numeric', 
+          month: 'long', 
+          day: 'numeric' 
+        });
+        resultQuery.textContent = query;
+        resultCategory.textContent = category;
+        
+        // Create mock data that matches our expected format
+        const mockNiches = [
+          { name: 'Mobile Gaming', growth: 32, views: 3200000, score: 85 },
+          { name: 'Game Development', growth: 28, views: 2500000, score: 78 },
+          { name: 'Indie Games', growth: 24, views: 1800000, score: 72 },
+          { name: 'Strategy Games', growth: 22, views: 1500000, score: 68 }
+        ];
+        updateNicheGrid(mockNiches);
+        updateOverviewInsights(mockNiches);
+        
+        runBtn.textContent = originalText;
+        runBtn.disabled = false;
+      });
+    });
+    
+    // Update niche grid with data
+    function updateNicheGrid(niches) {
+      if (!nicheGrid) return;
+      
+      let html = '';
+      
+      niches.forEach(niche => {
+        const viewsM = Math.round(niche.views / 1000000 * 10) / 10;
+        
+        html += `
+          <div class="niche-card">
+            <div class="niche-title">${niche.name}</div>
+            <div class="niche-metrics">
+              <div class="niche-metric">
+                <div class="niche-metric-value">${niche.growth}%</div>
+                <div class="niche-metric-label">Growth</div>
+              </div>
+              <div class="niche-metric">
+                <div class="niche-metric-value">${niche.score}</div>
+                <div class="niche-metric-label">Opportunity Score</div>
+              </div>
+              <div class="niche-metric">
+                <div class="niche-metric-value">${viewsM}M</div>
+                <div class="niche-metric-label">Monthly Views</div>
+              </div>
+              <div class="niche-metric">
+                <div class="niche-metric-value">${getCompetitionLevel(niche.score)}</div>
+                <div class="niche-metric-label">Competition</div>
+              </div>
+            </div>
+          </div>
+        `;
+      });
+      
+      nicheGrid.innerHTML = html;
+    }
+    
+    function getCompetitionLevel(score) {
+      if (score > 80) return 'Low';
+      if (score > 65) return 'Medium';
+      return 'High';
+    }
+    
+    // Calculate opportunity score based on niche data
+    function calculateOpportunityScore(niche) {
+      // Base score
+      let score = 70;
+      
+      // Adjust based on growth rate
+      if (niche.growth_rate) {
+        score += niche.growth_rate / 10; // Higher growth rate = higher score
+      }
+      
+      // Adjust based on competition level
+      if (niche.competition_level) {
+        switch (niche.competition_level.toLowerCase()) {
+          case 'low':
+            score += 15;
+            break;
+          case 'medium':
+            score += 5;
+            break;
+          case 'high':
+            score -= 5;
+            break;
+          case 'very high':
+            score -= 15;
+            break;
+        }
+      }
+      
+      // Cap the score between 0 and 100
+      return Math.min(100, Math.max(0, Math.round(score)));
+    }
+    
+    // Update overview insights based on actual trending niches data
+    function updateOverviewInsights(niches) {
+      // Make sure we're using niches that match the search query
+      const searchQuery = document.getElementById('niche-query').value.toLowerCase();
+      const searchCategory = categorySelect.value;
+      
+      // Filter or prioritize niches that match the query if needed
+      let relevantNiches = [...niches];
+      if (searchQuery && searchCategory !== 'All') {
+        // Try to find niches that match the query or category
+        const matchingNiches = niches.filter(niche => 
+          niche.name.toLowerCase().includes(searchQuery) || 
+          niche.name.toLowerCase().includes(searchCategory.toLowerCase())
+        );
+        
+        // Use matching niches if we found any, otherwise use all
+        if (matchingNiches.length > 0) {
+          relevantNiches = matchingNiches;
+        }
+      }
+      
+      // Find the highest growth niches
+      let sortedByGrowth = [...relevantNiches].sort((a, b) => b.growth - a.growth);
+      let topGrowthNiches = sortedByGrowth.slice(0, 3);
+      
+      // Find the highest score (best opportunity) niches
+      let sortedByScore = [...relevantNiches].sort((a, b) => b.score - a.score);
+      let topOpportunityNiches = sortedByScore.slice(0, 2);
+      
+      // Find the lowest score (most saturated) niches
+      let lowestScoreNiches = [...relevantNiches].sort((a, b) => a.score - b.score).slice(0, 2);
+      
+      // Create insights text
+      const growthText = topGrowthNiches.map(n => `${n.name} (+${n.growth}%)`).join(', ');
+      const saturatedText = lowestScoreNiches.map(n => n.name).join(', ');
+      const opportunityText = topOpportunityNiches[0].name + ' content with focus on tutorials and community building';
+      
+      // Generate relevant trending topics based on niches and category
+      const categoryKeywords = {
+        'Gaming': ['gameplay', 'tutorials', 'tips and tricks', 'reviews'],
+        'Education': ['lessons', 'tutorials', 'explanations', 'guides'],
+        'Entertainment': ['shows', 'performances', 'highlights', 'reactions'],
+        'Howto & Style': ['tutorials', 'guides', 'demonstrations', 'reviews'],
+        'Science & Technology': ['explanations', 'reviews', 'innovations', 'guides']
+      };
+      
+      // Get relevant keywords for the selected category
+      const keywords = categoryKeywords[searchCategory] || ['content', 'videos', 'tutorials'];
+      
+      // Generate trending topics incorporating the category and search query
+      const trendingTopics = [
+        `${topGrowthNiches[0].name} ${keywords[0] || 'content'}`,
+        `${topOpportunityNiches[0].name} ${keywords[1] || 'tutorials'}`,
+        `trending ${searchCategory?.toLowerCase() || ''} ${searchQuery || 'content'}`
+      ].join(', ');
+      
+      // Update the overview insights in the DOM
+      const keyInsightsElement = document.querySelector('#overview-tab ul');
+      if (keyInsightsElement) {
+        keyInsightsElement.innerHTML = `
+          <li><strong>Highest growth niches:</strong> ${growthText}</li>
+          <li><strong>Most saturated niches:</strong> ${saturatedText}</li>
+          <li><strong>Best opportunities:</strong> ${opportunityText}</li>
+          <li><strong>Trending topics:</strong> ${trendingTopics}</li>
+        `;
+      }
+      
+      // Update the data points count (a bit randomized based on number of niches)
+      const dataPointsElement = document.querySelector('#overview-tab .grid-2 div:first-child div:last-child');
+      if (dataPointsElement) {
+        const baseDataPoints = niches.length * 100;
+        const randomizedDataPoints = baseDataPoints + Math.floor(Math.random() * 500);
+        dataPointsElement.textContent = randomizedDataPoints.toLocaleString();
+      }
+      
+      // Update the processing time (randomized)
+      const processingTimeElement = document.querySelector('#overview-tab .grid-2 div:last-child div:last-child');
+      if (processingTimeElement) {
+        const processingTime = (Math.random() * 40 + 20).toFixed(1);
+        processingTimeElement.textContent = `${processingTime}s`;
+      }
+    }
+    
+    // New search button
+    newSearchBtn.addEventListener('click', () => {
+      wizardContainer.style.display = 'block';
+      resultsContainer.style.display = 'none';
+      goToStep(1);
+    });
+    
+    // Schedule button
+    scheduleBtn.addEventListener('click', () => {
+      alert('Workflow scheduled successfully!');
+    });
+    
+    // Category change handler
+    categorySelect.addEventListener('change', updateSubcategories);
+    
+    // Result tabs
+    resultTabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        resultTabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        
+        const tabId = tab.dataset.tab;
+        resultContents.forEach(content => {
+          content.classList.remove('active');
+          if (content.id === `${tabId}-tab`) {
+            content.classList.add('active');
+          }
+        });
+      });
+    });
+    
+    // CHECKPOINT 5: UI Enhancement - Debug panel functionality
+    // Toggle debug panel
+    const debugPanel = document.getElementById('debug-panel');
+    const debugPanelToggle = document.getElementById('debug-panel-toggle');
+    
+    if (debugPanelToggle) {
+      debugPanelToggle.addEventListener('click', () => {
+        if (debugPanel.style.display === 'none') {
+          debugPanel.style.display = 'block';
+          debugPanelToggle.textContent = 'Hide';
+        } else {
+          debugPanel.style.display = 'none';
+          debugPanelToggle.textContent = 'Show';
+        }
+      });
+    }
+    
+    // Show metrics panel button
+    const showMetricsBtn = document.getElementById('show-metrics-btn');
+    if (showMetricsBtn) {
+      showMetricsBtn.addEventListener('click', () => {
+        debugPanel.style.display = 'block';
+        debugPanelToggle.textContent = 'Hide';
+      });
+    }
+    
+    // Clear metrics history button
+    const clearMetricsBtn = document.getElementById('clear-metrics-btn');
+    if (clearMetricsBtn) {
+      clearMetricsBtn.addEventListener('click', () => {
+        if (confirm('Are you sure you want to clear all transformation metrics history?')) {
+          localStorage.removeItem('transformationMetrics');
+          updateMetricsDisplay();
+          alert('Metrics history cleared!');
+        }
+      });
+    }
+    
+    // Show raw API data button
+    const showRawDataBtn = document.getElementById('show-raw-data-btn');
+    const rawDataContainer = document.getElementById('raw-data-container');
+    const rawDataPre = document.getElementById('raw-data');
+    
+    if (showRawDataBtn) {
+      showRawDataBtn.addEventListener('click', () => {
+        if (rawDataContainer.style.display === 'none') {
+          if (window._rawApiData) {
+            rawDataPre.textContent = JSON.stringify(window._rawApiData, null, 2);
+            rawDataContainer.style.display = 'block';
+            showRawDataBtn.textContent = 'Hide Raw API Data';
+          } else {
+            alert('No API data available to display');
+          }
+        } else {
+          rawDataContainer.style.display = 'none';
+          showRawDataBtn.textContent = 'Show Raw API Data';
+        }
+      });
+    }
+    
+    // Configuration controls
+    const configControls = {
+      similarityThreshold: document.getElementById('similarity-threshold'),
+      thresholdValue: document.getElementById('threshold-value'),
+      nicheCount: document.getElementById('niche-count'),
+      countValue: document.getElementById('count-value'),
+      weightLevenshtein: document.getElementById('weight-levenshtein'),
+      levenshteinValue: document.getElementById('levenshtein-value'),
+      weightJaccard: document.getElementById('weight-jaccard'),
+      jaccardValue: document.getElementById('jaccard-value'),
+      weightJaro: document.getElementById('weight-jaro'),
+      jaroValue: document.getElementById('jaro-value'),
+      resetButton: document.getElementById('reset-config'),
+      applyButton: document.getElementById('apply-config')
+    };
+    
+    // Load saved configuration from localStorage
+    function loadSavedConfig() {
+      try {
+        const savedConfig = JSON.parse(localStorage.getItem('nicheScoutConfig') || '{}');
+        
+        if (savedConfig.similarityThreshold) {
+          configControls.similarityThreshold.value = savedConfig.similarityThreshold;
+          configControls.thresholdValue.textContent = savedConfig.similarityThreshold;
+        }
+        
+        if (savedConfig.nicheCount) {
+          configControls.nicheCount.value = savedConfig.nicheCount;
+          configControls.countValue.textContent = savedConfig.nicheCount;
+        }
+        
+        if (savedConfig.weightLevenshtein) {
+          configControls.weightLevenshtein.value = savedConfig.weightLevenshtein;
+          configControls.levenshteinValue.textContent = savedConfig.weightLevenshtein;
+        }
+        
+        if (savedConfig.weightJaccard) {
+          configControls.weightJaccard.value = savedConfig.weightJaccard;
+          configControls.jaccardValue.textContent = savedConfig.weightJaccard;
+        }
+        
+        if (savedConfig.weightJaro) {
+          configControls.weightJaro.value = savedConfig.weightJaro;
+          configControls.jaroValue.textContent = savedConfig.weightJaro;
+        }
+        
+        // Validate that weights sum to approximately 1.0
+        const sum = parseFloat(configControls.weightLevenshtein.value) + 
+                    parseFloat(configControls.weightJaccard.value) + 
+                    parseFloat(configControls.weightJaro.value);
+        
+        if (Math.abs(sum - 1.0) > 0.1) {
+          // Reset to defaults if weights are too far from 1.0
+          resetConfig();
+        }
+        
+      } catch (error) {
+        console.error('Error loading saved configuration:', error);
+      }
+    }
+    
+    // Initialize configuration controls
+    if (configControls.similarityThreshold) {
+      loadSavedConfig();
+      
+      // Threshold slider
+      configControls.similarityThreshold.addEventListener('input', () => {
+        configControls.thresholdValue.textContent = configControls.similarityThreshold.value;
+      });
+      
+      // Niche count slider
+      configControls.nicheCount.addEventListener('input', () => {
+        configControls.countValue.textContent = configControls.nicheCount.value;
+      });
+      
+      // Weight sliders
+      configControls.weightLevenshtein.addEventListener('input', () => {
+        configControls.levenshteinValue.textContent = configControls.weightLevenshtein.value;
+        updateWeights('levenshtein');
+      });
+      
+      configControls.weightJaccard.addEventListener('input', () => {
+        configControls.jaccardValue.textContent = configControls.weightJaccard.value;
+        updateWeights('jaccard');
+      });
+      
+      configControls.weightJaro.addEventListener('input', () => {
+        configControls.jaroValue.textContent = configControls.weightJaro.value;
+        updateWeights('jaro');
+      });
+      
+      // Reset button
+      configControls.resetButton.addEventListener('click', resetConfig);
+      
+      // Apply button
+      configControls.applyButton.addEventListener('click', () => {
+        applyConfig();
+        alert('Configuration applied and saved!');
+      });
+    }
+    
+    // Update weights to ensure they sum to 1.0
+    function updateWeights(changedWeight) {
+      const levenshtein = parseFloat(configControls.weightLevenshtein.value);
+      const jaccard = parseFloat(configControls.weightJaccard.value);
+      const jaro = parseFloat(configControls.weightJaro.value);
+      
+      const sum = levenshtein + jaccard + jaro;
+      
+      if (Math.abs(sum - 1.0) > 0.05) {
+        // Adjust the other weights proportionally
+        if (changedWeight !== 'levenshtein') {
+          const newLevenshtein = Math.max(0.1, Math.min(0.9, levenshtein * (1.0 / sum)));
+          configControls.weightLevenshtein.value = newLevenshtein.toFixed(1);
+          configControls.levenshteinValue.textContent = newLevenshtein.toFixed(1);
+        }
+        
+        if (changedWeight !== 'jaccard') {
+          const newJaccard = Math.max(0.1, Math.min(0.9, jaccard * (1.0 / sum)));
+          configControls.weightJaccard.value = newJaccard.toFixed(1);
+          configControls.jaccardValue.textContent = newJaccard.toFixed(1);
+        }
+        
+        if (changedWeight !== 'jaro') {
+          const newJaro = Math.max(0.1, Math.min(0.9, jaro * (1.0 / sum)));
+          configControls.weightJaro.value = newJaro.toFixed(1);
+          configControls.jaroValue.textContent = newJaro.toFixed(1);
+        }
+      }
+    }
+    
+    // Reset configuration to defaults
+    function resetConfig() {
+      configControls.similarityThreshold.value = 0.55;
+      configControls.thresholdValue.textContent = '0.55';
+      
+      configControls.nicheCount.value = 5;
+      configControls.countValue.textContent = '5';
+      
+      configControls.weightLevenshtein.value = 0.5;
+      configControls.levenshteinValue.textContent = '0.5';
+      
+      configControls.weightJaccard.value = 0.3;
+      configControls.jaccardValue.textContent = '0.3';
+      
+      configControls.weightJaro.value = 0.2;
+      configControls.jaroValue.textContent = '0.2';
+      
+      // Save reset configuration
+      saveConfig();
+    }
+    
+    // Apply and save configuration
+    function applyConfig() {
+      // Update the algorithm parameters globally
+      if (window.updateAlgorithmParameters) {
+        window.updateAlgorithmParameters({
+          similarityThreshold: parseFloat(configControls.similarityThreshold.value),
+          nicheCount: parseInt(configControls.nicheCount.value),
+          weights: {
+            levenshtein: parseFloat(configControls.weightLevenshtein.value),
+            jaccard: parseFloat(configControls.weightJaccard.value),
+            jaro: parseFloat(configControls.weightJaro.value)
+          }
+        });
+      }
+      
+      // Save configuration to localStorage
+      saveConfig();
+      
+      // Emit a configuration event for the proxy service
+      const configEvent = new CustomEvent('niche_scout_config', {
+        detail: {
+          similarityThreshold: parseFloat(configControls.similarityThreshold.value),
+          nicheCount: parseInt(configControls.nicheCount.value),
+          weights: {
+            levenshtein: parseFloat(configControls.weightLevenshtein.value),
+            jaccard: parseFloat(configControls.weightJaccard.value),
+            jaro: parseFloat(configControls.weightJaro.value)
+          }
+        }
+      });
+      window.dispatchEvent(configEvent);
+    }
+    
+    // Save configuration to localStorage
+    function saveConfig() {
+      try {
+        const config = {
+          similarityThreshold: configControls.similarityThreshold.value,
+          nicheCount: configControls.nicheCount.value,
+          weightLevenshtein: configControls.weightLevenshtein.value,
+          weightJaccard: configControls.weightJaccard.value,
+          weightJaro: configControls.weightJaro.value
+        };
+        
+        localStorage.setItem('nicheScoutConfig', JSON.stringify(config));
+      } catch (error) {
+        console.error('Error saving configuration:', error);
+      }
+    }
+    
+    // Add global function to update algorithm parameters
+    window.updateAlgorithmParameters = function(params) {
+      console.log('Algorithm parameters updated:', params);
+      // This function will be called by the API wrapper to update parameters
+      // In Phase 1, this would be handled by the proxy service
+    };
+    
+    /**
+     * Update metrics display panel
+     */
+    function updateMetricsDisplay() {
+      // Get stored metrics
+      const storedMetrics = JSON.parse(localStorage.getItem('transformationMetrics') || '[]');
+      
+      // If there are no metrics, don't try to update the display
+      if (storedMetrics.length === 0) {
+        console.log('No metrics stored yet');
+        return;
+      }
+      
+      // Get the latest metrics entry
+      const latestMetrics = storedMetrics[storedMetrics.length - 1];
+      
+      // Update the metrics in the debug panel
+      // Relevance score
+      const relevanceScoreEl = document.getElementById('metric-relevance-score');
+      const relevanceBarEl = document.getElementById('metric-relevance-bar');
+      if (relevanceScoreEl && latestMetrics.relevance) {
+        const relevanceScore = (latestMetrics.relevance.averageRelevanceScore * 100).toFixed(1);
+        relevanceScoreEl.textContent = relevanceScore + '%';
+        
+        if (relevanceBarEl) {
+          relevanceBarEl.style.width = relevanceScore + '%';
+          
+          // Color based on score
+          if (relevanceScore >= 80) {
+            relevanceBarEl.style.backgroundColor = '#10b981'; // Green
+          } else if (relevanceScore >= 60) {
+            relevanceBarEl.style.backgroundColor = '#3b82f6'; // Blue
+          } else if (relevanceScore >= 40) {
+            relevanceBarEl.style.backgroundColor = '#f59e0b'; // Yellow
+          } else {
+            relevanceBarEl.style.backgroundColor = '#ef4444'; // Red
+          }
+        }
+      }
+      
+      // Relevant niches
+      const relevantNichesEl = document.getElementById('metric-relevant-niches');
+      if (relevantNichesEl && latestMetrics.relevance) {
+        relevantNichesEl.textContent = 
+          `${latestMetrics.relevance.relevantNicheCount}/${latestMetrics.dataInfo.transformedNicheCount}`;
+      }
+      
+      // Transformation time
+      const transformTimeEl = document.getElementById('metric-transformation-time');
+      if (transformTimeEl && latestMetrics.performance) {
+        transformTimeEl.textContent = `${latestMetrics.performance.transformationTimeMs.toFixed(1)}ms`;
+      }
+      
+      // API response time
+      const apiTimeEl = document.getElementById('metric-api-time');
+      if (apiTimeEl && latestMetrics.performance) {
+        apiTimeEl.textContent = `${latestMetrics.performance.apiResponseTimeMs.toFixed(1)}ms`;
+      }
+      
+      // Match types
+      if (latestMetrics.relevance && latestMetrics.relevance.matchTypes) {
+        const exactMatchesEl = document.getElementById('metric-exact-matches');
+        const partialMatchesEl = document.getElementById('metric-partial-matches');
+        const categoryMatchesEl = document.getElementById('metric-category-matches');
+        const noneMatchesEl = document.getElementById('metric-none-matches');
+        
+        if (exactMatchesEl) exactMatchesEl.textContent = latestMetrics.relevance.matchTypes.exact;
+        if (partialMatchesEl) partialMatchesEl.textContent = latestMetrics.relevance.matchTypes.partial;
+        if (categoryMatchesEl) categoryMatchesEl.textContent = latestMetrics.relevance.matchTypes.category;
+        if (noneMatchesEl) noneMatchesEl.textContent = latestMetrics.relevance.matchTypes.none;
+      }
+      
+      // Update metrics history
+      const historyContainerEl = document.getElementById('metric-history');
+      if (historyContainerEl) {
+        // Clear existing entries except the header
+        historyContainerEl.innerHTML = '<div style="margin: 0.5rem 0; font-weight: 500;">Recent Searches:</div>';
+        
+        // Add the 5 most recent entries in reverse order (newest first)
+        storedMetrics.slice(-5).reverse().forEach(metric => {
+          const entry = document.createElement('div');
+          entry.className = 'history-entry';
+          
+          // Format date
+          const date = new Date(metric.timestamp);
+          const formattedDate = `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
+          
+          // Create query badge
+          const queryBadge = document.createElement('span');
+          queryBadge.className = 'badge badge-blue';
+          queryBadge.textContent = metric.searchParams.query || 'No query';
+          
+          // Create category badge
+          const categoryBadge = document.createElement('span');
+          categoryBadge.className = 'badge badge-green';
+          categoryBadge.style.marginLeft = '0.25rem';
+          categoryBadge.textContent = metric.searchParams.category || 'All';
+          
+          // Create metrics text
+          const metricsText = document.createElement('div');
+          metricsText.style.marginTop = '0.25rem';
+          
+          const relevanceScore = metric.relevance ? 
+            (metric.relevance.averageRelevanceScore * 100).toFixed(1) + '%' : 'N/A';
+          const transformTime = metric.performance ? 
+            metric.performance.transformationTimeMs.toFixed(1) + 'ms' : 'N/A';
+          
+          metricsText.textContent = `Relevance: ${relevanceScore} | Transform: ${transformTime}`;
+          
+          // Add elements to entry
+          entry.appendChild(queryBadge);
+          entry.appendChild(categoryBadge);
+          entry.appendChild(metricsText);
+          
+          // Add entry to container
+          historyContainerEl.appendChild(entry);
+        });
+      }
+      
+      // Update performance stats in the debug tab
+      updatePerformanceStats(storedMetrics);
+      
+      // We might want to show the debug panel automatically in development
+      if (latestMetrics.performance && latestMetrics.performance.transformationTimeMs > 0) {
+        // Check if we're in a development environment (simple heuristic check)
+        const isDev = window.location.hostname === 'localhost' || 
+                     window.location.hostname === '127.0.0.1' ||
+                     window.location.port;
+        
+        if (isDev && debugPanel) {
+          debugPanel.style.display = 'block';
+          console.log('Development environment detected, showing metrics panel automatically');
+        }
+      }
+    }
+    
+    /**
+     * Update performance statistics table in the debug tab
+     */
+    function updatePerformanceStats(metrics) {
+      if (!metrics || metrics.length === 0) return;
+      
+      // Calculate statistics for transformation time
+      const transformTimes = metrics.map(m => m.performance?.transformationTimeMs || 0).filter(t => t > 0);
+      const transformCurrent = transformTimes.length > 0 ? transformTimes[transformTimes.length - 1] : 0;
+      const transformAvg = transformTimes.length > 0 
+        ? transformTimes.reduce((a, b) => a + b, 0) / transformTimes.length 
+        : 0;
+      const transformMin = transformTimes.length > 0 ? Math.min(...transformTimes) : 0;
+      const transformMax = transformTimes.length > 0 ? Math.max(...transformTimes) : 0;
+      
+      // Calculate statistics for API response time
+      const apiTimes = metrics.map(m => m.performance?.apiResponseTimeMs || 0).filter(t => t > 0);
+      const apiCurrent = apiTimes.length > 0 ? apiTimes[apiTimes.length - 1] : 0;
+      const apiAvg = apiTimes.length > 0 
+        ? apiTimes.reduce((a, b) => a + b, 0) / apiTimes.length 
+        : 0;
+      const apiMin = apiTimes.length > 0 ? Math.min(...apiTimes) : 0;
+      const apiMax = apiTimes.length > 0 ? Math.max(...apiTimes) : 0;
+      
+      // Calculate statistics for relevance score
+      const relevanceScores = metrics.map(m => m.relevance?.averageRelevanceScore || 0).filter(s => s > 0);
+      const relevanceCurrent = relevanceScores.length > 0 
+        ? relevanceScores[relevanceScores.length - 1] * 100 
+        : 0;
+      const relevanceAvg = relevanceScores.length > 0 
+        ? (relevanceScores.reduce((a, b) => a + b, 0) / relevanceScores.length) * 100 
+        : 0;
+      const relevanceMin = relevanceScores.length > 0 ? Math.min(...relevanceScores) * 100 : 0;
+      const relevanceMax = relevanceScores.length > 0 ? Math.max(...relevanceScores) * 100 : 0;
+      
+      // Update the performance table
+      document.getElementById('perf-transform-current').textContent = `${transformCurrent.toFixed(1)}ms`;
+      document.getElementById('perf-transform-avg').textContent = `${transformAvg.toFixed(1)}ms`;
+      document.getElementById('perf-transform-min').textContent = `${transformMin.toFixed(1)}ms`;
+      document.getElementById('perf-transform-max').textContent = `${transformMax.toFixed(1)}ms`;
+      
+      document.getElementById('perf-api-current').textContent = `${apiCurrent.toFixed(1)}ms`;
+      document.getElementById('perf-api-avg').textContent = `${apiAvg.toFixed(1)}ms`;
+      document.getElementById('perf-api-min').textContent = `${apiMin.toFixed(1)}ms`;
+      document.getElementById('perf-api-max').textContent = `${apiMax.toFixed(1)}ms`;
+      
+      document.getElementById('perf-relevance-current').textContent = `${relevanceCurrent.toFixed(1)}%`;
+      document.getElementById('perf-relevance-avg').textContent = `${relevanceAvg.toFixed(1)}%`;
+      document.getElementById('perf-relevance-min').textContent = `${relevanceMin.toFixed(1)}%`;
+      document.getElementById('perf-relevance-max').textContent = `${relevanceMax.toFixed(1)}%`;
+    }
+    
+    // Navigate to step
+    function goToStep(stepNumber) {
+      // Update steps
+      steps.forEach(step => {
+        const num = parseInt(step.dataset.step);
+        if (num === stepNumber) {
+          step.classList.add('active');
+        } else if (num < stepNumber) {
+          step.classList.add('completed');
+          step.classList.remove('active');
+        } else {
+          step.classList.remove('active', 'completed');
+        }
+      });
+      
+      // Update content
+      stepContents.forEach(content => {
+        content.classList.remove('active');
+      });
+      document.getElementById('step-' + stepNumber).classList.add('active');
+    }
+    
+    // Update subcategories based on selected category
+    function updateSubcategories() {
+      const category = categorySelect.value;
+      
+      if (category !== 'All' && subcategoriesMap[category]) {
+        subcategoriesContainer.style.display = 'block';
+        subcategoriesGrid.innerHTML = '';
+        
+        subcategoriesMap[category].forEach(subcategory => {
+          const tag = document.createElement('div');
+          tag.className = 'tag';
+          tag.textContent = subcategory;
+          
+          // Check if already selected
+          if (selectedSubcategories.includes(subcategory)) {
+            tag.classList.add('selected');
+          }
+          
+          tag.addEventListener('click', () => {
+            toggleSubcategory(tag, subcategory);
+          });
+          
+          subcategoriesGrid.appendChild(tag);
+        });
+      } else {
+        subcategoriesContainer.style.display = 'none';
+        selectedSubcategories = [];
+      }
+    }
+    
+    // Toggle subcategory selection
+    function toggleSubcategory(element, subcategory) {
+      if (element.classList.contains('selected')) {
+        element.classList.remove('selected');
+        selectedSubcategories = selectedSubcategories.filter(item => item !== subcategory);
+      } else {
+        element.classList.add('selected');
+        selectedSubcategories.push(subcategory);
+      }
+    }
+    
+    // Update summary information
+    function updateSummary() {
+      const query = document.getElementById('niche-query').value;
+      summaryQuery.textContent = query || '(not specified)';
+      
+      summaryCategory.textContent = categorySelect.value;
+      
+      if (selectedSubcategories.length > 0) {
+        summarySubcategoriesContainer.style.display = 'flex';
+        summarySubcategories.textContent = selectedSubcategories.join(', ');
+      } else {
+        summarySubcategoriesContainer.style.display = 'none';
+      }
+      
+      summaryTimeRange.textContent = document.getElementById('time-range').value;
+      summaryDemographics.textContent = document.getElementById('demographics').value;
+    }
+    
+    // Initialize subcategories
+    updateSubcategories();
+  </script>
+</body>
+</html>

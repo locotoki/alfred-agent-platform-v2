@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube Channel Blueprint</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f1f1f1;
+        }
+        .header h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        .header p {
+            color: #7f8c8d;
+            font-size: 18px;
+        }
+        .section {
+            margin-bottom: 40px;
+        }
+        .section h2 {
+            color: #2c3e50;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f1f1f1;
+        }
+        .section-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .competitor-card {
+            border: 1px solid #e1e1e1;
+            border-radius: 5px;
+            padding: 20px;
+            margin-bottom: 20px;
+            background-color: #f9f9f9;
+        }
+        .competitor-card h3 {
+            margin-top: 0;
+            color: #2c3e50;
+            display: flex;
+            justify-content: space-between;
+        }
+        .metrics {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        .metric {
+            flex: 1;
+            min-width: 150px;
+            padding: 15px;
+            background-color: white;
+            border-radius: 5px;
+            box-shadow: 0 2px 3px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .metric h4 {
+            margin: 0 0 10px 0;
+            color: #7f8c8d;
+            font-size: 14px;
+            text-transform: uppercase;
+        }
+        .metric p {
+            margin: 0;
+            font-size: 20px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        .content-analysis {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .analysis-column {
+            flex: 1;
+            min-width: 250px;
+        }
+        .list-heading {
+            font-weight: bold;
+            color: #2c3e50;
+            margin: 10px 0 5px 0;
+        }
+        ul.divided-list {
+            list-style-type: none;
+            padding-left: 0;
+            margin: 0;
+        }
+        ul.divided-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid #f1f1f1;
+        }
+        ul.divided-list li:last-child {
+            border-bottom: none;
+        }
+        .content-gap {
+            background-color: #e8f4f8;
+            padding: 12px 15px;
+            border-left: 4px solid #3498db;
+            margin-bottom: 10px;
+        }
+        .strategy-section {
+            margin-bottom: 25px;
+        }
+        .strategy-section h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+        .name-ideas {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .name-tag {
+            background-color: #2c3e50;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+        }
+        .content-pillar {
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
+        .content-pillar h4 {
+            margin-top: 0;
+            color: #2c3e50;
+        }
+        .content-pillar p {
+            margin: 5px 0;
+        }
+        .tactic {
+            background-color: #f1f9f1;
+            padding: 10px 15px;
+            border-left: 3px solid #27ae60;
+            margin-bottom: 10px;
+        }
+        .execution-timeline {
+            padding: 0 20px;
+        }
+        .timeline-item {
+            position: relative;
+            padding-bottom: 20px;
+            padding-left: 30px;
+        }
+        .timeline-item:before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 4px;
+            height: 100%;
+            width: 2px;
+            background-color: #ddd;
+        }
+        .timeline-item:last-child:before {
+            height: 0;
+        }
+        .timeline-item:after {
+            content: "";
+            position: absolute;
+            left: -4px;
+            top: 4px;
+            height: 10px;
+            width: 10px;
+            border-radius: 50%;
+            background-color: #3498db;
+        }
+        .timeline-item h4 {
+            margin-top: 0;
+            color: #2c3e50;
+        }
+        .timeline-item ul {
+            margin-top: 10px;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 50px;
+            padding-top: 20px;
+            border-top: 2px solid #f1f1f1;
+            color: #7f8c8d;
+        }
+        .success-metric {
+            background-color: #f1f9f1;
+            padding: 10px 15px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            border-left: 3px solid #27ae60;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>YouTube Channel Blueprint</h1>
+        <p>Complete strategy from seed to execution</p>
+        <p>Generated on {{ date }}</p>
+        <p>
+            {% if seed_type == "video" %}
+            Based on Seed Video: <strong>{{ seed_value }}</strong>
+            {% else %}
+            Based on Niche: <strong>{{ seed_value }}</strong>
+            {% endif %}
+        </p>
+        <p>Analyzed Niche: <strong>{{ analyzed_niche }}</strong></p>
+    </div>
+
+    <div class="section">
+        <h2>Competitor Analysis</h2>
+        <div class="section-content">
+            {% for competitor in competitor_analysis %}
+            <div class="competitor-card">
+                <h3>{{ competitor.channel }}</h3>
+                
+                <div class="metrics">
+                    <div class="metric">
+                        <h4>Subscribers</h4>
+                        <p>{{ '{:,}'.format(competitor.subscribers) }}</p>
+                    </div>
+                    <div class="metric">
+                        <h4>Avg. Views</h4>
+                        <p>{{ '{:,}'.format(competitor.avg_views) }}</p>
+                    </div>
+                    <div class="metric">
+                        <h4>Engagement</h4>
+                        <p>{{ competitor.engagement_rate }}%</p>
+                    </div>
+                    <div class="metric">
+                        <h4>Posting</h4>
+                        <p>{{ competitor.posting_frequency }}</p>
+                    </div>
+                </div>
+                
+                <div class="content-analysis">
+                    <div class="analysis-column">
+                        <div class="list-heading">Top Video Topics</div>
+                        <ul class="divided-list">
+                            {% for topic in competitor.top_video_topics %}
+                            <li>{{ topic }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    
+                    <div class="analysis-column">
+                        <div class="list-heading">Strengths</div>
+                        <ul class="divided-list">
+                            {% for strength in competitor.strengths %}
+                            <li>{{ strength }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    
+                    <div class="analysis-column">
+                        <div class="list-heading">Weaknesses</div>
+                        <ul class="divided-list">
+                            {% for weakness in competitor.weaknesses %}
+                            <li>{{ weakness }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Content Gap Analysis</h2>
+        <div class="section-content">
+            <p>Based on our analysis, we've identified the following opportunities in the {{ analyzed_niche }} niche that are currently underserved:</p>
+            
+            {% for gap in content_gaps %}
+            <div class="content-gap">
+                {{ gap }}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Channel Strategy</h2>
+        <div class="section-content">
+            <div class="strategy-section">
+                <h3>Channel Name Ideas</h3>
+                <div class="name-ideas">
+                    {% for name in channel_strategy.channel_name_ideas %}
+                    <div class="name-tag">{{ name }}</div>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <div class="strategy-section">
+                <h3>Content Pillars</h3>
+                {% for pillar in channel_strategy.content_pillars %}
+                <div class="content-pillar">
+                    <h4>{{ pillar.name }}</h4>
+                    <p><strong>Description:</strong> {{ pillar.description }}</p>
+                    <p><strong>Frequency:</strong> {{ pillar.frequency }}</p>
+                    <p><strong>Example Topics:</strong> {{ pillar.example_topics|join(", ") }}</p>
+                </div>
+                {% endfor %}
+            </div>
+            
+            <div class="strategy-section">
+                <h3>Posting Schedule</h3>
+                <p><strong>Cadence:</strong> {{ channel_strategy.posting_schedule.cadence }}</p>
+                <p><strong>Optimal Days:</strong> {{ channel_strategy.posting_schedule.optimal_days|join(", ") }}</p>
+                <p><strong>Optimal Times:</strong> {{ channel_strategy.posting_schedule.optimal_times|join(", ") }}</p>
+            </div>
+            
+            <div class="strategy-section">
+                <h3>Growth Tactics</h3>
+                {% for tactic in channel_strategy.growth_tactics %}
+                <div class="tactic">
+                    {{ tactic }}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Execution Plan</h2>
+        <div class="section-content">
+            <div class="execution-timeline">
+                <div class="timeline-item">
+                    <h4>30-Day Plan</h4>
+                    <ul>
+                        {% for item in execution_plan.30_day_plan %}
+                        <li>{{ item }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                
+                <div class="timeline-item">
+                    <h4>90-Day Plan</h4>
+                    <ul>
+                        {% for item in execution_plan.90_day_plan %}
+                        <li>{{ item }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            
+            <h3>Success Metrics</h3>
+            {% for metric in execution_plan.success_metrics %}
+            <div class="success-metric">
+                {{ metric }}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>Generated by Seed-to-Blueprint | Alfred Agent Platform</p>
+        <p>© 2025 All Rights Reserved</p>
+    </div>
+</body>
+</html>

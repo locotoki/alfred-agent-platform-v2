@@ -1,0 +1,19 @@
+{
+  "name": "alfred-agent-youtube-workflow-tests",
+  "version": "1.0.0",
+  "description": "E2E tests for YouTube workflows in Alfred Agent Platform v2",
+  "main": "index.js",
+  "scripts": {
+    "test": "npx playwright test",
+    "test:headed": "npx playwright test --headed",
+    "test:mock": "npx playwright test mock-data-mode.spec.ts --headed",
+    "test:niche": "npx playwright test niche-scout.spec.ts --headed",
+    "test:blueprint": "npx playwright test seed-to-blueprint.spec.ts --headed",
+    "show-report": "npx playwright show-report",
+    "install-deps": "npm install && npx playwright install chromium"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.52.0",
+    "typescript": "^5.3.3"
+  }
+}

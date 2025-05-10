@@ -2,6 +2,22 @@
 
 All notable changes to the Social-Intel service will be documented in this file.
 
+## [1.0.1] - 2025-05-09
+
+### Fixed
+- Fixed 404 errors in API endpoints by adding JSON body parameter extraction to complement query parameter handling
+- Fixed "minute must be in 0..59" error by ensuring timestamp format compatibility between JavaScript and Python services
+- Added detailed logging for parameter extraction and processing
+- Improved error handling for API requests
+- Added support for A2A envelope format in all endpoints
+
+### Technical Details
+- Modified FastAPI endpoint handlers to accept both query parameters and JSON payloads
+- Updated timestamp generation in ID fields to use milliseconds (matching JavaScript's Date.now())
+- Added proper extraction of parameters from A2A envelope format
+- Implemented graceful fallbacks when parameters are missing from either source
+- See detailed documentation in `/docs/json-payload-fix.md` and `/docs/timestamp-fix.md`
+
 ## [1.0.0] - 2025-05-09
 
 ### Added

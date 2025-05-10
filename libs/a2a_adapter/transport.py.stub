@@ -1,0 +1,62 @@
+"""Stub transport implementation for A2A Adapter."""
+
+from typing import List, Dict, Any, Optional, Callable, Awaitable
+import asyncio
+import json
+import structlog
+
+logger = structlog.get_logger(__name__)
+
+class PubSubTransport:
+    """Stub implementation of PubSubTransport for social-intel container."""
+    
+    def __init__(self, project_id: str):
+        self.project_id = project_id
+        logger.info("Initialized stub PubSubTransport", project_id=project_id)
+        
+    async def publish(self, topic: str, message: Dict[str, Any], attributes: Optional[Dict[str, str]] = None) -> str:
+        """Stub method to publish a message to a topic."""
+        logger.info("STUB: Publishing message to topic", topic=topic)
+        return "message-id-stub"
+    
+    async def subscribe(self, subscription: str, callback: Callable[[Dict[str, Any], Dict[str, str]], Awaitable[bool]]):
+        """Stub method to subscribe to a topic."""
+        logger.info("STUB: Subscribing to topic", subscription=subscription)
+        
+    def create_topic(self, topic: str) -> None:
+        """Stub method to create a topic."""
+        logger.info("STUB: Creating topic", topic=topic)
+        
+    def create_subscription(self, subscription: str, topic: str) -> None:
+        """Stub method to create a subscription."""
+        logger.info("STUB: Creating subscription", subscription=subscription, topic=topic)
+
+class SupabaseTransport:
+    """Stub implementation of SupabaseTransport for social-intel container."""
+    
+    def __init__(self, database_url: str):
+        self.database_url = database_url
+        logger.info("Initialized stub SupabaseTransport", database_url=database_url)
+        
+    async def connect(self) -> None:
+        """Stub method to connect to Supabase."""
+        logger.info("STUB: Connecting to Supabase")
+        
+    async def disconnect(self) -> None:
+        """Stub method to disconnect from Supabase."""
+        logger.info("STUB: Disconnecting from Supabase")
+        
+    async def execute(self, query: str, *args, **kwargs) -> List[Dict[str, Any]]:
+        """Stub method to execute a query."""
+        logger.info("STUB: Executing query", query=query)
+        return []
+        
+    async def fetch(self, query: str, *args, **kwargs) -> List[Dict[str, Any]]:
+        """Stub method to fetch data."""
+        logger.info("STUB: Fetching data", query=query)
+        return []
+        
+    async def fetchrow(self, query: str, *args, **kwargs) -> Optional[Dict[str, Any]]:
+        """Stub method to fetch a single row."""
+        logger.info("STUB: Fetching row", query=query)
+        return None

@@ -1,0 +1,16 @@
+-- Create required user roles
+CREATE ROLE supabase_admin WITH LOGIN SUPERUSER PASSWORD 'your-super-secret-password' CREATEDB CREATEROLE REPLICATION BYPASSRLS;
+CREATE ROLE supabase_storage_admin WITH LOGIN PASSWORD 'your-super-secret-password' NOSUPERUSER NOCREATEDB NOCREATEROLE NOREPLICATION NOBYPASSRLS;
+CREATE ROLE authenticator WITH LOGIN PASSWORD 'your-super-secret-password' NOSUPERUSER NOCREATEDB NOCREATEROLE NOREPLICATION NOBYPASSRLS;
+CREATE ROLE anon WITH NOLOGIN NOINHERIT NOSUPERUSER NOCREATEDB NOCREATEROLE NOREPLICATION NOBYPASSRLS;
+CREATE ROLE service_role WITH NOLOGIN NOINHERIT NOSUPERUSER NOCREATEDB NOCREATEROLE NOREPLICATION BYPASSRLS;
+
+-- Grant permissions
+GRANT anon TO authenticator;
+GRANT service_role TO authenticator;
+
+-- Grant proper permissions to supabase_storage_admin
+GRANT ALL ON SCHEMA storage TO supabase_storage_admin;
+GRANT ALL ON ALL TABLES IN SCHEMA storage TO supabase_storage_admin;
+GRANT ALL ON ALL SEQUENCES IN SCHEMA storage TO supabase_storage_admin;
+GRANT ALL ON ALL FUNCTIONS IN SCHEMA storage TO supabase_storage_admin;

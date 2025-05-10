@@ -1,0 +1,52 @@
+groups:
+  - name: niche-scout-proxy-alerts
+    rules:
+      # Error rate alert
+      - alert: HighErrorRate
+        expr: proxy_error_rate > 0.05
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "High error rate in proxy service"
+          description: "Proxy service has a {{ $value | humanizePercentage }} error rate over the last minute."
+      
+      # Latency alert
+      - alert: HighLatency
+        expr: proxy_p95_latency > 0.8
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High latency in proxy service"
+          description: "Proxy service has a p95 latency of {{ $value }}s over the last minute."
+      
+      # Cache hit ratio alert
+      - alert: LowCacheHitRatio
+        expr: proxy_cache_hit_ratio < 0.2
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Low cache hit ratio"
+          description: "Cache hit ratio is {{ $value | humanizePercentage }}, which is below target."
+      
+      # Redis connection alert
+      - alert: RedisConnectionFailed
+        expr: sum(proxy_redis_operations{operation="connection", result="error"}) > 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Redis connection failures"
+          description: "Proxy service is experiencing Redis connection failures."
+      
+      # Service health alert
+      - alert: ProxyServiceDown
+        expr: up{job="niche-scout-proxy"} == 0
+        for: 30s
+        labels:
+          severity: critical
+        annotations:
+          summary: "Proxy service is down"
+          description: "The niche-scout proxy service is not responding to scrape requests."
