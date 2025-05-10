@@ -1,0 +1,229 @@
+diff --git a/services/social-intel/api/openapi.yaml b/services/social-intel/api/openapi.yaml
+new file mode 100644
+index 0000000..f48ffa8
+--- /dev/null
++++ b/services/social-intel/api/openapi.yaml
+@@ -0,0 +1,590 @@
++openapi: 3.0.3
++info:
++  title: Social Intelligence Service API
++  description: |
++    Social Intelligence Service provides trend analysis and social media monitoring capabilities,
++    with a focus on YouTube niche discovery and channel strategy generation.
++    
++    ## Features
++    
++    - **Niche Scout**: Identifies high-potential YouTube niches with opportunity scoring
++    - **Seed to Blueprint**: Generates channel strategy blueprints from seed videos
++    - **Workflow Management**: Schedule and manage analysis workflows
++  version: 1.0.0
++  contact:
++    name: Alfred Agent Platform Team
++    url: https://github.com/your-org/alfred-agent-platform
++  license:
++    name: Proprietary
++servers:
++  - url: http://localhost:9000
++    description: Local development server
++  - url: http://social-intel:9000
++    description: Docker container endpoint
++# ... [rest of OpenAPI spec content]
+
+diff --git a/services/social-intel/app/main.py b/services/social-intel/app/main.py
+index 1e8cc39..a49ba46 100644
+--- a/services/social-intel/app/main.py
++++ b/services/social-intel/app/main.py
+@@ -1,12 +1,16 @@
+ """Social Intelligence Service Main Application."""
+ 
+-from fastapi import FastAPI, HTTPException, Query, Body
++from fastapi import FastAPI, HTTPException, Query, Body, Request
+ from contextlib import asynccontextmanager
+ import os
+ import structlog
+ import asyncio
+ import redis
++import yaml
+ from typing import Dict, List, Any, Optional
+ from datetime import datetime
++from fastapi.responses import HTMLResponse, JSONResponse
++from fastapi.staticfiles import StaticFiles
++from fastapi.openapi.utils import get_openapi
+ 
+ from app.niche_scout import NicheScout
+ from app.blueprint import SeedToBlueprint
+@@ -292,3 +296,71 @@ async def schedule_workflow_alt2(
+ ):
+     """Alternative path for scheduling workflows."""
+     return await schedule_workflow(workflow_type, parameters, frequency, next_run)
++
++# ----- API Documentation Routes -----
++
++@app.get("/openapi.yaml", include_in_schema=False)
++async def get_custom_openapi_yaml():
++    """Serve the custom OpenAPI YAML file."""
++    with open("api/openapi.yaml", "r") as f:
++        yaml_content = f.read()
++    return JSONResponse(content=yaml.safe_load(yaml_content))
++
++@app.get("/docs", include_in_schema=False)
++async def custom_swagger_ui_html():
++    """Serve Swagger UI with the custom OpenAPI definition."""
++    swagger_ui_html = f"""
++    <!DOCTYPE html>
++    <html>
++    <head>
++        <title>Social Intelligence API - Swagger UI</title>
++        <meta charset="utf-8">
++        <meta name="viewport" content="width=device-width, initial-scale=1">
++        <link href="https://unpkg.com/swagger-ui-dist@5.9.0/swagger-ui.css" rel="stylesheet">
++        <style>
++            html {{
++                box-sizing: border-box;
++                overflow: -moz-scrollbars-vertical;
++                overflow-y: scroll;
++            }}
++            
++            *,
++            *:before,
++            *:after {{
++                box-sizing: inherit;
++            }}
++            
++            body {{
++                margin: 0;
++                background: #fafafa;
++            }}
++        </style>
++    </head>
++    <body>
++        <div id="swagger-ui"></div>
++        <script src="https://unpkg.com/swagger-ui-dist@5.9.0/swagger-ui-bundle.js"></script>
++        <script>
++            window.onload = function() {{
++                const ui = SwaggerUIBundle({{
++                    url: "/openapi.yaml",
++                    dom_id: '#swagger-ui',
++                    deepLinking: true,
++                    presets: [
++                        SwaggerUIBundle.presets.apis,
++                        SwaggerUIBundle.SwaggerUIStandalonePreset
++                    ],
++                    layout: "BaseLayout",
++                    supportedSubmitMethods: ['get', 'post', 'put', 'delete', 'patch']
++                }});
++                window.ui = ui;
++            }};
++        </script>
++    </body>
++    </html>
++    """
++    return HTMLResponse(content=swagger_ui_html)
++
++# Disable the default FastAPI OpenAPI schema
++def custom_openapi():
++    """Override the default OpenAPI schema with a custom one."""
++    with open("api/openapi.yaml", "r") as f:
++        return yaml.safe_load(f)
++    
++app.openapi = custom_openapi
+
+diff --git a/services/social-intel/Dockerfile b/services/social-intel/Dockerfile
+index 4fbc85f..f2da7c8 100644
+--- a/services/social-intel/Dockerfile
++++ b/services/social-intel/Dockerfile
+@@ -13,6 +13,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
+ # Copy application code
+ COPY . .
+ 
++# Ensure API directory exists
++RUN mkdir -p /app/api
++
+ # Create directories and establish symlinks if needed
+ RUN mkdir -p /app/data/niche_scout /app/data/builder \
+     && ln -sf /app/data/niche_scout /app/niche_scout \
+
+diff --git a/services/social-intel/README.md b/services/social-intel/README.md
+index cb61f5a..12b27be 100644
+--- a/services/social-intel/README.md
++++ b/services/social-intel/README.md
+@@ -146,16 +146,23 @@ The alert rules are designed to work with the tuned histogram buckets to:
+ 2. Balance alert sensitivity with minimizing noise
+ 3. Provide meaningful alerts for SLO violations
+ 
+-## API Endpoints
++## API Documentation
+ 
+-For a complete API reference, see the [API Documentation](API.md).
++The service provides a Swagger UI interface for browsing and testing the API:
++
++- **Swagger UI**: http://localhost:9000/docs
+ 
+ Key endpoints:
+ - `POST /niche-scout`: Run niche analysis
+ - `POST /seed-to-blueprint`: Generate channel strategy
+ - `GET /workflow-history`: View past workflow executions
+ - `POST /schedule-workflow`: Schedule a new workflow
+ 
++The OpenAPI specification is available at:
++- `/openapi.yaml`: Raw OpenAPI 3.0 specification
++
+ ## Architecture
++
+ ```
+ ┌─────────────┐     ┌─────────────┐     ┌──────────────┐
+ │ FastAPI     │     │ PostgreSQL  │     │ Nightly      │
+
+diff --git a/services/social-intel/package.json b/services/social-intel/package.json
+index 1ead8a2..bafffc6 100644
+--- a/services/social-intel/package.json
++++ b/services/social-intel/package.json
+@@ -8,6 +8,7 @@
+     "test:unit": "jest --testPathPattern=tests/unit",
+     "test:integration": "jest --testPathPattern=tests/integration",
+     "test:metrics": "./tests/check_metrics.sh",
++    "test:api": "./scripts/validate_openapi.sh",
+     "score:nightly": "ts-node scripts/score_features.ts",
+     "db:seed": "ts-node scripts/seed_features.ts",
+     "migrate": "psql $DATABASE_URL -f db/schema.sql",
+@@ -20,6 +21,7 @@
+     "pg": "^8.11.3"
+   },
+   "devDependencies": {
++    "@redocly/cli": "^1.5.0",
+     "@types/node": "^18.19.3",
+     "@types/pg": "^8.10.9",
+     "jest": "^29.7.0",
+
+diff --git a/services/social-intel/requirements.txt b/services/social-intel/requirements.txt
+index 8bd7723..f9f05b0 100644
+--- a/services/social-intel/requirements.txt
++++ b/services/social-intel/requirements.txt
+@@ -2,6 +2,7 @@
+ python-dotenv==1.0.0
+ pydantic==2.6.0
+ pydantic-settings==2.1.0
++PyYAML==6.0.1
+ 
+ # Async Support
+ asyncio==3.4.3
+
+diff --git a/services/social-intel/scripts/validate_openapi.sh b/services/social-intel/scripts/validate_openapi.sh
+new file mode 100755
+index 0000000..5c3b1ab
+--- /dev/null
++++ b/services/social-intel/scripts/validate_openapi.sh
+@@ -0,0 +1,11 @@
++#!/bin/bash
++# Validate the OpenAPI specification using redocly
++
++echo "Validating OpenAPI schema..."
++npx @redocly/cli lint api/openapi.yaml
++
++if [ $? -eq 0 ]; then
++  echo "✅ OpenAPI specification is valid!"
++  exit 0
++else
++  echo "❌ OpenAPI specification has errors."
++  exit 1
++fi

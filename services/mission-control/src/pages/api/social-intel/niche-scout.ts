@@ -19,8 +19,8 @@ import type { NextApiRequest, NextApiResponse } from 'next';
  * - 500: Server error
  */
 
-// Set the URL to the Social Intelligence Agent
-const SOCIAL_INTEL_URL = process.env.SOCIAL_INTEL_URL || 'http://localhost:9000';
+// Import our proxy helper
+import { SOCIAL_INTEL_URL, getMockNicheScoutData, useMockData } from './proxy-helper';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   // Only allow POST requests
@@ -46,62 +46,86 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       trace_id: `trace-${Date.now()}`
     };
 
-    // Call the Social Intelligence Agent API
-    const response = await fetch(`${SOCIAL_INTEL_URL}/youtube/niche-scout`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(payload),
-    });
+    console.log(`Running Niche-Scout with query: ${query || 'default queries'}`);
 
-    // Check for errors
-    if (!response.ok) {
-      // If the service isn't available, return mock data for development
-      if (response.status === 404 || response.status === 503) {
-        console.warn('Social Intel API not available, returning mock data');
-        const mockData = {
-          run_date: new Date().toISOString(),
-          trending_niches: Array.from({ length: 20 }, (_, i) => ({
-            query: ['mobile gaming tips', 'coding tutorials', 'fitness workouts', 'cooking recipes', 'travel vlogs'][i % 5],
-            view_sum: Math.floor(Math.random() * 5000000) + 1000000,
-            rsv: Math.random() * 100,
-            view_rank: i + 1,
-            rsv_rank: i + 1,
-            score: Math.random() * 0.5 + 0.5,
-            x: Math.random() * 100,
-            y: Math.random() * 100,
-            niche: i % 5
-          })),
-          top_niches: Array.from({ length: 10 }, (_, i) => ({
-            query: ['mobile gaming tips', 'coding tutorials', 'fitness workouts', 'cooking recipes', 'travel vlogs'][i % 5],
-            view_sum: Math.floor(Math.random() * 5000000) + 1000000,
-            rsv: Math.random() * 100,
-            view_rank: i + 1,
-            rsv_rank: i + 1,
-            score: Math.random() * 0.5 + 0.5,
-            x: Math.random() * 100,
-            y: Math.random() * 100,
-            niche: i % 5
-          }))
-        };
-        return res.status(200).json(mockData);
+    // Call the Social Intelligence Agent API
+    // Try multiple endpoint paths in sequence for better resilience
+    const endpoints = [
+      `${SOCIAL_INTEL_URL}/youtube/niche-scout`,
+      `${SOCIAL_INTEL_URL}/api/youtube/niche-scout`,
+      `${SOCIAL_INTEL_URL}/niche-scout`
+    ];
+    
+    let response: Response | null = null;
+    let lastError: any = null;
+    
+    // Try each endpoint until one works
+    for (const endpoint of endpoints) {
+      try {
+        console.log(`Attempting to call endpoint: ${endpoint}`);
+        response = await fetch(endpoint, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(payload),
+          // Add timeout to prevent hanging requests
+          signal: AbortSignal.timeout(60000) // 60 second timeout for better reliability with complex queries
+        });
+        
+        if (response.ok) {
+          console.log(`Successfully called endpoint: ${endpoint}`);
+          break;
+        } else {
+          const errorText = await response.text();
+          console.warn(`Endpoint ${endpoint} returned status ${response.status}: ${errorText}`);
+          lastError = new Error(`API returned status ${response.status}: ${errorText}`);
+        }
+      } catch (error) {
+        console.warn(`Failed to call endpoint ${endpoint}:`, error);
+        lastError = error;
       }
-      
-      const errorData = await response.json();
-      console.error('Social Intel API error:', errorData);
-      return res.status(response.status).json({
-        detail: errorData.detail || 'Failed to process Niche-Scout workflow',
-      });
     }
 
-    // Return the API response
+    // If all endpoints failed or returned errors
+    if (!response || !response.ok) {
+      console.error('All endpoints failed, returning mock data for development');
+      
+      // Use our helper to get mock data for development/testing
+      const mockData = getMockNicheScoutData();
+      
+      console.log('SERVER: Returning mock data with ID:', mockData._id);\r\n      // Add mock data indicator flag\r\n      mockData._mock = true;\r\n      mockData._mockReason = 'API call failed';\r\n      mockData._mockTimestamp = new Date().toISOString();
+      return res.status(200).json(mockData);
+    }
+
+    // Parse and return the successful API response
     const data = await response.json();
-    return res.status(200).json(data);
+    
+    // Add an _id field if not present (for result page retrieval)
+    if (!data._id) {
+      data._id = `niche-scout-${Date.now()}`;
+    }
+    
+    console.log('Successfully ran Niche-Scout workflow, returning data with ID:', data._id);
+    console.log('SERVER: Returning real API data with ID:', data._id);\r\nreturn res.status(200).json(data);
   } catch (error) {
     console.error('Error in Niche-Scout API handler:', error);
-    return res.status(500).json({
-      detail: error instanceof Error ? error.message : 'Internal server error',
+    
+    // Check if we should use mock data
+    if (useMockData(error)) {
+      // Return mock data if there's an error connecting to the service
+      console.warn('SERVER: API call failed, using mock data:', error);
+      const mockData = getMockNicheScoutData();
+      
+      console.log('SERVER: Returning mock data with ID:', mockData._id);\r\n      // Add mock data indicator flag\r\n      mockData._mock = true;\r\n      mockData._mockReason = 'API call failed';\r\n      mockData._mockTimestamp = new Date().toISOString();
+      return res.status(200).json(mockData);
+    }
+    
+    // If not a network/connection error, return a proper error
+    return res.status(500).json({ 
+      error: 'Failed to run Niche-Scout workflow',
+      message: error instanceof Error ? error.message : 'Unknown error',
+      _id: `error-${Date.now()}`
     });
   }
 }

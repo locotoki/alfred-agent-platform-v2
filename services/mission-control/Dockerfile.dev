@@ -1,0 +1,24 @@
+# Use Node.js LTS
+FROM node:18-alpine
+
+# Set working directory
+WORKDIR /app
+
+# Copy package files
+COPY package.json package-lock.json ./
+
+# Install dependencies
+RUN npm ci
+
+# Copy all files (most will be mounted as volumes in development)
+COPY . .
+
+# Expose port - this is the internal container port
+EXPOSE 3000
+
+# Set hostname
+ENV HOSTNAME "0.0.0.0"
+ENV PORT 3000
+
+# Run the application in development mode
+CMD ["npm", "run", "dev"]

@@ -1,0 +1,56 @@
+groups:
+  - name: platform_alerts
+    rules:
+      - alert: HighErrorRate
+        expr: rate(http_requests_total{status=~"5.."}[5m]) > 0.1
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: High error rate detected
+          description: Error rate is above 10% for 5 minutes
+
+      - alert: AgentDown
+        expr: up{job=~"alfred-bot|social-intel|financial-tax|legal-compliance"} == 0
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: Agent {{ $labels.job }} is down
+          description: Agent has been down for more than 2 minutes
+
+      - alert: HighMemoryUsage
+        expr: container_memory_usage_bytes / container_spec_memory_limit_bytes > 0.8
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: High memory usage in {{ $labels.container_name }}
+          description: Memory usage is above 80% for 5 minutes
+
+      - alert: PubSubBacklog
+        expr: pubsub_subscription_num_undelivered_messages > 1000
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: High Pub/Sub backlog
+          description: More than 1000 undelivered messages for 10 minutes
+
+      - alert: DatabaseConnectionsHigh
+        expr: pg_stat_database_numbackends / pg_settings_max_connections > 0.8
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: Database connections near limit
+          description: Database connections above 80% of max_connections
+
+      - alert: TaskProcessingLatency
+        expr: histogram_quantile(0.95, rate(task_processing_duration_seconds_bucket[5m])) > 30
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: High task processing latency
+          description: 95th percentile task processing time above 30s

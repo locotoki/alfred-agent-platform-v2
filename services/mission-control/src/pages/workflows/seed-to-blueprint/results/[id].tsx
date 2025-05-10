@@ -19,9 +19,21 @@ export default function SeedToBlueprintResults() {
       
       try {
         setIsLoading(true);
+        console.log(`Fetching Seed-to-Blueprint results for ID: ${id}`);
+        
+        // Introduce a small delay for UX so loading state is visible
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        
         const data = await getWorkflowResult(id as string, 'seed-to-blueprint');
+        
+        if (!data) {
+          throw new Error('No data returned from the server');
+        }
+        
+        console.log(`Successfully fetched Seed-to-Blueprint results for ID: ${id}`);
         setResults(data as BlueprintResult);
       } catch (err) {
+        console.error(`Error fetching Seed-to-Blueprint results: ${err instanceof Error ? err.message : 'Unknown error'}`);
         setError(err instanceof Error ? err.message : 'An unexpected error occurred');
       } finally {
         setIsLoading(false);

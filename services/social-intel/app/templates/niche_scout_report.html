@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Niche Scout Report</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f1f1f1;
+        }
+        .header h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        .header p {
+            color: #7f8c8d;
+            font-size: 18px;
+        }
+        .summary {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 30px;
+        }
+        .summary h2 {
+            color: #2c3e50;
+            margin-top: 0;
+        }
+        .recommendation {
+            background-color: #e8f4f8;
+            padding: 15px;
+            border-left: 4px solid #3498db;
+            margin-bottom: 10px;
+        }
+        .niche-card {
+            border: 1px solid #e1e1e1;
+            border-radius: 5px;
+            padding: 20px;
+            margin-bottom: 20px;
+            background-color: white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .niche-card h3 {
+            color: #2c3e50;
+            margin-top: 0;
+            display: flex;
+            justify-content: space-between;
+        }
+        .niche-card .growth-rate {
+            color: white;
+            background-color: #27ae60;
+            padding: 3px 8px;
+            border-radius: 20px;
+            font-size: 14px;
+        }
+        .niche-details {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-top: 15px;
+        }
+        .detail-column {
+            flex: 1;
+            min-width: 250px;
+        }
+        .detail-item {
+            margin-bottom: 15px;
+        }
+        .detail-item h4 {
+            margin: 0 0 5px 0;
+            color: #7f8c8d;
+            font-size: 14px;
+            text-transform: uppercase;
+        }
+        .competition {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 20px;
+            font-size: 14px;
+            color: white;
+        }
+        .low {
+            background-color: #27ae60;
+        }
+        .medium {
+            background-color: #f39c12;
+        }
+        .high {
+            background-color: #e74c3c;
+        }
+        .very-high {
+            background-color: #c0392b;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 50px;
+            padding-top: 20px;
+            border-top: 2px solid #f1f1f1;
+            color: #7f8c8d;
+        }
+        .topics-list, .channels-list {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        .topics-list li, .channels-list li {
+            margin-bottom: 5px;
+            padding-left: 20px;
+            position: relative;
+        }
+        .topics-list li:before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: #3498db;
+        }
+        .channels-list li span {
+            font-weight: bold;
+        }
+        .channels-list li small {
+            color: #7f8c8d;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Niche Scout Report</h1>
+        <p>Fastest-growing, biggest, and most Shorts-friendly YouTube niches</p>
+        <p>Generated on {{ date }}</p>
+        {% if query %}
+        <p>Custom Query: <strong>{{ query }}</strong></p>
+        {% endif %}
+    </div>
+
+    <div class="summary">
+        <h2>Analysis Summary</h2>
+        <p><strong>Fastest Growing Niche:</strong> {{ analysis_summary.fastest_growing }}</p>
+        <p><strong>Most Shorts-Friendly:</strong> {{ analysis_summary.most_shorts_friendly }}</p>
+        <p><strong>Lowest Competition:</strong> {{ analysis_summary.lowest_competition }}</p>
+        
+        <h3>Recommendations</h3>
+        {% for recommendation in recommendations %}
+        <div class="recommendation">
+            {{ recommendation }}
+        </div>
+        {% endfor %}
+    </div>
+
+    <h2>Analyzed Niches</h2>
+    
+    {% for niche in niches %}
+    <div class="niche-card">
+        <h3>
+            {{ niche.name }}
+            <span class="growth-rate">{{ niche.growth_rate }}% Growth</span>
+        </h3>
+        
+        <div class="niche-details">
+            <div class="detail-column">
+                <div class="detail-item">
+                    <h4>Competition Level</h4>
+                    <span class="competition {{ niche.competition_level|lower }}">{{ niche.competition_level }}</span>
+                </div>
+                
+                <div class="detail-item">
+                    <h4>Shorts-Friendly</h4>
+                    <p>{{ "Yes" if niche.shorts_friendly else "No" }}</p>
+                </div>
+                
+                <div class="detail-item">
+                    <h4>Audience Demographics</h4>
+                    <p><strong>Age Groups:</strong> {{ niche.viewer_demographics.age_groups|join(", ") }}</p>
+                    <p><strong>Gender Split:</strong> {{ niche.viewer_demographics.gender_split.male }}% Male, {{ niche.viewer_demographics.gender_split.female }}% Female</p>
+                </div>
+            </div>
+            
+            <div class="detail-column">
+                <div class="detail-item">
+                    <h4>Trending Topics</h4>
+                    <ul class="topics-list">
+                        {% for topic in niche.trending_topics %}
+                        <li>{{ topic }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="detail-column">
+                <div class="detail-item">
+                    <h4>Top Channels</h4>
+                    <ul class="channels-list">
+                        {% for channel in niche.top_channels %}
+                        <li>
+                            <span>{{ channel.name }}</span>
+                            <small>({{ channel.subs|format_number }} subscribers)</small>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+
+    <div class="footer">
+        <p>Generated by Niche Scout | Alfred Agent Platform</p>
+        <p>© 2025 All Rights Reserved</p>
+    </div>
+</body>
+</html>

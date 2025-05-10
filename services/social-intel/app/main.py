@@ -1,13 +1,17 @@
 """Social Intelligence Service Main Application."""
 
-from fastapi import FastAPI, HTTPException, Query, Body
+from fastapi import FastAPI, HTTPException, Query, Body, Request
 from contextlib import asynccontextmanager
 import os
 import structlog
 import asyncio
 import redis
+import yaml
 from typing import Dict, List, Any, Optional
 from datetime import datetime
+from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi.staticfiles import StaticFiles
+from fastapi.openapi.utils import get_openapi
 
 from app.niche_scout import NicheScout
 from app.blueprint import SeedToBlueprint
@@ -46,8 +50,18 @@ social_agent = SocialIntelAgent(
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Manage application lifecycle."""
+    # Import database module here to avoid circular imports
+    from app.database import get_pool, close_pool
+    
     # Startup
     await supabase_transport.connect()
+    
+    # Initialize database connection pool
+    try:
+        await get_pool()
+        logger.info("Database connection pool initialized")
+    except Exception as e:
+        logger.error("Failed to initialize database connection pool", error=str(e))
     
     # Start agent
     asyncio.create_task(social_agent.start())
@@ -58,6 +72,14 @@ async def lifespan(app: FastAPI):
     # Shutdown
     await social_agent.stop()
     await supabase_transport.disconnect()
+    
+    # Close database connection pool
+    try:
+        await close_pool()
+        logger.info("Database connection pool closed")
+    except Exception as e:
+        logger.error("Failed to close database connection pool", error=str(e))
+    
     logger.info("social_intel_service_stopped")
 
 app = FastAPI(
@@ -93,13 +115,60 @@ async def force_analyze(query: str):
         
 @app.post("/niche-scout")
 async def run_niche_scout(
+    request: Request,
     query: str = Query(None, description="Optional query to focus the niche analysis"),
     category: str = Query(None, description="Main content category (e.g., 'tech', 'kids')"),
     subcategory: str = Query(None, description="Specific subcategory (e.g., 'kids.nursery')")
 ):
     """Run the Niche-Scout workflow to find trending YouTube niches."""
+    # Log that we entered the endpoint handler
+    print(f"DEBUG: Entered niche-scout endpoint handler with query={query}, category={category}, subcategory={subcategory}")
+    logger.info("Entered niche-scout endpoint", path="/niche-scout", method="POST")
     try:
-        logger.info("niche_scout_request", query=query, category=category, subcategory=subcategory)
+        # Try to parse JSON body if present
+        json_data = {}
+        try:
+            # Get request body
+            body = await request.body()
+            print(f"DEBUG: Request body: {body}")
+
+            # Parse JSON
+            json_data = await request.json()
+            print(f"DEBUG: Parsed JSON: {json_data}")
+            logger.info("Received JSON payload", payload=json_data)
+
+            # If this is an A2A envelope, extract the relevant fields
+            if json_data.get("intent") == "YOUTUBE_NICHE_SCOUT":
+                # Extract data from A2A envelope
+                data = json_data.get("data", {})
+                queries = data.get("queries", [])
+                if queries and isinstance(queries, list):
+                    query = queries[0]  # Use the first query
+                    logger.info("Extracted query from JSON payload", query=query)
+
+                # Extract category from JSON payload
+                json_category = data.get("category")
+                if json_category and json_category != "All":
+                    category = json_category
+                    logger.info("Using category from JSON payload", category=category)
+                elif json_category == "All":
+                    category = None
+
+                # Extract subcategory from JSON payload
+                json_subcategory = data.get("subcategory")
+                if json_subcategory:
+                    subcategory = json_subcategory
+                    logger.info("Using subcategory from JSON payload", subcategory=subcategory)
+        except Exception as e:
+            logger.error("Failed to parse JSON body, using query parameters", error=str(e))
+
+        # Log the final parameter values being used
+        logger.info("niche_scout_request",
+                  query=query,
+                  category=category,
+                  subcategory=subcategory,
+                  received_json=bool(json_data),
+                  task_id=json_data.get("task_id", "none"))
         niche_scout = NicheScout()
         result, json_path, report_path = await niche_scout.run(query, category, subcategory)
         
@@ -120,32 +189,53 @@ async def run_niche_scout(
 # Alternative routes for Niche-Scout workflow
 @app.post("/youtube/niche-scout")
 async def run_niche_scout_alt1(
+    request: Request,
     query: str = Query(None, description="Optional query to focus the niche analysis"),
     category: str = Query(None, description="Main content category (e.g., 'tech', 'kids')"),
     subcategory: str = Query(None, description="Specific subcategory (e.g., 'kids.nursery')")
 ):
     """Alternative path for Niche-Scout workflow."""
-    return await run_niche_scout(query, category, subcategory)
+    return await run_niche_scout(request, query, category, subcategory)
 
 @app.post("/api/youtube/niche-scout")
 async def run_niche_scout_alt2(
+    request: Request,
     query: str = Query(None, description="Optional query to focus the niche analysis"),
     category: str = Query(None, description="Main content category (e.g., 'tech', 'kids')"),
     subcategory: str = Query(None, description="Specific subcategory (e.g., 'kids.nursery')")
 ):
     """Alternative path for Niche-Scout workflow."""
-    return await run_niche_scout(query, category, subcategory)
+    return await run_niche_scout(request, query, category, subcategory)
         
 @app.post("/seed-to-blueprint")
 async def run_seed_to_blueprint(
+    request: Request,
     video_url: str = Query(None, description="URL of the seed video to analyze"),
     niche: str = Query(None, description="Niche to analyze if no seed video is provided")
 ):
     """Run the Seed-to-Blueprint workflow to create a channel strategy."""
     try:
+        # Try to parse JSON body if present
+        json_data = {}
+        try:
+            json_data = await request.json()
+            logger.info("Received JSON payload for blueprint", payload=json_data)
+
+            # If this is an A2A envelope, extract the relevant fields
+            if json_data.get("intent") == "YOUTUBE_BLUEPRINT":
+                # Extract data from A2A envelope
+                data = json_data.get("data", {})
+                video_url = data.get("video_url", video_url)
+                niche = data.get("niche", niche)
+        except Exception as e:
+            logger.debug("Failed to parse JSON body, using query parameters", error=str(e))
+
         if not video_url and not niche:
             raise HTTPException(status_code=400, detail="Either video_url or niche parameter must be provided")
-            
+
+        logger.info("seed_to_blueprint_request", video_url=video_url, niche=niche,
+                  received_json=bool(json_data))
+
         blueprint = SeedToBlueprint()
         result, json_path, report_path = await blueprint.run(video_url, niche)
         
@@ -166,19 +256,21 @@ async def run_seed_to_blueprint(
 # Alternative routes for Seed-to-Blueprint workflow
 @app.post("/youtube/blueprint")
 async def run_seed_to_blueprint_alt1(
+    request: Request,
     video_url: str = Query(None, description="URL of the seed video to analyze"),
     niche: str = Query(None, description="Niche to analyze if no seed video is provided")
 ):
     """Alternative path for Seed-to-Blueprint workflow."""
-    return await run_seed_to_blueprint(video_url, niche)
+    return await run_seed_to_blueprint(request, video_url, niche)
 
 @app.post("/api/youtube/blueprint")
 async def run_seed_to_blueprint_alt2(
+    request: Request,
     video_url: str = Query(None, description="URL of the seed video to analyze"),
     niche: str = Query(None, description="Niche to analyze if no seed video is provided")
 ):
     """Alternative path for Seed-to-Blueprint workflow."""
-    return await run_seed_to_blueprint(video_url, niche)
+    return await run_seed_to_blueprint(request, video_url, niche)
     
 # Workflow result retrieval endpoint
 @app.get("/workflow-result/{result_id}")
@@ -271,3 +363,74 @@ async def schedule_workflow_alt2(
 ):
     """Alternative path for scheduling workflows."""
     return await schedule_workflow(workflow_type, parameters, frequency, next_run)
+
+# ----- API Documentation Routes -----
+
+@app.get("/openapi.yaml", include_in_schema=False)
+async def get_custom_openapi_yaml():
+    """Serve the custom OpenAPI YAML file."""
+    with open("api/openapi.yaml", "r") as f:
+        yaml_content = f.read()
+    return JSONResponse(content=yaml.safe_load(yaml_content))
+
+@app.get("/docs", include_in_schema=False)
+async def custom_swagger_ui_html():
+    """Serve Swagger UI with the custom OpenAPI definition."""
+    swagger_ui_html = f"""
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>Social Intelligence API - Swagger UI</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link href="https://unpkg.com/swagger-ui-dist@5.9.0/swagger-ui.css" rel="stylesheet">
+        <style>
+            html {{
+                box-sizing: border-box;
+                overflow: -moz-scrollbars-vertical;
+                overflow-y: scroll;
+            }}
+            
+            *,
+            *:before,
+            *:after {{
+                box-sizing: inherit;
+            }}
+            
+            body {{
+                margin: 0;
+                background: #fafafa;
+            }}
+        </style>
+    </head>
+    <body>
+        <div id="swagger-ui"></div>
+        <script src="https://unpkg.com/swagger-ui-dist@5.9.0/swagger-ui-bundle.js"></script>
+        <script>
+            window.onload = function() {{
+                const ui = SwaggerUIBundle({{
+                    url: "/openapi.yaml",
+                    dom_id: '#swagger-ui',
+                    deepLinking: true,
+                    presets: [
+                        SwaggerUIBundle.presets.apis,
+                        SwaggerUIBundle.SwaggerUIStandalonePreset
+                    ],
+                    layout: "BaseLayout",
+                    supportedSubmitMethods: ['get', 'post', 'put', 'delete', 'patch']
+                }});
+                window.ui = ui;
+            }};
+        </script>
+    </body>
+    </html>
+    """
+    return HTMLResponse(content=swagger_ui_html)
+
+# Disable the default FastAPI OpenAPI schema
+def custom_openapi():
+    """Override the default OpenAPI schema with a custom one."""
+    with open("api/openapi.yaml", "r") as f:
+        return yaml.safe_load(f)
+    
+app.openapi = custom_openapi

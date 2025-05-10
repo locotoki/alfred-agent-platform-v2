@@ -1,0 +1,25 @@
+sequenceDiagram
+    autonumber
+    participant User as Human<br/>(`goal.json`)
+    participant Atlas
+    participant Conductor
+    participant Forge
+    participant Sentinel
+    participant Slack as Slack<br/>#infra-reviews
+
+    User->>Atlas: ① Submit GoalStatement
+    Atlas-->>Conductor: ② PlanSpec (plan.pending)
+    Conductor-->>Forge: ③ Route PlanSpec
+    Forge-->>Sentinel: ④ ValidateRequest (validate.pending)
+    Sentinel-->>Forge: ⑤ ValidationResult (PASS/FAIL)
+    Forge-->>Conductor: ⑥ BuildStatus (READY / BLOCKED)
+    Conductor-->>Slack: ⑦ Post summary + diff
+    Slack->>Conductor: ⑧ /approve <PlanSpec-id>
+    Conductor-->>Forge: ⑨ apply.request
+    Forge-->>Conductor: ⑩ OpsEvent (APPLY_DONE)
+    Conductor-->>Slack: ⑪ Success notice
+
+Legend:
+
+| **Stream** | **Redis/NATS Topic** |
+| --- | --- |

@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mission Control Dashboard</title>
+  <style>
+    body {font-family:system-ui,-apple-system,sans-serif; margin:0; padding:0; background:#f5f7fa;}
+    header {background:#fff; box-shadow:0 1px 3px rgba(0,0,0,0.1); padding:1rem;}
+    h1 {font-size:1.5rem; margin:0;}
+    main {max-width:1200px; margin:0 auto; padding:1.5rem;}
+    .card {background:#fff; border-radius:0.5rem; box-shadow:0 2px 4px rgba(0,0,0,0.05); padding:1.5rem; margin-bottom:1.5rem;}
+    
+    .tabs {display:flex; border-bottom:1px solid #e2e8f0; margin-bottom:1.5rem;}
+    .tab {padding:0.75rem 1.5rem; cursor:pointer; font-weight:500; color:#64748b;}
+    .tab.active {color:#3b82f6; border-bottom:2px solid #3b82f6; margin-bottom:-1px;}
+    
+    .dashboard-overview {display:grid; grid-template-columns:repeat(2, 1fr); gap:1rem;}
+    @media (min-width:1024px) {.dashboard-overview {grid-template-columns:repeat(4, 1fr);}}
+    
+    .stat-card {background:white; padding:1rem; border-radius:0.5rem; box-shadow:0 1px 3px rgba(0,0,0,0.05);}
+    .stat-label {font-size:0.875rem; color:#64748b; font-weight:500;}
+    .stat-value {font-size:1.5rem; font-weight:600; margin-top:0.5rem; margin-bottom:0.5rem;}
+    .stat-trend {font-size:0.75rem; display:flex; align-items:center;}
+    .stat-trend-up {color:#10b981;}
+    .stat-trend-down {color:#ef4444;}
+    
+    .progress-bar {width:100%; background:#e2e8f0; height:0.5rem; border-radius:0.25rem; overflow:hidden;}
+    .progress-bar-fill {height:100%; background:#3b82f6;}
+    
+    .agents-grid {display:grid; grid-template-columns:repeat(1, 1fr); gap:1rem;}
+    @media (min-width:768px) {.agents-grid {grid-template-columns:repeat(2, 1fr);}}
+    @media (min-width:1024px) {.agents-grid {grid-template-columns:repeat(3, 1fr);}}
+    
+    .agent-card {background:white; padding:1rem; border-radius:0.5rem; box-shadow:0 1px 3px rgba(0,0,0,0.05);}
+    .agent-header {display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem;}
+    .agent-title {font-weight:600;}
+    .agent-status {font-size:0.75rem; padding:0.25rem 0.5rem; border-radius:0.25rem; font-weight:500;}
+    .status-online {background:#d1fae5; color:#065f46;}
+    .status-offline {background:#fee2e2; color:#991b1b;}
+    .status-idle {background:#fef3c7; color:#92400e;}
+    
+    .metrics-row {display:flex; justify-content:space-between; font-size:0.75rem; color:#64748b; margin-top:0.5rem;}
+    
+    .activity-feed {margin-top:2rem;}
+    .activity-item {padding:1rem; border-left:2px solid #e2e8f0; position:relative; margin-left:1rem; margin-bottom:1.5rem;}
+    .activity-item::before {content:''; position:absolute; width:0.75rem; height:0.75rem; border-radius:50%; background:#3b82f6; top:1.25rem; left:-0.5rem;}
+    .activity-time {font-size:0.75rem; color:#64748b;}
+    .activity-title {font-weight:500; margin:0.25rem 0;}
+    .activity-desc {font-size:0.875rem; color:#64748b;}
+    
+    .workflow-card {border:1px solid #e2e8f0; border-radius:0.5rem; padding:1.5rem; margin-bottom:1rem; cursor:pointer; transition:all 0.2s;}
+    .workflow-card:hover {border-color:#3b82f6; transform:translateY(-2px);}
+    .workflow-card h3 {margin-top:0;}
+    .workflow-card .btn {display:inline-block; padding:0.5rem 1rem; background:#3b82f6; color:white; border-radius:0.25rem; text-decoration:none; margin-top:1rem; font-weight:500;}
+    
+    table {width:100%; border-collapse:collapse; margin:1.5rem 0;}
+    th {text-align:left; padding:0.75rem; font-size:0.875rem; font-weight:600; color:#64748b; border-bottom:1px solid #e2e8f0;}
+    td {padding:0.75rem; border-bottom:1px solid #e2e8f0;}
+    .history-status {font-size:0.75rem; padding:0.25rem 0.5rem; border-radius:0.25rem;}
+    .status-completed {background:#d1fae5; color:#065f46;}
+    .status-running {background:#dbeafe; color:#1e40af;}
+    .status-scheduled {background:#fef3c7; color:#92400e;}
+    .status-failed {background:#fee2e2; color:#991b1b;}
+    
+    .tab-content {display:none;}
+    .tab-content.active {display:block; animation:fadeIn 0.3s ease-out;}
+    
+    @keyframes fadeIn {
+      from {opacity:0; transform:translateY(10px);}
+      to {opacity:1; transform:translateY(0);}
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>MISSION CONTROL</h1>
+  </header>
+  
+  <main>
+    <div class="tabs">
+      <div class="tab active" data-tab="dashboard">Dashboard</div>
+      <div class="tab" data-tab="workflows">Workflows</div>
+      <div class="tab" data-tab="agents">Agents</div>
+      <div class="tab" data-tab="reports">Reports</div>
+    </div>
+    
+    <div id="dashboard-tab" class="tab-content active">
+      <div class="card">
+        <h2>Platform Overview</h2>
+        <div class="dashboard-overview">
+          <div class="stat-card">
+            <div class="stat-label">CPU Usage</div>
+            <div class="stat-value">28%</div>
+            <div class="stat-trend stat-trend-up">
+              <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+              <span>2% from yesterday</span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-bar-fill" style="width:28%"></div>
+            </div>
+          </div>
+          
+          <div class="stat-card">
+            <div class="stat-label">Memory Usage</div>
+            <div class="stat-value">42%</div>
+            <div class="stat-trend stat-trend-down">
+              <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+              <span>5% from yesterday</span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-bar-fill" style="width:42%"></div>
+            </div>
+          </div>
+          
+          <div class="stat-card">
+            <div class="stat-label">Active Tasks</div>
+            <div class="stat-value">12</div>
+            <div class="stat-trend stat-trend-up">
+              <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+              <span>3 more than yesterday</span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-bar-fill" style="width:60%"></div>
+            </div>
+          </div>
+          
+          <div class="stat-card">
+            <div class="stat-label">Success Rate</div>
+            <div class="stat-value">98.5%</div>
+            <div class="stat-trend stat-trend-up">
+              <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+              <span>0.5% improvement</span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-bar-fill" style="width:98.5%"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="card">
+        <h2>Agent Status</h2>
+        <div id="agents-container" class="agents-grid">
+          <!-- Agent cards will be dynamically added here -->
+          <div class="agent-card loading">Loading agent status...</div>
+        </div>
+      </div>
+      
+      <div class="activity-feed">
+        <h2>Recent Activity</h2>
+        
+        <div class="activity-item">
+          <div class="activity-time">10 minutes ago</div>
+          <div class="activity-title">Niche Scout workflow completed</div>
+          <div class="activity-desc">Social Intelligence agent completed YouTube niche analysis for "gaming"</div>
+        </div>
+        
+        <div class="activity-item">
+          <div class="activity-time">25 minutes ago</div>
+          <div class="activity-title">Task started</div>
+          <div class="activity-desc">Financial Tax agent started "Quarterly Tax Report" workflow</div>
+        </div>
+        
+        <div class="activity-item">
+          <div class="activity-time">45 minutes ago</div>
+          <div class="activity-title">Error detected</div>
+          <div class="activity-desc">Legal Compliance agent encountered an error processing documents</div>
+        </div>
+        
+        <div class="activity-item">
+          <div class="activity-time">1 hour ago</div>
+          <div class="activity-title">System update</div>
+          <div class="activity-desc">Platform updated to version 2.4.1</div>
+        </div>
+      </div>
+    </div>
+    
+    <div id="workflows-tab" class="tab-content">
+      <h2>YouTube Research Workflows</h2>
+      
+      <div class="workflow-card">
+        <h3>Niche-Scout</h3>
+        <p>Find trending YouTube niches with comprehensive growth metrics and opportunity scores.</p>
+        <p><strong>Last run:</strong> May 8, 2025</p>
+        <a href="/workflows/niche-scout" class="btn">RUN WORKFLOW</a>
+      </div>
+      
+      <div class="workflow-card">
+        <h3>Seed-to-Blueprint</h3>
+        <p>Create channel strategy from a seed video or niche with competitor analysis.</p>
+        <p><strong>Last run:</strong> May 7, 2025</p>
+        <a href="/workflows/seed-to-blueprint" class="btn">RUN WORKFLOW</a>
+      </div>
+      
+      <h3>Scheduled Runs</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Time</th>
+            <th>Workflow</th>
+            <th>Parameters</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Daily</td>
+            <td>Niche-Scout</td>
+            <td>gaming</td>
+            <td><span class="history-status status-scheduled">Scheduled</span></td>
+          </tr>
+          <tr>
+            <td>Weekly</td>
+            <td>Seed-to-Blueprint</td>
+            <td>fitness</td>
+            <td><span class="history-status status-scheduled">Scheduled</span></td>
+          </tr>
+          <tr>
+            <td>May 10</td>
+            <td>Niche-Scout</td>
+            <td>cooking</td>
+            <td><span class="history-status status-scheduled">Scheduled</span></td>
+          </tr>
+        </tbody>
+      </table>
+      
+      <h3>Workflow History</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Time</th>
+            <th>Workflow</th>
+            <th>Parameters</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>May 8</td>
+            <td>Niche-Scout</td>
+            <td>gaming</td>
+            <td><span class="history-status status-completed">Completed</span></td>
+          </tr>
+          <tr>
+            <td>May 7</td>
+            <td>Seed-to-Blueprint</td>
+            <td>https://youtube.com/watch?v=example123</td>
+            <td><span class="history-status status-completed">Completed</span></td>
+          </tr>
+          <tr>
+            <td>May 7</td>
+            <td>Niche-Scout</td>
+            <td>cooking</td>
+            <td><span class="history-status status-completed">Completed</span></td>
+          </tr>
+          <tr>
+            <td>May 6</td>
+            <td>Seed-to-Blueprint</td>
+            <td>fitness</td>
+            <td><span class="history-status status-completed">Completed</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    
+    <div id="agents-tab" class="tab-content">
+      <h2>Agent Management</h2>
+      
+      <div id="agents-management" class="agents-grid">
+        <!-- Agent cards will be dynamically added here -->
+        <div class="agent-card loading">Loading agent data...</div>
+      </div>
+    </div>
+    
+    <div id="reports-tab" class="tab-content">
+      <h2>System Reports</h2>
+      
+      <div class="card">
+        <h3>Performance Report - Last 7 Days</h3>
+        <p>The system has been operating at 94.2% efficiency with an average of 35 tasks processed daily.</p>
+        <ul>
+          <li>CPU utilization averaged 32% with peaks at 58%</li>
+          <li>Memory utilization averaged 47% with peaks at 72%</li>
+          <li>98.5% tasks completed successfully</li>
+          <li>Average task completion time: 32.6 seconds</li>
+        </ul>
+      </div>
+      
+      <div class="card">
+        <h3>Workflow Analytics</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Workflow</th>
+              <th>Runs</th>
+              <th>Avg. Time</th>
+              <th>Success Rate</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Niche-Scout</td>
+              <td>28</td>
+              <td>45.2s</td>
+              <td>96.4%</td>
+            </tr>
+            <tr>
+              <td>Seed-to-Blueprint</td>
+              <td>15</td>
+              <td>73.8s</td>
+              <td>93.3%</td>
+            </tr>
+            <tr>
+              <td>Tax Analysis</td>
+              <td>12</td>
+              <td>37.1s</td>
+              <td>100%</td>
+            </tr>
+            <tr>
+              <td>Compliance Check</td>
+              <td>9</td>
+              <td>28.3s</td>
+              <td>88.9%</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+  
+  <script>
+    // Tab switching
+    const tabs = document.querySelectorAll('.tab');
+    const tabContents = document.querySelectorAll('.tab-content');
+    
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        // Update active tab
+        tabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        
+        // Show selected content
+        const tabId = tab.dataset.tab;
+        tabContents.forEach(content => {
+          content.style.display = 'none';
+          if (content.id === `${tabId}-tab`) {
+            content.style.display = 'block';
+          }
+        });
+      });
+    });
+
+    // Fetch agent status
+    async function fetchAgentStatus() {
+      try {
+        const response = await fetch('/api/agents/status');
+        const data = await response.json();
+        
+        // Update agent cards in both views
+        updateAgentCards(data.agents, 'agents-container');
+        updateAgentCards(data.agents, 'agents-management', true);
+      } catch (error) {
+        console.error('Error fetching agent status:', error);
+        // Show error message
+        document.getElementById('agents-container').innerHTML = `
+          <div class="agent-card">
+            <div class="agent-header">
+              <div class="agent-title">Error loading agent data</div>
+            </div>
+            <div>Unable to connect to agent services. Using mock data.</div>
+          </div>
+        `;
+        
+        // Use mock data
+        const mockAgents = [
+          { name: 'Alfred Bot', status: 'online', cpu: 12, memory: 256, tasks: 3 },
+          { name: 'Social Intelligence', status: 'online', cpu: 38, memory: 512, tasks: 5 },
+          { name: 'Financial Tax', status: 'online', cpu: 22, memory: 384, tasks: 2 },
+          { name: 'Legal Compliance', status: 'idle', cpu: 5, memory: 192, tasks: 0 }
+        ];
+        updateAgentCards(mockAgents, 'agents-management', true);
+      }
+    }
+    
+    // Update agent cards
+    function updateAgentCards(agents, containerId, detailed = false) {
+      const container = document.getElementById(containerId);
+      if (!container) return;
+      
+      let html = '';
+      
+      agents.forEach(agent => {
+        const statusClass = agent.status === 'online' ? 'status-online' : 
+                           agent.status === 'offline' ? 'status-offline' : 'status-idle';
+        
+        html += `
+          <div class="agent-card">
+            <div class="agent-header">
+              <div class="agent-title">${agent.name}</div>
+              <div class="agent-status ${statusClass}">${agent.status}</div>
+            </div>
+        `;
+        
+        if (detailed) {
+          html += `
+            <p>${getAgentDescription(agent.name)}</p>
+          `;
+        }
+        
+        html += `
+            <div class="metrics-row">
+              <div>CPU: ${agent.cpu}%</div>
+              <div>Memory: ${agent.memory}MB</div>
+              <div>Tasks: ${agent.tasks}</div>
+            </div>
+        `;
+        
+        if (detailed) {
+          html += `
+            <div>
+              <strong>Uptime:</strong> ${getRandomUptime()}
+            </div>
+            <div>
+              <strong>Version:</strong> ${getRandomVersion()}
+            </div>
+          `;
+        }
+        
+        html += `</div>`;
+      });
+      
+      container.innerHTML = html;
+    }
+    
+    // Helper functions
+    function getAgentDescription(name) {
+      const descriptions = {
+        'Alfred Bot': 'Slack interface for platform interaction',
+        'Social Intelligence': 'Social media trend analysis and monitoring',
+        'Financial Tax': 'Tax calculations and financial analysis',
+        'Legal Compliance': 'Regulatory compliance checking and monitoring'
+      };
+      return descriptions[name] || 'AI agent service';
+    }
+    
+    function getRandomUptime() {
+      const days = Math.floor(Math.random() * 7) + 1;
+      const hours = Math.floor(Math.random() * 24);
+      return `${days} days, ${hours} hours`;
+    }
+    
+    function getRandomVersion() {
+      const major = 1 + Math.floor(Math.random() * 2);
+      const minor = Math.floor(Math.random() * 9);
+      const patch = Math.floor(Math.random() * 10);
+      return `${major}.${minor}.${patch}`;
+    }
+    
+    // Initialize
+    document.addEventListener('DOMContentLoaded', () => {
+      fetchAgentStatus();
+      
+      // Set initial tab states
+      tabContents.forEach((content, index) => {
+        if (index !== 0) {
+          content.style.display = 'none';
+        }
+      });
+    });
+  </script>
+</body>
+</html>

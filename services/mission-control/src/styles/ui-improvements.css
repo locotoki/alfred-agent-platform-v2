@@ -1,0 +1,328 @@
+/* UI Improvements for Mission Control */
+
+/* Gradient utilities */
+.btn-gradient-primary {
+  background: linear-gradient(to right, #3b82f6, #2563eb);
+  color: white;
+  border-radius: 6px;
+  padding: 0.5rem 1rem;
+  font-weight: 500;
+  transition: all 0.2s;
+  box-shadow: 0 2px 5px rgba(37, 99, 235, 0.3);
+}
+
+.btn-gradient-primary:hover {
+  box-shadow: 0 4px 10px rgba(37, 99, 235, 0.4);
+  transform: translateY(-1px);
+}
+
+.btn-gradient-success {
+  background: linear-gradient(to right, #10b981, #059669);
+  color: white;
+  border-radius: 6px;
+  padding: 0.5rem 1rem;
+  font-weight: 500;
+  transition: all 0.2s;
+  box-shadow: 0 2px 5px rgba(5, 150, 105, 0.3);
+}
+
+.btn-gradient-success:hover {
+  box-shadow: 0 4px 10px rgba(5, 150, 105, 0.4);
+  transform: translateY(-1px);
+}
+
+.badge-gradient-primary {
+  background: linear-gradient(to right, #3b82f6, #2563eb);
+  color: white;
+  border-radius: 9999px;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.badge-gradient-success {
+  background: linear-gradient(to right, #10b981, #059669);
+  color: white;
+  border-radius: 9999px;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.badge-gradient-danger {
+  background: linear-gradient(to right, #ef4444, #b91c1c);
+  color: white;
+  border-radius: 9999px;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.dashboard-card-gradient {
+  background: linear-gradient(to right, #f0f9ff, #e0f2fe);
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+/* Animation utilities */
+.pulse-dot {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* Dashboard cards with better visual separation */
+.dashboard-card {
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.dashboard-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Workflow cards with visual indicators */
+.workflow-card {
+  border-left: 4px solid #3b82f6;
+  transition: background-color 0.2s;
+}
+
+.workflow-card:hover {
+  background-color: #f0f9ff;
+}
+
+.workflow-card.niche-scout {
+  border-left-color: #3b82f6; /* Blue */
+}
+
+.workflow-card.seed-to-blueprint {
+  border-left-color: #10b981; /* Green */
+}
+
+/* Better buttons */
+.btn-primary {
+  background-color: #3b82f6;
+  border-radius: 6px;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.btn-primary:hover {
+  background-color: #2563eb;
+}
+
+.btn-success {
+  background-color: #10b981;
+  border-radius: 6px;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.btn-success:hover {
+  background-color: #059669;
+}
+
+/* Status indicators */
+.status-badge {
+  border-radius: 9999px;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.status-badge.complete {
+  background-color: #d1fae5;
+  color: #065f46;
+}
+
+.status-badge.running {
+  background-color: #e0f2fe;
+  color: #0369a1;
+}
+
+.status-badge.failed {
+  background-color: #fee2e2;
+  color: #b91c1c;
+}
+
+/* Better navigation */
+.nav-link {
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  margin-bottom: 0.5rem;
+  transition: background-color 0.2s;
+}
+
+.nav-link:hover {
+  background-color: rgba(59, 130, 246, 0.1);
+}
+
+.nav-link.active {
+  background-color: rgba(59, 130, 246, 0.2);
+  font-weight: 500;
+}
+
+/* Better form elements */
+.form-input {
+  border-radius: 6px;
+  border: 1px solid #e5e7eb;
+  padding: 0.5rem 0.75rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-input:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
+  outline: none;
+}
+
+/* Loading indicators */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.loading {
+  animation: pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Results visualization */
+.result-card {
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.result-header {
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 0.5rem;
+}
+
+.result-value {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #111827;
+}
+
+/* Data visualization colors */
+.visualization-container {
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #e5e7eb;
+}
+
+.color-scale-1 { color: #3b82f6; }
+.color-scale-2 { color: #10b981; }
+.color-scale-3 { color: #f59e0b; }
+.color-scale-4 { color: #ef4444; }
+.color-scale-5 { color: #8b5cf6; }
+
+.bg-scale-1 { background-color: #3b82f6; }
+.bg-scale-2 { background-color: #10b981; }
+.bg-scale-3 { background-color: #f59e0b; }
+.bg-scale-4 { background-color: #ef4444; }
+.bg-scale-5 { background-color: #8b5cf6; }
+
+/* Transition and transform utilities */
+.transition-all {
+  transition-property: all;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 200ms;
+}
+
+.transition-transform {
+  transition-property: transform;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 200ms;
+}
+
+.transition-colors {
+  transition-property: background-color, border-color, color, fill, stroke;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 200ms;
+}
+
+.transform {
+  --transform-translate-x: 0;
+  --transform-translate-y: 0;
+  --transform-rotate: 0;
+  --transform-skew-x: 0;
+  --transform-skew-y: 0;
+  --transform-scale-x: 1;
+  --transform-scale-y: 1;
+  transform: translateX(var(--transform-translate-x)) translateY(var(--transform-translate-y)) rotate(var(--transform-rotate)) skewX(var(--transform-skew-x)) skewY(var(--transform-skew-y)) scaleX(var(--transform-scale-x)) scaleY(var(--transform-scale-y));
+}
+
+.hover\:scale-105:hover {
+  --transform-scale-x: 1.05;
+  --transform-scale-y: 1.05;
+}
+
+.hover\:scale-110:hover {
+  --transform-scale-x: 1.1;
+  --transform-scale-y: 1.1;
+}
+
+.hover\:-translate-y-1:hover {
+  --transform-translate-y: -0.25rem;
+}
+
+.group:hover .group-hover\:scale-110 {
+  --transform-scale-x: 1.1;
+  --transform-scale-y: 1.1;
+}
+
+.group:hover .group-hover\:-translate-y-1 {
+  --transform-translate-y: -0.25rem;
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .dashboard-card {
+    background-color: #1f2937;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  }
+  
+  .workflow-card:hover {
+    background-color: #111827;
+  }
+  
+  .form-input {
+    background-color: #111827;
+    border-color: #374151;
+    color: #e5e7eb;
+  }
+  
+  .form-input:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
+  }
+  
+  .result-card {
+    background-color: #1f2937;
+    border-color: #374151;
+  }
+  
+  .result-header {
+    color: #e5e7eb;
+  }
+  
+  .result-value {
+    color: #f3f4f6;
+  }
+}

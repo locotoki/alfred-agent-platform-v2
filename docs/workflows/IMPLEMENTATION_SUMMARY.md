@@ -1,13 +1,37 @@
 # YouTube Workflows Implementation Summary
 
 ## Overview
-This document summarizes the implementation of the YouTube Niche-Scout workflow functionality in the Agent Platform.
+This document summarizes the implementation of the YouTube workflows functionality in the Agent Platform, with a focus on the Niche-Scout and Seed-to-Blueprint workflows.
 
-## Changes Made
+## Recent Updates
 
-### 1. Updated YouTube Service API
+### 1. Enhanced Service Health Monitoring
 
-Modified the `runNicheScout` function in `services/agent-orchestrator/src/lib/youtube-service.ts` to accept a complete configuration object:
+Added robust service health monitoring to the YouTube service API:
+
+```typescript
+// Service health status tracker
+const serviceStatus: Record<string, ServiceStatus> = {
+  socialIntel: {
+    available: true,
+    lastChecked: new Date()
+  }
+};
+
+export async function checkServiceHealth(service: 'socialIntel'): Promise<boolean> {
+  // Implementation that checks if service is available
+}
+
+export function getServiceStatus(service: 'socialIntel'): ServiceStatus {
+  // Returns current service status with automatic refresh
+}
+```
+
+This enables real-time monitoring of backend service availability.
+
+### 2. Enhanced YouTube Service API
+
+Significantly improved the YouTube service API with offline mode support and better error handling:
 
 ```typescript
 export async function runNicheScout(config: {
@@ -15,30 +39,44 @@ export async function runNicheScout(config: {
   subcategory: string;
   budget?: number;
   dataSources?: Record<string, any>;
+  forceOfflineMode?: boolean;
 }): Promise<NicheScoutResult> {
-  // Implementation
+  // Implementation with offline mode and error handling
 }
 ```
 
-This allows passing all needed parameters from the wizard to the backend API.
+Key improvements:
+- Added timeout handling for API requests
+- Implemented offline mode operation when services are unavailable
+- Enhanced error detection and reporting
+- Added graceful degradation to offline mode
+- Improved result status reporting
 
-### 2. Integrated NicheScoutWizard in WorkflowCard
+### 3. Updated UI Components
 
-Updated the `WorkflowCard` component to:
-- Import necessary dependencies for NicheScoutWizard
-- Add state for wizard open/close and loading states
-- Implement `handleNicheScoutComplete` to process wizard output
-- Conditionally render a different UI when the workflow is "Niche-Scout"
+#### WorkflowCard Component
 
-The integration enables users to:
-- Click "Configure Analysis" to open the wizard
-- Go through the 3-step configuration process
-- Submit the configuration to the backend
-- See success/error notifications
+Enhanced the `WorkflowCard` component with:
+- Service health status indicators
+- Offline mode visual alerts
+- Improved error handling
+- Automatic service health checking
+- Clear user messaging for service status
+
+#### SocialIntelWorkflowsView Component
+
+Updated to:
+- Use actual API services instead of simulated functions
+- Display service health status
+- Support offline mode operation
+- Provide detailed error reporting
+- Automatically recover when services become available
 
 ## Testing Instructions
 
-To test the implementation:
+### Testing Workflow Functionality
+
+To test the basic workflow functionality:
 
 1. Start the agent-orchestrator service:
    ```
@@ -59,11 +97,63 @@ To test the implementation:
    - Loading state is shown during API call
    - Success notification appears on completion
    - Trending niches appear in the results
+   - Results are stored and can be viewed through the results dialog
 
-6. For testing without backend, set `VITE_USE_MOCK_DATA=true` in .env
+### Testing Service Health and Offline Mode
 
-## Notes
+To test service health monitoring and offline mode:
 
-- The implementation uses mock data as a fallback if the API fails
-- The UI is responsive and handles loading/error states
-- The wizard component is reusable for other similar workflows
+1. Start the agent-orchestrator service with the backend running:
+   ```
+   cd /home/locotoki/projects/alfred-agent-platform-v2
+   docker-compose up -d social-intel redis qdrant
+   cd services/agent-orchestrator
+   npm run dev
+   ```
+
+2. Navigate to the Workflows page and verify:
+   - Service health indicator shows "Connected" status (green wifi icon)
+   - Normal operation of workflows
+
+3. Stop the backend services:
+   ```
+   cd /home/locotoki/projects/alfred-agent-platform-v2
+   docker-compose stop social-intel
+   ```
+
+4. Reload the page and verify:
+   - Service health indicator shows "Unavailable" status (amber/yellow wifi-off icon)
+   - Offline mode banner is displayed
+   - Workflow buttons indicate "Run in Offline Mode"
+
+5. Run a workflow and verify:
+   - "Service unavailable" notification appears
+   - Workflow runs with simulated data in offline mode
+   - Results still appear and can be viewed
+   - "Offline Mode" indicator appears in the result
+
+6. Restart the backend services:
+   ```
+   cd /home/locotoki/projects/alfred-agent-platform-v2
+   docker-compose start social-intel
+   ```
+
+7. Wait 60 seconds (or reload the page) and verify:
+   - Service health indicator changes back to "Connected" status
+   - Offline mode banner disappears
+   - Normal operation is restored automatically
+
+### Configuration Options
+
+- For forced offline mode testing, set `VITE_USE_MOCK_DATA=true` in .env
+- For testing with actual services, ensure backend services are running and set `VITE_USE_MOCK_DATA=false`
+- Adjust timeouts by modifying AbortSignal.timeout values in youtube-service.ts
+
+## Implementation Notes
+
+- The UI now provides clear visual indicators of service status
+- Offline mode allows continued operation when backend services are unavailable
+- Automatic recovery when services become available improves user experience
+- Enhanced error handling provides meaningful error messages
+- Service health is checked periodically to update status automatically
+- All components are responsive and handle loading/error states properly

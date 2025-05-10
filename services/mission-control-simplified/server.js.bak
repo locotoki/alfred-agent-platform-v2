@@ -1,0 +1,110 @@
+const express = require('express');
+const path = require('path');
+const cors = require('cors');
+
+// Create Express app
+const app = express();
+const PORT = process.env.PORT || 3007;
+
+// Enable CORS
+app.use(cors());
+
+// Parse JSON request bodies
+app.use(express.json());
+
+// Serve static files
+app.use(express.static(path.join(__dirname, 'public')));
+
+// API routes for mock data
+app.get('/api/health', (req, res) => {
+  res.json({ status: 'healthy', uptime: process.uptime() });
+});
+
+app.get('/api/agents/status', (req, res) => {
+  res.json({
+    agents: [
+      { name: 'Alfred Bot', status: 'online', cpu: 12, memory: 256, tasks: 3 },
+      { name: 'Social Intelligence', status: 'online', cpu: 38, memory: 512, tasks: 5 },
+      { name: 'Financial Tax', status: 'online', cpu: 22, memory: 384, tasks: 2 },
+      { name: 'Legal Compliance', status: 'idle', cpu: 5, memory: 192, tasks: 0 }
+    ]
+  });
+});
+
+app.post('/api/workflows/niche-scout', (req, res) => {
+  // Simulate processing delay
+  setTimeout(() => {
+    res.json({
+      id: `wf-${Date.now()}`,
+      status: 'completed',
+      result: {
+        trending_niches: [
+          { name: 'Mobile Gaming', growth: 32, views: 3200000, score: 85 },
+          { name: 'Game Development', growth: 28, views: 2500000, score: 78 },
+          { name: 'Indie Games', growth: 24, views: 1800000, score: 72 },
+          { name: 'Strategy Games', growth: 22, views: 1500000, score: 68 }
+        ]
+      }
+    });
+  }, 2000);
+});
+
+app.post('/api/workflows/seed-to-blueprint', (req, res) => {
+  // Simulate processing delay
+  setTimeout(() => {
+    res.json({
+      id: `wf-${Date.now()}`,
+      status: 'completed',
+      result: {
+        channel_blueprint: {
+          focus: req.body && req.body.input_type === 'niche' 
+            ? `${req.body.niche_subcategory} within the ${req.body.niche_category} space`
+            : "programming tutorials and coding guides",
+          audience_potential: 4200000,
+          growth_score: 82,
+          competition_score: 76,
+          video_ideas_count: 24,
+          content_pillars: [
+            "Web Development Fundamentals",
+            "Framework Tutorials",
+            "Backend Development",
+            "Database Integration",
+            "Deployment and DevOps"
+          ],
+          trending_topics: [
+            "Serverless Functions",
+            "Web Assembly",
+            "State Management",
+            "TypeScript Migration",
+            "API Security"
+          ]
+        }
+      }
+    });
+  }, 3000);
+});
+
+// Route handling
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+app.get('/workflows/niche-scout', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'niche-scout.html'));
+});
+
+app.get('/workflows/seed-to-blueprint', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'seed-to-blueprint.html'));
+});
+
+// Default route for SPA
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+// Start the server
+app.listen(PORT, () => {
+  console.log(`Mission Control server running on port ${PORT}`);
+  console.log(`Dashboard: http://localhost:${PORT}/`);
+  console.log(`Niche-Scout workflow: http://localhost:${PORT}/workflows/niche-scout`);
+});

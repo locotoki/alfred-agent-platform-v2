@@ -19,9 +19,21 @@ export default function NicheScoutResults() {
       
       try {
         setIsLoading(true);
+        console.log(`Fetching Niche-Scout results for ID: ${id}`);
+        
+        // Introduce a small delay for UX so loading state is visible
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        
         const data = await getWorkflowResult(id as string, 'niche-scout');
+        
+        if (!data) {
+          throw new Error('No data returned from the server');
+        }
+        
+        console.log(`Successfully fetched Niche-Scout results for ID: ${id}`);
         setResults(data as NicheScoutResult);
       } catch (err) {
+        console.error(`Error fetching Niche-Scout results: ${err instanceof Error ? err.message : 'Unknown error'}`);
         setError(err instanceof Error ? err.message : 'An unexpected error occurred');
       } finally {
         setIsLoading(false);

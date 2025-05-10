@@ -1,0 +1,204 @@
+name: Documentation Validation
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - '**.md'
+      - '**.markdown'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - '**.md'
+      - '**.markdown'
+  # Allow manual triggering
+  workflow_dispatch:
+  # Schedule weekly validation check
+  schedule:
+    - cron: '0 0 * * 1'  # Run every Monday at midnight
+
+jobs:
+  validate-docs:
+    name: Validate Documentation
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install markdown-it-py mdformat markdownlint-cli markdown-link-check
+          
+      - name: Run metadata validation
+        id: metadata
+        run: |
+          python docs/tools/update_metadata.py --batch --dry-run --report validation_metadata_report.md docs/
+          echo "::set-output name=report_path::validation_metadata_report.md"
+      
+      - name: Run markdownlint
+        id: lint
+        continue-on-error: true
+        run: |
+          npx markdownlint-cli "**/*.md" "**/*.markdown" \
+            --ignore "node_modules" \
+            --config docs/.markdownlint.json \
+            --output markdownlint_report.txt || true
+          echo "::set-output name=report_path::markdownlint_report.txt"
+      
+      - name: Check for broken links
+        id: links
+        continue-on-error: true
+        run: |
+          find docs -name "*.md" -type f -print0 | xargs -0 -n1 markdown-link-check -q -c docs/.markdown-link-check.json > link_check_report.txt || true
+          echo "::set-output name=report_path::link_check_report.txt"
+      
+      - name: Check document structure
+        id: structure
+        run: |
+          python docs/tools/doc_validator.py --report structure_report.md docs/
+          echo "::set-output name=report_path::structure_report.md"
+      
+      - name: Generate validation summary
+        run: |
+          echo "# Documentation Validation Summary" > validation_summary.md
+          echo "" >> validation_summary.md
+          echo "## Metadata Validation" >> validation_summary.md
+          echo "" >> validation_summary.md
+          cat ${{ steps.metadata.outputs.report_path }} >> validation_summary.md
+          echo "" >> validation_summary.md
+          echo "## Markdown Linting" >> validation_summary.md
+          echo "" >> validation_summary.md
+          cat ${{ steps.lint.outputs.report_path }} >> validation_summary.md
+          echo "" >> validation_summary.md
+          echo "## Link Checking" >> validation_summary.md
+          echo "" >> validation_summary.md
+          cat ${{ steps.links.outputs.report_path }} >> validation_summary.md
+          echo "" >> validation_summary.md
+          echo "## Document Structure Validation" >> validation_summary.md
+          echo "" >> validation_summary.md
+          cat ${{ steps.structure.outputs.report_path }} >> validation_summary.md
+      
+      - name: Upload validation report
+        uses: actions/upload-artifact@v2
+        with:
+          name: documentation-validation-report
+          path: validation_summary.md
+      
+      - name: Fail job if critical issues found
+        if: ${{ github.event_name == 'pull_request' }}
+        run: |
+          # Extract critical validation errors
+          CRITICAL_ERRORS=$(grep -c "ERROR:" validation_summary.md || true)
+          if [ "$CRITICAL_ERRORS" -gt 0 ]; then
+            echo "::error::Found $CRITICAL_ERRORS critical documentation errors. See validation report for details."
+            exit 1
+          fi
+      
+      - name: Generate compliance metrics
+        if: ${{ github.event_name == 'push' }}
+        run: |
+          TOTAL_DOCS=$(find docs -name "*.md" | wc -l)
+          METADATA_COMPLIANT=$(grep -o "Metadata Compliance: [0-9]" validation_summary.md | awk '{sum+=$3} END {print sum}')
+          LINT_COMPLIANT=$(grep -o "Lint Compliance: [0-9]" validation_summary.md | awk '{sum+=$3} END {print sum}')
+          LINKS_COMPLIANT=$(grep -o "Links Compliance: [0-9]" validation_summary.md | awk '{sum+=$3} END {print sum}')
+          
+          echo "::set-output name=total_docs::$TOTAL_DOCS"
+          echo "::set-output name=metadata_compliant::$METADATA_COMPLIANT"
+          echo "::set-output name=lint_compliant::$LINT_COMPLIANT"
+          echo "::set-output name=links_compliant::$LINKS_COMPLIANT"
+          
+          # Create metrics file for tracking
+          echo "date,total_docs,metadata_compliant,lint_compliant,links_compliant" > metrics.csv
+          echo "$(date +%Y-%m-%d),$TOTAL_DOCS,$METADATA_COMPLIANT,$LINT_COMPLIANT,$LINKS_COMPLIANT" >> metrics.csv
+      
+      - name: Upload compliance metrics
+        if: ${{ github.event_name == 'push' }}
+        uses: actions/upload-artifact@v2
+        with:
+          name: documentation-compliance-metrics
+          path: metrics.csv
+
+  create-validation-configs:
+    name: Create Configuration Files
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      
+      - name: Create markdownlint config
+        if: ${{ !fileExists('docs/.markdownlint.json') }}
+        run: |
+          cat << EOF > docs/.markdownlint.json
+          {
+            "default": true,
+            "line-length": {
+              "line_length": 100,
+              "code_blocks": false,
+              "tables": false
+            },
+            "no-trailing-punctuation": {
+              "punctuation": ".,;:!"
+            },
+            "no-inline-html": {
+              "allowed_elements": ["br", "details", "summary", "sup", "img"]
+            },
+            "no-duplicate-heading": {
+              "siblings_only": true
+            },
+            "no-emphasis-as-heading": false,
+            "first-line-heading": false,
+            "no-hard-tabs": true,
+            "no-bare-urls": true
+          }
+          EOF
+      
+      - name: Create markdown-link-check config
+        if: ${{ !fileExists('docs/.markdown-link-check.json') }}
+        run: |
+          cat << EOF > docs/.markdown-link-check.json
+          {
+            "ignorePatterns": [
+              {
+                "pattern": "^https://github.com/[your-username]"
+              },
+              {
+                "pattern": "^#"
+              },
+              {
+                "pattern": "^/"
+              }
+            ],
+            "replacementPatterns": [
+              {
+                "pattern": "^/",
+                "replacement": "{{BASEURL}}/"
+              }
+            ],
+            "httpHeaders": [
+              {
+                "urls": ["https://docs.github.com/"],
+                "headers": {
+                  "Accept-Encoding": "zstd, br, gzip, deflate"
+                }
+              }
+            ]
+          }
+          EOF
+      
+      - name: Commit configuration files if they don't exist
+        run: |
+          if [[ -f docs/.markdownlint.json || -f docs/.markdown-link-check.json ]]; then
+            git config --global user.name "GitHub Actions"
+            git config --global user.email "actions@github.com"
+            git add docs/.markdownlint.json docs/.markdown-link-check.json
+            git commit -m "Add documentation validation configuration files" || true
+            git push
+          fi
