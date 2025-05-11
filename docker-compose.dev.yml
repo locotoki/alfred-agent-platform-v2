@@ -82,7 +82,7 @@ services:
       dockerfile: Dockerfile
     command: streamlit run src/streamlit_app.py
     ports:
-      - "8501:8501"
+      - "8502:8501"
     environment:
       - REDIS_URL=redis://redis:6379
       - SUPABASE_URL=${SUPABASE_URL}
