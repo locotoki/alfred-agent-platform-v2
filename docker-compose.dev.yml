@@ -24,9 +24,14 @@ services:
       - supabase
 
   alfred-orchestrator:
-    build:
-      context: ./mission-control
-      dockerfile: Dockerfile
+    image: node:18-alpine
+    working_dir: /app
+    command: >
+      sh -c "mkdir -p /app/src &&
+      cp /app_host/mission-control/src/index.js /app/src/ &&
+      npm init -y &&
+      npm install express cors &&
+      node src/index.js"
     ports:
       - "8012:8012"
     environment:
@@ -35,7 +40,7 @@ services:
       - SUPABASE_URL=${SUPABASE_URL}
       - SUPABASE_KEY=${SUPABASE_KEY}
     volumes:
-      - ./mission-control:/app
+      - ./:/app_host
     depends_on:
       - redis
       - supabase
@@ -77,10 +82,13 @@ services:
 
   # Optional Streamlit chat service for local testing
   streamlit-chat:
-    build:
-      context: ./mission-control
-      dockerfile: Dockerfile
-    command: streamlit run src/streamlit_app.py
+    image: python:3.11-slim
+    working_dir: /app
+    command: >
+      bash -c "pip install streamlit requests &&
+      mkdir -p /app/src &&
+      cp /app_host/mission-control/src/streamlit_app.py /app/src/ &&
+      streamlit run src/streamlit_app.py"
     ports:
       - "8502:8501"
     environment:
@@ -88,7 +96,7 @@ services:
       - SUPABASE_URL=${SUPABASE_URL}
       - SUPABASE_KEY=${SUPABASE_KEY}
     volumes:
-      - ./mission-control:/app
+      - ./:/app_host
     depends_on:
       - redis
       - supabase
