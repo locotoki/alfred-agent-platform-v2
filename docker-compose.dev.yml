@@ -1,0 +1,116 @@
+version: '3.8'
+
+services:
+  alfred-bot:
+    build:
+      context: ./slack-bot
+      dockerfile: Dockerfile
+    ports:
+      - "8011:8011"
+    environment:
+      - PORT=8011
+      - REDIS_URL=redis://redis:6379
+      - SUPABASE_URL=${SUPABASE_URL}
+      - SUPABASE_KEY=${SUPABASE_KEY}
+      - SLACK_BOT_TOKEN=${SLACK_BOT_TOKEN}
+      - SLACK_SIGNING_SECRET=${SLACK_SIGNING_SECRET}
+      - SLACK_APP_TOKEN=${SLACK_APP_TOKEN}
+      - ENVIRONMENT=${ENVIRONMENT:-development}
+      - DEBUG=${DEBUG:-true}
+    volumes:
+      - ./slack-bot:/app
+    depends_on:
+      - redis
+      - supabase
+
+  alfred-orchestrator:
+    build:
+      context: ./mission-control
+      dockerfile: Dockerfile
+    ports:
+      - "8012:8012"
+    environment:
+      - PORT=8012
+      - REDIS_URL=redis://redis:6379
+      - SUPABASE_URL=${SUPABASE_URL}
+      - SUPABASE_KEY=${SUPABASE_KEY}
+    volumes:
+      - ./mission-control:/app
+    depends_on:
+      - redis
+      - supabase
+
+  rag-gateway:
+    build:
+      context: ./rag-gateway
+      dockerfile: Dockerfile
+    ports:
+      - "8013:8013"
+    environment:
+      - PORT=8013
+      - REDIS_URL=redis://redis:6379
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - ENVIRONMENT=${ENVIRONMENT:-development}
+      - DEBUG=${DEBUG:-true}
+    volumes:
+      - ./rag-gateway:/app
+    depends_on:
+      - redis
+
+  whatsapp-adapter:
+    build:
+      context: ./whatsapp-adapter
+      dockerfile: Dockerfile
+    ports:
+      - "8014:8014"
+    environment:
+      - PORT=8014
+      - REDIS_URL=redis://redis:6379
+      - WHATSAPP_API_TOKEN=${WHATSAPP_API_TOKEN}
+      - WHATSAPP_PHONE_NUMBER_ID=${WHATSAPP_PHONE_NUMBER_ID}
+      - ENVIRONMENT=${ENVIRONMENT:-development}
+      - DEBUG=${DEBUG:-true}
+    volumes:
+      - ./whatsapp-adapter:/app
+    depends_on:
+      - redis
+
+  # Optional Streamlit chat service for local testing
+  streamlit-chat:
+    build:
+      context: ./mission-control
+      dockerfile: Dockerfile
+    command: streamlit run src/streamlit_app.py
+    ports:
+      - "8501:8501"
+    environment:
+      - REDIS_URL=redis://redis:6379
+      - SUPABASE_URL=${SUPABASE_URL}
+      - SUPABASE_KEY=${SUPABASE_KEY}
+    volumes:
+      - ./mission-control:/app
+    depends_on:
+      - redis
+      - supabase
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+
+  supabase:
+    image: supabase/postgres:15.1.0.117
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=postgres
+    volumes:
+      - supabase-data:/var/lib/postgresql/data
+
+volumes:
+  redis-data:
+  supabase-data:

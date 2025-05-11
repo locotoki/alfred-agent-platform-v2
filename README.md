@@ -138,12 +138,30 @@ make db-reset
 ### Local Development
 
 ```bash
-# Start all services
-make dev
+# Start all services with Docker Compose
+docker-compose -f docker-compose.dev.yml up
 
-# Start just the Mission Control UI container
-bash services/mission-control/start-container.sh
+# Start in detached mode (background)
+docker-compose -f docker-compose.dev.yml up -d
+
+# Start just specific services
+docker-compose -f docker-compose.dev.yml up slack-bot mission-control
+
+# View logs
+docker-compose -f docker-compose.dev.yml logs -f
+
+# Stop all services
+docker-compose -f docker-compose.dev.yml down
 ```
+
+The docker-compose.dev.yml file includes:
+- Slack Bot: http://localhost:8011
+- Mission Control: http://localhost:8012
+- RAG Gateway: http://localhost:8013
+- WhatsApp Adapter: http://localhost:8014
+- Streamlit Chat (dev-only): http://localhost:8501
+- Redis
+- Supabase (PostgreSQL)
 
 ### Staging Deployment
 
