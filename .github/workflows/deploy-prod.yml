@@ -2,6 +2,7 @@ name: Deploy to Production
 
 on:
   workflow_call:  # This allows the workflow to be called from tag-release.yml
+  workflow_dispatch:  # This allows manual triggering from the Actions tab
 
 jobs:
   prepare-matrix:
