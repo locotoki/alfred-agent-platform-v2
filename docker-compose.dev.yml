@@ -2,9 +2,13 @@ version: '3.8'
 
 services:
   alfred-bot:
-    build:
-      context: ./slack-bot
-      dockerfile: Dockerfile
+    image: python:3.11-slim
+    working_dir: /app
+    command: >
+      bash -c "pip install flask werkzeug==2.0.3 slack-sdk redis requests &&
+      mkdir -p /app/src &&
+      cp /app_host/slack-bot/src/app.py /app/src/ &&
+      python -m flask --app src.app run --host=0.0.0.0 --port=8011"
     ports:
       - "8011:8011"
     environment:
@@ -18,7 +22,7 @@ services:
       - ENVIRONMENT=${ENVIRONMENT:-development}
       - DEBUG=${DEBUG:-true}
     volumes:
-      - ./slack-bot:/app
+      - ./:/app_host
     depends_on:
       - redis
       - supabase
@@ -46,9 +50,13 @@ services:
       - supabase
 
   rag-gateway:
-    build:
-      context: ./rag-gateway
-      dockerfile: Dockerfile
+    image: python:3.11-slim
+    working_dir: /app
+    command: >
+      bash -c "pip install flask werkzeug==2.0.3 redis openai requests &&
+      mkdir -p /app/src &&
+      cp /app_host/rag-gateway/src/app.py /app/src/ &&
+      python -m flask --app src.app run --host=0.0.0.0 --port=8013"
     ports:
       - "8013:8013"
     environment:
@@ -58,14 +66,18 @@ services:
       - ENVIRONMENT=${ENVIRONMENT:-development}
       - DEBUG=${DEBUG:-true}
     volumes:
-      - ./rag-gateway:/app
+      - ./:/app_host
     depends_on:
       - redis
 
   whatsapp-adapter:
-    build:
-      context: ./whatsapp-adapter
-      dockerfile: Dockerfile
+    image: python:3.11-slim
+    working_dir: /app
+    command: >
+      bash -c "pip install flask werkzeug==2.0.3 redis requests &&
+      mkdir -p /app/src &&
+      cp /app_host/whatsapp-adapter/src/app.py /app/src/ &&
+      python -m flask --app src.app run --host=0.0.0.0 --port=8014"
     ports:
       - "8014:8014"
     environment:
@@ -76,7 +88,7 @@ services:
       - ENVIRONMENT=${ENVIRONMENT:-development}
       - DEBUG=${DEBUG:-true}
     volumes:
-      - ./whatsapp-adapter:/app
+      - ./:/app_host
     depends_on:
       - redis
 
