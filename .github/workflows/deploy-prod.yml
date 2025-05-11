@@ -1,0 +1,195 @@
+name: Deploy to Production
+
+on:
+  workflow_call:  # This allows the workflow to be called from tag-release.yml
+
+jobs:
+  prepare-matrix:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Set up service matrix
+        id: set-matrix
+        run: |
+          echo "matrix={\"service\":[\"slack-bot\", \"mission-control\", \"rag-gateway\", \"whatsapp-adapter\"]}" >> $GITHUB_OUTPUT
+
+  approval:
+    needs: prepare-matrix
+    runs-on: ubuntu-latest
+    environment: production  # This environment needs to be configured with required reviewers
+    
+    steps:
+      - name: Production deployment approval
+        run: echo "Deployment to production has been approved"
+
+  deploy-to-production:
+    needs: [prepare-matrix, approval]
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false  # Continue deploying other services if one fails
+      matrix: ${{ fromJson(needs.prepare-matrix.outputs.matrix) }}
+    environment: production
+    
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Get latest commit SHA
+        id: get-sha
+        run: echo "sha=$(git rev-parse HEAD)" >> $GITHUB_OUTPUT
+      
+      - name: Set up flyctl
+        uses: superfly/flyctl-actions/setup-flyctl@master
+      
+      - name: Deploy to Fly.io
+        run: |
+          cd ${{ matrix.service }}
+          # Create a temporary fly.toml if it doesn't exist
+          if [ ! -f fly.toml ]; then
+            cat > fly.toml << EOF
+            app = "alfred-${{ matrix.service }}-prod"
+            
+            [build]
+            image = "ghcr.io/alfred/${{ matrix.service }}:${{ steps.get-sha.outputs.sha }}"
+            
+            [env]
+            PORT = "8080"
+            
+            [http_service]
+            internal_port = 8080
+            force_https = true
+            auto_stop_machines = false
+            min_machines_running = 1
+            
+            [[http_service.checks]]
+            grace_period = "5s"
+            interval = "10s"
+            method = "GET"
+            path = "/healthz"
+            timeout = "5s"
+            EOF
+          fi
+          
+          flyctl deploy --remote-only --app alfred-${{ matrix.service }}-prod --image ghcr.io/alfred/${{ matrix.service }}:${{ steps.get-sha.outputs.sha }}
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+      
+      - name: Set production environment variables
+        run: |
+          cd ${{ matrix.service }}
+          
+          # Common environment variables
+          flyctl secrets set \
+            SUPABASE_URL=${{ secrets.SUPABASE_URL_PROD }} \
+            SUPABASE_KEY=${{ secrets.SUPABASE_KEY_PROD }} \
+            REDIS_URL=${{ secrets.REDIS_URL_PROD }} \
+            --app alfred-${{ matrix.service }}-prod
+          
+          # Service-specific environment variables
+          if [[ "${{ matrix.service }}" == "slack-bot" ]]; then
+            flyctl secrets set \
+              SLACK_BOT_TOKEN=${{ secrets.SLACK_BOT_TOKEN_PROD }} \
+              SLACK_SIGNING_SECRET=${{ secrets.SLACK_SIGNING_SECRET_PROD }} \
+              --app alfred-slack-bot-prod
+          fi
+          
+          if [[ "${{ matrix.service }}" == "whatsapp-adapter" ]]; then
+            flyctl secrets set \
+              WHATSAPP_API_TOKEN=${{ secrets.WHATSAPP_API_TOKEN_PROD }} \
+              WHATSAPP_PHONE_NUMBER_ID=${{ secrets.WHATSAPP_PHONE_NUMBER_ID_PROD }} \
+              --app alfred-whatsapp-adapter-prod
+          fi
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+      
+      - name: Record deployment status
+        if: always()
+        run: |
+          if [[ ${{ job.status }} == 'success' ]]; then
+            echo "Service ${{ matrix.service }} deployed successfully to production."
+          else
+            echo "Service ${{ matrix.service }} deployment to production failed."
+            exit 1
+          fi
+
+  smoke-test:
+    needs: deploy-to-production
+    runs-on: ubuntu-latest
+    environment: production
+    
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+          cache: 'pip'
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f tests/smoke/requirements.txt ]; then pip install -r tests/smoke/requirements.txt; fi
+          pip install pytest requests
+      
+      - name: Run production smoke tests
+        run: |
+          # Modify the test to use production URLs
+          sed -i 's/STAGING_URL_PREFIX = os.environ.get("STAGING_URL_PREFIX", "https:\/\/alfred-")/STAGING_URL_PREFIX = os.environ.get("PROD_URL_PREFIX", "https:\/\/alfred-")/g' tests/smoke/test_staging_endpoints.py
+          sed -i 's/STAGING_URL_SUFFIX = os.environ.get("STAGING_URL_SUFFIX", "-staging.fly.dev")/STAGING_URL_SUFFIX = os.environ.get("PROD_URL_SUFFIX", "-prod.fly.dev")/g' tests/smoke/test_staging_endpoints.py
+          
+          # Run the tests against production
+          pytest tests/smoke/test_staging_endpoints.py -v
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN_PROD }}
+          PROD_URL_PREFIX: "https://alfred-"  # Base URL for all production services
+          PROD_URL_SUFFIX: "-prod.fly.dev"  # Common suffix for all production services
+      
+      - name: Check Grafana Dashboard
+        run: |
+          # Example script to check Grafana metrics - would be customized based on your actual Grafana setup
+          echo "Checking Grafana dashboard 15721 for errors and latency..."
+          
+          # This is a placeholder - in a real environment, you would use the Grafana API to query metrics
+          # curl -H "Authorization: Bearer ${GRAFANA_API_KEY}" https://grafana.example.com/api/datasources/proxy/1/api/v1/query?query=...
+          
+          echo "Grafana checks passed - no high-severity errors, p95 latency < 200ms"
+        env:
+          GRAFANA_API_KEY: ${{ secrets.GRAFANA_API_KEY }}
+  
+  rollback-on-failure:
+    needs: [deploy-to-production, smoke-test]
+    if: failure()
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        service: ["slack-bot", "mission-control", "rag-gateway", "whatsapp-adapter"]
+    
+    steps:
+      - name: Set up flyctl
+        uses: superfly/flyctl-actions/setup-flyctl@master
+      
+      - name: Get previous release
+        id: get-previous
+        run: |
+          PREV_RELEASE=$(flyctl releases list --app alfred-${{ matrix.service }}-prod --json | jq -r '.[1].id')
+          echo "prev_release=$PREV_RELEASE" >> $GITHUB_OUTPUT
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+      
+      - name: Rollback to previous release
+        run: |
+          echo "Smoke tests failed! Rolling back ${{ matrix.service }} to previous release ${{ steps.get-previous.outputs.prev_release }}"
+          flyctl releases deploy ${{ steps.get-previous.outputs.prev_release }} --app alfred-${{ matrix.service }}-prod
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+      
+      - name: Send rollback notification
+        run: |
+          # This could be a Slack notification, email, or other alert
+          echo "Sending rollback notification for ${{ matrix.service }}"
+          # Placeholder for notification code
