@@ -1,0 +1,251 @@
+# Alfred Agent Platform v2 - Core Components
+# This file contains only the core infrastructure and database services
+
+x-core-service-labels: &core-service-labels
+  com.docker.compose.project: "alfred"
+  com.docker.compose.group: "core-infrastructure"
+
+x-database-service-labels: &database-service-labels
+  com.docker.compose.project: "alfred"
+  com.docker.compose.group: "database"
+
+# Mail service labels moved to docker-compose.yml
+
+services:
+  #############################################################################
+  # CORE INFRASTRUCTURE SERVICES
+  #############################################################################
+  
+  redis:
+    image: redis:7-alpine
+    container_name: redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+    restart: unless-stopped
+    networks:
+      - alfred-network
+    labels:
+      <<: *core-service-labels
+      com.docker.compose.service: "redis"
+
+  vector-db:
+    image: qdrant/qdrant:v1.7.4
+    container_name: vector-db
+    ports:
+      - "6333:6333"
+      - "6334:6334"
+    volumes:
+      - vector-db-data:/qdrant/storage
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:6333/healthz"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    restart: unless-stopped
+    networks:
+      - alfred-network
+    labels:
+      <<: *core-service-labels
+      com.docker.compose.service: "vector-db"
+
+  pubsub-emulator:
+    image: gcr.io/google.com/cloudsdktool/cloud-sdk:latest
+    container_name: pubsub-emulator
+    command: ["gcloud", "beta", "emulators", "pubsub", "start", "--host-port=0.0.0.0:8085", "--project=${ALFRED_PROJECT_ID:-alfred-agent-platform}"]
+    ports:
+      - "8085:8085"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8085/v1/projects/${ALFRED_PROJECT_ID:-alfred-agent-platform}/topics"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    restart: unless-stopped
+    networks:
+      - alfred-network
+    labels:
+      <<: *core-service-labels
+      com.docker.compose.service: "pubsub-emulator"
+
+  #############################################################################
+  # DATABASE SERVICES (SUPABASE)
+  #############################################################################
+
+  db-postgres:
+    image: supabase/postgres:15.1.0.117
+    container_name: db-postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: ${DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-your-super-secret-password}
+      POSTGRES_DB: ${DB_NAME:-postgres}
+      JWT_SECRET: ${DB_JWT_SECRET:-your-super-secret-jwt-token}
+      JWT_EXP: ${DB_JWT_EXP:-3600}
+    volumes:
+      - db-postgres-data:/var/lib/postgresql/data
+      - ./migrations/supabase:/docker-entrypoint-initdb.d
+    command:
+      - postgres
+      - -c
+      - wal_level=logical
+      - -c
+      - max_connections=1000
+      - -c
+      - listen_addresses=*
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "${DB_USER:-postgres}", "-h", "localhost"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+    networks:
+      - alfred-network
+    labels:
+      <<: *database-service-labels
+      com.docker.compose.service: "db-postgres"
+
+  # db-auth has been moved to docker-compose.yml
+
+  db-api:
+    image: postgrest/postgrest:v11.2.0
+    container_name: db-api
+    ports:
+      - "3000:3000"
+    environment:
+      PGRST_DB_URI: postgres://${DB_USER:-postgres}:${DB_PASSWORD:-your-super-secret-password}@db-postgres:5432/${DB_NAME:-postgres}
+      PGRST_DB_SCHEMAS: public,storage,graphql_public
+      PGRST_DB_ANON_ROLE: anon
+      PGRST_JWT_SECRET: ${DB_JWT_SECRET:-your-super-secret-jwt-token}
+    depends_on:
+      db-postgres:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - alfred-network
+    labels:
+      <<: *database-service-labels
+      com.docker.compose.service: "db-api"
+
+  db-admin:
+    image: alpine:latest
+    container_name: db-admin
+    ports:
+      - "3001:3000"
+    environment:
+      STUDIO_PG_META_URL: http://postgres-meta:8080
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-your-super-secret-password}
+      DEFAULT_ORGANIZATION_NAME: ${STUDIO_DEFAULT_ORGANIZATION}
+      DEFAULT_PROJECT_NAME: ${STUDIO_DEFAULT_PROJECT}
+      SUPABASE_URL: http://supabase-kong:8000
+      SUPABASE_PUBLIC_URL: ${SUPABASE_PUBLIC_URL}
+      SUPABASE_ANON_KEY: ${ANON_KEY}
+      SUPABASE_SERVICE_KEY: ${SERVICE_ROLE_KEY}
+    command: sh -c 'echo "Supabase Studio Stub Service" && tail -f /dev/null'
+    depends_on:
+      db-postgres:
+        condition: service_healthy
+      db-api:
+        condition: service_started
+    restart: unless-stopped
+    networks:
+      - alfred-network
+    labels:
+      <<: *database-service-labels
+      com.docker.compose.service: "db-admin"
+
+  db-realtime:
+    image: alpine:latest
+    container_name: db-realtime
+    ports:
+      - "4000:4000"
+    environment:
+      PORT: 4000
+      DB_HOST: db-postgres
+      DB_PORT: 5432
+      DB_NAME: ${DB_NAME:-postgres}
+      DB_USER: supabase_admin
+      DB_PASSWORD: ${DB_PASSWORD:-your-super-secret-password}
+      DB_SSL: "false"
+      JWT_SECRET: ${DB_JWT_SECRET:-your-super-secret-jwt-token}
+      REPLICATION_MODE: RLS
+      REPLICATION_POLL_INTERVAL: 100
+      SECURE_CHANNELS: "true"
+      SLOT_NAME: supabase_realtime_rls
+      TEMPORARY_SLOT: "true"
+      SECRET_KEY_BASE: ${SECRET_KEY_BASE}
+      RLIMIT_NOFILE: 100000
+      FLY_APP_NAME: realtime
+      FLY_ALLOC_ID: local
+      ERL_AFLAGS: "-proto_dist inet_tcp"
+    command: sh -c 'echo "Supabase Realtime Stub Service" && tail -f /dev/null'
+    depends_on:
+      db-postgres:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - alfred-network
+    labels:
+      <<: *database-service-labels
+      com.docker.compose.service: "db-realtime"
+
+  db-storage:
+    image: alpine:latest
+    container_name: db-storage
+    ports:
+      - "5000:5000"
+    environment:
+      ANON_KEY: ${ANON_KEY}
+      SERVICE_KEY: ${SERVICE_ROLE_KEY}
+      POSTGREST_URL: http://db-api:3000
+      PGRST_JWT_SECRET: ${DB_JWT_SECRET:-your-super-secret-jwt-token}
+      DATABASE_URL: postgres://supabase_storage_admin:${DB_PASSWORD:-your-super-secret-password}@db-postgres:5432/${DB_NAME:-postgres}
+      FILE_SIZE_LIMIT: 52428800
+      GLOBAL_S3_BUCKET: ${GLOBAL_S3_BUCKET}
+      STORAGE_BACKEND: ${STORAGE_BACKEND}
+      FILE_STORAGE_BACKEND_PATH: ${FILE_STORAGE_BACKEND_PATH:-/var/lib/storage}
+      REGION: ${REGION}
+      TENANT_ID: ${TENANT_ID}
+      IS_MULTITENANT: ${IS_MULTITENANT}
+    volumes:
+      - db-storage-data:/var/lib/storage
+    command: sh -c 'echo "Supabase Storage Stub Service" && tail -f /dev/null'
+    depends_on:
+      db-postgres:
+        condition: service_healthy
+      db-api:
+        condition: service_started
+    restart: unless-stopped
+    networks:
+      - alfred-network
+    labels:
+      <<: *database-service-labels
+      com.docker.compose.service: "db-storage"
+
+# Volumes
+volumes:
+  redis-data:
+    name: redis-data
+  vector-db-data:
+    name: vector-db-data
+  db-postgres-data:
+    name: db-postgres-data
+  db-storage-data:
+    name: db-storage-data
+
+  # Mail services moved to docker-compose.yml
+
+# Networks
+networks:
+  alfred-network:
+    name: alfred-network
+    driver: bridge

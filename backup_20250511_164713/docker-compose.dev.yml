@@ -1,0 +1,76 @@
+version: "3.9"
+
+services:
+  qdrant:
+    image: qdrant/qdrant:v1.7.3
+    volumes:
+      - qdrant-data:/qdrant/storage
+    ports: [6333:6333]
+
+  redis:
+    image: redis:7-alpine
+    ports: [6379:6379]
+
+  pubsub:
+    image: gcr.io/google.com/cloudsdktool/google-cloud-cli:emulators
+    command: ["gcloud", "beta", "emulators", "pubsub", "start", "--host-port=0.0.0.0:8681", "--project=atlas-dev"]
+    ports: [8681:8681]
+
+  rag-gateway:
+    image: atlas-rag-gateway:latest  # Will keep same image until rebuilt with new name
+    environment:
+      QDRANT_URL: http://qdrant:6333
+      REDIS_URL: redis://redis:6379/0
+      # Collection configuration for multi-agent support
+      DEFAULT_COLLECTION: general-knowledge
+      ENABLE_COLLECTIONS: "true"
+      # Authentication for different agents
+      AUTH_ENABLED: "true"
+      # Define API keys for different agent types
+      API_KEYS: ${RAG_API_KEYS:-"atlas:atlas-key,alfred:alfred-key,financial:financial-key,legal:legal-key,social:social-key"}
+      # Request rate limits per agent
+      RATE_LIMIT_REQUESTS: "100"
+      RATE_LIMIT_WINDOW_SECONDS: "60"
+      # Enhanced logging for multi-agent usage
+      LOG_LEVEL: "INFO"
+      LOG_AGENT_ACCESS: "true"
+    depends_on: [qdrant, redis]
+    ports: [8501:8501]
+    restart: unless-stopped
+    volumes:
+      # Mount config directory for persistent configurations
+      - ./config/rag:/app/config
+
+  atlas-worker:
+    image: atlas-worker:latest
+    env_file: .env.dev
+    environment:
+      # Additional environment variables can be overridden here if needed
+      # Connect to Supabase REST directly in Docker network
+      SUPABASE_URL: http://supabase-rest:3000
+      # This is a local development key - should be overridden in production
+      SUPABASE_SERVICE_ROLE_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoic2VydmljZV9yb2xlIiwiZXhwIjoxNzQ5NTM2MTMwfQ.EDf3DT0Zl6qQbrLIQLwAXRWAN5kaJ5mvlAh1jm0CY-o
+      PUBSUB_EMULATOR_HOST: pubsub-emulator:8085
+      PUBSUB_PROJECT_ID: alfred-agent-platform
+      # Updated to use the renamed RAG Gateway
+      RAG_URL: http://rag-gateway:8501
+      # Add API key for authentication to RAG Gateway
+      RAG_API_KEY: ${ATLAS_RAG_API_KEY:-atlas-key}
+      # Specify Atlas-specific collection
+      RAG_COLLECTION: ${ATLAS_RAG_COLLECTION:-architecture-knowledge}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    ports: [8000:8000]
+    depends_on:
+      - rag-gateway
+      - pubsub
+      - supabase-rest
+    restart: unless-stopped
+
+volumes:
+  qdrant-data:
+
+networks:
+  default:
+    name: alfred-network
+    external: true

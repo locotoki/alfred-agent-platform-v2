@@ -98,3 +98,4 @@ terraform.tfvars
 
 # Jupyter
 .ipynb_checkpoints/
+services/mission-control.old/

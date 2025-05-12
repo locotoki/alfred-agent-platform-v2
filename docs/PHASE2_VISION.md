@@ -61,4 +61,4 @@ Phase 2 is targeted for completion within 6 weeks, with major milestones:
 - Week 4: Interactive dashboard prototypes
 - Week 6: Production release
 
-For detailed timeline, see [PHASE2_TIMELINE.md](./PHASE2_TIMELINE.md)
+For detailed timeline, see [PHASE2_TIMELINE.md](./phase2_timeline.md)

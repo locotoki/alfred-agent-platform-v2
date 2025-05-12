@@ -48,7 +48,7 @@ At minimum, agent documentation should include:
 
 ### Using AI to Create Agent Documentation
 
-You can use AI tools to help create agent documentation. See the [AI Tool Guide](../governance/ai-tools/README.md) for specific instructions.
+You can use AI tools to help create agent documentation. See the [AI Tool Guide](../governance/ai-tools/readme.md) for specific instructions.
 
 ## Current Agents
 

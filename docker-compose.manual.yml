@@ -1,0 +1,47 @@
+# Alfred Agent Platform v2 - Manual Service Components
+# This file contains manually started/configured services that aren't part of the standard stack
+
+x-manual-service-labels: &manual-service-labels
+  com.docker.compose.project: "alfred"
+  com.docker.compose.group: "manual"
+
+services:
+  #############################################################################
+  # MANUAL SERVICES
+  #############################################################################
+  
+  # Auth Migration Tool
+  auth-migration:
+    image: supabase/gotrue:v2.132.3
+    container_name: auth-migration
+    environment:
+      GOTRUE_API_HOST: 0.0.0.0
+      GOTRUE_API_PORT: 9999
+      API_EXTERNAL_URL: ${API_EXTERNAL_URL:-http://localhost:8000}
+      GOTRUE_DB_DRIVER: postgres
+      GOTRUE_DB_DATABASE_URL: postgres://${DB_USER:-postgres}:${DB_PASSWORD:-your-super-secret-password}@db-postgres:5432/${DB_NAME:-postgres}?options=-c%20search_path=auth,public
+      GOTRUE_SITE_URL: ${SITE_URL:-http://localhost:3000}
+      GOTRUE_URI_ALLOW_LIST: ${ADDITIONAL_REDIRECT_URLS}
+      GOTRUE_DISABLE_SIGNUP: ${DISABLE_SIGNUP:-false}
+      GOTRUE_JWT_ADMIN_ROLES: service_role
+      GOTRUE_JWT_AUD: authenticated
+      GOTRUE_JWT_DEFAULT_GROUP_NAME: authenticated
+      GOTRUE_JWT_EXP: ${JWT_EXPIRY:-3600}
+      GOTRUE_JWT_SECRET: ${DB_JWT_SECRET:-your-super-secret-jwt-token}
+      GOTRUE_EXTERNAL_EMAIL_ENABLED: ${ENABLE_EMAIL_SIGNUP:-true}
+      GOTRUE_MAILER_AUTOCONFIRM: ${ENABLE_EMAIL_AUTOCONFIRM:-false}
+    command: auth
+    depends_on:
+      db-postgres:
+        condition: service_healthy
+    networks:
+      - alfred-network
+    labels:
+      <<: *manual-service-labels
+      com.docker.compose.service: "auth-migration"
+
+# Networks
+networks:
+  alfred-network:
+    external: true
+EOF < /dev/null

@@ -1,0 +1,77 @@
+version: '3.8'
+
+services:
+  streamlit-chat:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: alfred-streamlit-chat:latest
+    restart: unless-stopped
+    environment:
+      - ALFRED_API_URL=http://alfred-bot:8011
+    ports:
+      - "8502:8501"
+    networks:
+      - alfred-network
+    # Streamlit doesn't have a proper health endpoint
+    healthcheck:
+      test: ["CMD-SHELL", "curl -s http://localhost:8501 | grep -q streamlit || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    depends_on:
+      - alfred-api
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+      restart_policy:
+        condition: on-failure
+        max_attempts: 3
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.streamlit.rule=Host(`chat.alfred.example.com`)"
+        - "traefik.http.services.streamlit.loadbalancer.server.port=8501"
+
+  alfred-api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    image: alfred-api-demo:latest
+    restart: unless-stopped
+    environment:
+      - REDIS_URL=redis://alfred-agent-platform-v2-redis-1:6379
+    ports:
+      - "8012:8011"
+    networks:
+      - alfred-network
+    healthcheck:
+      test: ["CMD-SHELL", "curl -s http://localhost:8011/health | grep -q 'healthy' || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+      restart_policy:
+        condition: on-failure
+        max_attempts: 3
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.alfredapi.rule=Host(`api.alfred.example.com`)"
+        - "traefik.http.services.alfredapi.loadbalancer.server.port=8011"
+
+# External services are referenced in the networks and depends_on sections
+# No redis service defined here as we're using the existing one from the main platform
+
+networks:
+  alfred-network:
+    name: alfred-network
+    external: true
+
+# No volumes needed since we're using the existing Redis

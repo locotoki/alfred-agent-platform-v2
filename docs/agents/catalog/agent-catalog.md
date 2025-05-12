@@ -1,5 +1,9 @@
 # Agent Catalog
 
+**Last Updated:** 2025-05-12  
+**Owner:** Platform Team  
+**Status:** Active
+
 This document provides a comprehensive overview of all agents in the Alfred Agent Platform v2. Agents are organized by their primary category with relevant information about capabilities, status, and integration points.
 
 ## Migration Progress Summary
@@ -8,8 +12,8 @@ As part of the documentation migration initiative, this catalog tracks the migra
 
 | Category | Total Docs | Migrated | Status | Completion % |
 |----------|------------|----------|--------|--------------|
-| Agent Documentation | 142 | 3 | In Progress | 2% |
-| Priority P0 Agents | 3 | 1 | In Progress | 33% |
+| Agent Documentation | 142 | 4 | In Progress | 3% |
+| Priority P0 Agents | 3 | 2 | In Progress | 67% |
 | Priority P1 Agents | 5 | 1 | In Progress | 20% |
 | Priority P2 Agents | 8 | 0 | Not Started | 0% |
 | Priority P3 Agents | 6 | 0 | Not Started | 0% |
@@ -50,6 +54,7 @@ Agents are organized into the following primary categories:
 - **Business**: Solo-Biz tier agents for internal business operations
 - **SaaS**: External-Facing SaaS agents offered as multi-tenant services
 - **Domain**: Domain-specific agents focused on particular areas
+- **Interface**: User interface and external communication channels
 
 ## Core Agents
 
@@ -59,6 +64,14 @@ Agents are organized into the following primary categories:
 | Atlas | Knowledge graph and information mapping | Planned | Platform Team | [Documentation](../core/atlas.md) | Not Started | ❌ | Low | P2 |
 | Forge | Agent development and testing framework | Planned | Platform Team | [Documentation](../core/forge.md) | Not Started | ❌ | Low | P2 |
 | Sentinel | Security monitoring and policy enforcement | Planned | Platform Team | [Documentation](../core/sentinel.md) | Not Started | ❌ | Low | P3 |
+
+## Interface Agents
+
+| Agent | Description | Status | Owner | Documentation | Migration Status | Metadata Compliance | Doc Completeness | Priority |
+|-------|-------------|--------|-------|---------------|------------------|---------------------|------------------|----------|
+| Alfred Slack Bot | Slack interface for interaction with Alfred's capabilities | Active | Platform Team | [Documentation](../interfaces/alfred-slack-bot.md) | Completed | ✅ | High | P0 |
+| WhatsApp Service | WhatsApp interface for Alfred's capabilities | Planned | Platform Team | [Documentation](../interfaces/whatsapp-service.md) | Not Started | ❌ | Low | P1 |
+| Mission Control | Web dashboard for the Alfred platform | Active | Platform Team | [Documentation](../interfaces/mission-control.md) | Not Started | ❌ | Medium | P1 |
 
 ## Personal Agents
 
@@ -100,6 +113,30 @@ Agents are organized into the following primary categories:
 | Social Intelligence | Social media analysis and content strategy | Active | Domain Team | [Documentation](../domain/social-intelligence.md) | Completed | ✅ | High | P0 |
 
 ## Agent Capabilities Details
+
+### Alfred Slack Bot
+
+**Key Capabilities:**
+- Processing Slack slash commands (`/alfred`) with various subcommands
+- Handling direct messages (DMs) to the bot user
+- Supporting conversation threading for organized discussions
+- Creating and managing tasks via the A2A protocol
+- Providing rich message formatting using Slack blocks
+- Offering a REST API for external interface integration
+- Connecting to Social Intelligence for trend analysis
+
+**Supported Intents:**
+- GENERAL_ASSISTANCE
+- PING
+- TREND_ANALYSIS
+- TASK_STATUS
+- TASK_CANCEL
+- CONVERSATION
+
+**Workflow Integration:**
+- Integrates with Social Intelligence for trend analysis
+- Coordinates with all agent services via A2A protocol
+- Connects with Streamlit Chat UI through API endpoints
 
 ### Financial-Tax Agent
 
@@ -165,16 +202,27 @@ Some agents serve multiple user tiers or business functions. The table below sho
 | Financial-Tax | Business | SaaS | P0 |
 | Legal-Compliance | Business | SaaS | P0 |
 | Social Intelligence | Domain | Business, SaaS | P0 |
+| Alfred Slack Bot | Interface | Core | P0 |
 
 ## Documentation Status
 
 | Agent | Documentation Status | Last Updated | Migration Status | Doc Completeness | Priority |
 |-------|---------------------|--------------|------------------|------------------|----------|
-| Social Intelligence | Complete | 2024-05-10 | Completed | High | P0 |
-| Financial-Tax | Complete | 2024-05-10 | In Progress | High | P0 |
-| Legal-Compliance | In Progress | 2024-05-10 | In Progress | Medium | P0 |
+| Social Intelligence | Complete | 2025-05-10 | Completed | High | P0 |
+| Alfred Slack Bot | Complete | 2025-05-12 | Completed | High | P0 |
+| Financial-Tax | Complete | 2025-05-10 | In Progress | High | P0 |
+| Legal-Compliance | In Progress | 2025-05-10 | In Progress | Medium | P0 |
 | Alfred-bot | Planned | - | In Progress | Medium | P1 |
 | Other Agents | Planned | - | Not Started | Low | P2/P3 |
+
+## Recent Updates
+
+| Date | Agent | Update Type | Description |
+|------|-------|-------------|-------------|
+| 2025-05-12 | Alfred Slack Bot | New Documentation | Added comprehensive documentation for the enhanced Slack Bot |
+| 2025-05-12 | Agent Catalog | Update | Added Interface Agents category and Alfred Slack Bot details |
+| 2025-05-10 | Social Intelligence | Enhancement | Updated documentation with latest capabilities |
+| 2025-05-10 | Financial-Tax | Update | Updated documentation for better compliance with standards |
 
 ## Related Resources
 
@@ -184,3 +232,6 @@ Some agents serve multiple user tiers or business functions. The table below sho
 - [Agent Deployment Guide](../../operations/deployment.md)
 - [Documentation Migration Plan](../../migration-plan.md)
 - [Documentation Standards](../../governance/standards/documentation-standards.md)
+- [Slack Conversation Workflow](../../workflows/interfaces/slack-conversation-workflow.md)
+- [Chat UI Implementation](../../interfaces/chat-ui-implementation.md)
+- [ngrok Configuration Guide](../../integrations/ngrok-configuration.md)

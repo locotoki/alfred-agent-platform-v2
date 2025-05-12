@@ -1,0 +1,3 @@
+tell me a joke
+tell me another joke
+exit

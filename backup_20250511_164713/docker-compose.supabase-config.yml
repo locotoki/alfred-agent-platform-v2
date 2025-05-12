@@ -1,0 +1,12 @@
+version: '3.8'
+
+services:
+  # This defines a configuration service to be used with docker-compose.combined-fixed.yml
+  # Usage: docker-compose -f docker-compose.combined-fixed.yml -f docker-compose.supabase-config.yml up -d
+  
+  supabase-rest:
+    volumes:
+      - ./postgrest.conf:/etc/postgrest.conf
+
+  # To apply this configuration, the postgrest.conf file should exist in the project root
+  # and contain the simplified configuration for disabling authentication

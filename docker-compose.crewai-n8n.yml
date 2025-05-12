@@ -1,0 +1,106 @@
+# CrewAI and n8n integration services for Alfred Agent Platform
+# Use this file with docker-compose -f docker-compose.yml -f docker-compose.crewai-n8n.yml up
+
+services:
+  #############################################################################
+  # CREWAI SERVICE
+  #############################################################################
+  
+  crewai-service:
+    build:
+      context: ./services/crewai-service
+      dockerfile: Dockerfile
+    image: crewai-service:latest
+    container_name: crewai-service
+    ports:
+      - "9004:9004"  # API port
+      - "9005:9005"  # Metrics port
+    environment:
+      - CREWAI_PORT=9004
+      - CREWAI_METRICS_PORT=9005
+      - CREWAI_LOG_LEVEL=INFO
+      - CREWAI_OPENAI_API_KEY=${ALFRED_OPENAI_API_KEY}
+      - CREWAI_ANTHROPIC_API_KEY=${ALFRED_ANTHROPIC_API_KEY}
+      - ALFRED_PROJECT_ID=${ALFRED_PROJECT_ID:-alfred-agent-platform}
+      - ALFRED_PUBSUB_EMULATOR_HOST=pubsub-emulator:8085
+      - ALFRED_SUPABASE_URL=http://db-api:3000
+      - ALFRED_SUPABASE_KEY=${SERVICE_ROLE_KEY:-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoic2VydmljZV9yb2xlIiwiZXhwIjoxNzQ5NTM2MTMwfQ.EDf3DT0Zl6qQbrLIQLwAXRWAN5kaJ5mvlAh1jm0CY-o}
+      - ALFRED_RAG_URL=http://agent-rag:8501
+      - ALFRED_RAG_API_KEY=crew-key
+      - ALFRED_DATABASE_URL=${ALFRED_DATABASE_URL:-postgresql://${DB_USER:-postgres}:${DB_PASSWORD:-your-super-secret-password}@db-postgres:5432/${DB_NAME:-postgres}}
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9004/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    depends_on:
+      pubsub-emulator:
+        condition: service_started
+      agent-rag:
+        condition: service_started
+      db-postgres:
+        condition: service_healthy
+    restart: unless-stopped
+    volumes:
+      - ./services/crewai-service:/app  # For development hot-reloading
+    networks:
+      - alfred-network
+
+  #############################################################################
+  # N8N WORKFLOW AUTOMATION
+  #############################################################################
+  
+  workflow-n8n:
+    image: n8nio/n8n:latest
+    container_name: workflow-n8n
+    restart: unless-stopped
+    ports:
+      - "5500:5678"  # Web UI port
+      - "5679:5679"  # Metrics port (optional)
+    environment:
+      - N8N_BASIC_AUTH_ACTIVE=true
+      - N8N_BASIC_AUTH_USER=${N8N_USER:-admin}
+      - N8N_BASIC_AUTH_PASSWORD=${N8N_PASSWORD:-alfred123}
+      - N8N_HOST=${N8N_HOST:-localhost}
+      - N8N_PORT=5678
+      - N8N_PROTOCOL=${N8N_PROTOCOL:-http}
+      - N8N_LOG_LEVEL=${N8N_LOG_LEVEL:-info}
+      - GENERIC_TIMEZONE=${TIMEZONE:-UTC}
+      - DB_TYPE=postgresdb
+      - DB_POSTGRESDB_HOST=db-postgres
+      - DB_POSTGRESDB_PORT=5432
+      - DB_POSTGRESDB_DATABASE=${DB_NAME:-postgres}
+      - DB_POSTGRESDB_USER=${DB_USER:-postgres}
+      - DB_POSTGRESDB_PASSWORD=${DB_PASSWORD:-your-super-secret-password}
+      - N8N_METRICS=true
+      - N8N_METRICS_PORT=5679
+      # Integration with Alfred services
+      - ALFRED_CREWAI_URL=http://crewai-service:9004
+      - ALFRED_RAG_URL=http://agent-rag:8501
+      - ALFRED_RAG_API_KEY=n8n-key
+      - ALFRED_CORE_URL=http://agent-core:8011
+    volumes:
+      - n8n-data:/home/node/.n8n
+      - ./workflows/n8n:/home/node/workflows
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5678/healthz"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    depends_on:
+      db-postgres:
+        condition: service_healthy
+    networks:
+      - alfred-network
+
+# Volumes
+volumes:
+  n8n-data:
+    name: n8n-data
+
+# Networks
+networks:
+  alfred-network:
+    external: true

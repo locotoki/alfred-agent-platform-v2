@@ -1,6 +1,6 @@
 # Alfred Agent Platform v2 - Service Catalog
 
-> Last Updated: May 10, 2025
+> Last Updated: May 11, 2025
 
 This document provides a comprehensive catalog of all services in the Alfred Agent Platform v2, including their current status, documentation, and migration information.
 
@@ -8,6 +8,7 @@ This document provides a comprehensive catalog of all services in the Alfred Age
 
 - [Overview](#overview)
 - [Agent Services](#agent-services)
+- [Orchestration Services](#orchestration-services)
 - [Infrastructure Services](#infrastructure-services)
 - [UI Services](#ui-services)
 - [Messaging Services](#messaging-services)
@@ -27,6 +28,7 @@ The Alfred Agent Platform v2 consists of multiple interconnected services that w
 | **Social Intelligence** | Performs social media analysis and trend detection | 9000 | ✅ Active | Comprehensive | Complete | Low |
 | **Legal Compliance** | Handles legal and regulatory compliance checks | 9002 | ✅ Active | Comprehensive | Complete | Low |
 | **Financial-Tax** | Provides financial analysis and tax compliance verification | 9003 | ✅ Active | Partial | In Progress | High |
+| **CrewAI Service** | Multi-agent orchestration using specialized crews | 9004, 9005 | ✅ Active | Comprehensive | Complete | Medium |
 
 ### Alfred Bot Service
 
@@ -101,6 +103,51 @@ The Alfred Agent Platform v2 consists of multiple interconnected services that w
 - Pub/Sub Emulator (Messaging)
 - Supabase DB (State storage)
 - Qdrant (Vector database)
+
+### CrewAI Service
+
+**Description:** Multi-agent orchestration service that creates specialized "crews" of agents working together to accomplish complex tasks.
+
+**Endpoints:**
+- `/health` - Service health check on port 9004
+- `/crews` - List available crew types
+- `/crews/{crew_type}/tasks` - Create a task for a specific crew
+- `/tasks/{task_id}` - Check status of a specific task
+- `/metrics` - Prometheus metrics information
+- `/metrics/summary` - Summary of metrics for dashboard reporting
+
+**Documentation:**
+- `/docs/services/crewai-service.md` - Service documentation
+- `/docs/workflows/crewai-workflows.md` - Crew workflow documentation
+
+**Dependencies:**
+- Pub/Sub Emulator (Messaging)
+- RAG Gateway (Knowledge retrieval)
+- OpenAI API or Anthropic API (LLM access)
+
+## Orchestration Services
+
+| Service | Description | Port | Status | Documentation Status | Migration Status | Priority |
+|---------|-------------|------|--------|---------------------|-----------------|----------|
+| **n8n Workflow** | Visual workflow automation platform | 5500, 5679 | ✅ Active | Comprehensive | Complete | Medium |
+
+### n8n Workflow Service
+
+**Description:** Visual workflow automation service that connects different platform components and external services through configurable workflows.
+
+**Endpoints:**
+- `/healthz` - Health check on port 5500
+- Web UI on port 5500
+- Metrics endpoint on port 5679
+
+**Documentation:**
+- `/docs/services/n8n-service.md` - Service documentation
+- `/docs/workflows/n8n-workflows.md` - Workflow documentation
+
+**Dependencies:**
+- CrewAI Service (Multi-agent orchestration)
+- Postgres DB (Workflow storage)
+- Agent Services (Task execution)
 
 ## Infrastructure Services
 
@@ -303,25 +350,32 @@ The Alfred Agent Platform v2 consists of multiple interconnected services that w
 The following diagram illustrates the main service dependencies in the platform:
 
 ```
-+--------------+    +----------------------+
-| Mission      |<-->| Supabase            |
-| Control UI   |    | (DB, Auth, REST)    |
-+--------------+    +----------------------+
-        ^                     ^
-        |                     |
-        v                     v
-+------------------+    +---------------+
-| Agent Services   |<-->| Pub/Sub      |
-| (Alfred, Social, |    | Emulator     |
-| Legal, Financial)|    +---------------+
-+------------------+            ^
-        ^                       |
-        |                       v
-        v                +---------------+
-+------------------+    | Observability |
-| Qdrant          |    | (Prometheus,   |
++--------------+    +----------------------+    +---------------+
+| Mission      |<-->| Supabase            |<-->| n8n Workflow  |
+| Control UI   |    | (DB, Auth, REST)    |    | Automation    |
++--------------+    +----------------------+    +---------------+
+        ^                     ^                        ^
+        |                     |                        |
+        v                     v                        v
++------------------+    +---------------+    +------------------+
+| Agent Services   |<-->| Pub/Sub      |<-->| CrewAI Service   |
+| (Alfred, Social, |    | Emulator     |    | Multi-agent      |
+| Legal, Financial)|    +---------------+    | Orchestration   |
++------------------+            ^            +------------------+
+        ^                       |                    ^
+        |                       v                    |
+        v                +---------------+           |
++------------------+    | Observability |           |
+| Qdrant          |    | (Prometheus,   |<----------+
 | Vector Database |    | Grafana)       |
 +------------------+    +---------------+
+        ^
+        |
+        v
++------------------+
+| RAG Gateway      |
+| Knowledge Access |
++------------------+
 ```
 
 ## Documentation Migration Status
@@ -336,6 +390,13 @@ The following tables provide the status of documentation migration and consolida
 | Social Intelligence | `/docs/agents/social-intelligence-agent.md`<br>`/docs/workflows/niche-scout-implementation-guide.md` | Complete | Low | `/docs/staging-area/Social_Intel/*.md` |
 | Legal Compliance | `/docs/agents/legal-compliance-agent.md` | Complete | Low | `/docs/staging-area/AI_Agent_Platform_v2/AI Agent Platform v2- Security Plan*.md` |
 | Financial-Tax | `/docs/agents/financial-tax-agent.md`<br>`/docs/agents/financial-tax-deployment-checklist.md` | In Progress | High | N/A |
+| CrewAI Service | `/docs/services/crewai-service.md`<br>`/docs/workflows/crewai-workflows.md` | Complete | Medium | `/docs/staging-area/CrewAI_N8N.md`<br>`/docs/staging-area/CrewAI_N8N_Integration_Plan.md` |
+
+### Orchestration Services Documentation
+
+| Service | Documentation Location | Status | Priority | Related Documents |
+|---------|------------------------|--------|----------|-------------------|
+| n8n Workflow | `/docs/services/n8n-service.md`<br>`/docs/workflows/n8n-workflows.md` | Complete | Medium | `/docs/staging-area/CrewAI_N8N.md`<br>`/docs/staging-area/CrewAI_N8N_Integration_Plan.md` |
 
 ### Infrastructure Services Documentation
 

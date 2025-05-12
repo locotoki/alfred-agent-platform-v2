@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  atlas-rag-gateway:
+    image: atlas-rag-gateway:latest
+    environment:
+      QDRANT_URL: http://qdrant:6333
+      REDIS_URL: redis://redis:6379/0
+      DEFAULT_COLLECTION: general-knowledge
+      ENABLE_COLLECTIONS: "true"
+      AUTH_ENABLED: "true"
+      API_KEYS: "atlas:atlas-key,alfred:alfred-key,financial:financial-key,legal:legal-key,social:social-key"
+      RATE_LIMIT_REQUESTS: "100"
+      RATE_LIMIT_WINDOW_SECONDS: "60"
+      LOG_LEVEL: "INFO"
+      LOG_AGENT_ACCESS: "true"
+    ports: 
+      - "8501:8501"
+    restart: unless-stopped
+    networks:
+      - alfred-network
+
+  atlas-worker:
+    image: atlas-worker:latest
+    environment:
+      SUPABASE_URL: http://supabase-rest:3000
+      SUPABASE_SERVICE_ROLE_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoic2VydmljZV9yb2xlIiwiZXhwIjoxNzQ5NTM2MTMwfQ.EDf3DT0Zl6qQbrLIQLwAXRWAN5kaJ5mvlAh1jm0CY-o
+      PUBSUB_EMULATOR_HOST: pubsub-emulator:8085
+      PUBSUB_PROJECT_ID: alfred-agent-platform
+      RAG_URL: http://atlas-rag-gateway:8501
+      RAG_API_KEY: atlas-key
+      RAG_COLLECTION: architecture-knowledge
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    ports: 
+      - "8000:8000"
+    restart: unless-stopped
+    networks:
+      - alfred-network
+
+networks:
+  alfred-network:
+    external: true

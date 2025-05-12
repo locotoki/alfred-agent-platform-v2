@@ -1,0 +1,52 @@
+# Alfred Agent Platform v2 - Simple Test Configuration
+
+services:
+  redis:
+    image: redis:7-alpine
+    container_name: redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+    restart: unless-stopped
+    networks:
+      - alfred-network
+
+  db-postgres:
+    image: postgres:15-alpine
+    container_name: db-postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: your-super-secret-password
+      POSTGRES_DB: postgres
+    volumes:
+      - db-postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres", "-h", "localhost"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+    networks:
+      - alfred-network
+
+# Volumes
+volumes:
+  redis-data:
+    name: redis-data
+  db-postgres-data:
+    name: db-postgres-data
+
+# Networks
+networks:
+  alfred-network:
+    name: alfred-network
+    driver: bridge

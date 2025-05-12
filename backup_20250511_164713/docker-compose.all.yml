@@ -1,0 +1,22 @@
+version: "3.9"
+
+# This is a combined configuration file that includes all services
+# for the Alfred Agent Platform v2
+
+# Import all compose files
+include:
+  - docker-compose.yml            # Base services (supabase, redis, etc.)
+  - docker-compose.atlas.yml      # Atlas services (rag-gateway, worker)
+  - docker-compose.override.mission-control.yml  # Mission control UI
+  - docker-compose.monitoring-fixed.yml  # Prometheus and Grafana
+  - docker-compose.override.agent.yml    # Agent orchestrator
+
+# Additional services or overrides can be added here if needed
+services:
+  # This section can be empty - it's just required for the file to be valid
+  # All services are imported from the included files
+  
+networks:
+  alfred-network:
+    name: alfred-network
+    external: true

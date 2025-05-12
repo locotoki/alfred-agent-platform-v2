@@ -45,7 +45,7 @@ At minimum, workflow documentation should include:
 
 ### Using AI to Create Workflow Documentation
 
-You can use AI tools to help create workflow documentation. See the [AI Tool Guide](../governance/ai-tools/README.md) for specific instructions.
+You can use AI tools to help create workflow documentation. See the [AI Tool Guide](../governance/ai-tools/readme.md) for specific instructions.
 
 ## Current Workflows
 
@@ -77,6 +77,6 @@ For information on how to develop new workflows, see the [Workflow Development G
 
 ## Related Documentation
 
-- [Agent Documentation](../agents/README.md)
-- [Project Documentation](../projects/README.md)
-- [Architecture Documentation](../architecture/README.md)
+- [Agent Documentation](../agents/readme.md)
+- [Project Documentation](../projects/readme.md)
+- [Architecture Documentation](../architecture/readme.md)

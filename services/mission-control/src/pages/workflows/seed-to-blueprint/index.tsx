@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import MainLayout from '../../../components/layout/MainLayout';
+import LoadingOverlay from '../../../components/Loading/LoadingOverlay';
 import { runSeedToBlueprint } from '../../../services/youtube-workflows';
 
 export default function SeedToBlueprint() {
@@ -13,10 +14,37 @@ export default function SeedToBlueprint() {
   const [showScheduleModal, setShowScheduleModal] = useState(false);
   const [frequency, setFrequency] = useState('once');
   const [runDate, setRunDate] = useState('');
+  const [resultId, setResultId] = useState<string | null>(null);
+  const [loadingMessage, setLoadingMessage] = useState("Running Seed-to-Blueprint workflow...");
 
   const handleInputChange = (setter) => (e) => {
     setter(e.target.value);
   };
+
+  // Add useEffect for navigation
+  useEffect(() => {
+    if (resultId) {
+      const timer = setTimeout(() => {
+        setLoadingMessage("Blueprint generated! Navigating to results...");
+
+        // Add a small delay to ensure the loading message update is visible
+        setTimeout(() => {
+          console.log('Navigating to result ID:', resultId);
+
+          // Try direct window location navigation instead of router
+          window.location.href = `/workflows/seed-to-blueprint/results/${resultId}`;
+
+          // Fallback in case the above doesn't work
+          setTimeout(() => {
+            // Force a hard navigation if router is problematic
+            window.location.replace(`/workflows/seed-to-blueprint/results/${resultId}`);
+          }, 1000);
+        }, 1500);
+      }, 1000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [resultId]);
 
   const handleRunWorkflow = async () => {
     if (!videoUrl && !niche) {
@@ -25,20 +53,33 @@ export default function SeedToBlueprint() {
     }
 
     setIsLoading(true);
+    setLoadingMessage("Running Seed-to-Blueprint workflow...");
+
     try {
+      console.log('CLIENT: Starting API call to seed-to-blueprint');
+
       // Call workflow service to run blueprint generation
       const result = await runSeedToBlueprint({
         video_url: videoUrl,
         niche: niche,
         analysisDepth: analysisDepth
       });
-      
-      // Navigate to results page with the result ID
-      if (result._id) {
-        router.push(`/workflows/seed-to-blueprint/results/${result._id}`);
+
+      console.log('Received result:', result);
+
+      // Set the result ID in state to trigger navigation
+      if (result && result._id) {
+        console.log('Workflow completed successfully, got result ID:', result._id);
+        setResultId(result._id);
+        setLoadingMessage("Blueprint generated! Navigating to results...");
+      } else {
+        console.error('Workflow completed but no result ID was returned');
+        alert('An error occurred while running the workflow.');
+        setIsLoading(false);
       }
     } catch (error) {
-      console.error('Error running workflow:', error);
+      console.error('Error running Seed-to-Blueprint workflow:', error);
+      alert('An error occurred while running the workflow.');
       setIsLoading(false);
     }
   };
@@ -193,7 +234,7 @@ export default function SeedToBlueprint() {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-md w-full">
             <h2 className="text-xl font-bold mb-4">Schedule Workflow</h2>
-            
+
             <div className="mb-4">
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Frequency
@@ -209,7 +250,7 @@ export default function SeedToBlueprint() {
                 <option value="once">Once</option>
               </select>
             </div>
-            
+
             {frequency === 'once' && (
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
@@ -223,7 +264,7 @@ export default function SeedToBlueprint() {
                 />
               </div>
             )}
-            
+
             <div className="flex justify-end space-x-2">
               <button
                 onClick={() => setShowScheduleModal(false)}
@@ -241,6 +282,14 @@ export default function SeedToBlueprint() {
           </div>
         </div>
       )}
+
+      {/* Loading Overlay */}
+      <LoadingOverlay
+        isVisible={isLoading}
+        message={loadingMessage}
+        resultId={resultId}
+        resultType="seed-to-blueprint"
+      />
     </MainLayout>
   );
 }

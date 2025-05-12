@@ -1,0 +1,351 @@
+# Alfred Agent Platform v2 - Production Environment Overrides
+# Use with docker-compose.yml: docker-compose -f docker-compose.yml -f docker-compose/docker-compose.prod.yml up
+
+services:
+  #############################################################################
+  # GLOBAL PRODUCTION SETTINGS
+  #############################################################################
+  
+  # Apply these settings to all services that don't have specific overrides
+  x-service-defaults: &service-defaults
+    restart: always
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+  
+  #############################################################################
+  # CORE INFRASTRUCTURE SERVICES - PROD OVERRIDES
+  #############################################################################
+  
+  redis:
+    <<: *service-defaults
+    # More secure configuration for production
+    command: ["redis-server", "--loglevel", "notice", "--requirepass", "${REDIS_PASSWORD:-change_me_in_production}"]
+    # Improved security settings
+    volumes:
+      - redis-data:/data
+      - ./config/redis/redis.prod.conf:/usr/local/etc/redis/redis.conf:ro
+    # Limit external access
+    ports:
+      - "127.0.0.1:6379:6379"  # Only accessible from localhost
+    # Stronger resource limits for production
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+          cpus: '1.0'
+        reservations:
+          memory: 500M
+          cpus: '0.5'
+
+  vector-db:
+    <<: *service-defaults
+    # Improved security and production settings
+    environment:
+      QDRANT_API_KEY: "${QDRANT_API_KEY:-change_me_in_production}"
+      RUST_LOG: warn  # Less verbose logging in production
+    # Stronger resource limits for production
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+          cpus: '2.0'
+        reservations:
+          memory: 1G
+          cpus: '1.0'
+    # Limit external access
+    ports:
+      - "127.0.0.1:6333:6333"  # Only accessible from localhost
+
+  llm-service:
+    <<: *service-defaults
+    # Production-specific settings
+    environment:
+      OLLAMA_HOST: 0.0.0.0
+      OLLAMA_API_KEY: "${OLLAMA_API_KEY:-change_me_in_production}"
+    # Stronger GPU/Resource allocation for production
+    deploy:
+      resources:
+        limits:
+          memory: 16G
+        reservations:
+          memory: 8G
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    # Limit external access
+    ports:
+      - "127.0.0.1:11434:11434"  # Only accessible from localhost
+
+  #############################################################################
+  # DATABASE SERVICES - PROD OVERRIDES
+  #############################################################################
+
+  db-postgres:
+    <<: *service-defaults
+    # Production-optimized command flags
+    command:
+      - postgres
+      - -c
+      - wal_level=logical
+      - -c
+      - max_connections=200
+      - -c
+      - work_mem=8MB
+      - -c
+      - shared_buffers=256MB
+      - -c
+      - maintenance_work_mem=64MB
+      - -c
+      - effective_cache_size=1GB
+      - -c
+      - listen_addresses=*
+    # Stronger resource limits for production
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+          cpus: '2.0'
+        reservations:
+          memory: 1G
+          cpus: '1.0'
+    # Limit external access
+    ports:
+      - "127.0.0.1:5432:5432"  # Only accessible from localhost
+
+  db-auth:
+    <<: *service-defaults
+    # Production settings
+    environment:
+      GOTRUE_EXTERNAL_EMAIL_ENABLED: "true"
+      GOTRUE_MAILER_AUTOCONFIRM: "false"  # Require email verification in production
+      GOTRUE_DISABLE_SIGNUP: "${DISABLE_SIGNUP:-false}"
+      GOTRUE_SMTP_ADMIN_EMAIL: "${SMTP_ADMIN_EMAIL:-admin@example.com}"
+      GOTRUE_SMTP_HOST: "${SMTP_HOST}"
+      GOTRUE_SMTP_PORT: "${SMTP_PORT}"
+      GOTRUE_SMTP_USER: "${SMTP_USER}"
+      GOTRUE_SMTP_PASS: "${SMTP_PASS}"
+      GOTRUE_SMTP_SENDER_NAME: "Alfred Auth"
+    # Stronger resource limits for production
+    deploy:
+      resources:
+        limits:
+          memory: 500M
+          cpus: '0.5'
+        reservations:
+          memory: 250M
+          cpus: '0.25'
+
+  #############################################################################
+  # AGENT SERVICES - PROD OVERRIDES
+  #############################################################################
+
+  agent-core:
+    <<: *service-defaults
+    # Production build
+    build:
+      context: ./services/alfred-core
+      dockerfile: Dockerfile
+    # Environment variables for production
+    environment:
+      - ALFRED_ENVIRONMENT=production
+      - ALFRED_DEBUG=false
+      - ALFRED_LOG_LEVEL=INFO
+      - ALFRED_RATE_LIMIT=true
+    # Stronger resource limits for production
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+          cpus: '1.0'
+        reservations:
+          memory: 500M
+          cpus: '0.5'
+
+  agent-rag:
+    <<: *service-defaults
+    # Production build
+    build:
+      context: ./services/rag-service
+      dockerfile: Dockerfile
+    # Environment variables for production
+    environment:
+      - ALFRED_LOG_LEVEL=INFO
+      - ALFRED_DEBUG=false
+      - ALFRED_RATE_LIMIT_REQUESTS=50
+      - ALFRED_RATE_LIMIT_WINDOW_SECONDS=60
+    # Stronger resource limits for production
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+          cpus: '1.0'
+        reservations:
+          memory: 500M
+          cpus: '0.5'
+
+  agent-atlas:
+    <<: *service-defaults
+    # Environment variables for production
+    environment:
+      - ALFRED_LOG_LEVEL=INFO
+      - ALFRED_DEBUG=false
+    # Stronger resource limits for production
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+          cpus: '1.0'
+        reservations:
+          memory: 500M
+          cpus: '0.5'
+
+  agent-social:
+    <<: *service-defaults
+    # Environment variables for production
+    environment:
+      - ALFRED_LOG_LEVEL=INFO
+      - ALFRED_DEBUG=false
+    # Stronger resource limits for production
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+          cpus: '1.0'
+        reservations:
+          memory: 500M
+          cpus: '0.5'
+
+  agent-financial:
+    <<: *service-defaults
+    # Environment variables for production
+    environment:
+      - ALFRED_LOG_LEVEL=INFO
+      - ALFRED_DEBUG=false
+    # Stronger resource limits for production
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+          cpus: '1.0'
+        reservations:
+          memory: 500M
+          cpus: '0.5'
+
+  agent-legal:
+    <<: *service-defaults
+    # Environment variables for production
+    environment:
+      - ALFRED_LOG_LEVEL=INFO
+      - ALFRED_DEBUG=false
+    # Stronger resource limits for production
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+          cpus: '1.0'
+        reservations:
+          memory: 500M
+          cpus: '0.5'
+
+  #############################################################################
+  # UI SERVICES - PROD OVERRIDES
+  #############################################################################
+
+  ui-chat:
+    <<: *service-defaults
+    # Production build
+    build:
+      context: ./services/streamlit-chat
+      dockerfile: Dockerfile
+    # Environment variables for production
+    environment:
+      - ALFRED_DEBUG=false
+    # Stronger resource limits for production
+    deploy:
+      resources:
+        limits:
+          memory: 500M
+          cpus: '0.5'
+        reservations:
+          memory: 250M
+          cpus: '0.25'
+
+  ui-admin:
+    <<: *service-defaults
+    # Production build
+    build:
+      context: ./services/mission-control
+      dockerfile: Dockerfile
+    # Environment variables for production
+    environment:
+      - NODE_ENV=production
+    # Stronger resource limits for production
+    deploy:
+      resources:
+        limits:
+          memory: 500M
+          cpus: '0.5'
+        reservations:
+          memory: 250M
+          cpus: '0.25'
+
+  auth-ui:
+    <<: *service-defaults
+    # Production resource limits
+    deploy:
+      resources:
+        limits:
+          memory: 250M
+          cpus: '0.25'
+        reservations:
+          memory: 100M
+          cpus: '0.1'
+
+  #############################################################################
+  # MONITORING SERVICES - PROD OVERRIDES
+  #############################################################################
+
+  monitoring-metrics:
+    <<: *service-defaults
+    # Production volumes
+    volumes:
+      - ./monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - monitoring-metrics-data:/prometheus
+    # Production resource limits
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+          cpus: '0.5'
+        reservations:
+          memory: 500M
+          cpus: '0.25'
+
+  monitoring-dashboard:
+    <<: *service-defaults
+    # Production-specific environment variables
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: "${MONITORING_ADMIN_PASSWORD:-change_me_in_production}"
+      GF_USERS_ALLOW_SIGN_UP: "false"  # Disable signup in production
+      GF_AUTH_ANONYMOUS_ENABLED: "false"  # Disable anonymous access in production
+      GF_SECURITY_DISABLE_GRAVATAR: "true"
+      GF_SECURITY_COOKIE_SECURE: "true"
+    # Production resource limits
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+          cpus: '0.5'
+        reservations:
+          memory: 500M
+          cpus: '0.25'
+
+  # In production, use a real mail server instead of MailHog
+  mail-server:
+    image: tianon/true  # Dummy service
+    restart: "no"
+    command: "echo 'In production, configure real mail server settings in db-auth service'"

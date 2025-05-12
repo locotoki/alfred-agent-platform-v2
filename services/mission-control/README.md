@@ -1,14 +1,14 @@
-# Mission Control UI
+# Alfred Agent Platform - Mission Control UI
 
 Mission Control is the centralized dashboard for monitoring and managing the Alfred Agent Platform. It provides a business-oriented view of the platform's metrics, agent status, and task management capabilities.
 
 ## Features
 
-- **Dashboard**: Real-time overview of platform health, agent status, and recent activity
-- **Agent Management**: Monitor and control individual agents in the platform
-- **Task Management**: Create, monitor, and manage tasks across agents
-- **Workflow Hub**: Run and schedule specialized workflows like YouTube research tools
-- **Reporting**: View and export reports on platform performance
+- 📊 **Dashboard**: Real-time overview of platform health, agent status, and recent activity
+- 🤖 **Agent Management**: Monitor and control individual agents in the platform
+- 📝 **Task Management**: Create, monitor, and manage tasks across agents
+- 🔄 **Workflow Hub**: Run and schedule specialized workflows like YouTube research tools
+- 📈 **Reporting**: View and export reports on platform performance
 
 ## YouTube Research Workflows
 
@@ -41,45 +41,54 @@ The implementation includes proper error handling and fallback mock data for dev
 
 ## Technology Stack
 
-- **Frontend**: Next.js with React
+- **Frontend**: Next.js 14.x with React 18
+- **Language**: TypeScript
 - **Styling**: TailwindCSS
+- **Data Fetching**: React Query
+- **Animations**: Framer Motion
+- **Charts**: Chart.js with React-Chartjs-2
 - **Authentication**: Supabase Auth
-- **Real-time Updates**: Supabase Realtime
-- **State Management**: React Query and React Context
-- **Data Visualization**: Chart.js
 
 ## Getting Started
 
 ### Prerequisites
 
-- Node.js 16+
+- Node.js 18+
 - npm or yarn
+- Docker (for running with backend services)
 
-### Installation
+### Local Development
 
-1. Clone the repository
-2. Install dependencies:
+1. Install dependencies:
+   ```bash
+   npm install
+   ```
 
-```bash
-cd services/mission-control
-npm install
-```
+2. Create a `.env.local` file with required environment variables:
+   ```
+   NEXT_PUBLIC_SOCIAL_INTEL_URL=http://localhost:9000
+   NEXT_PUBLIC_SUPABASE_URL=your-supabase-url
+   NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
+   ```
 
-3. Set up environment variables:
+3. Start the development server:
+   ```bash
+   npm run dev
+   ```
 
-```
-NEXT_PUBLIC_SUPABASE_URL=your-supabase-url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
-NEXT_PUBLIC_API_URL=your-api-url
-```
+4. Access the UI at http://localhost:3007
 
-4. Run the development server:
+### Docker Development
 
-```bash
-npm run dev
-```
+1. Build the Docker image:
+   ```bash
+   docker build -t alfred-mission-control -f Dockerfile.dev .
+   ```
 
-5. Open [http://localhost:3000](http://localhost:3000) in your browser
+2. Run the container:
+   ```bash
+   docker run -p 3007:3000 -e NEXT_PUBLIC_SOCIAL_INTEL_URL=http://social-intel:9000 alfred-mission-control
+   ```
 
 ## Project Structure
 
@@ -97,10 +106,28 @@ src/
   lib/            # Utility functions
   services/       # API service integrations
   pages/          # Next.js pages
+    api/          # API routes for proxying to backend services
+    workflows/    # Workflow-specific pages
   styles/         # Global styles
   types/          # TypeScript type definitions
   contexts/       # React context providers
 ```
+
+## Documentation
+
+- [Component Structure](./COMPONENT_STRUCTURE.md) - Detailed overview of UI components
+- [API Integration](./API_INTEGRATION.md) - Guide to backend service integration
+- [Workflow Guide](./WORKFLOW_GUIDE.md) - Patterns for workflow implementation
+- [Design Brief](./lovable-dev-prompt.md) - Design requirements for lovable.dev
+
+## Design Goals
+
+The UI is designed with the following principles:
+
+1. **Simplicity First**: Focus on essential functionality
+2. **Task-Oriented**: Organize UI around user tasks, not system architecture
+3. **Feedback & Transparency**: Clear status indicators and meaningful error messages
+4. **Progressive Disclosure**: Show only what's needed at each step
 
 ## Deployment
 
@@ -121,11 +148,11 @@ services:
   mission-control:
     image: mission-control
     ports:
-      - "3000:3000"
+      - "3007:3000"
     environment:
       - NEXT_PUBLIC_SUPABASE_URL=your-supabase-url
       - NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
-      - NEXT_PUBLIC_API_URL=your-api-url
+      - NEXT_PUBLIC_SOCIAL_INTEL_URL=http://social-intel:9000
 ```
 
 ## Authentication
@@ -138,4 +165,10 @@ The Mission Control UI uses Supabase Auth for authentication and authorization. 
 
 ## Contributing
 
-See the [CONTRIBUTING.md](../../CONTRIBUTING.md) file for details on how to contribute to this project.
+1. Fork the repository
+2. Create a feature branch
+3. Submit a pull request
+
+## License
+
+MIT License

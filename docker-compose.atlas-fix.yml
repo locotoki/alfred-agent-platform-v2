@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  # This defines a configuration for Atlas to fix the health endpoint
+  # Usage: docker-compose -f docker-compose.combined-fixed.yml -f docker-compose.atlas-fix.yml up -d
+  
+  atlas:
+    volumes:
+      - ./patches/fixed_metrics.py:/app/atlas/metrics.py
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/healthz"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s

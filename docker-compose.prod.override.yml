@@ -1,0 +1,363 @@
+# Alfred Agent Platform v2 - Production Environment Overrides
+# This file contains production-specific settings that override the unified configuration
+
+services:
+  #############################################################################
+  # CORE INFRASTRUCTURE SERVICES - PRODUCTION OVERRIDES
+  #############################################################################
+  
+  redis:
+    # More conservative resource settings for stability
+    command: ["redis-server", "--maxmemory", "1gb", "--maxmemory-policy", "allkeys-lru"]
+    # Increased healthcheck intervals to reduce load
+    healthcheck:
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 20s
+    # Resource constraints
+    deploy:
+      resources:
+        limits:
+          memory: 1.5GB
+        reservations:
+          memory: 1GB
+
+  vector-db:
+    # Production configuration for Qdrant
+    command: ["./qdrant", "--config", "config/production.yaml"]
+    # Increased healthcheck intervals to reduce load
+    healthcheck:
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 40s
+    # Resource constraints
+    deploy:
+      resources:
+        limits:
+          memory: 4GB
+        reservations:
+          memory: 2GB
+
+  llm-service:
+    # Use persistent storage for models in production
+    volumes:
+      - llm-service-data:/root/.ollama
+    # Production environment variables
+    environment:
+      OLLAMA_HOST: 0.0.0.0
+    # Increased healthcheck intervals
+    healthcheck:
+      interval: 60s
+      timeout: 20s
+      retries: 3
+      start_period: 60s
+    # Resource constraints
+    deploy:
+      resources:
+        limits:
+          memory: 8GB
+        reservations:
+          memory: 4GB
+
+  #############################################################################
+  # LLM INFRASTRUCTURE - PRODUCTION OVERRIDES
+  #############################################################################
+
+  model-registry:
+    # Production command with optimized workers
+    command: >
+      bash -c "/app/init-db.sh && gunicorn app.main:app --workers 4 --worker-class uvicorn.workers.UvicornWorker --bind 0.0.0.0:8079"
+    # Production environment
+    environment:
+      - DEBUG=false
+    # Increased healthcheck intervals
+    healthcheck:
+      interval: 60s
+      timeout: 20s
+      retries: 3
+      start_period: 30s
+    # Resource constraints
+    deploy:
+      resources:
+        limits:
+          memory: 1GB
+        reservations:
+          memory: 512MB
+
+  model-router:
+    # Production command with optimized workers
+    command: >
+      gunicorn app.main:app --workers 4 --worker-class uvicorn.workers.UvicornWorker --bind 0.0.0.0:8080
+    # Production environment
+    environment:
+      - DEBUG=false
+    # Increased healthcheck intervals
+    healthcheck:
+      interval: 60s
+      timeout: 20s
+      retries: 3
+      start_period: 30s
+    # Resource constraints
+    deploy:
+      resources:
+        limits:
+          memory: 1GB
+        reservations:
+          memory: 512MB
+
+  #############################################################################
+  # DATABASE SERVICES - PRODUCTION OVERRIDES
+  #############################################################################
+
+  db-postgres:
+    # Production-optimized PostgreSQL settings
+    command:
+      - postgres
+      - -c
+      - shared_buffers=1GB
+      - -c
+      - work_mem=32MB
+      - -c
+      - maintenance_work_mem=256MB
+      - -c
+      - wal_level=logical
+      - -c
+      - max_connections=200
+      - -c
+      - effective_cache_size=3GB
+      - -c
+      - listen_addresses=*
+    # Increased healthcheck intervals
+    healthcheck:
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+    # Resource constraints
+    deploy:
+      resources:
+        limits:
+          memory: 4GB
+        reservations:
+          memory: 2GB
+
+  db-api:
+    # Production optimization
+    environment:
+      PGRST_LOG_LEVEL: warn
+      PGRST_SERVER_TIMING: false
+      # Increased pool size for production
+      PGRST_DB_POOL: 20
+    # Resource constraints
+    deploy:
+      resources:
+        limits:
+          memory: 1GB
+        reservations:
+          memory: 512MB
+
+  #############################################################################
+  # AGENT SERVICES - PRODUCTION OVERRIDES
+  #############################################################################
+
+  agent-core:
+    # Production command with optimized workers
+    command: gunicorn app.main:app --workers 4 --worker-class uvicorn.workers.UvicornWorker --bind 0.0.0.0:8011
+    # Production environment variables
+    environment:
+      - ALFRED_ENVIRONMENT=production
+      - ALFRED_DEBUG=false
+      - ALFRED_LOG_LEVEL=INFO
+    # Resource constraints
+    deploy:
+      resources:
+        limits:
+          memory: 2GB
+        reservations:
+          memory: 1GB
+
+  agent-rag:
+    # Production command with optimized workers
+    command: gunicorn app.main:app --workers 4 --worker-class uvicorn.workers.UvicornWorker --bind 0.0.0.0:8501
+    # Production environment variables
+    environment:
+      - ALFRED_LOG_LEVEL=INFO
+      - ALFRED_DEBUG=false
+      - ALFRED_RATE_LIMIT_REQUESTS=50
+      - ALFRED_RATE_LIMIT_WINDOW_SECONDS=60
+    # Resource constraints
+    deploy:
+      resources:
+        limits:
+          memory: 2GB
+        reservations:
+          memory: 1GB
+
+  agent-atlas:
+    # Production command
+    command: python -m atlas.main
+    # Production environment variables
+    environment:
+      - ALFRED_LOG_LEVEL=INFO
+      - ALFRED_DEBUG=false
+    # Resource constraints
+    deploy:
+      resources:
+        limits:
+          memory: 2GB
+        reservations:
+          memory: 1GB
+
+  agent-social:
+    # Production command with optimized workers
+    command: gunicorn app.main:app --workers 2 --worker-class uvicorn.workers.UvicornWorker --bind 0.0.0.0:9000
+    # Production environment variables
+    environment:
+      - ALFRED_LOG_LEVEL=INFO
+      - ALFRED_DEBUG=false
+    # Resource constraints
+    deploy:
+      resources:
+        limits:
+          memory: 1.5GB
+        reservations:
+          memory: 1GB
+
+  agent-financial:
+    # Production command with optimized workers
+    command: gunicorn app.main:app --workers 2 --worker-class uvicorn.workers.UvicornWorker --bind 0.0.0.0:9003
+    # Production environment variables
+    environment:
+      - ALFRED_LOG_LEVEL=INFO
+      - ALFRED_DEBUG=false
+    # Resource constraints
+    deploy:
+      resources:
+        limits:
+          memory: 1.5GB
+        reservations:
+          memory: 1GB
+
+  agent-legal:
+    # Production command with optimized workers
+    command: gunicorn app.main:app --workers 2 --worker-class uvicorn.workers.UvicornWorker --bind 0.0.0.0:9002
+    # Production environment variables
+    environment:
+      - ALFRED_LOG_LEVEL=INFO
+      - ALFRED_DEBUG=false
+    # Resource constraints
+    deploy:
+      resources:
+        limits:
+          memory: 1.5GB
+        reservations:
+          memory: 1GB
+
+  #############################################################################
+  # UI SERVICES - PRODUCTION OVERRIDES
+  #############################################################################
+
+  ui-chat:
+    # Production command
+    command: streamlit run streamlit_chat_ui.py --server.port=8501 --server.address=0.0.0.0 --server.headless=true --server.enableCORS=true --server.enableXsrfProtection=true
+    # Production environment variables
+    environment:
+      - ALFRED_DEBUG=false
+    # Resource constraints
+    deploy:
+      resources:
+        limits:
+          memory: 1GB
+        reservations:
+          memory: 512MB
+
+  ui-admin:
+    # Production environment variables
+    environment:
+      - NODE_ENV=production
+    # Production command
+    command: node server.js
+    # Resource constraints
+    deploy:
+      resources:
+        limits:
+          memory: 1GB
+        reservations:
+          memory: 512MB
+
+  auth-ui:
+    # Production environment variables
+    environment:
+      - DEBUG=false
+    # Resource constraints
+    deploy:
+      resources:
+        limits:
+          memory: 512MB
+        reservations:
+          memory: 256MB
+
+  #############################################################################
+  # MONITORING SERVICES - PRODUCTION OVERRIDES
+  #############################################################################
+
+  monitoring-metrics:
+    # Production-optimized Prometheus
+    command: 
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.path=/prometheus
+      - --web.console.libraries=/usr/share/prometheus/console_libraries
+      - --web.console.templates=/usr/share/prometheus/consoles
+      - --storage.tsdb.retention.time=30d
+      - --web.external-url=http://metrics.alfred.local
+    # Resource constraints
+    deploy:
+      resources:
+        limits:
+          memory: 2GB
+        reservations:
+          memory: 1GB
+
+  monitoring-dashboard:
+    # Production environment variables
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: ${MONITORING_ADMIN_PASSWORD:-admin}
+      GF_USERS_ALLOW_SIGN_UP: "false"
+      GF_AUTH_ANONYMOUS_ENABLED: "false"
+      GF_DASHBOARDS_MIN_REFRESH_INTERVAL: 1m
+    # Resource constraints
+    deploy:
+      resources:
+        limits:
+          memory: 1GB
+        reservations:
+          memory: 512MB
+
+  monitoring-node:
+    # Resource constraints
+    deploy:
+      resources:
+        limits:
+          memory: 256MB
+        reservations:
+          memory: 128MB
+
+  monitoring-db:
+    # Resource constraints
+    deploy:
+      resources:
+        limits:
+          memory: 256MB
+        reservations:
+          memory: 128MB
+
+  monitoring-redis:
+    # Resource constraints
+    deploy:
+      resources:
+        limits:
+          memory: 256MB
+        reservations:
+          memory: 128MB

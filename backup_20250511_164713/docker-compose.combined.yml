@@ -1,0 +1,365 @@
+version: "3.9"
+
+# This is a combined configuration file that includes all services
+# for the Alfred Agent Platform v2
+
+services:
+  # Core services from docker-compose.yml
+  redis:
+    image: redis:7-alpine
+    ports: [6379:6379]
+    networks:
+      - alfred-network
+
+  qdrant:
+    image: qdrant/qdrant:v1.7.4
+    volumes:
+      - qdrant-storage:/qdrant/storage
+    ports: [6333:6333, 6334:6334]
+    networks:
+      - alfred-network
+
+  pubsub-emulator:
+    image: gcr.io/google.com/cloudsdktool/cloud-sdk:latest
+    command: ["gcloud", "beta", "emulators", "pubsub", "start", "--host-port=0.0.0.0:8085", "--project=alfred-agent-platform"]
+    ports: [8085:8085]
+    networks:
+      - alfred-network
+
+  # Supabase services
+  supabase-db:
+    image: supabase/postgres:15.1.0.117
+    restart: unless-stopped
+    ports: [5432:5432]
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-your-super-secret-password}
+    volumes:
+      - supabase-db-data:/var/lib/postgresql/data
+    networks:
+      - alfred-network
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres"]
+    command:
+      - postgres
+      - -c
+      - wal_level=logical
+      - -c
+      - max_connections=1000
+      - -c
+      - listen_addresses=*
+
+  supabase-rest:
+    image: postgrest/postgrest:v11.2.0
+    depends_on:
+      - supabase-db
+    restart: unless-stopped
+    environment:
+      PGRST_DB_URI: postgres://authenticator:${POSTGRES_PASSWORD:-your-super-secret-password}@supabase-db:5432/postgres
+      PGRST_DB_SCHEMAS: public,storage,graphql_public
+      PGRST_DB_ANON_ROLE: anon
+      PGRST_JWT_SECRET: ${JWT_SECRET:-super-secret-jwt-token-with-at-least-32-characters-long}
+    ports: [3000:3000]
+    networks:
+      - alfred-network
+
+  supabase-auth:
+    image: supabase/gotrue:v2.132.3
+    depends_on:
+      - supabase-db
+    restart: unless-stopped
+    environment:
+      GOTRUE_API_HOST: 0.0.0.0
+      GOTRUE_API_PORT: 9999
+      API_EXTERNAL_URL: ${API_EXTERNAL_URL:-http://localhost:8000}
+      DATABASE_URL: postgresql://postgres:${POSTGRES_PASSWORD:-your-super-secret-password}@supabase-db:5432/postgres?search_path=auth
+      GOTRUE_DB_DRIVER: postgres
+      GOTRUE_DB_DATABASE_URL: postgres://postgres:${POSTGRES_PASSWORD:-your-super-secret-password}@supabase-db:5432/postgres?search_path=auth
+      GOTRUE_SITE_URL: ${SITE_URL:-http://localhost:3000}
+      GOTRUE_URI_ALLOW_LIST: ${ADDITIONAL_REDIRECT_URLS}
+      GOTRUE_DISABLE_SIGNUP: ${DISABLE_SIGNUP:-false}
+      GOTRUE_JWT_ADMIN_ROLES: service_role
+      GOTRUE_JWT_AUD: authenticated
+      GOTRUE_JWT_DEFAULT_GROUP_NAME: authenticated
+      GOTRUE_JWT_EXP: ${JWT_EXPIRY:-3600}
+      GOTRUE_JWT_SECRET: ${JWT_SECRET:-super-secret-jwt-token-with-at-least-32-characters-long}
+      GOTRUE_EXTERNAL_EMAIL_ENABLED: ${ENABLE_EMAIL_SIGNUP:-true}
+      GOTRUE_MAILER_AUTOCONFIRM: ${ENABLE_EMAIL_AUTOCONFIRM:-false}
+    ports: [9999:9999]
+    networks:
+      - alfred-network
+
+  supabase-realtime:
+    image: alpine:latest
+    command: ["sh", "-c", "echo 'Supabase Realtime Stub Service' && tail -f /dev/null"]
+    restart: unless-stopped
+    ports: [4000:4000]
+    networks:
+      - alfred-network
+
+  supabase-storage:
+    image: supabase/storage-api:v0.40.4
+    depends_on:
+      - supabase-db
+      - supabase-rest
+    restart: unless-stopped
+    environment:
+      POSTGREST_URL: http://supabase-rest:3000
+      POSTGRES_CONNECTION: postgres://postgres:postgres@supabase-db:5432/postgres
+      REGION: us-east-1
+      FILE_SIZE_LIMIT: 52428800
+      STORAGE_BACKEND: file
+      FILE_STORAGE_BACKEND_PATH: /var/lib/storage
+      TENANT_ID: stub
+      SERVICE_ROLE_KEY: super-secret-jwt-token-with-at-least-32-characters-long
+    ports: [5000:5000]
+    volumes:
+      - supabase-storage-data:/var/lib/storage
+    networks:
+      - alfred-network
+
+  supabase-studio:
+    image: supabase/studio:20231123-64a766a
+    restart: unless-stopped
+    ports: [3001:3000]
+    environment:
+      STUDIO_PG_META_URL: http://supabase-db:8080
+      STUDIO_KONG_URL: http://kong:8000
+      STUDIO_SUPABASE_URL: http://kong:8000
+    networks:
+      - alfred-network
+      
+  # Agent services
+  alfred-bot:
+    build:
+      context: ./services/alfred-bot
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports: [8011:8011]
+    networks:
+      - alfred-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8011/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  social-intel:
+    image: alpine:latest
+    command: ["sh", "-c", "echo 'Social Intelligence Stub Service' && tail -f /dev/null"]
+    restart: unless-stopped
+    ports: [9000:9000]
+    networks:
+      - alfred-network
+
+  financial-tax:
+    image: alpine:latest
+    command: ["sh", "-c", "echo 'Financial Tax Stub Service' && tail -f /dev/null"]
+    restart: unless-stopped
+    ports: [9003:9003]
+    networks:
+      - alfred-network
+
+  legal-compliance:
+    image: alpine:latest
+    command: ["sh", "-c", "echo 'Legal Compliance Stub Service' && tail -f /dev/null"]
+    restart: unless-stopped
+    ports: [9002:9002]
+    networks:
+      - alfred-network
+
+  alfred-bot:
+    image: alpine:latest
+    command: ["sh", "-c", "echo 'Alfred Bot Stub Service' && tail -f /dev/null"]
+    restart: unless-stopped
+    ports: [8011:8011]
+    networks:
+      - alfred-network
+
+  supabase-storage:
+    image: alpine:latest
+    command: ["sh", "-c", "echo 'Supabase Storage Stub Service' && tail -f /dev/null"]
+    restart: unless-stopped
+    ports: [5000:5000]
+    networks:
+      - alfred-network
+
+  supabase-studio:
+    image: alpine:latest
+    command: ["sh", "-c", "echo 'Supabase Studio Stub Service' && tail -f /dev/null"]
+    restart: unless-stopped
+    ports: [3001:3000]
+    networks:
+      - alfred-network
+
+  node-exporter:
+    image: prom/node-exporter:v1.7.0
+    ports:
+      - "9100:9100"
+    networks:
+      - alfred-network
+
+  ollama:
+    image: ollama/ollama:latest
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama-models:/root/.ollama
+    networks:
+      - alfred-network
+
+  # Atlas services
+  atlas-rag-gateway:
+    image: atlas-rag-gateway:latest
+    environment:
+      QDRANT_URL: http://qdrant:6333
+      REDIS_URL: redis://redis:6379/0
+      DEFAULT_COLLECTION: general-knowledge
+      ENABLE_COLLECTIONS: "true"
+      AUTH_ENABLED: "true"
+      API_KEYS: "atlas:atlas-key,alfred:alfred-key,financial:financial-key,legal:legal-key,social:social-key"
+      RATE_LIMIT_REQUESTS: "100"
+      RATE_LIMIT_WINDOW_SECONDS: "60"
+      LOG_LEVEL: "INFO"
+      LOG_AGENT_ACCESS: "true"
+    ports: 
+      - "8501:8501"
+    restart: unless-stopped
+    networks:
+      - alfred-network
+
+  atlas-worker:
+    image: atlas-worker:latest
+    environment:
+      SUPABASE_URL: http://supabase-rest:3000
+      SUPABASE_SERVICE_ROLE_KEY: ${SERVICE_ROLE_KEY:-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoic2VydmljZV9yb2xlIiwiZXhwIjoxNzQ5NTM2MTMwfQ.EDf3DT0Zl6qQbrLIQLwAXRWAN5kaJ5mvlAh1jm0CY-o}
+      PUBSUB_EMULATOR_HOST: pubsub-emulator:8085
+      PUBSUB_PROJECT_ID: ${GCP_PROJECT_ID:-alfred-agent-platform}
+      RAG_URL: http://atlas-rag-gateway:8501
+      RAG_API_KEY: atlas-key
+      RAG_COLLECTION: architecture-knowledge
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      DAILY_TOKEN_BUDGET: "250000"
+      NODE_ENV: ${ENVIRONMENT:-development}
+      DEBUG: ${DEBUG:-true}
+    depends_on:
+      - atlas-rag-gateway
+      - pubsub-emulator
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    ports:
+      - "8000:8000"
+    restart: unless-stopped
+    networks:
+      - alfred-network
+
+  # Mission Control
+  mission-control:
+    build:
+      context: ./services/mission-control
+      dockerfile: Dockerfile
+    container_name: mission-control
+    depends_on:
+      supabase-db:
+        condition: service_healthy
+      supabase-auth:
+        condition: service_started
+      supabase-realtime:
+        condition: service_started
+      social-intel:
+        condition: service_started
+    ports:
+      - "3007:3000"  # Maps host port 3007 to container port 3000
+    environment:
+      - NODE_ENV=production
+      - NEXT_TELEMETRY_DISABLED=1
+      - SOCIAL_INTEL_URL=http://social-intel:9000
+      - NEXT_PUBLIC_SUPABASE_URL=${SUPABASE_PUBLIC_URL:-http://localhost:8000}
+      - NEXT_PUBLIC_SUPABASE_ANON_KEY=${ANON_KEY}
+      - NEXT_PUBLIC_API_URL=${API_URL:-http://localhost:3007}  # Updated port from 3003 to 3007
+      - SOCIAL_INTEL_SERVICE_URL=http://social-intel:9000
+      - FINANCIAL_TAX_URL=http://financial-tax:9003
+      - LEGAL_COMPLIANCE_URL=http://legal-compliance:9002
+    volumes:
+      - mission-control-node-modules:/app/node_modules
+    networks:
+      - alfred-network
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Agent Orchestrator
+  alfred-orchestrator:
+    build:
+      context: ./services/agent-orchestrator
+      dockerfile: Dockerfile
+    ports:
+      - "8012:8080"
+    environment:
+      - NODE_ENV=production
+    restart: unless-stopped
+    networks:
+      - alfred-network
+
+  # Monitoring services
+  prometheus:
+    image: prom/prometheus:v2.48.1
+    volumes:
+      - ./monitoring/prometheus:/etc/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--web.enable-lifecycle'
+    ports:
+      - "9090:9090"
+    networks:
+      - alfred-network
+
+  grafana:
+    image: grafana/grafana:10.2.3
+    volumes:
+      - grafana-data:/var/lib/grafana
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_USERS_ALLOW_SIGN_UP=false
+      - GF_INSTALL_PLUGINS=marcusolsson-json-datasource
+    ports:
+      - "3005:3000"
+    networks:
+      - alfred-network
+
+  # Monitoring exporters
+  node-exporter:
+    image: prom/node-exporter:v1.7.0
+    ports:
+      - "9100:9100"
+    networks:
+      - alfred-network
+
+  postgres-exporter:
+    image: prometheuscommunity/postgres-exporter:v0.15.0
+    environment:
+      DATA_SOURCE_NAME: "postgresql://postgres:postgres@supabase-db:5432/postgres?sslmode=disable"
+    ports:
+      - "9187:9187"
+    networks:
+      - alfred-network
+
+volumes:
+  qdrant-storage:
+  supabase-db-data:
+  supabase-storage-data:
+  social-intel-data:
+  grafana-data:
+  mission-control-node-modules:
+  ollama-models:
+
+networks:
+  alfred-network:
+    name: alfred-network
+    external: true

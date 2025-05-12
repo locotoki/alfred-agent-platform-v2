@@ -118,11 +118,15 @@ The following documents provide essential guidance for understanding and working
 - [Documentation Roadmap](./project/documentation-roadmap.md) - How documentation aligns with project phases
 - [Phase Transition Report](./project/phase-transition-report.md) - Transition from Phase 1 to Phase 2
 
+### Family User Management System
+
+- [Family User Management Documentation](./family-user-management/readme.md) - Complete documentation suite for the family user management system
+
 These documents should be reviewed before beginning any development work on the platform.
 
 ## Working with AI Tools
 
-This documentation is designed to work well with AI coding tools. See the [AI tools guide](./governance/ai-tools/README.md) for instructions on using different AI assistants with this documentation.
+This documentation is designed to work well with AI coding tools. See the [AI tools guide](./governance/ai-tools/readme.md) for instructions on using different AI assistants with this documentation.
 
 For GitHub-specific references and optimal prompts for AI tools, see the [GitHub Reference Guide](./github-reference-guide.md).
 

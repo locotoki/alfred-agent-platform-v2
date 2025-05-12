@@ -362,7 +362,7 @@ kubectl exec -it alfred-bot-xxxxx -- /bin/bash
 - [System Architecture](../architecture/system-architecture.md)
 - [Agent Core Framework](../architecture/agent-core.md)
 - [Deployment Guide](../operations/deployment.md)
-- [Service Containerization](../SERVICE_CONTAINERIZATION.md)
+- [Service Containerization](../service_containerization.md)
 
 ## Contact Information
 

@@ -1,12 +1,10 @@
-﻿import { ReactNode, useState, useEffect } from 'react';
-import React from "react";
-import "../../styles/loading.css";
 import { ReactNode, useState, useEffect } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { FiHome, FiUsers, FiList, FiActivity, FiFileText, FiSettings, FiLogOut, FiMoon, FiSun } from 'react-icons/fi';
 import classNames from 'classnames';
+import "../../styles/loading.css";
 
 // Optional import of Supabase clients
 let useSupabaseClient;
@@ -72,22 +70,28 @@ export default function MainLayout({ children, title = 'Mission Control' }: Main
         <meta name="description" content="Mission Control for Alfred Agent Platform" />
         <link rel="icon" href="/favicon.ico" />
         <script src="/port-fix.js"></script>
-        <script src="/test-script.js"></script>
       </Head>
 
-      <header className="bg-white dark:bg-gray-800 shadow-md border-b border-gray-200 dark:border-gray-700">
+      {/* Top Header */}
+      <header className="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700">
         <div className="flex justify-between items-center px-4 py-4 sm:px-6 lg:px-8">
-          <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">MISSION CONTROL</h1>
           <div className="flex items-center">
+            <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+              MISSION CONTROL
+            </h1>
+          </div>
+          
+          <div className="flex items-center space-x-4">
             <button
               onClick={toggleDarkMode}
-              className="p-2 mr-4 rounded-full text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+              className="button-icon"
+              aria-label={darkMode ? "Switch to light mode" : "Switch to dark mode"}
             >
               {darkMode ? <FiSun className="h-5 w-5" /> : <FiMoon className="h-5 w-5" />}
             </button>
-            {/* Always show admin in development */}
+            
             <div className="flex items-center">
-              <div className="mr-3 flex items-center">
+              <div className="flex items-center mr-3">
                 <div className="h-8 w-8 rounded-full bg-gradient-to-r from-blue-500 to-indigo-600 flex items-center justify-center text-white">
                   <span className="text-sm font-bold">A</span>
                 </div>
@@ -97,7 +101,8 @@ export default function MainLayout({ children, title = 'Mission Control' }: Main
               </div>
               <button
                 onClick={handleSignOut}
-                className="p-2 rounded-full text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                className="button-icon"
+                aria-label="Sign out"
               >
                 <FiLogOut className="h-5 w-5" />
               </button>
@@ -106,6 +111,7 @@ export default function MainLayout({ children, title = 'Mission Control' }: Main
         </div>
       </header>
 
+      {/* Navigation Bar */}
       <nav className="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700">
         <div className="px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-12">
@@ -115,9 +121,9 @@ export default function MainLayout({ children, title = 'Mission Control' }: Main
                   key={item.name}
                   href={item.href}
                   className={classNames(
-                    'nav-link inline-flex items-center px-4 text-sm font-medium border-b-2 transition-all',
+                    'inline-flex items-center px-4 text-sm font-medium border-b-2 transition-all',
                     router.pathname.startsWith(item.href) 
-                      ? 'border-primary-500 text-primary-600 dark:text-primary-400 active' 
+                      ? 'border-primary-600 text-primary-600 dark:text-primary-400' 
                       : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600'
                   )}
                 >
@@ -130,12 +136,14 @@ export default function MainLayout({ children, title = 'Mission Control' }: Main
         </div>
       </nav>
 
+      {/* Main Content */}
       <main className="py-6">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {children}
         </div>
       </main>
 
+      {/* Footer */}
       <footer className="bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
         <div className="max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8">
           <p className="text-center text-sm text-gray-500 dark:text-gray-400">
@@ -145,4 +153,4 @@ export default function MainLayout({ children, title = 'Mission Control' }: Main
       </footer>
     </div>
   );
-import React from "react";
+}

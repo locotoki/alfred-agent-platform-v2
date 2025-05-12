@@ -1,0 +1,84 @@
+# Alfred Agent Platform v2 - UI Components
+# This file contains only the UI services
+
+x-ui-service-labels: &ui-service-labels
+  com.docker.compose.project: "alfred"
+  com.docker.compose.group: "ui"
+
+services:
+  #############################################################################
+  # UI SERVICES
+  #############################################################################
+
+  # Chat UI
+  ui-chat:
+    build:
+      context: ./services/streamlit-chat
+      dockerfile: Dockerfile
+    image: ui-chat:latest
+    container_name: ui-chat
+    ports:
+      - "8502:8501"  # Map container's 8501 to host's 8502
+    environment:
+      - ALFRED_API_URL=http://agent-core:8011
+    command: ["streamlit", "run", "streamlit_chat_ui.py", "--server.port=8501", "--server.address=0.0.0.0"]
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "http://localhost:8501"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    restart: unless-stopped
+    networks:
+      - alfred-network
+    labels:
+      <<: *ui-service-labels
+      com.docker.compose.service: "ui-chat"
+
+  # Admin Dashboard
+  ui-admin:
+    build:
+      context: ./services/mission-control
+      dockerfile: Dockerfile
+    image: ui-admin:latest
+    container_name: ui-admin
+    ports:
+      - "3007:3000"  # Map container's 3000 to host's 3007
+    environment:
+      - ALFRED_API_URL=http://agent-core:8011
+      - ALFRED_RAG_URL=http://agent-rag:8501
+      - NODE_ENV=production
+    command: node server.js
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "http://localhost:3000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    restart: unless-stopped
+    networks:
+      - alfred-network
+    labels:
+      <<: *ui-service-labels
+      com.docker.compose.service: "ui-admin"
+
+  # Auth UI
+  auth-ui:
+    build:
+      context: ./services/auth-ui
+      dockerfile: Dockerfile
+    image: auth-ui:latest
+    container_name: auth-ui
+    ports:
+      - "8030:80"
+    restart: unless-stopped
+    networks:
+      - alfred-network
+    labels:
+      <<: *ui-service-labels
+      com.docker.compose.service: "auth-ui"
+
+# Networks
+networks:
+  alfred-network:
+    external: true

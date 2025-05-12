@@ -1,0 +1,53 @@
+# Alfred Agent Platform v2 - UI Components
+# This file contains only the UI services
+
+services:
+  #############################################################################
+  # UI SERVICES
+  #############################################################################
+
+  # Chat UI
+  ui-chat:
+    build:
+      context: ./services/streamlit-chat
+      dockerfile: Dockerfile
+    image: ui-chat:latest
+    container_name: ui-chat
+    ports:
+      - "8501:8501"
+    environment:
+      - ALFRED_API_URL=http://agent-core:8011
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "http://localhost:8501"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    volumes:
+      - ./services/streamlit-chat:/app
+    depends_on:
+      - agent-core
+    restart: unless-stopped
+    networks:
+      - alfred-network
+
+  # Admin Dashboard
+  ui-admin:
+    image: alpine:latest
+    container_name: ui-admin
+    ports:
+      - "3007:3000"
+    environment:
+      - ALFRED_API_URL=http://agent-core:8011
+      - ALFRED_RAG_URL=http://agent-rag:8501
+    command: sh -c 'echo "Mission Control Stub Service" && tail -f /dev/null'
+    depends_on:
+      - agent-core
+    restart: unless-stopped
+    networks:
+      - alfred-network
+
+# Networks
+networks:
+  alfred-network:
+    external: true

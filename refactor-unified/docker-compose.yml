@@ -1,0 +1,650 @@
+# Alfred Agent Platform v2 - Unified Docker Compose Configuration
+# This is the base configuration file that defines all services
+# Environment-specific settings are in docker-compose.{env}.yml files
+# Component-specific settings are in docker-compose.{component}.yml files
+
+services:
+  #############################################################################
+  # CORE INFRASTRUCTURE SERVICES
+  #############################################################################
+  
+  # Redis - In-memory data store
+  redis:
+    image: redis:7-alpine
+    container_name: redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+    restart: unless-stopped
+    networks:
+      - alfred-network
+
+  # Vector Database - Qdrant for embeddings
+  vector-db:
+    image: qdrant/qdrant:v1.7.4
+    container_name: vector-db
+    ports:
+      - "6333:6333"
+      - "6334:6334"
+    volumes:
+      - vector-db-data:/qdrant/storage
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:6333/healthz"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    restart: unless-stopped
+    networks:
+      - alfred-network
+
+  # PubSub Emulator - Message queue for service communication
+  pubsub-emulator:
+    image: gcr.io/google.com/cloudsdktool/cloud-sdk:latest
+    container_name: pubsub-emulator
+    command: ["gcloud", "beta", "emulators", "pubsub", "start", "--host-port=0.0.0.0:8085", "--project=${ALFRED_PROJECT_ID:-alfred-agent-platform}"]
+    ports:
+      - "8085:8085"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8085/v1/projects/${ALFRED_PROJECT_ID:-alfred-agent-platform}/topics"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    restart: unless-stopped
+    networks:
+      - alfred-network
+
+  # Local LLM Service - Optional local model inference
+  llm-service:
+    image: ollama/ollama:latest
+    container_name: llm-service
+    ports:
+      - "11434:11434"
+    volumes:
+      - llm-service-data:/root/.ollama
+    restart: unless-stopped
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    networks:
+      - alfred-network
+
+  #############################################################################
+  # DATABASE SERVICES (SUPABASE)
+  #############################################################################
+
+  # PostgreSQL Database
+  db-postgres:
+    image: supabase/postgres:15.1.0.117
+    container_name: db-postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: ${DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-your-super-secret-password}
+      POSTGRES_DB: ${DB_NAME:-postgres}
+      JWT_SECRET: ${DB_JWT_SECRET:-your-super-secret-jwt-token}
+      JWT_EXP: ${DB_JWT_EXP:-3600}
+    volumes:
+      - db-postgres-data:/var/lib/postgresql/data
+      - ./migrations/supabase:/docker-entrypoint-initdb.d
+    command:
+      - postgres
+      - -c
+      - wal_level=logical
+      - -c
+      - max_connections=1000
+      - -c
+      - listen_addresses=*
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "${DB_USER:-postgres}", "-h", "localhost"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+    networks:
+      - alfred-network
+
+  # Database Auth Service
+  db-auth:
+    image: supabase/gotrue:v2.132.3
+    container_name: db-auth
+    ports:
+      - "9999:9999"
+    environment:
+      GOTRUE_API_HOST: 0.0.0.0
+      GOTRUE_API_PORT: 9999
+      API_EXTERNAL_URL: ${API_EXTERNAL_URL:-http://localhost:8000}
+      GOTRUE_DB_DRIVER: postgres
+      GOTRUE_DB_DATABASE_URL: postgres://${DB_USER:-postgres}:${DB_PASSWORD:-your-super-secret-password}@db-postgres:5432/${DB_NAME:-postgres}?search_path=auth
+      GOTRUE_SITE_URL: ${SITE_URL:-http://localhost:3000}
+      GOTRUE_URI_ALLOW_LIST: ${ADDITIONAL_REDIRECT_URLS}
+      GOTRUE_DISABLE_SIGNUP: ${DISABLE_SIGNUP:-false}
+      GOTRUE_JWT_ADMIN_ROLES: service_role
+      GOTRUE_JWT_AUD: authenticated
+      GOTRUE_JWT_DEFAULT_GROUP_NAME: authenticated
+      GOTRUE_JWT_EXP: ${JWT_EXPIRY:-3600}
+      GOTRUE_JWT_SECRET: ${DB_JWT_SECRET:-your-super-secret-jwt-token}
+      GOTRUE_EXTERNAL_EMAIL_ENABLED: ${ENABLE_EMAIL_SIGNUP:-true}
+      GOTRUE_MAILER_AUTOCONFIRM: ${ENABLE_EMAIL_AUTOCONFIRM:-false}
+    depends_on:
+      db-postgres:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - alfred-network
+
+  # Database REST API
+  db-api:
+    image: postgrest/postgrest:v11.2.0
+    container_name: db-api
+    ports:
+      - "3000:3000"
+    environment:
+      PGRST_DB_URI: postgres://${DB_USER:-postgres}:${DB_PASSWORD:-your-super-secret-password}@db-postgres:5432/${DB_NAME:-postgres}
+      PGRST_DB_SCHEMAS: public,storage,graphql_public
+      PGRST_DB_ANON_ROLE: anon
+      PGRST_JWT_SECRET: ${DB_JWT_SECRET:-your-super-secret-jwt-token}
+    depends_on:
+      db-postgres:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - alfred-network
+
+  # Database Admin UI
+  db-admin:
+    image: alpine:latest
+    container_name: db-admin
+    ports:
+      - "3001:3000"
+    environment:
+      STUDIO_PG_META_URL: http://postgres-meta:8080
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-your-super-secret-password}
+      DEFAULT_ORGANIZATION_NAME: ${STUDIO_DEFAULT_ORGANIZATION}
+      DEFAULT_PROJECT_NAME: ${STUDIO_DEFAULT_PROJECT}
+      SUPABASE_URL: http://supabase-kong:8000
+      SUPABASE_PUBLIC_URL: ${SUPABASE_PUBLIC_URL}
+      SUPABASE_ANON_KEY: ${ANON_KEY}
+      SUPABASE_SERVICE_KEY: ${SERVICE_ROLE_KEY}
+    command: sh -c 'echo "Supabase Studio Stub Service" && tail -f /dev/null'
+    healthcheck:
+      test: ["CMD-SHELL", "ps aux | grep -v grep | grep 'tail -f /dev/null' || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 5s
+    depends_on:
+      db-postgres:
+        condition: service_healthy
+      db-api:
+        condition: service_started
+    restart: unless-stopped
+    networks:
+      - alfred-network
+
+  # Database Realtime Updates
+  db-realtime:
+    image: alpine:latest
+    container_name: db-realtime
+    ports:
+      - "4000:4000"
+    healthcheck:
+      test: ["CMD-SHELL", "ps aux | grep -v grep | grep 'tail -f /dev/null' || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 5s
+    environment:
+      PORT: 4000
+      DB_HOST: db-postgres
+      DB_PORT: 5432
+      DB_NAME: ${DB_NAME:-postgres}
+      DB_USER: supabase_admin
+      DB_PASSWORD: ${DB_PASSWORD:-your-super-secret-password}
+      DB_SSL: "false"
+      JWT_SECRET: ${DB_JWT_SECRET:-your-super-secret-jwt-token}
+      REPLICATION_MODE: RLS
+      REPLICATION_POLL_INTERVAL: 100
+      SECURE_CHANNELS: "true"
+      SLOT_NAME: supabase_realtime_rls
+      TEMPORARY_SLOT: "true"
+      SECRET_KEY_BASE: ${SECRET_KEY_BASE}
+      RLIMIT_NOFILE: 100000
+      FLY_APP_NAME: realtime
+      FLY_ALLOC_ID: local
+      ERL_AFLAGS: "-proto_dist inet_tcp"
+    command: sh -c 'echo "Supabase Realtime Stub Service" && tail -f /dev/null'
+    depends_on:
+      db-postgres:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - alfred-network
+
+  # Database Storage
+  db-storage:
+    image: alpine:latest
+    container_name: db-storage
+    ports:
+      - "5000:5000"
+    environment:
+      ANON_KEY: ${ANON_KEY}
+      SERVICE_KEY: ${SERVICE_ROLE_KEY}
+      POSTGREST_URL: http://db-api:3000
+      PGRST_JWT_SECRET: ${DB_JWT_SECRET:-your-super-secret-jwt-token}
+      DATABASE_URL: postgres://supabase_storage_admin:${DB_PASSWORD:-your-super-secret-password}@db-postgres:5432/${DB_NAME:-postgres}
+      FILE_SIZE_LIMIT: 52428800
+      GLOBAL_S3_BUCKET: ${GLOBAL_S3_BUCKET}
+      STORAGE_BACKEND: ${STORAGE_BACKEND}
+      FILE_STORAGE_BACKEND_PATH: ${FILE_STORAGE_BACKEND_PATH:-/var/lib/storage}
+      REGION: ${REGION}
+      TENANT_ID: ${TENANT_ID}
+      IS_MULTITENANT: ${IS_MULTITENANT}
+    healthcheck:
+      test: ["CMD-SHELL", "ps aux | grep -v grep | grep 'tail -f /dev/null' || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 5s
+    volumes:
+      - db-storage-data:/var/lib/storage
+    command: sh -c 'echo "Supabase Storage Stub Service" && tail -f /dev/null'
+    depends_on:
+      db-postgres:
+        condition: service_healthy
+      db-api:
+        condition: service_started
+    restart: unless-stopped
+    networks:
+      - alfred-network
+
+  #############################################################################
+  # AGENT SERVICES
+  #############################################################################
+
+  # Core Agent Service
+  agent-core:
+    build:
+      context: ./services/alfred-core
+      dockerfile: Dockerfile
+    image: agent-core:latest
+    container_name: agent-core
+    ports:
+      - "8011:8011"
+    environment:
+      - ALFRED_ENVIRONMENT=${ALFRED_ENVIRONMENT:-development}
+      - ALFRED_DEBUG=${ALFRED_DEBUG:-true}
+      - ALFRED_MODE=${ALFRED_MODE:-default}
+      - ALFRED_ENABLE_SLACK=${ALFRED_ENABLE_SLACK:-true}
+      - ALFRED_DATABASE_URL=${ALFRED_DATABASE_URL:-postgresql://${DB_USER:-postgres}:${DB_PASSWORD:-your-super-secret-password}@db-postgres:5432/${DB_NAME:-postgres}}
+      - ALFRED_REDIS_URL=redis://redis:6379
+      - ALFRED_PUBSUB_EMULATOR_HOST=pubsub-emulator:8085
+      - ALFRED_PROJECT_ID=${ALFRED_PROJECT_ID:-alfred-agent-platform}
+      - ALFRED_SLACK_BOT_TOKEN=${ALFRED_SLACK_BOT_TOKEN}
+      - ALFRED_SLACK_SIGNING_SECRET=${ALFRED_SLACK_SIGNING_SECRET}
+      - ALFRED_OPENAI_API_KEY=${ALFRED_OPENAI_API_KEY}
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8011/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    depends_on:
+      db-postgres:
+        condition: service_healthy
+      pubsub-emulator:
+        condition: service_started
+      redis:
+        condition: service_started
+    restart: unless-stopped
+    networks:
+      - alfred-network
+
+  # RAG Service
+  agent-rag:
+    image: rag-gateway:latest
+    container_name: agent-rag
+    ports:
+      - "8501:8501"
+    environment:
+      - ALFRED_QDRANT_URL=http://vector-db:6333
+      - ALFRED_REDIS_URL=redis://redis:6379/0
+      - ALFRED_DEFAULT_COLLECTION=general-knowledge
+      - ALFRED_ENABLE_COLLECTIONS=true
+      - ALFRED_AUTH_ENABLED=true
+      - ALFRED_API_KEYS=atlas:atlas-key,alfred:alfred-key,financial:financial-key,legal:legal-key,social:social-key
+      - ALFRED_RATE_LIMIT_REQUESTS=100
+      - ALFRED_RATE_LIMIT_WINDOW_SECONDS=60
+      - ALFRED_LOG_LEVEL=INFO
+      - ALFRED_LOG_AGENT_ACCESS=true
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8501/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    depends_on:
+      vector-db:
+        condition: service_started
+      redis:
+        condition: service_started
+    restart: unless-stopped
+    networks:
+      - alfred-network
+
+  # Atlas Agent
+  agent-atlas:
+    image: worker:latest
+    container_name: agent-atlas
+    ports:
+      - "8000:8000"
+    environment:
+      - ALFRED_DATABASE_URL=${ALFRED_DATABASE_URL:-postgresql://${DB_USER:-postgres}:${DB_PASSWORD:-your-super-secret-password}@db-postgres:5432/${DB_NAME:-postgres}}
+      - ALFRED_SUPABASE_URL=http://db-api:3000
+      - ALFRED_SUPABASE_KEY=${SERVICE_ROLE_KEY:-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoic2VydmljZV9yb2xlIiwiZXhwIjoxNzQ5NTM2MTMwfQ.EDf3DT0Zl6qQbrLIQLwAXRWAN5kaJ5mvlAh1jm0CY-o}
+      - ALFRED_PUBSUB_EMULATOR_HOST=pubsub-emulator:8085
+      - ALFRED_GOOGLE_APPLICATION_CREDENTIALS=/tmp/empty-credentials.json
+    volumes:
+      - /dev/null:/tmp/empty-credentials.json
+    command: python -m atlas.main
+    healthcheck:
+      test: ["CMD", "python", "-c", "import socket; s=socket.socket(); s.connect((\"localhost\", 8000))"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    depends_on:
+      agent-rag:
+        condition: service_started
+      redis:
+        condition: service_started
+      pubsub-emulator:
+        condition: service_started
+    restart: unless-stopped
+    networks:
+      - alfred-network
+
+  # Social Intelligence Agent
+  agent-social:
+    image: alpine:latest
+    container_name: agent-social
+    ports:
+      - "9000:9000"
+    environment:
+      - ALFRED_ENVIRONMENT=${ALFRED_ENVIRONMENT:-development}
+      - ALFRED_DEBUG=${ALFRED_DEBUG:-true}
+      - ALFRED_DATABASE_URL=${ALFRED_DATABASE_URL:-postgresql://${DB_USER:-postgres}:${DB_PASSWORD:-your-super-secret-password}@db-postgres:5432/${DB_NAME:-postgres}}
+      - ALFRED_REDIS_URL=redis://redis:6379
+      - ALFRED_PUBSUB_EMULATOR_HOST=pubsub-emulator:8085
+      - ALFRED_PROJECT_ID=${ALFRED_PROJECT_ID:-alfred-agent-platform}
+      - ALFRED_OPENAI_API_KEY=${ALFRED_OPENAI_API_KEY}
+      - ALFRED_YOUTUBE_API_KEY=${ALFRED_YOUTUBE_API_KEY}
+      - ALFRED_SUPABASE_URL=http://db-api:3000
+      - ALFRED_SUPABASE_KEY=${SERVICE_ROLE_KEY:-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoic2VydmljZV9yb2xlIiwiZXhwIjoxNzQ5NTM2MTMwfQ.EDf3DT0Zl6qQbrLIQLwAXRWAN5kaJ5mvlAh1jm0CY-o}
+      - ALFRED_RAG_URL=http://agent-rag:8501
+      - ALFRED_RAG_API_KEY=social-key
+      - ALFRED_RAG_COLLECTION=social-knowledge
+    command: sh -c 'echo "Social Intelligence Stub Service" && tail -f /dev/null'
+    depends_on:
+      db-postgres:
+        condition: service_healthy
+      pubsub-emulator:
+        condition: service_started
+      redis:
+        condition: service_started
+      agent-rag:
+        condition: service_started
+    healthcheck:
+      test: ["CMD-SHELL", "ps aux | grep -v grep | grep 'tail -f /dev/null' || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 5s
+    restart: unless-stopped
+    networks:
+      - alfred-network
+
+  # Financial Tax Agent
+  agent-financial:
+    image: alpine:latest
+    container_name: agent-financial
+    ports:
+      - "9003:9003"
+    environment:
+      - ALFRED_ENVIRONMENT=${ALFRED_ENVIRONMENT:-development}
+      - ALFRED_DEBUG=${ALFRED_DEBUG:-true}
+      - ALFRED_DATABASE_URL=${ALFRED_DATABASE_URL:-postgresql://${DB_USER:-postgres}:${DB_PASSWORD:-your-super-secret-password}@db-postgres:5432/${DB_NAME:-postgres}}
+      - ALFRED_REDIS_URL=redis://redis:6379
+      - ALFRED_PUBSUB_EMULATOR_HOST=pubsub-emulator:8085
+      - ALFRED_PROJECT_ID=${ALFRED_PROJECT_ID:-alfred-agent-platform}
+      - ALFRED_OPENAI_API_KEY=${ALFRED_OPENAI_API_KEY}
+      - ALFRED_SUPABASE_URL=http://db-api:3000
+      - ALFRED_SUPABASE_KEY=${SERVICE_ROLE_KEY:-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoic2VydmljZV9yb2xlIiwiZXhwIjoxNzQ5NTM2MTMwfQ.EDf3DT0Zl6qQbrLIQLwAXRWAN5kaJ5mvlAh1jm0CY-o}
+      - ALFRED_RAG_URL=http://agent-rag:8501
+      - ALFRED_RAG_API_KEY=financial-key
+      - ALFRED_RAG_COLLECTION=financial-knowledge
+    command: sh -c 'echo "Financial Tax Stub Service" && tail -f /dev/null'
+    healthcheck:
+      test: ["CMD-SHELL", "ps aux | grep -v grep | grep 'tail -f /dev/null' || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 5s
+    depends_on:
+      db-postgres:
+        condition: service_healthy
+      pubsub-emulator:
+        condition: service_started
+      redis:
+        condition: service_started
+      agent-rag:
+        condition: service_started
+    restart: unless-stopped
+    networks:
+      - alfred-network
+
+  # Legal Compliance Agent
+  agent-legal:
+    image: alpine:latest
+    container_name: agent-legal
+    ports:
+      - "9002:9002"
+    environment:
+      - ALFRED_ENVIRONMENT=${ALFRED_ENVIRONMENT:-development}
+      - ALFRED_DEBUG=${ALFRED_DEBUG:-true}
+      - ALFRED_DATABASE_URL=${ALFRED_DATABASE_URL:-postgresql://${DB_USER:-postgres}:${DB_PASSWORD:-your-super-secret-password}@db-postgres:5432/${DB_NAME:-postgres}}
+      - ALFRED_REDIS_URL=redis://redis:6379
+      - ALFRED_PUBSUB_EMULATOR_HOST=pubsub-emulator:8085
+      - ALFRED_PROJECT_ID=${ALFRED_PROJECT_ID:-alfred-agent-platform}
+      - ALFRED_OPENAI_API_KEY=${ALFRED_OPENAI_API_KEY}
+      - ALFRED_SUPABASE_URL=http://db-api:3000
+      - ALFRED_SUPABASE_KEY=${SERVICE_ROLE_KEY:-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoic2VydmljZV9yb2xlIiwiZXhwIjoxNzQ5NTM2MTMwfQ.EDf3DT0Zl6qQbrLIQLwAXRWAN5kaJ5mvlAh1jm0CY-o}
+      - ALFRED_RAG_URL=http://agent-rag:8501
+      - ALFRED_RAG_API_KEY=legal-key
+      - ALFRED_RAG_COLLECTION=legal-knowledge
+    command: sh -c 'echo "Legal Compliance Stub Service" && tail -f /dev/null'
+    depends_on:
+      db-postgres:
+        condition: service_healthy
+      pubsub-emulator:
+        condition: service_started
+      redis:
+        condition: service_started
+      agent-rag:
+        condition: service_started
+    restart: unless-stopped
+    networks:
+      - alfred-network
+
+  #############################################################################
+  # UI SERVICES
+  #############################################################################
+
+    healthcheck:
+      test: ["CMD-SHELL", "ps aux | grep -v grep | grep 'tail -f /dev/null' || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 5s
+  # Chat UI
+  ui-chat:
+    build:
+      context: ./services/streamlit-chat
+      dockerfile: Dockerfile
+    image: ui-chat:latest
+    container_name: ui-chat
+    ports:
+      - "8501:8501"
+    environment:
+      - ALFRED_API_URL=http://agent-core:8011
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "http://localhost:8501"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    volumes:
+      - ./services/streamlit-chat:/app
+    depends_on:
+      agent-core:
+        condition: service_started
+    restart: unless-stopped
+    networks:
+      - alfred-network
+
+  # Admin Dashboard
+  ui-admin:
+    image: alpine:latest
+    container_name: ui-admin
+    ports:
+      - "3007:3000"
+    environment:
+      - ALFRED_API_URL=http://agent-core:8011
+      - ALFRED_RAG_URL=http://agent-rag:8501
+    command: sh -c 'echo "Mission Control Stub Service" && tail -f /dev/null'
+    depends_on:
+      agent-core:
+        condition: service_started
+    restart: unless-stopped
+    networks:
+      - alfred-network
+
+  #############################################################################
+  # MONITORING SERVICES
+  #############################################################################
+
+  # Metrics Collection
+  monitoring-metrics:
+    image: prom/prometheus:v2.48.1
+    container_name: monitoring-metrics
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - monitoring-metrics-data:/prometheus
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "http://localhost:9090/-/healthy"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    restart: unless-stopped
+    networks:
+      - alfred-network
+
+  # Monitoring Dashboards
+  monitoring-dashboard:
+    image: grafana/grafana:10.2.3
+    container_name: monitoring-dashboard
+    ports:
+      - "3005:3000"
+    volumes:
+      - ./monitoring/grafana/dashboards:/var/lib/grafana/dashboards
+      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning
+      - monitoring-dashboard-data:/var/lib/grafana
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: ${MONITORING_ADMIN_PASSWORD:-admin}
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    restart: unless-stopped
+    networks:
+      - alfred-network
+
+  # Host Metrics Exporter
+  monitoring-node:
+    image: prom/node-exporter:v1.7.0
+    container_name: monitoring-node
+    ports:
+      - "9100:9100"
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.sysfs=/host/sys'
+      - '--collector.filesystem.ignored-mount-points=^/(sys|proc|dev|host|etc)($$|/)'
+    restart: unless-stopped
+    networks:
+      - alfred-network
+
+  # Database Metrics Exporter
+  monitoring-db:
+    image: prometheuscommunity/postgres-exporter:v0.15.0
+    container_name: monitoring-db
+    ports:
+      - "9187:9187"
+    environment:
+      DATA_SOURCE_NAME: "postgresql://${DB_USER:-postgres}:${DB_PASSWORD:-your-super-secret-password}@db-postgres:5432/${DB_NAME:-postgres}?sslmode=disable"
+    depends_on:
+      db-postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9187/metrics"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    restart: unless-stopped
+    networks:
+      - alfred-network
+
+# Volumes
+volumes:
+  redis-data:
+    name: redis-data
+  vector-db-data:
+    name: vector-db-data
+  llm-service-data:
+    name: llm-service-data
+  db-postgres-data:
+    name: db-postgres-data
+  db-storage-data:
+    name: db-storage-data
+  monitoring-metrics-data:
+    name: monitoring-metrics-data
+  monitoring-dashboard-data:
+    name: monitoring-dashboard-data
+
+# Networks
+networks:
+  alfred-network:
+    name: alfred-network
+    driver: bridge

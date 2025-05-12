@@ -1,0 +1,249 @@
+# Alfred Agent Platform v2 - Complete Test Configuration
+# This file combines infrastructure, agents, UI, and monitoring components for full testing
+
+services:
+  #############################################################################
+  # CORE INFRASTRUCTURE SERVICES
+  #############################################################################
+  
+  redis:
+    image: redis:7-alpine
+    container_name: redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+    restart: unless-stopped
+    networks:
+      - alfred-network
+
+  vector-db:
+    image: qdrant/qdrant:v1.7.4
+    container_name: vector-db
+    ports:
+      - "6333:6333"
+      - "6334:6334"
+    volumes:
+      - vector-db-data:/qdrant/storage
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:6333/healthz"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    restart: unless-stopped
+    networks:
+      - alfred-network
+
+  pubsub-emulator:
+    image: gcr.io/google.com/cloudsdktool/cloud-sdk:latest
+    container_name: pubsub-emulator
+    command: ["gcloud", "beta", "emulators", "pubsub", "start", "--host-port=0.0.0.0:8085", "--project=alfred-agent-platform"]
+    ports:
+      - "8085:8085"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8085/v1/projects/alfred-agent-platform/topics"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    restart: unless-stopped
+    networks:
+      - alfred-network
+
+  db-postgres:
+    image: postgres:15-alpine
+    container_name: db-postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: ${DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-your-super-secret-password}
+      POSTGRES_DB: ${DB_NAME:-postgres}
+    volumes:
+      - db-postgres-data:/var/lib/postgresql/data
+      - ./migrations/supabase:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "${DB_USER:-postgres}", "-h", "localhost"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+    networks:
+      - alfred-network
+
+  #############################################################################
+  # AGENT SERVICES
+  #############################################################################
+
+  agent-core:
+    build:
+      context: ./services/alfred-core
+      dockerfile: Dockerfile
+    image: agent-core:latest
+    container_name: agent-core
+    ports:
+      - "8011:8011"
+    environment:
+      - ALFRED_ENVIRONMENT=development
+      - ALFRED_DEBUG=true
+      - ALFRED_MODE=default
+      - ALFRED_DATABASE_URL=postgresql://postgres:your-super-secret-password@db-postgres:5432/postgres
+      - ALFRED_REDIS_URL=redis://redis:6379
+      - ALFRED_PUBSUB_EMULATOR_HOST=pubsub-emulator:8085
+      - ALFRED_PROJECT_ID=alfred-agent-platform
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8011/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    depends_on:
+      db-postgres:
+        condition: service_healthy
+      pubsub-emulator:
+        condition: service_started
+      redis:
+        condition: service_started
+    restart: unless-stopped
+    networks:
+      - alfred-network
+
+  agent-rag:
+    build:
+      context: ./services/rag-service
+      dockerfile: Dockerfile
+    image: agent-rag:latest
+    container_name: agent-rag
+    ports:
+      - "8501:8501"
+    environment:
+      - ALFRED_QDRANT_URL=http://vector-db:6333
+      - ALFRED_REDIS_URL=redis://redis:6379/0
+      - ALFRED_DEFAULT_COLLECTION=general-knowledge
+      - ALFRED_ENABLE_COLLECTIONS=true
+      - ALFRED_AUTH_ENABLED=true
+      - ALFRED_API_KEYS=atlas:atlas-key,alfred:alfred-key,financial:financial-key,legal:legal-key,social:social-key
+      - ALFRED_RATE_LIMIT_REQUESTS=100
+      - ALFRED_RATE_LIMIT_WINDOW_SECONDS=60
+      - ALFRED_LOG_LEVEL=INFO
+      - ALFRED_LOG_AGENT_ACCESS=true
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8501/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    depends_on:
+      vector-db:
+        condition: service_started
+      redis:
+        condition: service_started
+    restart: unless-stopped
+    networks:
+      - alfred-network
+
+  #############################################################################
+  # MONITORING SERVICES
+  #############################################################################
+
+  monitoring-metrics:
+    image: prom/prometheus:v2.48.1
+    container_name: monitoring-metrics
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - monitoring-metrics-data:/prometheus
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "http://localhost:9090/-/healthy"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    restart: unless-stopped
+    networks:
+      - alfred-network
+
+  monitoring-dashboard:
+    image: grafana/grafana:10.2.3
+    container_name: monitoring-dashboard
+    ports:
+      - "3005:3000"
+    volumes:
+      - ./monitoring/grafana/dashboards:/var/lib/grafana/dashboards
+      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning
+      - monitoring-dashboard-data:/var/lib/grafana
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: ${MONITORING_ADMIN_PASSWORD:-admin}
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    restart: unless-stopped
+    networks:
+      - alfred-network
+
+  monitoring-node:
+    image: prom/node-exporter:v1.7.0
+    container_name: monitoring-node
+    ports:
+      - "9100:9100"
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.sysfs=/host/sys'
+      - '--collector.filesystem.ignored-mount-points=^/(sys|proc|dev|host|etc)($$|/)'
+    restart: unless-stopped
+    networks:
+      - alfred-network
+
+  monitoring-db:
+    image: prometheuscommunity/postgres-exporter:v0.15.0
+    container_name: monitoring-db
+    ports:
+      - "9187:9187"
+    environment:
+      DATA_SOURCE_NAME: "postgresql://${DB_USER:-postgres}:${DB_PASSWORD:-your-super-secret-password}@db-postgres:5432/${DB_NAME:-postgres}?sslmode=disable"
+    depends_on:
+      db-postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9187/metrics"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    restart: unless-stopped
+    networks:
+      - alfred-network
+
+# Volumes
+volumes:
+  redis-data:
+    name: redis-data
+  vector-db-data:
+    name: vector-db-data
+  db-postgres-data:
+    name: db-postgres-data
+  monitoring-metrics-data:
+    name: monitoring-metrics-data
+  monitoring-dashboard-data:
+    name: monitoring-dashboard-data
+
+# Networks
+networks:
+  alfred-network:
+    name: alfred-network
+    driver: bridge

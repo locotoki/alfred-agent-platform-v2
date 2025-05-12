@@ -2,7 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Import custom component styles */
+/* Import design system & custom component styles */
+@import './design-system.css';
 @import './niche-scout-improvements.css';
 @import './ui-improvements.css';
 

@@ -1,0 +1,72 @@
+version: '3.8'
+
+services:
+  streamlit-chat:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: streamlit-chat:latest
+    restart: unless-stopped
+    environment:
+      - ALFRED_API_URL=http://alfred-bot:8011
+    ports:
+      - "8502:8501"
+    networks:
+      - alfred-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8501"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    depends_on:
+      - alfred-bot
+
+  alfred-bot:
+    build:
+      context: ../../
+      dockerfile: services/alfred-bot/Dockerfile
+    image: alfred-bot:latest
+    restart: unless-stopped
+    environment:
+      - SLACK_BOT_TOKEN=${SLACK_BOT_TOKEN:-xoxb-your-token-here}
+      - SLACK_SIGNING_SECRET=${SLACK_SIGNING_SECRET:-your-signing-secret-here}
+      - REDIS_URL=redis://redis:6379
+      - DATABASE_URL=${DATABASE_URL:-postgresql://postgres:postgres@localhost:5432/postgres}
+      - GCP_PROJECT_ID=alfred-agent-platform
+      - ALFRED_APP_MODULE=app.demo_mode:app
+    ports:
+      - "8012:8011"
+    networks:
+      - alfred-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8011/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    depends_on:
+      - redis
+
+  redis:
+    image: redis:alpine
+    restart: unless-stopped
+    ports:
+      - "6380:6379"
+    networks:
+      - alfred-network
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+networks:
+  alfred-network:
+    driver: bridge
+
+volumes:
+  redis-data:

@@ -57,6 +57,11 @@ RUN echo '"""\nStub implementation of SocialIntelAgent.\n"""\n\nclass SocialInte
 ENV PYTHONPATH=/app
 ENV PYTHONUNBUFFERED=1
 ENV QDRANT_URL=http://qdrant:6333
+ENV MIGRATION_MODE=hybrid
+ENV SERVICE_VERSION=1.1.0
+ENV RAG_URL=http://rag-gateway:8501
+ENV SUPABASE_URL=http://supabase-rest:3000
+ENV USE_AUTH=true
 
 # Expose port
 EXPOSE 9000

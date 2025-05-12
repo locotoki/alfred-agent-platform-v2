@@ -1,6 +1,6 @@
 """Social Intelligence Service Main Application."""
 
-from fastapi import FastAPI, HTTPException, Query, Body, Request
+from fastapi import FastAPI, HTTPException, Query, Body, Request, Depends
 from contextlib import asynccontextmanager
 import os
 import structlog
@@ -12,6 +12,7 @@ from datetime import datetime
 from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.openapi.utils import get_openapi
+from fastapi.middleware.cors import CORSMiddleware
 
 from app.niche_scout import NicheScout
 from app.blueprint import SeedToBlueprint
@@ -22,13 +23,24 @@ from app.workflow_endpoints import (
     schedule_workflow
 )
 
+# Import platform integration clients
+from app.clients import (
+    supabase_client,
+    rag_client,
+    AuthMiddleware,
+    get_api_key,
+    initialize_clients,
+    MIGRATION_MODE,
+    SERVICE_VERSION
+)
+
 from libs.a2a_adapter import PubSubTransport, SupabaseTransport, PolicyMiddleware
 from libs.agent_core.health import create_health_app
 from agents.social_intel.agent import SocialIntelAgent
 
 logger = structlog.get_logger(__name__)
 
-# Initialize services
+# Initialize legacy services (will be used as fallback or in legacy mode)
 pubsub_transport = PubSubTransport(
     project_id=os.getenv("GCP_PROJECT_ID", "alfred-agent-platform")
 )
@@ -37,7 +49,7 @@ supabase_transport = SupabaseTransport(
     database_url=os.getenv("DATABASE_URL")
 )
 
-redis_client = redis.from_url(os.getenv("REDIS_URL", "redis://redis:6379"))
+redis_client = redis.from_url(os.getenv("REDIS_URL", "redis://redis:6379/0"))
 policy_middleware = PolicyMiddleware(redis_client)
 
 # Initialize agent
@@ -52,45 +64,66 @@ async def lifespan(app: FastAPI):
     """Manage application lifecycle."""
     # Import database module here to avoid circular imports
     from app.database import get_pool, close_pool
-    
+
     # Startup
+    logger.info(f"Starting Social Intelligence Service v{SERVICE_VERSION}")
+
+    # Initialize platform integration clients
+    await initialize_clients()
+
+    # Initialize legacy connections
     await supabase_transport.connect()
-    
+
     # Initialize database connection pool
     try:
         await get_pool()
         logger.info("Database connection pool initialized")
     except Exception as e:
         logger.error("Failed to initialize database connection pool", error=str(e))
-    
+
     # Start agent
     asyncio.create_task(social_agent.start())
-    
-    logger.info("social_intel_service_started")
+
+    logger.info(f"Social Intelligence Service started in {MIGRATION_MODE} mode")
     yield
-    
+
     # Shutdown
+    logger.info("Shutting down Social Intelligence Service")
     await social_agent.stop()
     await supabase_transport.disconnect()
-    
+
     # Close database connection pool
     try:
         await close_pool()
         logger.info("Database connection pool closed")
     except Exception as e:
         logger.error("Failed to close database connection pool", error=str(e))
-    
-    logger.info("social_intel_service_stopped")
+
+    logger.info("Social Intelligence Service stopped")
 
 app = FastAPI(
     title="Social Intelligence Service",
     description="Trend analysis and social media monitoring service",
-    version="1.0.0",
+    version=SERVICE_VERSION,
     lifespan=lifespan
 )
 
+# Add CORS middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Update with appropriate origins in production
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# Add authentication middleware if enabled
+if os.getenv("USE_AUTH", "true").lower() in ("true", "1", "yes"):
+    app.add_middleware(AuthMiddleware)
+    logger.info("Authentication middleware enabled")
+
 # Add health check endpoints
-health_app = create_health_app("social-intel", "1.0.0")
+health_app = create_health_app("social-intel", SERVICE_VERSION)
 app.mount("/health", health_app)
 
 @app.get("/status")
@@ -179,8 +212,19 @@ async def run_niche_scout(
         }
         
         # Add a unique ID for result retrieval
-        result["_id"] = f"niche-scout-{int(datetime.now().timestamp())}"
-        
+        result_id = f"niche-scout-{int(datetime.now().timestamp())}"
+        result["_id"] = result_id
+
+        # Store the result in Supabase if enabled
+        if MIGRATION_MODE == "hybrid" or MIGRATION_MODE == "platform":
+            try:
+                await supabase_client.store_workflow_result(result_id, result, "niche-scout")
+                logger.info(f"Stored niche-scout result in Supabase: {result_id}")
+            except Exception as e:
+                logger.error(f"Error storing niche-scout result in Supabase: {str(e)}")
+                if MIGRATION_MODE == "platform":
+                    raise HTTPException(status_code=500, detail=f"Failed to store result: {str(e)}")
+
         return result
     except Exception as e:
         logger.error("niche_scout_failed", error=str(e), query=query, category=category, subcategory=subcategory)
@@ -246,8 +290,19 @@ async def run_seed_to_blueprint(
         }
         
         # Add a unique ID for result retrieval
-        result["_id"] = f"blueprint-{int(datetime.now().timestamp())}"
-        
+        result_id = f"blueprint-{int(datetime.now().timestamp())}"
+        result["_id"] = result_id
+
+        # Store the result in Supabase if enabled
+        if MIGRATION_MODE == "hybrid" or MIGRATION_MODE == "platform":
+            try:
+                await supabase_client.store_workflow_result(result_id, result, "seed-to-blueprint")
+                logger.info(f"Stored blueprint result in Supabase: {result_id}")
+            except Exception as e:
+                logger.error(f"Error storing blueprint result in Supabase: {str(e)}")
+                if MIGRATION_MODE == "platform":
+                    raise HTTPException(status_code=500, detail=f"Failed to store result: {str(e)}")
+
         return result
     except Exception as e:
         logger.error("seed_to_blueprint_failed", error=str(e))
@@ -276,44 +331,75 @@ async def run_seed_to_blueprint_alt2(
 @app.get("/workflow-result/{result_id}")
 async def get_workflow_result_endpoint(
     result_id: str,
-    type: str = Query(..., description="Type of workflow result to retrieve (niche-scout or seed-to-blueprint)")
+    type: str = Query(..., description="Type of workflow result to retrieve (niche-scout or seed-to-blueprint)"),
+    api_key: str = Depends(get_api_key)
 ):
     """Retrieve previously generated workflow results by ID."""
+    # Use hybrid retrieval if in hybrid mode
+    if MIGRATION_MODE == "hybrid" or MIGRATION_MODE == "platform":
+        try:
+            result = await supabase_client.get_workflow_result(result_id, type)
+            if result:
+                logger.info(f"Retrieved workflow result from Supabase: {result_id}")
+                return result
+        except Exception as e:
+            logger.error(f"Error retrieving workflow result from platform services: {str(e)}")
+            if MIGRATION_MODE == "platform":
+                return {"error": "Failed to retrieve workflow result", "details": str(e)}
+
+    # Fall back to legacy implementation
+    logger.info(f"Retrieving workflow result from file system: {result_id}")
     return await get_workflow_result(result_id, type)
 
 # Alternative routes for workflow results
 @app.get("/youtube/workflow-result/{result_id}")
 async def get_workflow_result_alt1(
     result_id: str,
-    type: str = Query(..., description="Type of workflow result to retrieve")
+    type: str = Query(..., description="Type of workflow result to retrieve"),
+    api_key: str = Depends(get_api_key)
 ):
     """Alternative path for workflow results."""
-    return await get_workflow_result(result_id, type)
+    return await get_workflow_result_endpoint(result_id, type, api_key)
 
 @app.get("/api/youtube/workflow-result/{result_id}")
 async def get_workflow_result_alt2(
     result_id: str,
-    type: str = Query(..., description="Type of workflow result to retrieve")
+    type: str = Query(..., description="Type of workflow result to retrieve"),
+    api_key: str = Depends(get_api_key)
 ):
     """Alternative path for workflow results."""
-    return await get_workflow_result(result_id, type)
+    return await get_workflow_result_endpoint(result_id, type, api_key)
 
 # Workflow history endpoint
 @app.get("/workflow-history")
-async def get_workflow_history_endpoint():
+async def get_workflow_history_endpoint(api_key: str = Depends(get_api_key)):
     """Retrieve history of workflow executions."""
+    # Use hybrid retrieval if in hybrid mode
+    if MIGRATION_MODE == "hybrid" or MIGRATION_MODE == "platform":
+        try:
+            result = await supabase_client.get_workflow_history(limit=50)
+            if result:
+                logger.info(f"Retrieved workflow history from Supabase: {len(result)} items")
+                return result
+        except Exception as e:
+            logger.error(f"Error retrieving workflow history from platform services: {str(e)}")
+            if MIGRATION_MODE == "platform":
+                return {"error": "Failed to retrieve workflow history", "details": str(e)}
+
+    # Fall back to legacy implementation
+    logger.info("Retrieving workflow history from file system")
     return await get_workflow_history()
 
 # Alternative routes for workflow history
 @app.get("/youtube/workflow-history")
-async def get_workflow_history_alt1():
+async def get_workflow_history_alt1(api_key: str = Depends(get_api_key)):
     """Alternative path for workflow history."""
-    return await get_workflow_history()
+    return await get_workflow_history_endpoint(api_key)
 
 @app.get("/api/youtube/workflow-history")
-async def get_workflow_history_alt2():
+async def get_workflow_history_alt2(api_key: str = Depends(get_api_key)):
     """Alternative path for workflow history."""
-    return await get_workflow_history()
+    return await get_workflow_history_endpoint(api_key)
 
 # Scheduled workflows endpoint
 @app.get("/scheduled-workflows")

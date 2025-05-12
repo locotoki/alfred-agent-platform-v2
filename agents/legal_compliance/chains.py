@@ -28,6 +28,8 @@ Audit Scope: {audit_scope}
 Compliance Categories: {compliance_categories}
 Documents: {documents}
 
+{external_context}
+
 Analyze the organization's compliance status across all specified categories.
 Identify any compliance issues, assess risk levels, and provide detailed recommendations.
 
@@ -35,7 +37,7 @@ Identify any compliance issues, assess risk levels, and provide detailed recomme
 
 Provide a thorough compliance audit result:
 """,
-    input_variables=["organization_name", "audit_scope", "compliance_categories", "documents"],
+    input_variables=["organization_name", "audit_scope", "compliance_categories", "documents", "external_context"],
     partial_variables={"format_instructions": audit_parser.get_format_instructions()}
 )
 
@@ -57,6 +59,8 @@ Document Content: {document_content}
 Compliance Frameworks: {compliance_frameworks}
 Check for PII: {check_for_pii}
 
+{external_context}
+
 Thoroughly analyze the document for compliance issues, identify any personally identifiable information (PII),
 and assess the risk level of any findings.
 
@@ -64,7 +68,7 @@ and assess the risk level of any findings.
 
 Provide a comprehensive document analysis:
 """,
-    input_variables=["document_type", "document_content", "compliance_frameworks", "check_for_pii"],
+    input_variables=["document_type", "document_content", "compliance_frameworks", "check_for_pii", "external_context"],
     partial_variables={"format_instructions": document_parser.get_format_instructions()}
 )
 
@@ -86,13 +90,15 @@ Jurisdictions: {jurisdictions}
 Industry Sector: {industry_sector}
 Specific Regulations: {specific_regulations}
 
+{external_context}
+
 Identify all applicable regulations, compliance requirements, and potential risk areas.
 
 {format_instructions}
 
 Provide a comprehensive regulation check result:
 """,
-    input_variables=["business_activity", "jurisdictions", "industry_sector", "specific_regulations"],
+    input_variables=["business_activity", "jurisdictions", "industry_sector", "specific_regulations", "external_context"],
     partial_variables={"format_instructions": regulation_parser.get_format_instructions()}
 )
 
@@ -115,14 +121,16 @@ Parties Involved: {parties_involved}
 Jurisdiction: {jurisdiction}
 Review Focus Areas: {review_focus}
 
-Analyze the contract for compliance issues, identify key terms, assess risks, 
+{external_context}
+
+Analyze the contract for compliance issues, identify key terms, assess risks,
 and provide recommendations for improvement.
 
 {format_instructions}
 
 Provide a comprehensive contract review:
 """,
-    input_variables=["contract_type", "contract_content", "parties_involved", "jurisdiction", "review_focus"],
+    input_variables=["contract_type", "contract_content", "parties_involved", "jurisdiction", "review_focus", "external_context"],
     partial_variables={"format_instructions": contract_parser.get_format_instructions()}
 )
 

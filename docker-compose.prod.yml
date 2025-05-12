@@ -1,0 +1,461 @@
+# Alfred Agent Platform v2 - Production Environment Configuration
+# This file contains production-specific settings that override the base configuration
+
+services:
+  #############################################################################
+  # CORE INFRASTRUCTURE SERVICES - PRODUCTION OVERRIDES
+  #############################################################################
+  
+  redis:
+    # Production-ready Redis configuration
+    command: ["redis-server", "--appendonly", "yes", "--save", "60", "1", "--protected-mode", "no"]
+    restart: always
+    # Resource constraints for production
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+    # Production-only logging configuration
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  vector-db:
+    # Production configuration
+    restart: always
+    # Resource constraints for production
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 4G
+        reservations:
+          cpus: '1'
+          memory: 2G
+    # Production-only logging configuration
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  pubsub-emulator:
+    # In production, this might be replaced with a real PubSub service,
+    # but for self-contained deployments, still use the emulator with proper settings
+    restart: always
+    # Resource constraints for production
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 2G
+        reservations:
+          cpus: '0.5'
+          memory: 1G
+    # Production-only logging configuration
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  llm-service:
+    # Production settings
+    restart: always
+    # Resource constraints for production (if GPU is available)
+    deploy:
+      resources:
+        limits:
+          cpus: '4'
+          memory: 16G
+        reservations:
+          cpus: '2'
+          memory: 8G
+    # Production-only logging configuration
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  #############################################################################
+  # DATABASE SERVICES - PRODUCTION OVERRIDES
+  #############################################################################
+
+  db-postgres:
+    # Production-ready Postgres configuration
+    command:
+      - postgres
+      - -c
+      - wal_level=logical
+      - -c
+      - max_connections=1000
+      - -c
+      - shared_buffers=1GB
+      - -c
+      - effective_cache_size=3GB
+      - -c
+      - maintenance_work_mem=256MB
+      - -c
+      - checkpoint_completion_target=0.9
+      - -c
+      - wal_buffers=16MB
+      - -c
+      - default_statistics_target=100
+      - -c
+      - random_page_cost=1.1
+      - -c
+      - effective_io_concurrency=200
+      - -c
+      - work_mem=4MB
+      - -c
+      - min_wal_size=1GB
+      - -c
+      - max_wal_size=4GB
+      - -c
+      - max_worker_processes=8
+      - -c
+      - max_parallel_workers_per_gather=4
+      - -c
+      - max_parallel_workers=8
+      - -c
+      - max_parallel_maintenance_workers=4
+    restart: always
+    # Resource constraints for production
+    deploy:
+      resources:
+        limits:
+          cpus: '4'
+          memory: 8G
+        reservations:
+          cpus: '2'
+          memory: 4G
+    # Production-only logging configuration
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "5"
+
+  db-auth:
+    restart: always
+    # Resource constraints for production
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+    # Production-only logging configuration
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  db-api:
+    restart: always
+    # Resource constraints for production
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 2G
+        reservations:
+          cpus: '1'
+          memory: 1G
+    # Production-only logging configuration
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  #############################################################################
+  # AGENT SERVICES - PRODUCTION OVERRIDES
+  #############################################################################
+
+  agent-core:
+    # Use pre-built image in production
+    image: ${ALFRED_REGISTRY:-localhost}/agent-core:${ALFRED_VERSION:-latest}
+    restart: always
+    environment:
+      - ALFRED_ENVIRONMENT=production
+      - ALFRED_DEBUG=false
+      - ALFRED_LOG_LEVEL=INFO
+    # Resource constraints for production
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 4G
+        reservations:
+          cpus: '1'
+          memory: 2G
+    # Production-only logging configuration
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "5"
+    # Production optimized command
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8011 --workers 4 --log-level info
+
+  agent-rag:
+    # Use pre-built image in production
+    image: ${ALFRED_REGISTRY:-localhost}/agent-rag:${ALFRED_VERSION:-latest}
+    restart: always
+    environment:
+      - ALFRED_LOG_LEVEL=INFO
+      - ALFRED_DEBUG=false
+    # Resource constraints for production
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 4G
+        reservations:
+          cpus: '1'
+          memory: 2G
+    # Production-only logging configuration
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "5"
+    # Production optimized command
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8501 --workers 4 --log-level info
+
+  agent-atlas:
+    # Use pre-built image in production
+    image: ${ALFRED_REGISTRY:-localhost}/agent-atlas:${ALFRED_VERSION:-latest}
+    restart: always
+    environment:
+      - ALFRED_LOG_LEVEL=INFO
+      - ALFRED_DEBUG=false
+    # Resource constraints for production
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 8G
+        reservations:
+          cpus: '1'
+          memory: 4G
+    # Production-only logging configuration
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "5"
+
+  agent-social:
+    # Use real service in production instead of stub
+    image: ${ALFRED_REGISTRY:-localhost}/agent-social:${ALFRED_VERSION:-latest}
+    restart: always
+    environment:
+      - ALFRED_ENVIRONMENT=production
+      - ALFRED_DEBUG=false
+      - ALFRED_LOG_LEVEL=INFO
+    # Resource constraints for production
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 4G
+        reservations:
+          cpus: '1'
+          memory: 2G
+    # Production-only logging configuration
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "3"
+    # Production command (not stub)
+    command: python -m app.main
+
+  agent-financial:
+    # Use real service in production instead of stub
+    image: ${ALFRED_REGISTRY:-localhost}/agent-financial:${ALFRED_VERSION:-latest}
+    restart: always
+    environment:
+      - ALFRED_ENVIRONMENT=production
+      - ALFRED_DEBUG=false
+      - ALFRED_LOG_LEVEL=INFO
+    # Resource constraints for production
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 4G
+        reservations:
+          cpus: '1'
+          memory: 2G
+    # Production-only logging configuration
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "3"
+    # Production command (not stub)
+    command: python -m app.main
+
+  agent-legal:
+    # Use real service in production instead of stub
+    image: ${ALFRED_REGISTRY:-localhost}/agent-legal:${ALFRED_VERSION:-latest}
+    restart: always
+    environment:
+      - ALFRED_ENVIRONMENT=production
+      - ALFRED_DEBUG=false
+      - ALFRED_LOG_LEVEL=INFO
+    # Resource constraints for production
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 4G
+        reservations:
+          cpus: '1'
+          memory: 2G
+    # Production-only logging configuration
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "3"
+    # Production command (not stub)
+    command: python -m app.main
+
+  #############################################################################
+  # UI SERVICES - PRODUCTION OVERRIDES
+  #############################################################################
+
+  ui-chat:
+    # Use pre-built image in production
+    image: ${ALFRED_REGISTRY:-localhost}/ui-chat:${ALFRED_VERSION:-latest}
+    restart: always
+    # No development volumes in production
+    volumes: []
+    # Production environment
+    environment:
+      - ALFRED_ENVIRONMENT=production
+    ports:
+      - "8502:8501"  # Map container's 8501 to host's 8502
+    # Resource constraints for production
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 2G
+        reservations:
+          cpus: '0.5'
+          memory: 1G
+    # Production-only logging configuration
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  ui-admin:
+    # Use real service in production instead of stub
+    image: ${ALFRED_REGISTRY:-localhost}/ui-admin:${ALFRED_VERSION:-latest}
+    restart: always
+    # Production environment
+    environment:
+      - NODE_ENV=production
+    ports:
+      - "3007:3000"  # Map container's 3000 to host's 3007
+    # Resource constraints for production
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 2G
+        reservations:
+          cpus: '0.5'
+          memory: 1G
+    # Production-only logging configuration
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "3"
+    # Production command (not stub)
+    command: node server.js
+
+  #############################################################################
+  # MONITORING SERVICES - PRODUCTION OVERRIDES
+  #############################################################################
+
+  monitoring-metrics:
+    restart: always
+    # Use production configuration
+    volumes:
+      - ./monitoring/prometheus/prometheus.prod.yml:/etc/prometheus/prometheus.yml
+      - monitoring-metrics-data:/prometheus
+    # Resource constraints for production
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 4G
+        reservations:
+          cpus: '1'
+          memory: 2G
+    # Production-only logging configuration
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  monitoring-dashboard:
+    restart: always
+    # Production environment variables
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: ${MONITORING_ADMIN_PASSWORD}
+      GF_USERS_ALLOW_SIGN_UP: "false"
+      GF_SERVER_DOMAIN: ${MONITORING_DOMAIN}
+      GF_SERVER_ROOT_URL: "https://${MONITORING_DOMAIN}/grafana/"
+    # Resource constraints for production
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 2G
+        reservations:
+          cpus: '0.5'
+          memory: 1G
+    # Production-only logging configuration
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  monitoring-node:
+    restart: always
+    # Resource constraints for production
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 256M
+        reservations:
+          cpus: '0.1'
+          memory: 128M
+    # Production-only logging configuration
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  monitoring-db:
+    restart: always
+    # Resource constraints for production
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 256M
+        reservations:
+          cpus: '0.1'
+          memory: 128M
+    # Production-only logging configuration
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "3"

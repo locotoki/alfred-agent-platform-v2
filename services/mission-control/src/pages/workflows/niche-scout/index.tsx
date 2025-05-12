@@ -1,9 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
+import { useRouter } from "next/router";
 
 // Dynamically load the better loading component with no SSR
 import MainLayout from "../../../components/layout/MainLayout";
+import LoadingOverlay from "../../../components/Loading/LoadingOverlay";
 import { motion, AnimatePresence } from "framer-motion";
+import { runNicheScout } from "../../../services/youtube-workflows";
 
 // Types ----------------------------------------------------------------------
 interface NicheForm {
@@ -39,6 +42,8 @@ export default function NicheScout() {
   const [showScheduleModal, setShowScheduleModal] = useState(false);
   const [frequency, setFrequency] = useState("daily");
   const [runDate, setRunDate] = useState("");
+  const [resultId, setResultId] = useState<string | null>(null);
+  const [loadingMessage, setLoadingMessage] = useState("Running Niche-Scout workflow...");
 
   // helpers -------------------------------------------------------------------
   const next = () => setStep((s) => (s < 2 ? ((s + 1) as any) : s));
@@ -49,13 +54,57 @@ export default function NicheScout() {
   const update = (field: keyof NicheForm, value: any) =>
     setForm((f) => ({ ...f, [field]: value }));
 
-  const handleRunWorkflow = async () => {\r\n    console.log('CLIENT: Starting API call to niche-scout');
+  const router = useRouter();
+
+  // Add useEffect for navigation
+  useEffect(() => {
+    if (resultId) {
+      const timer = setTimeout(() => {
+        setLoadingMessage("Analysis complete! Navigating to results...");
+
+        // Add a small delay to ensure the loading message update is visible
+        setTimeout(() => {
+          console.log('Navigating to result ID:', resultId);
+
+          // Try direct window location navigation instead of router
+          window.location.href = `/workflows/niche-scout/results/${resultId}`;
+
+          // Fallback in case the above doesn't work
+          setTimeout(() => {
+            // Force a hard navigation if router is problematic
+            window.location.replace(`/workflows/niche-scout/results/${resultId}`);
+          }, 1000);
+        }, 1500);
+      }, 1000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [resultId]);
+
+  const handleRunWorkflow = async () => {
+    console.log('CLIENT: Starting API call to niche-scout');
     setIsLoading(true);
-    // Simulate API call with a timeout
-    setTimeout(() => {
-      alert('Analysis complete! Navigating to results...');
+    setLoadingMessage("Running Niche-Scout workflow...");
+
+    try {
+      // Call the actual API service
+      const response = await runNicheScout(form.description);
+
+      // When we get a result ID, set it in state
+      if (response && response._id) {
+        console.log('Workflow completed successfully, got result ID:', response._id);
+        setResultId(response._id);
+        setLoadingMessage("Analysis complete! Navigating to results...");
+      } else {
+        console.error('Workflow completed but no result ID was returned');
+        alert('An error occurred while running the workflow.');
+        setIsLoading(false);
+      }
+    } catch (error) {
+      console.error('Error running Niche-Scout workflow:', error);
+      alert('An error occurred while running the workflow.');
       setIsLoading(false);
-    }, 2000);
+    }
   };
 
   const handleScheduleWorkflow = () => {
@@ -426,7 +475,7 @@ export default function NicheScout() {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-md w-full">
             <h2 className="text-xl font-bold mb-4">Schedule Workflow</h2>
-            
+
             <div className="mb-4">
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Frequency
@@ -442,7 +491,7 @@ export default function NicheScout() {
                 <option value="once">Once</option>
               </select>
             </div>
-            
+
             {frequency === 'once' && (
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
@@ -456,7 +505,7 @@ export default function NicheScout() {
                 />
               </div>
             )}
-            
+
             <div className="flex justify-end space-x-2">
               <button
                 onClick={() => setShowScheduleModal(false)}
@@ -474,6 +523,14 @@ export default function NicheScout() {
           </div>
         </div>
       )}
+
+      {/* Loading Overlay */}
+      <LoadingOverlay
+        isVisible={isLoading}
+        message={loadingMessage}
+        resultId={resultId}
+        resultType="niche-scout"
+      />
     </MainLayout>
   );
 }

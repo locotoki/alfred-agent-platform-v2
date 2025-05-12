@@ -1,0 +1,114 @@
+# Alfred Agent Platform v2 - Monitoring Components
+# This file contains only the monitoring services
+
+x-monitoring-service-labels: &monitoring-service-labels
+  com.docker.compose.project: "alfred"
+  com.docker.compose.group: "monitoring"
+
+services:
+  #############################################################################
+  # MONITORING SERVICES
+  #############################################################################
+
+  # Metrics Collection
+  monitoring-metrics:
+    image: prom/prometheus:v2.48.1
+    container_name: monitoring-metrics
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - monitoring-metrics-data:/prometheus
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "http://localhost:9090/-/healthy"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    restart: unless-stopped
+    networks:
+      - alfred-network
+    labels:
+      <<: *monitoring-service-labels
+      com.docker.compose.service: "monitoring-metrics"
+
+  # Monitoring Dashboards
+  monitoring-dashboard:
+    image: grafana/grafana:10.2.3
+    container_name: monitoring-dashboard
+    ports:
+      - "3005:3000"
+    volumes:
+      - ./monitoring/grafana/dashboards:/var/lib/grafana/dashboards
+      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning
+      - monitoring-dashboard-data:/var/lib/grafana
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: ${MONITORING_ADMIN_PASSWORD:-admin}
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    restart: unless-stopped
+    networks:
+      - alfred-network
+    labels:
+      <<: *monitoring-service-labels
+      com.docker.compose.service: "monitoring-dashboard"
+
+  # Host Metrics Exporter
+  monitoring-node:
+    image: prom/node-exporter:v1.7.0
+    container_name: monitoring-node
+    ports:
+      - "9100:9100"
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.sysfs=/host/sys'
+      - '--collector.filesystem.ignored-mount-points=^/(sys|proc|dev|host|etc)($$|/)'
+    restart: unless-stopped
+    networks:
+      - alfred-network
+    labels:
+      <<: *monitoring-service-labels
+      com.docker.compose.service: "monitoring-node"
+
+  # Database Metrics Exporter
+  monitoring-db:
+    image: prometheuscommunity/postgres-exporter:v0.15.0
+    container_name: monitoring-db
+    ports:
+      - "9187:9187"
+    environment:
+      DATA_SOURCE_NAME: "postgresql://${DB_USER:-postgres}:${DB_PASSWORD:-your-super-secret-password}@db-postgres:5432/${DB_NAME:-postgres}?sslmode=disable"
+    depends_on:
+      - db-postgres
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9187/metrics"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    restart: unless-stopped
+    networks:
+      - alfred-network
+    labels:
+      <<: *monitoring-service-labels
+      com.docker.compose.service: "monitoring-db"
+
+# Volumes
+volumes:
+  monitoring-metrics-data:
+    name: monitoring-metrics-data
+  monitoring-dashboard-data:
+    name: monitoring-dashboard-data
+
+# Networks
+networks:
+  alfred-network:
+    external: true

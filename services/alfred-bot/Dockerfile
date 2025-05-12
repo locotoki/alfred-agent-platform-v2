@@ -21,6 +21,8 @@ COPY ./libs /app/libs
 # Set environment variables
 ENV PYTHONPATH=/app
 ENV PYTHONUNBUFFERED=1
+# Default to demo mode for easier testing without Slack credentials
+ENV ALFRED_APP_MODULE="app.demo_mode:app"
 
 # Expose port
 EXPOSE 8011
@@ -29,5 +31,5 @@ EXPOSE 8011
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
     CMD curl -f http://localhost:8011/health/ || exit 1
 
-# Run the application
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8011"]
+# Run the application with configurable module
+CMD uvicorn ${ALFRED_APP_MODULE} --host 0.0.0.0 --port 8011

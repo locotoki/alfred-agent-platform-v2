@@ -1,0 +1,104 @@
+# Alfred Agent Platform v2 - Agent Core Test Configuration
+
+services:
+  # Core infrastructure services required by agent-core
+  redis:
+    image: redis:7-alpine
+    container_name: redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+    restart: unless-stopped
+    networks:
+      - alfred-network
+
+  db-postgres:
+    image: postgres:15-alpine
+    container_name: db-postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: your-super-secret-password
+      POSTGRES_DB: postgres
+    volumes:
+      - db-postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres", "-h", "localhost"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+    networks:
+      - alfred-network
+
+  # PubSub emulator for message queue
+  pubsub-emulator:
+    image: gcr.io/google.com/cloudsdktool/cloud-sdk:latest
+    container_name: pubsub-emulator
+    command: ["gcloud", "beta", "emulators", "pubsub", "start", "--host-port=0.0.0.0:8085", "--project=alfred-agent-platform"]
+    ports:
+      - "8085:8085"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8085/v1/projects/alfred-agent-platform/topics"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    restart: unless-stopped
+    networks:
+      - alfred-network
+
+  # Core Agent Service
+  agent-core:
+    build:
+      context: ./services/alfred-core
+      dockerfile: Dockerfile
+    image: agent-core:latest
+    container_name: agent-core
+    ports:
+      - "8011:8011"
+    environment:
+      - ALFRED_ENVIRONMENT=development
+      - ALFRED_DEBUG=true
+      - ALFRED_MODE=default
+      - ALFRED_DATABASE_URL=postgresql://postgres:your-super-secret-password@db-postgres:5432/postgres
+      - ALFRED_REDIS_URL=redis://redis:6379
+      - ALFRED_PUBSUB_EMULATOR_HOST=pubsub-emulator:8085
+      - ALFRED_PROJECT_ID=alfred-agent-platform
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8011/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    depends_on:
+      db-postgres:
+        condition: service_healthy
+      pubsub-emulator:
+        condition: service_started
+      redis:
+        condition: service_started
+    restart: unless-stopped
+    networks:
+      - alfred-network
+
+# Volumes
+volumes:
+  redis-data:
+    name: redis-data
+  db-postgres-data:
+    name: db-postgres-data
+
+# Networks
+networks:
+  alfred-network:
+    name: alfred-network
+    driver: bridge

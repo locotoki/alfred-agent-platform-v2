@@ -1,0 +1,149 @@
+name: Atlas Tests
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'services/atlas-worker/**'
+      - 'services/atlas-rag-gateway/**'
+      - 'scripts/publish_task.sh'
+      - 'scripts/index_repo.sh'
+      - 'docker-compose.dev.yml'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'services/atlas-worker/**'
+      - 'services/atlas-rag-gateway/**'
+      - 'scripts/publish_task.sh'
+      - 'scripts/index_repo.sh'
+      - 'docker-compose.dev.yml'
+  workflow_dispatch:
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install black isort flake8 mypy
+
+      - name: Run black
+        run: |
+          black --check services/atlas-worker/ services/atlas-rag-gateway/
+
+      - name: Run isort
+        run: |
+          isort --check-only services/atlas-worker/ services/atlas-rag-gateway/
+
+      - name: Run flake8
+        run: |
+          flake8 services/atlas-worker/ services/atlas-rag-gateway/
+
+      - name: Run mypy
+        run: |
+          mypy services/atlas-worker/ services/atlas-rag-gateway/
+
+  unit-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest pytest-asyncio pytest-cov
+          cd services/atlas-worker
+          pip install -e .
+          cd ../../services/atlas-rag-gateway
+          pip install -e .
+
+      - name: Run tests for atlas-worker
+        run: |
+          cd services/atlas-worker
+          python -m pytest --cov=atlas
+
+      - name: Run tests for atlas-rag-gateway
+        run: |
+          cd services/atlas-rag-gateway
+          python -m pytest --cov=rag_gateway
+
+  integration-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up environment
+        run: |
+          echo "OPENAI_API_KEY=sk-fake-key" >> .env.dev
+          echo "SUPABASE_URL=http://localhost:54321" >> .env.dev
+          echo "SUPABASE_SERVICE_ROLE_KEY=fake-jwt" >> .env.dev
+          echo "PUBSUB_PROJECT_ID=atlas-dev" >> .env.dev
+
+      - name: Start Atlas development stack
+        run: |
+          export $(grep -v '^#' .env.dev | xargs)
+          docker-compose -f docker-compose.dev.yml up -d --build
+          
+      - name: Wait for services to start
+        run: sleep 30
+
+      - name: Check service health
+        run: |
+          docker ps
+          curl -f http://localhost:8501/healthz || (echo "RAG Gateway not healthy" && exit 1)
+          curl -f http://localhost:8000/healthz || (echo "Atlas Worker not healthy" && exit 1)
+
+      - name: Test topic creation
+        run: |
+          # Make sure topics exist
+          docker exec $(docker-compose -f docker-compose.dev.yml ps -q pubsub) gcloud beta pubsub topics create architect_in || true
+          docker exec $(docker-compose -f docker-compose.dev.yml ps -q pubsub) gcloud beta pubsub topics create architect_out || true
+          docker exec $(docker-compose -f docker-compose.dev.yml ps -q pubsub) gcloud beta pubsub subscriptions create architect_in-sub --topic architect_in || true
+
+      - name: Send test task
+        run: |
+          chmod +x ./scripts/publish_task.sh
+          ./scripts/publish_task.sh "Design a small logging API"
+
+      - name: Check for response in logs
+        run: |
+          # Wait for processing
+          sleep 15
+          # Check if Atlas processed the message
+          docker logs $(docker-compose -f docker-compose.dev.yml ps -q atlas-worker) | grep -q "Task completed successfully" || (echo "No successful task completion in logs" && exit 1)
+
+      - name: Index test document
+        run: |
+          chmod +x ./scripts/index_repo.sh
+          # Create a test file
+          mkdir -p /tmp/test-docs
+          echo "# Test Document\n\nThis is a test document for indexing.\n\n## Section 1\n\nSome content for testing." > /tmp/test-docs/test.md
+          # Index the test file
+          ./scripts/index_repo.sh -u http://localhost:8501 /tmp/test-docs
+          # Check the logs
+          docker logs $(docker-compose -f docker-compose.dev.yml ps -q atlas-rag-gateway) | grep -q "Embedding" || (echo "No embedding process found in logs" && exit 1)
+
+      - name: Check prometheus metrics
+        run: |
+          # Check if metrics are being exposed
+          curl -s http://localhost:8000/metrics | grep "atlas_" || (echo "No Atlas metrics found" && exit 1)
+          curl -s http://localhost:8501/metrics | grep "rag_" || (echo "No RAG metrics found" && exit 1)
+
+      - name: Clean up
+        if: always()
+        run: |
+          docker-compose -f docker-compose.dev.yml down -v
+          rm -rf /tmp/test-docs

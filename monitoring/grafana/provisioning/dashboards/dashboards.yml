@@ -1,0 +1,11 @@
+apiVersion: 1
+
+providers:
+  - name: 'Alfred Platform Dashboards'
+    folder: 'Alfred'
+    type: file
+    disableDeletion: false
+    editable: true
+    allowUiUpdates: true
+    options:
+      path: /var/lib/grafana/dashboards

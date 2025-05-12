@@ -91,15 +91,6 @@ For entities that belong to multiple categories:
 2. **Reference Files**: Create reference files in secondary categories that link to the primary document.
 3. **Cross-Reference Map**: Update cross-reference maps to maintain relationships.
 
-### Archived Documentation
-
-For outdated or obsolete content that retains historical value:
-
-1. **Assessment**: Evaluate if content is completely obsolete or has historical value.
-2. **Archiving Process**: Use the archive template to clearly mark content as archived.
-3. **Context Preservation**: Maintain historical context while linking to current documentation.
-4. **Visibility**: Keep archived content accessible but clearly distinguished from active docs.
-
 ### Documentation Standards
 
 1. **Metadata Requirements**:

@@ -1,0 +1,83 @@
+version: '3.8'
+
+services:
+  alfred-core:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: alfred-core:latest
+    restart: unless-stopped
+    environment:
+      # Core settings
+      - ALFRED_MODE=${ALFRED_MODE:-default}
+      - ENABLE_SLACK=${ENABLE_SLACK:-true}
+      
+      # Slack credentials
+      - SLACK_BOT_TOKEN=${SLACK_BOT_TOKEN:-}
+      - SLACK_SIGNING_SECRET=${SLACK_SIGNING_SECRET:-}
+      
+      # Service connections
+      - REDIS_URL=redis://redis:6379
+      - DATABASE_URL=${DATABASE_URL:-postgresql://postgres:postgres@supabase-db:5432/postgres}
+      
+      # Logging
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+    ports:
+      - "8011:8011"
+    networks:
+      - alfred-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8011/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    depends_on:
+      - redis
+
+  streamlit-chat:
+    build:
+      context: ../streamlit-chat
+      dockerfile: Dockerfile
+    image: streamlit-chat:latest
+    restart: unless-stopped
+    environment:
+      - ALFRED_API_URL=http://alfred-core:8011
+    ports:
+      - "8501:8501"
+    networks:
+      - alfred-network
+    healthcheck:
+      test: ["CMD-SHELL", "curl -s http://localhost:8501 | grep -q streamlit || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    depends_on:
+      - alfred-core
+
+  redis:
+    image: redis:alpine
+    restart: unless-stopped
+    command: redis-server --appendonly yes
+    volumes:
+      - redis-data:/data
+    ports:
+      - "6379:6379"
+    networks:
+      - alfred-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+networks:
+  alfred-network:
+    name: alfred-network
+    driver: bridge
+
+volumes:
+  redis-data:
+    driver: local

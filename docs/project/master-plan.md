@@ -375,8 +375,8 @@ Phase 9 will produce test procedure documentation, performance benchmark reports
 ## Related Documentation
 
 - [Technical Design Guide](../development/AI%20Agent%20Platform%20v2–%20Technical%20Design%20Guide.md)
-- [Implementation Status](../IMPLEMENTATION_STATUS.md)
-- [Infrastructure Status](../INFRASTRUCTURE_STATUS.md)
+- [Implementation Status](../implementation_status.md)
+- [Infrastructure Status](../infrastructure_status.md)
 - [Alfred Assistant Implementation](../alfred_assistant_implementation/implementation-plan.md)
 - [API Documentation](../api/a2a-protocol.md)
 - [System Design](../architecture/system-design.md)

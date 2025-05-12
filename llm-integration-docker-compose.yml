@@ -1,0 +1,104 @@
+version: '3.8'
+
+services:
+  model-registry:
+    build:
+      context: ./services/model-registry
+      dockerfile: Dockerfile
+    image: alfred/model-registry:latest
+    container_name: alfred-model-registry
+    restart: unless-stopped
+    environment:
+      - DEBUG=true
+      - DATABASE_URL=postgresql+asyncpg://postgres:postgres@db-postgres:5432/postgres
+      - OLLAMA_URL=http://llm-service:11434
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+      - PORT=8079
+    ports:
+      - "8079:8079"
+    networks:
+      - alfred-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8079/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    depends_on:
+      - db-postgres
+    command: >
+      bash -c "/app/init-db.sh && uvicorn app.main:app --host 0.0.0.0 --port 8079"
+
+  model-router:
+    build:
+      context: ./services/model-router
+      dockerfile: Dockerfile
+    image: alfred/model-router:latest
+    container_name: alfred-model-router
+    restart: unless-stopped
+    environment:
+      - DEBUG=true
+      - MODEL_REGISTRY_URL=http://model-registry:8079
+      - PORT=8080
+    ports:
+      - "8080:8080"
+    networks:
+      - alfred-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    depends_on:
+      - model-registry
+
+  # Reuse the existing postgres database if available
+  db-postgres:
+    image: postgres:14-alpine
+    container_name: alfred-postgres
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - alfred-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # Ollama for local LLM hosting
+  llm-service:
+    image: ollama/ollama:latest
+    container_name: alfred-ollama
+    restart: unless-stopped
+    volumes:
+      - ollama-data:/root/.ollama
+    ports:
+      - "11434:11434"
+    networks:
+      - alfred-network
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+
+networks:
+  alfred-network:
+    external: true
+    name: alfred-network
+
+volumes:
+  postgres-data:
+  ollama-data:

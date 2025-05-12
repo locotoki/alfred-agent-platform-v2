@@ -1,0 +1,245 @@
+# Alfred Agent Platform v2 - Development Environment Overrides
+# This file contains development-specific settings that override the unified configuration
+
+services:
+  #############################################################################
+  # CORE INFRASTRUCTURE SERVICES - DEV OVERRIDES
+  #############################################################################
+  
+  redis:
+    # More verbose logging for development
+    command: ["redis-server", "--loglevel", "verbose"]
+    # Expose debugger ports in development
+    ports:
+      - "6379:6379"
+      - "9121:9121"  # Redis exporter port
+
+  vector-db:
+    # Mount local config for easier debugging
+    volumes:
+      - vector-db-data:/qdrant/storage
+      - ./dev-config/qdrant:/qdrant/config
+    # Expose more verbose logging
+    environment:
+      RUST_LOG: info
+
+  llm-service:
+    # Use bind mount for model storage in development for easier model management
+    volumes:
+      - ./models:/root/.ollama
+    # Additional environment variables for development
+    environment:
+      OLLAMA_HOST: 0.0.0.0
+      OLLAMA_DEBUG: "true"
+
+  model-registry:
+    environment:
+      - DEBUG=true
+    # Development command with debug flag
+    command: >
+      bash -c "/app/init-db.sh && uvicorn app.main:app --host 0.0.0.0 --port 8079 --reload --log-level debug"
+    # Bind mount for development
+    volumes:
+      - ./services/model-registry:/app
+
+  model-router:
+    environment:
+      - DEBUG=true
+    # Development command with debug flag
+    command: >
+      uvicorn app.main:app --host 0.0.0.0 --port 8080 --reload --log-level debug
+    # Bind mount for development
+    volumes:
+      - ./services/model-router:/app
+
+  #############################################################################
+  # DATABASE SERVICES - DEV OVERRIDES
+  #############################################################################
+
+  db-postgres:
+    # Add local mount for SQL scripts during development
+    volumes:
+      - db-postgres-data:/var/lib/postgresql/data
+      - ./migrations/supabase:/docker-entrypoint-initdb.d
+      - ./dev-scripts/database:/dev-scripts
+    # More verbose logging for development
+    command:
+      - postgres
+      - -c
+      - log_statement=all
+      - -c
+      - wal_level=logical
+      - -c
+      - max_connections=1000
+      - -c
+      - listen_addresses=*
+
+  db-api:
+    # Additional params for development
+    environment:
+      PGRST_LOG_LEVEL: info
+      PGRST_SERVER_TIMING: true
+
+  #############################################################################
+  # AGENT SERVICES - DEV OVERRIDES
+  #############################################################################
+
+  agent-core:
+    # Development build overrides
+    build:
+      context: ./services/alfred-core
+      dockerfile: Dockerfile.dev
+    # Bind mount for development hot reloading
+    volumes:
+      - ./services/alfred-core:/app
+    # Development-specific environment variables
+    environment:
+      - ALFRED_ENVIRONMENT=development
+      - ALFRED_DEBUG=true
+      - ALFRED_LOG_LEVEL=DEBUG
+      - ALFRED_RELOAD=true
+    # Development command for hot reloading
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8011 --reload
+
+  agent-rag:
+    # Development build
+    build:
+      context: ./services/atlas-rag-gateway
+      dockerfile: Dockerfile.dev
+    # Bind mount for development hot reloading
+    volumes:
+      - ./services/atlas-rag-gateway:/app
+    # Development-specific environment variables
+    environment:
+      - ALFRED_LOG_LEVEL=DEBUG
+      - ALFRED_DEBUG=true
+    # Development command for hot reloading
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8501 --reload
+
+  agent-atlas:
+    # Development build
+    build:
+      context: ./services/atlas-worker
+      dockerfile: Dockerfile.dev
+    # Bind mount for development
+    volumes:
+      - ./services/atlas-worker:/app
+    # Development-specific environment variables
+    environment:
+      - ALFRED_LOG_LEVEL=DEBUG
+      - ALFRED_DEBUG=true
+    # Development command with auto-reload
+    command: python -m atlas.main --debug --reload
+
+  agent-social:
+    # Development build
+    build:
+      context: ./services/social-intel
+      dockerfile: Dockerfile.dev
+    # Bind mount for development
+    volumes:
+      - ./services/social-intel:/app
+    # Development-specific environment variables
+    environment:
+      - ALFRED_LOG_LEVEL=DEBUG
+      - ALFRED_DEBUG=true
+    # Development command with auto-reload
+    command: uvicorn app.main:app --host 0.0.0.0 --port 9000 --reload
+
+  agent-financial:
+    # Development build
+    build:
+      context: ./services/financial-tax
+      dockerfile: Dockerfile.dev
+    # Bind mount for development
+    volumes:
+      - ./services/financial-tax:/app
+    # Development-specific environment variables
+    environment:
+      - ALFRED_LOG_LEVEL=DEBUG
+      - ALFRED_DEBUG=true
+    # Development command with auto-reload
+    command: uvicorn app.main:app --host 0.0.0.0 --port 9003 --reload
+
+  agent-legal:
+    # Development build
+    build:
+      context: ./services/legal-compliance
+      dockerfile: Dockerfile.dev
+    # Bind mount for development
+    volumes:
+      - ./services/legal-compliance:/app
+    # Development-specific environment variables
+    environment:
+      - ALFRED_LOG_LEVEL=DEBUG
+      - ALFRED_DEBUG=true
+    # Development command with auto-reload
+    command: uvicorn app.main:app --host 0.0.0.0 --port 9002 --reload
+
+  #############################################################################
+  # UI SERVICES - DEV OVERRIDES
+  #############################################################################
+
+  ui-chat:
+    # Development build
+    build:
+      context: ./services/streamlit-chat
+      dockerfile: Dockerfile.dev
+    # Bind mount for development hot reloading
+    volumes:
+      - ./services/streamlit-chat:/app
+    # Development-specific environment variables
+    environment:
+      - ALFRED_DEBUG=true
+    # Development command
+    command: streamlit run streamlit_chat_ui.py --server.port=8501 --server.address=0.0.0.0 --server.headless=true --server.enableCORS=false --server.enableXsrfProtection=false --server.runOnSave=true
+
+  ui-admin:
+    # In development, use actual mission control service rather than stub
+    build:
+      context: ./services/mission-control
+      dockerfile: Dockerfile.dev
+    # Bind mount for development hot reloading
+    volumes:
+      - ./services/mission-control:/app
+      - /app/node_modules
+    # Development-specific environment variables
+    environment:
+      - NODE_ENV=development
+    # Development command
+    command: npm run dev
+    # In development, map to both 3000 and 3007
+    ports:
+      - "3000:3000"
+      - "3007:3000"
+
+  auth-ui:
+    # Development environment variables
+    environment:
+      - DEBUG=true
+
+  #############################################################################
+  # MONITORING SERVICES - DEV OVERRIDES
+  #############################################################################
+
+  monitoring-metrics:
+    # Development-specific configs
+    volumes:
+      - ./monitoring/prometheus/prometheus.dev.yml:/etc/prometheus/prometheus.yml
+      - monitoring-metrics-data:/prometheus
+    # Extra development flags
+    command: 
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.path=/prometheus
+      - --web.console.libraries=/usr/share/prometheus/console_libraries
+      - --web.console.templates=/usr/share/prometheus/consoles
+      - --log.level=debug
+
+  monitoring-dashboard:
+    # Development-specific environment variables
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: admin
+      GF_USERS_ALLOW_SIGN_UP: "true"
+      GF_AUTH_ANONYMOUS_ENABLED: "true"
+      GF_INSTALL_PLUGINS: grafana-clock-panel,grafana-simple-json-datasource
+      GF_LOG_LEVEL: debug

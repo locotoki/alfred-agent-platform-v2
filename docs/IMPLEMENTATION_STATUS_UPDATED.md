@@ -288,7 +288,7 @@ All components have been tested and verified:
 
 ### Immediate Post-Rollout Actions
 
-For Social Intelligence v1.0.0, the following post-rollout actions are tracked in [POST_ROLLOUT_ACTIONS.md](./POST_ROLLOUT_ACTIONS.md):
+For Social Intelligence v1.0.0, the following post-rollout actions are tracked in [POST_ROLLOUT_ACTIONS.md](./post_rollout_actions.md):
 
 1. **Weekly follow-up on SI-243** (parameter-aware upstream API)
 2. **Cleanup of client-side transformation** once upstream API is fixed

@@ -1,0 +1,45 @@
+services:
+  streamlit-chat:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: streamlit-chat:latest
+    restart: unless-stopped
+    environment:
+      - ALFRED_API_URL=http://alfred-api-demo:8011
+    ports:
+      - "8502:8501"
+    networks:
+      - alfred-network
+    # Streamlit doesn't have a proper health endpoint
+    healthcheck:
+      test: ["CMD-SHELL", "curl -s http://localhost:8501 | grep -q streamlit || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    depends_on:
+      - alfred-api-demo
+
+  alfred-api-demo:
+    image: python:3.11-slim
+    restart: unless-stopped
+    working_dir: /app
+    volumes:
+      - ./alfred_api_demo.py:/app/alfred_api_demo.py
+    ports:
+      - "8012:8011"
+    networks:
+      - alfred-network
+    command: >
+      bash -c "pip install fastapi uvicorn && python alfred_api_demo.py"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -s http://localhost:8011/health | grep -q 'healthy' || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+networks:
+  alfred-network:
+    driver: bridge

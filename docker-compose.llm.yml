@@ -1,0 +1,39 @@
+# Alfred Agent Platform v2 - LLM Service
+# This file contains the LLM service
+
+x-llm-service-labels: &llm-service-labels
+  com.docker.compose.project: "alfred"
+  com.docker.compose.group: "llm"
+
+services:
+  # Local LLM Service
+  llm-service:
+    image: ollama/ollama:latest
+    container_name: llm-service
+    ports:
+      - "11434:11434"
+    volumes:
+      - llm-service-data:/root/.ollama
+    restart: unless-stopped
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    networks:
+      - alfred-network
+    labels:
+      <<: *llm-service-labels
+      com.docker.compose.service: "llm-service"
+
+# Volumes
+volumes:
+  llm-service-data:
+    name: llm-service-data
+
+# Networks
+networks:
+  alfred-network:
+    external: true

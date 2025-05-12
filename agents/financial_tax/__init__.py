@@ -1,35 +1,51 @@
-"""Financial Tax Agent Package"""
+"""Stub implementation of FinancialTaxAgent."""
 
-from .agent import FinancialTaxAgent
-from .chains import (
-    TaxCalculationChain,
-    FinancialAnalysisChain,
-    ComplianceCheckChain,
-    RateLookupChain
-)
-from .models import (
-    TaxCalculationRequest,
-    FinancialAnalysisRequest,
-    ComplianceCheckRequest,
-    TaxRateRequest,
-    TaxCalculationResponse,
-    FinancialAnalysisResponse,
-    ComplianceCheckResponse,
-    TaxRateResponse
-)
+# Intent constants
+TAX_CALCULATION = "tax_calculation"
+FINANCIAL_ANALYSIS = "financial_analysis"
+TAX_COMPLIANCE_CHECK = "tax_compliance_check"
+RATE_SHEET_LOOKUP = "rate_sheet_lookup"
 
-__all__ = [
-    "FinancialTaxAgent",
-    "TaxCalculationChain",
-    "FinancialAnalysisChain", 
-    "ComplianceCheckChain",
-    "RateLookupChain",
-    "TaxCalculationRequest",
-    "FinancialAnalysisRequest",
-    "ComplianceCheckRequest",
-    "TaxRateRequest",
-    "TaxCalculationResponse",
-    "FinancialAnalysisResponse",
-    "ComplianceCheckResponse",
-    "TaxRateResponse"
-]
+class FinancialTaxAgent:
+    def __init__(self, pubsub_transport, supabase_transport, policy_middleware):
+        self.pubsub_transport = pubsub_transport
+        self.supabase_transport = supabase_transport
+        self.policy_middleware = policy_middleware
+        self.is_running = False
+        self.supported_intents = [TAX_CALCULATION, FINANCIAL_ANALYSIS, TAX_COMPLIANCE_CHECK, RATE_SHEET_LOOKUP]
+        
+    async def start(self):
+        self.is_running = True
+        print("Starting FinancialTaxAgent...")
+        
+    async def stop(self):
+        self.is_running = False
+        print("Stopping FinancialTaxAgent...")
+        
+class TaxCalculationRequest:
+    @staticmethod
+    def dict():
+        return {}
+        
+class FinancialAnalysisRequest:
+    @staticmethod
+    def dict():
+        return {}
+        
+class ComplianceCheckRequest:
+    @staticmethod
+    def dict():
+        return {}
+        
+class TaxRateRequest:
+    def __init__(self, jurisdiction, tax_year, entity_type):
+        self.jurisdiction = jurisdiction
+        self.tax_year = tax_year
+        self.entity_type = entity_type
+        
+    def dict(self):
+        return {
+            "jurisdiction": self.jurisdiction,
+            "tax_year": self.tax_year,
+            "entity_type": self.entity_type
+        }
