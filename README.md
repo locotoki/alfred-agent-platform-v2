@@ -183,8 +183,21 @@ Access monitoring dashboards:
 make monitor
 ```
 
-- Grafana: http://localhost:3002 (admin/admin)
+- Grafana: http://localhost:3005 (admin/admin)
 - Prometheus: http://localhost:9090
+
+### Metrics and Health Checks
+
+The platform includes comprehensive health monitoring with metrics export:
+
+- **Update healthcheck binary**: `./scripts/update-healthcheck-binary.sh`
+- **Validate metrics format**: `./scripts/lint-metrics-format.sh`
+- **Service health dashboard**: http://localhost:3005/d/platform-health-dashboard/platform-health-dashboard
+
+Each service exposes three standard health endpoints:
+- `/health` - Detailed health information
+- `/healthz` - Simple health probe
+- `/metrics` - Prometheus metrics (port 909x)
 
 ## Contributing
 
