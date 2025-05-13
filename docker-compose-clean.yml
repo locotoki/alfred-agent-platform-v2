@@ -823,7 +823,7 @@ services:
     ports:
       - "3005:3000"
     volumes:
-      - ./monitoring/grafana/dashboards:/var/lib/grafana/dashboards
+      - ./monitoring/grafana/dashboards:/etc/grafana/dashboards
       - ./monitoring/grafana/provisioning:/etc/grafana/provisioning
       - monitoring-dashboard-data:/var/lib/grafana
     environment:
