@@ -30,7 +30,7 @@ google-cloud-pubsub==2.19.0
 
 # Slack Integration
 slack-bolt==1.18.1
-slack-sdk==3.23.0
+slack-sdk>=3.25.0,<4.0.0
 
 # API Framework
 fastapi==0.108.0
