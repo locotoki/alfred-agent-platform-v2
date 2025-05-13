@@ -7,7 +7,7 @@ from .models import (
     ComplianceAuditResult,
     DocumentAnalysisResult,
     RegulationCheckResult,
-    ContractReviewResult
+    ContractReviewResult,
 )
 
 __all__ = [
@@ -19,5 +19,5 @@ __all__ = [
     "ComplianceAuditResult",
     "DocumentAnalysisResult",
     "RegulationCheckResult",
-    "ContractReviewResult"
+    "ContractReviewResult",
 ]
