@@ -24,7 +24,7 @@ aiohttp==3.9.1
 # LangChain ecosystem
 langchain==0.1.6
 langchain-community==0.0.20
-langchain-core==0.1.23
+langchain-core>=0.1.25,<0.2.0
 langchain-openai==0.0.5
 
 # Database
