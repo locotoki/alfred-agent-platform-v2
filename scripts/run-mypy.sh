@@ -11,6 +11,7 @@ EXCLUDE_PATTERNS=(
   "cleanup-temp"
   "docs/archive"
   "node_modules"
+  "services/alfred-bot/app"  # Conflicts with rag-gateway/src/app.py
 )
 
 EXCLUDE_ARGS=""
