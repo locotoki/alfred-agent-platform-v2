@@ -8,6 +8,7 @@ from datetime import datetime
 
 class FilingStatus(str, Enum):
     """Tax filing status"""
+
     SINGLE = "single"
     MARRIED_JOINT = "married_joint"
     MARRIED_SEPARATE = "married_separate"
@@ -17,6 +18,7 @@ class FilingStatus(str, Enum):
 
 class DeductionType(str, Enum):
     """Types of tax deductions"""
+
     STANDARD = "standard"
     MORTGAGE_INTEREST = "mortgage_interest"
     PROPERTY_TAX = "property_tax"
@@ -29,6 +31,7 @@ class DeductionType(str, Enum):
 
 class CreditType(str, Enum):
     """Types of tax credits"""
+
     CHILD_TAX_CREDIT = "child_tax_credit"
     EARNED_INCOME = "earned_income"
     EDUCATION = "education"
@@ -39,6 +42,7 @@ class CreditType(str, Enum):
 
 class SeverityLevel(str, Enum):
     """Severity levels for compliance issues"""
+
     LOW = "low"
     MEDIUM = "medium"
     HIGH = "high"
@@ -47,6 +51,7 @@ class SeverityLevel(str, Enum):
 
 class TaxDeduction(BaseModel):
     """Tax deduction model"""
+
     type: DeductionType
     amount: float = Field(..., gt=0)
     description: Optional[str] = None
@@ -54,6 +59,7 @@ class TaxDeduction(BaseModel):
 
 class TaxCredit(BaseModel):
     """Tax credit model"""
+
     type: CreditType
     amount: float = Field(..., gt=0)
     description: Optional[str] = None
@@ -61,6 +67,7 @@ class TaxCredit(BaseModel):
 
 class TaxCalculationRequest(BaseModel):
     """Request model for tax calculation"""
+
     gross_income: float = Field(..., ge=0)
     filing_status: FilingStatus
     tax_year: int = Field(..., ge=1900, le=2050)
@@ -72,6 +79,7 @@ class TaxCalculationRequest(BaseModel):
 
 class TaxCalculationResult(BaseModel):
     """Result model for tax calculation"""
+
     gross_income: float
     total_deductions: float
     taxable_income: float
@@ -85,6 +93,7 @@ class TaxCalculationResult(BaseModel):
 
 class FinancialAnalysisRequest(BaseModel):
     """Request model for financial analysis"""
+
     analysis_type: str = Field(..., pattern="^(business_health|tax_planning|investment_analysis)$")
     data: Dict[str, Any]
     time_period: str
@@ -94,6 +103,7 @@ class FinancialAnalysisRequest(BaseModel):
 
 class FinancialAnalysisResult(BaseModel):
     """Result model for financial analysis"""
+
     analysis_type: str
     metrics: Dict[str, float]
     insights: List[str]
@@ -106,6 +116,7 @@ class FinancialAnalysisResult(BaseModel):
 
 class ComplianceIssue(BaseModel):
     """Model for compliance issues"""
+
     area: str
     issue: str
     severity: SeverityLevel
@@ -116,6 +127,7 @@ class ComplianceIssue(BaseModel):
 
 class ComplianceCheckRequest(BaseModel):
     """Request model for compliance check"""
+
     entity_type: str = Field(..., pattern="^(individual|corporation|partnership|LLC|trust)$")
     jurisdiction: str
     tax_year: int = Field(..., ge=1900, le=2050)
@@ -126,6 +138,7 @@ class ComplianceCheckRequest(BaseModel):
 
 class ComplianceCheckResult(BaseModel):
     """Result model for compliance check"""
+
     compliance_status: str = Field(..., pattern="^(compliant|partially_compliant|non_compliant)$")
     issues_found: List[Dict[str, Any]] = Field(default_factory=list)
     passing_areas: List[str] = Field(default_factory=list)
@@ -137,6 +150,7 @@ class ComplianceCheckResult(BaseModel):
 
 class TaxBracket(BaseModel):
     """Model for tax brackets"""
+
     rate: float = Field(..., ge=0, le=100)
     threshold: float = Field(..., ge=0)
     description: Optional[str] = None
@@ -144,6 +158,7 @@ class TaxBracket(BaseModel):
 
 class TaxRateRequest(BaseModel):
     """Request model for tax rate lookup"""
+
     jurisdiction: str
     tax_year: int = Field(..., ge=1900, le=2050)
     entity_type: str = Field(..., pattern="^(individual|corporation|partnership|LLC|trust)$")
@@ -153,6 +168,7 @@ class TaxRateRequest(BaseModel):
 
 class TaxRateResult(BaseModel):
     """Result model for tax rate lookup"""
+
     jurisdiction: str
     tax_year: int
     entity_type: str
