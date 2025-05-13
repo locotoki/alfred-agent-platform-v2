@@ -14,6 +14,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Applied isort for consistent import ordering
 - Added mypy exclusions for duplicate modules
 
+### Removed
+- Archived legacy health check scripts to archive/legacy-health-scripts
+- Removed unused health check patch and endpoint update scripts
+
 ## [0.3.0-healthcheck-full] - 2025-05-14
 
 ### Added
