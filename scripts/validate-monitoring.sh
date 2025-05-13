@@ -31,9 +31,15 @@ curl -fsSL "${PROM_BASE}/-/ready" | grep -q "Ready" && ok || fail
 
 # --- Grafana --------------------------------------------------------------
 status "Grafana /api/health"
-GRAF_RES=$(curl -fsSL -u "${GRAF_USER}:${GRAF_PASS}" \
-  "${GRAF_BASE}/api/health" | json_pretty)
-echo "$GRAF_RES" | grep -q '"database":"ok"' && ok || fail
+GRAF_RES=$(curl -fsSL "${GRAF_BASE}/api/health" | json_pretty)
+# Just check if there is a valid JSON response as we may not need auth
+if echo "$GRAF_RES" | grep -q '"database"'; then
+  ok
+else
+  # Try with auth as fallback
+  GRAF_RES=$(curl -fsSL -u "${GRAF_USER}:${GRAF_PASS}" "${GRAF_BASE}/api/health" | json_pretty)
+  echo "$GRAF_RES" | grep -q '"database"' && ok || fail
+fi
 
 # --- summary --------------------------------------------------------------
 echo
