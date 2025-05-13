@@ -3,10 +3,11 @@
 Simple script to test OpenAI API access using the key from .env.llm
 """
 
-import os
-import requests
 import json
+import os
 import re
+
+import requests
 
 
 def load_env():

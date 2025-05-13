@@ -1,11 +1,12 @@
-from abc import ABC, abstractmethod
-from typing import Dict, Any, List, Optional
 import asyncio
-import structlog
 import json
+from abc import ABC, abstractmethod
 from datetime import datetime
+from typing import Any, Dict, List, Optional
 
-from libs.a2a_adapter import A2AEnvelope, PubSubTransport, SupabaseTransport, PolicyMiddleware
+import structlog
+
+from libs.a2a_adapter import A2AEnvelope, PolicyMiddleware, PubSubTransport, SupabaseTransport
 
 logger = structlog.get_logger(__name__)
 

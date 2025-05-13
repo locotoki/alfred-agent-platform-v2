@@ -4,14 +4,16 @@ Provides pool management and query utilities.
 """
 
 import os
+from typing import Any, Dict, List, Optional
+
 import asyncpg
 import structlog
-from typing import List, Dict, Any, Optional
 
 logger = structlog.get_logger(__name__)
 
 # Global connection pool
 _pool = None
+
 
 async def get_pool():
     """Get or create the database connection pool."""
@@ -21,15 +23,16 @@ async def get_pool():
         if not database_url:
             logger.error("DATABASE_URL environment variable is not set")
             raise ValueError("DATABASE_URL environment variable is not set")
-        
+
         try:
             _pool = await asyncpg.create_pool(database_url, min_size=2, max_size=10)
             logger.info("Database connection pool created")
         except Exception as e:
             logger.error("Failed to create database connection pool", error=str(e))
             raise
-    
+
     return _pool
+
 
 async def close_pool():
     """Close the database connection pool."""
@@ -38,6 +41,7 @@ async def close_pool():
         await _pool.close()
         _pool = None
         logger.info("Database connection pool closed")
+
 
 async def execute_query(query: str, *args) -> List[Dict[str, Any]]:
     """Execute a database query and return results as dictionaries."""
@@ -50,6 +54,7 @@ async def execute_query(query: str, *args) -> List[Dict[str, Any]]:
             logger.error("Database query error", query=query, error=str(e))
             raise
 
+
 async def execute_query_single(query: str, *args) -> Optional[Dict[str, Any]]:
     """Execute a query and return a single row result as dictionary or None."""
     pool = await get_pool()
@@ -60,6 +65,7 @@ async def execute_query_single(query: str, *args) -> Optional[Dict[str, Any]]:
         except Exception as e:
             logger.error("Database query error", query=query, error=str(e))
             raise
+
 
 async def execute_command(query: str, *args) -> int:
     """Execute a command (insert, update, delete) and return rowcount."""
