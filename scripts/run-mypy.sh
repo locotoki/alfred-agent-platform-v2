@@ -11,8 +11,9 @@ EXCLUDE_PATTERNS=(
   "cleanup-temp"
   "docs/archive"
   "node_modules"
-  "services/alfred-bot/app"  # Conflicts with rag-gateway/src/app.py
-  "services/financial-tax/app"  # Conflicts with rag-gateway/src/app.py
+  "services/alfred-bot/app"      # Conflicts with rag-gateway/src/app.py
+  "services/financial-tax/app"   # Conflicts with rag-gateway/src/app.py
+  "services/legal-compliance/app"  # Conflicts with rag-gateway/src/app.py
 )
 
 EXCLUDE_ARGS=""
