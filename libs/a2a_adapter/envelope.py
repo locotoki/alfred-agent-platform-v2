@@ -3,12 +3,14 @@ from typing import Dict, Any, Optional, List
 from uuid import uuid4
 from pydantic import BaseModel, Field
 
+
 class Artifact(BaseModel):
     key: str
     uri: str
     mime_type: Optional[str] = None
     description: Optional[str] = None
     metadata: Dict[str, Any] = Field(default_factory=dict)
+
 
 class A2AEnvelope(BaseModel):
     schema_version: str = "0.4"
@@ -31,14 +33,14 @@ class A2AEnvelope(BaseModel):
             "attributes": {
                 "intent": self.intent,
                 "priority": str(self.priority),
-                "trace_id": self.trace_id
-            }
+                "trace_id": self.trace_id,
+            },
         }
 
     @classmethod
-    def from_pubsub_message(cls, message: Dict[str, Any]) -> 'A2AEnvelope':
+    def from_pubsub_message(cls, message: Dict[str, Any]) -> "A2AEnvelope":
         """Create envelope from Pub/Sub message."""
         data = message.get("data", "{}")
         if isinstance(data, bytes):
-            data = data.decode('utf-8')
+            data = data.decode("utf-8")
         return cls.parse_raw(data)

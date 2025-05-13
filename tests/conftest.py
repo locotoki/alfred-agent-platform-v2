@@ -9,12 +9,14 @@ from google.cloud import pubsub_v1
 
 from libs.a2a_adapter import PubSubTransport, SupabaseTransport, PolicyMiddleware
 
+
 @pytest.fixture(scope="session")
 def event_loop() -> Generator:
     """Create an instance of the default event loop for the test session."""
     loop = asyncio.get_event_loop_policy().new_event_loop()
     yield loop
     loop.close()
+
 
 @pytest.fixture(autouse=True)
 def setup_test_env():
@@ -25,17 +27,19 @@ def setup_test_env():
     os.environ["REDIS_URL"] = "redis://localhost:6379/1"
     os.environ["GCP_PROJECT_ID"] = "test-project"
 
+
 @pytest.fixture
 async def test_db():
     """Provide a clean test database."""
     conn = await asyncpg.connect(os.environ["DATABASE_URL"])
-    
+
     # Clean up existing data
     await conn.execute("TRUNCATE TABLE tasks, task_results, processed_messages CASCADE")
-    
+
     yield conn
-    
+
     await conn.close()
+
 
 @pytest.fixture
 def mock_pubsub():
@@ -44,10 +48,12 @@ def mock_pubsub():
     mock.publish.return_value.result.return_value = "test-message-id"
     return mock
 
+
 @pytest.fixture
 def mock_redis():
     """Mock Redis client."""
     return MagicMock(spec=redis.Redis)
+
 
 @pytest.fixture
 def pubsub_transport(mock_pubsub):
@@ -56,6 +62,7 @@ def pubsub_transport(mock_pubsub):
     transport.publisher = mock_pubsub
     return transport
 
+
 @pytest.fixture
 async def supabase_transport(test_db):
     """Create SupabaseTransport with test database."""
@@ -63,6 +70,7 @@ async def supabase_transport(test_db):
     await transport.connect()
     yield transport
     await transport.disconnect()
+
 
 @pytest.fixture
 def policy_middleware(mock_redis):
