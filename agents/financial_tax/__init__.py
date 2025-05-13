@@ -5,7 +5,7 @@ from .chains import (
     TaxCalculationChain,
     FinancialAnalysisChain,
     ComplianceCheckChain,
-    RateLookupChain
+    RateLookupChain,
 )
 from .models import (
     TaxCalculationRequest,
@@ -15,13 +15,13 @@ from .models import (
     TaxCalculationResponse,
     FinancialAnalysisResponse,
     ComplianceCheckResponse,
-    TaxRateResponse
+    TaxRateResponse,
 )
 
 __all__ = [
     "FinancialTaxAgent",
     "TaxCalculationChain",
-    "FinancialAnalysisChain", 
+    "FinancialAnalysisChain",
     "ComplianceCheckChain",
     "RateLookupChain",
     "TaxCalculationRequest",
@@ -31,5 +31,5 @@ __all__ = [
     "TaxCalculationResponse",
     "FinancialAnalysisResponse",
     "ComplianceCheckResponse",
-    "TaxRateResponse"
+    "TaxRateResponse",
 ]
