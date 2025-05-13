@@ -19,7 +19,7 @@ RUN cd /tmp \
 
 # Install pg_cron extension
 RUN apt-get update && apt-get install -y postgresql-14-cron && \
-n# Copy healthcheck binary
-COPY --from=healthcheck /healthcheck /usr/local/bin/healthcheck
-
     rm -rf /var/lib/apt/lists/*
+
+# Copy healthcheck binary
+COPY --from=healthcheck /healthcheck /usr/local/bin/healthcheck

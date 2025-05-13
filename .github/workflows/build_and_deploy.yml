@@ -1,0 +1,40 @@
+name: Build and Deploy
+
+on:
+  push:
+    branches: [ main, feature/*, fix/* ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build_and_deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+    
+    - name: Set up environment
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y curl jq
+    
+    - name: Build Docker images
+      run: docker-compose -f docker-compose-clean.yml build
+    
+    - name: Start platform
+      run: ./start-platform.sh -a start -e dev
+    
+    - name: Wait for services to start
+      run: sleep 120
+    
+    - name: Verify health status
+      run: ./scripts/verify-service-health.sh
+    
+    - name: Validate monitoring
+      run: ./scripts/validate-monitoring.sh
+    
+    - name: Stop platform
+      run: ./start-platform.sh -a stop -e dev
+      if: always()

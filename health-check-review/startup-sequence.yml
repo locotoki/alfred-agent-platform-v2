@@ -1,0 +1,330 @@
+# Example startup sequence configuration for Alfred Agent Platform
+# This file would be used by the startup-orchestrator service to manage the startup sequence
+
+version: '1.0'
+
+# Global configuration
+config:
+  # Maximum time to wait for a service to be ready before giving up
+  global_timeout_seconds: 600
+  
+  # How often to check if a service is ready
+  check_interval_seconds: 5
+  
+  # Whether to wait for optional dependencies (soft dependencies)
+  wait_for_optional: false
+  
+  # Whether to fail if any required service fails to become ready
+  fail_fast: false
+  
+  # Logging level (debug, info, warn, error)
+  log_level: info
+  
+  # Whether to report progress (useful for UI integration)
+  report_progress: true
+  
+  # Health check type to use (process, port, endpoint, deep)
+  default_check_type: endpoint
+
+# Service tiers define startup ordering
+# Each tier starts after all services in the previous tier are ready
+tiers:
+  # Tier 0: Core infrastructure services
+  - name: core-infrastructure
+    description: "Core infrastructure services with no dependencies"
+    services:
+      - name: redis
+        port: 6379
+        readiness:
+          check_type: port
+          endpoint: ""
+          timeout: 10
+      
+      - name: vector-db
+        port: 6333
+        readiness:
+          check_type: port
+          endpoint: ""
+          timeout: 30
+          
+      - name: pubsub-emulator
+        port: 8085
+        readiness:
+          check_type: port
+          endpoint: ""
+          timeout: 30
+          
+      - name: llm-service
+        port: 11434
+        readiness:
+          check_type: endpoint
+          endpoint: "api/tags"
+          timeout: 30
+          
+      - name: mail-server
+        port: 1025
+        readiness:
+          check_type: port
+          endpoint: ""
+          timeout: 10
+
+  # Tier 1: Database services
+  - name: database-services
+    description: "Database services dependent on core infrastructure"
+    services:
+      - name: db-postgres
+        port: 5432
+        readiness:
+          check_type: custom
+          command: ["pg_isready", "-U", "postgres"]
+          timeout: 60
+      
+      - name: db-auth
+        port: 9999
+        readiness:
+          check_type: port
+          endpoint: ""
+          timeout: 30
+        dependencies:
+          required:
+            - db-postgres
+            - mail-server
+            
+      - name: db-api
+        port: 3000
+        readiness:
+          check_type: endpoint
+          endpoint: ""
+          timeout: 30
+        dependencies:
+          required:
+            - db-postgres
+            
+      - name: db-admin
+        port: 3001
+        readiness:
+          check_type: endpoint
+          endpoint: "api/health"
+          timeout: 30
+        dependencies:
+          required:
+            - db-postgres
+            - db-api
+            
+      - name: db-realtime
+        port: 4000
+        readiness:
+          check_type: port
+          endpoint: ""
+          timeout: 30
+        dependencies:
+          required:
+            - db-postgres
+            
+      - name: db-storage
+        port: 5000
+        readiness:
+          check_type: endpoint
+          endpoint: "health"
+          timeout: 30
+        dependencies:
+          required:
+            - db-postgres
+            - db-api
+
+  # Tier 2: LLM services
+  - name: llm-services
+    description: "LLM infrastructure services"
+    services:
+      - name: model-registry
+        port: 8079
+        readiness:
+          check_type: endpoint
+          endpoint: "health"
+          timeout: 30
+        dependencies:
+          required:
+            - db-postgres
+            - llm-service
+            
+      - name: model-router
+        port: 8080
+        readiness:
+          check_type: endpoint
+          endpoint: "health"
+          timeout: 30
+        dependencies:
+          required:
+            - model-registry
+
+  # Tier 3: Agent services
+  - name: agent-services
+    description: "Agent services dependent on lower tiers"
+    services:
+      - name: agent-core
+        port: 8011
+        readiness:
+          check_type: endpoint
+          endpoint: "health"
+          timeout: 60
+        dependencies:
+          required:
+            - db-postgres
+            - redis
+            - model-router
+          optional:
+            - pubsub-emulator
+            
+      - name: agent-rag
+        port: 8501
+        readiness:
+          check_type: endpoint
+          endpoint: "health"
+          timeout: 60
+        dependencies:
+          required:
+            - vector-db
+            - redis
+            - model-router
+            
+      - name: agent-atlas
+        port: 8000
+        readiness:
+          check_type: endpoint
+          endpoint: "health"
+          timeout: 60
+        dependencies:
+          required:
+            - agent-rag
+            - redis
+            - model-router
+          optional:
+            - pubsub-emulator
+            
+      - name: agent-social
+        port: 9000
+        readiness:
+          check_type: endpoint
+          endpoint: "health"
+          timeout: 60
+        dependencies:
+          required:
+            - db-postgres
+            - redis
+            - agent-rag
+            - model-router
+          optional:
+            - pubsub-emulator
+            
+      - name: agent-financial
+        port: 9003
+        readiness:
+          check_type: endpoint
+          endpoint: "health"
+          timeout: 60
+        dependencies:
+          required:
+            - db-postgres
+            - redis
+            - agent-rag
+            - model-router
+          optional:
+            - pubsub-emulator
+            
+      - name: agent-legal
+        port: 9002
+        readiness:
+          check_type: endpoint
+          endpoint: "health"
+          timeout: 60
+        dependencies:
+          required:
+            - db-postgres
+            - redis
+            - agent-rag
+            - model-router
+          optional:
+            - pubsub-emulator
+
+  # Tier 4: UI services
+  - name: ui-services
+    description: "UI services dependent on agent services"
+    services:
+      - name: ui-chat
+        port: 8502
+        readiness:
+          check_type: endpoint
+          endpoint: "health"
+          timeout: 60
+        dependencies:
+          required:
+            - agent-core
+            - model-router
+            
+      - name: ui-admin
+        port: 3007
+        readiness:
+          check_type: port
+          endpoint: ""
+          timeout: 30
+        dependencies:
+          required:
+            - agent-core
+            - agent-social
+            
+      - name: auth-ui
+        port: 3006
+        readiness:
+          check_type: port
+          endpoint: ""
+          timeout: 30
+        dependencies:
+          required:
+            - db-auth
+
+# Monitoring services can start at any time
+monitoring:
+  services:
+    - name: monitoring-metrics
+      port: 9090
+      readiness:
+        check_type: port
+        endpoint: ""
+        timeout: 10
+        
+    - name: monitoring-dashboard
+      port: 3005
+      readiness:
+        check_type: port
+        endpoint: ""
+        timeout: 10
+      dependencies:
+        optional:
+          - monitoring-metrics
+          
+    - name: monitoring-node
+      port: 9100
+      readiness:
+        check_type: port
+        endpoint: ""
+        timeout: 10
+        
+    - name: monitoring-db
+      port: 9187
+      readiness:
+        check_type: port
+        endpoint: ""
+        timeout: 10
+      dependencies:
+        required:
+          - db-postgres
+          
+    - name: monitoring-redis
+      port: 9122
+      readiness:
+        check_type: port
+        endpoint: ""
+        timeout: 10
+      dependencies:
+        required:
+          - redis

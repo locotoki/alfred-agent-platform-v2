@@ -1,0 +1,84 @@
+# Example Docker Compose file for health check proxy service
+# This represents a recommended implementation for a centralized health check system
+
+version: '3.8'
+
+services:
+  # Health Check Proxy Service
+  # A dedicated service for monitoring and managing health checks
+  health-proxy:
+    build:
+      context: ./services/health-proxy
+      dockerfile: Dockerfile
+    image: health-proxy:latest
+    container_name: health-proxy
+    ports:
+      - "8888:8888"  # Health API port
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock  # For Docker API access
+      - ./config/health-proxy:/config
+    environment:
+      - LOG_LEVEL=info
+      - CHECK_INTERVAL_SECONDS=30
+      - STARTUP_GRACE_PERIOD_SECONDS=120
+      - HEALTH_CONFIG_PATH=/config/health-checks.yml
+      - CHECK_HISTORY_SIZE=100
+      - PORT=8888
+      - ENABLE_METRICS=true
+      - METRICS_PORT=9888
+      - TELEGRAM_ALERTS_ENABLED=false
+      - SLACK_ALERTS_ENABLED=false
+    healthcheck:
+      test: ["CMD", "pidof", "health-proxy"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+    restart: unless-stopped
+    networks:
+      - alfred-network
+    # Ensure it starts early in the sequence
+    depends_on: {}
+
+  # Prometheus metrics exporter for health checks
+  # Collects and exposes health metrics
+  health-metrics:
+    image: health-metrics:latest
+    container_name: health-metrics
+    ports:
+      - "9889:9889"  # Metrics port
+    volumes:
+      - ./config/health-metrics:/config
+    environment:
+      - LOG_LEVEL=info
+      - HEALTH_PROXY_URL=http://health-proxy:8888
+      - PORT=9889
+      - METRICS_SCRAPE_INTERVAL=15
+    depends_on:
+      - health-proxy
+    restart: unless-stopped
+    networks:
+      - alfred-network
+
+  # Health check dashboard
+  # Visualizes health status across the platform
+  health-dashboard:
+    image: health-dashboard:latest
+    container_name: health-dashboard
+    ports:
+      - "3010:3000"  # Web UI port
+    environment:
+      - HEALTH_PROXY_URL=http://health-proxy:8888
+      - HEALTH_METRICS_URL=http://health-metrics:9889
+      - PORT=3000
+      - LOG_LEVEL=info
+      - ENABLE_AUTH=false
+    depends_on:
+      - health-proxy
+      - health-metrics
+    restart: unless-stopped
+    networks:
+      - alfred-network
+
+networks:
+  alfred-network:
+    external: true
