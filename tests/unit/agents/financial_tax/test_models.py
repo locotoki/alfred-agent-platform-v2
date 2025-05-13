@@ -1,18 +1,19 @@
 """Tests for Financial Tax Agent models"""
 
-import pytest
 from datetime import datetime
+
+import pytest
 from langchain.pydantic_v1 import ValidationError
 
 from agents.financial_tax.models import (
-    TaxJurisdiction,
-    EntityType,
-    TaxCalculationRequest,
-    TaxCalculationResponse,
-    FinancialAnalysisRequest,
-    FinancialAnalysisResponse,
     ComplianceCheckRequest,
     ComplianceCheckResponse,
+    EntityType,
+    FinancialAnalysisRequest,
+    FinancialAnalysisResponse,
+    TaxCalculationRequest,
+    TaxCalculationResponse,
+    TaxJurisdiction,
     TaxRateRequest,
     TaxRateResponse,
 )

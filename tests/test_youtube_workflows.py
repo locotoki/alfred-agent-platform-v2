@@ -1,14 +1,15 @@
 """Tests for YouTube workflows in SocialIntelligence Agent."""
 
-import os
 import asyncio
-import pytest
 import json
+import os
 from datetime import datetime
-from unittest.mock import AsyncMock, patch, MagicMock
+from unittest.mock import AsyncMock, MagicMock, patch
+
+import pytest
 
 from agents.social_intel.agent import SocialIntelAgent
-from agents.social_intel.models.youtube_models import NicheScoutResult, BlueprintResult
+from agents.social_intel.models.youtube_models import BlueprintResult, NicheScoutResult
 from agents.social_intel.models.youtube_vectors import YouTubeVectorStorage
 from libs.a2a_adapter import A2AEnvelope
 
