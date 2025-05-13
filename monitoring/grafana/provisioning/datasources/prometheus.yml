@@ -9,13 +9,3 @@ datasources:
     isDefault: true
     version: 1
     editable: true
-
-  # Update existing datasources to point to the right URL
-  - name: prometheus
-    type: prometheus
-    access: proxy
-    url: http://monitoring-metrics:9090
-    uid: ff337512-3e2a-4a13-a962-453573369b72
-    isDefault: false
-    version: 1
-    editable: true

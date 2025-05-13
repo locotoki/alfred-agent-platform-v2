@@ -48,10 +48,10 @@ fi
 status "Grafana Platform Health Dashboard"
 # Try without auth first
 GRAF_DASH=$(curl -fsSL "${GRAF_BASE}/api/search?query=Platform%20Health%20Dashboard" 2>/dev/null || echo "")
-if ! echo "$GRAF_DASH" | grep -q "platform-health"; then
+if ! echo "$GRAF_DASH" | grep -q "platform-health-dashboard"; then
   # Try with auth if first attempt fails
   GRAF_DASH=$(curl -fsSL -u "${GRAF_USER}:${GRAF_PASS}" "${GRAF_BASE}/api/search?query=Platform%20Health%20Dashboard" | json_pretty)
-  if echo "$GRAF_DASH" | grep -q "platform-health" || echo "$GRAF_DASH" | grep -q "simple-metrics"; then
+  if echo "$GRAF_DASH" | grep -q "platform-health-dashboard"; then
     ok
   else
     echo "Platform Health Dashboard not found"

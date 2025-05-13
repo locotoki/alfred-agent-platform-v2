@@ -1,14 +1,14 @@
 apiVersion: 1
 
 providers:
-  - name: 'alfred'
+  - name: 'platform-dashboards'
     orgId: 1
-    folder: 'Alfred Platform'
-    folderUid: 'alfred-platform'
+    folder: 'Platform'
+    folderUid: 'platform'
     type: file
     disableDeletion: false
-    updateIntervalSeconds: 10
+    updateIntervalSeconds: 30
     allowUiUpdates: true
     options:
-      path: /etc/grafana/dashboards
+      path: /etc/grafana/dashboards/platform
       foldersFromFilesStructure: false
