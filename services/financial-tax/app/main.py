@@ -1,23 +1,24 @@
 """Financial Tax Service FastAPI Application"""
 
-from fastapi import FastAPI, HTTPException, Request, Security
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-from fastapi.middleware.cors import CORSMiddleware
-from contextlib import asynccontextmanager
 import os
-import structlog
-import redis
-from prometheus_client import Counter, Histogram, Gauge
+from contextlib import asynccontextmanager
 
-from libs.a2a_adapter import A2AEnvelope, PubSubTransport, SupabaseTransport, PolicyMiddleware
-from libs.agent_core.health import create_health_app
+import redis
+import structlog
+from fastapi import FastAPI, HTTPException, Request, Security
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
+from prometheus_client import Counter, Gauge, Histogram
+
 from agents.financial_tax import (
+    ComplianceCheckRequest,
+    FinancialAnalysisRequest,
     FinancialTaxAgent,
     TaxCalculationRequest,
-    FinancialAnalysisRequest,
-    ComplianceCheckRequest,
     TaxRateRequest,
 )
+from libs.a2a_adapter import A2AEnvelope, PolicyMiddleware, PubSubTransport, SupabaseTransport
+from libs.agent_core.health import create_health_app
 
 logger = structlog.get_logger(__name__)
 

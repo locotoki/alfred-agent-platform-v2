@@ -1,23 +1,24 @@
 """Legal Compliance Service FastAPI Application"""
 
-from fastapi import FastAPI, HTTPException, Request, Security
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-from fastapi.middleware.cors import CORSMiddleware
-from contextlib import asynccontextmanager
 import os
-import structlog
-import redis
-from prometheus_client import Counter, Histogram, Gauge
+from contextlib import asynccontextmanager
 
-from libs.a2a_adapter import A2AEnvelope, PubSubTransport, SupabaseTransport, PolicyMiddleware
-from libs.agent_core.health import create_health_app
+import redis
+import structlog
+from fastapi import FastAPI, HTTPException, Request, Security
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
+from prometheus_client import Counter, Gauge, Histogram
+
 from agents.legal_compliance import (
-    LegalComplianceAgent,
     ComplianceAuditRequest,
-    DocumentAnalysisRequest,
-    RegulationCheckRequest,
     ContractReviewRequest,
+    DocumentAnalysisRequest,
+    LegalComplianceAgent,
+    RegulationCheckRequest,
 )
+from libs.a2a_adapter import A2AEnvelope, PolicyMiddleware, PubSubTransport, SupabaseTransport
+from libs.agent_core.health import create_health_app
 
 logger = structlog.get_logger(__name__)
 

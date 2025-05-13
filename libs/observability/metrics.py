@@ -1,8 +1,9 @@
-from prometheus_client import Counter, Histogram, Gauge, Summary
 import time
-from typing import Callable, Any
 from functools import wraps
+from typing import Any, Callable
+
 import structlog
+from prometheus_client import Counter, Gauge, Histogram, Summary
 
 logger = structlog.get_logger(__name__)
 

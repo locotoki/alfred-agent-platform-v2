@@ -1,12 +1,13 @@
-from fastapi import FastAPI, Request
-from slack_bolt.adapter.fastapi import SlackRequestHandler
-from slack_bolt import App
 import os
-import structlog
-import redis
 from contextlib import asynccontextmanager
 
-from libs.a2a_adapter import A2AEnvelope, PubSubTransport, SupabaseTransport, PolicyMiddleware
+import redis
+import structlog
+from fastapi import FastAPI, Request
+from slack_bolt import App
+from slack_bolt.adapter.fastapi import SlackRequestHandler
+
+from libs.a2a_adapter import A2AEnvelope, PolicyMiddleware, PubSubTransport, SupabaseTransport
 from libs.agent_core.health import create_health_app
 
 logger = structlog.get_logger(__name__)

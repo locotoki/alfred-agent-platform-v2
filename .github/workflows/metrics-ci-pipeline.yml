@@ -49,7 +49,8 @@ jobs:
           # Run mypy and pytest for full validation
           if [[ "$GITHUB_REF" != "refs/heads/main" && "$GITHUB_EVENT_NAME" != "workflow_dispatch" ]]; then
             echo "Running full validation with mypy and pytest"
-            mypy .
+            # Use our wrapper script to properly exclude problematic directories
+            ./scripts/run-mypy.sh .
             pytest -xvs
           else
             echo "SKIPPING mypy type checking for main branch"

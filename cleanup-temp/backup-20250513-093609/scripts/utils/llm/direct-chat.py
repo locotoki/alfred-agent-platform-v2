@@ -11,9 +11,10 @@ Usage:
 If model_name is not provided, defaults to "tinyllama".
 """
 
-import requests
 import json
 import sys
+
+import requests
 
 
 class OllamaChat:

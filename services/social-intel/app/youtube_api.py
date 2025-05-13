@@ -5,11 +5,12 @@ This module provides functions to interact with the YouTube Data API v3 for fetc
 trends, statistics, and channel data.
 """
 
-import os
 import asyncio
 import json
+import os
 from datetime import datetime
-from typing import Dict, List, Any, Optional
+from typing import Any, Dict, List, Optional
+
 import aiohttp
 import structlog
 

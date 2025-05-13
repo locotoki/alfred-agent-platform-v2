@@ -19,15 +19,14 @@ Options:
     --quiet               Suppress console output
 """
 
+import argparse
+import datetime
+import logging
 import os
 import re
 import sys
-import argparse
-import datetime
 from pathlib import Path
-import logging
-from typing import Dict, List, Tuple, Optional, Set
-
+from typing import Dict, List, Optional, Set, Tuple
 
 # Set up logging
 logging.basicConfig(

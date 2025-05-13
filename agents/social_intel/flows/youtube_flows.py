@@ -1,35 +1,35 @@
 """Prefect flows for YouTube workflows in SocialIntelligence Agent."""
 
-import os
-import json
 import asyncio
-import pandas as pd
-import numpy as np
-from datetime import datetime
-import structlog
+import json
+import os
 import uuid
 import zipfile
-from typing import List, Dict, Any, Optional
+from datetime import datetime
 from pathlib import Path
+from typing import Any, Dict, List, Optional
 
-from prefect import flow, task, get_run_logger
-from prefect.utilities.asyncutils import sync_compatible
 import duckdb
-import umap
+import numpy as np
+import pandas as pd
 import sklearn.cluster as skc
+import structlog
+import umap
+from prefect import flow, get_run_logger, task
+from prefect.utilities.asyncutils import sync_compatible
 from sentence_transformers import SentenceTransformer
 
 from ..models.youtube_api import YouTubeAPI
-from ..models.youtube_vectors import YouTubeVectorStorage
 from ..models.youtube_models import (
-    YouTubeNiche,
-    YouTubeVideo,
+    BlueprintResult,
+    NicheScoutResult,
+    YouTubeBlueprint,
     YouTubeChannel,
     YouTubeGap,
-    YouTubeBlueprint,
-    NicheScoutResult,
-    BlueprintResult,
+    YouTubeNiche,
+    YouTubeVideo,
 )
+from ..models.youtube_vectors import YouTubeVectorStorage
 
 logger = structlog.get_logger(__name__)
 

@@ -2,11 +2,12 @@
 Template service with standardized health and metrics endpoints.
 """
 
-from fastapi import FastAPI, Response
 import json
 import logging
 import os
-from typing import Dict, Any
+from typing import Any, Dict
+
+from fastapi import FastAPI, Response
 
 # Initialize FastAPI app
 app = FastAPI(

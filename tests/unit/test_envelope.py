@@ -1,5 +1,6 @@
-import pytest
 from datetime import datetime
+
+import pytest
 
 from libs.a2a_adapter import A2AEnvelope, Artifact
 

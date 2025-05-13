@@ -1,7 +1,8 @@
-import structlog
 import logging
 import sys
 from typing import Any, Dict
+
+import structlog
 
 
 def setup_logging(service_name: str, log_level: str = "INFO") -> None:
