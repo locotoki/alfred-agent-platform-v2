@@ -1,8 +1,9 @@
 """Stub transport implementation for A2A Adapter."""
 
-from typing import List, Dict, Any, Optional, Callable, Awaitable
 import asyncio
 import json
+from typing import Any, Awaitable, Callable, Dict, List, Optional
+
 import structlog
 
 logger = structlog.get_logger(__name__)

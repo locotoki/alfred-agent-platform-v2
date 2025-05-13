@@ -1,8 +1,8 @@
 """Legal Compliance Agent Models"""
 
-from typing import Dict, List, Optional, Any
 from datetime import datetime
 from enum import Enum
+from typing import Any, Dict, List, Optional
 
 # Use LangChain's Pydantic v1 for compatibility
 from langchain.pydantic_v1 import BaseModel, Field

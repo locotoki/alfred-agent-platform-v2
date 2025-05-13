@@ -1,8 +1,9 @@
 """Stub implementation of Social Intelligence Agent."""
 
-from typing import Dict, Any, List
-import structlog
 import asyncio
+from typing import Any, Dict, List
+
+import structlog
 
 logger = structlog.get_logger(__name__)
 
