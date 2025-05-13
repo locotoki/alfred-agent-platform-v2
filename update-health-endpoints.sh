@@ -1,5 +1,11 @@
 #!/bin/bash
+# *********************************************************************
+# DEPRECATED: This script is deprecated and will be removed in a future version.
+# Please use the healthcheck binary v0.4.0 instead, which is now standardized
+# across all services. See PR #22 for details.
+# *********************************************************************
 
+echo "DEPRECATED: This script is deprecated. See comments in the script for details."
 echo "Updating health endpoints to use simple /health pattern..."
 
 cd /home/locotoki/projects/alfred-agent-platform-v2
