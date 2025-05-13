@@ -11,7 +11,7 @@ from agents.financial_tax.models import (
     ComplianceCheckRequest,
     TaxRateRequest,
     TaxJurisdiction,
-    EntityType
+    EntityType,
 )
 from libs.a2a_adapter import A2AEnvelope
 
@@ -49,18 +49,18 @@ def mock_policy():
 @pytest.fixture
 def financial_tax_agent(mock_pubsub, mock_supabase, mock_policy):
     """Create Financial Tax Agent instance with mocked dependencies."""
-    with patch('agents.financial_tax.agent.ChatOpenAI'):
+    with patch("agents.financial_tax.agent.ChatOpenAI"):
         agent = FinancialTaxAgent(
             pubsub_transport=mock_pubsub,
             supabase_transport=mock_supabase,
-            policy_middleware=mock_policy
+            policy_middleware=mock_policy,
         )
         return agent
 
 
 class TestFinancialTaxAgent:
     """Test suite for Financial Tax Agent."""
-    
+
     @pytest.mark.asyncio
     async def test_agent_initialization(self, financial_tax_agent):
         """Test agent initializes with correct properties."""
@@ -70,7 +70,7 @@ class TestFinancialTaxAgent:
         assert "FINANCIAL_ANALYSIS" in financial_tax_agent.supported_intents
         assert "TAX_COMPLIANCE_CHECK" in financial_tax_agent.supported_intents
         assert "RATE_SHEET_LOOKUP" in financial_tax_agent.supported_intents
-    
+
     @pytest.mark.asyncio
     async def test_tax_calculation_processing(self, financial_tax_agent):
         """Test tax calculation processing."""
@@ -84,10 +84,10 @@ class TestFinancialTaxAgent:
                 "jurisdiction": "US-CA",
                 "tax_year": 2024,
                 "entity_type": "individual",
-                "additional_info": {}
-            }
+                "additional_info": {},
+            },
         )
-        
+
         # Mock the chain result
         mock_result = MagicMock()
         mock_result.dict.return_value = {
@@ -100,18 +100,20 @@ class TestFinancialTaxAgent:
             "credits_applied": 2000,
             "net_tax_due": 18000,
             "breakdown": {"federal": 15000, "state": 5000},
-            "calculation_details": ["Standard deduction applied", "Tax credit applied"]
+            "calculation_details": ["Standard deduction applied", "Tax credit applied"],
         }
-        
-        with patch.object(financial_tax_agent.tax_calc_chain, 'calculate', return_value=mock_result):
+
+        with patch.object(
+            financial_tax_agent.tax_calc_chain, "calculate", return_value=mock_result
+        ):
             result = await financial_tax_agent.process_task(envelope)
-        
+
         assert result["status"] == "success"
         assert result["intent"] == "TAX_CALCULATION"
         assert "result" in result
         assert result["result"]["taxable_income"] == 83000
         assert result["result"]["net_tax_due"] == 18000
-    
+
     @pytest.mark.asyncio
     async def test_financial_analysis_processing(self, financial_tax_agent):
         """Test financial analysis processing."""
@@ -120,32 +122,32 @@ class TestFinancialTaxAgent:
             content={
                 "financial_statements": {
                     "income_statement": {"revenue": 1000000, "expenses": 750000},
-                    "balance_sheet": {"assets": 2000000, "liabilities": 800000}
+                    "balance_sheet": {"assets": 2000000, "liabilities": 800000},
                 },
                 "analysis_type": "profitability",
                 "period": "Q4 2024",
                 "industry": "technology",
-                "custom_metrics": ["gross_margin", "debt_to_equity"]
-            }
+                "custom_metrics": ["gross_margin", "debt_to_equity"],
+            },
         )
-        
+
         mock_result = MagicMock()
         mock_result.dict.return_value = {
             "summary": {"overall_health": "strong", "profitability": "above average"},
             "key_metrics": {"gross_margin": 0.25, "debt_to_equity": 0.4},
             "trends": {"revenue_growth": [0.05, 0.07, 0.06, 0.08]},
             "insights": ["Strong revenue growth", "Healthy profit margins"],
-            "recommendations": ["Consider expanding operations", "Maintain current debt levels"]
+            "recommendations": ["Consider expanding operations", "Maintain current debt levels"],
         }
-        
-        with patch.object(financial_tax_agent.analysis_chain, 'analyze', return_value=mock_result):
+
+        with patch.object(financial_tax_agent.analysis_chain, "analyze", return_value=mock_result):
             result = await financial_tax_agent.process_task(envelope)
-        
+
         assert result["status"] == "success"
         assert result["intent"] == "FINANCIAL_ANALYSIS"
         assert "result" in result
         assert result["result"]["key_metrics"]["gross_margin"] == 0.25
-    
+
     @pytest.mark.asyncio
     async def test_compliance_check_processing(self, financial_tax_agent):
         """Test compliance check processing."""
@@ -155,14 +157,14 @@ class TestFinancialTaxAgent:
                 "entity_type": "corporation",
                 "transactions": [
                     {"type": "sale", "amount": 50000, "date": "2024-01-15"},
-                    {"type": "expense", "amount": 10000, "date": "2024-01-20"}
+                    {"type": "expense", "amount": 10000, "date": "2024-01-20"},
                 ],
                 "jurisdiction": "US-NY",
                 "tax_year": 2024,
-                "compliance_areas": ["sales_tax", "corporate_income_tax"]
-            }
+                "compliance_areas": ["sales_tax", "corporate_income_tax"],
+            },
         )
-        
+
         mock_result = MagicMock()
         mock_result.dict.return_value = {
             "compliance_status": "partial_compliance",
@@ -171,17 +173,22 @@ class TestFinancialTaxAgent:
             ],
             "recommendations": ["Register for sales tax collection", "File amended returns"],
             "risk_level": "medium",
-            "detailed_findings": {"sales_tax": "Non-compliant", "corporate_income_tax": "Compliant"}
+            "detailed_findings": {
+                "sales_tax": "Non-compliant",
+                "corporate_income_tax": "Compliant",
+            },
         }
-        
-        with patch.object(financial_tax_agent.compliance_chain, 'check_compliance', return_value=mock_result):
+
+        with patch.object(
+            financial_tax_agent.compliance_chain, "check_compliance", return_value=mock_result
+        ):
             result = await financial_tax_agent.process_task(envelope)
-        
+
         assert result["status"] == "success"
         assert result["intent"] == "TAX_COMPLIANCE_CHECK"
         assert result["result"]["compliance_status"] == "partial_compliance"
         assert result["result"]["risk_level"] == "medium"
-    
+
     @pytest.mark.asyncio
     async def test_rate_lookup_processing(self, financial_tax_agent):
         """Test tax rate lookup processing."""
@@ -192,10 +199,10 @@ class TestFinancialTaxAgent:
                 "tax_year": 2024,
                 "entity_type": "individual",
                 "income_level": 100000,
-                "special_categories": ["capital_gains", "qualified_dividends"]
-            }
+                "special_categories": ["capital_gains", "qualified_dividends"],
+            },
         )
-        
+
         mock_result = MagicMock()
         mock_result.dict.return_value = {
             "jurisdiction": "US-CA",
@@ -203,56 +210,51 @@ class TestFinancialTaxAgent:
             "entity_type": "individual",
             "tax_brackets": [
                 {"rate": 0.10, "min": 0, "max": 10000},
-                {"rate": 0.12, "min": 10001, "max": 40000}
+                {"rate": 0.12, "min": 10001, "max": 40000},
             ],
             "standard_deduction": 13850,
             "exemptions": {"personal": 4300},
             "special_rates": {"capital_gains": 0.15, "qualified_dividends": 0.15},
-            "additional_info": {"state_rate": 0.093}
+            "additional_info": {"state_rate": 0.093},
         }
-        
-        with patch.object(financial_tax_agent.rate_lookup_chain, 'lookup_rates', return_value=mock_result):
+
+        with patch.object(
+            financial_tax_agent.rate_lookup_chain, "lookup_rates", return_value=mock_result
+        ):
             result = await financial_tax_agent.process_task(envelope)
-        
+
         assert result["status"] == "success"
         assert result["intent"] == "RATE_SHEET_LOOKUP"
         assert result["result"]["standard_deduction"] == 13850
         assert result["result"]["special_rates"]["capital_gains"] == 0.15
-    
+
     @pytest.mark.asyncio
     async def test_unsupported_intent_handling(self, financial_tax_agent):
         """Test handling of unsupported intent."""
-        envelope = A2AEnvelope(
-            intent="UNSUPPORTED_INTENT",
-            content={"test": "data"}
-        )
-        
+        envelope = A2AEnvelope(intent="UNSUPPORTED_INTENT", content={"test": "data"})
+
         with pytest.raises(ValueError, match="Unsupported intent"):
             await financial_tax_agent.process_task(envelope)
-    
+
     @pytest.mark.asyncio
     async def test_workflow_routing(self, financial_tax_agent):
         """Test the workflow correctly routes based on intent."""
-        test_state = {
-            "intent": "TAX_CALCULATION",
-            "content": {"test": "data"}
-        }
-        
+        test_state = {"intent": "TAX_CALCULATION", "content": {"test": "data"}}
+
         # Test routing logic
         route = financial_tax_agent._route_by_intent(test_state)
         assert route == "tax_calculation"
-        
+
         test_state["intent"] = "FINANCIAL_ANALYSIS"
         route = financial_tax_agent._route_by_intent(test_state)
         assert route == "financial_analysis"
-    
+
     @pytest.mark.asyncio
     async def test_error_handling(self, financial_tax_agent):
         """Test error handling in process_task."""
         envelope = A2AEnvelope(
-            intent="TAX_CALCULATION",
-            content={"invalid": "data"}  # Missing required fields
+            intent="TAX_CALCULATION", content={"invalid": "data"}  # Missing required fields
         )
-        
+
         with pytest.raises(Exception):
             await financial_tax_agent.process_task(envelope)

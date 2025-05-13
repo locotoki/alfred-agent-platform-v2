@@ -14,23 +14,24 @@ from .models import (
     ComplianceAuditRequest,
     DocumentAnalysisRequest,
     RegulationCheckRequest,
-    ContractReviewRequest
+    ContractReviewRequest,
 )
 
 logger = structlog.get_logger(__name__)
+
 
 class LegalComplianceAgent(BaseAgent):
     def __init__(
         self,
         pubsub_transport: PubSubTransport,
         supabase_transport: SupabaseTransport,
-        policy_middleware: PolicyMiddleware
+        policy_middleware: PolicyMiddleware,
     ):
         supported_intents = [
             "COMPLIANCE_AUDIT",
             "DOCUMENT_ANALYSIS",
             "REGULATION_CHECK",
-            "CONTRACT_REVIEW"
+            "CONTRACT_REVIEW",
         ]
 
         super().__init__(
@@ -39,7 +40,7 @@ class LegalComplianceAgent(BaseAgent):
             supported_intents=supported_intents,
             pubsub_transport=pubsub_transport,
             supabase_transport=supabase_transport,
-            policy_middleware=policy_middleware
+            policy_middleware=policy_middleware,
         )
 
     async def process_task(self, envelope: A2AEnvelope) -> Dict[str, Any]:
@@ -61,10 +62,7 @@ class LegalComplianceAgent(BaseAgent):
 
         except Exception as e:
             logger.error(
-                "task_processing_failed",
-                error=str(e),
-                intent=intent,
-                task_id=envelope.task_id
+                "task_processing_failed", error=str(e), intent=intent, task_id=envelope.task_id
             )
             raise
 
@@ -79,7 +77,7 @@ class LegalComplianceAgent(BaseAgent):
                 organization_name=request.organization_name,
                 audit_scope=request.audit_scope,
                 compliance_categories=[cat.value for cat in request.compliance_categories],
-                documents=request.documents or []
+                documents=request.documents or [],
             )
 
             # Add metadata
@@ -90,11 +88,7 @@ class LegalComplianceAgent(BaseAgent):
 
         except Exception as e:
             logger.error("compliance_audit_failed", error=str(e))
-            return {
-                "status": "error",
-                "error": str(e),
-                "error_type": "compliance_audit_error"
-            }
+            return {"status": "error", "error": str(e), "error_type": "compliance_audit_error"}
 
     async def _process_document_analysis(self, content: Dict[str, Any]) -> Dict[str, Any]:
         """Process document analysis request."""
@@ -107,7 +101,7 @@ class LegalComplianceAgent(BaseAgent):
                 document_type=request.document_type.value,
                 document_content=request.document_content,
                 compliance_frameworks=[fw.value for fw in request.compliance_frameworks],
-                check_for_pii=request.check_for_pii
+                check_for_pii=request.check_for_pii,
             )
 
             # Add metadata
@@ -118,11 +112,7 @@ class LegalComplianceAgent(BaseAgent):
 
         except Exception as e:
             logger.error("document_analysis_failed", error=str(e))
-            return {
-                "status": "error",
-                "error": str(e),
-                "error_type": "document_analysis_error"
-            }
+            return {"status": "error", "error": str(e), "error_type": "document_analysis_error"}
 
     async def _process_regulation_check(self, content: Dict[str, Any]) -> Dict[str, Any]:
         """Process regulation check request."""
@@ -135,7 +125,7 @@ class LegalComplianceAgent(BaseAgent):
                 business_activity=request.business_activity,
                 jurisdictions=request.jurisdictions,
                 industry_sector=request.industry_sector,
-                specific_regulations=request.specific_regulations or []
+                specific_regulations=request.specific_regulations or [],
             )
 
             # Add metadata
@@ -145,11 +135,7 @@ class LegalComplianceAgent(BaseAgent):
 
         except Exception as e:
             logger.error("regulation_check_failed", error=str(e))
-            return {
-                "status": "error",
-                "error": str(e),
-                "error_type": "regulation_check_error"
-            }
+            return {"status": "error", "error": str(e), "error_type": "regulation_check_error"}
 
     async def _process_contract_review(self, content: Dict[str, Any]) -> Dict[str, Any]:
         """Process contract review request."""
@@ -163,7 +149,7 @@ class LegalComplianceAgent(BaseAgent):
                 contract_content=request.contract_content,
                 parties_involved=request.parties_involved,
                 jurisdiction=request.jurisdiction,
-                review_focus=request.review_focus
+                review_focus=request.review_focus,
             )
 
             # Add metadata
@@ -174,8 +160,4 @@ class LegalComplianceAgent(BaseAgent):
 
         except Exception as e:
             logger.error("contract_review_failed", error=str(e))
-            return {
-                "status": "error",
-                "error": str(e),
-                "error_type": "contract_review_error"
-            }
+            return {"status": "error", "error": str(e), "error_type": "contract_review_error"}

@@ -1,4 +1,4 @@
-#\!/bin/bash
+#!/bin/bash
 # Script to apply black formatting to the entire codebase
 
 # Get Python version (prefer python3, fallback to python)

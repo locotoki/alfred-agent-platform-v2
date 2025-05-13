@@ -8,7 +8,7 @@ from agents.financial_tax.chains import (
     TaxCalculationChain,
     FinancialAnalysisChain,
     ComplianceCheckChain,
-    RateLookupChain
+    RateLookupChain,
 )
 from agents.financial_tax.models import (
     TaxCalculationRequest,
@@ -20,8 +20,9 @@ from agents.financial_tax.models import (
     TaxRateRequest,
     TaxRateResponse,
     TaxJurisdiction,
-    EntityType
+    EntityType,
 )
+
 
 @pytest.fixture
 def mock_llm():
@@ -29,22 +30,23 @@ def mock_llm():
     mock = MagicMock(spec=ChatOpenAI)
     return mock
 
+
 class TestTaxCalculationChain:
     """Test cases for TaxCalculationChain"""
-    
+
     def test_chain_initialization(self, mock_llm):
         """Test chain initializes with proper configuration"""
         chain = TaxCalculationChain(llm=mock_llm)
-        
+
         assert chain.llm == mock_llm
         assert chain.output_parser is not None
         assert chain.prompt is not None
         assert chain.chain is not None
-    
+
     def test_calculate_with_valid_request(self, mock_llm):
         """Test tax calculation with valid request"""
         chain = TaxCalculationChain(llm=mock_llm)
-        
+
         # Mock the chain run method
         mock_response = """
         {
@@ -61,7 +63,7 @@ class TestTaxCalculationChain:
         }
         """
         chain.chain.arun = AsyncMock(return_value=mock_response)
-        
+
         request = TaxCalculationRequest(
             income=150000.0,
             deductions={"standard": 27700.0},
@@ -69,16 +71,16 @@ class TestTaxCalculationChain:
             jurisdiction=TaxJurisdiction.US_FEDERAL,
             tax_year=2024,
             entity_type=EntityType.INDIVIDUAL,
-            additional_info={"dependents": 2}
+            additional_info={"dependents": 2},
         )
-        
+
         response = await chain.calculate(request)
-        
+
         assert isinstance(response, TaxCalculationResponse)
         assert response.gross_income == 150000.0
         assert response.net_tax_due == 14000.0
         assert response.effective_tax_rate == 12.0
-        
+
         # Verify chain was called with correct parameters
         chain.chain.arun.assert_called_once_with(
             income=150000.0,
@@ -87,35 +89,36 @@ class TestTaxCalculationChain:
             jurisdiction="US-FED",
             tax_year=2024,
             entity_type="individual",
-            additional_info={"dependents": 2}
+            additional_info={"dependents": 2},
         )
-    
+
     def test_calculate_with_parsing_error(self, mock_llm):
         """Test error handling when LLM returns unparseable result"""
         chain = TaxCalculationChain(llm=mock_llm)
-        
+
         # Mock invalid response
         chain.chain.arun = AsyncMock(return_value="Invalid JSON response")
-        
+
         request = TaxCalculationRequest(
             income=100000.0,
             deductions={},
             credits={},
             jurisdiction=TaxJurisdiction.US_FEDERAL,
             tax_year=2024,
-            entity_type=EntityType.INDIVIDUAL
+            entity_type=EntityType.INDIVIDUAL,
         )
-        
+
         with pytest.raises(Exception):  # OutputParserException
             await chain.calculate(request)
 
+
 class TestFinancialAnalysisChain:
     """Test cases for FinancialAnalysisChain"""
-    
+
     def test_analyze_with_valid_request(self, mock_llm):
         """Test financial analysis with valid request"""
         chain = FinancialAnalysisChain(llm=mock_llm)
-        
+
         mock_response = """
         {
             "summary": {"overall_health": "good"},
@@ -128,31 +131,32 @@ class TestFinancialAnalysisChain:
         }
         """
         chain.chain.arun = AsyncMock(return_value=mock_response)
-        
+
         request = FinancialAnalysisRequest(
             financial_statements={
                 "income_statement": {"revenue": 1000000, "expenses": 750000},
-                "balance_sheet": {"assets": 500000, "liabilities": 200000}
+                "balance_sheet": {"assets": 500000, "liabilities": 200000},
             },
             analysis_type="profitability",
             period="2024",
-            industry="technology"
+            industry="technology",
         )
-        
+
         response = await chain.analyze(request)
-        
+
         assert isinstance(response, FinancialAnalysisResponse)
         assert response.key_metrics["profit_margin"] == 25.0
         assert len(response.insights) == 1
         assert len(response.recommendations) == 1
 
+
 class TestComplianceCheckChain:
     """Test cases for ComplianceCheckChain"""
-    
+
     def test_check_compliance_with_valid_request(self, mock_llm):
         """Test compliance check with valid request"""
         chain = ComplianceCheckChain(llm=mock_llm)
-        
+
         mock_response = """
         {
             "compliance_status": "partially_compliant",
@@ -163,29 +167,30 @@ class TestComplianceCheckChain:
         }
         """
         chain.chain.arun = AsyncMock(return_value=mock_response)
-        
+
         request = ComplianceCheckRequest(
             entity_type=EntityType.CORPORATION,
             transactions=[{"type": "sale", "amount": 10000}],
             jurisdiction=TaxJurisdiction.US_CA,
             tax_year=2024,
-            compliance_areas=["sales_tax", "employment_tax"]
+            compliance_areas=["sales_tax", "employment_tax"],
         )
-        
+
         response = await chain.check_compliance(request)
-        
+
         assert isinstance(response, ComplianceCheckResponse)
         assert response.compliance_status == "partially_compliant"
         assert len(response.issues_found) == 1
         assert response.risk_level == "medium"
 
+
 class TestRateLookupChain:
     """Test cases for RateLookupChain"""
-    
+
     def test_lookup_rates_with_valid_request(self, mock_llm):
         """Test tax rate lookup with valid request"""
         chain = RateLookupChain(llm=mock_llm)
-        
+
         mock_response = """
         {
             "jurisdiction": "US-CA",
@@ -202,16 +207,16 @@ class TestRateLookupChain:
         }
         """
         chain.chain.arun = AsyncMock(return_value=mock_response)
-        
+
         request = TaxRateRequest(
             jurisdiction=TaxJurisdiction.US_CA,
             tax_year=2024,
             entity_type=EntityType.INDIVIDUAL,
-            income_level=150000.0
+            income_level=150000.0,
         )
-        
+
         response = await chain.lookup_rates(request)
-        
+
         assert isinstance(response, TaxRateResponse)
         assert response.jurisdiction == TaxJurisdiction.US_CA
         assert len(response.tax_brackets) == 2

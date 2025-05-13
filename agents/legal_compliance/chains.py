@@ -7,13 +7,16 @@ from langchain.output_parsers import PydanticOutputParser
 from typing import Dict, Any
 import os
 
-from .models import ComplianceAuditResult, DocumentAnalysisResult, RegulationCheckResult, ContractReviewResult
+from .models import (
+    ComplianceAuditResult,
+    DocumentAnalysisResult,
+    RegulationCheckResult,
+    ContractReviewResult,
+)
 
 # Initialize the LLM
 llm = ChatOpenAI(
-    model="gpt-4-turbo-preview",
-    temperature=0.1,
-    openai_api_key=os.getenv("OPENAI_API_KEY")
+    model="gpt-4-turbo-preview", temperature=0.1, openai_api_key=os.getenv("OPENAI_API_KEY")
 )
 
 # Compliance Audit Chain
@@ -36,14 +39,10 @@ Identify any compliance issues, assess risk levels, and provide detailed recomme
 Provide a thorough compliance audit result:
 """,
     input_variables=["organization_name", "audit_scope", "compliance_categories", "documents"],
-    partial_variables={"format_instructions": audit_parser.get_format_instructions()}
+    partial_variables={"format_instructions": audit_parser.get_format_instructions()},
 )
 
-audit_chain = LLMChain(
-    llm=llm,
-    prompt=audit_prompt,
-    output_parser=audit_parser
-)
+audit_chain = LLMChain(llm=llm, prompt=audit_prompt, output_parser=audit_parser)
 
 # Document Analysis Chain
 document_parser = PydanticOutputParser(pydantic_object=DocumentAnalysisResult)
@@ -65,14 +64,10 @@ and assess the risk level of any findings.
 Provide a comprehensive document analysis:
 """,
     input_variables=["document_type", "document_content", "compliance_frameworks", "check_for_pii"],
-    partial_variables={"format_instructions": document_parser.get_format_instructions()}
+    partial_variables={"format_instructions": document_parser.get_format_instructions()},
 )
 
-document_chain = LLMChain(
-    llm=llm,
-    prompt=document_prompt,
-    output_parser=document_parser
-)
+document_chain = LLMChain(llm=llm, prompt=document_prompt, output_parser=document_parser)
 
 # Regulation Check Chain
 regulation_parser = PydanticOutputParser(pydantic_object=RegulationCheckResult)
@@ -92,15 +87,16 @@ Identify all applicable regulations, compliance requirements, and potential risk
 
 Provide a comprehensive regulation check result:
 """,
-    input_variables=["business_activity", "jurisdictions", "industry_sector", "specific_regulations"],
-    partial_variables={"format_instructions": regulation_parser.get_format_instructions()}
+    input_variables=[
+        "business_activity",
+        "jurisdictions",
+        "industry_sector",
+        "specific_regulations",
+    ],
+    partial_variables={"format_instructions": regulation_parser.get_format_instructions()},
 )
 
-regulation_chain = LLMChain(
-    llm=llm,
-    prompt=regulation_prompt,
-    output_parser=regulation_parser
-)
+regulation_chain = LLMChain(llm=llm, prompt=regulation_prompt, output_parser=regulation_parser)
 
 # Contract Review Chain
 contract_parser = PydanticOutputParser(pydantic_object=ContractReviewResult)
@@ -122,12 +118,14 @@ and provide recommendations for improvement.
 
 Provide a comprehensive contract review:
 """,
-    input_variables=["contract_type", "contract_content", "parties_involved", "jurisdiction", "review_focus"],
-    partial_variables={"format_instructions": contract_parser.get_format_instructions()}
+    input_variables=[
+        "contract_type",
+        "contract_content",
+        "parties_involved",
+        "jurisdiction",
+        "review_focus",
+    ],
+    partial_variables={"format_instructions": contract_parser.get_format_instructions()},
 )
 
-contract_chain = LLMChain(
-    llm=llm,
-    prompt=contract_prompt,
-    output_parser=contract_parser
-)
+contract_chain = LLMChain(llm=llm, prompt=contract_prompt, output_parser=contract_parser)
