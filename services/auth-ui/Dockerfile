@@ -1,3 +1,8 @@
+FROM ghcr.io/alfred/healthcheck:0.3.1 AS healthcheck
+
+n# Copy healthcheck binary
+COPY --from=healthcheck /healthcheck /usr/local/bin/healthcheck
+
 FROM nginx:alpine
 
 WORKDIR /usr/share/nginx/html

@@ -1,3 +1,5 @@
+FROM ghcr.io/alfred/healthcheck:0.3.1 AS healthcheck
+
 FROM python:3.11-slim
 
 WORKDIR /app
@@ -23,6 +25,9 @@ COPY ./app /app/app
 COPY init-db.sql /app/
 COPY init-db.sh /app/
 RUN chmod +x /app/init-db.sh
+n# Copy healthcheck binary
+COPY --from=healthcheck /healthcheck /usr/local/bin/healthcheck
+
 
 # Expose the service port
 EXPOSE 8079

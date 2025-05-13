@@ -40,10 +40,10 @@ x-mail-service-labels: &mail-service-labels
 
 # Common health check settings
 x-health-check-settings: &basic-health-check
-  interval: 20s
-  timeout: 10s
-  retries: 3
-  start_period: 10s
+  interval: 30s
+  timeout: 20s
+  retries: 5
+  start_period: 45s
 
 # Common resource constraints
 # Resource constraints removed - they were causing validation issues
@@ -65,7 +65,7 @@ services:
     volumes:
       - redis-data:/data
     healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
+      test: ["CMD", "healthcheck", "--redis", "redis://localhost:6379"]
       <<: *basic-health-check
     restart: unless-stopped
     networks:
@@ -85,9 +85,9 @@ services:
     volumes:
       - vector-db-data:/qdrant/storage
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:6333/healthz"]
+      test: ["CMD", "healthcheck", "--http", "http://localhost:6333/health"]
       <<: *basic-health-check
-      start_period: 30s
+      start_period: 60s
     restart: unless-stopped
     deploy:
     networks:
@@ -104,7 +104,7 @@ services:
     ports:
       - "8085:8085"
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8085/v1/projects/${ALFRED_PROJECT_ID:-alfred-agent-platform}/topics"]
+      test: ["CMD", "healthcheck", "--http", "http://localhost:8085/v1/projects/alfred-agent-platform/topics"]
       <<: *basic-health-check
     restart: unless-stopped
     deploy:
@@ -123,7 +123,7 @@ services:
     volumes:
       - llm-service-data:/root/.ollama
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:11434/api/tags"]
+      test: ["CMD", "healthcheck", "--http", "http://localhost:11434/api/tags"]
       <<: *basic-health-check
       start_period: 20s
     restart: unless-stopped
@@ -154,7 +154,7 @@ services:
     volumes:
       - ./services/model-registry/init-db.sql:/app/init-db.sql
     healthcheck:
-      test: ["CMD-SHELL", "wget -q -O - http://localhost:8079/health > /dev/null || exit 1"]
+      test: ["CMD", "healthcheck", "--http", "http://localhost:8079/health"]
       <<: *basic-health-check
       start_period: 20s
     depends_on:
@@ -181,7 +181,7 @@ services:
       - MODEL_REGISTRY_URL=http://model-registry:8079
       - PORT=8080
     healthcheck:
-      test: ["CMD-SHELL", "wget -q -O - http://localhost:8080/health > /dev/null || exit 1"]
+      test: ["CMD", "healthcheck", "--http", "http://localhost:8080/health"]
       <<: *basic-health-check
       start_period: 20s
     depends_on:
@@ -227,7 +227,7 @@ services:
       - -c
       - listen_addresses=*
     healthcheck:
-      test: ["CMD", "pg_isready", "-U", "${DB_USER:-postgres}", "-h", "localhost"]
+      test: ["CMD", "healthcheck", "--postgres", "postgres://postgres:your-super-secret-password@localhost:5432/postgres"]
       interval: 5s
       timeout: 5s
       retries: 10
@@ -295,7 +295,7 @@ services:
       PGRST_DB_ANON_ROLE: anon
       PGRST_JWT_SECRET: ${DB_JWT_SECRET:-your-super-secret-jwt-token}
     healthcheck:
-      test: ["CMD-SHELL", "wget -q -O - http://localhost:3000/ > /dev/null || exit 1"]
+      test: ["CMD", "healthcheck", "--http", "http://localhost:3000/"]
       <<: *basic-health-check
     depends_on:
       db-postgres:
@@ -324,7 +324,7 @@ services:
       SUPABASE_ANON_KEY: ${ANON_KEY:-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImV4cCI6MTc0OTUzNjEzMH0.zcPCLGlqF3YHBP-gTlXOQ2zjV-h3VmxbThiYEg2I5io}
       SUPABASE_SERVICE_KEY: ${SERVICE_ROLE_KEY:-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoic2VydmljZV9yb2xlIiwiZXhwIjoxNzQ5NTM2MTMwfQ.EDf3DT0Zl6qQbrLIQLwAXRWAN5kaJ5mvlAh1jm0CY-o}
     healthcheck:
-      test: ["CMD-SHELL", "wget -q -O - http://localhost:3000/api/health > /dev/null || exit 1"]
+      test: ["CMD", "healthcheck", "--http", "http://localhost:3001/api/health"]
       <<: *basic-health-check
     depends_on:
       db-postgres:
@@ -365,7 +365,7 @@ services:
       FLY_ALLOC_ID: local
       ERL_AFLAGS: "-proto_dist inet_tcp"
     healthcheck:
-      test: ["CMD", "timeout", "5", "bash", "-c", "printf \"GET /health HTTP/1.1\\r\\nHost: localhost\\r\\n\\r\\n\" | nc localhost 4000 | grep -q '200 OK'"]
+      test: ["CMD", "healthcheck", "--tcp", "localhost:4000"]
       <<: *basic-health-check
     depends_on:
       db-postgres:
@@ -430,7 +430,7 @@ services:
     volumes:
       - ./libs:/app/libs
     healthcheck:
-      test: ["CMD-SHELL", "wget -q -O - http://localhost:8011/health > /dev/null || exit 1"]
+      test: ["CMD", "healthcheck", "--http", "http://localhost:8011/health"]
       <<: *basic-health-check
     depends_on:
       db-postgres:
@@ -472,9 +472,9 @@ services:
       - ALFRED_LOG_AGENT_ACCESS=true
       - ALFRED_MODEL_ROUTER_URL=http://model-router:8080
     healthcheck:
-      test: ["CMD-SHELL", "wget -q -O - http://localhost:8501/healthz > /dev/null || exit 1"]
+      test: ["CMD", "healthcheck", "--http", "http://localhost:8501/health"]
       <<: *basic-health-check
-      start_period: 30s
+      start_period: 60s
     depends_on:
       vector-db:
         condition: service_started
@@ -516,12 +516,12 @@ services:
       - OPENAI_API_KEY=${ALFRED_OPENAI_API_KEY:-sk-mock-key-for-development-only}
       - ALFRED_OPENAI_API_KEY=${ALFRED_OPENAI_API_KEY:-sk-mock-key-for-development-only}
     volumes:
-      - ./empty-credentials.json:/tmp/empty-credentials.json
+      - ./config/credentials/empty-credentials.json:/tmp/empty-credentials.json
       - ./libs:/app/libs
     healthcheck:
-      test: ["CMD-SHELL", "wget -q -O - http://localhost:8000/healthz > /dev/null || exit 1"]
+      test: ["CMD", "healthcheck", "--http", "http://localhost:8000/health"]
       <<: *basic-health-check
-      start_period: 30s
+      start_period: 60s
     depends_on:
       agent-rag:
         condition: service_started
@@ -566,7 +566,7 @@ services:
     volumes:
       - ./libs:/app/libs
     healthcheck:
-      test: ["CMD-SHELL", "wget -q -O - http://localhost:9000/health > /dev/null || exit 1"]
+      test: ["CMD", "healthcheck", "--http", "http://localhost:9000/health"]
       <<: *basic-health-check
     depends_on:
       db-postgres:
@@ -620,9 +620,9 @@ services:
     volumes:
       - ./libs:/app/libs
       - ./agents/financial_tax:/app/agents/financial_tax
-      - ./empty-credentials.json:/tmp/empty-credentials.json
+      - ./config/credentials/empty-credentials.json:/tmp/empty-credentials.json
     healthcheck:
-      test: ["CMD-SHELL", "wget -q -O - http://localhost:9003/health > /dev/null || exit 1"]
+      test: ["CMD", "healthcheck", "--http", "http://localhost:9003/health"]
       <<: *basic-health-check
     depends_on:
       db-postgres:
@@ -676,9 +676,9 @@ services:
     volumes:
       - ./libs:/app/libs
       - ./agents/legal_compliance:/app/agents/legal_compliance
-      - ./empty-credentials.json:/tmp/empty-credentials.json
+      - ./config/credentials/empty-credentials.json:/tmp/empty-credentials.json
     healthcheck:
-      test: ["CMD-SHELL", "wget -q -O - http://localhost:9002/health > /dev/null || exit 1"]
+      test: ["CMD", "healthcheck", "--http", "http://localhost:9002/health"]
       <<: *basic-health-check
     depends_on:
       db-postgres:
@@ -716,9 +716,9 @@ services:
       - ALFRED_API_URL=http://agent-core:8011
       - ALFRED_MODEL_ROUTER_URL=http://model-router:8080
     healthcheck:
-      test: ["CMD-SHELL", "wget -q -O - http://localhost:8501/healthz > /dev/null || exit 1"]
+      test: ["CMD", "healthcheck", "--http", "http://localhost:8501/health"]
       <<: *basic-health-check
-      start_period: 30s
+      start_period: 60s
     volumes:
       - ./services/streamlit-chat:/app
     depends_on:
@@ -780,7 +780,7 @@ services:
       - ALFRED_AUTH_URL=http://db-auth:9999
       - ALFRED_API_URL=http://db-api:3000
     healthcheck:
-      test: ["CMD-SHELL", "wget -q -O - http://localhost:80/healthz > /dev/null || exit 1"]
+      test: ["CMD", "healthcheck", "--http", "http://localhost:80/health"]
       <<: *basic-health-check
     depends_on:
       db-auth:
@@ -850,7 +850,7 @@ services:
       - /:/rootfs:ro
     command:
     healthcheck:
-      test: ["CMD-SHELL", "wget -q -O - http://localhost:9100/metrics > /dev/null || exit 1"]
+      test: ["CMD", "healthcheck", "--http", "http://localhost:9090/-/healthy"]
       <<: *basic-health-check
     restart: unless-stopped
     deploy:
@@ -872,7 +872,7 @@ services:
       db-postgres:
         condition: service_healthy
     healthcheck:
-      test: ["CMD-SHELL", "wget -q -O - http://localhost:9187/metrics > /dev/null || exit 1"]
+      test: ["CMD", "healthcheck", "--http", "http://localhost:9187/metrics"]
       <<: *basic-health-check
     restart: unless-stopped
     deploy:
@@ -894,7 +894,7 @@ services:
       redis:
         condition: service_started
     healthcheck:
-      test: ["CMD-SHELL", "pgrep redis_exporter || exit 1"]
+      test: ["CMD", "healthcheck", "--http", "http://localhost:9122/metrics"]
       <<: *basic-health-check
     restart: unless-stopped
     deploy:
@@ -916,7 +916,7 @@ services:
       - "1025:1025"  # SMTP port
       - "8025:8025"  # Web UI port
     healthcheck:
-      test: ["CMD", "nc", "-z", "localhost", "1025"]
+      test: ["CMD", "healthcheck", "--tcp", "localhost:1025"]
       <<: *basic-health-check
     restart: unless-stopped
     deploy:

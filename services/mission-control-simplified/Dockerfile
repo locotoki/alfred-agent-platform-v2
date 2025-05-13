@@ -1,3 +1,5 @@
+FROM ghcr.io/alfred/healthcheck:0.3.1 AS healthcheck
+
 FROM node:18-alpine
 
 WORKDIR /app
@@ -8,6 +10,9 @@ COPY package-lock.json* ./
 
 # Install dependencies
 RUN npm install
+n# Copy healthcheck binary
+COPY --from=healthcheck /healthcheck /usr/local/bin/healthcheck
+
 
 # Copy server files
 COPY server.js ./

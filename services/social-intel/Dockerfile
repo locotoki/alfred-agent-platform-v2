@@ -1,3 +1,5 @@
+FROM ghcr.io/alfred/healthcheck:0.3.1 AS healthcheck
+
 FROM python:3.11-slim
 
 WORKDIR /app
@@ -52,6 +54,9 @@ RUN echo '"""\nStub implementation of agent_core package.\n"""\n\nfrom fastapi i
 
 # Create SocialIntelAgent stub
 RUN echo '"""\nStub implementation of SocialIntelAgent.\n"""\n\nclass SocialIntelAgent:\n    def __init__(self, pubsub_transport, supabase_transport, policy_middleware):\n        self.pubsub_transport = pubsub_transport\n        self.supabase_transport = supabase_transport\n        self.policy_middleware = policy_middleware\n        self.is_running = False\n        self.supported_intents = ["TREND_ANALYSIS", "SOCIAL_MONITOR", "SENTIMENT_ANALYSIS"]\n        \n    async def start(self):\n        self.is_running = True\n        \n    async def stop(self):\n        self.is_running = False\n        \n    async def _analyze_trend(self, request):\n        query = request.get("query", "")\n        return {\n            "query": query,\n            "results": [\n                {"topic": "Topic 1", "popularity": 85, "sentiment": "positive"},\n                {"topic": "Topic 2", "popularity": 65, "sentiment": "neutral"},\n                {"topic": "Topic 3", "popularity": 45, "sentiment": "negative"}\n            ]\n        }\n' > /app/agents/social_intel/agent.py
+n# Copy healthcheck binary
+COPY --from=healthcheck /healthcheck /usr/local/bin/healthcheck
+
 
 # Set environment variables
 ENV PYTHONPATH=/app

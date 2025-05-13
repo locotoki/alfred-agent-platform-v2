@@ -1,3 +1,5 @@
+FROM ghcr.io/alfred/healthcheck:0.3.1 AS healthcheck
+
 FROM pgvector/pgvector:pg14
 
 # Install required dependencies
@@ -17,4 +19,7 @@ RUN cd /tmp \
 
 # Install pg_cron extension
 RUN apt-get update && apt-get install -y postgresql-14-cron && \
+n# Copy healthcheck binary
+COPY --from=healthcheck /healthcheck /usr/local/bin/healthcheck
+
     rm -rf /var/lib/apt/lists/*

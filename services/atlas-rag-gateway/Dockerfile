@@ -1,8 +1,13 @@
+FROM ghcr.io/alfred/healthcheck:0.3.1 AS healthcheck
+
 FROM python:3.11-slim
 WORKDIR /app
 
 # Install dependencies directly
 RUN pip install --no-cache-dir \
+n# Copy healthcheck binary
+COPY --from=healthcheck /healthcheck /usr/local/bin/healthcheck
+
     fastapi==0.110.0 \
     uvicorn[standard]==0.29.0 \
     qdrant-client==1.7.0 \

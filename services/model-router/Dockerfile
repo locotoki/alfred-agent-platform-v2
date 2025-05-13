@@ -1,3 +1,5 @@
+FROM ghcr.io/alfred/healthcheck:0.3.1 AS healthcheck
+
 FROM python:3.10-slim
 
 WORKDIR /app
@@ -14,6 +16,9 @@ RUN apt-get update \
     curl \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
+
+# Copy healthcheck binary
+COPY --from=healthcheck /healthcheck /usr/local/bin/healthcheck
 
 # Install Python dependencies
 COPY requirements.txt .
