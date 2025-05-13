@@ -1,0 +1,81 @@
+[tool.poetry]
+name = "alfred-agent-platform"
+version = "2.0.0"
+description = "AI Agent Platform with Supabase and Pub/Sub"
+authors = ["Your Name <your.email@example.com>"]
+readme = "README.md"
+packages = [
+    { include = "agents" },
+    { include = "libs" }
+]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+python-dotenv = "^1.0.0"
+pydantic = "^2.6.0"
+pydantic-settings = "^2.1.0"
+asyncio = "^3.4.3"
+asyncpg = "^0.29.0"
+aiohttp = "^3.9.1"
+langchain = "^0.1.6"
+langchain-community = "^0.0.20"
+langchain-core = "^0.1.23"
+langchain-openai = "^0.0.5"
+langgraph = "^0.0.29"
+langsmith = "^0.0.87"
+psycopg2-binary = "^2.9.9"
+sqlalchemy = "^2.0.25"
+alembic = "^1.13.1"
+qdrant-client = "^1.7.0"
+google-cloud-pubsub = "^2.19.0"
+slack-bolt = "^1.18.1"
+slack-sdk = "^3.23.0"
+fastapi = "^0.108.0"
+uvicorn = "^0.27.0"
+opentelemetry-api = "^1.22.0"
+opentelemetry-sdk = "^1.22.0"
+opentelemetry-exporter-otlp = "^1.22.0"
+prometheus-client = "^0.19.0"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.4.4"
+pytest-asyncio = "^0.23.3"
+pytest-cov = "^4.1.0"
+black = "^24.1.1"
+isort = "^5.13.2"
+flake8 = "^7.0.0"
+mypy = "^1.8.0"
+pre-commit = "^3.6.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+line-length = 100
+target-version = ['py311']
+include = '\.pyi?$'
+
+[tool.isort]
+profile = "black"
+line_length = 100
+multi_line_output = 3
+
+[tool.mypy]
+python_version = "3.11"
+disallow_untyped_defs = true
+ignore_missing_imports = true
+show_error_codes = true
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_functions = ["test_*"]
+asyncio_mode = "auto"
+addopts = "-ra -q --strict-markers"
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "integration: marks integration tests",
+    "e2e: marks end-to-end tests"
+]
