@@ -34,21 +34,18 @@ jobs:
           
       - name: Run minimal linting
         run: |
-          # Only run black and isort for quicker checks
-          echo "Running black with continue-on-error for main branch..."
-          if [[ "$GITHUB_REF" == "refs/heads/main" || "$GITHUB_EVENT_NAME" == "workflow_dispatch" ]]; then
-            # On main, run black but don't fail if it doesn't pass
-            black --check --exclude "(youtube-test-env/|migrations/|node_modules/|\.git/|\.mypy_cache/|\.env/|\.venv/|env/|venv/|\.ipynb/)" . || echo "Black formatting issues found, but continuing..."
-            isort --check-only --profile black --skip youtube-test-env --skip migrations . || echo "Isort issues found, but continuing..."
-            echo "SKIPPING mypy type checking for main branch"
-            echo "SKIPPING pytest for main branch"
-          else
-            # On other branches, require black to pass
-            black --check --exclude "(youtube-test-env/|migrations/|node_modules/|\.git/|\.mypy_cache/|\.env/|\.venv/|env/|venv/|\.ipynb/)" .
-            isort --check-only --profile black --skip youtube-test-env --skip migrations .
-            echo "Running full validation for non-main branches"
+          # Run black and isort with strict checking
+          black --check --exclude "(youtube-test-env/|migrations/|node_modules/|\.git/|\.mypy_cache/|\.env/|\.venv/|env/|venv/|\.ipynb/)" .
+          isort --check-only --profile black --skip youtube-test-env --skip migrations .
+          
+          # Run mypy and pytest for full validation
+          if [[ "$GITHUB_REF" != "refs/heads/main" && "$GITHUB_EVENT_NAME" != "workflow_dispatch" ]]; then
+            echo "Running full validation with mypy and pytest"
             mypy .
             pytest -xvs
+          else
+            echo "SKIPPING mypy type checking for main branch"
+            echo "SKIPPING pytest for main branch"
           fi
 
   # Metrics validation job

@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- Applied Black 24.1.1 formatting across entire codebase
+- Updated CI pipeline to enforce strict Black checks
+- Standardized code formatting for better maintainability
+
 ## [0.2.0-phase1] - 2025-05-13
 
 ### Added
