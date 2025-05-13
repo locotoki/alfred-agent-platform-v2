@@ -17,8 +17,6 @@ jobs:
   # Security scanning
   security-scan:
     runs-on: ubuntu-latest
-    # Allow this job to pass even with errors for PR #12 (black formatting PR)
-    continue-on-error: ${{ github.event.pull_request.number == 12 }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -52,8 +50,6 @@ jobs:
   lint-and-test:
     needs: security-scan
     runs-on: ubuntu-latest
-    # Allow this job to pass even with errors for PR #12 (black formatting PR)
-    continue-on-error: ${{ github.event.pull_request.number == 12 }}
     services:
       postgres:
         image: postgres:15
@@ -117,8 +113,6 @@ jobs:
   build-images:
     needs: lint-and-test
     runs-on: ubuntu-latest
-    # Allow this job to pass even with errors for PR #12 (black formatting PR)
-    continue-on-error: ${{ github.event.pull_request.number == 12 }}
     strategy:
       matrix:
         service:
@@ -172,8 +166,6 @@ jobs:
   integration-tests:
     needs: build-images
     runs-on: ubuntu-latest
-    # Allow this job to pass even with errors for PR #12 (black formatting PR)
-    continue-on-error: ${{ github.event.pull_request.number == 12 }}
     steps:
       - uses: actions/checkout@v4
 

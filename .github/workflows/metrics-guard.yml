@@ -10,8 +10,6 @@ on:
 jobs:
   validate-metrics:
     runs-on: ubuntu-latest
-    # Allow this job to pass even with errors for PR #12 (black formatting PR)
-    continue-on-error: ${{ github.event.pull_request.number == 12 }}
     steps:
       - uses: actions/checkout@v3
       
