@@ -1,30 +1,30 @@
 """Social Intelligence Service Main Application."""
 
-from fastapi import FastAPI, HTTPException, Query, Body, Request
-from contextlib import asynccontextmanager
-import os
-import structlog
 import asyncio
-import redis
-import yaml
-from typing import Dict, List, Any, Optional
+import os
+from contextlib import asynccontextmanager
 from datetime import datetime
-from fastapi.responses import HTMLResponse, JSONResponse
-from fastapi.staticfiles import StaticFiles
-from fastapi.openapi.utils import get_openapi
+from typing import Any, Dict, List, Optional
 
-from app.niche_scout import NicheScout
+import redis
+import structlog
+import yaml
 from app.blueprint import SeedToBlueprint
+from app.niche_scout import NicheScout
 from app.workflow_endpoints import (
-    get_workflow_result,
-    get_workflow_history,
     get_scheduled_workflows,
+    get_workflow_history,
+    get_workflow_result,
     schedule_workflow,
 )
+from fastapi import Body, FastAPI, HTTPException, Query, Request
+from fastapi.openapi.utils import get_openapi
+from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi.staticfiles import StaticFiles
 
-from libs.a2a_adapter import PubSubTransport, SupabaseTransport, PolicyMiddleware
-from libs.agent_core.health import create_health_app
 from agents.social_intel.agent import SocialIntelAgent
+from libs.a2a_adapter import PolicyMiddleware, PubSubTransport, SupabaseTransport
+from libs.agent_core.health import create_health_app
 
 logger = structlog.get_logger(__name__)
 
@@ -48,7 +48,7 @@ social_agent = SocialIntelAgent(
 async def lifespan(app: FastAPI):
     """Manage application lifecycle."""
     # Import database module here to avoid circular imports
-    from app.database import get_pool, close_pool
+    from app.database import close_pool, get_pool
 
     # Startup
     await supabase_transport.connect()

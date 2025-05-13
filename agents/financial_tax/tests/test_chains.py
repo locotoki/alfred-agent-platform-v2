@@ -1,21 +1,22 @@
 """Unit tests for Financial Tax Agent chains"""
 
-import pytest
 from unittest.mock import AsyncMock, MagicMock, patch
 
+import pytest
+
 from agents.financial_tax.chains import (
-    TaxCalculationChain,
-    FinancialAnalysisChain,
     ComplianceCheckChain,
+    FinancialAnalysisChain,
     RateLookupChain,
+    TaxCalculationChain,
 )
 from agents.financial_tax.models import (
-    TaxCalculationRequest,
-    FinancialAnalysisRequest,
     ComplianceCheckRequest,
-    TaxRateRequest,
-    TaxJurisdiction,
     EntityType,
+    FinancialAnalysisRequest,
+    TaxCalculationRequest,
+    TaxJurisdiction,
+    TaxRateRequest,
 )
 
 

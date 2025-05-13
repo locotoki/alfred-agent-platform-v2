@@ -20,8 +20,9 @@ import os
 import sys
 import time
 from datetime import datetime
+from typing import Any, Dict, Optional
+
 import requests
-from typing import Dict, Any, Optional
 
 # Test cases with various categories and subcategories
 TEST_CASES = [

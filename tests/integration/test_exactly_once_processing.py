@@ -1,8 +1,9 @@
-import pytest
 import asyncio
-import asyncpg
 import os
 from datetime import datetime, timedelta
+
+import asyncpg
+import pytest
 
 from libs.a2a_adapter import A2AEnvelope, SupabaseTransport
 

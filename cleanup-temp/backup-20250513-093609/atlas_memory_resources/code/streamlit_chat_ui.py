@@ -1,11 +1,12 @@
-import streamlit as st
-import requests
-import json
-import time
-import os
-from datetime import datetime
-import structlog
 import asyncio
+import json
+import os
+import time
+from datetime import datetime
+
+import requests
+import streamlit as st
+import structlog
 
 # Configure logging
 logger = structlog.get_logger(__name__)
@@ -195,6 +196,7 @@ async def send_message_async(message: str) -> str:
         ):
             # Import the client lazily to avoid circular imports
             import asyncio
+
             from send_message import create_model_router_client
 
             # Create client if needed

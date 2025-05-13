@@ -10,19 +10,19 @@ This script helps with the documentation migration process by:
 5. Creating a CSV or JSON report with migration recommendations
 """
 
-import os
-import sys
-import json
+import argparse
 import csv
-import re
-import time
 import hashlib
-from pathlib import Path
+import json
+import logging
+import os
+import re
+import sys
+import time
+from collections import defaultdict
 from datetime import datetime
 from difflib import SequenceMatcher
-import argparse
-from collections import defaultdict
-import logging
+from pathlib import Path
 
 # Set up logging
 logging.basicConfig(

@@ -1,8 +1,8 @@
 """Stub implementation of health module for agent_core."""
 
-from fastapi import FastAPI
 import prometheus_client
 import structlog
+from fastapi import FastAPI
 
 logger = structlog.get_logger(__name__)
 
