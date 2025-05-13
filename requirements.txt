@@ -15,7 +15,7 @@ langchain-community==0.0.20
 langchain-core==0.1.25
 langchain-openai==0.0.5
 langgraph==0.0.29
-langsmith==0.1.17
+langsmith<0.1,>=0.0.83  # Constraint from langchain 0.1.7
 
 # Database
 psycopg2-binary==2.9.9
