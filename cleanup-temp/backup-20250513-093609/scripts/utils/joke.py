@@ -3,9 +3,10 @@
 Simple script to request a joke from Ollama.
 """
 
-import requests
 import json
 import sys
+
+import requests
 
 
 def get_joke(model="tinyllama"):

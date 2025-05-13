@@ -76,6 +76,22 @@ def create_health_app(service_name: str, version: str) -> FastAPI:
         """Prometheus metrics endpoint."""
         return Response(content=prometheus_client.generate_latest(), media_type="text/plain")
 
+    # Legacy endpoints (maintain backward compatibility)
+    @health_app.get("/")
+    async def root_health_check():
+        """Basic health check endpoint (legacy)."""
+        return {"status": "healthy", "service": service_name, "version": version}
+
+    @health_app.get("/ready")
+    async def readiness_check():
+        """Readiness check endpoint (legacy)."""
+        return {"status": "ready"}
+
+    @health_app.get("/live")
+    async def liveness_check():
+        """Liveness check endpoint (legacy)."""
+        return {"status": "alive"}
+
     # Attach utility methods to the app for dependency management
     health_app.register_dependency = register_dependency
     health_app.update_dependency_status = update_dependency_status

@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 """Integration test for YouTube workflows in SocialIntelligence Agent."""
 
-import os
-import json
-import uuid
-import sys
 import asyncio
+import json
+import os
+import sys
+import uuid
 from datetime import datetime
 
 

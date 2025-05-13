@@ -2,15 +2,17 @@
 """Simple test script for YouTube Niche-Scout workflow."""
 
 import asyncio
-import os
 import json
-import pandas as pd
-import numpy as np
+import os
 from datetime import datetime
-import umap
+
+import numpy as np
+import pandas as pd
 import sklearn.cluster as skc
-from youtubesearchpython import VideosSearch
+import umap
 from pytrends.request import TrendReq
+from youtubesearchpython import VideosSearch
+
 
 async def search_videos(query, limit=100):
     """Search for videos using the given query."""

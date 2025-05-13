@@ -16,7 +16,7 @@ fixed_content = re.sub(
     r'@health_app\.get\("/metrics"\).*?def metrics\(\):.*?""".*?""".*?return prometheus_client\.generate_latest\(\)',
     '@health_app.get("/metrics")\n    async def metrics():\n        """Prometheus metrics endpoint."""\n        from fastapi.responses import Response\n        return Response(content=prometheus_client.generate_latest(), media_type="text/plain")',
     content,
-    flags=re.DOTALL
+    flags=re.DOTALL,
 )
 
 # Write the fixed content back
