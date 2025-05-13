@@ -21,9 +21,13 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          # Install minimal requirements for CI only
-          pip install black isort mypy pytest
-          if [ -f requirements-minimal.txt ]; then pip install -r requirements-minimal.txt; fi
+
+          # Install test tools only - avoid full requirements.txt with dependency conflicts
+          pip install black==24.1.1 isort==5.13.2 mypy==1.8.0 pytest==7.4.4
+
+          # Install minimal requirements for CI tests
+          echo "Installing minimal requirements for CI..."
+          pip install python-dotenv==1.0.0 pydantic==2.6.0 fastapi==0.108.0 prometheus-client==0.19.0
           
       - name: Run linting
         run: |
