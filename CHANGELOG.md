@@ -13,6 +13,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Standardized code formatting for better maintainability
 - Applied isort for consistent import ordering
 - Added mypy exclusions for duplicate modules
+- Marked legacy health check scripts as deprecated
+- Updated agent_core/health.py to comply with health check standard
 
 ## [0.3.0-healthcheck-full] - 2025-05-14
 

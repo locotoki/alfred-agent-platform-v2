@@ -1,4 +1,10 @@
-#\!/bin/bash
+#!/bin/bash
+# *********************************************************************
+# DEPRECATED: This script is deprecated and will be removed in a future version.
+# Please use the healthcheck binary v0.4.0 instead, which is now standardized
+# across all services. See PR #22 for details.
+# *********************************************************************
+
 # Extract URL from args
 URL=""
 while [[ $# -gt 0 ]]; do
