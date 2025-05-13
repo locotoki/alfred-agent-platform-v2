@@ -1,0 +1,47 @@
+# CODEOWNERS for Alfred Agent Platform v2
+# Each line is a file pattern followed by one or more owners.
+
+# Default owners for everything in the repo
+* @DevOps
+
+# Core infrastructure
+/docker-compose*.yml @DevOps
+/infra/ @DevOps @SRE
+
+# Service Dockerfiles - Always require DevOps review
+**/Dockerfile @DevOps
+
+# Monitoring configurations - SRE team owns
+/monitoring/ @SRE
+/scripts/lint-metrics-format.sh @SRE
+/scripts/test-metrics-ports.sh @SRE
+/scripts/bump-healthcheck.sh @SRE @DevOps
+
+# Agent implementations - Owned by corresponding teams
+/agents/financial_tax/ @FinanceTeam
+/agents/legal_compliance/ @LegalTeam
+/agents/social_intel/ @SocialTeam
+
+# Documentation - TechWriters must review
+/docs/ @TechWriters
+/CONTRIBUTING.md @TechWriters @DevOps
+/README.md @TechWriters
+/CHANGELOG.md @TechWriters @DevOps
+
+# CI/CD pipeline - DevOps team owns
+/.github/workflows/ @DevOps
+/scripts/ @DevOps
+
+# Services - Owned by corresponding teams with DevOps oversight
+/services/financial-tax/ @FinanceTeam @DevOps
+/services/legal-compliance/ @LegalTeam @DevOps
+/services/social-intel/ @SocialTeam @DevOps
+/services/streamlit-chat/ @UITeam @DevOps
+/services/mission-control/ @UITeam @DevOps
+
+# API and libraries - Core team owns
+/api/ @CoreTeam
+/libs/ @CoreTeam
+
+# Tests - Everyone should care, but DevOps and QA must review
+/tests/ @DevOps @QA
