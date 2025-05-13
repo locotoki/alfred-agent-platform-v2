@@ -1,0 +1,155 @@
+Verifying health of all services...
+====================================
+
+Checking redis (port 6379)...
+  ✅ Container is running and healthy
+
+Checking vector-db (port 6333)...
+  ❌ Container is not healthy (status: unhealthy)
+  Health check logs:
+OCI runtime exec failed: exec failed: unable to start container process: exec: "curl": executable file not found in $PATH: unknownOCI runtime exec failed: exec failed: unable to start container process: exec: "curl": executable file not found in $PATH: unknownOCI runtime exec failed: exec failed: unable to start container process: exec: "curl": executable file not found in $PATH: unknownOCI runtime exec failed: exec failed: unable to start container process: exec: "curl": executable file not found in $PATH: unknownOCI runtime exec failed: exec failed: unable to start container process: exec: "curl": executable file not found in $PATH: unknown
+
+Checking pubsub-emulator (port 8085)...
+  ✅ Container is running and healthy
+
+Checking llm-service (port 11434)...
+  ❌ Container is not healthy (status: unhealthy)
+  Health check logs:
+OCI runtime exec failed: exec failed: unable to start container process: exec: "curl": executable file not found in $PATH: unknownOCI runtime exec failed: exec failed: unable to start container process: exec: "curl": executable file not found in $PATH: unknownOCI runtime exec failed: exec failed: unable to start container process: exec: "curl": executable file not found in $PATH: unknownOCI runtime exec failed: exec failed: unable to start container process: exec: "curl": executable file not found in $PATH: unknownOCI runtime exec failed: exec failed: unable to start container process: exec: "curl": executable file not found in $PATH: unknown
+
+Checking model-registry (port 8079)...
+  ✅ Container is running and healthy
+
+Checking model-router (port 8080)...
+  ❌ Container is not healthy (status: unhealthy)
+  Health check logs:
+/bin/sh: 1: wget: not found
+/bin/sh: 1: wget: not found
+/bin/sh: 1: wget: not found
+/bin/sh: 1: wget: not found
+
+
+Checking db-postgres (port 5432)...
+  ✅ Container is running and healthy
+
+Checking db-auth (port 9999)...
+  ⚠️ Container is running but has no health check
+
+Checking db-api (port 3000)...
+  ❌ Container is not healthy (status: unhealthy)
+  Health check logs:
+OCI runtime exec failed: exec failed: unable to start container process: exec: "/bin/sh": stat /bin/sh: no such file or directory: unknownOCI runtime exec failed: exec failed: unable to start container process: exec: "/bin/sh": stat /bin/sh: no such file or directory: unknownOCI runtime exec failed: exec failed: unable to start container process: exec: "/bin/sh": stat /bin/sh: no such file or directory: unknownOCI runtime exec failed: exec failed: unable to start container process: exec: "/bin/sh": stat /bin/sh: no such file or directory: unknownOCI runtime exec failed: exec failed: unable to start container process: exec: "/bin/sh": stat /bin/sh: no such file or directory: unknown
+
+Checking db-admin (port 3001)...
+  ❌ Container is not healthy (status: unhealthy)
+  Health check logs:
+/bin/sh: 1: wget: not found
+/bin/sh: 1: wget: not found
+/bin/sh: 1: wget: not found
+/bin/sh: 1: wget: not found
+
+
+Checking db-realtime (port 4000)...
+  ❌ Container is not healthy (status: unhealthy)
+  Health check logs:
+bash: line 1: nc: command not found
+bash: line 1: nc: command not found
+bash: line 1: nc: command not found
+bash: line 1: nc: command not found
+
+
+Checking db-storage (port 5000)...
+  ✅ Container is running and healthy
+
+Checking agent-core (port 8011)...
+  ❌ Container is not healthy (status: unhealthy)
+  Health check logs:
+/bin/sh: 1: wget: not found
+/bin/sh: 1: wget: not found
+/bin/sh: 1: wget: not found
+/bin/sh: 1: wget: not found
+
+
+Checking agent-rag (port 8501)...
+  ❌ Container is not healthy (status: unhealthy)
+  Health check logs:
+/bin/sh: 1: wget: not found
+/bin/sh: 1: wget: not found
+/bin/sh: 1: wget: not found
+/bin/sh: 1: wget: not found
+
+
+Checking agent-atlas (port 8000)...
+  ❌ Container is not healthy (status: unhealthy)
+  Health check logs:
+/bin/sh: 1: wget: not found
+/bin/sh: 1: wget: not found
+/bin/sh: 1: wget: not found
+/bin/sh: 1: wget: not found
+
+
+Checking agent-social (port 9000)...
+  ❌ Container is not healthy (status: unhealthy)
+  Health check logs:
+/bin/sh: 1: wget: not found
+/bin/sh: 1: wget: not found
+/bin/sh: 1: wget: not found
+/bin/sh: 1: wget: not found
+
+
+Checking agent-financial (port 9003)...
+  ❌ Container is not healthy (status: unhealthy)
+  Health check logs:
+/bin/sh: 1: wget: not found
+/bin/sh: 1: wget: not found
+/bin/sh: 1: wget: not found
+/bin/sh: 1: wget: not found
+
+
+Checking agent-legal (port 9002)...
+  ❌ Container is not healthy (status: unhealthy)
+  Health check logs:
+/bin/sh: 1: wget: not found
+/bin/sh: 1: wget: not found
+/bin/sh: 1: wget: not found
+/bin/sh: 1: wget: not found
+
+
+Checking ui-chat (port 8501)...
+  ❌ Container is not healthy (status: unhealthy)
+  Health check logs:
+/bin/sh: 1: wget: not found
+/bin/sh: 1: wget: not found
+/bin/sh: 1: wget: not found
+/bin/sh: 1: wget: not found
+
+
+Checking ui-admin (port 3000)...
+  ⚠️ Container is running but has no health check
+
+Checking auth-ui (port 80)...
+  ❌ Container is not healthy (status: unhealthy)
+  Health check logs:
+wget: can't connect to remote host: Connection refused
+wget: can't connect to remote host: Connection refused
+wget: can't connect to remote host: Connection refused
+wget: can't connect to remote host: Connection refused
+
+
+Checking monitoring-metrics (port 9090)...
+  ⚠️ Container is running but has no health check
+
+Checking monitoring-dashboard (port 3000)...
+  ⚠️ Container is running but has no health check
+
+Checking monitoring-node (port 9100)...
+  ✅ Container is running and healthy
+
+Checking monitoring-db (port 9187)...
+  ✅ Container is running and healthy
+
+Checking mail-server (port 1025)...
+  ✅ Container is running and healthy
+
+Health check verification complete
+==================================
