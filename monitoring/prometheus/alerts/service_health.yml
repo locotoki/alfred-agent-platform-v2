@@ -1,0 +1,26 @@
+groups:
+  - name: service_health_alerts
+    rules:
+    - alert: ServiceUnhealthy
+      expr: service_health == 0
+      for: 1m
+      labels:
+        severity: critical
+        category: availability
+      annotations:
+        summary: "Service {{ $labels.name }} is unhealthy"
+        description: "Service {{ $labels.name }} ({{ $labels.instance }}) has reported unhealthy status for at least 1 minute."
+        runbook_url: "https://github.com/locotoki/alfred-agent-platform-v2/docs/runbooks/service_health.md"
+        dashboard_url: "https://grafana.example.com/d/platform/health-dashboard"
+        
+    - alert: MultipleServicesUnhealthy
+      expr: sum(service_health == 0) > 1
+      for: 2m
+      labels:
+        severity: critical
+        category: availability
+      annotations:
+        summary: "Multiple services are unhealthy"
+        description: "{{ $value }} services are reporting unhealthy status for at least 2 minutes."
+        runbook_url: "https://github.com/locotoki/alfred-agent-platform-v2/docs/runbooks/multiple_services_down.md"
+        dashboard_url: "https://grafana.example.com/d/platform/health-dashboard"

@@ -11,6 +11,8 @@ alerting:
 
 rule_files:
   - /etc/prometheus/alerts/*.yml
+  # Phase 2 alert rules
+  - /etc/prometheus/alerts/service_health.yml
 
 scrape_configs:
   - job_name: 'prometheus'
