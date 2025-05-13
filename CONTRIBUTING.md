@@ -1,17 +1,32 @@
 # Contributing to Alfred Agent Platform v2
 
-We love your input! We want to make contributing to this project as easy and transparent as possible.
+We love your input! We want to make contributing to this project as easy and transparent as possible. This guide ensures all changes follow our lean-first, metrics-driven workflow.
 
 ## Development Process
 
-We use GitHub to host code, to track issues and feature requests, as well as accept pull requests.
+We use GitHub to host code, to track issues and feature requests, as well as accept pull requests. Our development process follows a phased approach:
 
-1. Fork the repo and create your branch from `develop`.
-2. If you've added code that should be tested, add tests.
-3. If you've changed APIs, update the documentation.
-4. Ensure the test suite passes.
-5. Make sure your code lints.
-6. Issue that pull request!
+- **Phase 0**: Foundational changes with basic metrics and monitoring
+- **Phase 1**: Enhanced metrics with service_health gauges
+- **Phase 2**: Advanced metrics with custom service-specific metrics
+
+### Branch Naming Convention
+
+All branches should follow this naming pattern:
+- `feat/<area>-<slug>` - For new features (e.g., `feat/metrics-exporter`)
+- `fix/<area>-<slug>` - For bug fixes (e.g., `fix/dashboard-broken-panel`)
+- `docs/<area>-<slug>` - For documentation updates (e.g., `docs/metrics-guide`)
+- `chore/<area>-<slug>` - For maintenance tasks (e.g., `chore/bump-healthcheck-version`)
+
+### Required Documentation Per Phase
+
+Each phase of development requires specific documentation:
+
+| Phase | Required Documentation |
+|-------|------------------------|
+| 0     | Basic README updates, implementation notes |
+| 1     | Design doc, CHANGELOG.md updates, monitoring documentation |
+| 2     | Full technical specification, CHANGELOG.md, metrics documentation, dashboard designs |
 
 ## Code Style
 
@@ -20,12 +35,39 @@ We use GitHub to host code, to track issues and feature requests, as well as acc
 - We use [isort](https://pycqa.github.io/isort/) for import sorting
 - Type hints are required for all new code
 
+## Metrics and Monitoring Standards
+
+All services MUST implement:
+- `/health` endpoint with detailed status
+- `/healthz` endpoint for simple health probes
+- `/metrics` endpoint in Prometheus format
+
+New or modified services MUST:
+- Use the latest healthcheck binary (currently v0.4.0)
+- Expose metrics on port 9091
+- Include the `service_health` gauge metric
+- Follow standard metric naming conventions
+- Update Grafana dashboards when adding metrics
+
 ## Pull Request Process
 
+Before creating a pull request, ensure you've completed the CI Sanity Checklist:
+
+| Check | Command / URL | Pass Criteria |
+|-------|--------------|---------------|
+| Local metrics reach Prometheus | `curl -s http://localhost:9090/api/v1/query?query=service_health` | JSON returns data.series > 0 for every service |
+| Grafana panels populated | Open Dashboard | Panels show green ✓ for each service |
+| Metrics lint script green | `./scripts/lint-metrics-format.sh` | No errors |
+| CI pipeline passes | GitHub Actions | All checks pass |
+| CHANGELOG updated | View CHANGELOG.md | Version bumped with your changes listed |
+
+Pull request steps:
 1. Ensure any install or build dependencies are removed before the end of the layer when doing a build.
-2. Update the README.md with details of changes to the interface.
-3. Increase the version numbers in any examples files and the README.md to the new version that this Pull Request would represent.
-4. The PR will be merged once you have the sign-off of two other developers.
+2. Update relevant documentation (README.md, CHANGELOG.md, etc.).
+3. Increase version numbers according to [Semantic Versioning](https://semver.org/).
+4. Complete the full PR template checklist.
+5. Get review from at least two team members from relevant teams.
+6. CI checks must pass before merging.
 
 ## Any contributions you make will be under the MIT Software License
 
