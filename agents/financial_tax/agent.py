@@ -35,7 +35,7 @@ class FinancialTaxAgent(BaseAgent):
                 "FINANCIAL_ANALYSIS",
                 "TAX_COMPLIANCE_CHECK",
                 "RATE_SHEET_LOOKUP",
-                ],
+            ],
             *args,
             **kwargs,
         )
