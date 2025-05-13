@@ -1,17 +1,18 @@
 """Legal Compliance Chain Components"""
 
+import os
+from typing import Any, Dict
+
 from langchain.chains import LLMChain
+from langchain.output_parsers import PydanticOutputParser
 from langchain.prompts import PromptTemplate
 from langchain_openai import ChatOpenAI
-from langchain.output_parsers import PydanticOutputParser
-from typing import Dict, Any
-import os
 
 from .models import (
     ComplianceAuditResult,
+    ContractReviewResult,
     DocumentAnalysisResult,
     RegulationCheckResult,
-    ContractReviewResult,
 )
 
 # Initialize the LLM

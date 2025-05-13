@@ -35,19 +35,19 @@ Examples:
     python migrate_document.py old_docs/guide.md new_docs/guides/guide.md --check-duplicates
 """
 
-import os
-import sys
-import re
 import argparse
-import shutil
-import json
-from pathlib import Path
-from datetime import datetime
 import difflib
-import hashlib
 import getpass
+import hashlib
+import json
 import logging
-from typing import Dict, List, Set, Tuple, Optional, Any, Union
+import os
+import re
+import shutil
+import sys
+from datetime import datetime
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Set, Tuple, Union
 
 # Configure logging
 logging.basicConfig(

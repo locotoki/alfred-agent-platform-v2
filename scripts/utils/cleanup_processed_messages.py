@@ -3,12 +3,13 @@
 Cleanup job for expired processed messages to maintain deduplication efficiency.
 """
 
-import os
 import asyncio
-import asyncpg
+import os
 from datetime import datetime
-from dotenv import load_dotenv
+
+import asyncpg
 import structlog
+from dotenv import load_dotenv
 
 logger = structlog.get_logger(__name__)
 

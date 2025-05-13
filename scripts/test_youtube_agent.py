@@ -1,19 +1,19 @@
 #!/usr/bin/env python
 """Manual test script for YouTube-focused flows in SocialIntelligence Agent."""
 
-import os
+import argparse
 import asyncio
 import json
-import argparse
-from datetime import datetime
+import os
 
 # Add parent directory to path
 import sys
+from datetime import datetime
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 # Import agent
-from agents.social_intel.flows.youtube_flows import youtube_niche_scout_flow, youtube_blueprint_flow
+from agents.social_intel.flows.youtube_flows import youtube_blueprint_flow, youtube_niche_scout_flow
 
 
 async def test_niche_scout(queries=None):

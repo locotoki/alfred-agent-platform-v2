@@ -6,11 +6,11 @@ This script directly uses the YouTube API to perform a niche analysis for YouTub
 It bypasses the usual platform services and provides a direct way to analyze trends.
 """
 
-import os
-import json
 import argparse
-import time
 import asyncio
+import json
+import os
+import time
 from datetime import datetime, timedelta
 
 # Check if we have the required libraries
@@ -196,8 +196,8 @@ def build_youtube_client():
 
 def parse_duration(duration_str):
     """Parse ISO 8601 duration string to seconds."""
-    import re
     import datetime
+    import re
 
     # Parse the duration string
     pattern = r"PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?"

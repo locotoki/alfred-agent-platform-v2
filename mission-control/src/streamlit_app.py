@@ -1,7 +1,8 @@
-import streamlit as st
-import requests
 import json
 import os
+
+import requests
+import streamlit as st
 
 st.set_page_config(
     page_title="Alfred Agent Platform",

@@ -3,10 +3,11 @@
 Test script for directly calling the Model Router with a specific numeric model ID.
 """
 
-import requests
 import json
-import time
 import sys
+import time
+
+import requests
 
 
 def get_models():

@@ -1,26 +1,27 @@
 """Tests for Financial Tax Agent chains"""
 
-import pytest
 from unittest.mock import AsyncMock, MagicMock, patch
+
+import pytest
 from langchain_openai import ChatOpenAI
 
 from agents.financial_tax.chains import (
-    TaxCalculationChain,
-    FinancialAnalysisChain,
     ComplianceCheckChain,
+    FinancialAnalysisChain,
     RateLookupChain,
+    TaxCalculationChain,
 )
 from agents.financial_tax.models import (
-    TaxCalculationRequest,
-    TaxCalculationResponse,
-    FinancialAnalysisRequest,
-    FinancialAnalysisResponse,
     ComplianceCheckRequest,
     ComplianceCheckResponse,
+    EntityType,
+    FinancialAnalysisRequest,
+    FinancialAnalysisResponse,
+    TaxCalculationRequest,
+    TaxCalculationResponse,
+    TaxJurisdiction,
     TaxRateRequest,
     TaxRateResponse,
-    TaxJurisdiction,
-    EntityType,
 )
 
 

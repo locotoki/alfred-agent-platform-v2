@@ -1,13 +1,14 @@
 import os
-from typing import Optional, Dict, Any
+from functools import wraps
+from typing import Any, Dict, Optional
+
+import structlog
 from opentelemetry import trace
 from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExporter
-from opentelemetry.sdk.resources import Resource, SERVICE_NAME, SERVICE_VERSION
+from opentelemetry.sdk.resources import SERVICE_NAME, SERVICE_VERSION, Resource
 from opentelemetry.sdk.trace import TracerProvider
 from opentelemetry.sdk.trace.export import BatchSpanProcessor
 from opentelemetry.trace import Status, StatusCode
-from functools import wraps
-import structlog
 
 logger = structlog.get_logger(__name__)
 

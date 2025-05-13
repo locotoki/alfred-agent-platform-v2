@@ -41,17 +41,17 @@ Examples:
     python doc_validator.py --fix-metadata --dry-run /path/to/docs
 """
 
-import os
-import re
-import sys
 import argparse
 import logging
+import os
+import re
 import shutil
+import sys
+from collections import defaultdict
+from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Set, Tuple, Optional, Any
-from dataclasses import dataclass
-from collections import defaultdict
+from typing import Any, Dict, List, Optional, Set, Tuple
 
 # Configure logging
 logging.basicConfig(

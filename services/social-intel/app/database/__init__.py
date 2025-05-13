@@ -4,9 +4,10 @@ Provides pool management and query utilities.
 """
 
 import os
+from typing import Any, Dict, List, Optional
+
 import asyncpg
 import structlog
-from typing import List, Dict, Any, Optional
 
 logger = structlog.get_logger(__name__)
 
