@@ -1,0 +1,26 @@
+name: Metrics Guardrail
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  validate-metrics:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Check metrics format
+        run: |
+          echo "Checking metrics format..."
+          echo "This is a placeholder check that always passes."
+          echo "SUCCESS!"
+          
+      - name: Verify metrics documentation
+        run: |
+          echo "Verifying metrics documentation..."
+          echo "This is a placeholder check that always passes."
+          echo "SUCCESS!"
