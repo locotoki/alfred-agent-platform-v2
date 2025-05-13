@@ -1,11 +1,10 @@
+import json
+import logging
 import os
+import re
 import sys
 from datetime import datetime, timedelta
 from typing import Any, Dict, List, Optional
-
-import json
-import logging
-import re
 
 
 def badly_formatted_function(arg1, arg2: str, arg3: int = 42) -> Dict[str, Any]:
