@@ -1,13 +1,13 @@
 from .agent import LegalComplianceAgent
 from .models import (
     ComplianceAuditRequest,
-    DocumentAnalysisRequest,
-    RegulationCheckRequest,
-    ContractReviewRequest,
     ComplianceAuditResult,
-    DocumentAnalysisResult,
-    RegulationCheckResult,
+    ContractReviewRequest,
     ContractReviewResult,
+    DocumentAnalysisRequest,
+    DocumentAnalysisResult,
+    RegulationCheckRequest,
+    RegulationCheckResult,
 )
 
 __all__ = [

@@ -1,9 +1,9 @@
 """Simple report generation without HTML templates."""
 
-import os
 import json
+import os
 from datetime import datetime
-from typing import Dict, Any, Optional
+from typing import Any, Dict, Optional
 
 
 def generate_niche_scout_report(

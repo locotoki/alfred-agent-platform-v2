@@ -1,6 +1,7 @@
-import os
 import logging
-from flask import Flask, request, jsonify
+import os
+
+from flask import Flask, jsonify, request
 
 app = Flask(__name__)
 logging.basicConfig(level=logging.INFO)

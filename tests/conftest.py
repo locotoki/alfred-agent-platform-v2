@@ -1,13 +1,14 @@
-import pytest
 import asyncio
 import os
 from typing import Generator
 from unittest.mock import AsyncMock, MagicMock
+
 import asyncpg
+import pytest
 import redis
 from google.cloud import pubsub_v1
 
-from libs.a2a_adapter import PubSubTransport, SupabaseTransport, PolicyMiddleware
+from libs.a2a_adapter import PolicyMiddleware, PubSubTransport, SupabaseTransport
 
 
 @pytest.fixture(scope="session")

@@ -15,9 +15,10 @@ Options:
 import argparse
 import os
 import sys
-import requests
+from typing import Any, Dict, List, Optional
+
 import dotenv
-from typing import Dict, Any, List, Optional
+import requests
 
 YOUTUBE_API_BASE_URL = "https://www.googleapis.com/youtube/v3"
 

@@ -3,11 +3,12 @@
 Database validation script to ensure all required tables and indexes exist.
 """
 
-import os
 import asyncio
+import os
+
 import asyncpg
-from dotenv import load_dotenv
 import structlog
+from dotenv import load_dotenv
 
 logger = structlog.get_logger(__name__)
 

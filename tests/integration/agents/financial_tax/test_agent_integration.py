@@ -1,18 +1,19 @@
 """Integration tests for Financial Tax Agent"""
 
-import pytest
 import asyncio
 import os
 from datetime import datetime
 
+import pytest
+
 from agents.financial_tax.agent import FinancialTaxAgent
-from libs.a2a_adapter import A2AEnvelope, PubSubTransport, SupabaseTransport, PolicyMiddleware
 from agents.financial_tax.models import (
-    TaxCalculationRequest,
-    FinancialAnalysisRequest,
     ComplianceCheckRequest,
+    FinancialAnalysisRequest,
+    TaxCalculationRequest,
     TaxRateRequest,
 )
+from libs.a2a_adapter import A2AEnvelope, PolicyMiddleware, PubSubTransport, SupabaseTransport
 
 pytestmark = pytest.mark.integration
 

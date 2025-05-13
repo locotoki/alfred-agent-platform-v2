@@ -1,11 +1,12 @@
 #!/usr/bin/env python
 """Test script for YouTube workflows via the API."""
 
-import requests
+import argparse
 import json
 import time
-import argparse
 from datetime import datetime
+
+import requests
 
 
 def test_niche_scout(host="localhost", port=9000):

@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 
+import os
 import subprocess
 import sys
-import os
 
 
 def main():

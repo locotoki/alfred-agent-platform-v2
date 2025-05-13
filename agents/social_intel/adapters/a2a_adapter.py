@@ -1,8 +1,8 @@
 """A2A adapters for SocialIntelligence Agent."""
 
 import json
-from typing import Dict, Any, List, Optional
 from datetime import datetime
+from typing import Any, Dict, List, Optional
 
 
 class YouTubeNicheScoutAdapter:

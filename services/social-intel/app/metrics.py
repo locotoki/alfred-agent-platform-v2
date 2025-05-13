@@ -3,7 +3,8 @@ Enhanced Prometheus metrics for the Social Intelligence service.
 """
 
 import time
-from prometheus_client import Counter, Histogram, Gauge, Summary
+
+from prometheus_client import Counter, Gauge, Histogram, Summary
 
 # Request metrics
 SI_REQUESTS_TOTAL = Counter(

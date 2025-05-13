@@ -2,17 +2,17 @@
 Enhanced health check implementation for the Social Intelligence service.
 """
 
+import asyncio
 import os
 import time
-import asyncio
-import aiohttp
-from typing import Dict, Any
-import structlog
-from fastapi import APIRouter, Response, status
+from typing import Any, Dict
 
-from app.metrics import OFFLINE_MODE_GAUGE
+import aiohttp
+import structlog
 from app.database import get_pool
+from app.metrics import OFFLINE_MODE_GAUGE
 from app.utils.circuit_breaker import CircuitBreaker
+from fastapi import APIRouter, Response, status
 
 logger = structlog.get_logger(__name__)
 

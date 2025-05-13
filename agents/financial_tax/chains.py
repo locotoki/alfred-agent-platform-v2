@@ -1,17 +1,19 @@
 """LangChain implementations for Financial Tax Agent"""
 
-from typing import Dict, Any, List
+from typing import Any, Dict, List
+
 from langchain.chains import LLMChain
+from langchain.output_parsers import PydanticOutputParser
 from langchain.prompts import PromptTemplate
 from langchain_openai import ChatOpenAI
-from langchain.output_parsers import PydanticOutputParser
+
 from .models import (
-    TaxCalculationRequest,
-    TaxCalculationResponse,
-    FinancialAnalysisRequest,
-    FinancialAnalysisResponse,
     ComplianceCheckRequest,
     ComplianceCheckResponse,
+    FinancialAnalysisRequest,
+    FinancialAnalysisResponse,
+    TaxCalculationRequest,
+    TaxCalculationResponse,
     TaxRateRequest,
     TaxRateResponse,
 )

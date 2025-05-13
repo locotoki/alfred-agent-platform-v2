@@ -10,21 +10,21 @@ import json
 import os
 import time
 from datetime import datetime
-from typing import Dict, List, Any, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
 import structlog
+from app.database import niche_repository
+from app.metrics import (
+    NICHE_OPPORTUNITY_SCORE,
+    NICHE_SCOUT_RESULTS_COUNT,
+    SI_LATENCY_SECONDS,
+    SI_REQUESTS_TOTAL,
+    LatencyTimer,
+)
 
 # Use simple reports instead of HTML templates
 from app.simple_reports import generate_niche_scout_report
-from app.youtube_api import get_trends_by_category, YouTubeAPIError
-from app.database import niche_repository
-from app.metrics import (
-    SI_REQUESTS_TOTAL,
-    SI_LATENCY_SECONDS,
-    NICHE_SCOUT_RESULTS_COUNT,
-    NICHE_OPPORTUNITY_SCORE,
-    LatencyTimer,
-)
+from app.youtube_api import YouTubeAPIError, get_trends_by_category
 
 logger = structlog.get_logger(__name__)
 

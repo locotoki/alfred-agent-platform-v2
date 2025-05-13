@@ -4,9 +4,10 @@ Service health check script to validate all services are running.
 """
 
 import asyncio
-import aiohttp
 import sys
-from typing import Dict, Any, List
+from typing import Any, Dict, List
+
+import aiohttp
 
 SERVICES = {
     "alfred-bot": {"port": 8011, "health_endpoint": "/health/health"},

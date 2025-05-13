@@ -1,9 +1,10 @@
 """Data models for Financial Tax Agent"""
 
 from datetime import date
-from typing import Dict, List, Optional, Any
-from langchain.pydantic_v1 import BaseModel, Field
 from enum import Enum
+from typing import Any, Dict, List, Optional
+
+from langchain.pydantic_v1 import BaseModel, Field
 
 
 class TaxJurisdiction(str, Enum):

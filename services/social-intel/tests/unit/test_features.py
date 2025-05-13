@@ -2,11 +2,12 @@
 Unit tests for the features table and opportunity scoring.
 """
 
-import os
 import asyncio
-import pytest
-import asyncpg
+import os
 from datetime import datetime
+
+import asyncpg
+import pytest
 
 # Set test database URL
 os.environ["DATABASE_URL"] = os.environ.get(

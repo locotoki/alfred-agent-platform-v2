@@ -1,13 +1,14 @@
 """Integration tests for Financial Tax Agent"""
 
-import pytest
 import asyncio
 import json
-from unittest.mock import AsyncMock, MagicMock
 from datetime import datetime
+from unittest.mock import AsyncMock, MagicMock
+
+import pytest
 
 from agents.financial_tax import FinancialTaxAgent
-from agents.financial_tax.models import TaxJurisdiction, EntityType
+from agents.financial_tax.models import EntityType, TaxJurisdiction
 from libs.a2a_adapter import A2AEnvelope, PubSubTransport, SupabaseTransport
 
 

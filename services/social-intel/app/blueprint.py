@@ -10,7 +10,7 @@ import json
 import os
 import time
 from datetime import datetime
-from typing import Dict, List, Any, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
 import structlog
 
