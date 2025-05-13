@@ -1,22 +1,24 @@
 """Financial Tax Agent implementation"""
 
-from typing import Dict, Any, List
+from typing import Any, Dict, List
+
 import structlog
 from langchain_openai import ChatOpenAI
-from langgraph.graph import Graph, END
+from langgraph.graph import END, Graph
 
-from libs.agent_core import BaseAgent
 from libs.a2a_adapter import A2AEnvelope
+from libs.agent_core import BaseAgent
+
 from .chains import (
-    TaxCalculationChain,
-    FinancialAnalysisChain,
     ComplianceCheckChain,
+    FinancialAnalysisChain,
     RateLookupChain,
+    TaxCalculationChain,
 )
 from .models import (
-    TaxCalculationRequest,
-    FinancialAnalysisRequest,
     ComplianceCheckRequest,
+    FinancialAnalysisRequest,
+    TaxCalculationRequest,
     TaxRateRequest,
 )
 
