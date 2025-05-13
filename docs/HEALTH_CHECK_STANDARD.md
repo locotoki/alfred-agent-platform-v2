@@ -2,6 +2,8 @@
 
 This document outlines the standardized health check implementation required for all services in the Alfred Agent Platform v2.
 
+> **Status**: All services have been fully migrated to this standard as of commit `7ac9ed4` (2025-05-14). The standardized health check implementation is now required for all services.
+
 ## Required Endpoints
 
 Every service MUST implement these three health-related endpoints:
@@ -165,9 +167,23 @@ healthcheck:
   start_period: 45s
 ```
 
-## Validation
+## Validation and Tooling
 
-The standardized health check implementation is validated using the `validate-monitoring.sh` script, which checks both monitoring services and key application services for compliance with these standards.
+The standardized health check implementation is validated using the following scripts:
+
+1. `scripts/standardize-service-health.sh`: Checks all services for compliance with the health endpoint standard and provides an interactive way to fix non-compliant services.
+
+2. `scripts/ensure-metrics-exported.sh`: Verifies that all services are properly exporting metrics on port 9091 and that they include the required service_health metrics.
+
+3. `scripts/audit-health-binary.sh`: Identifies any Dockerfiles still using legacy healthcheck binaries (< v0.4.0).
+
+4. `scripts/bulk-update-health-binary.sh`: Automatically updates Dockerfiles to use the latest healthcheck binary (v0.4.0) and ensures they expose the metrics endpoint.
+
+The following scripts have been deprecated and marked for removal in a future version:
+
+- `bump-healthcheck.sh`: Replaced by `bulk-update-health-binary.sh`
+- `healthcheck.sh`: Replaced by the standardized healthcheck binary v0.4.0
+- `update-health-endpoints.sh`: Replaced by `standardize-service-health.sh`
 
 ## Adding New Services
 
