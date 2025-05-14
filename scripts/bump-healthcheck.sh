@@ -1,4 +1,11 @@
 #!/bin/bash
+# *********************************************************************
+# DEPRECATED: This script is deprecated and will be removed in a future version.
+# Please use scripts/update-healthcheck-binary.sh instead, which is now the
+# standard way to update healthcheck versions across all services.
+# See PR #22 for details.
+# *********************************************************************
+
 # Script to bump the healthcheck binary version across all services
 # Usage: ./scripts/bump-healthcheck.sh <new_version>
 # Example: ./scripts/bump-healthcheck.sh 0.5.0
@@ -64,6 +71,7 @@ update_changelog() {
 }
 
 # Main execution
+echo "DEPRECATED: This script is deprecated. Please use scripts/update-healthcheck-binary.sh instead."
 echo "Bumping healthcheck binary from v$CURRENT_VERSION to v$NEW_VERSION"
 check_version_format
 

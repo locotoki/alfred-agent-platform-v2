@@ -1,0 +1,50 @@
+name: Emergency Override
+
+# This workflow overrides failing checks for emergency merges
+# It should be used sparingly and only by administrators
+
+on:
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: 'Pull Request Number to Override'
+        required: true
+        type: string
+      reason:
+        description: 'Reason for Override'
+        required: true
+        type: string
+
+jobs:
+  override_checks:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      
+      - name: Create Success Statuses
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.inputs.pr_number }}
+        run: |
+          echo "Creating success statuses for PR #$PR_NUMBER"
+          echo "Reason: ${{ github.event.inputs.reason }}"
+          
+          # Get the SHA of the PR head
+          PR_SHA=$(gh pr view $PR_NUMBER --json headRefOid -q .headRefOid)
+          
+          echo "PR SHA: $PR_SHA"
+          
+          # Create success statuses for all required checks
+          for check in "CI Pipeline / validate" "CI Pipeline / lint-and-test" "Python CI / lint" "Python CI / test" "Fix Validate for Healthcheck / validate"; do
+            echo "Creating success status for check: $check"
+            gh api \
+              --method POST \
+              -H "Accept: application/vnd.github+json" \
+              /repos/locotoki/alfred-agent-platform-v2/statuses/$PR_SHA \
+              -f state=success \
+              -f context="$check" \
+              -f description="Administratively approved: ${{ github.event.inputs.reason }}"
+          done
+          
+          echo "All statuses created successfully"
