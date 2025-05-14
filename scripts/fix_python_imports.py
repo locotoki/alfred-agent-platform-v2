@@ -10,9 +10,8 @@ This script scans the codebase for Python files and fixes common import issues:
 
 import os
 import re
-import sys
 from pathlib import Path
-from typing import Dict, List, Set, Tuple
+from typing import List
 
 # Directory to search for Python files
 ROOT_DIR = Path(__file__).parent.parent

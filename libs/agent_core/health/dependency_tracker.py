@@ -1,9 +1,9 @@
 """Dependency tracking for health checks.
 
-This module provides a way to track service dependencies and their health status.
+This module provides a way to track service dependencies.
 """
 
-from typing import Dict, Optional
+from typing import Dict
 
 import structlog
 

@@ -1,12 +1,12 @@
 """Health check app factory for agent_core services.
 
-Implements the three required endpoints as specified in docs/HEALTH_CHECK_STANDARD.md:
+Implements the three required endpoints as specified in HEALTH_CHECK_STANDARD.md:
 1. /health - Detailed health status
 2. /healthz - Simple health probe
 3. /metrics - Prometheus metrics
 """
 
-from typing import Any, Callable, Dict, Optional
+from typing import Dict
 
 import prometheus_client
 import structlog
