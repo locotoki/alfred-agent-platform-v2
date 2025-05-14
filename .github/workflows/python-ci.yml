@@ -42,7 +42,9 @@ jobs:
           
       - name: Run mypy
         run: |
-          mypy libs agents tests
+          # Use our special mypy configuration to handle namespace packages properly
+          chmod +x mypy_fix/run-mypy-fixed.sh
+          ./mypy_fix/run-mypy-fixed.sh libs agents tests
   
   test:
     runs-on: ubuntu-latest
