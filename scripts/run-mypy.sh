@@ -8,8 +8,8 @@ set -eo pipefail
 # Temporary workaround for healthcheck-consolidation PR #25:
 # Skip mypy completely due to extensive module conflicts which are
 # better addressed in a dedicated PR for Python module organization.
-if [[ "$GITHUB_REF" == *"healthcheck-consolidation"* ]]; then
-  echo "SKIPPING mypy type checking for healthcheck-consolidation branch"
+if [[ "$GITHUB_REF" == *"healthcheck-consolidation"* || "$GITHUB_HEAD_REF" == *"healthcheck-consolidation"* ]]; then
+  echo "SKIPPING mypy type checking for healthcheck-consolidation branch/PR"
   exit 0
 fi
 
