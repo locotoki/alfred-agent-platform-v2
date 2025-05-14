@@ -20,7 +20,9 @@ EXCLUDE_DIRS = {".git", "node_modules", "venv", "__pycache__", "cleanup-temp", "
 # Import pattern replacements
 IMPORT_REPLACEMENTS = {
     # Old health module import to new package structure
-    r"from libs\.agent_core\.health import create_health_app": "from libs.agent_core.health import create_health_app",
+    r"from libs\.agent_core\.health import create_health_app": (
+        "from libs.agent_core.health import create_health_app"
+    ),
     # Fix any direct imports from the health module
     r"from libs\.agent_core import health": "from libs.agent_core.health import create_health_app",
     r"import libs\.agent_core\.health": "from libs.agent_core.health import create_health_app",
