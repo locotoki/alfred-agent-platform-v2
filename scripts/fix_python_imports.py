@@ -12,7 +12,7 @@ import os
 import re
 import sys
 from pathlib import Path
-from typing import List, Dict, Set, Tuple
+from typing import Dict, List, Set, Tuple
 
 # Directory to search for Python files
 ROOT_DIR = Path(__file__).parent.parent

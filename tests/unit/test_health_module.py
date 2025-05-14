@@ -1,9 +1,9 @@
 """Unit tests for the health module."""
 
+import prometheus_client
 import pytest
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
-import prometheus_client
 
 from libs.agent_core.health import create_health_app
 from libs.agent_core.health.dependency_tracker import DependencyTracker

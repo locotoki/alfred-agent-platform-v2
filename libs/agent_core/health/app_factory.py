@@ -6,7 +6,7 @@ Implements the three required endpoints as specified in docs/HEALTH_CHECK_STANDA
 3. /metrics - Prometheus metrics
 """
 
-from typing import Dict, Optional, Callable, Any
+from typing import Any, Callable, Dict, Optional
 
 import prometheus_client
 import structlog

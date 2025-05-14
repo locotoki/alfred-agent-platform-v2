@@ -7,8 +7,8 @@ and prevent import shadowing issues.
 """
 
 import os
-import sys
 import subprocess
+import sys
 from pathlib import Path
 
 ROOT_DIR = Path(__file__).parent.parent

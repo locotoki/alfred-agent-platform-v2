@@ -4,6 +4,7 @@ This module provides a way to track service dependencies and their health status
 """
 
 from typing import Dict, Optional
+
 import structlog
 
 logger = structlog.get_logger(__name__)
