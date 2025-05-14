@@ -17,7 +17,7 @@ from .models import (
 
 # Initialize the LLM
 llm = ChatOpenAI(
-    model="gpt-4-turbo-preview", temperature=0.1, openai_api_key=os.getenv("OPENAI_API_KEY")
+    model="gpt-4-turbo-preview", temperature=0.1, openai_api_key="sk-mock-key-for-development-only"
 )
 
 # Compliance Audit Chain

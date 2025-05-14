@@ -46,7 +46,9 @@ class FinancialTaxAgent(BaseAgent):
 
     def setup_chains(self):
         """Initialize LangChain configurations for each intent"""
-        llm = ChatOpenAI(temperature=0, model="gpt-4")
+        llm = ChatOpenAI(
+            temperature=0, model="gpt-4", openai_api_key="sk-mock-key-for-development-only"
+        )
 
         self.tax_calc_chain = TaxCalculationChain(llm)
         self.analysis_chain = FinancialAnalysisChain(llm)

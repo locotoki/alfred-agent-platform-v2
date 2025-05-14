@@ -15,18 +15,21 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # Database configuration
-DATABASE_URL = os.getenv("DATABASE_URL", "postgresql+asyncpg://postgres:postgres@db-postgres:5432/postgres")
+DATABASE_URL = os.getenv(
+    "DATABASE_URL", "postgresql+asyncpg://postgres:postgres@db-postgres:5432/postgres"
+)
 engine = create_async_engine(DATABASE_URL)
 async_session = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
 
 # Base class for SQLAlchemy models
 Base = declarative_base()
 
+
 # Model class for database table
 class ModelRegistry(Base):
     __tablename__ = "models"
     __table_args__ = {"schema": "model_registry"}
-    
+
     id = Column(Integer, primary_key=True)
     name = Column(String(255), nullable=False)
     display_name = Column(String(255))
@@ -37,6 +40,7 @@ class ModelRegistry(Base):
     parameters = Column(JSON, default={})
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
 
 # Pydantic model for API request/response
 class ModelSchema(BaseModel):
@@ -54,6 +58,7 @@ class ModelSchema(BaseModel):
     class Config:
         from_attributes = True
 
+
 # Dependency to get database session
 async def get_db():
     async with async_session() as session:
@@ -62,8 +67,10 @@ async def get_db():
         finally:
             await session.close()
 
+
 # Create FastAPI application
 app = FastAPI(title="Model Registry API")
+
 
 @app.get("/health")
 async def health_check():
@@ -71,6 +78,7 @@ async def health_check():
     Health check endpoint
     """
     return {"status": "healthy", "timestamp": datetime.utcnow().isoformat()}
+
 
 @app.get("/models", response_model=List[ModelSchema])
 async def get_models(db: AsyncSession = Depends(get_db)):
@@ -80,6 +88,7 @@ async def get_models(db: AsyncSession = Depends(get_db)):
     result = await db.execute(select(ModelRegistry))
     models = result.scalars().all()
     return models
+
 
 @app.get("/models/{model_id}", response_model=ModelSchema)
 async def get_model(model_id: int, db: AsyncSession = Depends(get_db)):
@@ -91,6 +100,7 @@ async def get_model(model_id: int, db: AsyncSession = Depends(get_db)):
     if not model:
         raise HTTPException(status_code=404, detail=f"Model with ID {model_id} not found")
     return model
+
 
 @app.post("/models", response_model=ModelSchema)
 async def create_model(model: ModelSchema, db: AsyncSession = Depends(get_db)):
@@ -104,12 +114,13 @@ async def create_model(model: ModelSchema, db: AsyncSession = Depends(get_db)):
         model_type=model.model_type,
         endpoint=model.endpoint,
         description=model.description,
-        parameters=model.parameters
+        parameters=model.parameters,
     )
     db.add(db_model)
     await db.commit()
     await db.refresh(db_model)
     return db_model
+
 
 # Application lifespan event
 @app.on_event("startup")
