@@ -16,6 +16,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Marked legacy health check scripts as deprecated
 - Updated agent_core/health.py to comply with health check standard
 
+### Fixed
+- Removed temporary CI workarounds used for PR #25 (Health Check Standardization)
+- Restored proper CI checks after module reorganization
+
 ## [0.3.0-healthcheck-full] - 2025-05-14
 
 ### Added

@@ -1,9 +1,7 @@
 """Unit tests for the health module."""
 
 import pytest
-from fastapi import FastAPI
 from fastapi.testclient import TestClient
-import prometheus_client
 
 from libs.agent_core.health import create_health_app
 from libs.agent_core.health.dependency_tracker import DependencyTracker
@@ -58,13 +56,13 @@ def test_legacy_endpoints(client):
     assert data["status"] == "healthy"
     assert data["service"] == "test-service"
     assert data["version"] == "1.0.0"
-    
+
     # Ready endpoint
     response = client.get("/ready")
     assert response.status_code == 200
     data = response.json()
     assert data["status"] == "ready"
-    
+
     # Live endpoint
     response = client.get("/live")
     assert response.status_code == 200
@@ -77,16 +75,16 @@ def test_dependency_tracking(health_app, client):
     # Register dependencies
     health_app.register_dependency("database", "ok")
     health_app.register_dependency("external-api", "ok")
-    
+
     # Verify dependencies are tracked
     response = client.get("/health")
     data = response.json()
     assert data["services"]["database"] == "ok"
     assert data["services"]["external-api"] == "ok"
-    
+
     # Update dependency status
     health_app.update_dependency_status("database", "error")
-    
+
     # Verify status is updated
     response = client.get("/health")
     data = response.json()
@@ -98,21 +96,21 @@ def test_dependency_tracking(health_app, client):
 def test_dependency_tracker_class():
     """Test the DependencyTracker class directly."""
     tracker = DependencyTracker("test-service")
-    
+
     # Register dependencies
     tracker.register_dependency("db", "ok")
     tracker.register_dependency("api", "ok")
-    
+
     # Check dependencies
     deps = tracker.check_dependencies()
     assert deps["db"] == "ok"
     assert deps["api"] == "ok"
-    
+
     # Update dependency
     tracker.update_dependency_status("db", "error")
     deps = tracker.check_dependencies()
     assert deps["db"] == "error"
-    
+
     # Update non-existent dependency should not raise error
     tracker.update_dependency_status("non-existent", "error")
     deps = tracker.check_dependencies()
