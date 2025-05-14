@@ -16,6 +16,7 @@ EXCLUDE_PATTERNS=(
   "services/legal-compliance/app" # Conflicts with rag-gateway/src/app.py
   "services/social-intel/app"     # Conflicts with rag-gateway/src/app.py
   "slack-bot/src/app.py"          # Conflicts with rag-gateway/src/app.py
+  "whatsapp-adapter/src/app.py"   # Conflicts with rag-gateway/src/app.py
 )
 
 EXCLUDE_ARGS=""
