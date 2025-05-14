@@ -15,22 +15,3 @@
 [Social Intel Agent : **Manual-Pilot Playbook – Phase 1**](Social%20Intel%20Agent%20Manual-Pilot%20Playbook%20%E2%80%93%20Phase%201%201eab4fd21ff080348ea9e45825cc4f54.md)
 
 [Social Intel Agent : YouTube research workflows through simple API calls](Social%20Intel%20Agent%20YouTube%20research%20workflows%20thro%201eab4fd21ff0802b806cfbab033a42da.md)
-
-
-**Note:** This document is a consolidation of multiple source documents from the staging area.
-Last consolidated: 2025-05-14
-
-
-## Source Documents
-
-- Social_Intel/social-intel-agent-manual-pilot-playbook-phase-1.md
-- Social_Intel/social-intel-agent.md
-- Social_Intel/social-intel-agent-agent-automation-playbook.md
-- Social_Intel/social-intel-agent-role-for-youtube-content-creati.md
-- Social_Intel/social-intel-agent-youtube-research-workflows-thro.md
-- Social_Intel/social-intel-agent-youtube-content-creation-shippi.md
-- Social_Intel/social-intel-agent-try-it-tomorrow-exercises.md
-- Social_Intel/social-intel-agent-for-youtube-content-creation.md
-- Social_Intel/social-intel-agent-researchand-insight-workflows.md
-
-

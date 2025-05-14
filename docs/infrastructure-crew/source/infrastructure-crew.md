@@ -230,20 +230,3 @@ Let me know if you’d like:
 ```
 
 The --quiet flag suppresses SVG output; the command exits non-zero on parse errors, so your build fails early.
-
-
-**Note:** This document is a consolidation of multiple source documents from the staging area.
-Last consolidated: 2025-05-14
-
-
-## Source Documents
-
-- Infra_Crew/ai-agent-crew-for-scalable-fully-automated-infras.md
-- Infra_Crew/infrastructure-architect-agent.md
-- Infra_Crew/infra-architect-role-definition.md
-- Infra_Crew/infrastructure-crew.md
-- Infra_Crew/infra-architect-lean-crew-mvp.md
-- Infra_Crew/ai-aent-team-crew---autonomous-infrastructure.md
-- alfred__AI_Assistant/interfaces-initial-infra-assessment.md
-
-
