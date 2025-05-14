@@ -1,0 +1,79 @@
+name: Python CI
+
+on:
+  pull_request:
+    branches: [ main ]
+    paths:
+      - '**.py'
+      - 'requirements*.txt'
+      - 'pyproject.toml'
+      - 'pytest.ini'
+      - '.github/workflows/python-ci.yml'
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+          
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install black isort flake8 mypy
+          pip install -r requirements.txt
+          pip install -r requirements-dev.txt
+          
+      - name: Run black
+        run: |
+          black --check .
+          
+      - name: Run isort
+        run: |
+          isort --check-only --profile black .
+          
+      - name: Run flake8
+        run: |
+          flake8 .
+          
+      - name: Run mypy
+        run: |
+          mypy libs agents tests
+  
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+          
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install -r requirements-dev.txt
+          
+      - name: Run tests with improved module isolation
+        run: |
+          python scripts/run_python_tests.py -v tests/unit
+          
+  validate-health:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Validate health endpoint structure
+        run: |
+          echo "Validating health check implementations..."
+          # Verify health module structure
+          test -d libs/agent_core/health || { echo "Health module folder missing"; exit 1; }
+          test -f libs/agent_core/health/__init__.py || { echo "Health module init missing"; exit 1; }
+          test -f libs/agent_core/health/app_factory.py || { echo "Health app factory missing"; exit 1; }
+          echo "✅ Health module structure validated"
