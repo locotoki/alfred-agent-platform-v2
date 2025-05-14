@@ -11,6 +11,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Applied Black 24.1.1 formatting across entire codebase
 - Updated CI pipeline to enforce strict Black checks
 - Standardized code formatting for better maintainability
+- Applied isort for consistent import ordering
+- Added mypy exclusions for duplicate modules
+- Marked legacy health check scripts as deprecated
+- Updated agent_core/health.py to comply with health check standard
+
+## [0.3.0-healthcheck-full] - 2025-05-14
+
+### Added
+- Complete standardization of healthcheck binary v0.4.0 across all services
+- Added metrics port exposure (9091) for all containers
+- Created audit script to identify legacy healthcheck implementations
+- Created bulk update script for standardizing healthcheck across services
+- Added verification script to ensure metrics are properly exported
+- Enhanced CI validation to detect services without proper health checks
+- Updated Prometheus configuration to include all service metrics endpoints
+
+### Changed
+- Updated all remaining Dockerfiles to use healthcheck binary v0.4.0
+- Standardized health check configuration across services
+- Added consistent metrics port exposure for monitoring
+- Enhanced documentation of health check implementation
+
+### Removed
+- Legacy health check scripts and configurations
+- Deprecated service-specific health probe implementations
 
 ## [0.2.0-phase1] - 2025-05-13
 
