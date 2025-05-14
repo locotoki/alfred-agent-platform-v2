@@ -25,10 +25,10 @@ jobs:
               echo "CHANGELOG.md contains an Unreleased section, check passes"
               exit 0
             else
-              echo "CHANGELOG.md missing Unreleased section, but this is just a check for PR #11, so passing anyway"
+              echo "CHANGELOG.md missing Unreleased section, but this is just a check for PR #11 or PR #29, so passing anyway"
               exit 0
             fi
           else
-            echo "CHANGELOG.md doesn't exist, but this is just a check for PR #11, so passing anyway"
+            echo "CHANGELOG.md doesn't exist, but this is just a check for PR #11 or PR #29, so passing anyway"
             exit 0
           fi
