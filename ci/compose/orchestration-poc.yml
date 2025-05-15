@@ -10,7 +10,7 @@ x-common-env: &common
 services:
   n8n:
     image: docker.n8n.io/n8nio/n8n:1.26.0
-    ports: ["5678:5678"]
+    ports: ["${N8N_PORT:-5678}:5678"]
     restart: unless-stopped
     environment: *common
     volumes:
@@ -18,7 +18,7 @@ services:
 
   crewai:
     image: python:3.12-slim
-    ports: ["9090:8080"]
+    ports: ["${CREWAI_PORT:-8080}:8080"]
     command: >
       python - <<'PY'
       import json, os
@@ -34,4 +34,4 @@ services:
 
   mock-slack:
     image: containous/whoami:latest
-    ports: ["3010:80"]
+    ports: ["${SLACK_PORT:-3010}:80"]
