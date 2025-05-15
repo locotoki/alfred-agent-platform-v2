@@ -119,6 +119,7 @@ Before creating a pull request, ensure you've completed the CI Sanity Checklist:
 | Local metrics reach Prometheus | `curl -s http://localhost:9090/api/v1/query?query=service_health` | JSON returns data.series > 0 for every service |
 | Grafana panels populated | Open Dashboard | Panels show green ✓ for each service |
 | Metrics lint script green | `./scripts/lint-metrics-format.sh` | No errors |
+| Health checks pass locally | `docker compose -f ci/compose/health-smoke.yml up` | All services exit with code 0 |
 | CI pipeline passes | GitHub Actions | All checks pass |
 | CHANGELOG updated | View CHANGELOG.md | Version bumped with your changes listed |
 

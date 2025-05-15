@@ -169,7 +169,7 @@ healthcheck:
 
 ## Validation and Tooling
 
-The standardized health check implementation is validated using the following scripts:
+The standardized health check implementation is validated using the following scripts and CI tools:
 
 1. `scripts/standardize-service-health.sh`: Checks all services for compliance with the health endpoint standard and provides an interactive way to fix non-compliant services.
 
@@ -178,6 +178,12 @@ The standardized health check implementation is validated using the following sc
 3. `scripts/audit-health-binary.sh`: Identifies any Dockerfiles still using legacy healthcheck binaries (< v0.4.0).
 
 4. `scripts/bulk-update-health-binary.sh`: Automatically updates Dockerfiles to use the latest healthcheck binary (v0.4.0) and ensures they expose the metrics endpoint.
+
+5. `ci/compose/health-smoke.yml`: Used in CI to perform fast smoke tests of all health checks. This uses the `--once` flag to verify that health checks are properly implemented. You can run this locally with:
+   ```bash
+   docker compose -f ci/compose/health-smoke.yml up
+   ```
+   All services should exit with code 0 if health checks are properly implemented.
 
 The following scripts have been deprecated and marked for removal in a future version:
 
