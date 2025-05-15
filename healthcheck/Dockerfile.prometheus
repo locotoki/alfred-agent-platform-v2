@@ -1,0 +1,26 @@
+FROM golang:1.22-alpine AS builder
+
+WORKDIR /app
+
+# Copy go.mod and go.sum files
+COPY go.mod go.sum ./
+RUN go mod download
+
+# Copy source code
+COPY cmd/ cmd/
+COPY internal/ internal/
+
+# Build the application
+RUN CGO_ENABLED=0 GOOS=linux go build -o /prometheus-probe ./cmd/prometheus-probe
+
+# Create a minimal image
+FROM alpine:3.18
+
+RUN apk --no-cache add ca-certificates curl
+
+COPY --from=builder /prometheus-probe /usr/local/bin/prometheus-probe
+
+RUN chmod +x /usr/local/bin/prometheus-probe
+
+# Set the entrypoint
+ENTRYPOINT ["/usr/local/bin/prometheus-probe"]
