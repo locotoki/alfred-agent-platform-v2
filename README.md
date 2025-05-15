@@ -254,6 +254,21 @@ Each service exposes three standard health endpoints:
 - `/healthz` - Simple health probe
 - `/metrics` - Prometheus metrics (port 909x)
 
+#### Distributed Tracing
+
+Health check probes support optional OpenTelemetry tracing to correlate health issues with service performance:
+
+```bash
+# Enable tracing for a health check probe
+healthcheck --db-type postgres --db-dsn "user:pass@host:port/db" --trace-endpoint http://otel-collector:4318
+
+# Environment variable configuration
+export TRACE_ENDPOINT=http://otel-collector:4318
+healthcheck --db-type postgres --db-dsn "user:pass@host:port/db"
+```
+
+See [TRACING.md](docs/TRACING.md) for full documentation.
+
 ## Contributing
 
 1. Fork the repository
