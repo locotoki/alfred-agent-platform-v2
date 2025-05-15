@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 
+import json
 import os
 import time
-import json
+
 import requests
-from flask import Flask, jsonify, Response
-from prometheus_client import Counter, Gauge, generate_latest, REGISTRY
+from flask import Flask, Response, jsonify
+from prometheus_client import REGISTRY, Counter, Gauge, generate_latest
 
 app = Flask(__name__)
 
