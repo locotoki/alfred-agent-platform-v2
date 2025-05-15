@@ -1,0 +1,116 @@
+name: CI/CD Pipeline
+
+env:
+  PYTHON_VERSION: "3.11"
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      - name: Run linters
+        run: make lint
+  
+  tests:
+    needs: lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      - name: Run tests
+        run: make test
+  
+  slack-smoke:
+    needs: tests
+    runs-on: ubuntu-latest
+    environment: staging          # ← gives access to staging secrets
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      - run: pip install -r requirements.txt
+      - env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+          SLACK_APP_TOKEN: ${{ secrets.SLACK_APP_TOKEN }}
+          SLACK_SIGNING_SECRET: ${{ secrets.SLACK_SIGNING_SECRET }}
+        run: pytest tests/slack
+  
+  smoke-health:
+    needs: tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run health checks
+        run: ./scripts/run-e2e-health-test.sh
+  
+  otel-smoke:
+    needs: smoke-health
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Test OpenTelemetry tracing
+        run: ./ci/compose/otel-smoke.yml
+  
+  orchestration-integration:
+    needs: [smoke-health, otel-smoke, slack-smoke]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run orchestration integration tests
+        run: ./ci/compose/orchestration-integration.yml
+  
+  image-build:
+    needs: orchestration-integration
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build and scan images
+        run: |
+          make build
+          make scan-images
+  
+  template-lint:
+    needs: orchestration-integration
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate templates
+        run: ./scripts/validate-health-templates.sh
+  
+  deploy-staging:
+    if: github.ref == 'refs/heads/main'
+    needs: [image-build, template-lint]
+    runs-on: ubuntu-latest
+    environment: staging
+    steps:
+      - uses: actions/checkout@v4
+      - name: Deploy to staging
+        run: ./scripts/deploy.sh staging
+  
+  deploy-prod:
+    if: github.ref == 'refs/tags/v*'
+    needs: orchestration-integration
+    runs-on: ubuntu-latest
+    environment: prod
+    steps:
+      - uses: actions/checkout@v4
+      - name: Helm deploy
+        env:
+          CREWAI_ENDPOINT: ${{ secrets.CREWAI_ENDPOINT_PROD }}
+          CREWAI_A2A_CLIENT_ID: ${{ secrets.CREWAI_A2A_CLIENT_ID }}
+          CREWAI_A2A_CLIENT_SECRET: ${{ secrets.CREWAI_A2A_CLIENT_SECRET }}
+        run: ./scripts/deploy.sh
