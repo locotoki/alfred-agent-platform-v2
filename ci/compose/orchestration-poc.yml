@@ -13,8 +13,7 @@ services:
     ports: ["${N8N_PORT:-5678}:5678"]
     restart: unless-stopped
     environment: *common
-    volumes:
-      - ./orchestration/n8n:/home/node/.n8n   # pre-load workflow
+    # Skip volume mount for CI testing - will bundle workflow in image for production
 
   crewai:
     image: python:3.12-slim
