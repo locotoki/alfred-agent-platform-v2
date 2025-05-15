@@ -1,0 +1,436 @@
+name: Database Health Checks Phase 5
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+      - 'feature/db-health-*'
+      - 'chore/db-health-*'
+      - 'fix/db-health-*'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'services/db-*/**'
+      - 'internal/db/**'
+      - '.github/workflows/db-health-phase5.yml'
+  workflow_dispatch:  # Allow manual triggering
+
+env:
+  PYTHON_VERSION: "3.11"
+  NODE_VERSION: "20"
+  DOCKER_BUILDKIT: 1
+  COMPOSE_DOCKER_CLI_BUILD: 1
+  GO_VERSION: "1.21"
+  HEALTHCHECK_VERSION: "0.4.0"
+
+jobs:
+  # Validate the Go code in internal/db package
+  validate-db-package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: ${{ env.GO_VERSION }}
+          cache: true
+          cache-dependency-path: internal/db/go.sum
+      
+      - name: Check if DB package exists
+        id: check-package
+        run: |
+          if [ -d "internal/db" ]; then
+            echo "DB package found, proceeding with validation"
+            echo "exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "DB package not found, skipping validation"
+            echo "exists=false" >> $GITHUB_OUTPUT
+          fi
+      
+      - name: Verify DB package structure
+        if: steps.check-package.outputs.exists == 'true'
+        run: |
+          # Verify expected files exist
+          test -f internal/db/driver.go || { echo "driver.go missing"; exit 1; }
+          
+          # Check for driver implementations
+          echo "Checking for database driver implementations..."
+          if [ ! -f internal/db/postgres.go ]; then
+            echo "⚠️ WARNING: postgres.go not found, PostgreSQL driver implementation may be missing"
+          fi
+          if [ ! -f internal/db/mysql.go ]; then
+            echo "⚠️ WARNING: mysql.go not found, MySQL driver implementation may be missing"
+          fi
+          if [ ! -f internal/db/sqlite.go ]; then
+            echo "⚠️ WARNING: sqlite.go not found, SQLite driver implementation may be missing"
+          fi
+          echo "✅ DB package structure validated"
+      
+      - name: Run Go tests
+        if: steps.check-package.outputs.exists == 'true'
+        run: |
+          cd internal/db
+          go test -v -race ./...
+      
+      - name: Run Go linter
+        if: steps.check-package.outputs.exists == 'true'
+        uses: golangci/golangci-lint-action@v3
+        with:
+          version: latest
+          working-directory: internal/db
+          args: --timeout=5m
+
+  # Build and test the DB service Dockerfiles
+  build-db-services:
+    runs-on: ubuntu-latest
+    needs: validate-db-package
+    strategy:
+      matrix:
+        service: [db-api, db-admin, db-realtime, vector-db, monitoring-db]
+        include:
+          - service: db-api
+            port: 5432
+            test_cmd: pg_isready -U postgres
+          - service: db-admin
+            port: 5433
+            test_cmd: pg_isready -U postgres
+          - service: db-realtime
+            port: 5434
+            test_cmd: pg_isready -U postgres
+          - service: vector-db
+            port: 6333
+            test_cmd: curl -s http://localhost:6333/health
+          - service: monitoring-db
+            port: 5435
+            test_cmd: pg_isready -U postgres
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check if service directory exists
+        id: check-service
+        run: |
+          if [ -d "services/${{ matrix.service }}" ]; then
+            echo "Service directory found, proceeding with build"
+            echo "exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "Service directory not found, skipping build"
+            echo "exists=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Check if Dockerfile.new exists
+        id: check-dockerfile
+        if: steps.check-service.outputs.exists == 'true'
+        run: |
+          if [ -f "services/${{ matrix.service }}/Dockerfile.new" ]; then
+            echo "Dockerfile.new found, proceeding with build"
+            echo "exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "Dockerfile.new not found, skipping build"
+            echo "exists=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Set up Docker Buildx
+        if: steps.check-service.outputs.exists == 'true' && steps.check-dockerfile.outputs.exists == 'true'
+        uses: docker/setup-buildx-action@v2
+
+      - name: Cache Docker layers
+        if: steps.check-service.outputs.exists == 'true' && steps.check-dockerfile.outputs.exists == 'true'
+        uses: actions/cache@v3
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-db-${{ matrix.service }}-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-db-${{ matrix.service }}-
+            ${{ runner.os }}-buildx-db-
+            ${{ runner.os }}-buildx-
+
+      - name: Build ${{ matrix.service }} service
+        if: steps.check-service.outputs.exists == 'true' && steps.check-dockerfile.outputs.exists == 'true'
+        uses: docker/build-push-action@v4
+        with:
+          context: ./services/${{ matrix.service }}
+          file: ./services/${{ matrix.service }}/Dockerfile.new
+          push: false
+          tags: alfred-platform/${{ matrix.service }}:test
+          load: true
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
+
+      - name: Run container and test health
+        if: steps.check-service.outputs.exists == 'true' && steps.check-dockerfile.outputs.exists == 'true'
+        run: |
+          echo "Starting ${{ matrix.service }} container..."
+          docker run -d --name ${{ matrix.service }}-test -p ${{ matrix.port }}:${{ matrix.port }} -p 9091:9091 alfred-platform/${{ matrix.service }}:test
+          
+          # Wait for container to start (increased timeout for database services)
+          echo "Waiting for container to initialize..."
+          sleep 30
+          
+          # Wait for health check to pass
+          max_retries=10
+          retries=0
+          until [ $retries -ge $max_retries ] || docker inspect --format='{{.State.Health.Status}}' ${{ matrix.service }}-test | grep -q "healthy"; do
+            retries=$((retries+1))
+            echo "Waiting for container health check to pass (attempt $retries/$max_retries)..."
+            sleep 10
+          done
+          
+          if [ $retries -ge $max_retries ]; then
+            echo "Health check did not pass within timeout"
+            docker logs ${{ matrix.service }}-test
+            exit 1
+          fi
+          
+          # Check container health
+          echo "Checking container status..."
+          docker ps -a
+          
+          # Test service-specific health check
+          echo "Testing service health command..."
+          docker exec ${{ matrix.service }}-test ${{ matrix.test_cmd }} || { echo "Service health check failed"; docker logs ${{ matrix.service }}-test; exit 1; }
+          
+          # Test metrics endpoint
+          echo "Testing metrics endpoint..."
+          curl -s http://localhost:9091/metrics | grep -q "service_health" || { echo "Metrics endpoint check failed"; exit 1; }
+          
+          echo "All checks passed for ${{ matrix.service }}"
+
+      - name: Move cache
+        if: steps.check-service.outputs.exists == 'true' && steps.check-dockerfile.outputs.exists == 'true'
+        run: |
+          rm -rf /tmp/.buildx-cache
+          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+
+      - name: Cleanup
+        if: always() && steps.check-service.outputs.exists == 'true' && steps.check-dockerfile.outputs.exists == 'true'
+        run: |
+          docker stop ${{ matrix.service }}-test || true
+          docker rm ${{ matrix.service }}-test || true
+
+  # Integration test with docker-compose
+  integration-test:
+    runs-on: ubuntu-latest
+    needs: build-db-services
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Update docker-compose.yml for testing
+        run: |
+          # Check if healthcheck-fix.yml exists
+          if [ -f "docker-compose.healthcheck-fix.yml" ]; then
+            echo "Using docker-compose.healthcheck-fix.yml for testing"
+            cp docker-compose.healthcheck-fix.yml docker-compose.test.yml
+          else
+            echo "Creating test docker-compose configuration"
+            cp docker-compose.yml docker-compose.test.yml
+            
+            # Update service configurations in test file
+            for service in "db-api" "db-admin" "db-realtime" "vector-db" "monitoring-db"; do
+              if [ -d "services/$service" ] && [ -f "services/$service/Dockerfile.new" ]; then
+                echo "Updating $service in docker-compose.test.yml to use Dockerfile.new"
+                # This is a simple sed replacement - in a real scenario you might want to use a YAML parser
+                sed -i "s|context: ./services/$service|context: ./services/$service\n      dockerfile: Dockerfile.new|g" docker-compose.test.yml
+              fi
+            done
+          fi
+          
+          cat docker-compose.test.yml
+
+      - name: Start services with docker-compose
+        run: |
+          # Add health check options to docker-compose services
+          for service in "db-api" "db-admin" "db-realtime" "vector-db" "monitoring-db"; do
+            if grep -q "$service:" docker-compose.test.yml; then
+              # Check if healthcheck section already exists
+              if ! grep -q "healthcheck:" -A 3 -B 3 <(grep -A 20 "$service:" docker-compose.test.yml); then
+                # Add healthcheck section if it doesn't exist
+                sed -i "/\s*$service:\s*$/a\    healthcheck:\n      test: [\"CMD\", \"curl\", \"-f\", \"http://localhost:9091/health\", \"||\" , \"exit\", \"1\"]\n      interval: 10s\n      timeout: 5s\n      retries: 3\n      start_period: 30s" docker-compose.test.yml
+              fi
+            fi
+          done
+          
+          docker-compose -f docker-compose.test.yml up -d db-api db-admin db-realtime vector-db monitoring-db
+          # Wait for services to initialize
+          sleep 30
+          
+          # Wait for all services to be healthy
+          echo "Waiting for services to be healthy..."
+          for service in db-api db-admin db-realtime vector-db monitoring-db; do
+            if docker-compose -f docker-compose.test.yml ps | grep -q $service; then
+              max_retries=10
+              retries=0
+              until [ $retries -ge $max_retries ] || docker-compose -f docker-compose.test.yml ps | grep $service | grep -q "(healthy)"; do
+                retries=$((retries+1))
+                echo "Waiting for $service to be healthy (attempt $retries/$max_retries)..."
+                sleep 10
+              done
+              
+              if [ $retries -ge $max_retries ]; then
+                echo "$service did not become healthy within timeout"
+                docker-compose -f docker-compose.test.yml logs $service
+              fi
+            fi
+          done
+          
+          docker-compose -f docker-compose.test.yml ps
+
+      - name: Test service health endpoints
+        run: |
+          # Test health endpoints for all services
+          echo "Testing db-api health..."
+          docker exec $(docker-compose -f docker-compose.test.yml ps -q db-api) pg_isready -U postgres || { echo "db-api health check failed"; exit 1; }
+          
+          echo "Testing db-admin health..."
+          docker exec $(docker-compose -f docker-compose.test.yml ps -q db-admin) pg_isready -U postgres || { echo "db-admin health check failed"; exit 1; }
+          
+          echo "Testing db-realtime health..."
+          docker exec $(docker-compose -f docker-compose.test.yml ps -q db-realtime) pg_isready -U postgres || { echo "db-realtime health check failed"; exit 1; }
+          
+          echo "Testing vector-db health..."
+          curl -s http://localhost:6333/health || { echo "vector-db health check failed"; exit 1; }
+          
+          echo "Testing monitoring-db health..."
+          docker exec $(docker-compose -f docker-compose.test.yml ps -q monitoring-db) pg_isready -U postgres || { echo "monitoring-db health check failed"; exit 1; }
+          
+          echo "All service health checks passed!"
+
+      - name: Test metrics endpoints
+        run: |
+          # Get the mapped ports for metrics endpoints
+          DB_API_METRICS_PORT=$(docker-compose -f docker-compose.test.yml port db-api 9091 | cut -d: -f2)
+          DB_ADMIN_METRICS_PORT=$(docker-compose -f docker-compose.test.yml port db-admin 9091 | cut -d: -f2)
+          DB_REALTIME_METRICS_PORT=$(docker-compose -f docker-compose.test.yml port db-realtime 9091 | cut -d: -f2)
+          VECTOR_DB_METRICS_PORT=$(docker-compose -f docker-compose.test.yml port vector-db 9091 | cut -d: -f2)
+          MONITORING_DB_METRICS_PORT=$(docker-compose -f docker-compose.test.yml port monitoring-db 9091 | cut -d: -f2)
+          
+          # Test metrics endpoints
+          echo "Testing db-api metrics..."
+          curl -s http://localhost:$DB_API_METRICS_PORT/metrics | grep -q "service_health" || { echo "db-api metrics check failed"; exit 1; }
+          
+          echo "Testing db-admin metrics..."
+          curl -s http://localhost:$DB_ADMIN_METRICS_PORT/metrics | grep -q "service_health" || { echo "db-admin metrics check failed"; exit 1; }
+          
+          echo "Testing db-realtime metrics..."
+          curl -s http://localhost:$DB_REALTIME_METRICS_PORT/metrics | grep -q "service_health" || { echo "db-realtime metrics check failed"; exit 1; }
+          
+          echo "Testing vector-db metrics..."
+          curl -s http://localhost:$VECTOR_DB_METRICS_PORT/metrics | grep -q "service_health" || { echo "vector-db metrics check failed"; exit 1; }
+          
+          echo "Testing monitoring-db metrics..."
+          curl -s http://localhost:$MONITORING_DB_METRICS_PORT/metrics | grep -q "service_health" || { echo "monitoring-db metrics check failed"; exit 1; }
+          
+          echo "All metrics endpoints verified!"
+
+      - name: Stop services
+        if: always()
+        run: docker-compose -f docker-compose.test.yml down -v
+
+  # Validate Prometheus configuration
+  verify-prometheus:
+    runs-on: ubuntu-latest
+    needs: integration-test
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check Prometheus configuration
+        run: |
+          # Check if prometheus.yml exists
+          if [ -f "monitoring/prometheus/prometheus.yml" ]; then
+            echo "Verifying Prometheus configuration..."
+            
+            # Check for service_health metrics job
+            grep -q "job_name: 'services'" monitoring/prometheus/prometheus.yml || { echo "services job not found in Prometheus config"; exit 1; }
+            
+            # Check for relevant alert rules
+            if [ -f "monitoring/prometheus/alerts/service_health.yml" ]; then
+              grep -q "service_health == 0" monitoring/prometheus/alerts/service_health.yml || { echo "service_health alert rule not found"; exit 1; }
+              echo "✅ Alert rules verified"
+            else
+              echo "⚠️ Warning: service_health.yml alert rules file not found"
+            fi
+          else
+            echo "⚠️ Warning: prometheus.yml not found, skipping verification"
+          fi
+
+  # Create summary report
+  summary:
+    runs-on: ubuntu-latest
+    needs: [validate-db-package, build-db-services, integration-test, verify-prometheus]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Generate implementation status report
+        run: |
+          echo "# Phase 5 Database Health Check Implementation Status" > PHASE5-STATUS-REPORT.md
+          echo "" >> PHASE5-STATUS-REPORT.md
+          echo "## Implementation Progress" >> PHASE5-STATUS-REPORT.md
+          echo "" >> PHASE5-STATUS-REPORT.md
+          
+          # Check internal/db package
+          echo "### Database Driver Package" >> PHASE5-STATUS-REPORT.md
+          if [ -d "internal/db" ]; then
+            echo "- ✅ Base driver interface implemented" >> PHASE5-STATUS-REPORT.md
+            
+            # Check for specific implementations
+            [ -f "internal/db/postgres.go" ] && echo "- ✅ PostgreSQL driver implemented" >> PHASE5-STATUS-REPORT.md || echo "- ❌ PostgreSQL driver not implemented" >> PHASE5-STATUS-REPORT.md
+            [ -f "internal/db/mysql.go" ] && echo "- ✅ MySQL driver implemented" >> PHASE5-STATUS-REPORT.md || echo "- ❌ MySQL driver not implemented" >> PHASE5-STATUS-REPORT.md
+            [ -f "internal/db/sqlite.go" ] && echo "- ✅ SQLite driver implemented" >> PHASE5-STATUS-REPORT.md || echo "- ❌ SQLite driver not implemented" >> PHASE5-STATUS-REPORT.md
+            [ -f "internal/db/mssql.go" ] && echo "- ✅ MSSQL driver implemented" >> PHASE5-STATUS-REPORT.md || echo "- ❌ MSSQL driver not implemented" >> PHASE5-STATUS-REPORT.md
+          else
+            echo "- ❌ Database driver package not implemented" >> PHASE5-STATUS-REPORT.md
+          fi
+          
+          echo "" >> PHASE5-STATUS-REPORT.md
+          echo "### Service Implementation Status" >> PHASE5-STATUS-REPORT.md
+          
+          # Check services
+          for service in "db-api" "db-admin" "db-realtime" "vector-db" "monitoring-db" "mail-server" "monitoring-node" "monitoring-redis" "redis-exporter"; do
+            if [ -d "services/$service" ]; then
+              if [ -f "services/$service/Dockerfile.new" ]; then
+                echo "- ✅ $service: Implemented" >> PHASE5-STATUS-REPORT.md
+              else
+                echo "- ❌ $service: Missing Dockerfile.new" >> PHASE5-STATUS-REPORT.md
+              fi
+            else
+              echo "- ⚠️ $service: Service directory not found" >> PHASE5-STATUS-REPORT.md
+            fi
+          done
+          
+          # Check Prometheus alert rules
+          echo "" >> PHASE5-STATUS-REPORT.md
+          echo "### Monitoring Configuration" >> PHASE5-STATUS-REPORT.md
+          if [ -f "monitoring/prometheus/alerts/service_health.yml" ]; then
+            echo "- ✅ Prometheus alert rules implemented" >> PHASE5-STATUS-REPORT.md
+          else
+            echo "- ❌ Prometheus alert rules not implemented" >> PHASE5-STATUS-REPORT.md
+          fi
+          
+          # Create completion percentage
+          echo "" >> PHASE5-STATUS-REPORT.md
+          echo "## Overall Progress" >> PHASE5-STATUS-REPORT.md
+          echo "" >> PHASE5-STATUS-REPORT.md
+          echo "This report was generated automatically by the database health check CI pipeline." >> PHASE5-STATUS-REPORT.md
+          echo "Run date: $(date)" >> PHASE5-STATUS-REPORT.md
+          
+          # Output the report in the logs
+          cat PHASE5-STATUS-REPORT.md
+
+      - name: Upload status report
+        uses: actions/upload-artifact@v3
+        with:
+          name: phase5-status-report
+          path: PHASE5-STATUS-REPORT.md

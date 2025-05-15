@@ -1,0 +1,264 @@
+name: Phase 5 Implementation Summary
+
+permissions:
+  contents: write
+  issues: write  # Required to comment on issues
+
+on:
+  workflow_run:
+    workflows:
+      - Database Health Checks Phase 5
+      - Monitoring Services Health Checks Phase 5
+    types:
+      - completed
+  schedule:
+    - cron: '0 8 * * MON'  # Run weekly on Monday at 8 AM
+  workflow_dispatch:  # Allow manual triggering
+
+jobs:
+  generate-summary:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check implementation progress
+        run: |
+          echo "# Phase 5 Health Check Implementation Summary" > PHASE5-SUMMARY.md
+          echo "" >> PHASE5-SUMMARY.md
+          echo "## Overall Progress" >> PHASE5-SUMMARY.md
+          echo "" >> PHASE5-SUMMARY.md
+          
+          # Initialize counters
+          total_services=12
+          implemented_services=0
+          
+          # Check database services
+          echo "### Database Services" >> PHASE5-SUMMARY.md
+          for service in "db-api" "db-admin" "db-realtime" "vector-db" "monitoring-db"; do
+            if [ -d "services/$service" ] && [ -f "services/$service/Dockerfile.new" ]; then
+              echo "- ✅ $service: Implemented" >> PHASE5-SUMMARY.md
+              implemented_services=$((implemented_services+1))
+            elif [ -d "services/$service" ]; then
+              echo "- ❌ $service: Missing Dockerfile.new" >> PHASE5-SUMMARY.md
+            else
+              echo "- ⚠️ $service: Service directory not found" >> PHASE5-SUMMARY.md
+            fi
+          done
+          
+          # Check infrastructure services
+          echo "" >> PHASE5-SUMMARY.md
+          echo "### Infrastructure Services" >> PHASE5-SUMMARY.md
+          for service in "mail-server" "vector-db"; do
+            if [ -d "services/$service" ] && [ -f "services/$service/Dockerfile.new" ]; then
+              echo "- ✅ $service: Implemented" >> PHASE5-SUMMARY.md
+              implemented_services=$((implemented_services+1))
+            elif [ -d "services/$service" ]; then
+              echo "- ❌ $service: Missing Dockerfile.new" >> PHASE5-SUMMARY.md
+            else
+              echo "- ⚠️ $service: Service directory not found" >> PHASE5-SUMMARY.md
+            fi
+          done
+          
+          # Check monitoring services
+          echo "" >> PHASE5-SUMMARY.md
+          echo "### Monitoring Services" >> PHASE5-SUMMARY.md
+          for service in "monitoring-node" "monitoring-redis" "redis-exporter" "monitoring-dashboard" "monitoring-metrics"; do
+            if [ -d "services/$service" ] && [ -f "services/$service/Dockerfile.new" ]; then
+              echo "- ✅ $service: Implemented" >> PHASE5-SUMMARY.md
+              implemented_services=$((implemented_services+1))
+            elif [ -d "services/$service" ]; then
+              echo "- ❌ $service: Missing Dockerfile.new" >> PHASE5-SUMMARY.md
+            else
+              echo "- ⚠️ $service: Service directory not found" >> PHASE5-SUMMARY.md
+            fi
+          done
+          
+          # Check internal/db package
+          echo "" >> PHASE5-SUMMARY.md
+          echo "### Database Driver Package" >> PHASE5-SUMMARY.md
+          if [ -d "internal/db" ]; then
+            echo "- ✅ Base driver interface implemented" >> PHASE5-SUMMARY.md
+            
+            # Check for specific implementations
+            [ -f "internal/db/postgres.go" ] && echo "- ✅ PostgreSQL driver implemented" >> PHASE5-SUMMARY.md || echo "- ❌ PostgreSQL driver not implemented" >> PHASE5-SUMMARY.md
+            [ -f "internal/db/mysql.go" ] && echo "- ✅ MySQL driver implemented" >> PHASE5-SUMMARY.md || echo "- ❌ MySQL driver not implemented" >> PHASE5-SUMMARY.md
+            [ -f "internal/db/sqlite.go" ] && echo "- ✅ SQLite driver implemented" >> PHASE5-SUMMARY.md || echo "- ❌ SQLite driver not implemented" >> PHASE5-SUMMARY.md
+            [ -f "internal/db/mssql.go" ] && echo "- ✅ MSSQL driver implemented" >> PHASE5-SUMMARY.md || echo "- ❌ MSSQL driver not implemented" >> PHASE5-SUMMARY.md
+          else
+            echo "- ❌ Database driver package not implemented" >> PHASE5-SUMMARY.md
+          fi
+          
+          # Check Prometheus configuration
+          echo "" >> PHASE5-SUMMARY.md
+          echo "### Monitoring Configuration" >> PHASE5-SUMMARY.md
+          if [ -f "monitoring/prometheus/alerts/service_health.yml" ]; then
+            echo "- ✅ Prometheus alert rules implemented" >> PHASE5-SUMMARY.md
+          else
+            echo "- ❌ Prometheus alert rules not implemented" >> PHASE5-SUMMARY.md
+          fi
+          
+          if [ -f "monitoring/prometheus/prometheus.yml" ] && grep -q "alerts/service_health.yml" monitoring/prometheus/prometheus.yml; then
+            echo "- ✅ Prometheus configured to use alert rules" >> PHASE5-SUMMARY.md
+          else
+            echo "- ❌ Prometheus not configured to use alert rules" >> PHASE5-SUMMARY.md
+          fi
+          
+          # Calculate overall progress
+          percentage=$((implemented_services * 100 / total_services))
+          echo "" >> PHASE5-SUMMARY.md
+          echo "## Overall Status" >> PHASE5-SUMMARY.md
+          echo "- **Services Implemented**: $implemented_services out of $total_services ($percentage%)" >> PHASE5-SUMMARY.md
+          
+          # Target completion date
+          echo "- **Target Completion Date**: June 12, 2025" >> PHASE5-SUMMARY.md
+          
+          # Timeline status
+          current_date=$(date +%s)
+          target_date=$(date -d "2025-06-12" +%s)
+          start_date=$(date -d "2025-05-15" +%s)
+          total_duration=$((target_date - start_date))
+          elapsed_duration=$((current_date - start_date))
+          
+          if [ $elapsed_duration -gt 0 ] && [ $total_duration -gt 0 ]; then
+            time_percentage=$((elapsed_duration * 100 / total_duration))
+            echo "- **Timeline Progress**: $time_percentage% of allocated time used" >> PHASE5-SUMMARY.md
+            
+            # Compare progress to timeline
+            if [ $percentage -ge $time_percentage ]; then
+              echo "- **Status**: 🟢 On track or ahead of schedule" >> PHASE5-SUMMARY.md
+            else
+              echo "- **Status**: 🔴 Behind schedule" >> PHASE5-SUMMARY.md
+            fi
+          else
+            echo "- **Status**: ⚪ Timeline assessment unavailable" >> PHASE5-SUMMARY.md
+          fi
+          
+          echo "" >> PHASE5-SUMMARY.md
+          echo "## Recommendations" >> PHASE5-SUMMARY.md
+          
+          # Generate recommendations based on status
+          if [ $percentage -lt 25 ]; then
+            echo "- Immediately focus on implementing database services (highest priority)" >> PHASE5-SUMMARY.md
+            echo "- Set up daily check-ins to accelerate progress" >> PHASE5-SUMMARY.md
+            echo "- Consider allocating additional resources to meet the deadline" >> PHASE5-SUMMARY.md
+          elif [ $percentage -lt 50 ]; then
+            echo "- Prioritize remaining database services" >> PHASE5-SUMMARY.md
+            echo "- Begin implementing infrastructure services in parallel" >> PHASE5-SUMMARY.md
+            echo "- Review and update project timeline if needed" >> PHASE5-SUMMARY.md
+          elif [ $percentage -lt 75 ]; then
+            echo "- Complete infrastructure services implementation" >> PHASE5-SUMMARY.md
+            echo "- Begin implementing monitoring services" >> PHASE5-SUMMARY.md
+            echo "- Start working on Prometheus alert rules" >> PHASE5-SUMMARY.md
+          else
+            echo "- Finalize remaining monitoring services" >> PHASE5-SUMMARY.md
+            echo "- Complete Prometheus integration" >> PHASE5-SUMMARY.md
+            echo "- Begin code cleanup and documentation" >> PHASE5-SUMMARY.md
+            echo "- Prepare for final testing and handover" >> PHASE5-SUMMARY.md
+          fi
+          
+          echo "" >> PHASE5-SUMMARY.md
+          echo "## Next Steps" >> PHASE5-SUMMARY.md
+          
+          # Always list the next immediate tasks
+          if [ ! -d "internal/db" ]; then
+            echo "1. Implement base database driver interface" >> PHASE5-SUMMARY.md
+          elif [ ! -f "internal/db/postgres.go" ]; then
+            echo "1. Implement PostgreSQL driver" >> PHASE5-SUMMARY.md
+          fi
+          
+          # Check which service should be implemented next
+          priority_services=("db-api" "db-admin" "db-realtime" "vector-db" "monitoring-db" "mail-server" "monitoring-node" "monitoring-redis" "redis-exporter" "monitoring-dashboard" "monitoring-metrics")
+          
+          for service in "${priority_services[@]}"; do
+            if [ -d "services/$service" ] && [ ! -f "services/$service/Dockerfile.new" ]; then
+              echo "- Implement standardized health checks for $service service" >> PHASE5-SUMMARY.md
+            fi
+          done
+          
+          if [ ! -f "monitoring/prometheus/alerts/service_health.yml" ]; then
+            echo "- Create Prometheus alert rules for service_health" >> PHASE5-SUMMARY.md
+          fi
+          
+          echo "" >> PHASE5-SUMMARY.md
+          echo "This report was generated automatically by the Phase 5 Summary workflow." >> PHASE5-SUMMARY.md
+          echo "Generated on: $(date)" >> PHASE5-SUMMARY.md
+          
+          # Output report in logs
+          cat PHASE5-SUMMARY.md
+
+      - name: Upload summary report
+        uses: actions/upload-artifact@v3
+        with:
+          name: phase5-implementation-summary
+          path: PHASE5-SUMMARY.md
+          
+      - name: Add phase label to the artifacts
+        run: |
+          echo "phase: 5" >> $GITHUB_STEP_SUMMARY
+          echo "tags: health-check, database, monitoring" >> $GITHUB_STEP_SUMMARY
+
+      - name: Post summary to tracking issue
+        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const fs = require('fs');
+            const summaryContent = fs.readFileSync('PHASE5-SUMMARY.md', 'utf8');
+            
+            // Hard-code the Phase 5 tracking issue number
+            const TRACKING_ISSUE_NUMBER = 33;
+            
+            // Check if the tracking issue exists
+            try {
+              await github.rest.issues.get({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: TRACKING_ISSUE_NUMBER
+              });
+              // Post the summary as a comment on the tracking issue
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: TRACKING_ISSUE_NUMBER,
+                body: `## 📊 Phase 5 Implementation Status Update (${new Date().toISOString().split('T')[0]})
+
+${summaryContent}
+
+---
+*This update was automatically generated by the Phase 5 Summary workflow.*`
+              });
+              
+              console.log(`Posted summary update to tracking issue #${TRACKING_ISSUE_NUMBER}`);
+            } catch (error) {
+              console.log(`Error accessing tracking issue #${TRACKING_ISSUE_NUMBER}: ${error.message}`);
+              console.log('Please create a Phase 5 tracking issue with this number or update the workflow.');
+            }
+            
+      - name: Save summary to repository if running on schedule
+        # Only commit the summary report if this is a scheduled run
+        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+          
+          # Check if the report changed
+          if git status --porcelain | grep -q "PHASE5-SUMMARY.md"; then
+            # Create report directory if it doesn't exist
+            mkdir -p docs/phase5
+            # Copy summary to docs directory
+            cp PHASE5-SUMMARY.md docs/phase5/IMPLEMENTATION-STATUS-$(date +%Y%m%d).md
+            
+            # Stage the files
+            git add PHASE5-SUMMARY.md docs/phase5/IMPLEMENTATION-STATUS-$(date +%Y%m%d).md
+            
+            # Commit and push if there are changes
+            git commit -m "docs: Update Phase 5 implementation status [skip ci]"
+            git tag -a "phase5/status-$(date +%Y%m%d)" -m "Phase 5 status snapshot $(date +%Y-%m-%d)"
+            git push --tags
+            git push
+          else
+            echo "No changes to commit"
+          fi

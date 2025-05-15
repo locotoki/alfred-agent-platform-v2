@@ -1,0 +1,454 @@
+name: Monitoring Services Health Checks Phase 5
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+      - 'feature/monitoring-health-*'
+      - 'chore/monitoring-health-*'
+      - 'fix/monitoring-health-*'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'services/monitoring-*/**'
+      - 'services/redis-exporter/**'
+      - 'services/mail-server/**'
+      - '.github/workflows/monitoring-health-phase5.yml'
+  workflow_dispatch:  # Allow manual triggering
+
+env:
+  PYTHON_VERSION: "3.11"
+  NODE_VERSION: "20"
+  DOCKER_BUILDKIT: 1
+  COMPOSE_DOCKER_CLI_BUILD: 1
+  HEALTHCHECK_VERSION: "0.4.0"
+
+jobs:
+  # Build and test the monitoring service Dockerfiles
+  build-monitoring-services:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false  # Continue with other services even if one fails
+      matrix:
+        service: [mail-server, monitoring-node, monitoring-redis, redis-exporter, monitoring-dashboard, monitoring-metrics]
+        include:
+          - service: mail-server
+            port: 25
+            test_cmd: "curl -s --fail http://localhost:8025/health || exit 1"
+          - service: monitoring-node
+            port: 9100
+            test_cmd: "curl -s --fail http://localhost:9100/metrics || exit 1"
+          - service: monitoring-redis
+            port: 6379
+            test_cmd: "redis-cli ping | grep -q PONG || exit 1"
+          - service: redis-exporter
+            port: 9121
+            test_cmd: "curl -s --fail http://localhost:9121/metrics || exit 1"
+          - service: monitoring-dashboard
+            port: 3000
+            test_cmd: "curl -s --fail http://localhost:3000/api/health || exit 1"
+          - service: monitoring-metrics
+            port: 9090
+            test_cmd: "curl -s --fail http://localhost:9090/-/healthy || exit 1"
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check if service directory exists
+        id: check-service
+        run: |
+          if [ -d "services/${{ matrix.service }}" ]; then
+            echo "Service directory found, proceeding with build"
+            echo "exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "Service directory not found, skipping build"
+            echo "exists=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Check if Dockerfile.new exists
+        id: check-dockerfile
+        if: steps.check-service.outputs.exists == 'true'
+        run: |
+          if [ -f "services/${{ matrix.service }}/Dockerfile.new" ]; then
+            echo "Dockerfile.new found, proceeding with build"
+            echo "exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "Dockerfile.new not found, skipping build"
+            echo "exists=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Set up Docker Buildx
+        if: steps.check-service.outputs.exists == 'true' && steps.check-dockerfile.outputs.exists == 'true'
+        uses: docker/setup-buildx-action@v2
+
+      - name: Cache Docker layers
+        if: steps.check-service.outputs.exists == 'true' && steps.check-dockerfile.outputs.exists == 'true'
+        uses: actions/cache@v3
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-monitoring-${{ matrix.service }}-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-monitoring-${{ matrix.service }}-
+            ${{ runner.os }}-buildx-monitoring-
+            ${{ runner.os }}-buildx-
+
+      - name: Build ${{ matrix.service }} service
+        if: steps.check-service.outputs.exists == 'true' && steps.check-dockerfile.outputs.exists == 'true'
+        uses: docker/build-push-action@v4
+        with:
+          context: ./services/${{ matrix.service }}
+          file: ./services/${{ matrix.service }}/Dockerfile.new
+          push: false
+          tags: alfred-platform/${{ matrix.service }}:test
+          load: true
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
+
+      - name: Run container and test health
+        if: steps.check-service.outputs.exists == 'true' && steps.check-dockerfile.outputs.exists == 'true'
+        run: |
+          echo "Starting ${{ matrix.service }} container..."
+          docker run -d --name ${{ matrix.service }}-test -p ${{ matrix.port }}:${{ matrix.port }} -p 9091:9091 alfred-platform/${{ matrix.service }}:test
+          
+          # Wait for container to start
+          echo "Waiting for container to initialize..."
+          sleep 20
+          
+          # Wait for health check to pass
+          max_retries=10
+          retries=0
+          until [ $retries -ge $max_retries ] || docker inspect --format='{{.State.Health.Status}}' ${{ matrix.service }}-test | grep -q "healthy"; do
+            retries=$((retries+1))
+            echo "Waiting for container health check to pass (attempt $retries/$max_retries)..."
+            sleep 10
+          done
+          
+          if [ $retries -ge $max_retries ]; then
+            echo "Health check did not pass within timeout"
+            docker logs ${{ matrix.service }}-test
+            exit 1
+          fi
+          
+          # Check container health
+          echo "Checking container status..."
+          docker ps -a
+          
+          # Test service-specific health check
+          echo "Testing service health command..."
+          docker exec ${{ matrix.service }}-test sh -c '${{ matrix.test_cmd }}' || { echo "Service health check failed"; docker logs ${{ matrix.service }}-test; exit 1; }
+          
+          # Test metrics endpoint
+          echo "Testing metrics endpoint..."
+          curl -s http://localhost:9091/metrics | grep -q "service_health" || { echo "Metrics endpoint check failed"; exit 1; }
+          
+          echo "All checks passed for ${{ matrix.service }}"
+
+      - name: Move cache
+        if: steps.check-service.outputs.exists == 'true' && steps.check-dockerfile.outputs.exists == 'true'
+        run: |
+          rm -rf /tmp/.buildx-cache
+          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+
+      - name: Cleanup
+        if: always() && steps.check-service.outputs.exists == 'true' && steps.check-dockerfile.outputs.exists == 'true'
+        run: |
+          docker stop ${{ matrix.service }}-test || true
+          docker rm ${{ matrix.service }}-test || true
+
+  # Integration test with docker-compose
+  integration-test:
+    runs-on: ubuntu-latest
+    needs: build-monitoring-services
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Update docker-compose.yml for testing
+        run: |
+          # Check if healthcheck-fix.yml exists
+          if [ -f "docker-compose.healthcheck-fix.yml" ]; then
+            echo "Using docker-compose.healthcheck-fix.yml for testing"
+            cp docker-compose.healthcheck-fix.yml docker-compose.monitoring-test.yml
+          else
+            echo "Creating test docker-compose configuration"
+            cp docker-compose.yml docker-compose.monitoring-test.yml
+            
+            # Update service configurations in test file
+            for service in "mail-server" "monitoring-node" "monitoring-redis" "redis-exporter" "monitoring-dashboard" "monitoring-metrics"; do
+              if [ -d "services/$service" ] && [ -f "services/$service/Dockerfile.new" ]; then
+                echo "Updating $service in docker-compose.monitoring-test.yml to use Dockerfile.new"
+                # This is a simple sed replacement - in a real scenario you might want to use a YAML parser
+                sed -i "s|context: ./services/$service|context: ./services/$service\n      dockerfile: Dockerfile.new|g" docker-compose.monitoring-test.yml
+              fi
+            done
+          fi
+          
+          cat docker-compose.monitoring-test.yml
+
+      - name: Start services with docker-compose
+        run: |
+          # Add health check options to docker-compose services
+          for service in "mail-server" "monitoring-node" "monitoring-redis" "redis-exporter" "monitoring-dashboard" "monitoring-metrics"; do
+            if grep -q "$service:" docker-compose.monitoring-test.yml; then
+              # Check if healthcheck section already exists
+              if ! grep -q "healthcheck:" -A 3 -B 3 <(grep -A 20 "$service:" docker-compose.monitoring-test.yml); then
+                # Add healthcheck section if it doesn't exist
+                sed -i "/\s*$service:\s*$/a\    healthcheck:\n      test: [\"CMD\", \"curl\", \"-f\", \"http://localhost:9091/health\", \"||\" , \"exit\", \"1\"]\n      interval: 10s\n      timeout: 5s\n      retries: 3\n      start_period: 30s" docker-compose.monitoring-test.yml
+              fi
+            fi
+          done
+          
+          docker-compose -f docker-compose.monitoring-test.yml up -d mail-server monitoring-node monitoring-redis redis-exporter monitoring-dashboard monitoring-metrics
+          # Wait for services to initialize
+          sleep 30
+          
+          # Wait for all services to be healthy
+          echo "Waiting for services to be healthy..."
+          for service in mail-server monitoring-node monitoring-redis redis-exporter monitoring-dashboard monitoring-metrics; do
+            if docker-compose -f docker-compose.monitoring-test.yml ps | grep -q $service; then
+              max_retries=10
+              retries=0
+              until [ $retries -ge $max_retries ] || docker-compose -f docker-compose.monitoring-test.yml ps | grep $service | grep -q "(healthy)"; do
+                retries=$((retries+1))
+                echo "Waiting for $service to be healthy (attempt $retries/$max_retries)..."
+                sleep 10
+              done
+              
+              if [ $retries -ge $max_retries ]; then
+                echo "$service did not become healthy within timeout"
+                docker-compose -f docker-compose.monitoring-test.yml logs $service
+              fi
+            fi
+          done
+          
+          docker-compose -f docker-compose.monitoring-test.yml ps
+
+      - name: Test service health endpoints
+        run: |
+          # Test each service that exists
+          if docker-compose -f docker-compose.monitoring-test.yml ps | grep -q mail-server; then
+            echo "Testing mail-server health..."
+            curl -s --fail http://localhost:8025/health || { echo "mail-server health check failed"; exit 1; }
+          fi
+          
+          if docker-compose -f docker-compose.monitoring-test.yml ps | grep -q monitoring-node; then
+            echo "Testing monitoring-node health..."
+            curl -s --fail http://localhost:9100/metrics || { echo "monitoring-node health check failed"; exit 1; }
+          fi
+          
+          if docker-compose -f docker-compose.monitoring-test.yml ps | grep -q monitoring-redis; then
+            echo "Testing monitoring-redis health..."
+            docker exec $(docker-compose -f docker-compose.monitoring-test.yml ps -q monitoring-redis) redis-cli ping | grep -q PONG || { echo "monitoring-redis health check failed"; exit 1; }
+          fi
+          
+          if docker-compose -f docker-compose.monitoring-test.yml ps | grep -q redis-exporter; then
+            echo "Testing redis-exporter health..."
+            curl -s --fail http://localhost:9121/metrics || { echo "redis-exporter health check failed"; exit 1; }
+          fi
+          
+          if docker-compose -f docker-compose.monitoring-test.yml ps | grep -q monitoring-dashboard; then
+            echo "Testing monitoring-dashboard health..."
+            curl -s --fail http://localhost:3000/api/health || { echo "monitoring-dashboard health check failed"; exit 1; }
+          fi
+          
+          if docker-compose -f docker-compose.monitoring-test.yml ps | grep -q monitoring-metrics; then
+            echo "Testing monitoring-metrics health..."
+            curl -s --fail http://localhost:9090/-/healthy || { echo "monitoring-metrics health check failed"; exit 1; }
+          fi
+          
+          echo "All service health checks passed!"
+
+      - name: Test metrics endpoints where available
+        run: |
+          # Loop through services to test metrics endpoints
+          for service in "mail-server" "monitoring-node" "monitoring-redis" "redis-exporter" "monitoring-dashboard" "monitoring-metrics"; do
+            if docker-compose -f docker-compose.monitoring-test.yml ps | grep -q $service; then
+              PORT=$(docker-compose -f docker-compose.monitoring-test.yml port $service 9091 | cut -d: -f2 || echo "")
+              if [ ! -z "$PORT" ]; then
+                echo "Testing $service metrics on port $PORT..."
+                curl -s http://localhost:$PORT/metrics | grep -q "service_health" || { echo "$service metrics check failed"; exit 1; }
+              else
+                echo "Metrics port not mapped for $service, skipping"
+              fi
+            fi
+          done
+          
+          echo "All available metrics endpoints verified!"
+
+      - name: Stop services
+        if: always()
+        run: docker-compose -f docker-compose.monitoring-test.yml down -v
+
+  # Create prometheus alert rules if they don't exist
+  create-alert-rules:
+    runs-on: ubuntu-latest
+    needs: integration-test
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Check and create alert rules directory
+        run: |
+          mkdir -p monitoring/prometheus/alerts
+      
+      - name: Check if service_health alert rules exist
+        id: check-rules
+        run: |
+          if [ -f "monitoring/prometheus/alerts/service_health.yml" ]; then
+            echo "Alert rules file already exists"
+            echo "exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "Alert rules file doesn't exist, will create it"
+            echo "exists=false" >> $GITHUB_OUTPUT
+          fi
+      
+      - name: Create service_health alert rules
+        if: steps.check-rules.outputs.exists != 'true'
+        id: create-rules
+        run: |
+          cat > monitoring/prometheus/alerts/service_health.yml << 'EOF'
+          groups:
+          - name: service_health
+            rules:
+            - alert: ServiceHealthCritical
+              expr: service_health == 0
+              for: 60s
+              labels:
+                severity: critical
+              annotations:
+                summary: "Service {{ $labels.service }} is unhealthy"
+                description: "Service has reported an unhealthy status for more than 1 minute"
+            
+            - alert: ServiceHealthDegraded
+              expr: service_health == 0.5
+              for: 2m
+              labels:
+                severity: warning
+              annotations:
+                summary: "Service {{ $labels.service }} is degraded"
+                description: "Service has reported a degraded status for more than 2 minutes"
+                
+            - alert: ServiceMetricsUnavailable
+              expr: up == 0
+              for: 30s
+              labels:
+                severity: warning
+              annotations:
+                summary: "Service {{ $labels.job }} metrics unavailable"
+                description: "Service metrics endpoint cannot be scraped"
+          EOF
+          echo "Created service_health alert rules"
+          echo "created=true" >> $GITHUB_OUTPUT
+      
+      - name: Check if Prometheus configuration includes alert rules
+        run: |
+          if [ -f "monitoring/prometheus/prometheus.yml" ]; then
+            if grep -q "alerts/service_health.yml" monitoring/prometheus/prometheus.yml; then
+              echo "Alert rules already included in prometheus.yml"
+            else
+              echo "Alert rules not included in prometheus.yml, adding comment to remind manual addition"
+              echo "" >> monitoring/prometheus/prometheus.yml
+              echo "# TODO: Include the following in rule_files section:" >> monitoring/prometheus/prometheus.yml
+              echo "# - 'alerts/service_health.yml'" >> monitoring/prometheus/prometheus.yml
+            fi
+          else
+            echo "prometheus.yml not found, cannot update"
+          fi
+          
+      - name: Upload alert rules artifact
+        if: steps.create-rules.outputs.created == 'true' || steps.check-rules.outputs.exists == 'true'
+        uses: actions/upload-artifact@v3
+        with:
+          name: prometheus-alert-rules
+          path: monitoring/prometheus/alerts/service_health.yml
+          if-no-files-found: ignore
+          fi
+
+  # Summary report
+  summary:
+    runs-on: ubuntu-latest
+    needs: [build-monitoring-services, integration-test, create-alert-rules]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Generate implementation status report
+        run: |
+          echo "# Phase 5 Monitoring Services Health Check Implementation Status" > MONITORING-STATUS-REPORT.md
+          echo "" >> MONITORING-STATUS-REPORT.md
+          echo "## Implementation Progress" >> MONITORING-STATUS-REPORT.md
+          echo "" >> MONITORING-STATUS-REPORT.md
+          
+          echo "### Service Implementation Status" >> MONITORING-STATUS-REPORT.md
+          
+          # Check services
+          for service in "mail-server" "monitoring-node" "monitoring-redis" "redis-exporter" "monitoring-dashboard" "monitoring-metrics"; do
+            if [ -d "services/$service" ]; then
+              if [ -f "services/$service/Dockerfile.new" ]; then
+                echo "- ✅ $service: Implemented" >> MONITORING-STATUS-REPORT.md
+              else
+                echo "- ❌ $service: Missing Dockerfile.new" >> MONITORING-STATUS-REPORT.md
+              fi
+            else
+              echo "- ⚠️ $service: Service directory not found" >> MONITORING-STATUS-REPORT.md
+            fi
+          done
+          
+          # Check Prometheus alert rules
+          echo "" >> MONITORING-STATUS-REPORT.md
+          echo "### Monitoring Configuration" >> MONITORING-STATUS-REPORT.md
+          if [ -f "monitoring/prometheus/alerts/service_health.yml" ]; then
+            echo "- ✅ Prometheus alert rules implemented" >> MONITORING-STATUS-REPORT.md
+          else
+            echo "- ❌ Prometheus alert rules not implemented" >> MONITORING-STATUS-REPORT.md
+          fi
+          
+          if [ -f "monitoring/prometheus/prometheus.yml" ] && grep -q "alerts/service_health.yml" monitoring/prometheus/prometheus.yml; then
+            echo "- ✅ Prometheus configured to use alert rules" >> MONITORING-STATUS-REPORT.md
+          else
+            echo "- ❌ Prometheus not configured to use alert rules" >> MONITORING-STATUS-REPORT.md
+          fi
+          
+          # Create completion percentage
+          echo "" >> MONITORING-STATUS-REPORT.md
+          echo "## Overall Progress" >> MONITORING-STATUS-REPORT.md
+          
+          # Calculate a rough progress percentage
+          completed=0
+          total=6  # Total number of services to check
+          
+          for service in "mail-server" "monitoring-node" "monitoring-redis" "redis-exporter" "monitoring-dashboard" "monitoring-metrics"; do
+            if [ -d "services/$service" ] && [ -f "services/$service/Dockerfile.new" ]; then
+              completed=$((completed+1))
+            fi
+          done
+          
+          # Add alert rules to calculation
+          total=$((total+1))
+          if [ -f "monitoring/prometheus/alerts/service_health.yml" ]; then
+            completed=$((completed+1))
+          fi
+          
+          # Calculate percentage
+          percentage=$((completed * 100 / total))
+          echo "- Progress: $percentage% ($completed/$total)" >> MONITORING-STATUS-REPORT.md
+          
+          echo "" >> MONITORING-STATUS-REPORT.md
+          echo "This report was generated automatically by the monitoring health check CI pipeline." >> MONITORING-STATUS-REPORT.md
+          echo "Run date: $(date)" >> MONITORING-STATUS-REPORT.md
+          
+          # Output the report in the logs
+          cat MONITORING-STATUS-REPORT.md
+
+      - name: Upload status report
+        uses: actions/upload-artifact@v3
+        with:
+          name: monitoring-status-report
+          path: MONITORING-STATUS-REPORT.md
