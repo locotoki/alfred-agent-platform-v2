@@ -137,6 +137,7 @@ jobs:
           service_account: ${{ secrets.CREWAI_A2A_CLIENT_ID }}
           create_credentials_file: true
           export_environment_variables: true
+          token_lifetime: 900  # 15 minute token lifetime (in seconds)
       
       - name: Generate A2A token configuration
         run: |
@@ -148,6 +149,7 @@ jobs:
         with:
           name: crewai-token
           path: /tmp/crewai-token.json
+          retention-days: 1  # Only keep artifact for 1 day
       
       - name: Helm deploy
         env:
@@ -155,3 +157,9 @@ jobs:
           CREWAI_A2A_CLIENT_ID: ${{ secrets.CREWAI_A2A_CLIENT_ID }}
           CREWAI_A2A_TOKEN_PATH: /tmp/crewai-token.json
         run: ./scripts/deploy.sh
+      
+      # Delete the token artifact after deployment for security
+      - name: Delete token artifact
+        uses: geekyeggo/delete-artifact@v2
+        with:
+          name: crewai-token

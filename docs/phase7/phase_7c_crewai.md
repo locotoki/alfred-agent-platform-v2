@@ -153,18 +153,21 @@ except requests.RequestException as e:
 ## Security Considerations
 
 1. **Token Management**: 
-   - Tokens are short-lived and automatically rotated
+   - Tokens are short-lived (15 minutes) and automatically rotated
    - Tokens are stored as Kubernetes secrets
    - The client reads tokens from read-only file mounts
+   - Artifacts containing tokens are automatically deleted after deployment
    
 2. **Authentication**: 
    - Each request is authenticated with a JWT token
    - Tokens include audience and scope restrictions
    - GitHub Actions environment restrictions limit access
+   - Token retention policy limits exposure time
 
 3. **Authorization**:
    - Service account has minimal required permissions
    - Workload Identity Federation limits token usage to specific GitHub repository
+   - Artifact cleanup ensures tokens are not persisted in GitHub Actions
 
 ## Troubleshooting
 
