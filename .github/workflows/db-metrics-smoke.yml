@@ -1,0 +1,52 @@
+name: DB Metrics Smoke Test
+
+on:
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'services/db-metrics/**'
+      - '.github/workflows/db-metrics-smoke.yml'
+  push:
+    branches: [ main ]
+    paths:
+      - 'services/db-metrics/**'
+      - '.github/workflows/db-metrics-smoke.yml'
+
+jobs:
+  db-metrics-smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.11'
+          
+      - name: Install dependencies
+        run: |
+          cd services/db-metrics
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          
+      - name: Run smoke test
+        run: |
+          cd services/db-metrics
+          python -m app --check
+          
+      - name: Build Docker image
+        uses: docker/build-push-action@v2
+        with:
+          context: ./services/db-metrics
+          push: false
+          tags: db-metrics:test
+          file: ./services/db-metrics/Dockerfile.ci
+          
+      - name: Run security scan
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: db-metrics:test
+          format: 'table'
+          exit-code: '1'
+          ignore-unfixed: true
+          severity: 'CRITICAL'

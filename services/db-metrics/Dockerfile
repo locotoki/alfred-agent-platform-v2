@@ -1,0 +1,35 @@
+FROM ghcr.io/alfred/healthcheck:0.4.0 AS healthcheck
+
+FROM python:3.11-slim
+
+# Copy healthcheck binary
+COPY --from=healthcheck /healthcheck /usr/local/bin/healthcheck
+
+WORKDIR /app
+
+# Install dependencies first (for better layer caching)
+COPY requirements.txt /app/
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Install curl for health check
+RUN apt-get update && apt-get install -y curl && \
+    rm -rf /var/lib/apt/lists/*
+
+# Copy application code
+COPY app.py /app/
+
+# Set environment variables
+ENV PYTHONUNBUFFERED=1
+ENV PORT=8000
+ENV METRICS_PORT=9091
+
+# Expose ports
+EXPOSE 8000
+EXPOSE 9091
+
+# Add health check
+HEALTHCHECK --interval=30s --timeout=20s --start-period=45s --retries=5 \
+  CMD curl -f http://localhost:8000/healthz || exit 1
+
+# Run the application with healthcheck wrapper
+CMD ["bash", "-c", "healthcheck --export-prom :9091 -- python app.py"]
