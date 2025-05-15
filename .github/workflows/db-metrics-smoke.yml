@@ -40,6 +40,7 @@ jobs:
           context: ./services/db-metrics
           push: false
           tags: db-metrics:test
+          file: ./services/db-metrics/Dockerfile.ci
           
       - name: Run security scan
         uses: aquasecurity/trivy-action@master
