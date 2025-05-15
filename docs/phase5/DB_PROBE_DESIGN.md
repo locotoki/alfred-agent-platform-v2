@@ -509,6 +509,23 @@ func TestDatabaseHealth_Integration(t *testing.T) {
 9. Implement MSSQL driver (if needed)
 10. Create example Grafana dashboard for database health metrics
 
+## Reference Implementation
+
+See these example files for reference:
+
+- [Database Driver Interface](../../internal/db/driver.go.example)
+- [PostgreSQL Driver Implementation](../../internal/db/postgres.go.example)
+- [Prometheus Alert Rules](../../monitoring/prometheus/alerts/service_health.yml.example)
+- [CI/CD Workflows Documentation](../../README-PHASE5-WORKFLOWS.md)
+
+## GitHub Actions Workflows
+
+The implementation is validated by dedicated GitHub Actions workflows:
+
+- [Database Health Checks Workflow](../../.github/workflows/db-health-phase5.yml)
+- [Monitoring Health Checks Workflow](../../.github/workflows/monitoring-health-phase5.yml)
+- [Phase 5 Summary Workflow](../../.github/workflows/phase5-summary.yml)
+
 ## Example Alert Rules
 
 ```yaml
@@ -535,8 +552,14 @@ groups:
       description: "Database is experiencing high latency: {{ $value }}ms"
 ```
 
+See the [service_health.yml.example](../../monitoring/prometheus/alerts/service_health.yml.example) file for a complete implementation of service health alert rules.
+
 ## Conclusion
 
 This design provides a standardized approach to database health monitoring across our platform. By implementing common interfaces and leveraging our existing healthcheck infrastructure, we ensure consistent reporting and metrics collection for all database services.
 
 The implementation prioritizes PostgreSQL as our primary database technology, with support for other database types based on project requirements. The modular design allows for easy extension to additional database types in the future.
+
+## Tracking
+
+Implementation progress is tracked in [Phase 5 Progress Issue #33](https://github.com/locotoki/alfred-agent-platform-v2/issues/33). The status is automatically updated weekly by the Phase 5 Summary workflow.
