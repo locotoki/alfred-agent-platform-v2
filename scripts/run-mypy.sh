@@ -23,13 +23,23 @@ if [[ "$GITHUB_HEAD_REF" == "update-pr-42" || "$GITHUB_REF" == *"update-pr-42"* 
 fi
 
 # Exclude problematic directories and files that aren't part of the core codebase
-EXCLUDE_ARGS="--exclude cleanup-temp --exclude docs/archive --exclude node_modules"
+# and exclude all duplicate 'app' modules to avoid collisions
+EXCLUDE_ARGS="--exclude cleanup-temp --exclude docs/archive --exclude node_modules \
+              --exclude rag-gateway/src \
+              --exclude services/alfred-core/app \
+              --exclude services/alfred-bot/app \
+              --exclude services/model-registry/app \
+              --exclude services/model-router/app \
+              --exclude services/financial-tax/app \
+              --exclude services/legal-compliance/app \
+              --exclude services/social-intel/app \
+              --exclude services/pubsub-metrics/app.py \
+              --exclude services/db-metrics/app.py \
+              --exclude slack-bot/src/app.py \
+              --exclude whatsapp-adapter/src/app.py \
+              --exclude agents/financial_tax"
 
-# Completely skip any directory with app.py or app/__init__.py files to avoid duplicate module conflicts
-# This will be addressed properly in a future PR for Python module organization
-echo "Skipping mypy type checking for all app.py modules to avoid duplicate module conflicts"
-echo "This is a temporary workaround until proper module namespacing is implemented"
-
-# Run mypy only on specific safe paths
-echo "Running mypy with limited scope to avoid module conflicts"
-mypy ${EXCLUDE_ARGS} libs/agent_core/base_agent.py libs/observability "$@"
+# Run mypy with comprehensive exclusions to avoid duplicate module conflicts
+echo "Running mypy with exclusions to avoid duplicate module conflicts..."
+echo "This is a temporary workaround until proper module namespacing is implemented in Phase 7"
+mypy ${EXCLUDE_ARGS} "$@"
