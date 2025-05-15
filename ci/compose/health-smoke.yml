@@ -19,3 +19,23 @@ services:
   social-intel:
     image: ghcr.io/locotoki/social-intel:${TAG:-local}
     command: ["healthcheck", "--once"]
+    
+  # MSSQL database health check
+  mssql:
+    image: ghcr.io/locotoki/healthcheck:${TAG:-local}
+    command: ["./healthcheck", "--db-type", "mssql", "--db-dsn", "sa:Password123!@mssql-server:1433/tempdb", "--once"]
+    depends_on:
+      - mssql-server
+  
+  # MSSQL server for testing
+  mssql-server:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    environment:
+      SA_PASSWORD: "Password123!"
+      ACCEPT_EULA: "Y"
+      MSSQL_PID: "Express"
+    healthcheck:
+      test: ["CMD", "/opt/mssql-tools/bin/sqlcmd", "-S", "localhost", "-U", "sa", "-P", "Password123!", "-Q", "SELECT 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
