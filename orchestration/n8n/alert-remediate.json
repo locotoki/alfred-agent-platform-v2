@@ -1,0 +1,35 @@
+{ "name": "Alertmanager → CrewAI remediation",
+  "nodes":[
+    { "id":"http_trigger", "name":"Alertmanager Webhook", "type":"n8n-nodes-base.webhook",
+      "parameters":{"path":"alertmanager","httpMethod":"POST","responseMode":"lastNode","responseCode":200},
+      "position":[250,300] },
+    { "id":"prep", "name":"Prepare alert JSON", "type":"n8n-nodes-base.set", "position":[450,300] },
+    { "id":"crewai", "name":"CrewAI Decision", "type":"n8n-nodes-base.httpRequest",
+      "parameters":{
+        "url":"={{$env.CREWAI_ENDPOINT}}/decide","method":"POST","responseFormat":"json","jsonParameters":true,
+        "headerParametersJson":"{\"Authorization\":\"Bearer {{$env.CREWAI_API_KEY}}\"}",
+        "bodyParametersJson":"={{JSON.stringify({alerts:$json[\"alerts\"]})}}"
+      },
+      "position":[650,300] },
+    { "id":"action_switch","name":"IF action == restart","type":"n8n-nodes-base.if",
+      "parameters":{"conditions":{"string":[{"value1":"={{$json[\"action\"]}}","operation":"equal","value2":"restart"}]}},
+      "position":[850,300] },
+    { "id":"kubectl","name":"Restart Deployment","type":"n8n-nodes-base.executeCommand",
+      "parameters":{"command":"kubectl","options":"--namespace={{$json[\"namespace\"]}} rollout restart deployment/{{$json[\"deployment\"]}}"},
+      "position":[1150,180] },
+    { "id":"slack","name":"Escalate to Slack","type":"n8n-nodes-base.httpRequest",
+      "parameters":{"url":"={{$env.SLACK_WEBHOOK_URL}}","method":"POST","jsonParameters":true,
+        "bodyParametersJson":"{\"text\":\"🚨 Alfred orchestration – {{$json[\\\"reason\\\"]}}\"}"},
+      "position":[1150,420] }
+  ],
+  "connections":{
+    "Alertmanager Webhook":{"main":[[{"node":"Prepare alert JSON","type":"main","index":0}]]},
+    "Prepare alert JSON":{"main":[[{"node":"CrewAI Decision","type":"main","index":0}]]},
+    "CrewAI Decision":{"main":[[{"node":"IF action == restart","type":"main","index":0}]]},
+    "IF action == restart":{
+      "main":[
+        [{"node":"Restart Deployment","type":"main","index":0}],
+        [{"node":"Escalate to Slack","type":"main","index":1}]
+      ]}
+  }
+}

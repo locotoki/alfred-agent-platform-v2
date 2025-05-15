@@ -1,32 +1,30 @@
-name: Integration Tests
+name: orchestration-integration
 
 on:
-  push:
-    branches: [ main, phase6/*, develop ]
   pull_request:
-    branches: [ main, develop ]
+    paths:
+      - 'ci/compose/orchestration-poc.yml'
+      - 'orchestration/**'
+      - '.github/workflows/integrations.yml'
 
 jobs:
-  build-images:
+  verify-alert-remediation:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Setup Go
-        uses: actions/setup-go@v4
-        with:
-          go-version: '1.22'
-      - name: Build test images
+      - name: Launch PoC stack
+        run: docker compose -f ci/compose/orchestration-poc.yml up -d --build
+      - name: Wait for n8n
+        run:  < /dev/null | 
+          for i in {1..20}; do curl -s http://localhost:5678/healthz && exit 0; sleep 3; done
+          echo "n8n failed" && docker compose logs && exit 1
+      - name: Fire mock alert
         run: |
-          docker build -t ghcr.io/locotoki/healthcheck:local -f cmd/healthcheck/Dockerfile .
-          docker images
-
-  otel-smoke:
-    runs-on: ubuntu-latest
-    needs: build-images
-    steps:
-      - uses: actions/checkout@v4
-      - name: Run OpenTelemetry smoke test
-        run: docker compose -f ci/compose/otel-smoke.yml up --abort-on-container-exit
-      - name: Assert spans exported
-        if: failure()
-        run: docker compose -f ci/compose/otel-smoke.yml logs otelcol
+          curl -s -X POST http://localhost:5678/webhook/alertmanager \
+          -H 'Content-Type: application/json' \
+          -d '{"alerts":[{"labels":{"namespace":"default","deployment":"api"}}]}'
+      - name: Assert CrewAI saw alert
+        run: docker compose logs crewai | grep -q '"action":"restart"'
+      - name: Tear down
+        if: always()
+        run: docker compose -f ci/compose/orchestration-poc.yml down -v
