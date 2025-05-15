@@ -3,14 +3,12 @@
 package prometheus_test
 
 import (
-	"encoding/json"
 	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"os"
 	"os/exec"
 	"testing"
-	"time"
 )
 
 func TestPrometheusProbe_Integration(t *testing.T) {
