@@ -3,7 +3,7 @@ version: "3.9"
 x-common-env: &common
   CREWAI_ENDPOINT: "http://crewai:8080"
   CREWAI_API_KEY: "local-test"
-  SLACK_WEBHOOK_URL: "http://mock-slack:3000"
+  SLACK_WEBHOOK_URL: "http://mock-slack:80"
   N8N_BASIC_AUTH_USER: "admin"
   N8N_BASIC_AUTH_PASSWORD: "admin"
 
@@ -34,4 +34,4 @@ services:
 
   mock-slack:
     image: containous/whoami:latest
-    ports: ["3000:80"]
+    ports: ["3010:80"]
