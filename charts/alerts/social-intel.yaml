@@ -1,0 +1,15 @@
+# charts/alerts/social-intel.yaml
+groups:
+ - name: social-intel
+   rules:
+   - alert: SocialIntelHealthCritical
+     expr: service_health{service="social-intel"} == 0
+     for: 5m
+     labels: {severity: "critical"}
+     annotations: {summary: "Social Intel DOWN"}
+
+   - alert: SocialIntelHealthWarning
+     expr: service_health{service="social-intel"} == 0.5
+     for: 10m
+     labels: {severity: "warning"}
+     annotations: {summary: "Social Intel DEGRADED"}

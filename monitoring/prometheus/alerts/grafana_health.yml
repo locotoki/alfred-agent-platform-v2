@@ -1,0 +1,42 @@
+groups:
+- name: grafana_health
+  rules:
+  - alert: GrafanaDown
+    expr: service_health{service="grafana"} == 0
+    for: 60s
+    labels:
+      severity: critical
+      category: platform
+    annotations:
+      summary: "Grafana is down"
+      description: "Grafana has been down for more than 1 minute"
+  
+  - alert: GrafanaDegraded
+    expr: service_health{service="grafana"} == 0.5
+    for: 5m
+    labels:
+      severity: warning
+      category: platform
+    annotations:
+      summary: "Grafana service is degraded"
+      description: "Grafana has been in a degraded state for more than 5 minutes"
+  
+  - alert: GrafanaDatasourceDown
+    expr: grafana_datasource_up_total{} == 0
+    for: 5m
+    labels:
+      severity: warning
+      category: platform
+    annotations:
+      summary: "Grafana datasource {{ $labels.type }} is down"
+      description: "Grafana datasource {{ $labels.type }} has been down for more than 5 minutes"
+  
+  - alert: GrafanaApiLatencyHigh
+    expr: histogram_quantile(0.95, rate(grafana_api_latency_seconds_bucket[5m])) > 2
+    for: 10m
+    labels:
+      severity: warning
+      category: platform
+    annotations:
+      summary: "Grafana API latency is high"
+      description: "95th percentile of Grafana API requests is taking more than 2 seconds over the last 10 minutes"

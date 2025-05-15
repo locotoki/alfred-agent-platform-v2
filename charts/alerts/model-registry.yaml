@@ -1,0 +1,15 @@
+# charts/alerts/model-registry.yaml
+groups:
+ - name: model-registry
+   rules:
+   - alert: ModelRegistryHealthCritical
+     expr: service_health{service="model-registry"} == 0
+     for: 5m
+     labels: {severity: "critical"}
+     annotations: {summary: "Model Registry DOWN"}
+
+   - alert: ModelRegistryHealthWarning
+     expr: service_health{service="model-registry"} == 0.5
+     for: 10m
+     labels: {severity: "warning"}
+     annotations: {summary: "Model Registry DEGRADED"}

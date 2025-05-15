@@ -1,0 +1,15 @@
+# charts/alerts/alfred-core.yaml
+groups:
+ - name: alfred-core
+   rules:
+   - alert: AlfredCoreHealthCritical
+     expr: service_health{service="alfred-core"} == 0
+     for: 5m
+     labels: {severity: "critical"}
+     annotations: {summary: "Alfred Core DOWN"}
+
+   - alert: AlfredCoreHealthWarning
+     expr: service_health{service="alfred-core"} == 0.5
+     for: 10m
+     labels: {severity: "warning"}
+     annotations: {summary: "Alfred Core DEGRADED"}

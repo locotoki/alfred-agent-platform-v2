@@ -1,0 +1,15 @@
+# charts/alerts/model-router.yaml
+groups:
+ - name: model-router
+   rules:
+   - alert: ModelRouterHealthCritical
+     expr: service_health{service="model-router"} == 0
+     for: 5m
+     labels: {severity: "critical"}
+     annotations: {summary: "Model Router DOWN"}
+
+   - alert: ModelRouterHealthWarning
+     expr: service_health{service="model-router"} == 0.5
+     for: 10m
+     labels: {severity: "warning"}
+     annotations: {summary: "Model Router DEGRADED"}
