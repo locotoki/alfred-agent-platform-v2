@@ -11,6 +11,8 @@ import time
 import logging
 import requests
 
+from remediation import settings
+
 logger = logging.getLogger(__name__)
 
 class RemediationState(Dict[str, Any]):
@@ -23,10 +25,14 @@ def restart_service(state: RemediationState) -> RemediationState:
     logger.info(f"Restarting service: {service_name}")
     
     try:
+        # Get webhook URL for the service
+        webhook_url = settings.get_webhook_url(service_name)
+        
         # Call n8n workflow to restart service
         response = requests.post(
-            f"http://n8n:5678/webhook/restart-service",
-            json={"service": service_name}
+            webhook_url,
+            json={"service": service_name},
+            timeout=settings.PROBE_TIMEOUT
         )
         response.raise_for_status()
         state["restart_status"] = "success"
@@ -41,7 +47,7 @@ def restart_service(state: RemediationState) -> RemediationState:
 
 def wait_for_stabilization(state: RemediationState) -> RemediationState:
     """Wait for service to stabilize after restart"""
-    wait_seconds = state.get("wait_seconds", 30)
+    wait_seconds = state.get("wait_seconds", settings.DEFAULT_WAIT_SECONDS)
     service_name = state.get("service_name")
     logger.info(f"Waiting {wait_seconds}s for {service_name} to stabilize")
     
@@ -59,7 +65,8 @@ def probe_health(state: RemediationState) -> RemediationState:
     try:
         # Call health probe endpoint
         response = requests.get(
-            f"http://{service_name}:8080/health"
+            f"http://{service_name}:8080/health",
+            timeout=settings.PROBE_TIMEOUT
         )
         state["probe_status_code"] = response.status_code
         state["probe_response"] = response.text
@@ -73,12 +80,13 @@ def probe_health(state: RemediationState) -> RemediationState:
         state["probe_response"] = str(e)
         state["health_ok"] = False
         state["probe_timestamp"] = time.time()
+        state["probe_error"] = str(e)  # Expose exception details
     
     return state
 
 def should_retry_or_complete(state: RemediationState) -> str:
     """Decision node to determine if we should retry restart or complete"""
-    max_retries = state.get("max_retries", 3)
+    max_retries = state.get("max_retries", settings.MAX_RETRIES)
     current_retry = state.get("retry_count", 0)
     health_ok = state.get("health_ok", False)
     
@@ -115,15 +123,21 @@ def escalate_issue(state: RemediationState) -> RemediationState:
     service_name = state.get("service_name")
     thread_ts = state.get("thread_ts")
     channel = state.get("channel")
+    max_retries = state.get("max_retries", settings.MAX_RETRIES)
     
-    logger.info(f"Escalating remediation for {service_name} after failed attempts")
+    logger.info(f"Escalating remediation for {service_name} after {state.get('retry_count', 0)}/{max_retries} failed attempts")
+    
+    # Build error details from probe_error if available
+    error_details = ""
+    if "probe_error" in state:
+        error_details = f"\nLast error: {state['probe_error']}"
     
     if thread_ts and channel:
         # Would update Slack thread in real implementation
         state["thread_updated"] = True
         state["escalation_message"] = (
-            f"❌ Failed to remediate {service_name} after {state.get('retry_count', 0)} attempts. "
-            f"This issue has been escalated to the on-call team."
+            f"❌ Failed to remediate {service_name} after {state.get('retry_count', 0)}/{max_retries} attempts. "
+            f"This issue has been escalated to the on-call team.{error_details}"
         )
     
     state["remediation_status"] = "escalated"
@@ -131,7 +145,11 @@ def escalate_issue(state: RemediationState) -> RemediationState:
     
     return state
 
-def restart_then_verify(service_name: str, wait_seconds: int = 30, max_retries: int = 3) -> Tuple[StateGraph, RemediationState]:
+def restart_then_verify(
+    service_name: str, 
+    wait_seconds: int = settings.DEFAULT_WAIT_SECONDS, 
+    max_retries: int = settings.MAX_RETRIES
+) -> Tuple[StateGraph, RemediationState]:
     """
     Creates a remediation graph that:
     1. Restarts the service

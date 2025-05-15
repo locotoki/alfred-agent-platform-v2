@@ -18,6 +18,7 @@ from remediation.graphs import (
     escalate_issue,
     restart_then_verify
 )
+from remediation import settings
 
 @pytest.fixture
 def basic_state():
@@ -46,22 +47,30 @@ def mock_requests():
         
         yield mock
 
-def test_restart_service_success(basic_state, mock_requests):
+@patch("remediation.settings.get_webhook_url")
+def test_restart_service_success(mock_get_webhook, basic_state, mock_requests):
     """Test successful service restart"""
+    webhook_url = "http://n8n:5678/webhook/restart-service"
+    mock_get_webhook.return_value = webhook_url
+    
     result = restart_service(basic_state)
     
     # Verify API call
     mock_requests.post.assert_called_once_with(
-        "http://n8n:5678/webhook/restart-service",
-        json={"service": "test-service"}
+        webhook_url,
+        json={"service": "test-service"},
+        timeout=settings.PROBE_TIMEOUT
     )
     
     # Verify state updates
     assert result["restart_status"] == "success"
     assert "restart_timestamp" in result
 
-def test_restart_service_failure(basic_state, mock_requests):
+@patch("remediation.settings.get_webhook_url")
+def test_restart_service_failure(mock_get_webhook, basic_state, mock_requests):
     """Test failed service restart"""
+    webhook_url = "http://n8n:5678/webhook/restart-service"
+    mock_get_webhook.return_value = webhook_url
     mock_requests.post.side_effect = Exception("Connection error")
     
     result = restart_service(basic_state)
@@ -75,8 +84,21 @@ def test_wait_for_stabilization(mock_sleep, basic_state):
     """Test waiting for service stabilization"""
     result = wait_for_stabilization(basic_state)
     
-    # Verify sleep was called
+    # Verify sleep was called with the value from state
     mock_sleep.assert_called_once_with(5)
+    
+    # Verify state updates
+    assert result["wait_completed"] is True
+    assert "wait_timestamp" in result
+
+@patch("remediation.graphs.time.sleep")
+def test_wait_for_stabilization_default(mock_sleep):
+    """Test waiting for service stabilization with default value"""
+    state = {"service_name": "test-service"}
+    result = wait_for_stabilization(state)
+    
+    # Verify sleep was called with the default value
+    mock_sleep.assert_called_once_with(settings.DEFAULT_WAIT_SECONDS)
     
     # Verify state updates
     assert result["wait_completed"] is True
@@ -90,7 +112,8 @@ def test_probe_health_success(basic_state, mock_requests):
     
     # Verify API call
     mock_requests.get.assert_called_once_with(
-        "http://test-service:8080/health"
+        "http://test-service:8080/health",
+        timeout=settings.PROBE_TIMEOUT
     )
     
     # Verify state updates
@@ -110,14 +133,30 @@ def test_probe_health_failure(basic_state, mock_requests):
 
 def test_probe_health_exception(basic_state, mock_requests):
     """Test exception during health probe"""
-    mock_requests.get.side_effect = Exception("Connection refused")
+    error_message = "Connection refused"
+    mock_requests.get.side_effect = Exception(error_message)
     
     result = probe_health(basic_state)
     
     # Verify state updates for exception
     assert result["probe_status_code"] == 500
     assert result["health_ok"] is False
-    assert result["probe_response"] == "Connection refused"
+    assert result["probe_response"] == error_message
+    assert result["probe_error"] == error_message  # Verify error is exposed
+
+@patch("remediation.settings.MAX_RETRIES", 5)  # Override for this test
+def test_should_retry_or_complete_with_settings():
+    """Test decision function using settings for max retries"""
+    state = {
+        "health_ok": False,
+        "retry_count": 4,
+    }
+    
+    result = should_retry_or_complete(state)
+    
+    # Should still retry because MAX_RETRIES is now 5
+    assert result == "retry"
+    assert state["retry_count"] == 5
 
 def test_should_retry_or_complete_success():
     """Test decision function when health is ok"""
@@ -181,9 +220,26 @@ def test_escalate_issue(basic_state):
     assert result["thread_updated"] is True
     assert "escalation_message" in result
 
+def test_escalate_issue_with_error(basic_state):
+    """Test issue escalation with probe error"""
+    basic_state["thread_ts"] = "1234567890.123456"
+    basic_state["channel"] = "C12345"
+    basic_state["retry_count"] = 3
+    basic_state["probe_error"] = "Connection timeout"
+    
+    result = escalate_issue(basic_state)
+    
+    # Verify error is included in escalation message
+    assert "Last error: Connection timeout" in result["escalation_message"]
+    assert result["remediation_status"] == "escalated"
+
 @patch("remediation.graphs.time.sleep")
-def test_restart_then_verify_graph_success(mock_sleep, mock_requests):
+@patch("remediation.settings.get_webhook_url")
+def test_restart_then_verify_graph_success(mock_get_webhook, mock_sleep, mock_requests):
     """Test successful execution of the full graph"""
+    webhook_url = "http://n8n:5678/webhook/restart-service"
+    mock_get_webhook.return_value = webhook_url
+    
     # Configure for successful remediation
     mock_requests.get.return_value.status_code = 200
     
@@ -199,8 +255,12 @@ def test_restart_then_verify_graph_success(mock_sleep, mock_requests):
     assert result["health_ok"] is True
 
 @patch("remediation.graphs.time.sleep")
-def test_restart_then_verify_graph_retry_then_success(mock_sleep, mock_requests):
+@patch("remediation.settings.get_webhook_url")
+def test_restart_then_verify_graph_retry_then_success(mock_get_webhook, mock_sleep, mock_requests):
     """Test graph with one failed attempt then success"""
+    webhook_url = "http://n8n:5678/webhook/restart-service"
+    mock_get_webhook.return_value = webhook_url
+    
     # First health probe fails, second succeeds
     responses = [MagicMock(), MagicMock()]
     responses[0].status_code = 500
@@ -220,8 +280,12 @@ def test_restart_then_verify_graph_retry_then_success(mock_sleep, mock_requests)
     assert result["health_ok"] is True
 
 @patch("remediation.graphs.time.sleep")
-def test_restart_then_verify_graph_escalation(mock_sleep, mock_requests):
+@patch("remediation.settings.get_webhook_url")
+def test_restart_then_verify_graph_escalation(mock_get_webhook, mock_sleep, mock_requests):
     """Test graph escalation after max retries"""
+    webhook_url = "http://n8n:5678/webhook/restart-service"
+    mock_get_webhook.return_value = webhook_url
+    
     # All health probes fail
     mock_requests.get.return_value.status_code = 500
     
@@ -236,3 +300,19 @@ def test_restart_then_verify_graph_escalation(mock_sleep, mock_requests):
     assert result["remediation_status"] == "escalated"
     assert result["remediation_completed"] is True
     assert result["health_ok"] is False
+
+@patch("remediation.settings.MAX_RETRIES", 5)
+@patch("remediation.settings.DEFAULT_WAIT_SECONDS", 10)
+@patch("remediation.graphs.time.sleep")
+@patch("remediation.settings.get_webhook_url")
+def test_restart_then_verify_with_default_settings(mock_get_webhook, mock_sleep, mock_requests):
+    """Test graph using environment settings"""
+    webhook_url = "http://n8n:5678/webhook/restart-service"
+    mock_get_webhook.return_value = webhook_url
+    
+    # Create graph with default settings
+    graph, initial_state = restart_then_verify("test-service")
+    
+    # Check that initial state reflects environment settings
+    assert initial_state["max_retries"] == 5
+    assert initial_state["wait_seconds"] == 10
