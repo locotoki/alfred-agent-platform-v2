@@ -5,10 +5,13 @@ from sqlalchemy import Column, Integer, String, Text, JSON, DateTime, select, fu
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.sql import text
 import os
+import threading
+import uvicorn
 from datetime import datetime
 from typing import List, Optional, Dict, Any
 from pydantic import BaseModel, Field
 import logging
+import prometheus_client
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
@@ -71,13 +74,51 @@ async def get_db():
 # Create FastAPI application
 app = FastAPI(title="Model Registry API")
 
+# Create metrics app
+metrics_app = FastAPI(title="Model Registry Metrics")
+
 
 @app.get("/health")
 async def health_check():
     """
-    Health check endpoint
+    Detailed health check endpoint
     """
-    return {"status": "healthy", "timestamp": datetime.utcnow().isoformat()}
+    # Check database connectivity
+    db_status = "ok"
+    try:
+        async with async_session() as session:
+            await session.execute(text("SELECT 1"))
+    except Exception as e:
+        logger.error(f"Database health check failed: {e}")
+        db_status = "error"
+
+    return {
+        "status": "ok" if db_status == "ok" else "error",
+        "version": "1.0.0",
+        "services": {"database": db_status},
+    }
+
+
+@app.get("/healthz")
+async def simple_health():
+    """Simple health check for container probes"""
+    return {"status": "ok"}
+
+
+@app.get("/metrics")
+async def metrics():
+    """Prometheus metrics endpoint on the main service port"""
+    from fastapi.responses import Response
+
+    return Response(content=prometheus_client.generate_latest(), media_type="text/plain")
+
+
+@metrics_app.get("/metrics")
+async def metrics_dedicated():
+    """Prometheus metrics endpoint for the dedicated metrics port"""
+    from fastapi.responses import Response
+
+    return Response(content=prometheus_client.generate_latest(), media_type="text/plain")
 
 
 @app.get("/models", response_model=List[ModelSchema])
@@ -120,6 +161,22 @@ async def create_model(model: ModelSchema, db: AsyncSession = Depends(get_db)):
     await db.commit()
     await db.refresh(db_model)
     return db_model
+
+
+# Start metrics server on separate port
+@app.on_event("startup")
+async def start_metrics_server():
+    """Start metrics server on metrics port."""
+    # Use environment variable or default to 9092 to avoid conflict with healthcheck port 9091
+    metrics_port = int(os.getenv("METRICS_PORT", 9092))
+    thread = threading.Thread(
+        target=uvicorn.run,
+        args=(metrics_app,),
+        kwargs={"host": "0.0.0.0", "port": metrics_port, "log_level": "error"},
+        daemon=True,
+    )
+    thread.start()
+    logger.info(f"Metrics server started on port {metrics_port}")
 
 
 # Application lifespan event
