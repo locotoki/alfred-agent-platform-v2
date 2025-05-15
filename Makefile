@@ -3,7 +3,7 @@
 include .env
 export $(shell sed 's/=.*//' .env)
 
-.PHONY: help install start stop restart clean test lint format dev deploy build update-dashboards
+.PHONY: help install start stop restart clean test test-unit test-integration test-e2e lint format dev deploy build update-dashboards
 
 help:
 	@echo "Alfred Agent Platform v2 Makefile"
@@ -13,9 +13,12 @@ help:
 	@echo "stop                 Stop all services"
 	@echo "restart              Restart all services"
 	@echo "clean                Remove all containers and volumes"
-	@echo "test                 Run tests"
+	@echo "test                 Run all tests"
+	@echo "test-unit            Run unit tests"
+	@echo "test-integration     Run integration tests"
+	@echo "test-e2e             Run end-to-end tests"
 	@echo "lint                 Run linters"
-	@echo "format               Format code"
+	@echo "format               Format code (Black, isort)"
 	@echo "dev                  Start dev environment"
 	@echo "deploy               Deploy to production"
 	@echo "build                Build all services"
@@ -38,15 +41,25 @@ clean:
 	docker-compose down -v
 
 test:
-	pytest
+	pytest tests/ -v
+
+test-unit:
+	pytest tests/unit/ -v -m unit
+
+test-integration:
+	pytest tests/integration/ -v -m integration
+
+test-e2e:
+	pytest tests/e2e/ -v -m e2e
 
 lint:
-	flake8 .
-	mypy .
+	flake8 --config=.flake8 .
+	mypy_fix/run-mypy-fixed.sh .
+	bandit -r agents/ libs/ services/ -c pyproject.toml
 
 format:
-	black .
-	isort .
+	./scripts/apply-black-formatting.sh
+	isort --profile black .
 
 dev:
 	docker-compose -f docker-compose.yml -f docker-compose.override.yml up -d

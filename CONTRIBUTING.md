@@ -61,7 +61,7 @@ Each phase of development requires specific documentation:
 - We use [isort](https://pycqa.github.io/isort/) for import sorting
 - Type hints are required for all new code
 
-For a detailed overview of our Python formatting standards and implementation, see [Black Formatting Summary](docs/formatting/BLACK-FORMATTING-SUMMARY.md). All Python files in the codebase are formatted using Black v24.1.1 with these settings.
+For a detailed overview of our Python formatting standards and implementation, see [Black Formatting Standards](docs/formatting/BLACK-FORMATTING-STANDARDS.md). All Python files in the codebase are formatted using Black v24.1.1 with these settings.
 
 ## Metrics and Monitoring Standards
 

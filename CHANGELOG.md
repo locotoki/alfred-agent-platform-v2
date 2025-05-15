@@ -7,11 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- ❯ Python code is now auto-formatted with Black in CI and pre-commit. Run `make format` before pushing.
+- Created new GitHub workflow for applying Black automatically (`apply-black.yml`)
+- Added in-depth documentation for Black formatting standards (`docs/formatting/BLACK-FORMATTING-STANDARDS.md`)
+- Created pre-commit hooks for consistent formatting in local development
+
 ### Changed
 - Applied Black 24.1.1 formatting across entire codebase
-- Updated CI pipeline to enforce strict Black checks
+- Updated CI pipeline to enforce strict Black checks with fail-fast feedback
 - Standardized code formatting for better maintainability
 - Applied isort for consistent import ordering
+- Updated Makefile with improved format and test commands
+- Enhanced pre-commit configuration for better developer experience
+- Updated dependabot to monitor Black versions
 - Added mypy exclusions for duplicate modules
 - Marked legacy health check scripts as deprecated
 - Updated agent_core/health.py to comply with health check standard
@@ -19,6 +28,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Removed temporary CI workarounds used for PR #25 (Health Check Standardization)
 - Restored proper CI checks after module reorganization
+- Fixed inconsistent code style across Python files
 
 ## [0.3.0-healthcheck-full] - 2025-05-14
 
