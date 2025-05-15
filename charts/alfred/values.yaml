@@ -1,0 +1,55 @@
+# Default values for Alfred Agent Platform
+# This is a YAML-formatted file.
+
+# Global settings
+global:
+  environment: development
+  
+# Metrics settings
+metrics:
+  enabled: false  # Set to true in staging/prod
+
+# DB Metrics service configuration
+dbMetrics:
+  image:
+    repository: db-metrics
+    tag: v0.1.0
+    pullPolicy: IfNotPresent
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 200m
+      memory: 256Mi
+  service:
+    port: 8000
+    metricsPort: 9091
+  environment:
+    DB_USER: postgres
+    DB_NAME: postgres
+
+# Prometheus configuration
+prometheus:
+  enabled: true
+  server:
+    configMapOverrideName: prometheus-server-conf
+    image:
+      repository: prom/prometheus
+      tag: v2.48.1
+      pullPolicy: IfNotPresent
+
+# Grafana configuration  
+grafana:
+  enabled: true
+  image:
+    repository: grafana/grafana
+    tag: 10.2.3
+    pullPolicy: IfNotPresent
+  sidecar:
+    dashboards:
+      enabled: false  # Set to true in staging/prod
+      label: grafana_dashboard
+      folder: /var/lib/grafana/dashboards
+  admin:
+    password: admin  # Default password, should be overridden in production

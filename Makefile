@@ -3,7 +3,7 @@
 include .env
 export $(shell sed 's/=.*//' .env)
 
-.PHONY: help install start stop restart clean test test-unit test-integration test-e2e lint format dev deploy build update-dashboards
+.PHONY: help install start stop restart clean test test-unit test-integration test-e2e lint format dev deploy build update-dashboards setup-metrics
 
 help:
 	@echo "Alfred Agent Platform v2 Makefile"
@@ -23,6 +23,7 @@ help:
 	@echo "deploy               Deploy to production"
 	@echo "build                Build all services"
 	@echo "update-dashboards    Reload Grafana dashboards"
+	@echo "setup-metrics        Setup DB metrics service"
 
 install:
 	pip install -r requirements.txt
@@ -63,6 +64,10 @@ format:
 
 dev:
 	docker-compose -f docker-compose.yml -f docker-compose.override.yml up -d
+	./scripts/setup-db-metrics.sh
+
+setup-metrics:
+	./scripts/setup-db-metrics.sh
 
 deploy:
 	@echo "Deploying to production..."

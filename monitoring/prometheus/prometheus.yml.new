@@ -17,6 +17,7 @@ scrape_configs:
     static_configs:
       - targets: ['localhost:9090']
 
+  # Agent services metrics
   - job_name: 'alfred-bot'
     static_configs:
       - targets: ['alfred-bot:8011']
@@ -37,6 +38,13 @@ scrape_configs:
       - targets: ['legal-compliance:9002']
     metrics_path: '/health/metrics'
 
+  # Database metrics
+  - job_name: 'db-metrics'
+    static_configs:
+      - targets: ['db-metrics:9091']
+    metrics_path: '/metrics'
+
+  # Infrastructure metrics
   - job_name: 'supabase'
     static_configs:
       - targets: ['postgres-exporter:9187']
@@ -52,7 +60,7 @@ scrape_configs:
       - targets: ['qdrant:6333']
     metrics_path: '/metrics'
 
-  # Added per Changefix #7
+  # System metrics
   - job_name: 'node-exporter'
     static_configs:
       - targets: ['node-exporter:9100']
@@ -61,7 +69,7 @@ scrape_configs:
     static_configs:
       - targets: ['postgres-exporter:9187']
       
-  # New job for service health metrics from v0.4.0 healthcheck binary
+  # Service health metrics from v0.4.0 healthcheck binary
   - job_name: 'service_health'
     static_configs:
       - targets: [
@@ -72,6 +80,14 @@ scrape_configs:
           'rag-service:9091',
           'mission-control:9091',
           'agent-rag:9091', 
-          'agent-atlas:9091'
+          'agent-atlas:9091',
+          'agent-core:9091',
+          'agent-financial:9091',
+          'agent-legal:9091',
+          'agent-social:9091',
+          'model-registry:9091',
+          'model-router:9091',
+          'ui-admin:9091',
+          'ui-chat:9091'
         ]
     metrics_path: '/metrics'
