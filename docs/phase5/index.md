@@ -8,6 +8,7 @@ This phase focuses on standardizing health checks across all services in the Alf
 - [SQLite Health Implementation](SQLITE_HEALTH_IMPLEMENTATION.md): Implementation of SQLite health checks
 - [Redis Health Implementation](REDIS_HEALTH_IMPLEMENTATION.md): Implementation of Redis health checks
 - [Prometheus Health Implementation](PROMETHEUS_HEALTH_IMPLEMENTATION.md): Implementation of Prometheus health checks
+- [Grafana Health Implementation](GRAFANA_HEALTH_IMPLEMENTATION.md): Implementation of Grafana health checks
 
 ## Key Implementations
 
