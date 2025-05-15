@@ -9,8 +9,9 @@ try:
 except ImportError:  # pragma: no cover
     asyncpg = None
     import pytest
+
     pytest.skip("asyncpg not available", allow_module_level=True)
-    
+
 import pytest
 import redis
 from google.cloud import pubsub_v1
