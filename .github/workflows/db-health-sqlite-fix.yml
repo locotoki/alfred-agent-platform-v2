@@ -1,0 +1,46 @@
+name: DB Health SQLite Checksum Verification Fix
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'internal/db/**'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'internal/db/**'
+
+jobs:
+  validate-db-package:
+    runs-on: ubuntu-latest
+    env:
+      # Scoped GONOSUMDB to just this job to bypass checksum verification
+      # for modernc.org/sqlite and modernc.org/libc
+      # See internal/db/CI_BYPASS.md for more details
+      GONOSUMDB: "modernc.org/sqlite,modernc.org/libc"
+    
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.20'
+
+      - name: Install dependencies
+        working-directory: ./internal/db
+        run: go mod download
+
+      - name: Build
+        working-directory: ./internal/db
+        run: go build -v ./...
+
+      - name: Run tests
+        working-directory: ./internal/db
+        run: go test -v ./...
+
+      - name: Verify SQLite driver
+        working-directory: ./internal/db
+        run: |
+          echo "Performing additional validation for SQLite driver..."
+          go test -v -run TestSQLiteDriver

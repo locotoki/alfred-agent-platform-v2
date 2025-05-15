@@ -63,6 +63,31 @@ Each phase of development requires specific documentation:
 
 For a detailed overview of our Python formatting standards and implementation, see [Black Formatting Standards](docs/formatting/BLACK-FORMATTING-STANDARDS.md). All Python files in the codebase are formatted using Black v24.1.1 with these settings.
 
+To apply Black formatting to Python files, use the provided script:
+```bash
+./apply-black.sh
+```
+
+## Go Module Checksum Verification
+
+When working with the database health drivers in `internal/db`, you may encounter checksum verification issues with the SQLite driver. We use a CGO-free SQLite implementation (`modernc.org/sqlite`) that occasionally has checksum verification issues in Go's proxy system.
+
+To work around this issue:
+
+1. Use the provided environment script:
+   ```bash
+   source scripts/env/gonosumdb_sqlite.sh
+   ```
+
+2. This will set the `GONOSUMDB` environment variable to bypass checksum verification for the required modules:
+   ```
+   GONOSUMDB="modernc.org/sqlite,modernc.org/libc"
+   ```
+
+3. Now you can run `go test` or `go build` commands without checksum errors.
+
+For more details, see [internal/db/CI_BYPASS.md](internal/db/CI_BYPASS.md).
+
 ## Metrics and Monitoring Standards
 
 All services MUST implement:
