@@ -136,9 +136,33 @@ jobs:
           name: codecov-umbrella
           fail_ci_if_error: false
 
+  # Health check smoke tests
+  smoke-health:
+    runs-on: ubuntu-latest
+    needs: lint-and-test
+    env:
+      TAG: ${{ github.sha }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # Pull the freshly-built images from the previous job's registry push
+      - name: docker login
+        run: echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.repository_owner }} --password-stdin
+
+      - name: Run smoke health checks
+        run: |
+          docker compose -f ci/compose/health-smoke.yml up --abort-on-container-exit
+
+      - name: Show container logs on failure
+        if: failure()
+        run: docker compose -f ci/compose/health-smoke.yml logs
+
   # Build Docker images
   build-images:
-    needs: lint-and-test
+    needs: smoke-health
     runs-on: ubuntu-latest
     # Allow this job to pass even with errors for PR #12 (black formatting PR) or PR #29 (CI cleanup PR)
     continue-on-error: ${{ github.event.pull_request.number == 12 || github.event.pull_request.number == 29 }}

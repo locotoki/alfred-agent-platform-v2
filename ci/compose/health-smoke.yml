@@ -1,0 +1,21 @@
+version: "3.8"
+services:
+  model-registry:
+    image: ghcr.io/locotoki/model-registry:${TAG:-local}
+    command: ["healthcheck", "--once"]
+  
+  model-router:
+    image: ghcr.io/locotoki/model-router:${TAG:-local}
+    command: ["healthcheck", "--once"]
+  
+  redis:
+    image: ghcr.io/locotoki/redis:${TAG:-local}
+    command: ["healthcheck", "--once"]
+  
+  alfred-core:
+    image: ghcr.io/locotoki/alfred-core:${TAG:-local}
+    command: ["healthcheck", "--once"]
+  
+  social-intel:
+    image: ghcr.io/locotoki/social-intel:${TAG:-local}
+    command: ["healthcheck", "--once"]
