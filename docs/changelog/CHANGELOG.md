@@ -8,7 +8,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-- TBD
+- Slack interactive layer with Socket Mode integration
+- `/alfred` slash command with help and health subcommands
+- Environment-specific secrets in GitHub Actions workflow
+- CI/CD pipeline enhancements with slack-smoke test job
+- Remediation graph framework with LangGraph integration
+
+### Changed
+- Updated CI pipeline to use environment contexts
+- Enhanced production deployment with CrewAI credentials
+- Improved documentation for secret management
+
+### Fixed
+- Resolved issues with environment variable scope in CI
+
+## [0.7.0-rc1] - 2025-05-15
+
+### Added
+- Phase 7A: Slack interactive layer with Socket Mode integration
 
 ## [0.6.1-rc1] - 2025-05-15
 
