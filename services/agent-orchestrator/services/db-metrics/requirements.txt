@@ -1,0 +1,5 @@
+flask==2.3.3
+prometheus-client==0.17.1
+psycopg2-binary==2.9.9
+redis==5.0.1
+requests==2.31.0

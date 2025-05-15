@@ -1,0 +1,93 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+  external_labels:
+    monitor: 'alfred-platform'
+
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets: ['alertmanager:9093']
+
+rule_files:
+  - /etc/prometheus/alerts/*.yml
+
+scrape_configs:
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  # Agent services metrics
+  - job_name: 'alfred-bot'
+    static_configs:
+      - targets: ['alfred-bot:8011']
+    metrics_path: '/health/metrics'
+
+  - job_name: 'social-intel'
+    static_configs:
+      - targets: ['social-intel:9000']
+    metrics_path: '/health/metrics'
+
+  - job_name: 'financial-tax'
+    static_configs:
+      - targets: ['financial-tax:9003']
+    metrics_path: '/health/metrics'
+
+  - job_name: 'legal-compliance'
+    static_configs:
+      - targets: ['legal-compliance:9002']
+    metrics_path: '/health/metrics'
+
+  # Database metrics
+  - job_name: 'db-metrics'
+    static_configs:
+      - targets: ['db-metrics:9091']
+    metrics_path: '/metrics'
+
+  # Infrastructure metrics
+  - job_name: 'supabase'
+    static_configs:
+      - targets: ['postgres-exporter:9187']
+    metrics_path: '/metrics'
+
+  - job_name: 'redis'
+    static_configs:
+      - targets: ['redis-exporter:9121']
+    metrics_path: '/metrics'
+
+  - job_name: 'qdrant'
+    static_configs:
+      - targets: ['qdrant:6333']
+    metrics_path: '/metrics'
+
+  # System metrics
+  - job_name: 'node-exporter'
+    static_configs:
+      - targets: ['node-exporter:9100']
+
+  - job_name: 'postgres-exporter'
+    static_configs:
+      - targets: ['postgres-exporter:9187']
+      
+  # Service health metrics from v0.4.0 healthcheck binary
+  - job_name: 'service_health'
+    static_configs:
+      - targets: [
+          'alfred-bot:9091', 
+          'social-intel:9091', 
+          'financial-tax:9091', 
+          'legal-compliance:9091', 
+          'rag-service:9091',
+          'mission-control:9091',
+          'agent-rag:9091', 
+          'agent-atlas:9091',
+          'agent-core:9091',
+          'agent-financial:9091',
+          'agent-legal:9091',
+          'agent-social:9091',
+          'model-registry:9091',
+          'model-router:9091',
+          'ui-admin:9091',
+          'ui-chat:9091'
+        ]
+    metrics_path: '/metrics'
