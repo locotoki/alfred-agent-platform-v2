@@ -76,4 +76,11 @@ EOF
   chmod +x "$HOOK_DIR/pre-commit-healthcheck"
 fi
 
+# Install pre-commit tool and hooks
+if [ -f "$PROJECT_ROOT/.pre-commit-config.yaml" ]; then
+  echo "Installing pre-commit and hooks..."
+  pip install pre-commit || python -m pip install pre-commit || python3 -m pip install pre-commit
+  cd "$PROJECT_ROOT" && pre-commit install
+fi
+
 echo "Git hooks installed successfully."
