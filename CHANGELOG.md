@@ -8,12 +8,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- TBD
+
+## [0.5.0] - 2025-05-15
+
+### Added
+- Fixed Grafana probe to add environment variable fallback with default to `http://localhost:3005`
+- Standardized health checks for all priority services (model-registry, model-router, redis, alfred-core, social-intel)
+- Added proper entrypoint.sh scripts with secure defaults (set -euo pipefail)
+- Created skeletal alert rules for each standardized service
+- Added lightweight health check smoke test to CI pipeline
+- Implemented model-registry fixes for WSL compatibility
+
+### Changed
 - ❯ Python code is now auto-formatted with Black in CI and pre-commit. Run `make format` before pushing.
 - Created new GitHub workflow for applying Black automatically (`apply-black.yml`)
 - Added in-depth documentation for Black formatting standards (`docs/formatting/BLACK-FORMATTING-STANDARDS.md`)
 - Created pre-commit hooks for consistent formatting in local development
-
-### Changed
 - Applied Black 24.1.1 formatting across entire codebase
 - Updated CI pipeline to enforce strict Black checks with fail-fast feedback
 - Standardized code formatting for better maintainability
@@ -26,6 +37,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated agent_core/health.py to comply with health check standard
 
 ### Fixed
+- Resolved WSL mount issue in model-registry service
 - Removed temporary CI workarounds used for PR #25 (Health Check Standardization)
 - Restored proper CI checks after module reorganization
 - Fixed inconsistent code style across Python files
