@@ -25,13 +25,14 @@ EXCLUDE_PATTERNS=(
   "cleanup-temp"
   "docs/archive"
   "node_modules"
-  "services/alfred-bot/app"       # Conflicts with rag-gateway/src/app.py
-  "services/alfred-core/app"      # Conflicts with rag-gateway/src/app.py
-  "services/financial-tax/app"    # Conflicts with rag-gateway/src/app.py
-  "services/legal-compliance/app" # Conflicts with rag-gateway/src/app.py
-  "services/social-intel/app"     # Conflicts with rag-gateway/src/app.py
-  "slack-bot/src/app.py"          # Conflicts with rag-gateway/src/app.py
-  "whatsapp-adapter/src/app.py"   # Conflicts with rag-gateway/src/app.py
+  "rag-gateway/src"               # Exclude entire src directory to prevent duplicate module issues
+  "services/alfred-bot/app"       # Conflicts with app.py modules
+  "services/alfred-core/app"      # Conflicts with app.py modules
+  "services/financial-tax/app"    # Conflicts with app.py modules
+  "services/legal-compliance/app" # Conflicts with app.py modules
+  "services/social-intel/app"     # Conflicts with app.py modules
+  "slack-bot/src/app.py"          # Conflicts with app.py modules
+  "whatsapp-adapter/src/app.py"   # Conflicts with app.py modules
   "agents/financial_tax"          # Duplicate module issues needing proper reorganization
 )
 
