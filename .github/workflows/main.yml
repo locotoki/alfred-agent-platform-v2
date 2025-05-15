@@ -86,6 +86,12 @@ jobs:
           python -c "import remediation.graphs; graph, state = remediation.graphs.restart_then_verify('alertmanager-dummy-service'); print('Graph verification successful!')"
       - name: Run orchestration integration tests
         run: ./ci/compose/orchestration-integration.yml
+      - name: Install CrewAI dependencies
+        run: |
+          pip install pytest requests jwt
+      - name: Run CrewAI integration tests
+        run: |
+          pytest tests/integration/test_crewai_prod.py::test_crewai_roundtrip
   
   image-build:
     needs: orchestration-integration
@@ -116,15 +122,36 @@ jobs:
         run: ./scripts/deploy.sh staging
   
   deploy-prod:
-    if: github.ref == 'refs/tags/v*'
+    if: github.ref == 'refs/tags/v*' || github.event_name == 'workflow_dispatch'
     needs: orchestration-integration
     runs-on: ubuntu-latest
     environment: prod
     steps:
       - uses: actions/checkout@v4
+      
+      - name: Mint CrewAI A2A token
+        id: mint
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ secrets.CREWAI_A2A_PROVIDER }}
+          service_account: ${{ secrets.CREWAI_A2A_CLIENT_ID }}
+          create_credentials_file: true
+          export_environment_variables: true
+      
+      - name: Generate A2A token configuration
+        run: |
+          gcloud iam workload-identity-pools create-cred-config \
+            $CREWAI_A2A_PROVIDER --service-account=$CREWAI_A2A_CLIENT_ID \
+            --output-file=/tmp/crewai-token.json
+      
+      - uses: actions/upload-artifact@v4
+        with:
+          name: crewai-token
+          path: /tmp/crewai-token.json
+      
       - name: Helm deploy
         env:
           CREWAI_ENDPOINT: ${{ secrets.CREWAI_ENDPOINT_PROD }}
           CREWAI_A2A_CLIENT_ID: ${{ secrets.CREWAI_A2A_CLIENT_ID }}
-          CREWAI_A2A_CLIENT_SECRET: ${{ secrets.CREWAI_A2A_CLIENT_SECRET }}
+          CREWAI_A2A_TOKEN_PATH: /tmp/crewai-token.json
         run: ./scripts/deploy.sh

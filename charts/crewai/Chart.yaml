@@ -1,0 +1,9 @@
+apiVersion: v2
+name: crewai
+description: A Helm chart for CrewAI production deployment
+type: application
+version: 0.1.0
+appVersion: "0.7.0"
+maintainers:
+  - name: Platform Team
+    email: platform-team@example.com
