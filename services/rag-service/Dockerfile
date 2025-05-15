@@ -1,18 +1,23 @@
-FROM ghcr.io/alfred/healthcheck:0.4.0 AS healthcheck
+FROM alfred/healthcheck:0.4.0 AS healthcheck
 
 FROM python:3.11-slim
+COPY --from=healthcheck /usr/local/bin/healthcheck /usr/local/bin/healthcheck
+RUN chmod +x /usr/local/bin/healthcheck
 
 WORKDIR /app
 
-# Install dependencies
+# Install dependencies if needed
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Python dependencies
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy healthcheck binary
-COPY --from=healthcheck /healthcheck /usr/local/bin/healthcheck
-
 # Copy source code
 COPY . .
+
+# Healthcheck is handled by the healthcheck binary
 
 # Expose application port
 EXPOSE 8501

@@ -58,6 +58,17 @@ async def detailed_health():
     return health_state
 
 
+@health_router.get("/healthz")
+async def simple_health():
+    """Simple health check for container probes."""
+    global health_state
+    if health_state["status"] == "unhealthy":
+        return Response(
+            content='{"status":"error"}', media_type="application/json", status_code=503
+        )
+    return {"status": "ok"}
+
+
 @health_router.post("/health/check-now")
 async def trigger_health_check():
     """Manually trigger a full health check."""

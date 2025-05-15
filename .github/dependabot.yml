@@ -1,0 +1,25 @@
+version: 2
+updates:
+  # Docker dependency updates
+  - package-ecosystem: "docker"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    versioning-strategy: "lockfile-only"
+    target-branch: "develop"
+    labels:
+      - "docker"
+      - "dependencies"
+    allow:
+      - dependency-name: "alfred/healthcheck"
+    
+  # Python dependency updates
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    versioning-strategy: "lockfile-only"
+    target-branch: "develop"
+    labels:
+      - "python"
+      - "dependencies"
