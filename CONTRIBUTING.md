@@ -10,6 +10,32 @@ We use GitHub to host code, to track issues and feature requests, as well as acc
 - **Phase 1**: Enhanced metrics with service_health gauges
 - **Phase 2**: Advanced metrics with custom service-specific metrics
 
+### Docker Compose Structure
+
+We follow a simple pattern for Docker Compose to maintain clarity and predictability:
+
+1. **Single Source of Truth**: `docker-compose.yml` is the canonical definition of all services
+2. **Environment Overrides**: `docker-compose.dev.yml` contains all development-specific changes
+3. **Personal Overrides**: `docker-compose.local.yml` (gitignored) for personal customizations
+4. **Service Profiles**: Use profiles to enable/disable optional services (dev, mocks, etc.)
+
+The files are loaded in this order, with later files overriding earlier ones:
+```
+docker-compose.yml ← docker-compose.dev.yml ← docker-compose.local.yml
+```
+
+Standard Docker Compose commands:
+```bash
+# Production-like setup
+docker compose up -d
+
+# Development environment
+docker compose -f docker-compose.yml -f docker-compose.dev.yml --profile dev up -d
+
+# Personal customizations
+docker compose -f docker-compose.yml -f docker-compose.dev.yml -f docker-compose.local.yml --profile dev up -d
+```
+
 ### Branch Naming Convention
 
 All branches should follow this naming pattern:
@@ -41,6 +67,39 @@ All services MUST implement:
 - `/health` endpoint with detailed status
 - `/healthz` endpoint for simple health probes
 - `/metrics` endpoint in Prometheus format
+
+### Healthcheck Standard Pattern
+
+All Dockerfiles MUST follow this standard pattern for health checks:
+
+```dockerfile
+FROM alfred/healthcheck:0.4.0 AS healthcheck
+
+FROM <base-image>
+COPY --from=healthcheck /usr/local/bin/healthcheck /usr/local/bin/healthcheck
+RUN chmod +x /usr/local/bin/healthcheck
+
+# Service-specific content...
+
+# Expose application and metrics ports
+EXPOSE <app-port>
+EXPOSE 9091
+
+# Use healthcheck wrapper for application
+CMD ["healthcheck", "--export-prom", ":9091", "--", "<command>", "<args>"]
+```
+
+In docker-compose.yml:
+```yaml
+healthcheck:
+  test: ["CMD", "curl", "-f", "http://localhost:<PORT>/health"]
+  <<: *basic-health-check
+labels:
+  <<: *service-labels
+  prometheus.metrics.port: "9091"
+```
+
+A pre-commit hook (`pre-commit-healthcheck`) enforces these standards for all Dockerfile changes.
 
 New or modified services MUST:
 - Use the latest healthcheck binary (currently v0.4.0)

@@ -8,8 +8,8 @@ WORKDIR /app
 COPY --from=healthcheck /usr/local/bin/healthcheck /usr/local/bin/healthcheck
 RUN chmod +x /usr/local/bin/healthcheck
 
-# Install necessary packages for building and healthcheck
-RUN apt-get update && apt-get install -y gcc git curl netcat-traditional && rm -rf /var/lib/apt/lists/*
+# Install necessary packages for building
+RUN apt-get update && apt-get install -y gcc git && rm -rf /var/lib/apt/lists/*
 
 # Install dependencies directly - using compatible versions
 # httpx version set to 0.24.1 to be compatible with both OpenAI and Supabase
@@ -31,9 +31,7 @@ COPY atlas /app/atlas
 # Create libs directory if it doesn't exist yet
 RUN mkdir -p /app/libs
 
-# Create fallback healthcheck script
-RUN echo '#!/bin/bash\nset -e\n\ncurl -f -s http://localhost:8000/health > /dev/null || exit 1\nexit 0' > /usr/local/bin/healthcheck.sh && \
-    chmod +x /usr/local/bin/healthcheck.sh
+# Healthcheck is handled by the healthcheck binary
 
 # Expose application port and metrics port
 EXPOSE 8000

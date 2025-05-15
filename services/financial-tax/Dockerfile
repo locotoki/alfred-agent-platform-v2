@@ -9,8 +9,6 @@ WORKDIR /app
 # Install system dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
-    curl \
-    netcat-traditional \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy requirements
@@ -25,9 +23,7 @@ COPY app app/
 # Copy shared libraries and agents - Using volume mount approach
 # These will be mounted at runtime using docker-compose volumes
 
-# Create fallback healthcheck script
-RUN echo '#!/bin/bash\nset -e\n\ncurl -f -s http://localhost:9003/health > /dev/null || exit 1\nexit 0' > /usr/local/bin/healthcheck.sh && \
-    chmod +x /usr/local/bin/healthcheck.sh
+# Healthcheck is handled by the healthcheck binary
 
 # Set environment variables
 ENV PYTHONPATH=/app
