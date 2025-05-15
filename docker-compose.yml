@@ -65,7 +65,7 @@ services:
     volumes:
       - redis-data:/data
     healthcheck:
-      test: ["CMD", "healthcheck", "--redis", "redis://localhost:6379"]
+      test: ["CMD", "redis-cli", "ping"]
       <<: *basic-health-check
     restart: unless-stopped
     networks:
@@ -74,6 +74,28 @@ services:
     labels:
       <<: *infra-service-labels
       com.docker.compose.service: "redis"
+      
+  # Redis Exporter - Metrics for Redis
+  redis-exporter:
+    image: oliver006/redis_exporter:v1.55.0
+    container_name: redis-exporter
+    ports:
+      - "9101:9121"  # Map container's 9121 to host's 9101
+    environment:
+      REDIS_ADDR: redis:6379
+    depends_on:
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:9121/metrics"]
+      <<: *basic-health-check
+    restart: unless-stopped
+    networks:
+      - alfred-network
+    labels:
+      <<: *infra-service-labels
+      com.docker.compose.service: "redis-exporter"
+      prometheus.metrics.port: "9121"
 
   # Vector Database - Qdrant for embeddings
   vector-db:
@@ -82,10 +104,11 @@ services:
     ports:
       - "6333:6333"
       - "6334:6334"
+      - "9102:6333"  # Map metrics endpoint to host port 9102
     volumes:
       - vector-db-data:/qdrant/storage
     healthcheck:
-      test: ["CMD", "healthcheck", "--http", "http://localhost:6333/health"]
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:6333/health"]
       <<: *basic-health-check
       start_period: 60s
     restart: unless-stopped
@@ -95,6 +118,7 @@ services:
     labels:
       <<: *infra-service-labels
       com.docker.compose.service: "vector-db"
+      prometheus.metrics.port: "6333"
 
   # PubSub Emulator - Message queue for service communication
   pubsub-emulator:
@@ -104,7 +128,7 @@ services:
     ports:
       - "8085:8085"
     healthcheck:
-      test: ["CMD", "healthcheck", "--http", "http://localhost:8085/v1/projects/alfred-agent-platform/topics"]
+      test: ["CMD", "curl", "-f", "http://localhost:8085/v1/projects/alfred-agent-platform/topics"]
       <<: *basic-health-check
     restart: unless-stopped
     deploy:
@@ -113,6 +137,33 @@ services:
     labels:
       <<: *infra-service-labels
       com.docker.compose.service: "pubsub-emulator"
+      
+  # PubSub Metrics Exporter
+  pubsub-metrics:
+    build:
+      context: ./services/pubsub-metrics
+      dockerfile: Dockerfile
+    image: pubsub-metrics:latest
+    container_name: pubsub-metrics
+    ports:
+      - "9103:9103"
+    environment:
+      - PUBSUB_URL=http://pubsub-emulator:8085
+      - PROJECT_ID=${ALFRED_PROJECT_ID:-alfred-agent-platform}
+      - PORT=9103
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:9103/health"]
+      <<: *basic-health-check
+    depends_on:
+      pubsub-emulator:
+        condition: service_started
+    restart: unless-stopped
+    networks:
+      - alfred-network
+    labels:
+      <<: *infra-service-labels
+      com.docker.compose.service: "pubsub-metrics"
+      prometheus.metrics.port: "9103"
 
   # Local LLM Service - Local model inference
   llm-service:
@@ -120,10 +171,11 @@ services:
     container_name: llm-service
     ports:
       - "11434:11434"
+      - "9094:9091"  # Map metrics port to host
     volumes:
       - llm-service-data:/root/.ollama
     healthcheck:
-      test: ["CMD", "healthcheck", "--http", "http://localhost:11434/api/tags"]
+      test: ["CMD", "curl", "-f", "http://localhost:11434/api/tags"]
       <<: *basic-health-check
       start_period: 20s
     restart: unless-stopped
@@ -133,6 +185,7 @@ services:
     labels:
       <<: *llm-service-labels
       com.docker.compose.service: "llm-service"
+      prometheus.metrics.port: "9091"
 
   #############################################################################
   # LLM INFRASTRUCTURE SERVICES
@@ -157,7 +210,7 @@ services:
     volumes:
       - ./services/model-registry/init-db.sql:/app/init-db.sql
     healthcheck:
-      test: ["CMD", "healthcheck", "--http", "http://localhost:8079/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:8079/health"]
       <<: *basic-health-check
       start_period: 20s
     depends_on:
@@ -205,9 +258,12 @@ services:
   # DATABASE SERVICES (SUPABASE)
   #############################################################################
 
-  # PostgreSQL Database
+  # PostgreSQL Database with Storage Schema Bootstrap
   db-postgres:
-    image: postgres:15-alpine
+    build:
+      context: ./bootstrap
+      dockerfile: Dockerfile.postgres-init
+    image: postgres:15-alpine-storage-bootstrap
     container_name: db-postgres
     ports:
       - "5432:5432"
@@ -218,6 +274,7 @@ services:
     volumes:
       - db-postgres-data:/var/lib/postgresql/data
       - ./migrations/supabase:/docker-entrypoint-initdb.d
+      - ./bootstrap:/bootstrap
     command:
       - postgres
       - -c
@@ -269,6 +326,7 @@ services:
       GOTRUE_SMTP_SENDER_NAME: Alfred Auth
     command: ["auth"]
     healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:9999/health"]
       <<: *basic-health-check
     depends_on:
       db-postgres:
@@ -282,6 +340,36 @@ services:
     labels:
       <<: *database-service-labels
       com.docker.compose.service: "db-auth"
+      prometheus.metrics.port: "9091"
+      
+  # Database Auth Metrics Exporter
+  db-auth-metrics:
+    build:
+      context: ./services/db-metrics
+      dockerfile: Dockerfile
+    image: db-metrics:latest
+    container_name: db-auth-metrics
+    ports:
+      - "9120:9091"  # Map container's 9091 to host's 9120
+    environment:
+      - SERVICE_NAME=db-auth
+      - SERVICE_URL=http://db-auth:9999
+      - CHECK_TYPE=http
+      - HEALTH_PATH=/health
+      - PORT=9091
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:9091/healthz"]
+      <<: *basic-health-check
+    depends_on:
+      db-auth:
+        condition: service_started
+    restart: unless-stopped
+    networks:
+      - alfred-network
+    labels:
+      <<: *monitoring-service-labels
+      com.docker.compose.service: "db-auth-metrics"
+      prometheus.metrics.port: "9091"
 
   # Database REST API
   db-api:
@@ -295,7 +383,7 @@ services:
       PGRST_DB_ANON_ROLE: anon
       PGRST_JWT_SECRET: ${DB_JWT_SECRET:-your-super-secret-jwt-token}
     healthcheck:
-      test: ["CMD", "healthcheck", "--http", "http://localhost:3000/"]
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/"]
       <<: *basic-health-check
     depends_on:
       db-postgres:
@@ -307,6 +395,35 @@ services:
     labels:
       <<: *database-service-labels
       com.docker.compose.service: "db-api"
+      
+  # Database REST API Metrics Exporter
+  db-api-metrics:
+    build:
+      context: ./services/db-metrics
+      dockerfile: Dockerfile
+    image: db-metrics:latest
+    container_name: db-api-metrics
+    ports:
+      - "9121:9091"  # Map container's 9091 to host's 9121
+    environment:
+      - SERVICE_NAME=db-api
+      - SERVICE_URL=http://db-api:3000
+      - CHECK_TYPE=http
+      - HEALTH_PATH=/
+      - PORT=9091
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:9091/healthz"]
+      <<: *basic-health-check
+    depends_on:
+      db-api:
+        condition: service_started
+    restart: unless-stopped
+    networks:
+      - alfred-network
+    labels:
+      <<: *monitoring-service-labels
+      com.docker.compose.service: "db-api-metrics"
+      prometheus.metrics.port: "9091"
 
   # Database Admin UI
   db-admin:
@@ -324,7 +441,7 @@ services:
       SUPABASE_ANON_KEY: ${ANON_KEY:-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImV4cCI6MTc0OTUzNjEzMH0.zcPCLGlqF3YHBP-gTlXOQ2zjV-h3VmxbThiYEg2I5io}
       SUPABASE_SERVICE_KEY: ${SERVICE_ROLE_KEY:-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoic2VydmljZV9yb2xlIiwiZXhwIjoxNzQ5NTM2MTMwfQ.EDf3DT0Zl6qQbrLIQLwAXRWAN5kaJ5mvlAh1jm0CY-o}
     healthcheck:
-      test: ["CMD", "healthcheck", "--http", "http://localhost:3001/api/health"]
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/api/health"]
       <<: *basic-health-check
     depends_on:
       db-postgres:
@@ -338,6 +455,35 @@ services:
     labels:
       <<: *database-service-labels
       com.docker.compose.service: "db-admin"
+      
+  # Database Admin UI Metrics Exporter
+  db-admin-metrics:
+    build:
+      context: ./services/db-metrics
+      dockerfile: Dockerfile
+    image: db-metrics:latest
+    container_name: db-admin-metrics
+    ports:
+      - "9122:9091"  # Map container's 9091 to host's 9122
+    environment:
+      - SERVICE_NAME=db-admin
+      - SERVICE_URL=http://db-admin:3000
+      - CHECK_TYPE=http
+      - HEALTH_PATH=/health
+      - PORT=9091
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:9091/healthz"]
+      <<: *basic-health-check
+    depends_on:
+      db-admin:
+        condition: service_started
+    restart: unless-stopped
+    networks:
+      - alfred-network
+    labels:
+      <<: *monitoring-service-labels
+      com.docker.compose.service: "db-admin-metrics"
+      prometheus.metrics.port: "9091"
 
   # Database Realtime Updates
   db-realtime:
@@ -365,7 +511,7 @@ services:
       FLY_ALLOC_ID: local
       ERL_AFLAGS: "-proto_dist inet_tcp"
     healthcheck:
-      test: ["CMD", "healthcheck", "--tcp", "localhost:4000"]
+      test: ["CMD-SHELL", "nc -z localhost 4000 || exit 1"]
       <<: *basic-health-check
     depends_on:
       db-postgres:
@@ -377,17 +523,65 @@ services:
     labels:
       <<: *database-service-labels
       com.docker.compose.service: "db-realtime"
+      
+  # Database Realtime Metrics Exporter
+  db-realtime-metrics:
+    build:
+      context: ./services/db-metrics
+      dockerfile: Dockerfile
+    image: db-metrics:latest
+    container_name: db-realtime-metrics
+    ports:
+      - "9123:9091"  # Map container's 9091 to host's 9123
+    environment:
+      - SERVICE_NAME=db-realtime
+      - SERVICE_URL=db-realtime:4000
+      - CHECK_TYPE=tcp
+      - PORT=9091
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:9091/healthz"]
+      <<: *basic-health-check
+    depends_on:
+      db-realtime:
+        condition: service_started
+    restart: unless-stopped
+    networks:
+      - alfred-network
+    labels:
+      <<: *monitoring-service-labels
+      com.docker.compose.service: "db-realtime-metrics"
+      prometheus.metrics.port: "9091"
 
-  # Database Storage
+  # Database Storage - Using custom patched storage-api that bypasses migrations
   db-storage:
-    image: supabase/storage-api:v0.40.4
+    image: alfred-custom-storage-api:v0.40.4
     container_name: db-storage
     ports:
       - "5000:5000"
-    healthcheck:
-      <<: *basic-health-check
+      - "5001:5001"  # Health check port
+    environment:
+      ANON_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImV4cCI6MTc0OTUzNjEzMH0.zcPCLGlqF3YHBP-gTlXOQ2zjV-h3VmxbThiYEg2I5io
+      SERVICE_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoic2VydmljZV9yb2xlIiwiZXhwIjoxNzQ5NTM2MTMwfQ.EDf3DT0Zl6qQbrLIQLwAXRWAN5kaJ5mvlAh1jm0CY-o
+      PGRST_URL: http://db-api:3000
+      PGRST_JWT_SECRET: jwt-secret-for-development-only
+      DATABASE_URL: postgresql://postgres:postgres@db-postgres:5432/postgres
+      REGION: local
+      GLOBAL_S3_BUCKET: supabase-storage
+      FILE_SIZE_LIMIT: 52428800
+      FILE_STORAGE_BACKEND_PATH: /var/lib/storage
+      TENANT_ID: stub
+      STORAGE_BACKEND: file
+      JWT_SECRET: jwt-secret-for-development-only
+      ENABLE_IMAGE_TRANSFORMATION: "true"
+      # Our custom image completely bypasses the migrations using NODE_OPTIONS
+      # to preload a patch script that makes the migration functions no-ops
+      SKIP_MIGRATIONS: "true"
     volumes:
       - db-storage-data:/var/lib/storage
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://127.0.0.1:5001/health"]
+      <<: *basic-health-check
+      start_period: 30s
     depends_on:
       db-postgres:
         condition: service_healthy
@@ -400,6 +594,37 @@ services:
     labels:
       <<: *database-service-labels
       com.docker.compose.service: "db-storage"
+      
+  # Database Storage Metrics Exporter
+  db-storage-metrics:
+    build:
+      context: ./services/db-metrics
+      dockerfile: Dockerfile
+    image: db-metrics:latest
+    container_name: db-storage-metrics
+    ports:
+      - "9124:9091"  # Map container's 9091 to host's 9124
+    environment:
+      - SERVICE_NAME=db-storage
+      - SERVICE_URL=http://db-storage:5001
+      - CHECK_TYPE=http
+      - HEALTH_PATH=/health
+      - PORT=9091
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:9091/healthz"]
+      <<: *basic-health-check
+    depends_on:
+      db-postgres:
+        condition: service_healthy
+      db-api:
+        condition: service_started
+    restart: unless-stopped
+    networks:
+      - alfred-network
+    labels:
+      <<: *monitoring-service-labels
+      com.docker.compose.service: "db-storage-metrics"
+      prometheus.metrics.port: "9091"
 
   #############################################################################
   # AGENT SERVICES
@@ -430,7 +655,7 @@ services:
     volumes:
       - ./libs:/app/libs
     healthcheck:
-      test: ["CMD", "healthcheck", "--http", "http://localhost:8011/health"]
+      test: ["CMD", "healthcheck.sh"]
       <<: *basic-health-check
     depends_on:
       db-postgres:
@@ -458,6 +683,7 @@ services:
     container_name: agent-rag
     ports:
       - "8501:8501"
+      - "9099:9091"  # Map metrics port to host
     environment:
       - ALFRED_QDRANT_URL=http://vector-db:6333
       - ALFRED_QDRANT_HOST=vector-db
@@ -472,7 +698,7 @@ services:
       - ALFRED_LOG_AGENT_ACCESS=true
       - ALFRED_MODEL_ROUTER_URL=http://model-router:8080
     healthcheck:
-      test: ["CMD", "healthcheck", "--http", "http://localhost:8501/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:8501/health"]
       <<: *basic-health-check
       start_period: 60s
     depends_on:
@@ -489,6 +715,7 @@ services:
     labels:
       <<: *agent-service-labels
       com.docker.compose.service: "agent-rag"
+      prometheus.metrics.port: "9091"
 
   # Atlas Agent
   agent-atlas:
@@ -499,6 +726,7 @@ services:
     container_name: agent-atlas
     ports:
       - "8000:8000"
+      - "9095:9091"  # Map metrics port to host
     environment:
       - ALFRED_DATABASE_URL=${ALFRED_DATABASE_URL:-postgresql://${DB_USER:-postgres}:${DB_PASSWORD:-your-super-secret-password}@db-postgres:5432/${DB_NAME:-postgres}}
       - ALFRED_SUPABASE_URL=http://db-api:3000
@@ -519,7 +747,7 @@ services:
       - ./config/credentials/empty-credentials.json:/tmp/empty-credentials.json
       - ./libs:/app/libs
     healthcheck:
-      test: ["CMD", "healthcheck", "--http", "http://localhost:8000/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
       <<: *basic-health-check
       start_period: 60s
     depends_on:
@@ -538,6 +766,7 @@ services:
     labels:
       <<: *agent-service-labels
       com.docker.compose.service: "agent-atlas"
+      prometheus.metrics.port: "9091"
 
   # Social Intelligence Agent
   agent-social:
@@ -548,6 +777,7 @@ services:
     container_name: agent-social
     ports:
       - "9000:9000"
+      - "9093:9091"  # Map metrics port to host
     environment:
       - ALFRED_ENVIRONMENT=${ALFRED_ENVIRONMENT:-development}
       - ALFRED_DEBUG=${ALFRED_DEBUG:-true}
@@ -566,7 +796,7 @@ services:
     volumes:
       - ./libs:/app/libs
     healthcheck:
-      test: ["CMD", "healthcheck", "--http", "http://localhost:9000/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:9000/health"]
       <<: *basic-health-check
     depends_on:
       db-postgres:
@@ -586,6 +816,7 @@ services:
     labels:
       <<: *agent-service-labels
       com.docker.compose.service: "agent-social"
+      prometheus.metrics.port: "9091"
 
   # Financial Tax Agent
   agent-financial:
@@ -596,6 +827,7 @@ services:
     container_name: agent-financial
     ports:
       - "9003:9003"
+      - "9096:9091"  # Map metrics port to host
     environment:
       - ALFRED_ENVIRONMENT=${ALFRED_ENVIRONMENT:-development}
       - ALFRED_DEBUG=${ALFRED_DEBUG:-true}
@@ -622,7 +854,7 @@ services:
       - ./agents/financial_tax:/app/agents/financial_tax
       - ./config/credentials/empty-credentials.json:/tmp/empty-credentials.json
     healthcheck:
-      test: ["CMD", "healthcheck", "--http", "http://localhost:9003/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:9003/health"]
       <<: *basic-health-check
     depends_on:
       db-postgres:
@@ -642,6 +874,7 @@ services:
     labels:
       <<: *agent-service-labels
       com.docker.compose.service: "agent-financial"
+      prometheus.metrics.port: "9091"
 
   # Legal Compliance Agent
   agent-legal:
@@ -652,6 +885,7 @@ services:
     container_name: agent-legal
     ports:
       - "9002:9002"
+      - "9097:9091"  # Map metrics port to host
     environment:
       - ALFRED_ENVIRONMENT=${ALFRED_ENVIRONMENT:-development}
       - ALFRED_DEBUG=${ALFRED_DEBUG:-true}
@@ -678,7 +912,7 @@ services:
       - ./agents/legal_compliance:/app/agents/legal_compliance
       - ./config/credentials/empty-credentials.json:/tmp/empty-credentials.json
     healthcheck:
-      test: ["CMD", "healthcheck", "--http", "http://localhost:9002/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:9002/health"]
       <<: *basic-health-check
     depends_on:
       db-postgres:
@@ -698,6 +932,7 @@ services:
     labels:
       <<: *agent-service-labels
       com.docker.compose.service: "agent-legal"
+      prometheus.metrics.port: "9091"
 
   #############################################################################
   # UI SERVICES
@@ -705,18 +940,23 @@ services:
 
   # Chat UI
   ui-chat:
-    image: python:3.11-slim
+    build:
+      context: ./services/streamlit-chat
+      dockerfile: Dockerfile
     container_name: ui-chat
     ports:
       - "8502:8501"  # Map container's 8501 to host's 8502
+      - "9098:9091"  # Map metrics port to host
     environment:
       - ALFRED_API_URL=http://agent-core:8011
       - ALFRED_MODEL_ROUTER_URL=http://model-router:8080
       - ENABLE_DIRECT_INFERENCE=true
-    command: ["sh", "-c", "pip install streamlit requests && streamlit run streamlit_chat_ui.py --server.address=0.0.0.0"]
     volumes:
       - ./services/streamlit-chat:/app
     working_dir: /app
+    healthcheck:
+      test: ["CMD", "healthcheck", "--http", "http://localhost:8501/health"]
+      <<: *basic-health-check
     depends_on:
       agent-core:
         condition: service_started
@@ -729,26 +969,26 @@ services:
     labels:
       <<: *ui-service-labels
       com.docker.compose.service: "ui-chat"
+      prometheus.metrics.port: "9091"
 
   # Admin Dashboard
   ui-admin:
     build:
-      context: ./services/mission-control
-      dockerfile: Dockerfile.simple
+      context: ./services/mission-control-simplified
+      dockerfile: Dockerfile
     image: mission-control-simplified:latest
     container_name: ui-admin
     ports:
-      - "3007:3000"  # Map container's 3000 to host's 3007
+      - "3007:3007"  # Map container's 3007 to host's 3007
+      - "9126:9091"  # Map metrics port to host (changed from 9100 to avoid conflict)
     environment:
       - ALFRED_API_URL=http://agent-core:8011
       - ALFRED_RAG_URL=http://agent-rag:8501
       - NEXT_PUBLIC_SOCIAL_INTEL_URL=http://agent-social:9000
       - NODE_ENV=production
-      - PORT=3000
-    volumes:
-      - ./services/mission-control/standalone.js:/app/standalone.js
-    command: ["node", "standalone.js"]
+      - PORT=3007
     healthcheck:
+      test: ["CMD", "healthcheck", "--http", "http://localhost:3007/health"]
       <<: *basic-health-check
     depends_on:
       agent-core:
@@ -762,6 +1002,7 @@ services:
     labels:
       <<: *ui-service-labels
       com.docker.compose.service: "ui-admin"
+      prometheus.metrics.port: "9091"
 
   # Auth UI
   auth-ui:
@@ -883,14 +1124,14 @@ services:
     image: oliver006/redis_exporter:v1.55.0
     container_name: monitoring-redis
     ports:
-      - "9122:9121"  # Map container's 9121 to host's 9122 to avoid conflict
+      - "9125:9121"  # Map container's 9121 to host's 9125 to avoid conflict
     environment:
       REDIS_ADDR: redis:6379
     depends_on:
       redis:
         condition: service_started
     healthcheck:
-      test: ["CMD", "healthcheck", "--http", "http://localhost:9122/metrics"]
+      test: ["CMD", "healthcheck", "--http", "http://localhost:9125/metrics"]
       <<: *basic-health-check
     restart: unless-stopped
     deploy:
