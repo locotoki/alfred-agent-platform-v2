@@ -3,6 +3,7 @@ package prometheus
 import (
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"testing"
 	"time"
 )
@@ -152,5 +153,5 @@ func TestHealthChecker_GetMetrics(t *testing.T) {
 
 // Helper function to check if a string contains a substring
 func containsSubstring(s, substr string) bool {
-	return s != "" && substr != "" && s != substr && len(s) > len(substr) && s[len(s)-len(substr):] == substr
+	return s != "" && substr != "" && strings.Contains(s, substr)
 }
