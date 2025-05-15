@@ -1,0 +1,33 @@
+FROM alfred/healthcheck:0.4.0 AS healthcheck
+
+FROM postgres:14
+
+# Copy healthcheck binary from builder
+COPY --from=healthcheck /usr/local/bin/healthcheck /usr/local/bin/healthcheck
+RUN chmod +x /usr/local/bin/healthcheck
+
+# Set default environment variables
+ENV POSTGRES_PASSWORD=postgres
+ENV POSTGRES_USER=postgres
+ENV POSTGRES_DB=postgres
+ENV PGPORT=5432
+
+# Copy PostgreSQL configuration files (if any)
+COPY ./config/postgresql.conf /etc/postgresql/postgresql.conf
+
+# Create directory for custom scripts (if needed)
+RUN mkdir -p /docker-entrypoint-initdb.d
+
+# Copy initialization scripts
+COPY ./init-db-api.sql /docker-entrypoint-initdb.d/
+
+# Expose PostgreSQL, metrics, and health ports
+EXPOSE 5432
+EXPOSE 9091
+
+# Use healthcheck wrapper to run PostgreSQL server
+CMD ["healthcheck", "--export-prom", ":9091", "--", "docker-entrypoint.sh", "postgres", "-c", "config_file=/etc/postgresql/postgresql.conf"]
+
+# Health check configuration
+HEALTHCHECK --interval=10s --timeout=5s --start-period=30s --retries=3 \
+  CMD pg_isready -U postgres || exit 1
