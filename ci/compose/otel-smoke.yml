@@ -1,0 +1,14 @@
+version: "3.8"
+services:
+  otelcol:
+    image: otel/opentelemetry-collector-contrib:0.99.0
+    command: ["--config=/etc/otel-config.yaml"]
+    volumes:
+      - ./ci/compose/otel-config.yaml:/etc/otel-config.yaml:ro
+    ports: ["4318:4318"]  # OTLP/HTTP
+
+  health:
+    image: ghcr.io/locotoki/healthcheck:${TAG:-local}
+    command: ["healthcheck", "--once", "--probe", "noop",
+              "--trace-endpoint", "http://otelcol:4318"]
+    depends_on: [otelcol]
