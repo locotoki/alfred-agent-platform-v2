@@ -8,6 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- TBD
+
+## [0.6.0] - 2025-05-15
+
+### Added
 - Implemented MSSQL health check probe for SQL Server databases
 - Created comprehensive documentation for all database probes in docs/PROBES.md
 - Added alerts for MSSQL database health monitoring
@@ -16,6 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Created tracer bootstrap helper in internal/trace
 - Added span attributes for service name, result, and error details
 - Added CI job for OpenTelemetry smoke testing
+- Added canary bake monitoring script for release validation
 
 ## [0.5.0] - 2025-05-15
 
