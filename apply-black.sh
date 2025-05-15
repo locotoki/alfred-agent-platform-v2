@@ -1,10 +1,22 @@
 #!/bin/bash
-# Script to apply black formatting to the entire codebase
-echo "Setting up Black formatter..."
-python3 -m pip install black==24.1.1 || pip install black==24.1.1
+# Script to apply black formatting to Python files
 
-echo "Running Black formatter on entire codebase..."
-black --exclude "(youtube-test-env/|migrations/|node_modules/|\.git/|\.mypy_cache/|\.env/|\.venv/|env/|venv/|\.ipynb/)" .
+set -e
 
-echo "Black formatting complete."
+# Go to repo root directory
+cd "$(git rev-parse --show-toplevel)" || exit 1
 
+echo "Running Black formatter on Python files..."
+./run-black-format.py "$@"
+
+if [ $? -eq 0 ]; then
+  echo "Formatting complete."
+  echo ""
+  echo "You can now commit these changes with:"
+  echo "  git add -u"
+  echo "  git commit -m \"style: Apply Black formatting to Python files\""
+  echo ""
+else
+  echo "Formatter encountered errors."
+  exit 1
+fi
