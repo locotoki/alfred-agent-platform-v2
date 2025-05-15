@@ -72,6 +72,8 @@ scrape_configs:
           'rag-service:9091',
           'mission-control:9091',
           'agent-rag:9091', 
-          'agent-atlas:9091'
+          'agent-atlas:9091',
+          'redis:9091',
+          'monitoring-redis:9091'
         ]
     metrics_path: '/metrics'
