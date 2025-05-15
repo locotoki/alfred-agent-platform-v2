@@ -61,6 +61,7 @@ data/
 *.json
 !package.json
 !tsconfig.json
+!monitoring/grafana/custom-dashboards/*.json
 
 # Logs
 logs/
