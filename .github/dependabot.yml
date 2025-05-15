@@ -23,3 +23,20 @@ updates:
     labels:
       - "python"
       - "dependencies"
+    allow:
+      # Allow only specific dependencies to reduce noise
+      - dependency-name: "black"
+      - dependency-name: "isort"
+      - dependency-name: "flake8"
+      - dependency-name: "mypy"
+      - dependency-name: "pytest"
+      
+  # GitHub Actions dependency updates 
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    target-branch: "develop"
+    labels:
+      - "ci-cd"
+      - "dependencies"
