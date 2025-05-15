@@ -1,5 +1,3 @@
-version: "3.9"
-
 x-common-env: &common
   CREWAI_ENDPOINT: "http://crewai:8080"
   CREWAI_API_KEY: "local-test"
@@ -21,14 +19,19 @@ services:
     restart: unless-stopped
     command: >
       python - <<'PY'
-      import json, os
+      import json, os, sys
       from http.server import BaseHTTPRequestHandler, HTTPServer
+      print("CrewAI server starting up...", file=sys.stderr)
       class H(BaseHTTPRequestHandler):
         def do_POST(self):
-          self.rfile.read(int(self.headers['content-length']))
+          content_len = int(self.headers['content-length'])
+          post_body = self.rfile.read(content_len)
+          print(f"Received request with content: {post_body}", file=sys.stderr)
           resp={"action":"restart","reason":"PoC stub – always restart","deployment":"api","namespace":"default"}
+          print(f"Sending response: {json.dumps(resp)}", file=sys.stderr)
           self.send_response(200); self.send_header("Content-Type","application/json"); self.end_headers()
           self.wfile.write(json.dumps(resp).encode())
+      print('Starting HTTP server on port 8080, ready for "action":"restart" tests', file=sys.stderr)
       HTTPServer(("",8080),H).serve_forever()
       PY
 
