@@ -70,6 +70,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install langgraph==0.2.* pytest-cov freezegun
+      - name: Run LangGraph tests
+        run: |
+          pytest tests/remediation/test_graphs.py -v --cov=remediation.graphs --cov-report=term --cov-fail-under=95
+      - name: Verify remediation graph
+        run: |
+          python -c "import remediation.graphs; graph, state = remediation.graphs.restart_then_verify('alertmanager-dummy-service'); print('Graph verification successful!')"
       - name: Run orchestration integration tests
         run: ./ci/compose/orchestration-integration.yml
   
