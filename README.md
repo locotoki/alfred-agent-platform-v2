@@ -2,6 +2,9 @@
 
 A scalable, modular AI agent platform built with Docker, Supabase, and Pub/Sub messaging.
 
+[![Black Code Style](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![Black Format Check](https://github.com/locotoki/alfred-agent-platform-v2/actions/workflows/black-check.yml/badge.svg?branch=main)](https://github.com/locotoki/alfred-agent-platform-v2/actions/workflows/black-check.yml)
+
 ## Features
 
 - 🤖 Multiple AI agents with LangChain and LangGraph
@@ -51,14 +54,22 @@ A scalable, modular AI agent platform built with Docker, Supabase, and Pub/Sub m
 
 4. Start the platform:
    ```bash
-   make setup
+   # Production-like environment
+   docker compose up -d
+   
+   # Development environment with hot-reloading and debugging
+   docker compose -f docker-compose.yml -f docker-compose.dev.yml --profile dev up -d
+   
+   # Include mock services for development
+   docker compose -f docker-compose.yml -f docker-compose.dev.yml --profile dev --profile mocks up -d
    ```
 
 5. Access the services:
    - Supabase Studio: http://localhost:3001
    - Mission Control UI: http://localhost:3007
-   - Grafana: http://localhost:3002
+   - Grafana: http://localhost:3005
    - Prometheus: http://localhost:9090
+   - Chat UI: http://localhost:8502
    - Financial-Tax API: http://localhost:9003/docs
    - Social Intelligence API: http://localhost:9000/docs
 
@@ -79,12 +90,25 @@ make test-e2e
 ### Code Quality
 
 ```bash
-# Format code
+# Format code (Black for Python, Prettier for JS/TS)
 make format
 
 # Run linters
 make lint
 ```
+
+We use industry-standard code formatters and linters:
+- **Black (v24.1.1)**: Python formatter with line length=100
+- **isort**: Import sorting (with Black compatibility)
+- **flake8**: Python linter
+- **mypy**: Static type checker
+
+To manually apply Black formatting:
+```bash
+./scripts/apply-black-formatting.sh
+```
+
+See [Black Formatting Standards](docs/formatting/BLACK-FORMATTING-STANDARDS.md) for more details.
 
 ### Adding a New Agent
 
@@ -138,23 +162,54 @@ make db-reset
 ### Local Development
 
 ```bash
-# Start all services with Docker Compose
-docker-compose -f docker-compose.dev.yml up
+# Start all services in development mode (default)
+./start-platform.sh
+
+# Start in production mode
+./start-platform.sh -e prod
 
 # Start in detached mode (background)
-docker-compose -f docker-compose.dev.yml up -d
+./start-platform.sh -d
 
 # Start just specific services
-docker-compose -f docker-compose.dev.yml up slack-bot mission-control
+./start-platform.sh agent-core ui-chat
 
 # View logs
-docker-compose -f docker-compose.dev.yml logs -f
+./start-platform.sh -a logs
 
 # Stop all services
-docker-compose -f docker-compose.dev.yml down
+./start-platform.sh -a down
 ```
 
-The docker-compose.dev.yml file includes:
+#### Docker Compose Structure
+The platform uses a simplified Docker Compose configuration:
+
+- `docker-compose.yml` - Core configuration with all services and production defaults
+- `docker-compose.dev.yml` - Development overrides with debugging and hot-reloading
+- `docker-compose.prod.yml` - Production optimizations with performance settings
+- `docker-compose.local.yml` - Personal developer customizations (create from template, not in version control)
+
+Services are organized using profiles to enable conditional startup:
+```bash
+# Start with development profile (enables debug mode, hot-reloading)
+docker compose -f docker-compose.yml -f docker-compose.dev.yml --profile dev up -d
+
+# Add mock services for testing without real dependencies
+docker compose -f docker-compose.yml -f docker-compose.dev.yml --profile dev --profile mocks up -d
+
+# Start only specific services
+docker compose -f docker-compose.yml -f docker-compose.dev.yml --profile dev up -d mission-control social-intel
+```
+
+To create your personal configuration file:
+```bash
+cp docker-compose.local.yml.template docker-compose.local.yml
+# Edit as needed - this file is gitignored
+```
+
+See [DOCKER-COMPOSE-GUIDE.md](DOCKER-COMPOSE-GUIDE.md) for more details on the Docker Compose structure.
+
+The platform includes these services:
 - Slack Bot: http://localhost:8011
 - Mission Control: http://localhost:8012
 - RAG Gateway: http://localhost:8013

@@ -48,9 +48,31 @@ jobs:
         with:
           sarif_file: 'trivy-results.sarif'
 
+  # Black code style check (fast feedback)
+  black-check:
+    needs: security-scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          
+      - name: Install Black
+        run: |
+          python -m pip install --upgrade pip
+          pip install black==24.1.1
+          
+      - name: Run Black check
+        run: |
+          echo "Running Black format check with version 24.1.1..."
+          black --check --exclude "(youtube-test-env/|migrations/|node_modules/|\.git/|\.mypy_cache/|\.env/|\.venv/|env/|venv/|\.ipynb/)" .
+
   # Python linting and testing
   lint-and-test:
-    needs: security-scan
+    needs: black-check
     runs-on: ubuntu-latest
     # Allow this job to pass even with errors for PR #12 (black formatting PR) or PR #29 (CI cleanup PR)
     continue-on-error: ${{ github.event.pull_request.number == 12 || github.event.pull_request.number == 29 }}
@@ -88,7 +110,6 @@ jobs:
 
       - name: Run formatters check
         run: |
-          black --check .
           isort --check-only .
 
       - name: Run linters
