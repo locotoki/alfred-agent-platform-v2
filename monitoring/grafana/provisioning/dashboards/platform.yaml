@@ -1,0 +1,24 @@
+apiVersion: 1
+
+providers:
+  - name: 'Alfred Platform'
+    orgId: 1
+    folder: 'Alfred Platform'
+    type: file
+    disableDeletion: false
+    updateIntervalSeconds: 10
+    allowUiUpdates: true
+    options:
+      path: /var/lib/grafana/dashboards/platform
+      foldersFromFilesStructure: true
+      
+  - name: 'Platform Health'
+    orgId: 1
+    folder: 'Platform Health'
+    type: file
+    disableDeletion: false
+    updateIntervalSeconds: 10
+    allowUiUpdates: true
+    options:
+      path: /etc/grafana/custom-dashboards
+      foldersFromFilesStructure: true

@@ -30,6 +30,7 @@ services:
       - GF_SECURITY_ADMIN_PASSWORD=admin
     volumes:
       - ../monitoring/grafana/provisioning:/etc/grafana/provisioning
+      - ../monitoring/grafana/custom-dashboards:/etc/grafana/custom-dashboards
     depends_on:
       - prometheus
     healthcheck:
