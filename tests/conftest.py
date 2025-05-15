@@ -3,7 +3,15 @@ import os
 from typing import Generator
 from unittest.mock import AsyncMock, MagicMock
 
-import asyncpg
+# Handle asyncpg import for environment where it might not be available
+try:
+    import asyncpg
+except ImportError:  # pragma: no cover
+    asyncpg = None
+    import pytest
+
+    pytest.skip("asyncpg not available", allow_module_level=True)
+
 import pytest
 import redis
 from google.cloud import pubsub_v1
