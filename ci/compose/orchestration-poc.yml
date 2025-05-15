@@ -33,5 +33,5 @@ services:
       PY
 
   mock-slack:
-    image: ghcr.io/mendhak/http-https-echo:27
+    image: containous/whoami:latest
     ports: ["3000:80"]
