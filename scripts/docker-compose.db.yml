@@ -1,0 +1,58 @@
+version: '3.8'
+
+services:
+  postgres-test:
+    image: postgres:14
+    environment:
+      POSTGRES_USER: test
+      POSTGRES_PASSWORD: test
+      POSTGRES_DB: test
+    ports:
+      - "5433:5432"
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "test"]
+      interval: 5s
+      timeout: 3s
+      retries: 3
+
+  mysql-test:
+    image: mysql:8
+    environment:
+      MYSQL_ROOT_PASSWORD: test
+      MYSQL_DATABASE: test
+      MYSQL_USER: test
+      MYSQL_PASSWORD: test
+    ports:
+      - "3307:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "test", "-ptest"]
+      interval: 5s
+      timeout: 3s
+      retries: 3
+      
+  healthcheck:
+    build:
+      context: .
+      dockerfile: healthcheck/Dockerfile
+    environment:
+      POSTGRES_DSN: "postgres://test:test@postgres-test:5432/test"
+      MYSQL_DSN: "mysql://test:test@tcp(mysql-test:3306)/test"
+      SQLITE_DSN: "file:/tmp/test.db?_pragma=journal_mode(WAL)&_pragma=foreign_keys(ON)"
+    depends_on:
+      postgres-test:
+        condition: service_healthy
+      mysql-test:
+        condition: service_healthy
+    ports:
+      - "9091:9091"
+    volumes:
+      - ./:/app
+    command: >
+      /app/healthcheck 
+      --export-metrics 
+      --metrics-port=9091 
+      --postgres-dsn="${POSTGRES_DSN}" 
+      --mysql-dsn="${MYSQL_DSN}" 
+      --sqlite-dsn="${SQLITE_DSN}"
+      --create-tables 
+      --check-interval=5
