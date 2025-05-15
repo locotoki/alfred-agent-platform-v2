@@ -30,6 +30,8 @@ EXCLUDE_PATTERNS=(
   "services/alfred-core/app"      # Conflicts with app.py modules
   "services/financial-tax/app"    # Conflicts with app.py modules
   "services/legal-compliance/app" # Conflicts with app.py modules
+  "services/model-registry/app"   # Conflicts with app.py modules
+  "services/db-metrics/app.py"    # Conflicts with app.py modules
   "services/social-intel/app"     # Conflicts with app.py modules
   "slack-bot/src/app.py"          # Conflicts with app.py modules
   "whatsapp-adapter/src/app.py"   # Conflicts with app.py modules
