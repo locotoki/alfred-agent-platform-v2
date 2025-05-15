@@ -11,11 +11,11 @@ It acts as a wrapper around the PubSub emulator to make it compliant with the pl
 health check standard.
 """
 
+import json
 import os
 import time
-import json
-from typing import Dict
 import urllib.request
+from typing import Dict
 
 import prometheus_client
 from fastapi import FastAPI, Response, status
