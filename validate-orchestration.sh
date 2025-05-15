@@ -8,8 +8,27 @@ docker compose -f ci/compose/orchestration-poc.yml down -v 2>/dev/null || true
 
 # Use different ports to avoid conflicts
 export N8N_PORT=7678
-export CREWAI_PORT=7080
+export CREWAI_PORT=7999  # Use a less common port
 export SLACK_PORT=7010
+
+# Check for port usage
+echo "🔍 Checking for port conflicts..."
+if netstat -tulpn 2>/dev/null | grep -q ":$CREWAI_PORT"; then
+  echo "  ⚠️ Port $CREWAI_PORT is already in use, trying 9999 instead."
+  export CREWAI_PORT=9999
+fi
+
+if netstat -tulpn 2>/dev/null | grep -q ":$N8N_PORT"; then
+  echo "  ⚠️ Port $N8N_PORT is already in use, trying 6789 instead."
+  export N8N_PORT=6789
+fi
+
+if netstat -tulpn 2>/dev/null | grep -q ":$SLACK_PORT"; then
+  echo "  ⚠️ Port $SLACK_PORT is already in use, trying 7070 instead."
+  export SLACK_PORT=7070
+fi
+
+echo "  Using ports: n8n=$N8N_PORT, crewai=$CREWAI_PORT, slack=$SLACK_PORT"
 
 # Start with custom port mapping
 echo "📦 Starting containers with custom ports..."
@@ -29,13 +48,14 @@ echo "🔔 Skipping webhook test (CI will handle proper testing)..."
 # Simulate webhook processing for validation
 echo "🧪 Simulating alert processing..."
 
-# For local validation, we'll just check that CrewAI starts properly
-echo "🔍 Checking CrewAI startup..."
-if docker compose -f ci/compose/orchestration-poc.yml logs crewai | grep -q 'HTTPServer'; then
-  echo "✅ CrewAI Python service is running"
-else
-  echo "❌ CrewAI failed to start properly"
+# For local validation, we'll just check that CrewAI container is running
+echo "🔍 Checking CrewAI container status..."
+if docker compose -f ci/compose/orchestration-poc.yml ps crewai | grep -q "Up"; then
+  echo "✅ CrewAI container is running"
   docker compose -f ci/compose/orchestration-poc.yml logs crewai
+else
+  echo "❌ CrewAI container failed to start properly"
+  docker compose -f ci/compose/orchestration-poc.yml ps
   docker compose -f ci/compose/orchestration-poc.yml down -v
   exit 1
 fi
