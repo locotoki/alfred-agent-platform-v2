@@ -18,6 +18,7 @@ services:
   crewai:
     image: python:3.12-slim
     ports: ["${CREWAI_PORT:-8080}:8080"]
+    restart: unless-stopped
     command: >
       python - <<'PY'
       import json, os
