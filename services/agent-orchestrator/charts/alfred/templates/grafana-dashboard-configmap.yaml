@@ -1,0 +1,15 @@
+{{- if and .Values.grafana.enabled .Values.grafana.sidecar.dashboards.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: alfred-grafana-db-health-dashboard
+  labels:
+    app: {{ template "alfred.name" . }}
+    chart: {{ template "alfred.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    grafana_dashboard: "1"
+data:
+  db-health-dashboard.json: |-
+{{ .Files.Get "dashboards/db-health-dashboard.json" | indent 4 }}
+{{- end }}

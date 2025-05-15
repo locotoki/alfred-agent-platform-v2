@@ -247,12 +247,19 @@ The platform includes comprehensive health monitoring with metrics export:
 
 - **Update healthcheck binary**: `./scripts/update-healthcheck-binary.sh`
 - **Validate metrics format**: `./scripts/lint-metrics-format.sh`
+- **Setup DB metrics**: `make setup-metrics`
 - **Service health dashboard**: http://localhost:3005/d/platform-health-dashboard/platform-health-dashboard
+- **DB health dashboard**: http://localhost:3005/d/db-health-dashboard/database-health-dashboard
 
 Each service exposes three standard health endpoints:
 - `/health` - Detailed health information
 - `/healthz` - Simple health probe
 - `/metrics` - Prometheus metrics (port 909x)
+
+For detailed documentation on the monitoring system, see:
+- [Prometheus Health Implementation](docs/monitoring/PROMETHEUS_HEALTH_IMPLEMENTATION.md)
+- [DB Metrics Implementation](docs/monitoring/DB_METRICS_IMPLEMENTATION.md)
+- [Grafana Dashboard Preview](docs/monitoring/GRAFANA-DASHBOARD-PREVIEW.md)
 
 #### Distributed Tracing
 
