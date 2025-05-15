@@ -1,0 +1,15 @@
+# charts/alerts/redis.yaml
+groups:
+ - name: redis
+   rules:
+   - alert: RedisHealthCritical
+     expr: service_health{service="redis"} == 0
+     for: 5m
+     labels: {severity: "critical"}
+     annotations: {summary: "Redis DOWN"}
+
+   - alert: RedisHealthWarning
+     expr: service_health{service="redis"} == 0.5
+     for: 10m
+     labels: {severity: "warning"}
+     annotations: {summary: "Redis DEGRADED"}
