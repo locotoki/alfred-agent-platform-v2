@@ -1,0 +1,389 @@
+#!/usr/bin/env python3
+"""
+Redis Health Check Wrapper for the Alfred Agent Platform.
+
+This script provides standardized health check endpoints for Redis:
+1. /health - Detailed health status
+2. /healthz - Simple health probe
+3. /metrics - Prometheus metrics
+
+It acts as a wrapper around Redis to make it compliant with the platform
+health check standard for Phase 5.
+"""
+
+import os
+import socket
+import time
+from datetime import datetime
+from typing import Any, Dict, List, Optional, Tuple
+
+import prometheus_client
+import redis
+from fastapi import FastAPI, Response, status
+from prometheus_client import Counter, Gauge, Histogram
+
+# Configuration
+REDIS_URL = os.environ.get("REDIS_URL", "redis://localhost:6379")
+REDIS_DB = os.environ.get("REDIS_DB", "0")
+SERVICE_NAME = "redis"
+VERSION = "7.0.0"  # Redis version
+HOSTNAME = socket.gethostname()
+
+# Create FastAPI app
+app = FastAPI(
+    title=f"{SERVICE_NAME} Health",
+    description=f"Health checks for {SERVICE_NAME}",
+    version=VERSION,
+)
+
+# Standard service_health metric (required for Phase 5)
+service_health = Gauge(
+    "service_health", 
+    "Service health status (1=healthy, 0.5=degraded, 0=unhealthy)",
+    ["service", "hostname"]
+)
+service_health.labels(service=SERVICE_NAME, hostname=HOSTNAME).set(0)  # Initialize as unhealthy
+
+# Redis availability metrics
+redis_up = Gauge(
+    "redis_up", 
+    "Redis availability (1=available, 0=unavailable)",
+    ["instance"]
+)
+
+# Redis latency metrics
+redis_latency = Histogram(
+    "redis_latency_seconds", 
+    "Redis operation latency in seconds",
+    ["operation", "instance"],
+    buckets=[0.001, 0.005, 0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1.0, 2.5, 5.0]
+)
+
+# Redis commands metrics
+redis_commands_total = Counter(
+    "redis_commands_processed_total", 
+    "Total Redis commands processed",
+    ["instance"]
+)
+redis_commands_per_sec = Gauge(
+    "redis_commands_per_second", 
+    "Redis commands processed per second",
+    ["instance"]
+)
+
+# Redis connections metrics
+redis_connections_current = Gauge(
+    "redis_connections_current", 
+    "Current number of client connections",
+    ["instance"]
+)
+redis_connections_rejected = Counter(
+    "redis_connections_rejected_total", 
+    "Total number of rejected connections",
+    ["instance"]
+)
+redis_connections_max = Gauge(
+    "redis_connections_max", 
+    "Maximum client connections limit",
+    ["instance"]
+)
+
+# Redis memory metrics
+redis_memory_used_bytes = Gauge(
+    "redis_memory_used_bytes", 
+    "Redis used memory in bytes",
+    ["instance"]
+)
+redis_memory_peak_bytes = Gauge(
+    "redis_memory_peak_bytes", 
+    "Redis peak memory usage in bytes",
+    ["instance"]
+)
+redis_memory_lua_bytes = Gauge(
+    "redis_memory_lua_bytes", 
+    "Redis Lua engine used memory in bytes",
+    ["instance"]
+)
+redis_memory_fragmentation_ratio = Gauge(
+    "redis_memory_fragmentation_ratio", 
+    "Redis memory fragmentation ratio",
+    ["instance"]
+)
+
+# Redis keyspace metrics
+redis_keys_total = Gauge(
+    "redis_keys_total", 
+    "Total number of keys by database",
+    ["db", "instance"]
+)
+redis_keys_expires_total = Gauge(
+    "redis_keys_expires_total", 
+    "Number of keys with an expiration",
+    ["db", "instance"]
+)
+redis_keys_evicted_total = Counter(
+    "redis_keys_evicted_total", 
+    "Total number of evicted keys due to maxmemory limit",
+    ["instance"]
+)
+redis_keys_expired_total = Counter(
+    "redis_keys_expired_total", 
+    "Total number of expired keys",
+    ["instance"]
+)
+
+# Redis persistence metrics
+redis_rdb_last_save_time = Gauge(
+    "redis_rdb_last_save_time_seconds", 
+    "Last successful RDB save timestamp",
+    ["instance"]
+)
+redis_rdb_changes_since_last_save = Gauge(
+    "redis_rdb_changes_since_last_save", 
+    "Number of changes since the last successful RDB save",
+    ["instance"]
+)
+redis_persistence_status = Gauge(
+    "redis_persistence_status", 
+    "Persistence status (1=OK, 0=ERR)",
+    ["type", "instance"]
+)
+
+# Redis replication metrics
+redis_replication_role = Gauge(
+    "redis_replication_role", 
+    "Role of this Redis instance (1=master, 0=slave)",
+    ["instance"]
+)
+redis_replication_connected_slaves = Gauge(
+    "redis_replication_connected_slaves", 
+    "Number of connected replicas",
+    ["instance"]
+)
+
+# Last health check time
+redis_last_check_time = Gauge(
+    "redis_last_check_time", 
+    "Timestamp of last Redis health check",
+    ["instance"]
+)
+
+# Redis client - configure for connection pooling
+redis_client = redis.from_url(REDIS_URL)
+
+
+def get_redis_info() -> Optional[Dict[str, Any]]:
+    """Get Redis server information.
+    
+    Returns:
+        Dictionary with Redis server information or None if error
+    """
+    try:
+        start_time = time.time()
+        info = redis_client.info()
+        latency = time.time() - start_time
+        redis_latency.labels(operation="info", instance=REDIS_URL).observe(latency)
+        return info
+    except Exception:
+        return None
+
+
+def update_redis_metrics(info: Dict[str, Any]) -> None:
+    """Update Prometheus metrics with Redis information.
+    
+    Args:
+        info: Redis server information
+    """
+    instance = REDIS_URL
+    
+    # Basic metrics
+    redis_up.labels(instance=instance).set(1)
+    
+    # Commands metrics
+    redis_commands_total.labels(instance=instance).inc()
+    total_commands = info.get("total_commands_processed", 0)
+    instantaneous_ops = info.get("instantaneous_ops_per_sec", 0)
+    redis_commands_per_sec.labels(instance=instance).set(instantaneous_ops)
+    
+    # Connection metrics
+    redis_connections_current.labels(instance=instance).set(info.get("connected_clients", 0))
+    redis_connections_rejected.labels(instance=instance).inc(info.get("rejected_connections", 0))
+    redis_connections_max.labels(instance=instance).set(info.get("maxclients", 0))
+    
+    # Memory metrics
+    redis_memory_used_bytes.labels(instance=instance).set(info.get("used_memory", 0))
+    redis_memory_peak_bytes.labels(instance=instance).set(info.get("used_memory_peak", 0))
+    redis_memory_lua_bytes.labels(instance=instance).set(info.get("used_memory_lua", 0))
+    redis_memory_fragmentation_ratio.labels(instance=instance).set(
+        info.get("mem_fragmentation_ratio", 0)
+    )
+    
+    # Keyspace metrics
+    redis_keys_evicted_total.labels(instance=instance).inc(info.get("evicted_keys", 0))
+    redis_keys_expired_total.labels(instance=instance).inc(info.get("expired_keys", 0))
+    
+    # Process keyspace info
+    for db_name, db_info in info.items():
+        if db_name.startswith("db"):
+            db_number = db_name[2:]  # Extract the database number
+            if isinstance(db_info, dict):
+                redis_keys_total.labels(db=db_number, instance=instance).set(db_info.get("keys", 0))
+                redis_keys_expires_total.labels(db=db_number, instance=instance).set(
+                    db_info.get("expires", 0)
+                )
+    
+    # Persistence metrics
+    redis_rdb_last_save_time.labels(instance=instance).set(info.get("rdb_last_save_time", 0))
+    redis_rdb_changes_since_last_save.labels(instance=instance).set(
+        info.get("rdb_changes_since_last_save", 0)
+    )
+    
+    # Set persistence status
+    rdb_status = 1 if info.get("rdb_last_save_time", 0) > 0 else 0
+    redis_persistence_status.labels(type="rdb", instance=instance).set(rdb_status)
+    
+    # Replication metrics
+    role_value = 1 if info.get("role", "") == "master" else 0
+    redis_replication_role.labels(instance=instance).set(role_value)
+    redis_replication_connected_slaves.labels(instance=instance).set(
+        info.get("connected_slaves", 0)
+    )
+    
+    # Standard service_health metric (Phase 5 requirement)
+    service_health.labels(service=SERVICE_NAME, hostname=HOSTNAME).set(1.0)
+
+
+def check_redis_health() -> Tuple[Dict[str, Any], bool]:
+    """Check Redis connection and status.
+    
+    Returns:
+        Tuple of (status_info, is_healthy)
+    """
+    status_info = {
+        "status": "error",
+        "version": VERSION,
+        "timestamp": datetime.now().isoformat(),
+        "details": {},
+    }
+    
+    try:
+        # Try to ping Redis
+        start_time = time.time()
+        response = redis_client.ping()
+        latency = time.time() - start_time
+        redis_latency.labels(operation="ping", instance=REDIS_URL).observe(latency)
+        
+        if response:
+            # Get Redis info for metrics
+            info = get_redis_info()
+            if info:
+                update_redis_metrics(info)
+                status_info["status"] = "ok"
+                status_info["details"] = {
+                    "uptime_seconds": info.get("uptime_in_seconds", 0),
+                    "connected_clients": info.get("connected_clients", 0),
+                    "used_memory_human": info.get("used_memory_human", ""),
+                    "db_keys": {},
+                }
+                
+                # Add keyspace info
+                for db_name, db_info in info.items():
+                    if db_name.startswith("db"):
+                        if isinstance(db_info, dict):
+                            status_info["details"]["db_keys"][db_name] = db_info.get("keys", 0)
+                
+                return status_info, True
+            else:
+                status_info["error"] = "Failed to get Redis info"
+                redis_up.labels(instance=REDIS_URL).set(0.5)  # Degraded
+                service_health.labels(service=SERVICE_NAME, hostname=HOSTNAME).set(0.5)  # Degraded
+                return status_info, False
+        else:
+            status_info["error"] = "Redis ping failed"
+            redis_up.labels(instance=REDIS_URL).set(0)
+            service_health.labels(service=SERVICE_NAME, hostname=HOSTNAME).set(0)
+            return status_info, False
+    except redis.exceptions.ConnectionError as e:
+        status_info["error"] = f"Redis connection error: {str(e)}"
+        redis_up.labels(instance=REDIS_URL).set(0)
+        service_health.labels(service=SERVICE_NAME, hostname=HOSTNAME).set(0)
+        return status_info, False
+    except Exception as e:
+        status_info["error"] = f"Unexpected error: {str(e)}"
+        redis_up.labels(instance=REDIS_URL).set(0)
+        service_health.labels(service=SERVICE_NAME, hostname=HOSTNAME).set(0)
+        return status_info, False
+    finally:
+        redis_last_check_time.labels(instance=REDIS_URL).set(time.time())
+
+
+@app.get("/health")
+async def health_check():
+    """Detailed health check endpoint that follows Phase 5 standard."""
+    status_info, is_healthy = check_redis_health()
+    
+    # Phase 5 standard format
+    response_data = {
+        "status": status_info["status"],
+        "version": VERSION,
+        "timestamp": status_info["timestamp"],
+        "hostname": HOSTNAME,
+        "services": {
+            "redis": status_info["status"]
+        }
+    }
+    
+    if "error" in status_info:
+        response_data["error"] = status_info["error"]
+    
+    if "details" in status_info:
+        response_data["details"] = status_info["details"]
+    
+    status_code = status.HTTP_200_OK if is_healthy else status.HTTP_503_SERVICE_UNAVAILABLE
+    return Response(
+        content=prometheus_client.json.dumps(response_data),
+        media_type="application/json",
+        status_code=status_code,
+    )
+
+
+@app.get("/healthz")
+async def simple_health():
+    """Simple health check for container probes."""
+    _, is_healthy = check_redis_health()
+    
+    if is_healthy:
+        return Response(
+            content='{"status":"ok"}',
+            media_type="application/json",
+            status_code=status.HTTP_200_OK,
+        )
+    else:
+        return Response(
+            content='{"status":"error"}',
+            media_type="application/json",
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+        )
+
+
+@app.get("/metrics")
+async def metrics():
+    """Prometheus metrics endpoint."""
+    return Response(content=prometheus_client.generate_latest(), media_type="text/plain")
+
+
+if __name__ == "__main__":
+    import uvicorn
+
+    # Set up health check endpoint wrapper
+    print(f"Starting Redis health check wrapper on port 9091...")
+    print(f"Redis URL: {REDIS_URL}")
+    print(f"Service name: {SERVICE_NAME}")
+    print(f"Version: {VERSION}")
+    print(f"Hostname: {HOSTNAME}")
+    
+    # Initialize metrics
+    service_health.labels(service=SERVICE_NAME, hostname=HOSTNAME).set(0)
+    
+    # Start the server
+    uvicorn.run(app, host="0.0.0.0", port=9091)

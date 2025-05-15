@@ -2,14 +2,14 @@
 
 import os
 import threading
-import uvicorn
 from datetime import datetime
-from typing import Dict, Any, Optional, List
+from typing import Any, Dict, List, Optional
 
-from fastapi import FastAPI, HTTPException, Depends, Request
-from fastapi.middleware.cors import CORSMiddleware
 import httpx
 import prometheus_client
+import uvicorn
+from fastapi import Depends, FastAPI, HTTPException, Request
+from fastapi.middleware.cors import CORSMiddleware
 
 # Initialize FastAPI app
 app = FastAPI(title="Model Router API")
