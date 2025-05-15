@@ -15,8 +15,8 @@ import os
 import time
 from typing import Dict
 
-import redis
 import prometheus_client
+import redis
 from fastapi import FastAPI, Response, status
 from prometheus_client import Counter, Gauge
 
