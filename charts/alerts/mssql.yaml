@@ -1,0 +1,33 @@
+# charts/alerts/mssql.yaml
+groups:
+ - name: mssql-database
+   rules:
+   - alert: MSSQLDatabaseHealthCritical
+     expr: service_health{service="mssql"} == 0
+     for: 5m
+     labels: {severity: "critical"}
+     annotations: {summary: "MSSQL Database DOWN"}
+
+   - alert: MSSQLDatabaseHealthWarning
+     expr: service_health{service="mssql"} == 0.5
+     for: 10m
+     labels: {severity: "warning"}
+     annotations: {summary: "MSSQL Database DEGRADED"}
+   
+   - alert: MSSQLConnectionFailures
+     expr: increase(db_connection_success{service="mssql"}[15m]) == 0
+     for: 15m
+     labels: {severity: "warning"}
+     annotations: {summary: "MSSQL Database connection failures detected"}
+   
+   - alert: MSSQLHighLatency
+     expr: db_connection_latency_seconds{service="mssql"} > 2
+     for: 15m
+     labels: {severity: "warning"}
+     annotations: {summary: "MSSQL Database high latency detected"}
+   
+   - alert: MSSQLReadWriteFailures
+     expr: db_write_success{service="mssql"} == 0 or db_read_success{service="mssql"} == 0
+     for: 10m
+     labels: {severity: "critical"}
+     annotations: {summary: "MSSQL Database read/write failures detected"}

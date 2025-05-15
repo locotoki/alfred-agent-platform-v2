@@ -8,7 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-- TBD
+- Implemented MSSQL health check probe for SQL Server databases
+- Created comprehensive documentation for all database probes in docs/PROBES.md
+- Added alerts for MSSQL database health monitoring
+- Extended smoke test compose file with MSSQL support
 
 ## [0.5.0] - 2025-05-15
 
