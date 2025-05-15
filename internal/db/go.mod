@@ -8,3 +8,6 @@ require (
 	github.com/lib/pq v1.10.9
 	modernc.org/sqlite v1.29.1
 )
+
+// Explicitly pin modernc.org/libc to the version required by modernc.org/sqlite
+require modernc.org/libc v1.34.11
