@@ -48,6 +48,46 @@ groups:
       summary: "High database latency for {{ $labels.service }}"
       description: "Service {{ $labels.service }} is experiencing high latency (>1s) connecting to database {{ $labels.database }}"
 
+  - alert: PostgreSQLHealthCritical
+    expr: service_health{db_driver_type="1"} == 0
+    for: 30s
+    labels:
+      severity: critical
+    annotations:
+      summary: "PostgreSQL database unhealthy for {{ $labels.service }}"
+      description: "PostgreSQL database used by {{ $labels.service }} is not operational for more than 30 seconds"
+      dashboard_url: "https://grafana.alfred-platform.local/d/db-health?var-service={{ $labels.service }}&var-db_type=postgres"
+
+  - alert: PostgreSQLHealthDegraded
+    expr: service_health{db_driver_type="1"} == 0.5
+    for: 2m
+    labels:
+      severity: warning
+    annotations:
+      summary: "PostgreSQL database degraded for {{ $labels.service }}"
+      description: "PostgreSQL database used by {{ $labels.service }} is in degraded state for more than 2 minutes"
+      dashboard_url: "https://grafana.alfred-platform.local/d/db-health?var-service={{ $labels.service }}&var-db_type=postgres"
+
+  - alert: MySQLHealthCritical
+    expr: service_health{db_driver_type="2"} == 0
+    for: 30s
+    labels:
+      severity: critical
+    annotations:
+      summary: "MySQL database unhealthy for {{ $labels.service }}"
+      description: "MySQL database used by {{ $labels.service }} is not operational for more than 30 seconds"
+      dashboard_url: "https://grafana.alfred-platform.local/d/db-health?var-service={{ $labels.service }}&var-db_type=mysql"
+
+  - alert: MySQLHealthDegraded
+    expr: service_health{db_driver_type="2"} == 0.5
+    for: 2m
+    labels:
+      severity: warning
+    annotations:
+      summary: "MySQL database degraded for {{ $labels.service }}"
+      description: "MySQL database used by {{ $labels.service }} is in degraded state for more than 2 minutes"
+      dashboard_url: "https://grafana.alfred-platform.local/d/db-health?var-service={{ $labels.service }}&var-db_type=mysql"
+
   - alert: SQLiteHealthCritical
     expr: service_health{db_driver_type="3"} == 0
     for: 30s

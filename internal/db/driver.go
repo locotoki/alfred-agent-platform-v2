@@ -51,11 +51,17 @@ type Config struct {
 	// ConnectTimeout is the maximum time allowed for connecting to the database
 	ConnectTimeout time.Duration
 	
+	// PingTimeout is the maximum time allowed for ping operations
+	PingTimeout time.Duration
+	
 	// ReadTimeout is the maximum time allowed for read operations
 	ReadTimeout time.Duration
 	
 	// WriteTimeout is the maximum time allowed for write operations
 	WriteTimeout time.Duration
+	
+	// TableCreationTimeout is the maximum time allowed for table creation
+	TableCreationTimeout time.Duration
 	
 	// MaxRetries is the number of times to retry operations before giving up
 	MaxRetries int
@@ -65,6 +71,18 @@ type Config struct {
 	
 	// CreateHealthTable determines whether to create the health check table if it doesn't exist
 	CreateHealthTable bool
+	
+	// MaxOpenConns sets the maximum number of open connections to the database
+	MaxOpenConns int
+	
+	// MaxIdleConns sets the maximum number of connections in the idle connection pool
+	MaxIdleConns int
+	
+	// ConnMaxLifetime sets the maximum amount of time a connection may be reused
+	ConnMaxLifetime time.Duration
+	
+	// ConnMaxIdleTime sets the maximum amount of time a connection may be idle
+	ConnMaxIdleTime time.Duration
 }
 
 // NewDriver creates a new database driver based on the DSN scheme
