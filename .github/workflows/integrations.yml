@@ -15,16 +15,25 @@ jobs:
       - name: Launch PoC stack
         run: docker compose -f ci/compose/orchestration-poc.yml up -d --build
       - name: Wait for n8n
-        run:  < /dev/null | 
+        run: |
           for i in {1..20}; do curl -s http://localhost:5678/healthz && exit 0; sleep 3; done
           echo "n8n failed" && docker compose logs && exit 1
-      - name: Fire mock alert
+      # In CI environment we can use default ports without conflicts
+      - name: Send test alert
         run: |
           curl -s -X POST http://localhost:5678/webhook/alertmanager \
           -H 'Content-Type: application/json' \
           -d '{"alerts":[{"labels":{"namespace":"default","deployment":"api"}}]}'
-      - name: Assert CrewAI saw alert
-        run: docker compose logs crewai | grep -q '"action":"restart"'
+      
+      # Verify response from CrewAI
+      - name: Verify CrewAI response
+        run: |
+          if ! docker compose logs crewai | grep -q '"action":"restart"'; then
+            echo "❌ CrewAI failed to return expected response"
+            docker compose logs crewai
+            exit 1
+          fi
+          echo "✅ CrewAI responded with restart action"
       - name: Tear down
         if: always()
         run: docker compose -f ci/compose/orchestration-poc.yml down -v
