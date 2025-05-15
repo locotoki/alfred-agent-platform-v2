@@ -171,17 +171,17 @@ def background_collector():
 def run_smoke_test():
     """
     Run a basic smoke test to check if the app will start properly.
-    
+
     Returns:
         bool: True if test passes, False otherwise
     """
     try:
         # Set up a dummy metric
         service_availability.labels(service="test").set(1)
-        
+
         # Generate metrics to verify they work
         metrics_data = generate_latest(REGISTRY)
-        
+
         if b'service_availability{service="test"} 1.0' in metrics_data:
             print("Smoke test passed: Metrics generation works")
             return True
@@ -198,12 +198,12 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="DB Metrics Exporter")
     parser.add_argument("--check", action="store_true", help="Run a smoke test and exit")
     args = parser.parse_args()
-    
+
     # Run smoke test if requested
     if args.check:
         success = run_smoke_test()
         sys.exit(0 if success else 1)
-    
+
     # Initialize metrics
     service_availability.labels(service=SERVICE_NAME).set(0)
 
