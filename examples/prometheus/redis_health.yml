@@ -1,0 +1,96 @@
+groups:
+- name: redis_health
+  rules:
+  # Redis instance health alerts
+  - alert: RedisDown
+    expr: redis_up == 0
+    for: 30s
+    labels:
+      severity: critical
+    annotations:
+      summary: "Redis instance is down"
+      description: "Redis instance {{ $labels.instance }} has been down for more than 30 seconds"
+      dashboard_url: "https://grafana.alfred-platform.local/d/redis-overview"
+      
+  - alert: RedisHealthCritical
+    expr: service_health{service="redis"} == 0
+    for: 30s
+    labels:
+      severity: critical
+    annotations:
+      summary: "Redis service is unhealthy"
+      description: "Redis service on {{ $labels.hostname }} has reported unhealthy status for more than 30 seconds"
+      dashboard_url: "https://grafana.alfred-platform.local/d/redis-overview"
+  
+  - alert: RedisHealthDegraded
+    expr: service_health{service="redis"} == 0.5
+    for: 2m
+    labels:
+      severity: warning
+    annotations:
+      summary: "Redis service is degraded"
+      description: "Redis service on {{ $labels.hostname }} has reported degraded status for more than 2 minutes"
+      dashboard_url: "https://grafana.alfred-platform.local/d/redis-overview"
+  
+  # Redis resource usage alerts
+  - alert: RedisMemoryHigh
+    expr: redis_memory_used_bytes / 1024 / 1024 > 1000
+    for: 5m
+    labels:
+      severity: warning
+    annotations:
+      summary: "Redis memory usage high"
+      description: "Redis instance {{ $labels.instance }} is using more than 1GB of memory for over 5 minutes"
+      dashboard_url: "https://grafana.alfred-platform.local/d/redis-overview"
+      
+  - alert: RedisKeyEviction
+    expr: rate(redis_keys_evicted_total[1m]) > 0
+    for: 2m
+    labels:
+      severity: warning
+    annotations:
+      summary: "Redis is evicting keys"
+      description: "Redis instance {{ $labels.instance }} has been evicting keys for over 2 minutes. This indicates memory pressure."
+      dashboard_url: "https://grafana.alfred-platform.local/d/redis-overview"
+  
+  # Redis client connection alerts
+  - alert: RedisClientConnectionsHigh
+    expr: redis_connections_current > 100
+    for: 5m
+    labels:
+      severity: warning
+    annotations:
+      summary: "High number of Redis client connections"
+      description: "Redis instance {{ $labels.instance }} has more than 100 client connections for over 5 minutes"
+      dashboard_url: "https://grafana.alfred-platform.local/d/redis-overview"
+      
+  - alert: RedisRejectedConnections
+    expr: rate(redis_connections_rejected_total[1m]) > 0
+    for: 1m
+    labels:
+      severity: warning
+    annotations:
+      summary: "Redis is rejecting connections"
+      description: "Redis instance {{ $labels.instance }} is rejecting connections. This could indicate reaching connection limit."
+      dashboard_url: "https://grafana.alfred-platform.local/d/redis-overview"
+  
+  # Redis performance alerts  
+  - alert: RedisCommandsHigh
+    expr: redis_commands_per_second > 1000
+    for: 5m
+    labels:
+      severity: warning
+    annotations:
+      summary: "Redis command rate high"
+      description: "Redis instance {{ $labels.instance }} is processing more than 1000 commands per second for over 5 minutes"
+      dashboard_url: "https://grafana.alfred-platform.local/d/redis-overview"
+  
+  - alert: RedisLatencyHigh 
+    expr: histogram_quantile(0.95, sum(rate(redis_latency_seconds_bucket{operation="ping"}[5m])) by (le, instance)) > 0.01
+    for: 5m
+    labels:
+      severity: warning
+    annotations:
+      summary: "Redis latency high"
+      description: "Redis instance {{ $labels.instance }} has high ping latency (>10ms) for over 5 minutes"
+      dashboard_url: "https://grafana.alfred-platform.local/d/redis-overview"

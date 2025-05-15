@@ -12,8 +12,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Created new GitHub workflow for applying Black automatically (`apply-black.yml`)
 - Added in-depth documentation for Black formatting standards (`docs/formatting/BLACK-FORMATTING-STANDARDS.md`)
 - Created pre-commit hooks for consistent formatting in local development
+- Black formatter now exposes `--check` and `--verbose` flags for better control and error reporting
+- Added Redis health monitoring implementation with alert rules
 
 ### Changed
+- Enhanced Python Black formatter with better error handling and CLI options
 - Applied Black 24.1.1 formatting across entire codebase
 - Updated CI pipeline to enforce strict Black checks with fail-fast feedback
 - Standardized code formatting for better maintainability
@@ -29,6 +32,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Removed temporary CI workarounds used for PR #25 (Health Check Standardization)
 - Restored proper CI checks after module reorganization
 - Fixed inconsistent code style across Python files
+- Added SQLite checksum verification workaround for CI builds
 
 ## [0.3.0-healthcheck-full] - 2025-05-14
 

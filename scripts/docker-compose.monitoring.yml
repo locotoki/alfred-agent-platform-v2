@@ -1,0 +1,61 @@
+version: '3.8'
+
+x-healthcheck: &basic-health-check
+  interval: 10s
+  timeout: 5s
+  retries: 3
+  start_period: 20s
+
+x-labels: &service-labels
+  alfred.service.type: "monitoring"
+  alfred.service.phase: "5"
+  alfred.service.category: "infrastructure"
+
+services:
+  redis:
+    build:
+      context: ../services/redis
+      dockerfile: Dockerfile.new
+    ports:
+      - "6379:6379"
+      - "9091:9091"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9091/health"]
+      <<: *basic-health-check
+    labels:
+      <<: *service-labels
+      prometheus.metrics.port: "9091"
+      prometheus.metrics.path: "/metrics"
+
+  monitoring-redis:
+    build:
+      context: ../services/monitoring-redis
+      dockerfile: Dockerfile.new
+    ports:
+      - "9121:9121"
+      - "9092:9091"
+    depends_on:
+      - redis
+    environment:
+      - REDIS_URL=redis://redis:6379
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9091/health"]
+      <<: *basic-health-check
+    labels:
+      <<: *service-labels
+      prometheus.metrics.port: "9091"
+      prometheus.metrics.path: "/metrics"
+    # This will execute the container and exit when the health check succeeds
+    entrypoint: >
+      sh -c '
+        echo "Waiting for Redis to be healthy..."
+        until curl -s http://redis:9091/health | grep -q "healthy"; do
+          sleep 2
+        done
+        echo "Redis is healthy, testing monitoring-redis health..."
+        until curl -s http://localhost:9091/health | grep -q "healthy"; do
+          sleep 2
+        done
+        echo "Both services are healthy!"
+        exit 0
+      '
