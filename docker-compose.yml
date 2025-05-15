@@ -207,8 +207,9 @@ services:
       - OPENAI_API_KEY=${ALFRED_OPENAI_API_KEY:-sk-mock-key-for-development-only}
       - ANTHROPIC_API_KEY=${ALFRED_ANTHROPIC_API_KEY:-}
       - PORT=8079
-    volumes:
-      - ./services/model-registry/init-db.sql:/app/init-db.sql
+    # Using COPY in Dockerfile instead of volume mount to avoid WSL mount issues
+    # volumes:
+    #   - ./services/model-registry/init-db.sql:/app/init-db.sql
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8079/health"]
       <<: *basic-health-check
