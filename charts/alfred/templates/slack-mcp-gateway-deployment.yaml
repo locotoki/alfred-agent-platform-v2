@@ -1,0 +1,90 @@
+{{- if .Values.slackMcpGateway.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-slack-mcp-gateway
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ .Release.Name }}-slack-mcp-gateway
+    component: slack-mcp-gateway
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    app.kubernetes.io/name: slack-mcp-gateway
+    app.kubernetes.io/instance: {{ .Release.Name }}
+spec:
+  replicas: {{ .Values.slackMcpGateway.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-slack-mcp-gateway
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-slack-mcp-gateway
+        release: {{ .Release.Name }}
+        component: slack-mcp-gateway
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "9090"
+        prometheus.io/path: "/metrics"
+    spec:
+      serviceAccountName: {{ .Values.serviceAccount.name }}
+      containers:
+      - name: slack-mcp-gateway
+        image: "{{ .Values.slackMcpGateway.image.repository }}:{{ .Values.slackMcpGateway.image.tag }}"
+        imagePullPolicy: {{ .Values.slackMcpGateway.image.pullPolicy }}
+        ports:
+        - name: app
+          containerPort: 8001
+          protocol: TCP
+        env:
+        - name: SLACK_BOT_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: slack-bot-token
+              key: token
+        - name: SLACK_APP_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: slack-credentials
+              key: app-token
+        - name: REDIS_ENDPOINT
+          value: "{{ .Values.redis.endpoint }}:{{ .Values.redis.port }}"
+        - name: STREAM_KEY
+          value: {{ .Values.slackMcpGateway.config.streamKey }}
+        - name: A2A_ENDPOINT
+          value: {{ .Values.slackMcpGateway.config.a2aEndpoint }}
+        envFrom:
+        - configMapRef:
+            name: {{ .Release.Name }}-slack-mcp-gateway-config
+        resources:
+          {{- toYaml .Values.slackMcpGateway.resources | nindent 10 }}
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: app
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: app
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+{{- end }}

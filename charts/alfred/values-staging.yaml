@@ -9,6 +9,7 @@ slackMcpGateway:
   image:
     repository: ghcr.io/locotoki/slack-mcp-gateway
     tag: "0.1.0-rc3"
+    digest: "sha256:42bb863efa3faa2fef3a024bd22bbd1a492522488a952397b13c6329ab62ce4a"
     pullPolicy: Always
   
   # Environment configuration
