@@ -133,6 +133,14 @@ Slack tokens should be rotated every 90 days as per security best practices. To 
    - Add a reminder in the team calendar for the next rotation (90 days from current rotation)
    - Include link to this documentation in the calendar event
 
+## Known Issues & Fixes
+
+- [x] **Socket Mode command registration fix (v0.8.1)**
+  - Issue: Commands were registered with slash prefix (`@app.command("/alfred")`) causing dispatch failures
+  - Fix: Register command without slash prefix (`@app.command("alfred")`)
+  - Reference: See [SLACK-COMMAND-FIX-REPORT.md](../SLACK-COMMAND-FIX-REPORT.md) for details
+  - Symptoms: `/alfred` commands failing with "dispatch_failed" and "dispatch_unknown_error" in Slack
+
 ## Troubleshooting
 
 Common issues and their solutions:
@@ -140,6 +148,7 @@ Common issues and their solutions:
 1. **Connection Failures:**
    - Check that the `SLACK_APP_TOKEN` is valid and has the correct scope
    - Verify the app has Socket Mode enabled
+   - Confirm logs show "Socket Mode client connected" message
 
 2. **Authentication Failures:**
    - Confirm the `SLACK_BOT_TOKEN` is valid and not expired
@@ -148,7 +157,14 @@ Common issues and their solutions:
 3. **Command Not Found:**
    - Check that the command is included in the `ALLOWED_COMMANDS` list
    - Verify the command handler is properly implemented
+   - Ensure command is registered without slash prefix (`@app.command("alfred")`, not `@app.command("/alfred")`)
 
 4. **Health Check Failures:**
    - The `/healthz` and `/readyz` endpoints should return 200 OK
    - Check the logs for any startup errors
+
+5. **Command Dispatch Errors:**
+   - If you see "dispatch_failed" or "dispatch_unknown_error" in Slack, check:
+     - Command registration format (no slash prefix)
+     - Exception handling in command processors
+     - Verify `ack()` is called immediately at the start of the handler
