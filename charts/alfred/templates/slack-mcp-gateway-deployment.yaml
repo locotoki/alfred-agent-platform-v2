@@ -1,0 +1,80 @@
+{{- if .Values.slackMcpGateway.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "alfred.fullname" . }}-slack-mcp-gateway
+  labels:
+    {{- include "alfred.labels" . | nindent 4 }}
+    app.kubernetes.io/component: slack-mcp-gateway
+spec:
+  replicas: {{ .Values.slackMcpGateway.replicaCount | default 1 }}
+  selector:
+    matchLabels:
+      {{- include "alfred.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: slack-mcp-gateway
+  template:
+    metadata:
+      labels:
+        {{- include "alfred.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: slack-mcp-gateway
+    spec:
+      containers:
+        - name: slack-mcp-gateway
+          image: "{{ .Values.slackMcpGateway.image.repository }}:{{ .Values.slackMcpGateway.image.tag }}"
+          imagePullPolicy: {{ .Values.slackMcpGateway.image.pullPolicy | default "IfNotPresent" }}
+          envFrom:
+            - secretRef:
+                name: {{ include "alfred.fullname" . }}-slack-mcp-gateway-secrets
+            - configMapRef:
+                name: {{ include "alfred.fullname" . }}-slack-mcp-gateway-config
+          env:
+            - name: SOCKET_MODE
+              value: "true"
+            - name: LOG_LEVEL
+              value: "{{ .Values.slackMcpGateway.env.LOG_LEVEL | default "INFO" }}"
+            - name: REDIS_HOST
+              value: "{{ .Values.slackMcpGateway.env.REDIS_HOST | default "redis" }}"
+            - name: REDIS_PORT
+              value: "{{ .Values.slackMcpGateway.env.REDIS_PORT | default "6379" }}"
+            - name: REDIS_DB
+              value: "{{ .Values.slackMcpGateway.env.REDIS_DB | default "0" }}"
+          livenessProbe:
+            exec:
+              command:
+              - python
+              - -c
+              - |
+                import os
+                import sys
+                
+                # If the socket mode process is running, we consider the service healthy
+                try:
+                    with open('/tmp/socket_mode_heartbeat', 'r') as f:
+                        last_timestamp = float(f.read().strip())
+                    import time
+                    # Check if heartbeat is within last 60 seconds
+                    if time.time() - last_timestamp < 60:
+                        sys.exit(0)
+                    else:
+                        sys.exit(1)
+                except:
+                    sys.exit(1)
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            timeoutSeconds: 5
+            failureThreshold: 3
+          resources:
+            {{- toYaml .Values.slackMcpGateway.resources | nindent 12 }}
+      {{- with .Values.slackMcpGateway.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.slackMcpGateway.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.slackMcpGateway.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+{{- end }}
