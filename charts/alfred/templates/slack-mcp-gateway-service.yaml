@@ -11,21 +11,13 @@ metadata:
     heritage: {{ .Release.Service }}
     app.kubernetes.io/name: slack-mcp-gateway
     app.kubernetes.io/instance: {{ .Release.Name }}
-  annotations:
-    prometheus.io/scrape: "true"
-    prometheus.io/port: "9090"
-    prometheus.io/path: "/metrics"
 spec:
   type: {{ .Values.slackMcpGateway.service.type }}
   ports:
-    - port: {{ .Values.slackMcpGateway.service.ports.app }}
+    - port: {{ .Values.slackMcpGateway.service.port }}
       targetPort: app
       protocol: TCP
       name: app
-    - port: {{ .Values.slackMcpGateway.service.ports.metrics }}
-      targetPort: 9090
-      protocol: TCP
-      name: metrics
   selector:
     app: {{ .Release.Name }}-slack-mcp-gateway
     release: {{ .Release.Name }}
