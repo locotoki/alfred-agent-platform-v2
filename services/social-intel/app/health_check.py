@@ -9,11 +9,10 @@ from typing import Any, Dict
 
 import aiohttp
 import structlog
-from fastapi import APIRouter, Response, status
-
 from app.database import get_pool
 from app.metrics import OFFLINE_MODE_GAUGE
 from app.utils.circuit_breaker import CircuitBreaker
+from fastapi import APIRouter, Response, status
 
 logger = structlog.get_logger(__name__)
 

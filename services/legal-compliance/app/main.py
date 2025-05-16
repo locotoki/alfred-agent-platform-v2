@@ -17,12 +17,7 @@ from agents.legal_compliance import (
     LegalComplianceAgent,
     RegulationCheckRequest,
 )
-from libs.a2a_adapter import (
-    A2AEnvelope,
-    PolicyMiddleware,
-    PubSubTransport,
-    SupabaseTransport,
-)
+from libs.a2a_adapter import A2AEnvelope, PolicyMiddleware, PubSubTransport, SupabaseTransport
 from libs.agent_core.health import create_health_app
 
 logger = structlog.get_logger(__name__)

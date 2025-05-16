@@ -13,10 +13,7 @@ from datetime import datetime
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 # Import agent
-from agents.social_intel.flows.youtube_flows import (
-    youtube_blueprint_flow,
-    youtube_niche_scout_flow,
-)
+from agents.social_intel.flows.youtube_flows import youtube_blueprint_flow, youtube_niche_scout_flow
 
 
 async def test_niche_scout(queries=None):
