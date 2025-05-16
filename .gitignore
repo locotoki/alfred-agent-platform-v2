@@ -60,6 +60,7 @@ data/
 *.csv
 *.json
 !package.json
+!package-lock.json
 !tsconfig.json
 !monitoring/grafana/custom-dashboards/*.json
 
