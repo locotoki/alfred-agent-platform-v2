@@ -2,11 +2,12 @@
 FastAPI server for Slack App integration with Socket Mode.
 """
 
-import os
 import logging
+import os
 import threading
+
 from fastapi import FastAPI, Response
-from prometheus_client import generate_latest, CONTENT_TYPE_LATEST, Counter
+from prometheus_client import CONTENT_TYPE_LATEST, Counter, generate_latest
 from slack_bolt import App
 from slack_bolt.adapter.socket_mode import SocketModeHandler
 

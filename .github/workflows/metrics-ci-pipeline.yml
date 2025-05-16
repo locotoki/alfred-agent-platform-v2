@@ -206,13 +206,18 @@ jobs:
             exit 0
           fi
       
+      - name: Install docker-compose plugin
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y docker-compose-plugin
+          
       - name: Set up Docker Compose
         run: |
-          docker-compose --version
+          docker-compose --version || docker compose version
       
       - name: Start services
         run: |
-          docker-compose -f docker-compose-clean.yml up -d
+          docker compose -f docker-compose-clean.yml up -d
       
       - name: Wait for services to be ready
         run: |
@@ -234,4 +239,4 @@ jobs:
       
       - name: Teardown services
         run: |
-          docker-compose -f docker-compose-clean.yml down
+          docker compose -f docker-compose-clean.yml down

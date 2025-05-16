@@ -1,0 +1,88 @@
+{{- if .Values.slackMcpGateway.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-slack-mcp-gateway
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ .Release.Name }}-slack-mcp-gateway
+    component: slack-mcp-gateway
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    app.kubernetes.io/name: slack-mcp-gateway
+    app.kubernetes.io/instance: {{ .Release.Name }}
+spec:
+  replicas: {{ .Values.slackMcpGateway.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-slack-mcp-gateway
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-slack-mcp-gateway
+        release: {{ .Release.Name }}
+        component: slack-mcp-gateway
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "9090"
+        prometheus.io/path: "/metrics"
+    spec:
+      serviceAccountName: {{ .Values.serviceAccount.name | default "default" }}
+      containers:
+      - name: slack-mcp-gateway
+        image: "{{ .Values.slackMcpGateway.image.repository }}:{{ .Values.slackMcpGateway.image.tag }}"
+        imagePullPolicy: {{ .Values.slackMcpGateway.image.pullPolicy }}
+        ports:
+        - name: app
+          containerPort: 3000
+          protocol: TCP
+        env:
+        - name: SLACK_APP_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.slackMcpGateway.envFromSecret }}
+              key: SLACK_APP_TOKEN
+        - name: REDIS_HOST
+          value: "redis"
+        - name: REDIS_PORT
+          value: "6379"
+        - name: MCP_REDIS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.slackMcpGateway.envFromSecret }}
+              key: MCP_REDIS_PASSWORD
+        envFrom:
+        - configMapRef:
+            name: {{ .Release.Name }}-slack-mcp-gateway-config
+        resources:
+          {{- toYaml .Values.slackMcpGateway.resources | nindent 10 }}
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: app
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: app
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+{{- end }}

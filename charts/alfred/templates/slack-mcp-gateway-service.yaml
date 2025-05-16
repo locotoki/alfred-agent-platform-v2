@@ -1,0 +1,24 @@
+{{- if .Values.slackMcpGateway.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-slack-mcp-gateway
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ .Release.Name }}-slack-mcp-gateway
+    component: slack-mcp-gateway
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    app.kubernetes.io/name: slack-mcp-gateway
+    app.kubernetes.io/instance: {{ .Release.Name }}
+spec:
+  type: {{ .Values.slackMcpGateway.service.type }}
+  ports:
+    - port: {{ .Values.slackMcpGateway.service.port }}
+      targetPort: app
+      protocol: TCP
+      name: app
+  selector:
+    app: {{ .Release.Name }}-slack-mcp-gateway
+    release: {{ .Release.Name }}
+{{- end }}
