@@ -1,0 +1,55 @@
+# Staging-specific values for Alfred Helm chart
+
+# Inherit base values
+# Override staging-specific settings
+
+# Enable Slack MCP Gateway for staging
+slackMcpGateway:
+  enabled: true
+  image:
+    repository: ghcr.io/locotoki/slack-mcp-gateway
+    tag: "0.1.0-rc3"
+    pullPolicy: Always
+  
+  # Environment configuration
+  envFromSecret: slack-mcp-gateway-secrets
+  
+  # Resource allocation for staging
+  resources:
+    requests:
+      memory: "128Mi"
+      cpu: "100m"
+    limits:
+      memory: "256Mi"
+      cpu: "200m"
+  
+  # Replica count for staging
+  replicaCount: 1
+  
+  # Service configuration
+  service:
+    type: ClusterIP
+    port: 80
+    targetPort: 3000
+  
+  # Health check configuration
+  livenessProbe:
+    httpGet:
+      path: /health
+      port: 3000
+    initialDelaySeconds: 10
+    periodSeconds: 30
+  
+  readinessProbe:
+    httpGet:
+      path: /health
+      port: 3000
+    initialDelaySeconds: 5
+    periodSeconds: 10
+
+# Redis configuration for staging
+redis:
+  enabled: true
+  auth:
+    existingSecret: redis-password
+    existingSecretPasswordKey: redis-password
