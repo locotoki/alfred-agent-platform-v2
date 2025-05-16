@@ -1,0 +1,32 @@
+name: Health Check Template Validation
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths:
+      - 'services/*/Dockerfile'
+      - 'services/*/entrypoint.sh'
+  pull_request:
+    branches: [ main, develop ]
+    paths:
+      - 'services/*/Dockerfile'
+      - 'services/*/entrypoint.sh'
+  workflow_dispatch:
+
+jobs:
+  validate-templates:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Validate Health Check Templates
+        run: |
+          chmod +x ./scripts/validate-health-templates.sh
+          ./scripts/validate-health-templates.sh
+      
+      - name: Fail on non-compliant services
+        if: ${{ failure() }}
+        run: |
+          echo "::error::Some services do not comply with the standardized health check template!"
+          echo "::error::Run ./scripts/apply-template-standard.sh [service-name] to fix."
+          exit 1
