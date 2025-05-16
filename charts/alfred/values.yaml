@@ -29,6 +29,38 @@ dbMetrics:
     DB_USER: postgres
     DB_NAME: postgres
 
+# Slack App configuration
+slackApp:
+  enabled: true  # Set to true in staging & prod
+  image:
+    repository: ghcr.io/alfred/slack-app
+    tag: v0.8.1  # bump via CI
+    pullPolicy: IfNotPresent
+  env:
+    SOCKET_MODE: "true"
+    LOG_LEVEL: "info"
+  secrets:
+    # These will be provided via CI/CD from GitHub Environments
+    SLACK_BOT_TOKEN: ""
+    SLACK_APP_TOKEN: ""
+    SLACK_SIGNING_SECRET: ""
+  config:
+    COMMAND_PREFIX: "/alfred"
+    DEFAULT_CHANNEL: "general"
+    ALLOWED_COMMANDS: "help,status,search,ask,agents"
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 200m
+      memory: 256Mi
+  ingress:
+    enabled: false  # Set to true only if HTTP mode is required instead of Socket Mode
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+
 # Prometheus configuration
 prometheus:
   enabled: true
