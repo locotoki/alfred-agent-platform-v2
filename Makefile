@@ -3,7 +3,7 @@
 include .env
 export $(shell sed 's/=.*//' .env)
 
-.PHONY: help install start stop restart clean test test-unit test-integration test-e2e lint format dev deploy build update-dashboards setup-metrics
+.PHONY: help install start stop restart clean test test-unit test-integration test-e2e lint format dev deploy build update-dashboards setup-metrics compose-generate up down
 
 help:
 	@echo "Alfred Agent Platform v2 Makefile"
@@ -24,6 +24,9 @@ help:
 	@echo "build                Build all services"
 	@echo "update-dashboards    Reload Grafana dashboards"
 	@echo "setup-metrics        Setup DB metrics service"
+	@echo "compose-generate     Generate docker-compose from service snippets"
+	@echo "up                   Start entire local stack (all services)"
+	@echo "down                 Stop entire local stack"
 
 install:
 	pip install -r requirements.txt
@@ -79,3 +82,18 @@ build:
 update-dashboards:
 	@echo "Reloading Grafana dashboards..."
 	curl -X POST http://admin:admin@localhost:3002/api/admin/provisioning/dashboards/reload
+
+# Generate docker-compose from snippets
+compose-generate:
+	@echo "Generating docker-compose.generated.yml..."
+	@python3 scripts/generate_compose.py
+
+# Start local stack with generated compose
+up: compose-generate
+	@echo "Starting Alfred Agent Platform..."
+	@docker compose -f docker-compose.generated.yml --profile full up -d
+
+# Stop local stack
+down:
+	@echo "Stopping Alfred Agent Platform..."
+	@docker compose -f docker-compose.generated.yml down

@@ -1,0 +1,34 @@
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# Install dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    busybox curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Set environment variables
+ENV PYTHONPATH=/app
+ENV PORT=8080
+
+# Install dependencies
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy application code
+COPY app/ app/
+
+# Copy healthcheck script
+COPY scripts/healthcheck.sh /usr/local/bin/healthcheck
+RUN chmod +x /usr/local/bin/healthcheck
+
+# Expose port
+EXPOSE 8080
+EXPOSE 9091
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+    CMD curl -f http://localhost:8080/health || exit 1
+
+# Run the application - metrics are exported by the healthcheck script
+CMD ["/usr/local/bin/healthcheck", "--export-prom", "9091", "--", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8080"]

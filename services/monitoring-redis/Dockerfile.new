@@ -1,0 +1,34 @@
+FROM alfred/healthcheck:0.4.0 AS healthcheck
+
+FROM oliver006/redis_exporter:v1.55.0
+
+# Copy healthcheck binary
+COPY --from=healthcheck /usr/local/bin/healthcheck /usr/local/bin/healthcheck
+RUN chmod +x /usr/local/bin/healthcheck
+
+# Install curl for healthcheck
+USER root
+RUN apk add --no-cache curl
+USER nobody
+
+# Expose redis_exporter metrics port
+EXPOSE 9121
+
+# Expose healthcheck metrics port
+EXPOSE 9091
+
+# Set standard healthcheck
+HEALTHCHECK --interval=30s --timeout=10s --retries=3 --start-period=15s \
+  CMD healthcheck --http http://localhost:9121/metrics || exit 1
+
+# Set labels
+LABEL maintainer="Alfred Platform Team" \
+      version="1.55.0" \
+      service="monitoring-redis" \
+      component="monitoring" \
+      prometheus.metrics.port="9121" \
+      prometheus.metrics.path="/metrics"
+
+# Use healthcheck to wrap the redis_exporter
+ENTRYPOINT ["healthcheck", "--export-prom", ":9091", "--", "/redis_exporter"]
+CMD []

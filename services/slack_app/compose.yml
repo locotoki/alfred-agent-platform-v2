@@ -1,0 +1,9 @@
+services:
+  slack_app:
+    image: ${ALFRED_REGISTRY}/alfred-platform/slack_app:${ALFRED_VERSION}
+    environment:
+    - ALFRED_ENVIRONMENT=${ALFRED_ENVIRONMENT}
+    - ALFRED_LOG_LEVEL=${ALFRED_LOG_LEVEL}
+    restart: unless-stopped
+    networks:
+    - alfred-network

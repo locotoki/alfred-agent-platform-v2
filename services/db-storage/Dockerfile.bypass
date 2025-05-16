@@ -1,0 +1,13 @@
+FROM ghcr.io/alfred/healthcheck:0.4.0 AS healthcheck
+COPY --from=healthcheck /usr/local/bin/healthcheck /usr/local/bin/healthcheck
+# Use the official Supabase storage image as base
+FROM supabase/storage-api:v0.40.4
+
+# Add our custom startup script that bypasses migrations
+COPY bypass-migrations.js /app/bypass-migrations.js
+
+# Start with our custom entry point that bypasses migrations
+EXPOSE 9091 # Metrics port
+ENTRYPOINT []
+CMD ["node", "/app/bypass-migrations.js"]
+# To expose metrics, update your ENTRYPOINT/CMD to include: /usr/local/bin/healthcheck --export-prom :9091 &

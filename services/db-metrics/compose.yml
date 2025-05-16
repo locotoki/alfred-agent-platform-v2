@@ -1,0 +1,11 @@
+services:
+  db-metrics:
+    image: ${ALFRED_REGISTRY}/alfred-platform/db-metrics:${ALFRED_VERSION}
+    environment:
+    - ALFRED_ENVIRONMENT=${ALFRED_ENVIRONMENT}
+    - ALFRED_LOG_LEVEL=${ALFRED_LOG_LEVEL}
+    restart: unless-stopped
+    networks:
+    - alfred-network
+    volumes:
+    - db-metrics-data:/var/lib/postgresql/data

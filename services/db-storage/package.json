@@ -1,0 +1,10 @@
+{
+  "name": "mock-storage-api",
+  "version": "1.0.0",
+  "private": true,
+  "main": "mock-storage.js",
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5"
+  }
+}

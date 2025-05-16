@@ -1,0 +1,21 @@
+FROM ghcr.io/alfred/healthcheck:0.4.0 AS healthcheck
+COPY --from=healthcheck /usr/local/bin/healthcheck /usr/local/bin/healthcheck
+# Use the official Supabase storage image as base
+FROM supabase/storage-api:v0.40.4
+
+# Install PostgreSQL client for database initialization
+USER root
+RUN apk add --no-cache postgresql-client bash
+
+# Add our custom scripts
+COPY fix-migrations-entrypoint.sh /app/fix-migrations-entrypoint.sh
+COPY fix-storage-migrations.sql /app/fix-storage-migrations.sql
+
+# Make the entrypoint script executable
+RUN chmod +x /app/fix-migrations-entrypoint.sh
+
+# Reset the original entrypoint and use our custom one
+EXPOSE 9091 # Metrics port
+ENTRYPOINT []
+CMD ["/app/fix-migrations-entrypoint.sh"]
+# To expose metrics, update your ENTRYPOINT/CMD to include: /usr/local/bin/healthcheck --export-prom :9091 &

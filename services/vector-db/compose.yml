@@ -1,0 +1,13 @@
+services:
+  vector-db:
+    image: ${ALFRED_REGISTRY}/alfred-platform/vector-db:${ALFRED_VERSION}
+    environment:
+    - ALFRED_ENVIRONMENT=${ALFRED_ENVIRONMENT}
+    - ALFRED_LOG_LEVEL=${ALFRED_LOG_LEVEL}
+    restart: unless-stopped
+    networks:
+    - alfred-network
+    volumes:
+    - vector-db-data:/var/lib/postgresql/data
+    ports:
+    - ${QDRANT_PORT:-6333}:6333

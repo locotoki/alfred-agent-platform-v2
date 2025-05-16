@@ -1,0 +1,20 @@
+FROM ghcr.io/alfred/healthcheck:0.4.0 AS healthcheck
+COPY --from=healthcheck /usr/local/bin/healthcheck /usr/local/bin/healthcheck
+FROM supabase/storage-api:latest
+
+USER root
+
+# Use apk for Alpine Linux
+RUN apk add --no-cache postgresql-client
+
+# Copy the entrypoint script
+COPY entrypoint.sh /app/entrypoint.sh
+RUN chmod +x /app/entrypoint.sh
+
+# Switch back to node user
+USER node
+
+# Set the entrypoint to our script
+EXPOSE 9091 # Metrics port
+ENTRYPOINT ["/app/entrypoint.sh"]
+# To expose metrics, update your ENTRYPOINT/CMD to include: /usr/local/bin/healthcheck --export-prom :9091 &
