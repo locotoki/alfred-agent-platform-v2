@@ -13,7 +13,12 @@ from agents.financial_tax.models import (
     TaxCalculationRequest,
     TaxRateRequest,
 )
-from libs.a2a_adapter import A2AEnvelope, PolicyMiddleware, PubSubTransport, SupabaseTransport
+from libs.a2a_adapter import (
+    A2AEnvelope,
+    PolicyMiddleware,
+    PubSubTransport,
+    SupabaseTransport,
+)
 
 pytestmark = pytest.mark.integration
 

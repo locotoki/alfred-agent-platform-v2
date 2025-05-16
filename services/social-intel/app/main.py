@@ -9,6 +9,12 @@ from typing import Any, Dict, List, Optional
 import redis
 import structlog
 import yaml
+from fastapi import Body, FastAPI, HTTPException, Query, Request
+from fastapi.openapi.utils import get_openapi
+from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi.staticfiles import StaticFiles
+
+from agents.social_intel.agent import SocialIntelAgent
 from app.blueprint import SeedToBlueprint
 from app.niche_scout import NicheScout
 from app.workflow_endpoints import (
@@ -17,12 +23,6 @@ from app.workflow_endpoints import (
     get_workflow_result,
     schedule_workflow,
 )
-from fastapi import Body, FastAPI, HTTPException, Query, Request
-from fastapi.openapi.utils import get_openapi
-from fastapi.responses import HTMLResponse, JSONResponse
-from fastapi.staticfiles import StaticFiles
-
-from agents.social_intel.agent import SocialIntelAgent
 from libs.a2a_adapter import PolicyMiddleware, PubSubTransport, SupabaseTransport
 from libs.agent_core.health import create_health_app
 
