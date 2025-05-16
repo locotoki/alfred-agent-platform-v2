@@ -1,0 +1,39 @@
+name: Deploy Images
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  push-image:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment: staging
+    strategy:
+      matrix:
+        service:
+          - slack_mcp_gateway
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+      
+      - name: Login to GHCR
+        run: echo "${{ secrets.GHCR_PAT }}" | docker login ghcr.io -u ${{ github.repository_owner }} --password-stdin
+      
+      - name: Build and push image
+        run: |
+          IMAGE_ID=ghcr.io/${{ github.repository_owner }}/alfred-platform/${{ matrix.service }}:${{ github.sha }}
+          STAGING_TAG=ghcr.io/${{ github.repository_owner }}/alfred-platform/${{ matrix.service }}:latest
+          
+          cd services/${{ matrix.service }}
+          docker build -t $IMAGE_ID .
+          docker tag $IMAGE_ID $STAGING_TAG
+          docker push $IMAGE_ID
+          docker push $STAGING_TAG
