@@ -4,7 +4,6 @@ import json
 import os
 import socket
 import time
-import traceback
 
 import requests
 from flask import Flask, Response, jsonify
@@ -29,15 +28,11 @@ CHECK_TYPE = os.getenv("CHECK_TYPE", "http")  # "http" or "tcp"
 DB_POSTGRES_URL = os.getenv("DB_POSTGRES_URL", "")
 COLLECTION_INTERVAL = int(os.getenv("COLLECTION_INTERVAL", "15"))
 PORT = int(os.getenv("PORT", "9091"))
-DEBUG_MODE = os.getenv("DEBUG_MODE", "false").lower() == "true"
 
 
 def check_service_http():
     """Check HTTP service availability"""
     try:
-        if DEBUG_MODE:
-            print(f"Checking HTTP service: {SERVICE_URL}")
-            
         if not SERVICE_URL:
             service_availability.labels(service=SERVICE_NAME).set(0)
             return False
@@ -58,22 +53,13 @@ def check_service_http():
                 service_availability.labels(service=SERVICE_NAME).set(1)
                 return True
             except Exception as e:
-                if DEBUG_MODE:
-                    print(f"Error connecting to {SERVICE_NAME} TCP port: {e}")
-                    print(traceback.format_exc())
+                print(f"Error connecting to {SERVICE_NAME} TCP port: {e}")
                 service_availability.labels(service=SERVICE_NAME).set(0)
                 return False
 
         # Standard HTTP health check for other services
         url = f"{SERVICE_URL.rstrip('/')}/{HEALTH_PATH.lstrip('/')}"
-        if DEBUG_MODE:
-            print(f"Checking URL: {url}")
-            
         response = requests.get(url, timeout=5)
-        
-        if DEBUG_MODE:
-            print(f"Response status: {response.status_code}")
-            print(f"Response body: {response.text[:100]}...")
 
         if response.status_code < 400:
             service_availability.labels(service=SERVICE_NAME).set(1)
@@ -82,9 +68,7 @@ def check_service_http():
             service_availability.labels(service=SERVICE_NAME).set(0)
             return False
     except Exception as e:
-        if DEBUG_MODE:
-            print(f"Error checking HTTP service: {e}")
-            print(traceback.format_exc())
+        print(f"Error checking HTTP service: {e}")
         service_availability.labels(service=SERVICE_NAME).set(0)
         return False
 
@@ -114,9 +98,7 @@ def check_service_tcp():
         service_availability.labels(service=SERVICE_NAME).set(1)
         return True
     except Exception as e:
-        if DEBUG_MODE:
-            print(f"Error checking TCP service: {e}")
-            print(traceback.format_exc())
+        print(f"Error checking TCP service: {e}")
         service_availability.labels(service=SERVICE_NAME).set(0)
         return False
 
@@ -131,9 +113,7 @@ def check_db_connections():
         # For now, just set a placeholder value
         db_postgres_connections.set(10)
     except Exception as e:
-        if DEBUG_MODE:
-            print(f"Error checking DB connections: {e}")
-            print(traceback.format_exc())
+        print(f"Error checking DB connections: {e}")
         db_postgres_connections.set(0)
 
 
@@ -174,7 +154,7 @@ def health():
 
 @app.route("/healthz")
 def healthz():
-    """Simple health probe endpoint that always returns healthy"""
+    """Simple health probe endpoint"""
     return jsonify({"status": "ok"})
 
 
@@ -182,14 +162,7 @@ def healthz():
 def background_collector():
     """Collect metrics periodically in the background"""
     while True:
-        if DEBUG_MODE:
-            print("Running background metrics collection")
-        try:
-            collect_metrics()
-        except Exception as e:
-            if DEBUG_MODE:
-                print(f"Error in background collector: {e}")
-                print(traceback.format_exc())
+        collect_metrics()
         time.sleep(COLLECTION_INTERVAL)
 
 
@@ -207,7 +180,6 @@ if __name__ == "__main__":
     print(f"Starting DB metrics exporter for {SERVICE_NAME}")
     print(f"Service URL: {SERVICE_URL}")
     print(f"Check type: {CHECK_TYPE}")
-    print(f"Debug mode: {DEBUG_MODE}")
     print(f"Listening on port: {PORT}")
 
     # Start the server
