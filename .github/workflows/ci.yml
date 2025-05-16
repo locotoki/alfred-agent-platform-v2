@@ -172,7 +172,6 @@ jobs:
     strategy:
       matrix:
         service:
-          - alfred-core
           - slack_mcp_gateway
 
     steps:
