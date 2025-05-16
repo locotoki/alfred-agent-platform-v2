@@ -172,8 +172,7 @@ jobs:
     strategy:
       matrix:
         service:
-          - alfred-bot
-          - social-intel
+          - alfred-core
           - legal-compliance
           - financial-tax
           - mission-control
