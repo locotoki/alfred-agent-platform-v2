@@ -7,7 +7,12 @@ from fastapi import FastAPI, Request
 from slack_bolt import App
 from slack_bolt.adapter.fastapi import SlackRequestHandler
 
-from libs.a2a_adapter import A2AEnvelope, PolicyMiddleware, PubSubTransport, SupabaseTransport
+from libs.a2a_adapter import (
+    A2AEnvelope,
+    PolicyMiddleware,
+    PubSubTransport,
+    SupabaseTransport,
+)
 from libs.agent_core.health import create_health_app
 
 logger = structlog.get_logger(__name__)

@@ -16,7 +16,12 @@ from agents.financial_tax.models import (
     TaxRateRequest,
     TaxRateResponse,
 )
-from libs.a2a_adapter import A2AEnvelope, PolicyMiddleware, PubSubTransport, SupabaseTransport
+from libs.a2a_adapter import (
+    A2AEnvelope,
+    PolicyMiddleware,
+    PubSubTransport,
+    SupabaseTransport,
+)
 
 
 @pytest.fixture

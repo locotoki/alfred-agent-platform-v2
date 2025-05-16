@@ -13,6 +13,7 @@ from datetime import datetime
 from typing import Any, Dict, List, Optional, Tuple
 
 import structlog
+
 from app.database import niche_repository
 from app.metrics import (
     NICHE_OPPORTUNITY_SCORE,
