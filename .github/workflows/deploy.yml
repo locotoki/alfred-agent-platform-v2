@@ -29,8 +29,8 @@ jobs:
       
       - name: Build and push image
         run: |
-          IMAGE_ID=ghcr.io/${{ github.repository_owner }}/alfred-platform/${{ matrix.service }}:${{ github.sha }}
-          STAGING_TAG=ghcr.io/${{ github.repository_owner }}/alfred-platform/${{ matrix.service }}:latest
+          IMAGE_ID=ghcr.io/${{ github.repository_owner }}/alfred-agent-platform-v2/${{ matrix.service }}:${{ github.sha }}
+          STAGING_TAG=ghcr.io/${{ github.repository_owner }}/alfred-agent-platform-v2/${{ matrix.service }}:latest
           
           cd services/${{ matrix.service }}
           docker build -t $IMAGE_ID .
