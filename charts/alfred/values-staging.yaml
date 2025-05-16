@@ -1,0 +1,48 @@
+# Staging environment values for Alfred Agent Platform
+global:
+  environment: staging
+  
+# Enable MCP Gateway for Slack integration
+slackMcpGateway:
+  enabled: true
+  replicaCount: 1
+  image:
+    repository: slack-mcp-gateway
+    tag: latest
+    pullPolicy: Always
+  env:
+    LOG_LEVEL: "INFO"
+    REDIS_HOST: "redis"
+    REDIS_PORT: "6379"
+    REDIS_DB: "0"
+  secrets:
+    SLACK_BOT_TOKEN: ""  # To be filled from GitHub Actions secrets
+    SLACK_SIGNING_SECRET: ""  # To be filled from GitHub Actions secrets
+    SLACK_APP_TOKEN: ""  # To be filled from GitHub Actions secrets
+    REDIS_PASSWORD: ""  # To be filled from GitHub Actions secrets
+  config:
+    MCP_REQUEST_STREAM: "mcp.requests"
+    MCP_RESPONSE_STREAM: "mcp.responses"
+    SLACK_APP_ENV: "staging"
+  echoAgent:
+    enabled: true
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 200m
+      memory: 256Mi
+
+# Metrics settings for staging
+metrics:
+  enabled: true
+
+# General settings for staging
+prometheus:
+  enabled: true
+grafana:
+  enabled: true
+  sidecar:
+    dashboards:
+      enabled: true
