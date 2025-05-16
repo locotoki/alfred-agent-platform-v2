@@ -18,10 +18,10 @@ This guide covers the deployment process for the Slack MCP Gateway to the stagin
 echo $GITHUB_TOKEN | docker login ghcr.io -u $GITHUB_ACTOR --password-stdin
 
 # Build the image
-docker build -t ghcr.io/org/slack-mcp-gateway:0.1.0-rc3 services/slack_mcp_gateway
+docker build -t ghcr.io/locotoki/slack-mcp-gateway:0.1.0-rc3 services/slack_mcp_gateway
 
 # Push to registry
-docker push ghcr.io/org/slack-mcp-gateway:0.1.0-rc3
+docker push ghcr.io/locotoki/slack-mcp-gateway:0.1.0-rc3
 ```
 
 ### 2. Configure Kubernetes Secrets
@@ -138,11 +138,11 @@ helm rollback alfred -n alfred
 
 ## Success Criteria
 
-✓ Gateway pod is running and healthy  
-✓ Health endpoint returns 200 OK  
-✓ Redis streams and consumer groups are created  
-✓ Slack commands receive responses within 5 seconds  
-✓ Resource usage within defined limits  
+✓ Gateway pod is running and healthy
+✓ Health endpoint returns 200 OK
+✓ Redis streams and consumer groups are created
+✓ Slack commands receive responses within 5 seconds
+✓ Resource usage within defined limits
 
 ## References
 

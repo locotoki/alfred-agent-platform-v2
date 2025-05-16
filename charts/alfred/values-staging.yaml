@@ -7,7 +7,7 @@
 slackMcpGateway:
   enabled: true
   image:
-    repository: ghcr.io/org/slack-mcp-gateway
+    repository: ghcr.io/locotoki/slack-mcp-gateway
     tag: "0.1.0-rc3"
     pullPolicy: Always
   
