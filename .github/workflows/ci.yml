@@ -177,6 +177,7 @@ jobs:
           - legal-compliance
           - financial-tax
           - mission-control
+          - slack_mcp_gateway
 
     steps:
       - uses: actions/checkout@v4
