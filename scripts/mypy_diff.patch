@@ -1,0 +1,29 @@
+--- mypy.ini	2025-05-14 10:23:00.398499280 +0100
++++ mypy_fix/mypy.ini	2025-05-14 10:23:00.398499280 +0100
+@@ -1,8 +1,18 @@
+ [mypy]
+ python_version = 3.11
+-disallow_untyped_defs = False
+-ignore_missing_imports = True
+-show_error_codes = True
+-follow_imports = skip
+-disable_error_code = misc, attr-defined, union-attr, var-annotated, arg-type, assignment
+-exclude = cleanup-temp/.*|node_modules/.*|docs/archive/.*|youtube-test-env/.*|services/social-intel/.*
+\ No newline at end of file
++warn_return_any = True
++warn_unused_configs = True
++disallow_untyped_defs = True
++disallow_incomplete_defs = True
++check_untyped_defs = True
++disallow_untyped_decorators = True
++no_implicit_optional = True
++strict_optional = True
++warn_redundant_casts = True
++warn_unused_ignores = True
++warn_no_return = True
++warn_unreachable = True
++
++# Fix for duplicate module issue
++namespace_packages = True
++explicit_package_bases = True
+\ No newline at end of file
