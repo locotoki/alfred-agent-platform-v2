@@ -12,9 +12,9 @@ metadata:
     app.kubernetes.io/name: slack-mcp-gateway
     app.kubernetes.io/instance: {{ .Release.Name }}
 data:
-  ECHO_AGENT_ENABLED: "{{ .Values.slackMcpGateway.config.echoAgent.enabled }}"
-  ECHO_AGENT_ENDPOINT: "{{ .Values.slackMcpGateway.config.echoAgent.endpoint }}"
-  LOG_LEVEL: "{{ .Values.slackMcpGateway.config.logLevel }}"
-  METRICS_ENABLED: "{{ .Values.slackMcpGateway.config.metrics.enabled }}"
-  # Add any other non-sensitive configuration values here
+  PORT: "3000"
+  NODE_ENV: "production"
+  LOG_LEVEL: "info"
+  ECHO_AGENT_ID: "echo-agent"
+  # Other non-sensitive configuration values
 {{- end }}

@@ -28,32 +28,30 @@ spec:
         prometheus.io/port: "9090"
         prometheus.io/path: "/metrics"
     spec:
-      serviceAccountName: {{ .Values.serviceAccount.name }}
+      serviceAccountName: {{ .Values.serviceAccount.name | default "default" }}
       containers:
       - name: slack-mcp-gateway
         image: "{{ .Values.slackMcpGateway.image.repository }}:{{ .Values.slackMcpGateway.image.tag }}"
         imagePullPolicy: {{ .Values.slackMcpGateway.image.pullPolicy }}
         ports:
         - name: app
-          containerPort: 8001
+          containerPort: 3000
           protocol: TCP
         env:
-        - name: SLACK_BOT_TOKEN
-          valueFrom:
-            secretKeyRef:
-              name: slack-bot-token
-              key: token
         - name: SLACK_APP_TOKEN
           valueFrom:
             secretKeyRef:
-              name: slack-credentials
-              key: app-token
-        - name: REDIS_ENDPOINT
-          value: "{{ .Values.redis.endpoint }}:{{ .Values.redis.port }}"
-        - name: STREAM_KEY
-          value: {{ .Values.slackMcpGateway.config.streamKey }}
-        - name: A2A_ENDPOINT
-          value: {{ .Values.slackMcpGateway.config.a2aEndpoint }}
+              name: {{ .Values.slackMcpGateway.envFromSecret }}
+              key: SLACK_APP_TOKEN
+        - name: REDIS_HOST
+          value: "redis"
+        - name: REDIS_PORT
+          value: "6379"
+        - name: MCP_REDIS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.slackMcpGateway.envFromSecret }}
+              key: MCP_REDIS_PASSWORD
         envFrom:
         - configMapRef:
             name: {{ .Release.Name }}-slack-mcp-gateway-config
@@ -69,7 +67,7 @@ spec:
           failureThreshold: 3
         readinessProbe:
           httpGet:
-            path: /ready
+            path: /health
             port: app
           initialDelaySeconds: 10
           periodSeconds: 5
