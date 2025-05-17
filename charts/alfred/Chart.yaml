@@ -13,3 +13,6 @@ dependencies:
     version: "~7.0.0"
     repository: "https://grafana.github.io/helm-charts"
     condition: grafana.enabled
+  - name: diagnostics-bot
+    version: "0.1.0"
+    condition: diagnostics.enabled

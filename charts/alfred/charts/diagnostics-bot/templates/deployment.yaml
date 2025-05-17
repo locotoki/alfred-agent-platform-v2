@@ -1,0 +1,39 @@
+{{- if .Values.diagnostics.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "diagnostics-bot.fullname" . }}
+  labels:
+    {{- include "diagnostics-bot.labels" . | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "diagnostics-bot.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "diagnostics-bot.selectorLabels" . | nindent 8 }}
+    spec:
+      containers:
+      - name: diagnostics-bot
+        image: "{{ .Values.diagnostics.image.repository }}:{{ .Values.diagnostics.image.tag }}"
+        imagePullPolicy: {{ .Values.diagnostics.image.pullPolicy }}
+        env:
+        - name: SLACK_BOT_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: {{ include "diagnostics-bot.fullname" . }}-secrets
+              key: slack-bot-token
+        - name: SLACK_APP_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: {{ include "diagnostics-bot.fullname" . }}-secrets
+              key: slack-app-token
+        - name: PROMETHEUS_URL
+          value: {{ .Values.diagnostics.env.PROMETHEUS_URL | quote }}
+        - name: SOCKET_MODE_ENABLED
+          value: {{ .Values.diagnostics.socketMode | quote }}
+        resources:
+          {{- toYaml .Values.diagnostics.resources | nindent 10 }}
+{{- end }}

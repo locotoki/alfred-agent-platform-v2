@@ -1,0 +1,25 @@
+diagnostics:
+  enabled: false
+  image:
+    repository: ghcr.io/locotoki/alfred-platform/diagnostics-bot
+    tag: "0.8.3-pre"
+    pullPolicy: IfNotPresent
+  
+  socketMode: true
+  
+  env:
+    SLACK_BOT_TOKEN: ""
+    SLACK_APP_TOKEN: ""
+    PROMETHEUS_URL: "http://prometheus:9090"
+  
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 200m
+      memory: 256Mi
+  
+  service:
+    port: 80
+    targetPort: 8080
