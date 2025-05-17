@@ -2,14 +2,13 @@
 Tests for the translator module.
 """
 
-import uuid
-from datetime import datetime
 import json
 import re
+import uuid
+from datetime import datetime
 
-import pytest
 import jsonschema
-
+import pytest
 from slack_mcp_gateway import translator
 
 

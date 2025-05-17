@@ -9,7 +9,7 @@ import json
 import logging
 import threading
 import time
-from typing import Dict, Any, Optional
+from typing import Any, Dict, Optional
 
 import requests
 from slack_sdk import WebClient

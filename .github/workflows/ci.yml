@@ -119,10 +119,12 @@ jobs:
       - name: Run linters
         run: |
           flake8 --config=.flake8 .
-          # Use fixed mypy configuration with namespace packages support
-          chmod +x mypy_fix/run-mypy-fixed.sh
-          GITHUB_EVENT_PR_NUMBER=${{ github.event.pull_request.number }} ./mypy_fix/run-mypy-fixed.sh
           bandit -r agents/ libs/ services/ -c pyproject.toml
+      
+      - name: Run type checking (mypy)
+        run: |
+          echo "Running mypy with strict type checking..."
+          mypy --config-file=mypy.ini alfred/
 
       - name: Run tests with coverage
         run: |

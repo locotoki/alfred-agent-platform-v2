@@ -3,14 +3,15 @@ Test the Slack app command handler functionality.
 This test simulates a slash command payload and verifies the handler works correctly.
 """
 
+import json
 import os
 import sys
-import json
-from unittest.mock import patch, MagicMock, call
+from unittest.mock import MagicMock, call, patch
+
 import pytest
 
 # Import the application module
-from services.slack_app.app import app, handle_alfred_command, handle_help_command, COMMAND_PREFIX
+from services.slack_app.app import COMMAND_PREFIX, app, handle_alfred_command, handle_help_command
 
 
 def test_command_registration():

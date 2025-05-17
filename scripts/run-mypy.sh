@@ -37,7 +37,8 @@ EXCLUDE_ARGS="--exclude cleanup-temp --exclude docs/archive --exclude node_modul
               --exclude services/db-metrics/app.py \
               --exclude slack-bot/src/app.py \
               --exclude whatsapp-adapter/src/app.py \
-              --exclude agents/financial_tax"
+              --exclude agents/financial_tax \
+              --exclude .github"
 
 # Run mypy with comprehensive exclusions to avoid duplicate module conflicts
 echo "Running mypy with exclusions to avoid duplicate module conflicts..."

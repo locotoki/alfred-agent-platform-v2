@@ -30,6 +30,8 @@ def restart_service(state: RemediationState) -> RemediationState:
 
     try:
         # Get webhook URL for the service
+        if service_name is None:
+            raise ValueError("Service name is required for restart")
         webhook_url = settings.get_webhook_url(service_name)
 
         # Call n8n workflow to restart service
@@ -211,4 +213,4 @@ def restart_then_verify(
     # Set the entry point
     workflow.set_entry_point("restart")
 
-    return workflow.compile(), initial_state
+    return workflow.compile(), initial_state  # type: ignore[return-value]
