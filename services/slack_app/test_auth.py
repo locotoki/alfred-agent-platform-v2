@@ -1,6 +1,7 @@
 """
 Simple test script to check if Slack API tokens work correctly.
 """
+
 import os
 import sys
 
@@ -25,10 +26,10 @@ print("Testing Slack API tokens...")
 try:
     from slack_sdk import WebClient
     from slack_sdk.errors import SlackApiError
-    
+
     client = WebClient(token=bot_token)
     response = client.auth_test()
-    
+
     if response["ok"]:
         print("✅ Bot Token is valid!")
         print(f"Team: {response['team']}")
