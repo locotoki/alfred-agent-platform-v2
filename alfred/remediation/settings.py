@@ -6,7 +6,7 @@ allowing for environment-based configuration.
 """
 
 import os
-from typing import Dict, Any, Optional, Union, cast
+from typing import Any, Dict, Optional, Union, cast
 
 # Maximum number of retry attempts for service remediation
 # Can be overridden with REMEDIATION_MAX_RETRIES environment variable

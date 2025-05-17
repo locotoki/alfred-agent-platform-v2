@@ -1,0 +1,9 @@
+services:
+  slack_mcp_gateway:
+    image: ${ALFRED_REGISTRY}/alfred-platform/slack_mcp_gateway:${ALFRED_VERSION}
+    environment:
+    - ALFRED_ENVIRONMENT=${ALFRED_ENVIRONMENT}
+    - ALFRED_LOG_LEVEL=${ALFRED_LOG_LEVEL}
+    restart: unless-stopped
+    networks:
+    - alfred-network

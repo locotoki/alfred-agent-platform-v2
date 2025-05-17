@@ -11,9 +11,9 @@ aiohttp==3.9.1
 # LangChain Ecosystem
 # Using specific versions for deterministic installs
 langchain>=0.1.7
-langchain-community>=0.0.20
-langchain-core>=0.1.25
-langchain-openai==0.0.5
+langchain-community>=0.2.0
+langchain-core==0.2.27
+langchain-openai>=0.1.0
 langgraph==0.2.6  # Updated for Phase 7B remediation graphs
 langsmith>=0.1.0  # Updated to fix dependency conflict with langchain-core
 

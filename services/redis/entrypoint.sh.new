@@ -1,0 +1,50 @@
+#!/bin/sh
+set -e
+
+# Start Redis server in the background
+echo "Starting Redis server..."
+redis-server --protected-mode no &
+REDIS_PID=$!
+
+# Wait for Redis to become ready
+echo "Waiting for Redis to start..."
+until redis-cli ping > /dev/null 2>&1; do
+  echo "Waiting for Redis to become available..."
+  sleep 1
+done
+echo "Redis started successfully"
+
+# Start the health check wrapper using the healthcheck binary
+echo "Starting health check wrapper on port 9091 using healthcheck binary"
+cd /app && healthcheck --export-prom ":9091" -- python health_wrapper.py &
+HEALTH_PID=$!
+
+# Function to handle signals
+handle_exit() {
+  echo "Received termination signal, shutting down..."
+  kill -TERM $HEALTH_PID 2>/dev/null || echo "Health check wrapper already stopped"
+  redis-cli shutdown || kill -TERM $REDIS_PID 2>/dev/null
+  wait $REDIS_PID
+  echo "Redis shutdown completed"
+  exit 0
+}
+
+# Set up signal trapping
+trap handle_exit TERM INT
+
+# Check processes periodically
+while true; do
+  # Check if Redis is still running
+  if ! kill -0 $REDIS_PID 2>/dev/null; then
+    echo "Redis server has stopped unexpectedly"
+    exit 1
+  fi
+  
+  # Check if health check wrapper is still running
+  if ! kill -0 $HEALTH_PID 2>/dev/null; then
+    echo "Health check wrapper has stopped unexpectedly"
+    exit 1
+  fi
+  
+  sleep 5
+done

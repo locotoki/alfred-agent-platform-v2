@@ -1,0 +1,9 @@
+services:
+  whatsapp-adapter:
+    image: ${ALFRED_REGISTRY}/alfred-platform/whatsapp-adapter:${ALFRED_VERSION}
+    environment:
+    - ALFRED_ENVIRONMENT=${ALFRED_ENVIRONMENT}
+    - ALFRED_LOG_LEVEL=${ALFRED_LOG_LEVEL}
+    restart: unless-stopped
+    networks:
+    - alfred-network

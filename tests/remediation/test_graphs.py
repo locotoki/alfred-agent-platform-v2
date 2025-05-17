@@ -5,20 +5,22 @@ This module provides unit tests for the remediation graph workflows,
 ensuring that the LangGraph-based remediation processes work correctly.
 """
 
-import pytest
-from unittest.mock import patch, MagicMock
 import time
+from unittest.mock import MagicMock, patch
+
 import freezegun
+import pytest
+
+from alfred.remediation import settings
 from alfred.remediation.graphs import (
-    restart_service,
-    wait_for_stabilization,
-    probe_health,
-    should_retry_or_complete,
     complete_remediation,
     escalate_issue,
+    probe_health,
+    restart_service,
     restart_then_verify,
+    should_retry_or_complete,
+    wait_for_stabilization,
 )
-from alfred.remediation import settings
 
 
 @pytest.fixture

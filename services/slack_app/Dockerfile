@@ -1,0 +1,23 @@
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# Copy requirements and install dependencies
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy application code
+COPY . .
+
+# Expose the port for HTTP and health checks
+EXPOSE 3000
+
+# Set the environment variable for the app
+ENV PYTHONUNBUFFERED=1
+
+# Run the app
+CMD ["python", "run.py"]
+
+# Define healthcheck
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+  CMD curl -f http://localhost:3000/healthz || exit 1

@@ -54,6 +54,9 @@ A scalable, modular AI agent platform built with Docker, Supabase, and Pub/Sub m
 
 4. Start the platform:
    ```bash
+   # One-command full local stack (all 34 services)
+   make up
+   
    # Production-like environment
    docker compose up -d
    
@@ -62,6 +65,9 @@ A scalable, modular AI agent platform built with Docker, Supabase, and Pub/Sub m
    
    # Include mock services for development
    docker compose -f docker-compose.yml -f docker-compose.dev.yml --profile dev --profile mocks up -d
+   
+   # Stop the full stack
+   make down
    ```
 
 5. Access the services:

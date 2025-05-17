@@ -1,0 +1,17 @@
+# Use the official Supabase storage image as base
+FROM supabase/storage-api:v0.40.4
+
+# Install Node.js dependencies
+USER root
+RUN apk add --no-cache bash
+
+# Add our patch and entrypoint scripts
+COPY patch-migrations.js /app/patch-migrations.js
+COPY patched-entrypoint.sh /app/patched-entrypoint.sh
+
+# Make the entrypoint script executable
+RUN chmod +x /app/patched-entrypoint.sh
+
+# Reset the original entrypoint and use our custom one
+ENTRYPOINT []
+CMD ["/app/patched-entrypoint.sh"]
