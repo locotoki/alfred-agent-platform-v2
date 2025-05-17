@@ -1,4 +1,4 @@
-name: Trainer Benchmark CI
+name: ML Trainer Benchmark
 
 on:
   push:
@@ -6,24 +6,27 @@ on:
       - 'feat/ml-retrain-pipeline'
       - 'feat/alert-dataset-db'
       - 'feat/dynamic-threshold-opt'
+      - 'feat/hf-transformers-integr'
+      - 'feat/phase8.3-sprint4'
   pull_request:
     paths:
       - 'alfred/ml/**'
       - 'alfred/alerts/**'
+      - 'backend/alfred/ml/**'
       - '.github/workflows/trainer-benchmark.yml'
 
 jobs:
   benchmark:
     runs-on: ubuntu-latest
-    timeout-minutes: 3
+    timeout-minutes: 3  # Must complete in 3 minutes
     
     services:
       postgres:
         image: postgres:15
         env:
-          POSTGRES_USER: testuser
-          POSTGRES_PASSWORD: testpass
-          POSTGRES_DB: alerts_test
+          POSTGRES_USER: test
+          POSTGRES_PASSWORD: test
+          POSTGRES_DB: alerts
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
@@ -31,34 +34,39 @@ jobs:
           --health-retries 5
         ports:
           - 5432:5432
-          
+    
     env:
-      ALERT_DB_URI: postgresql://testuser:testpass@localhost:5432/alerts_test
-      
+      ALERT_DB_URI: postgresql://test:test@localhost:5432/alerts
+      PYTHONPATH: ${{ github.workspace }}
+    
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        
-      - name: Set up Python
+      
+      - name: Set up Python 3.11
         uses: actions/setup-python@v4
         with:
           python-version: '3.11'
-          
-      - name: Cache dependencies
+          cache: 'pip'
+      
+      - name: Cache ML models
         uses: actions/cache@v3
         with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt') }}
+          path: ~/.cache/huggingface
+          key: ${{ runner.os }}-hf-models-${{ hashFiles('**/requirements*.txt') }}
           restore-keys: |
-            ${{ runner.os }}-pip-
-            
+            ${{ runner.os }}-hf-models-
+      
       - name: Install dependencies
         run: |
+          python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install -r requirements-dev.txt
-          pip install ray[default] sentence-transformers
-          
+          pip install ray[default] sentence-transformers psutil
+      
       - name: Initialize test database
+        env:
+          PGPASSWORD: test
         run: |
           echo "Creating test alert data..."
           python -c "
@@ -106,7 +114,7 @@ jobs:
           
           print('Test database initialized with 1000 alerts')
           "
-          
+      
       - name: Run training benchmark
         run: |
           echo "Running training benchmark..."
@@ -163,7 +171,7 @@ jobs:
           print(f'Memory usage: {memory_usage:.0f}MB')
           print(f'Noise reduction: {noise_rate*100:.1f}%')
           "
-          
+      
       - name: Check performance targets
         run: |
           python -c "
@@ -191,7 +199,7 @@ jobs:
           
           print('✅ All performance targets met!')
           "
-          
+      
       - name: Run threshold optimization test
         run: |
           echo "Testing threshold optimization..."
@@ -224,7 +232,7 @@ jobs:
           print(f'Optimized noise threshold: {optimized[\"noise_threshold\"]}')
           print(f'Adjustment: {(optimized[\"noise_threshold\"] - initial[\"noise_threshold\"]) * 100:.1f}%')
           "
-          
+      
       - name: Upload benchmark report
         uses: actions/upload-artifact@v3
         if: always()
@@ -233,7 +241,8 @@ jobs:
           path: |
             benchmark_results.json
             threshold_results.json
-            
+            .benchmarks/
+      
       - name: Post results to PR
         if: github.event_name == 'pull_request'
         uses: actions/github-script@v7
@@ -244,7 +253,9 @@ jobs:
             const data = JSON.parse(fs.readFileSync('benchmark_results.json'));
             const thresholds = JSON.parse(fs.readFileSync('threshold_results.json'));
             
-            const comment = `## 🎯 Trainer Benchmark Results
+            const comment = `## 🎯 ML Trainer Benchmark Results
+            
+            ✅ Completed in < 3 minutes
             
             **Performance Metrics:**
             - 📦 Dataset Load: ${data.dataset_load_time.toFixed(2)}s (target < 10s)
