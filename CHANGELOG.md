@@ -1,3 +1,20 @@
+## [0.8.2] - 2025-05-17
+
+### Added
+- Strict mypy type checking across all alfred.* modules
+- Protocol interfaces for dependency inversion
+- CI integration with mypy --strict enforcement
+- Type hints for __all__ exports in alfred packages
+
+### Fixed
+- LangChain API compatibility (arun vs ainvoke)
+- Pre-existing CI test failures
+- Type errors in alfred.* namespace modules
+
+### Changed
+- Enhanced CI pipeline with dedicated type checking step
+- Updated pytest markers and async test patterns
+
 # Changelog
 
 All notable changes to this project will be documented in this file.
