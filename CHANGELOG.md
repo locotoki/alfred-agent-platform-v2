@@ -1,3 +1,22 @@
+## [0.8.4] - 2025-05-17
+
+### Added
+- Alert Explanation Agent for Phase 8.2
+- `/diag explain` command for alert explanations
+- LangChain integration for AI-powered explanations
+- Slack release notifications via webhook
+- GitHub Actions workflow for automated release announcements
+
+### Fixed
+- Type checking errors in diagnostics bot
+- Test fixture paths and schemas
+- Trivy security scan warnings
+- Release notification script (now sends actual messages)
+
+### Changed
+- Updated git tags from v0.8.4-pre to v0.8.4
+- Enhanced release workflow with version tagging
+
 ## [0.8.3-pre] - 2025-05-17
 
 ### Added
