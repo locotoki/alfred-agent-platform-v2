@@ -159,25 +159,27 @@ class TestFinancialTaxAgent:
             },
         )
 
-        financial_tax_agent.workflow.ainvoke = AsyncMock(return_value={
-            "response": {
-                "status": "success",
-                "intent": "FINANCIAL_ANALYSIS",
-                "result": {
-                    "metrics": {
-                        "net_income": 70000,
-                        "profit_margin": 28.0,
-                        "effective_tax_rate": 22.5,
+        financial_tax_agent.workflow.ainvoke = AsyncMock(
+            return_value={
+                "response": {
+                    "status": "success",
+                    "intent": "FINANCIAL_ANALYSIS",
+                    "result": {
+                        "metrics": {
+                            "net_income": 70000,
+                            "profit_margin": 28.0,
+                            "effective_tax_rate": 22.5,
+                        },
+                        "recommendations": [
+                            "Consider QBI deduction",
+                            "Maximize retirement contributions",
+                        ],
+                        "insights": ["Profitability is strong", "Tax burden could be reduced"],
+                        "summary": "Healthy financial position with opportunities for tax optimization",
                     },
-                    "recommendations": [
-                        "Consider QBI deduction",
-                        "Maximize retirement contributions",
-                    ],
-                    "insights": ["Profitability is strong", "Tax burden could be reduced"],
-                    "summary": "Healthy financial position with opportunities for tax optimization",
-                },
+                }
             }
-        })
+        )
 
         result = await financial_tax_agent.process_task(envelope)
 
@@ -198,24 +200,26 @@ class TestFinancialTaxAgent:
             },
         )
 
-        financial_tax_agent.workflow.ainvoke = AsyncMock(return_value={
-            "response": {
-                "status": "success",
-                "intent": "TAX_COMPLIANCE_CHECK",
-                "result": {
-                    "compliance_status": "partially_compliant",
-                    "issues_found": [
-                        {
-                            "area": "sales_tax",
-                            "issue": "Missing nexus registration",
-                            "severity": "critical",
-                        }
-                    ],
-                    "risk_level": "medium",
-                    "recommendations": ["Register for sales tax permit in CA"],
-                },
+        financial_tax_agent.workflow.ainvoke = AsyncMock(
+            return_value={
+                "response": {
+                    "status": "success",
+                    "intent": "TAX_COMPLIANCE_CHECK",
+                    "result": {
+                        "compliance_status": "partially_compliant",
+                        "issues_found": [
+                            {
+                                "area": "sales_tax",
+                                "issue": "Missing nexus registration",
+                                "severity": "critical",
+                            }
+                        ],
+                        "risk_level": "medium",
+                        "recommendations": ["Register for sales tax permit in CA"],
+                    },
+                }
             }
-        })
+        )
 
         result = await financial_tax_agent.process_task(envelope)
 
@@ -236,24 +240,26 @@ class TestFinancialTaxAgent:
             },
         )
 
-        financial_tax_agent.workflow.ainvoke = AsyncMock(return_value={
-            "response": {
-                "status": "success",
-                "intent": "RATE_SHEET_LOOKUP",
-                "result": {
-                    "jurisdiction": "CA",
-                    "tax_year": 2024,
-                    "entity_type": "individual",
-                    "tax_brackets": [
-                        {"rate": 1.0, "threshold": 10412, "description": "First bracket"},
-                        {"rate": 2.0, "threshold": 24684, "description": "Second bracket"},
-                    ],
-                    "special_rates": {
-                        "capital_gains": {"long_term": 20.0, "short_term": "ordinary_income"}
+        financial_tax_agent.workflow.ainvoke = AsyncMock(
+            return_value={
+                "response": {
+                    "status": "success",
+                    "intent": "RATE_SHEET_LOOKUP",
+                    "result": {
+                        "jurisdiction": "CA",
+                        "tax_year": 2024,
+                        "entity_type": "individual",
+                        "tax_brackets": [
+                            {"rate": 1.0, "threshold": 10412, "description": "First bracket"},
+                            {"rate": 2.0, "threshold": 24684, "description": "Second bracket"},
+                        ],
+                        "special_rates": {
+                            "capital_gains": {"long_term": 20.0, "short_term": "ordinary_income"}
+                        },
                     },
-                },
+                }
             }
-        })
+        )
 
         result = await financial_tax_agent.process_task(envelope)
 
@@ -266,7 +272,9 @@ class TestFinancialTaxAgent:
         """Test error handling in process_task"""
         envelope = A2AEnvelope(intent="INVALID_INTENT", content={})
 
-        financial_tax_agent.workflow.ainvoke = AsyncMock(side_effect=ValueError("Unsupported intent"))
+        financial_tax_agent.workflow.ainvoke = AsyncMock(
+            side_effect=ValueError("Unsupported intent")
+        )
 
         with pytest.raises(ValueError):
             await financial_tax_agent.process_task(envelope)

@@ -100,15 +100,17 @@ class TestTaxCalculationChain:
         assert response.effective_tax_rate == 12.0
 
         # Verify chain was called with correct parameters
-        chain.chain.ainvoke.assert_called_once_with({
-            "income": 150000.0,
-            "deductions": {"standard": 27700.0},
-            "credits": {"child_tax_credit": 4000.0},
-            "jurisdiction": "US-FED",
-            "tax_year": 2024,
-            "entity_type": "individual",
-            "additional_info": {"dependents": 2},
-        })
+        chain.chain.ainvoke.assert_called_once_with(
+            {
+                "income": 150000.0,
+                "deductions": {"standard": 27700.0},
+                "credits": {"child_tax_credit": 4000.0},
+                "jurisdiction": "US-FED",
+                "tax_year": 2024,
+                "entity_type": "individual",
+                "additional_info": {"dependents": 2},
+            }
+        )
 
     async def test_calculate_with_parsing_error(self, mock_llm):
         """Test error handling when LLM returns unparseable result"""
