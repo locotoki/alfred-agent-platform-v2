@@ -66,3 +66,22 @@ explainer:
   env:
     - name: LOG_LEVEL
       value: "INFO"
+
+# Slack MCP Gateway configuration
+slackMcpGateway:
+  enabled: false
+  image:
+    repository: ghcr.io/locotoki/slack-mcp-gateway
+    tag: "0.1.0"
+    pullPolicy: IfNotPresent
+  resources:
+    requests:
+      memory: "128Mi"
+      cpu: "100m"
+    limits:
+      memory: "256Mi"
+      cpu: "200m"
+  service:
+    type: ClusterIP
+    port: 80
+    targetPort: 3000
