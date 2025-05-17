@@ -58,7 +58,7 @@ def get_webhook_url(service_name: str) -> str:
 
 def get_settings() -> Dict[str, Any]:
     """Get all remediation settings.
-    
+
     Returns:
         Dictionary containing all remediation settings.
     """

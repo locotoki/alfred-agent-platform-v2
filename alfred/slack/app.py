@@ -148,7 +148,7 @@ if __name__ == "__main__":
 
 def create_slack_app():
     """Create and configure the Slack app.
-    
+
     Returns:
         Configured Slack app instance.
     """

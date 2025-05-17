@@ -188,7 +188,7 @@ async def startup_event():
 
 def create_registry_app() -> FastAPI:
     """Create and configure the model registry app.
-    
+
     Returns:
         Configured FastAPI application.
     """
