@@ -1,16 +1,6 @@
-version: '3.8'
-
 services:
   diagnostics-bot:
-    build:
-      context: .
-      dockerfile: ./docker/diagnostics-bot/Dockerfile
-    environment:
-      - SLACK_BOT_TOKEN=${SLACK_BOT_TOKEN}
-      - SLACK_APP_TOKEN=${SLACK_APP_TOKEN}
-      - PROMETHEUS_URL=http://prometheus:9090
-      - SOCKET_MODE_ENABLED=true
-    volumes:
-      - ./alfred:/app/alfred
-    network_mode: host
+    image: ghcr.io/alfred/diagnostics-bot:${DIAG_IMAGE_TAG:-v0.8.3-pre}
+    env_file:
+      - ../.env.dev   # developer creates this from .env.sample
     restart: unless-stopped
