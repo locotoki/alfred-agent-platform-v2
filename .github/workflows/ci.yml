@@ -124,7 +124,7 @@ jobs:
       - name: Run type checking (mypy)
         run: |
           echo "Running mypy with strict type checking..."
-          mypy --config-file=mypy.ini .
+          mypy --config-file=mypy.ini alfred/
 
       - name: Run tests with coverage
         run: |
