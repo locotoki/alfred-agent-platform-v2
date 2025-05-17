@@ -16,3 +16,6 @@ dependencies:
   - name: diagnostics-bot
     version: "0.1.0"
     condition: diagnostics.enabled
+  - name: explainer-bot
+    version: "0.1.0"
+    condition: explainer.enabled
