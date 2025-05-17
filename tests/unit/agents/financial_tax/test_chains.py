@@ -80,7 +80,7 @@ class TestTaxCalculationChain:
             "calculation_details": ["Standard deduction applied", "Child tax credit applied"]
         }
         """
-        chain.chain.arun = AsyncMock(return_value=mock_response)
+        chain.chain.ainvoke = AsyncMock(return_value={"text": mock_response})
 
         request = TaxCalculationRequest(
             income=150000.0,
@@ -100,22 +100,22 @@ class TestTaxCalculationChain:
         assert response.effective_tax_rate == 12.0
 
         # Verify chain was called with correct parameters
-        chain.chain.arun.assert_called_once_with(
-            income=150000.0,
-            deductions={"standard": 27700.0},
-            credits={"child_tax_credit": 4000.0},
-            jurisdiction="US-FED",
-            tax_year=2024,
-            entity_type="individual",
-            additional_info={"dependents": 2},
-        )
+        chain.chain.ainvoke.assert_called_once_with({
+            "income": 150000.0,
+            "deductions": {"standard": 27700.0},
+            "credits": {"child_tax_credit": 4000.0},
+            "jurisdiction": "US-FED",
+            "tax_year": 2024,
+            "entity_type": "individual",
+            "additional_info": {"dependents": 2},
+        })
 
     async def test_calculate_with_parsing_error(self, mock_llm):
         """Test error handling when LLM returns unparseable result"""
         chain = TaxCalculationChain(llm=mock_llm)
 
         # Mock invalid response
-        chain.chain.arun = AsyncMock(return_value="Invalid JSON response")
+        chain.chain.ainvoke = AsyncMock(return_value={"text": "Invalid JSON response"})
 
         request = TaxCalculationRequest(
             income=100000.0,
@@ -148,7 +148,7 @@ class TestFinancialAnalysisChain:
             "benchmark_comparison": null
         }
         """
-        chain.chain.arun = AsyncMock(return_value=mock_response)
+        chain.chain.ainvoke = AsyncMock(return_value={"text": mock_response})
 
         request = FinancialAnalysisRequest(
             financial_statements={
@@ -184,7 +184,7 @@ class TestComplianceCheckChain:
             "detailed_findings": {"sales_tax": {"issues": ["nexus"]}}
         }
         """
-        chain.chain.arun = AsyncMock(return_value=mock_response)
+        chain.chain.ainvoke = AsyncMock(return_value={"text": mock_response})
 
         request = ComplianceCheckRequest(
             entity_type=EntityType.CORPORATION,
@@ -224,7 +224,7 @@ class TestRateLookupChain:
             "additional_info": {"notes": ["CA has 9 tax brackets"]}
         }
         """
-        chain.chain.arun = AsyncMock(return_value=mock_response)
+        chain.chain.ainvoke = AsyncMock(return_value={"text": mock_response})
 
         request = TaxRateRequest(
             jurisdiction=TaxJurisdiction.US_CA,
