@@ -31,12 +31,12 @@ echo
 # List of services to check (service_name:port:service_directory)
 SERVICES=(
   "agent-rag:8501:./services/rag-service"
-  "agent-core:8011:./services/alfred-core"
+  "agent-core:8011:./alfred/core"
   "agent-social:9000:./services/social-intel"
   "agent-financial:9003:./services/financial-tax"
   "agent-legal:9002:./services/legal-compliance"
   "ui-chat:8502:./services/streamlit-chat"
-  "model-router:8080:./services/model-router"
+  "model-router:8080:./alfred/model/router"
 )
 
 # Function to check if an endpoint exists

@@ -26,10 +26,10 @@ fi
 # and exclude all duplicate 'app' modules to avoid collisions
 EXCLUDE_ARGS="--exclude cleanup-temp --exclude docs/archive --exclude node_modules \
               --exclude rag-gateway/src \
-              --exclude services/alfred-core/app \
+              --exclude alfred/core/app \
               --exclude services/alfred-bot/app \
               --exclude services/model-registry/app \
-              --exclude services/model-router/app \
+              --exclude alfred/model/router/app \
               --exclude services/financial-tax/app \
               --exclude services/legal-compliance/app \
               --exclude services/social-intel/app \
