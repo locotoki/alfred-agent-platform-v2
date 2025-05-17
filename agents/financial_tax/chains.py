@@ -223,12 +223,14 @@ Return comprehensive tax rate information including:
 
     async def lookup_rates(self, request: TaxRateRequest) -> TaxRateResponse:
         """Process tax rate lookup request"""
-        result = await self.chain.arun(
-            jurisdiction=request.jurisdiction.value,
-            tax_year=request.tax_year,
-            entity_type=request.entity_type.value,
-            income_level=request.income_level,
-            special_categories=request.special_categories,
+        result = await self.chain.ainvoke(
+            {
+                "jurisdiction": request.jurisdiction.value,
+                "tax_year": request.tax_year,
+                "entity_type": request.entity_type.value,
+                "income_level": request.income_level,
+                "special_categories": request.special_categories,
+            }
         )
 
-        return self.output_parser.parse(result)
+        return self.output_parser.parse(result["text"])
