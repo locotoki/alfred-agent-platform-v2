@@ -2,9 +2,9 @@
 
 import json
 import os
-from typing import Any, Dict, Optional
-from datetime import datetime
 import urllib.parse
+from datetime import datetime
+from typing import Any, Dict, Optional
 
 import requests
 import structlog
@@ -21,18 +21,18 @@ SEVERITY_EMOJI = {
 # Severity color mapping for Slack attachments
 SEVERITY_COLOR = {
     "critical": "#FF0000",  # Red
-    "warning": "#FFA500",   # Orange
-    "info": "#0000FF",      # Blue
+    "warning": "#FFA500",  # Orange
+    "info": "#0000FF",  # Blue
 }
 
 
 def handle_alert(alert_json: Dict[str, Any]) -> None:
     """
     Process incoming Prometheus alert and forward to Slack with enrichment.
-    
+
     Args:
         alert_json: Alert payload from Alertmanager
-        
+
     Raises:
         ValueError: If required environment variables are missing
         requests.RequestException: If Slack webhook call fails
@@ -41,19 +41,19 @@ def handle_alert(alert_json: Dict[str, Any]) -> None:
     slack_webhook = os.getenv("SLACK_ALERT_WEBHOOK")
     if not slack_webhook:
         raise ValueError("SLACK_ALERT_WEBHOOK environment variable is required")
-    
+
     # Extract enrichment data from environment
     git_sha = os.getenv("GIT_SHA", "unknown")
     pod_uid = os.getenv("POD_UID", "unknown")
     chart_version = os.getenv("CHART_VERSION", "unknown")
-    
+
     # Extract alert details
     alerts = alert_json.get("alerts", [])
-    
+
     if not alerts:
         logger.warning("No alerts found in payload", payload=alert_json)
         return
-    
+
     # Process each alert
     for alert in alerts:
         try:
@@ -63,15 +63,15 @@ def handle_alert(alert_json: Dict[str, Any]) -> None:
                 pod_uid=pod_uid,
                 chart_version=chart_version,
             )
-            
+
             send_to_slack(slack_webhook, slack_message)
-            
+
             logger.info(
                 "Alert sent to Slack",
                 alert_name=alert.get("labels", {}).get("alertname"),
                 severity=alert.get("labels", {}).get("severity"),
             )
-            
+
         except Exception as e:
             logger.error(
                 "Failed to send alert to Slack",
@@ -89,19 +89,19 @@ def format_alert_for_slack(
 ) -> Dict[str, Any]:
     """
     Format Prometheus alert for Slack message.
-    
+
     Args:
         alert: Individual alert from Alertmanager
         git_sha: Git commit SHA
         pod_uid: Kubernetes pod UID
         chart_version: Helm chart version
-        
+
     Returns:
         Formatted Slack message payload
     """
     labels = alert.get("labels", {})
     annotations = alert.get("annotations", {})
-    
+
     # Extract key fields
     alert_name = labels.get("alertname", "Unknown Alert")
     severity = labels.get("severity", "info").lower()
@@ -109,14 +109,14 @@ def format_alert_for_slack(
     runbook = labels.get("runbook", "")
     summary = annotations.get("summary", "No summary provided")
     description = annotations.get("description", "")
-    
+
     # Get appropriate emoji and color
     emoji = SEVERITY_EMOJI.get(severity, "ℹ️")
     color = SEVERITY_COLOR.get(severity, "#808080")
-    
+
     # Build Slack message
     text = f"{emoji} [{severity.upper()}] {alert_name}"
-    
+
     # Create attachment with detailed information
     attachment = {
         "color": color,
@@ -157,15 +157,17 @@ def format_alert_for_slack(
         "footer": "Alfred Alert System",
         "ts": int(datetime.utcnow().timestamp()),
     }
-    
+
     # Add description if provided
     if description:
-        attachment["fields"].append({
-            "title": "Description",
-            "value": description,
-            "short": False,
-        })
-    
+        attachment["fields"].append(
+            {
+                "title": "Description",
+                "value": description,
+                "short": False,
+            }
+        )
+
     # Add runbook link if available
     if runbook:
         attachment["actions"] = [
@@ -175,7 +177,7 @@ def format_alert_for_slack(
                 "url": runbook,
             }
         ]
-    
+
     return {
         "text": text,
         "attachments": [attachment],
@@ -185,11 +187,11 @@ def format_alert_for_slack(
 def send_to_slack(webhook_url: str, message: Dict[str, Any]) -> None:
     """
     Send formatted message to Slack webhook.
-    
+
     Args:
         webhook_url: Slack webhook URL
         message: Formatted message payload
-        
+
     Raises:
         requests.RequestException: If webhook call fails
     """
@@ -199,8 +201,8 @@ def send_to_slack(webhook_url: str, message: Dict[str, Any]) -> None:
         headers={"Content-Type": "application/json"},
         timeout=10,
     )
-    
+
     response.raise_for_status()
-    
+
     if response.text != "ok":
         raise requests.RequestException(f"Slack webhook returned: {response.text}")
