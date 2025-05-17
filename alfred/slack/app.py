@@ -10,8 +10,7 @@ logger = logging.getLogger(__name__)
 
 # Initialize the Slack Bolt app
 app = App(
-    token=os.environ.get("SLACK_BOT_TOKEN"),
-    signing_secret=os.environ.get("SLACK_SIGNING_SECRET")
+    token=os.environ.get("SLACK_BOT_TOKEN"), signing_secret=os.environ.get("SLACK_SIGNING_SECRET")
 )
 
 # Command prefix for slash commands
@@ -25,15 +24,18 @@ ALLOWED_COMMANDS_SET = set(ALLOWED_COMMANDS)
 # Flask app for health checks
 flask_app = Flask(__name__)
 
+
 @flask_app.route("/healthz")
 def health():
     """Health check endpoint"""
     return jsonify({"status": "ok", "service": "slack-app"})
 
+
 @flask_app.route("/readyz")
 def ready():
     """Readiness check endpoint"""
     return jsonify({"status": "ready", "service": "slack-app"})
+
 
 # Command handler for /alfred - register WITHOUT the slash prefix
 @app.command("alfred")
@@ -41,26 +43,28 @@ def handle_alfred_command(ack, command, say):
     """Handle the /alfred slash command"""
     # Immediately acknowledge the command to prevent timeout
     ack()
-    
+
     try:
         # Parse the command text
         command_text = command.get("text", "").strip()
         if not command_text:
             command_text = "help"  # Default to help if no command provided
-        
+
         # Log the command for debugging
         logger.info(f"Processing command: /alfred {command_text}")
-        
+
         # Split into subcommand and arguments
         parts = command_text.split(" ", 1)
         subcommand = parts[0].lower()
         args = parts[1] if len(parts) > 1 else ""
-        
+
         # Check if the subcommand is allowed
         if subcommand not in ALLOWED_COMMANDS_SET:
-            say(f"Sorry, the command `{subcommand}` is not recognized. Try `/alfred help` for a list of available commands.")
+            say(
+                f"Sorry, the command `{subcommand}` is not recognized. Try `/alfred help` for a list of available commands."
+            )
             return
-        
+
         # Handle the specific subcommand
         if subcommand == "help":
             handle_help_command(say)
@@ -77,6 +81,7 @@ def handle_alfred_command(ack, command, say):
         say(f"Sorry, an error occurred while processing your command: {str(e)}")
         return
 
+
 def handle_help_command(say):
     """Handle the help command"""
     help_text = (
@@ -90,6 +95,7 @@ def handle_help_command(say):
     )
     say(help_text)
 
+
 def handle_status_command(say):
     """Handle the status command"""
     status_text = (
@@ -100,6 +106,7 @@ def handle_status_command(say):
         "• Available Services: 12\n"
     )
     say(status_text)
+
 
 def handle_health_command(say):
     """Handle the health command"""
@@ -119,13 +126,15 @@ def handle_health_command(say):
     )
     say(health_text)
 
+
 if __name__ == "__main__":
     # Start Flask app for health checks
     from threading import Thread
-    flask_thread = Thread(target=lambda: flask_app.run(host='0.0.0.0', port=3000))
+
+    flask_thread = Thread(target=lambda: flask_app.run(host="0.0.0.0", port=3000))
     flask_thread.daemon = True
     flask_thread.start()
-    
+
     # Start the Slack Bolt app
     if os.environ.get("SOCKET_MODE", "true").lower() == "true":
         handler = SocketModeHandler(app, os.environ.get("SLACK_APP_TOKEN"))

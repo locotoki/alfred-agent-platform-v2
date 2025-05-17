@@ -27,18 +27,20 @@ from slack_bolt.adapter.socket_mode import SocketModeHandler
 
 if __name__ == "__main__":
     # Start Flask app for health checks in a separate thread
-    flask_thread = Thread(target=lambda: flask_app.run(host='0.0.0.0', port=3000))
+    flask_thread = Thread(target=lambda: flask_app.run(host="0.0.0.0", port=3000))
     flask_thread.daemon = True
     flask_thread.start()
-    
+
     # Start the Slack Bolt app
     try:
         if os.environ.get("SOCKET_MODE", "true").lower() == "true":
             # Get the app token and validate it starts with xapp-
             app_token = os.environ.get("SLACK_APP_TOKEN", "")
             if not app_token.startswith("xapp-"):
-                print(f"Warning: SLACK_APP_TOKEN doesn't start with 'xapp-'. Token: {app_token[:5]}...")
-            
+                print(
+                    f"Warning: SLACK_APP_TOKEN doesn't start with 'xapp-'. Token: {app_token[:5]}..."
+                )
+
             # Initialize and start the socket mode handler
             handler = SocketModeHandler(app, app_token)
             handler.start()
@@ -52,5 +54,6 @@ if __name__ == "__main__":
     except Exception as e:
         print(f"Error starting Slack app: {str(e)}")
         import traceback
+
         traceback.print_exc()
         sys.exit(1)
