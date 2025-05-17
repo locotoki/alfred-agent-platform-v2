@@ -55,19 +55,28 @@ def mock_policy():
 def financial_tax_agent(mock_pubsub, mock_supabase, mock_policy):
     """Create Financial Tax Agent with mocks"""
     with patch("agents.financial_tax.agent.ChatOpenAI") as mock_openai:
-        # Make the mock return a properly mocked LLM that behaves like a Runnable
-        mock_llm = MagicMock()
-        mock_llm.invoke = MagicMock(return_value="test response")
-        # Add necessary attributes to make it compatible with LangChain
-        mock_llm._call = MagicMock(return_value="test response")
-        mock_llm.generate = MagicMock(
-            return_value=MagicMock(generations=[[MagicMock(text="test")]])
-        )
-        mock_llm.predict = MagicMock(return_value="test response")
-        # Add __class__ property for type checking
-        mock_llm.__class__.__name__ = "ChatOpenAI"
-
+        # Create a mock that actually inherits from the base class structure expected
+        from langchain.schema.runnable import Runnable
+        from typing import Any, Optional
+        
+        class MockLLM(Runnable):
+            def invoke(self, input: Any, config: Optional[Any] = None, **kwargs: Any) -> Any:
+                return "test response"
+                
+            def _call(self, *args, **kwargs):
+                return "test response"
+                
+            def generate(self, *args, **kwargs):
+                from langchain.schema import Generation
+                return MagicMock(generations=[[Generation(text="test")]])
+                
+            def predict(self, *args, **kwargs):
+                return "test response"
+        
+        # Create instance of our mock
+        mock_llm = MockLLM()
         mock_openai.return_value = mock_llm
+        
         agent = FinancialTaxAgent(
             pubsub_transport=mock_pubsub,
             supabase_transport=mock_supabase,

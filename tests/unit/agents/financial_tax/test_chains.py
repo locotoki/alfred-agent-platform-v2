@@ -28,13 +28,24 @@ from agents.financial_tax.models import (
 @pytest.fixture
 def mock_llm():
     """Mock LLM for chain tests"""
-    mock = MagicMock(spec=ChatOpenAI)
-    # Add necessary attributes to make it compatible with LangChain
-    mock._call = MagicMock(return_value="test response")
-    mock.generate = MagicMock(return_value=MagicMock(generations=[[MagicMock(text="test")]]))
-    mock.predict = MagicMock(return_value="test response")
-    mock.invoke = MagicMock(return_value="test response")
-    return mock
+    from langchain.schema.runnable import Runnable
+    from typing import Any, Optional
+    
+    class MockLLM(Runnable):
+        def invoke(self, input: Any, config: Optional[Any] = None, **kwargs: Any) -> Any:
+            return "test response"
+            
+        def _call(self, *args, **kwargs):
+            return "test response"
+            
+        def generate(self, *args, **kwargs):
+            from langchain.schema import Generation
+            return MagicMock(generations=[[Generation(text="test")]])
+            
+        def predict(self, *args, **kwargs):
+            return "test response"
+    
+    return MockLLM()
 
 
 class TestTaxCalculationChain:
