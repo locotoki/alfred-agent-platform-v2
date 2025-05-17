@@ -4,7 +4,7 @@ import json
 import re
 from typing import Any, Dict, List, Optional, cast
 
-import httpx  # type: ignore[import-not-found]
+import httpx
 import structlog
 from prometheus_client.parser import text_string_to_metric_families
 from slack_sdk.web.async_client import AsyncWebClient

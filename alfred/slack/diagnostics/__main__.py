@@ -2,6 +2,7 @@
 
 import asyncio
 import os
+from typing import Any
 
 import structlog
 from slack_bolt.adapter.socket_mode.async_handler import AsyncSocketModeHandler
@@ -29,7 +30,7 @@ async def main() -> None:
 
     # Register slash command handler
     @app.command("/diag")
-    async def handle_diag_command(ack, command, logger):
+    async def handle_diag_command(ack: Any, command: Any, logger: Any) -> None:
         await ack()
         try:
             await bot.handle_command(
@@ -48,11 +49,12 @@ async def main() -> None:
             app_token=os.environ.get("SLACK_APP_TOKEN"),
         )
         logger.info("Starting bot in socket mode...")
-        await handler.start_async()
+        await handler.start_async()  # type: ignore[no-untyped-call]
     else:
         # Web API mode
         logger.info("Starting bot in web API mode...")
-        await app.start(port=8080)
+        # Note: app.start returns None but is typed incorrectly
+        await app.start(port=8080)  # type: ignore[func-returns-value]
 
 
 if __name__ == "__main__":
