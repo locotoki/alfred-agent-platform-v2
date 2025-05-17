@@ -2,6 +2,7 @@
 Mock server for the Slack app.
 This server simulates the complete functionality without requiring real Slack authentication.
 """
+
 import json
 import os
 
@@ -9,74 +10,80 @@ from flask import Flask, Response, jsonify, request
 
 app = Flask(__name__)
 
+
 # Store mock state
 class MockState:
     health_reports = []
     channels = ["general", "random", "dev"]
     commands_executed = []
-    
+
+
 state = MockState()
+
 
 # Home page with basic info
 @app.route("/")
 def home():
-    return jsonify({
-        "name": "Alfred Slack App Mock Server",
-        "version": "v0.8.1",
-        "status": "running",
-        "features": [
-            "Command simulation",
-            "Health checks",
-            "Service status"
-        ]
-    })
+    return jsonify(
+        {
+            "name": "Alfred Slack App Mock Server",
+            "version": "v0.8.1",
+            "status": "running",
+            "features": ["Command simulation", "Health checks", "Service status"],
+        }
+    )
+
 
 # Health endpoints
 @app.route("/healthz")
 def health():
     return jsonify({"status": "ok", "service": "slack-app"})
 
+
 @app.route("/readyz")
 def ready():
     return jsonify({"status": "ready", "service": "slack-app"})
 
+
 # Mock Slack API endpoints
 @app.route("/api/auth.test", methods=["POST"])
 def auth_test():
-    return jsonify({
-        "ok": True,
-        "url": "https://alfred-workspace.slack.com/",
-        "team": "Alfred Platform",
-        "user": "alfred_bot",
-        "team_id": "T12345",
-        "user_id": "U12345"
-    })
+    return jsonify(
+        {
+            "ok": True,
+            "url": "https://alfred-workspace.slack.com/",
+            "team": "Alfred Platform",
+            "user": "alfred_bot",
+            "team_id": "T12345",
+            "user_id": "U12345",
+        }
+    )
+
 
 @app.route("/api/chat.postMessage", methods=["POST"])
 def post_message():
     data = request.json or {}
     channel = data.get("channel", "general")
     text = data.get("text", "")
-    
+
     # Store the message for history
     if text and "health" in text.lower():
-        state.health_reports.append({
+        state.health_reports.append({"channel": channel, "text": text, "timestamp": "now"})
+
+    return jsonify(
+        {
+            "ok": True,
             "channel": channel,
-            "text": text,
-            "timestamp": "now"
-        })
-    
-    return jsonify({
-        "ok": True,
-        "channel": channel,
-        "ts": "1234567890.123456",
-        "message": {
-            "text": text,
-            "username": "alfred_bot",
-            "bot_id": "B12345",
-            "type": "message"
+            "ts": "1234567890.123456",
+            "message": {
+                "text": text,
+                "username": "alfred_bot",
+                "bot_id": "B12345",
+                "type": "message",
+            },
         }
-    })
+    )
+
 
 # Command endpoint
 @app.route("/slack/commands", methods=["POST"])
@@ -85,79 +92,77 @@ def slack_commands():
     text = request.form.get("text", "help")
     channel_id = request.form.get("channel_id", "C12345")
     user_id = request.form.get("user_id", "U12345")
-    
+
     # Store the command
-    state.commands_executed.append({
-        "command": command,
-        "text": text,
-        "channel_id": channel_id,
-        "user_id": user_id
-    })
-    
+    state.commands_executed.append(
+        {"command": command, "text": text, "channel_id": channel_id, "user_id": user_id}
+    )
+
     # Process different commands
     if text == "help" or not text:
         response = {
             "text": "*Alfred Slack Bot Commands*\n\n"
-                   "• `/alfred help` - Show this help message\n"
-                   "• `/alfred status` - Show Alfred platform status\n"
-                   "• `/alfred health` - Show health status of Alfred services\n"
-                   "• `/alfred search <query>` - Search for information\n"
-                   "• `/alfred ask <question>` - Ask a question to Alfred agents\n"
-                   "• `/alfred agents` - List available agents\n"
+            "• `/alfred help` - Show this help message\n"
+            "• `/alfred status` - Show Alfred platform status\n"
+            "• `/alfred health` - Show health status of Alfred services\n"
+            "• `/alfred search <query>` - Search for information\n"
+            "• `/alfred ask <question>` - Ask a question to Alfred agents\n"
+            "• `/alfred agents` - List available agents\n"
         }
     elif text == "status":
         response = {
             "text": "*Alfred Platform Status*\n\n"
-                   "• Platform Version: v0.8.1\n"
-                   "• Status: Operational\n"
-                   "• Active Agents: 3\n"
-                   "• Available Services: 12\n"
+            "• Platform Version: v0.8.1\n"
+            "• Status: Operational\n"
+            "• Active Agents: 3\n"
+            "• Available Services: 12\n"
         }
     elif text == "health":
         response = {
             "text": "*Alfred Health Status*\n\n"
-                   "```\n"
-                   "Service            | Status  | Latency (ms) | Last Check\n"
-                   "-------------------|---------|--------------|-------------\n"
-                   "db-api-metrics     | UP      | 12           | Just now\n"
-                   "db-auth-metrics    | UP      | 15           | Just now\n"
-                   "db-admin-metrics   | UP      | 11           | Just now\n"
-                   "db-realtime-metrics| UP      | 14           | Just now\n"
-                   "db-storage-metrics | UP      | 13           | Just now\n"
-                   "model-registry     | UP      | 32           | Just now\n"
-                   "model-router       | UP      | 28           | Just now\n"
-                   "```\n"
+            "```\n"
+            "Service            | Status  | Latency (ms) | Last Check\n"
+            "-------------------|---------|--------------|-------------\n"
+            "db-api-metrics     | UP      | 12           | Just now\n"
+            "db-auth-metrics    | UP      | 15           | Just now\n"
+            "db-admin-metrics   | UP      | 11           | Just now\n"
+            "db-realtime-metrics| UP      | 14           | Just now\n"
+            "db-storage-metrics | UP      | 13           | Just now\n"
+            "model-registry     | UP      | 32           | Just now\n"
+            "model-router       | UP      | 28           | Just now\n"
+            "```\n"
         }
     elif text.startswith("search "):
         query = text[7:]
         response = {
             "text": f"Searching for: *{query}*\n\n"
-                   f"Found 3 results related to '{query}':\n"
-                   f"1. Documentation on {query}\n"
-                   f"2. Agent capabilities for {query}\n"
-                   f"3. Recent discussions about {query}\n"
+            f"Found 3 results related to '{query}':\n"
+            f"1. Documentation on {query}\n"
+            f"2. Agent capabilities for {query}\n"
+            f"3. Recent discussions about {query}\n"
         }
     elif text.startswith("ask "):
         question = text[4:]
         response = {
             "text": f"Question: *{question}*\n\n"
-                   f"I'm analyzing your question and consulting with the appropriate agents...\n\n"
-                   f"Answer: Based on my analysis, the answer to your question is related to Alfred's capabilities in this area.\n"
+            f"I'm analyzing your question and consulting with the appropriate agents...\n\n"
+            f"Answer: Based on my analysis, the answer to your question is related to Alfred's capabilities in this area.\n"
         }
     elif text == "agents":
         response = {
             "text": "*Available Alfred Agents*\n\n"
-                   "• Financial Tax Agent - Tax and financial analysis\n"
-                   "• Legal Compliance Agent - Legal and compliance guidance\n"
-                   "• Social Intelligence Agent - Social media and trend analysis\n"
+            "• Financial Tax Agent - Tax and financial analysis\n"
+            "• Legal Compliance Agent - Legal and compliance guidance\n"
+            "• Social Intelligence Agent - Social media and trend analysis\n"
         }
     else:
         response = {
             "text": f"Command not recognized: `{text}`\n"
-                   f"Try `/alfred help` for a list of available commands."
+            f"Try `/alfred help` for a list of available commands."
         }
-    
+
     return jsonify(response)
+
 
 # Mock events endpoint
 @app.route("/slack/events", methods=["POST"])
@@ -165,22 +170,26 @@ def slack_events():
     data = request.json or {}
     event = data.get("event", {})
     event_type = event.get("type")
-    
+
     if event_type == "app_mention":
         return jsonify({"ok": True})
-    
+
     return jsonify({"ok": True})
+
 
 # Status page with app information
 @app.route("/status")
 def status():
-    return jsonify({
-        "app": "Alfred Slack App",
-        "status": "running",
-        "commands_executed": state.commands_executed,
-        "health_reports": state.health_reports,
-        "channels": state
-    })
+    return jsonify(
+        {
+            "app": "Alfred Slack App",
+            "status": "running",
+            "commands_executed": state.commands_executed,
+            "health_reports": state.health_reports,
+            "channels": state,
+        }
+    )
+
 
 # Frontend UI for testing
 @app.route("/ui")
@@ -250,7 +259,8 @@ def ui():
     </body>
     </html>
     """
-    return Response(html, content_type='text/html')
+    return Response(html, content_type="text/html")
+
 
 if __name__ == "__main__":
     port = 5000
@@ -261,4 +271,4 @@ if __name__ == "__main__":
     print(f"  - http://localhost:{port}/readyz - Readiness check endpoint")
     print(f"  - http://localhost:{port}/ui - Interactive UI for testing commands")
     print(f"  - http://localhost:{port}/status - Status page with app information")
-    app.run(host='0.0.0.0', port=port, debug=True)
+    app.run(host="0.0.0.0", port=port, debug=True)

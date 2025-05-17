@@ -2,6 +2,7 @@
 Development server for the Slack app.
 Runs the Flask server only for testing health endpoints.
 """
+
 import os
 
 from dotenv import load_dotenv
@@ -13,30 +14,36 @@ load_dotenv()
 # Create a Flask app for health checks
 app = Flask(__name__)
 
+
 @app.route("/healthz")
 def health():
     """Health check endpoint"""
     return jsonify({"status": "ok", "service": "slack-app"})
+
 
 @app.route("/readyz")
 def ready():
     """Readiness check endpoint"""
     return jsonify({"status": "ready", "service": "slack-app"})
 
+
 @app.route("/")
 def home():
     """Home page"""
-    return jsonify({
-        "name": "Alfred Slack App",
-        "version": "v0.8.1",
-        "status": "development",
-        "endpoints": ["/healthz", "/readyz"],
-        "slack_commands": [
-            {"command": "/alfred help", "description": "Show help message"},
-            {"command": "/alfred status", "description": "Show platform status"},
-            {"command": "/alfred health", "description": "Check service health"}
-        ]
-    })
+    return jsonify(
+        {
+            "name": "Alfred Slack App",
+            "version": "v0.8.1",
+            "status": "development",
+            "endpoints": ["/healthz", "/readyz"],
+            "slack_commands": [
+                {"command": "/alfred help", "description": "Show help message"},
+                {"command": "/alfred status", "description": "Show platform status"},
+                {"command": "/alfred health", "description": "Check service health"},
+            ],
+        }
+    )
+
 
 @app.route("/mock/health")
 def mock_health_command():
@@ -45,6 +52,7 @@ def mock_health_command():
         "text": "*Alfred Health Status*\n\n```\nService            | Status  | Latency (ms) | Last Check\n-------------------|---------|--------------|-------------\ndb-api-metrics     | UP      | 12           | Just now\ndb-auth-metrics    | UP      | 15           | Just now\ndb-admin-metrics   | UP      | 11           | Just now\ndb-realtime-metrics| UP      | 14           | Just now\ndb-storage-metrics | UP      | 13           | Just now\nmodel-registry     | UP      | 32           | Just now\nmodel-router       | UP      | 28           | Just now\n```\n"
     }
     return jsonify(health_response)
+
 
 if __name__ == "__main__":
     port = 8502  # Use a much higher port to avoid conflicts
@@ -55,4 +63,4 @@ if __name__ == "__main__":
     print(f"  - http://localhost:{port}/mock/health (simulates /alfred health command)")
     print("\nTo run with real Slack tokens, update .env with valid credentials")
     print("and run: python run.py")
-    app.run(host='0.0.0.0', port=port, debug=True)
+    app.run(host="0.0.0.0", port=port, debug=True)
