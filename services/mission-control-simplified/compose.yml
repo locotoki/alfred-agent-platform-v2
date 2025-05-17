@@ -1,0 +1,9 @@
+services:
+  mission-control-simplified:
+    image: ${ALFRED_REGISTRY}/alfred-platform/mission-control-simplified:${ALFRED_VERSION}
+    environment:
+    - ALFRED_ENVIRONMENT=${ALFRED_ENVIRONMENT}
+    - ALFRED_LOG_LEVEL=${ALFRED_LOG_LEVEL}
+    restart: unless-stopped
+    networks:
+    - alfred-network

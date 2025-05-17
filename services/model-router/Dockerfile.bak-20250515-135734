@@ -1,0 +1,53 @@
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# Install dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Set environment variables
+ENV PYTHONPATH=/app
+ENV PORT=8080
+
+# Install dependencies
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy application code
+COPY app/ app/
+
+# Create a simple healthcheck script
+RUN echo '#!/bin/sh\n\
+# Simple health check and metrics exporter\n\
+if [ "$1" = "--export-prom" ] && [ -n "$2" ]; then\n\
+  # Start a background process for metrics\n\
+  PORT="${2#:}"\n\
+  mkdir -p /tmp/metrics\n\
+  echo "# HELP up Service up status\\n# TYPE up gauge\\nup 1" > /tmp/metrics/metrics\n\
+  (while true; do nc -l -p $PORT < /tmp/metrics/metrics || true; sleep 1; done) &\n\
+  shift 2\n\
+  if [ "$1" = "--" ]; then shift; fi\n\
+fi\n\
+\n\
+# If checking HTTP endpoint\n\
+if [ "$1" = "--http" ]; then\n\
+  curl -s -f "$2" > /dev/null\n\
+  exit $?\n\
+fi\n\
+\n\
+# Execute the wrapped command\n\
+exec "$@"' > /usr/local/bin/healthcheck && \
+    chmod +x /usr/local/bin/healthcheck
+
+# Expose ports
+EXPOSE 8080
+EXPOSE 9091
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+    CMD curl -f http://localhost:8080/health || exit 1
+
+# Run the application with metrics export
+CMD ["/usr/local/bin/healthcheck", "--export-prom", "9091", "--", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8080"]

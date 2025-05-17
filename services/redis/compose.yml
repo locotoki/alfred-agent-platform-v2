@@ -1,0 +1,11 @@
+services:
+  redis:
+    image: ${ALFRED_REGISTRY}/alfred-platform/redis:${ALFRED_VERSION}
+    environment:
+    - ALFRED_ENVIRONMENT=${ALFRED_ENVIRONMENT}
+    - ALFRED_LOG_LEVEL=${ALFRED_LOG_LEVEL}
+    restart: unless-stopped
+    networks:
+    - alfred-network
+    ports:
+    - ${REDIS_PORT:-6379}:6379
