@@ -30,21 +30,22 @@ def mock_llm():
     """Mock LLM for chain tests"""
     from langchain.schema.runnable import Runnable
     from typing import Any, Optional
-    
+
     class MockLLM(Runnable):
         def invoke(self, input: Any, config: Optional[Any] = None, **kwargs: Any) -> Any:
             return "test response"
-            
+
         def _call(self, *args, **kwargs):
             return "test response"
-            
+
         def generate(self, *args, **kwargs):
             from langchain.schema import Generation
+
             return MagicMock(generations=[[Generation(text="test")]])
-            
+
         def predict(self, *args, **kwargs):
             return "test response"
-    
+
     return MockLLM()
 
 

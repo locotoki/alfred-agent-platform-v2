@@ -58,25 +58,26 @@ def financial_tax_agent(mock_pubsub, mock_supabase, mock_policy):
         # Create a mock that actually inherits from the base class structure expected
         from langchain.schema.runnable import Runnable
         from typing import Any, Optional
-        
+
         class MockLLM(Runnable):
             def invoke(self, input: Any, config: Optional[Any] = None, **kwargs: Any) -> Any:
                 return "test response"
-                
+
             def _call(self, *args, **kwargs):
                 return "test response"
-                
+
             def generate(self, *args, **kwargs):
                 from langchain.schema import Generation
+
                 return MagicMock(generations=[[Generation(text="test")]])
-                
+
             def predict(self, *args, **kwargs):
                 return "test response"
-        
+
         # Create instance of our mock
         mock_llm = MockLLM()
         mock_openai.return_value = mock_llm
-        
+
         agent = FinancialTaxAgent(
             pubsub_transport=mock_pubsub,
             supabase_transport=mock_supabase,
