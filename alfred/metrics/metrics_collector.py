@@ -37,7 +37,7 @@ def check_service_http():
     try:
         if DEBUG_MODE:
             print(f"Checking HTTP service: {SERVICE_URL}")
-            
+
         if not SERVICE_URL:
             service_availability.labels(service=SERVICE_NAME).set(0)
             return False
@@ -68,9 +68,9 @@ def check_service_http():
         url = f"{SERVICE_URL.rstrip('/')}/{HEALTH_PATH.lstrip('/')}"
         if DEBUG_MODE:
             print(f"Checking URL: {url}")
-            
+
         response = requests.get(url, timeout=5)
-        
+
         if DEBUG_MODE:
             print(f"Response status: {response.status_code}")
             print(f"Response body: {response.text[:100]}...")
