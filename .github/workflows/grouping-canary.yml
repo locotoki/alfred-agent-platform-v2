@@ -1,0 +1,74 @@
+name: Alert Grouping Canary Deployment
+
+on:
+  workflow_dispatch:
+    inputs:
+      percentage:
+        description: 'Traffic percentage for canary'
+        required: true
+        default: '5'
+        type: choice
+        options:
+          - '5'
+          - '25'
+          - '50'
+          - '100'
+
+jobs:
+  deploy-canary:
+    runs-on: ubuntu-latest
+    environment: production
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_DEPLOY_ROLE }}
+          aws-region: us-east-1
+          
+      - name: Update Feature Flag
+        env:
+          UNLEASH_API_URL: ${{ secrets.UNLEASH_API_URL }}
+          UNLEASH_API_KEY: ${{ secrets.UNLEASH_API_KEY }}
+        run: |
+          curl -X PUT "${UNLEASH_API_URL}/api/admin/projects/default/features/alert-grouping/environments/production" \
+            -H "Authorization: ${UNLEASH_API_KEY}" \
+            -H "Content-Type: application/json" \
+            -d '{
+              "enabled": true,
+              "strategies": [{
+                "name": "gradualRolloutRandom",
+                "parameters": {
+                  "percentage": "${{ github.event.inputs.percentage }}"
+                }
+              }]
+            }'
+            
+      - name: Deploy to Canary
+        run: |
+          kubectl set image deployment/alfred-alerts \
+            alfred-alerts=alfred-alerts:${GITHUB_SHA:0:7} \
+            -n alfred-canary
+            
+      - name: Wait for rollout
+        run: |
+          kubectl rollout status deployment/alfred-alerts -n alfred-canary
+          
+      - name: Run smoke tests
+        run: |
+          sleep 30
+          curl -f -H "X-Feature-Flag: on" \
+            https://canary.api.acme.com/api/v1/alerts/grouped
+            
+      - name: Notify Slack
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_PROD_WEBHOOK }}
+        run: |
+          curl -X POST $SLACK_WEBHOOK \
+            -H 'Content-Type: application/json' \
+            -d '{
+              "text": "🚀 Alert Grouping canary deployed to ${{ github.event.inputs.percentage }}% of traffic"
+            }'
