@@ -45,14 +45,14 @@ class TestDiagnosticsBot:
         call_args = slack_client.chat_postMessage.call_args
         assert "Commands" in str(call_args)
 
-    @pytest.mark.asyncio  
+    @pytest.mark.asyncio
     async def test_command_error(self, bot: DiagnosticsBot, slack_client: AsyncMock) -> None:
         """Test command error handling."""
         # Mock the command dictionary entry to raise an exception
         bot.commands["/diag health"] = AsyncMock(side_effect=Exception("Test error"))
-        
+
         await bot.handle_command("/diag", "C123", "U456", "health")
-        
+
         slack_client.chat_postMessage.assert_called_once()
         call_args = slack_client.chat_postMessage.call_args
         assert call_args is not None
