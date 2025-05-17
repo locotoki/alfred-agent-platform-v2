@@ -20,7 +20,9 @@ graph LR
 
 ## Feature Flag Configuration
 
-Enable alert grouping via environment variable:
+The alert grouping feature is protected by a feature flag for controlled rollout.
+
+### Environment Variable
 ```bash
 export ALERT_GROUPING_ENABLED=true
 ```
@@ -29,37 +31,41 @@ To check feature flag status in code:
 ```python
 from alfred.alerts.feature_flags import AlertFeatureFlags
 
-if AlertFeatureFlags.is_enabled(AlertFeatureFlags.ALERT_GROUPING_ENABLED):
+if AlertFeatureFlags.is_grouping_enabled():
     # Feature is enabled
     pass
 ```
 
-## API Documentation
+## API Usage
 
-### POST /api/v1/alerts/grouped
+### Group Alerts Endpoint
 
-Groups alerts based on similarity and time window.
-
-**Request:**
 ```bash
-curl -X POST http://localhost:8000/api/v1/alerts/grouped \
-  -H "Content-Type: application/json" \
-  -H "X-Feature-Flag: on" \
-  -d '{
-    "strategy": "jaccard",
-    "time_window": 900
-  }'
-```
+POST /api/v1/alerts/grouped
+Content-Type: application/json
+X-Feature-Flag: on  # Required when feature flag is disabled globally
 
-**Request Body:**
-```json
 {
-  "strategy": "jaccard",      // Grouping strategy (only "jaccard" supported)
-  "time_window": 900          // Time window in seconds (default: 900)
+  "alerts": [
+    {
+      "id": "alert-123",
+      "name": "HighCPU",
+      "severity": "warning",
+      "labels": {
+        "service": "api-gateway",
+        "environment": "prod",
+        "region": "us-east-1"
+      },
+      "timestamp": "2025-05-20T10:00:00Z"
+    }
+  ],
+  "time_window_minutes": 15,
+  "similarity_threshold": 0.7
 }
 ```
 
-**Response:**
+### Response Format
+
 ```json
 {
   "groups": [
@@ -67,9 +73,16 @@ curl -X POST http://localhost:8000/api/v1/alerts/grouped \
       "id": "550e8400-e29b-41d4-a716-446655440000",
       "key": "api-gateway:HighCPU:warning",
       "count": 5,
-      "first_seen": "2025-05-20T10:00:00Z",
-      "last_seen": "2025-05-20T10:14:00Z",
-      "severity": "warning"
+      "alerts": [
+        "alert-123",
+        "alert-124"
+      ],
+      "representative_alert": {
+        "id": "alert-123",
+        "name": "HighCPU",
+        "severity": "warning"
+      },
+      "last_updated": "2025-05-20T10:15:00Z"
     }
   ]
 }
@@ -80,69 +93,104 @@ curl -X POST http://localhost:8000/api/v1/alerts/grouped \
 
 ## Algorithm Details
 
-The grouping algorithm uses Jaccard similarity on alert labels:
+The grouping algorithm uses Jaccard similarity to compare alert label sets:
 
-1. **Group Key Generation**: `{service}:{alert_name}:{severity}`
-2. **Similarity Calculation**: 
-   - Jaccard index on label sets
-   - +0.3 bonus for matching alert names
-   - +0.1 bonus for matching severity
-3. **Time Window**: Default 15 minutes, configurable
-4. **Threshold**: 0.5 minimum similarity score
+```python
+def calculate_similarity(alert1, alert2):
+    labels1 = set(alert1.labels.items())
+    labels2 = set(alert2.labels.items())
+    
+    intersection = labels1.intersection(labels2)
+    union = labels1.union(labels2)
+    
+    if not union:
+        return 0.0
+        
+    return len(intersection) / len(union)
+```
+
+### Grouping Parameters
+
+- **time_window_minutes**: Maximum time span for alerts in the same group (default: 15)
+- **similarity_threshold**: Minimum Jaccard similarity score (default: 0.7)
 
 ## UI Component
 
-The GroupedAlerts React component displays grouped alerts in an accordion:
+The UI displays grouped alerts in an accordion with severity badges:
 
 ```typescript
-import { GroupedAlerts } from '@/components/GroupedAlerts';
-
-<GroupedAlerts 
+<AlertGroupAccordion 
   groups={alertGroups}
-  featureFlags={{ ALERT_GROUPING_ENABLED: true }}
+  onGroupClick={handleGroupClick}
+  showBadges={true}
 />
 ```
 
-Features:
+### Component Features
+- Collapsible groups with alert counts
 - Severity-based color coding
-- Alert count badges
-- Expandable details
-- Time range display
+- Representative alert preview
+- Time-based sorting
 
-## Performance Metrics
+## Performance Monitoring
 
-Target performance:
-- P95 latency: < 150ms at 50 RPS
-- Memory usage: < 256MB for 10k alerts
-- CPU: < 50% on 2 cores
+### Metrics Tracked
+- Group calculation latency (P95 < 150ms)
+- API response time
+- Feature flag check overhead
+- Memory usage for large alert sets
 
-Load testing command:
+### Health Check
 ```bash
-locust -f load/alert_group.py --headless -u 50 -r 10 -t 2m
+curl http://localhost:8080/health/alert-grouping
 ```
 
 ## Rollout Plan
 
-1. **Phase 1**: Deploy with flag disabled
-2. **Phase 2**: Enable in staging (10% traffic)
-3. **Phase 3**: Monitor for 48 hours
-4. **Phase 4**: Enable in production (25% → 50% → 100%)
-5. **Phase 5**: Remove feature flag after 1 week stable
+### Phase 1: Staging (Week 1)
+- Deploy with feature flag disabled
+- Enable for test accounts
+- Monitor performance metrics
 
-## Monitoring
+### Phase 2: Canary (Week 2)
+- Enable for 5% of production traffic
+- Compare noise reduction metrics
+- Gather user feedback
 
-Key metrics to track:
-- Alert noise reduction percentage
-- API latency (P50, P95, P99)
-- Memory usage
-- Error rates
-- User engagement with grouped alerts
+### Phase 3: General Availability (Week 3)
+- Enable globally
+- Remove feature flag checks
+- Document in user guide
 
 ## Troubleshooting
 
-Common issues:
+### Common Issues
 
-1. **Feature not working**: Check `ALERT_GROUPING_ENABLED` env var
-2. **High latency**: Reduce time window or similarity threshold
-3. **Too many groups**: Increase similarity threshold
-4. **Too few groups**: Decrease similarity threshold
+**No groups returned:**
+- Verify feature flag is enabled
+- Check similarity threshold (lower if needed)
+- Ensure alerts have overlapping time windows
+
+**High latency:**
+- Reduce batch size
+- Increase similarity threshold
+- Check database indexes
+
+**Groups too large:**
+- Increase similarity threshold
+- Decrease time window
+- Add more discriminating labels
+
+### Debug Mode
+```bash
+export ALERT_GROUPING_DEBUG=true
+```
+
+This enables detailed logging of similarity calculations and grouping decisions.
+
+## Future Enhancements
+
+1. Machine learning-based similarity
+2. Custom grouping rules per service
+3. Alert group lifecycle management
+4. Integration with incident management
