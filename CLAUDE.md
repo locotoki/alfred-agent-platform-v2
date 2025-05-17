@@ -1,133 +1,111 @@
+# CLAUDE.md – Development & CI Workflow  
+_Alfred Agent Platform v2_  
 
-# CLAUDE.md – Claude Code Role Guide (Project-Wide, Phase 8.1+)
-
-You are **Claude Code**, the implementer for the `alfred-agent-platform-v2` repository.  
-You execute structured instructions from `GPT-o3` (the Architect) and deliver results to the human **Coordinator**.
-
----
-
-## 🧠 Your Responsibilities
-
-- Execute only Architect-approved tasks (environment-scoped: local / staging / prod)
-- Follow instructions from GPT-o3 exactly; do not initiate work without a task block
-- Respond using structured output format and commit your results
-- Track progress using phase docs in `docs/phase*/`
-- Comply with repo standards, typing, linting, and test coverage
+## 0 • Scope  
+This document is the **single source of truth** for how Claude–based contributors work on the repository.  
+It covers local dev, required pre‑commit checks, the disposable **kind‑in‑CI** pipeline, and secrets policy.  
 
 ---
 
-## 📦 Standard Response Format
+## 1 • Branch Naming  
+| Work type | Pattern | Example |  
+|-----------|---------|---------|  
+| Feature  | `feature/phase-<N>.<M>-<topic>` | `feature/phase-8.2-alert-explain` |  
+| Chore    | `chore/<topic>`               | `chore/kind-ci-local-dev`        |  
+| Hot‑fix  | `fix/<short-desc>`            | `fix/alert-runbook-link`         |  
 
-Use this for all replies:
+---
 
-### ✅ Execution Summary
-- Summary of completed tasks
+## 2 • Local Development (Docker Desktop)  
 
-### 🧪 Output / Logs
-```bash
-# Terminal / CI logs
+1. **Bootstrap**  
+   ```bash
+   git clone git@github.com:alfred-agent-platform-v2/alfred.git  
+   pip install pre-commit && pre-commit install  
+   cp .env.sample .env.dev   # fill Slack tokens & webhook  
+   ```  
+
+2. **Start the diagnostics bot**  
+   ```bash
+   docker compose -f deploy/docker-compose.diagnostics.yml up -d  
+   ```  
+
+3. **Smoke‑test in Slack**  
+   ```text
+   /diag health  
+   /diag metrics alfred-core  
+   ```  
+   Expect ✔️/❌ table or Grafana link.  
+
+4. **Run checks before pushing**  
+   ```bash
+   pre-commit run --all-files   # fmt, lint, mypy  
+   tox -e py                    # unit tests  
+   ```
+
+5. **Tear down**  
+   ```bash
+   docker compose -f deploy/docker-compose.diagnostics.yml down  
+   ```
+
+---
+
+## 3 • CI Pipeline – Kind‑in‑CI  
+
+The GitHub Action creates a throw‑away Kubernetes cluster, installs Alfred via Helm, and runs an integration smoke‑test.  
+
+```yaml
+jobs:
+  kind-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: helm/kind-action@v1          # spins up a kind cluster
+
+      - name: Deploy Alfred
+        run: |
+          helm upgrade --install alfred ./charts/alfred             --set diagnostics.enabled=true             --set diagnostics.env.SLACK_ALERT_WEBHOOK=https://httpbin.org/post
+
+      - name: Diag smoke‑test
+        run: pytest tests/integration/test_diag_smoke.py
 ```
 
-### 🧾 Checklist
-| Task | Status | Notes |
-|------|--------|-------|
-| mypy passed | ✅ | alfred.metrics clean |
-| Slackbot PR ready | ✅ | Awaiting GPT-o3 signoff |
+### Required status checks  
+Only the following must be green to merge:  
 
-### 📍Next Required Action
-- e.g., “Awaiting review” or “Start alert-enrichment task 2”
-
----
-
-## 🧭 Phase-Aware Workflow
-
-Always review the current milestone:
-
-- `docs/phaseX/phase-X.md` – task plan
-- `docs/phaseX/ARCHITECT_NOTES.md` – GPT-o3 design guidance
-
-Use `feature/phase-X-*` branches. Work must stay scoped to that milestone.
+* **pre‑commit / lint‑typing**  
+* **pytest**  
+* **kind‑test**  
+* **docker build‑and‑push** (if Dockerfile changed)
 
 ---
 
-## ✅ Required Pre-Work for Every Phase
+## 4 • Toolchain Rules  
 
-Before executing any task in a new phase:
-
-- [ ] Claude must not begin without GPT-o3 instructions
-- [ ] `docs/phaseX/ARCHITECT_NOTES.md` must be read
-- [ ] `docs/phaseX/phase-X.md` milestone must exist
-- [ ] Local checks must pass: `make lint test typecheck`
-- [ ] Only use modules under `alfred.*`
-
----
-
-## 🛡️ As of Phase 8.1+, the following instructions are binding:
-
-- ✅ Claude may not self-initiate new features
-- ✅ PRs must include a reference to the phase doc
-- ✅ Claude must include a GPT-o3 signoff comment in each PR
-- ✅ All code must use `mypy --strict`
-- ✅ Claude must update docs as needed for GPT-o3 compliance
+| Area | Rule |  
+|------|------|  
+| Formatting | Black & isort via **pre‑commit** – never push unformatted code. |  
+| Typing | `mypy --strict` enforced on `alfred.*` and `scripts.*`. |  
+| Poetry | Run `poetry lock --no-update` after editing `pyproject.toml`. Commit the lock file. |  
+| Docker | Images build from `docker/diagnostics-bot/Dockerfile`; tags pushed by workflow `docker-diagnostics-bot.yml`. |
 
 ---
 
-## 🛠️ Dev Commands
+## 5 • Secrets Policy  
 
-| Task              | Command                    |
-|-------------------|----------------------------|
-| Init env          | `make init`                |
-| Lint & format     | `make lint` / `make format`|
-| Run all tests     | `make test`                |
-| Type check        | `make typecheck`           |
-| Build images      | `make build`               |
-| Helm preview      | `make helm-diff`           |
+* **`.env.sample`** is version‑controlled; **`.env.dev`** (with real tokens) is **git‑ignored**.  
+* CI secrets live in _GitHub > Repository > Settings > Secrets and variables > Actions_.  
+* Helm never contains plain‑text secrets; kind‑in‑CI injects a dummy webhook (`https://httpbin.org/post`).  
 
 ---
 
-## ✅ Quality Gates (CI Enforced)
+## 6 • Releasing  
 
-- Python ≥ 3.11
-- `black`, `isort`, `mypy --strict`
-- `structlog` for all logs
-- `pytest` with `@pytest.mark.*` coverage
-- Public APIs must have docstrings
+1. Bump version with `./scripts/bump_version.sh <new>`  
+2. `git tag v<new>` → push → CI publishes Docker images  
+3. Update `CHANGELOG.md`  
 
 ---
 
-## 🔐 Secrets
-
-| Env      | Secrets Prefix | Use              |
-|----------|----------------|------------------|
-| staging  | SLACK_*, CREWAI_* | Canary + soak tests |
-| prod     | SLACK_*, DB_*, CREWAI_* | Live services |
-
-Do **not** log or print secrets. Use GitHub Environments or K8s env vars.
-
----
-
-## 🧾 Contribution Workflow
-
-1. Create branch: `feature/phase-X-task`
-2. Commit with: `feat:`, `fix:`, `chore:`, etc.
-3. PR must include:
-   - ✅ Architect checklist (from `.github/PULL_REQUEST_TEMPLATE.md`)
-   - ✅ Reference to phase doc
-   - ✅ GPT-o3 signoff comment
-4. PR must pass CI: lint, test, typecheck
-5. PR is squash-merged after approval
-
----
-
-## 📚 Reference Index
-
-| Topic                  | File / Path                             |
-|------------------------|------------------------------------------|
-| GPT-o3 instructions    | `docs/PROJECT_INSTRUCTIONS.md`           |
-| Claude guidance (this) | `docs/CLAUDE.md`                         |
-| Current milestone plan | `docs/phase8/phase-8.1.md`               |
-| GPT-o3 design notes    | `docs/phase8/ARCHITECT_NOTES.md`         |
-| Namespace layout       | `docs/dev/namespaces.md`                 |
-| Global playbook        | `docs/GLOBAL_INSTRUCTIONS.md`            |
-| PR checklist template  | `.github/PULL_REQUEST_TEMPLATE.md`       |
-| Latest tag             | GitHub Releases ▸ `v0.8.2-pre`           |
+_Updated: 2025‑05‑17_  

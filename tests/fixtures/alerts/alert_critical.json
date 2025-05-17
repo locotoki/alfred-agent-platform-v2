@@ -1,0 +1,16 @@
+{
+  "alert_name": "alfred_core_health_critical",
+  "description": "Alfred Core service has been unhealthy for more than 5 minutes",
+  "severity": "critical",
+  "value": "0",
+  "metric": "up",
+  "labels": {
+    "service": "alfred-core",
+    "namespace": "alfred",
+    "pod": "alfred-core-abc123"
+  },
+  "annotations": {
+    "runbook_url": "https://runbooks.alfred.ai/services/alfred-core/health",
+    "team": "platform"
+  }
+}
