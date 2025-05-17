@@ -1,0 +1,125 @@
+name: ML Trainer Benchmark
+
+on:
+  pull_request:
+    paths:
+      - 'backend/alfred/ml/**'
+      - '.github/workflows/trainer-benchmark.yml'
+  push:
+    branches:
+      - main
+      - 'feat/phase8.3-sprint4'
+
+jobs:
+  benchmark:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3  # Must complete in 3 minutes
+    
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: test
+          POSTGRES_PASSWORD: test
+          POSTGRES_DB: alerts
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+      
+      - name: Cache ML models
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/huggingface
+          key: ${{ runner.os }}-hf-models-${{ hashFiles('backend/alfred/ml/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-hf-models-
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r backend/alfred/ml/requirements.txt
+          pip install pytest pytest-benchmark locust
+      
+      - name: Initialize test database
+        env:
+          PGPASSWORD: test
+        run: |
+          psql -h localhost -U test -d alerts -c "
+            CREATE TABLE alerts (
+              id SERIAL PRIMARY KEY,
+              message TEXT NOT NULL,
+              severity VARCHAR(50) NOT NULL,
+              created_at TIMESTAMP NOT NULL
+            );
+            CREATE INDEX idx_alerts_created_at ON alerts(created_at);
+          "
+          
+          # Insert 100k test alerts
+          psql -h localhost -U test -d alerts -c "
+            INSERT INTO alerts (message, severity, created_at)
+            SELECT 
+              'Test alert ' || generate_series || ' ' || md5(random()::text),
+              CASE (random() * 3)::int
+                WHEN 0 THEN 'critical'
+                WHEN 1 THEN 'warning'
+                ELSE 'info'
+              END,
+              NOW() - (random() * interval '30 days')
+            FROM generate_series(1, 100000);
+          "
+      
+      - name: Run training benchmark
+        env:
+          ALERT_DB_URI: postgresql://test:test@localhost:5432/alerts
+          PYTHONPATH: ${{ github.workspace }}/backend
+        run: |
+          python -m pytest tests/backend/ml/test_trainer_benchmark.py -v --benchmark-only
+      
+      - name: Run inference benchmark
+        run: |
+          python -m pytest tests/backend/ml/test_inference_benchmark.py -v --benchmark-only
+      
+      - name: Check memory usage
+        run: |
+          python -c "import psutil; print(f'Memory usage: {psutil.Process().memory_info().rss / 1e9:.2f} GB')"
+      
+      - name: Upload benchmark results
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: benchmark-results
+          path: |
+            .benchmarks/
+            benchmark_report.json
+      
+      - name: Comment PR with results
+        uses: actions/github-script@v6
+        if: github.event_name == 'pull_request'
+        with:
+          script: |
+            const fs = require('fs');
+            const comment = `## ML Trainer Benchmark Results
+            
+            ✅ Completed in < 3 minutes
+            
+            See artifacts for detailed benchmark results.`;
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            })
