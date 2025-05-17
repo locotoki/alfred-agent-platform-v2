@@ -5,8 +5,10 @@ This is the script you run to start the app.
 """
 import os
 import sys
+from threading import Thread
 
 from dotenv import load_dotenv
+from slack_bolt.adapter.socket_mode import SocketModeHandler
 
 # Load environment variables from .env file
 load_dotenv()
@@ -21,11 +23,8 @@ if missing_vars:
     print("You can copy .env.template to .env and fill in the values.")
     sys.exit(1)
 
-from threading import Thread
-
-# Import and run the app
+# Import the app
 from app import app, flask_app
-from slack_bolt.adapter.socket_mode import SocketModeHandler
 
 if __name__ == "__main__":
     # Start Flask app for health checks in a separate thread

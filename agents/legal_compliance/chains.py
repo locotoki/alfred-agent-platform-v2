@@ -112,7 +112,7 @@ Parties Involved: {parties_involved}
 Jurisdiction: {jurisdiction}
 Review Focus Areas: {review_focus}
 
-Analyze the contract for compliance issues, identify key terms, assess risks, 
+Analyze the contract for compliance issues, identify key terms, assess risks,
 and provide recommendations for improvement.
 
 {format_instructions}

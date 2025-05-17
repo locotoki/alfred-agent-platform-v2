@@ -347,7 +347,7 @@ async def perform_gap_analysis(
         channel_keywords = {k for k in channel_keywords if len(k) > 3}
 
         # Find unique keywords in channel not in seed
-        unique_to_channel = channel_keywords - seed_keywords
+        # unique_to_channel = channel_keywords - seed_keywords  # Reserved for future use
 
         # Find unique keywords in seed not in channel
         unique_to_seed = seed_keywords - channel_keywords
@@ -407,10 +407,11 @@ def generate_blueprint(
     """Generate a channel blueprint based on analysis."""
     # Load trending niches if available
     trending_niches_path = Path("niche_scout/trending_niches.csv")
-    trending_niches = None
+    # trending_niches = None  # Reserved for future use
 
     if trending_niches_path.exists():
-        trending_niches = pd.read_csv(trending_niches_path)
+        # trending_niches = pd.read_csv(trending_niches_path)  # Reserved for future use
+        pass
 
     # Extract top opportunity keywords
     top_keywords = gap_df.head(20)["keyword"].tolist()
@@ -500,7 +501,7 @@ def generate_blueprint(
 
     # Save blueprint to markdown file
     with open("builder/channel_blueprint.md", "w") as f:
-        f.write(f"# YouTube Channel Blueprint\n\n")
+        f.write("# YouTube Channel Blueprint\n\n")
         f.write(f"## Positioning\n\n{positioning}\n\n")
 
         f.write("## Content Pillars\n\n")

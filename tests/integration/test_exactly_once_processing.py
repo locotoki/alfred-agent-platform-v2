@@ -38,11 +38,11 @@ class TestExactlyOnceProcessing:
 
         # First check should return False (not duplicate)
         is_duplicate1 = await supabase_transport.check_duplicate(message_id)
-        assert is_duplicate1 == False
+        assert is_duplicate1 is False
 
         # Second check should return True (is duplicate)
         is_duplicate2 = await supabase_transport.check_duplicate(message_id)
-        assert is_duplicate2 == True
+        assert is_duplicate2 is True
 
         # Verify the message is in the database
         async with supabase_transport._pool.acquire() as conn:
@@ -64,8 +64,8 @@ class TestExactlyOnceProcessing:
         results = await asyncio.gather(*tasks)
 
         # Only one check should return False (not duplicate)
-        false_count = sum(1 for r in results if r == False)
-        true_count = sum(1 for r in results if r == True)
+        false_count = sum(1 for r in results if r is False)
+        true_count = sum(1 for r in results if r is True)
 
         assert false_count == 1
         assert true_count == 9
@@ -119,8 +119,8 @@ class TestExactlyOnceProcessing:
         async with supabase_transport._pool.acquire() as conn:
             result = await conn.fetchrow(
                 """
-                SELECT processed_at, expires_at 
-                FROM processed_messages 
+                SELECT processed_at, expires_at
+                FROM processed_messages
                 WHERE message_id = $1
                 """,
                 message_id,
