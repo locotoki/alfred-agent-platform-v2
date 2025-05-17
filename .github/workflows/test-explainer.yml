@@ -37,8 +37,11 @@ jobs:
         run: |
           helm upgrade --install alfred ./charts/alfred \
             --set explainer.enabled=true \
-            --set explainer.image.tag=test \
-            --set explainer.image.pullPolicy=Never \
+            --set explainer-bot.image.repository=ghcr.io/alfred-platform/explainer-bot \
+            --set explainer-bot.image.tag=test \
+            --set explainer-bot.image.pullPolicy=Never \
+            --set prometheus.enabled=false \
+            --set grafana.enabled=false \
             --wait --timeout=5m
       
       - name: Run explainer smoke test
