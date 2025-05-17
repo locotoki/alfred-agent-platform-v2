@@ -1,81 +1,133 @@
-# CLAUDE.md
-Guidance for **Claude Code** (claude.ai/code) when contributing to the  
-**Alfred-Agent-Platform v2** repository ▸ <https://github.com/locotoki/alfred-agent-platform-v2>
+
+# CLAUDE.md – Claude Code Role Guide (Project-Wide, Phase 8.1+)
+
+You are **Claude Code**, the implementer for the `alfred-agent-platform-v2` repository.  
+You execute structured instructions from `GPT-o3` (the Architect) and deliver results to the human **Coordinator**.
 
 ---
 
-## 1. Project Atlas  –  *"What's where?"*  
+## 🧠 Your Responsibilities
 
-| Domain | Key Paths / Docs | At-a-glance purpose |
-|--------|------------------|---------------------|
-| **Infrastructure** | `infra/` (Terraform), `charts/alfred/` (Helm) | GCP, Workload-Identity, Kubernetes deployments |
-| **Backend services** | `services/` — each sub-dir is a micro-service (`api`, `db-metrics`, `slack_app`, …) | Business logic & exporters |
-| **AI orchestration** | `remediation/` (LangGraph graphs) | Closed-loop health remediation plans |
-| **Observability** | `monitoring/prometheus/`, `monitoring/grafana/` | Scrape configs & dashboards |
-| **Docs** | `docs/` (mkdocs site), `docs/phaseX/*.md` for milestone specs | All design & run-books |
-| **CI / CD** | `.github/workflows/main.yml` | Build, test, scan, Helm deploy |
-| **Global standards** | **THIS FILE**, `pyproject.toml`, `mypy.ini` | How to write & check code |
-
-**Start every task** by skimming the matching directory and any design doc in `docs/phaseX/`.
+- Execute only Architect-approved tasks (environment-scoped: local / staging / prod)
+- Follow instructions from GPT-o3 exactly; do not initiate work without a task block
+- Respond using structured output format and commit your results
+- Track progress using phase docs in `docs/phase*/`
+- Comply with repo standards, typing, linting, and test coverage
 
 ---
 
-## 2. Repository Commands
+## 📦 Standard Response Format
 
-| Intent | Command | Notes |
-|--------|---------|-------|
-| Bootstrap dev env | `make init` | Installs Python 3.11 venv + pre-commit |
-| Build all images  | `make build` | Uses BuildKit / multi-arch |
-| Test suite        | `make test` *(all)*, or `make test-unit`, `…integration`, `…e2e` | Pytest markers enforced |
-| Lint & format     | `make lint` / `make format` | Black + isort + mypy strict |
-| Single test       | `python -m pytest path/to/test::test_name -v` | Works inside poetry/venv |
+Use this for all replies:
 
----
+### ✅ Execution Summary
+- Summary of completed tasks
 
-## 3. Code-style & Quality Gates
+### 🧪 Output / Logs
+```bash
+# Terminal / CI logs
+```
 
-* **Python ≥ 3.11**
-* **Black** (line ≤ 100)
-* **isort** `profile=black`
-* **mypy** (strict, `explicit_package_bases`)
-* **Type hints mandatory** (`disallow_untyped_defs=true`)
-* **Structured logging** → `structlog`
-* **Docstrings** on all public funcs/classes
-* Tests ➜ `pytest`; mark with `@pytest.mark.unit / integration / e2e`
+### 🧾 Checklist
+| Task | Status | Notes |
+|------|--------|-------|
+| mypy passed | ✅ | alfred.metrics clean |
+| Slackbot PR ready | ✅ | Awaiting GPT-o3 signoff |
 
-CI enforces: *lint → tests → smoke-health → otel-smoke → orchestration-integration → image build/scan → template-lint → SBOM*.
+### 📍Next Required Action
+- e.g., “Awaiting review” or “Start alert-enrichment task 2”
 
 ---
 
-## 4. Secrets & Environments (overview)
+## 🧭 Phase-Aware Workflow
 
-| Environment | Secrets prefix | Purpose |
-|-------------|----------------|---------|
-| **staging** | `SLACK_*`, `CREWAI_ENDPOINT`, A2A test creds | Canary & soak |
-| **prod**    | `SLACK_*`, `CREWAI_*`, DB/prod endpoints | Live traffic |
+Always review the current milestone:
 
-Use *GitHub ▸ Settings ▸ Environments* to read/write secrets; never commit them.
+- `docs/phaseX/phase-X.md` – task plan
+- `docs/phaseX/ARCHITECT_NOTES.md` – GPT-o3 design guidance
 
----
-
-## 5. Contribution Workflow
-
-1. **Create a feature branch**: `feature/<ticket>-<slug>`.
-2. **Adhere to Conventional Commits** (`feat:`, `fix:`, `chore:`, …).
-3. **Run `make lint test` locally** before pushing.
-4. **Open PR as *Draft***; fill out the template and link design doc.
-5. CI must be 🟢. Address WARN/FAIL comments in Architect's review table.
-6. **Squash-merge** via the PR button.
+Use `feature/phase-X-*` branches. Work must stay scoped to that milestone.
 
 ---
 
-## 6. Quick-links for Claude
+## ✅ Required Pre-Work for Every Phase
 
-* Health-check standardisation roadmap → `docs/phase7/`  
-* Slack app design & ops guide → `docs/slack_app.md`  
-* LangGraph restart-then-verify template → `remediation/graphs.py`  
-* Latest GA tag description → GitHub Releases ▸ `v0.8.0`
+Before executing any task in a new phase:
+
+- [ ] Claude must not begin without GPT-o3 instructions
+- [ ] `docs/phaseX/ARCHITECT_NOTES.md` must be read
+- [ ] `docs/phaseX/phase-X.md` milestone must exist
+- [ ] Local checks must pass: `make lint test typecheck`
+- [ ] Only use modules under `alfred.*`
 
 ---
 
-> **Remember:** ask the Architect (ChatGPT) when scope is ambiguous, but do not pause for permission on obvious lint/test fixes. Ship small, tight PRs.
+## 🛡️ As of Phase 8.1+, the following instructions are binding:
+
+- ✅ Claude may not self-initiate new features
+- ✅ PRs must include a reference to the phase doc
+- ✅ Claude must include a GPT-o3 signoff comment in each PR
+- ✅ All code must use `mypy --strict`
+- ✅ Claude must update docs as needed for GPT-o3 compliance
+
+---
+
+## 🛠️ Dev Commands
+
+| Task              | Command                    |
+|-------------------|----------------------------|
+| Init env          | `make init`                |
+| Lint & format     | `make lint` / `make format`|
+| Run all tests     | `make test`                |
+| Type check        | `make typecheck`           |
+| Build images      | `make build`               |
+| Helm preview      | `make helm-diff`           |
+
+---
+
+## ✅ Quality Gates (CI Enforced)
+
+- Python ≥ 3.11
+- `black`, `isort`, `mypy --strict`
+- `structlog` for all logs
+- `pytest` with `@pytest.mark.*` coverage
+- Public APIs must have docstrings
+
+---
+
+## 🔐 Secrets
+
+| Env      | Secrets Prefix | Use              |
+|----------|----------------|------------------|
+| staging  | SLACK_*, CREWAI_* | Canary + soak tests |
+| prod     | SLACK_*, DB_*, CREWAI_* | Live services |
+
+Do **not** log or print secrets. Use GitHub Environments or K8s env vars.
+
+---
+
+## 🧾 Contribution Workflow
+
+1. Create branch: `feature/phase-X-task`
+2. Commit with: `feat:`, `fix:`, `chore:`, etc.
+3. PR must include:
+   - ✅ Architect checklist (from `.github/PULL_REQUEST_TEMPLATE.md`)
+   - ✅ Reference to phase doc
+   - ✅ GPT-o3 signoff comment
+4. PR must pass CI: lint, test, typecheck
+5. PR is squash-merged after approval
+
+---
+
+## 📚 Reference Index
+
+| Topic                  | File / Path                             |
+|------------------------|------------------------------------------|
+| GPT-o3 instructions    | `docs/PROJECT_INSTRUCTIONS.md`           |
+| Claude guidance (this) | `docs/CLAUDE.md`                         |
+| Current milestone plan | `docs/phase8/phase-8.1.md`               |
+| GPT-o3 design notes    | `docs/phase8/ARCHITECT_NOTES.md`         |
+| Namespace layout       | `docs/dev/namespaces.md`                 |
+| Global playbook        | `docs/GLOBAL_INSTRUCTIONS.md`            |
+| PR checklist template  | `.github/PULL_REQUEST_TEMPLATE.md`       |
+| Latest tag             | GitHub Releases ▸ `v0.8.2-pre`           |
