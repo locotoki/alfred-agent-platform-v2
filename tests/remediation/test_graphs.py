@@ -9,7 +9,7 @@ import pytest
 from unittest.mock import patch, MagicMock
 import time
 import freezegun
-from remediation.graphs import (
+from alfred.remediation.graphs import (
     restart_service,
     wait_for_stabilization,
     probe_health,
@@ -18,7 +18,7 @@ from remediation.graphs import (
     escalate_issue,
     restart_then_verify,
 )
-from remediation import settings
+from alfred.remediation import settings
 
 
 @pytest.fixture

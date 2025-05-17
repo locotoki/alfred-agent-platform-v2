@@ -1,0 +1,8 @@
+FROM postgres:15-alpine
+
+# Copy SQL file and initialization script
+COPY storage-schema.sql /bootstrap/storage-schema.sql
+COPY init-storage-schema.sh /docker-entrypoint-initdb.d/99-init-storage-schema.sh
+
+# The script will run automatically when the container starts
+RUN chmod +x /docker-entrypoint-initdb.d/99-init-storage-schema.sh

@@ -1,0 +1,36 @@
+### ALFRED PLATFORM STANDARDIZED HEALTHCHECK TEMPLATE ###
+# This template provides a standardized implementation of health checks
+# It should be included in your service Dockerfile with minimal modification
+
+# First stage: Get the healthcheck binary
+FROM gcr.io/distroless/static-debian12:nonroot AS healthcheck
+WORKDIR /app
+COPY --from=ghcr.io/alfred-health/healthcheck:latest /usr/local/bin/healthcheck /usr/local/bin/healthcheck
+
+# Main application stage
+FROM ${BASE_IMAGE} AS app
+
+# Install healthcheck binary from first stage
+COPY --from=healthcheck /usr/local/bin/healthcheck /usr/local/bin/healthcheck
+
+# Set up health check environment variables
+# These variables can be customized per service but defaults are provided
+ENV HEALTH_CHECK_PORT=8080
+ENV HEALTH_CHECK_PATH=/health
+ENV HEALTH_CHECK_INTERVAL=30s
+ENV METRICS_EXPORTER_PORT=9091
+
+# Set healthcheck command with standard parameters
+# --export-prom: Export Prometheus metrics on the specified port
+# --interval: How often to check the health endpoint
+# --port and --path: Where to reach the service's health endpoint
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+    CMD ["/usr/local/bin/healthcheck", \
+         "--export-prom", ":${METRICS_EXPORTER_PORT}", \
+         "--interval", "${HEALTH_CHECK_INTERVAL}", \
+         "--port", "${HEALTH_CHECK_PORT}", \
+         "--path", "${HEALTH_CHECK_PATH}"]
+
+# ENTRYPOINT and CMD should be defined in the service-specific Dockerfile
+# ENTRYPOINT ["/path/to/entrypoint.sh"]
+# CMD ["command", "arg1", "arg2"]

@@ -1,0 +1,53 @@
+#!/bin/bash
+### ALFRED PLATFORM STANDARDIZED ENTRYPOINT TEMPLATE ###
+# This template provides a standardized service entrypoint with health check integration
+# It should be copied to your service and customized as needed
+
+set -e
+
+# Start healthcheck in background with standard configuration
+# These environment variables can be overridden in the Dockerfile or at runtime
+: "${HEALTH_CHECK_PORT:=8080}"
+: "${HEALTH_CHECK_PATH:=/health}"
+: "${HEALTH_CHECK_INTERVAL:=30s}"
+: "${METRICS_EXPORTER_PORT:=9091}"
+
+# Start the healthcheck binary in the background
+# This exports Prometheus metrics and monitors the service's health endpoint
+/usr/local/bin/healthcheck \
+    --export-prom ":${METRICS_EXPORTER_PORT}" \
+    --interval "${HEALTH_CHECK_INTERVAL}" \
+    --port "${HEALTH_CHECK_PORT}" \
+    --path "${HEALTH_CHECK_PATH}" &
+
+# Store the healthcheck process ID
+HEALTHCHECK_PID=$!
+
+# CUSTOMIZE: Add any service-specific initialization here
+# ...
+
+# Handle cleanup when container is stopped
+cleanup() {
+    echo "Stopping service and healthcheck..."
+    
+    # CUSTOMIZE: Add any service-specific cleanup here
+    # ...
+
+    # Kill the healthcheck process
+    if [ -n "${HEALTHCHECK_PID}" ] && kill -0 ${HEALTHCHECK_PID} 2>/dev/null; then
+        kill -TERM ${HEALTHCHECK_PID}
+        wait ${HEALTHCHECK_PID}
+    fi
+    
+    exit 0
+}
+
+# Set up signal handlers
+trap cleanup SIGTERM SIGINT
+
+# CUSTOMIZE: Start your service here, for example:
+# exec python -m myservice.app "$@"
+
+# If your service runs in the foreground, execute it directly with exec.
+# If it runs in the background, uncomment the wait command below
+# wait
