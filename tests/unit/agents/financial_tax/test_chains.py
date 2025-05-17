@@ -29,6 +29,11 @@ from agents.financial_tax.models import (
 def mock_llm():
     """Mock LLM for chain tests"""
     mock = MagicMock(spec=ChatOpenAI)
+    # Add necessary attributes to make it compatible with LangChain
+    mock._call = MagicMock(return_value="test response")
+    mock.generate = MagicMock(return_value=MagicMock(generations=[[MagicMock(text="test")]]))
+    mock.predict = MagicMock(return_value="test response")
+    mock.invoke = MagicMock(return_value="test response")
     return mock
 
 
