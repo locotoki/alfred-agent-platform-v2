@@ -4,8 +4,8 @@ This module defines the abstract interfaces used throughout the alfred.ui
 subsystem for user interface components and interactions.
 """
 
-from typing import Protocol, Dict, Any, List, Optional, Callable
 from abc import abstractmethod
+from typing import Any, Callable, Dict, List, Optional, Protocol
 
 
 class ChatInterface(Protocol):

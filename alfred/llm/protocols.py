@@ -4,8 +4,8 @@ This module defines the abstract interfaces used throughout the alfred.llm
 subsystem for language model interactions and management.
 """
 
-from typing import Protocol, Dict, Any, List, Optional, Union, AsyncIterator
 from abc import abstractmethod
+from typing import Any, AsyncIterator, Dict, List, Optional, Protocol, Union
 
 
 class LLMProvider(Protocol):

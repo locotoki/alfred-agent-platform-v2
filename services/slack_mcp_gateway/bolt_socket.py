@@ -7,12 +7,12 @@ acknowledges slash commands, and forwards requests to Redis via the translator.
 
 import logging
 import os
-from typing import Callable, Dict, Any
+from typing import Any, Callable, Dict
 
 from slack_bolt import App
 from slack_bolt.adapter.socket_mode import SocketModeHandler
 
-from . import translator, redis_bus, responder
+from . import redis_bus, responder, translator
 
 # Configure logging
 logging.basicConfig(

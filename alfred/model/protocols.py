@@ -4,9 +4,9 @@ This module defines the abstract interfaces used throughout the alfred.model
 subsystem for model routing, registry, and management.
 """
 
-from typing import Protocol, Dict, Any, List, Optional
 from abc import abstractmethod
 from datetime import datetime
+from typing import Any, Dict, List, Optional, Protocol
 
 
 class ModelRouter(Protocol):

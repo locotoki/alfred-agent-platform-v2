@@ -4,9 +4,9 @@ This module defines the abstract interfaces used throughout the alfred.remediati
 subsystem for automated service recovery and remediation workflows.
 """
 
-from typing import Protocol, Dict, Any, List, Optional, Callable
 from abc import abstractmethod
 from enum import Enum
+from typing import Any, Callable, Dict, List, Optional, Protocol
 
 
 class RemediationState(Protocol):

@@ -11,7 +11,7 @@ import os
 import sys
 import time
 import uuid
-from typing import Dict, Any, Optional
+from typing import Any, Dict, Optional
 
 import redis
 

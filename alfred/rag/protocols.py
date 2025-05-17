@@ -4,8 +4,8 @@ This module defines the abstract interfaces used throughout the alfred.rag
 subsystem for retrieval-augmented generation functionality.
 """
 
-from typing import Protocol, List, Dict, Any, Optional, Tuple
 from abc import abstractmethod
+from typing import Any, Dict, List, Optional, Protocol, Tuple
 
 
 class VectorStore(Protocol):

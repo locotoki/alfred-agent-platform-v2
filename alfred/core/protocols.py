@@ -4,8 +4,8 @@ This module defines the abstract interfaces used throughout the alfred.core
 subsystem to ensure strict typing and enable proper dependency inversion.
 """
 
-from typing import Protocol, Any, Optional, Dict
 from abc import abstractmethod
+from typing import Any, Dict, Optional, Protocol
 
 
 class HealthCheckable(Protocol):

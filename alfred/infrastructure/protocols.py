@@ -4,8 +4,8 @@ This module defines the abstract interfaces used throughout the alfred.infrastru
 subsystem for infrastructure management and orchestration.
 """
 
-from typing import Protocol, Dict, Any, List, Optional, Callable
 from abc import abstractmethod
+from typing import Any, Callable, Dict, List, Optional, Protocol
 
 
 class ServiceDiscovery(Protocol):

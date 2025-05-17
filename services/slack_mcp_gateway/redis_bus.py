@@ -8,7 +8,7 @@ subscribing to response streams for consumption by the responder.
 import json
 import logging
 import os
-from typing import Dict, Any, Iterator, Tuple
+from typing import Any, Dict, Iterator, Tuple
 
 import redis
 
