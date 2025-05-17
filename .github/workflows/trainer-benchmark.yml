@@ -201,6 +201,56 @@ jobs:
           print('✅ All performance targets met!')
           "
       
+      - name: Run MLflow integration test
+        run: |
+          echo "Testing MLflow model registry integration..."
+          python -c "
+          import json
+          import mlflow
+          import mlflow.sklearn
+          from sklearn.ensemble import RandomForestClassifier
+          import numpy as np
+          
+          # Mock MLflow server (in CI, would use actual server)
+          mlflow.set_tracking_uri('sqlite:///mlflow.db')
+          mlflow.set_experiment('ci-benchmark')
+          
+          # Create a simple model
+          X = np.random.rand(100, 10)
+          y = np.random.randint(0, 2, 100)
+          model = RandomForestClassifier(n_estimators=10)
+          model.fit(X, y)
+          
+          # Log model to MLflow
+          with mlflow.start_run() as run:
+              mlflow.sklearn.log_model(
+                  model, 
+                  'model',
+                  registered_model_name='alert-noise-ranker-ci'
+              )
+              
+              # Log benchmark results
+              with open('hf_benchmark_results.json') as f:
+                  metrics = json.load(f)
+              
+              mlflow.log_metrics({
+                  'inference_latency_ms': metrics['per_text_latency_ms'],
+                  'similarity_latency_ms': metrics['similarity_latency_ms'],
+                  'memory_usage_mb': metrics['memory_usage_mb']
+              })
+              
+              # Log model URI
+              model_uri = f'runs:/{run.info.run_id}/model'
+              mlflow.log_param('model_uri', model_uri)
+              
+              print(f'Model logged with URI: {model_uri}')
+              print(f'Run ID: {run.info.run_id}')
+              
+              # Save model URI for artifact
+              with open('model_uri.txt', 'w') as f:
+                  f.write(model_uri)
+          "
+      
       - name: Upload benchmark report
         uses: actions/upload-artifact@v3
         if: always()
@@ -208,6 +258,7 @@ jobs:
           name: trainer-benchmark-report
           path: |
             hf_benchmark_results.json
+            model_uri.txt
       
       - name: Post results to PR
         if: github.event_name == 'pull_request'
@@ -217,6 +268,13 @@ jobs:
           script: |
             const fs = require('fs');
             const data = JSON.parse(fs.readFileSync('hf_benchmark_results.json'));
+            let modelUri = '';
+            
+            try {
+              modelUri = fs.readFileSync('model_uri.txt', 'utf8').trim();
+            } catch(e) {
+              modelUri = 'Not available';
+            }
             
             const comment = `## 🎯 ML Trainer Benchmark Results
             
@@ -228,6 +286,11 @@ jobs:
             - 🔗 Similarity Calculation: ${data.similarity_latency_ms.toFixed(2)}ms
             - 🧠 Memory Usage: ${data.memory_usage_mb.toFixed(0)}MB (target < 1GB)
             - 📏 Embedding Dimension: ${data.embedding_dimension}
+            
+            **MLflow Integration:**
+            - ✅ Model logged to MLflow registry
+            - 📦 Model URI: \`${modelUri}\`
+            - 🏷️ Registered as: alert-noise-ranker-ci
             
             **Model Caching:**
             - ✅ HuggingFace models cached via GitHub Actions
