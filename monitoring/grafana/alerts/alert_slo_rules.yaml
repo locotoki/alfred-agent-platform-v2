@@ -1,0 +1,161 @@
+apiVersion: 1
+groups:
+  - folder: "Alert SLO"
+    name: "Alert Service SLO"
+    interval: 60s
+    rules:
+      - uid: alert-accuracy-slo
+        title: "Alert Accuracy Below SLO"
+        condition: accuracy_below_threshold
+        data:
+          - refId: A
+            queryType: instant
+            relativeTimeRange:
+              from: 300
+              to: 0
+            datasourceUid: prometheus
+            model:
+              expr: '(1 - (sum(rate(alert_false_positives_total[5m])) / sum(rate(alert_total[5m])))) * 100'
+              instant: true
+              refId: A
+          - refId: B
+            queryType: classic_conditions
+            relativeTimeRange:
+              from: 300
+              to: 0
+            datasourceUid: __expr__
+            model:
+              conditions:
+                - evaluator:
+                    params:
+                      - 98
+                    type: lt
+                  operator:
+                    type: and
+                  query:
+                    params:
+                      - A
+                  reducer:
+                    type: avg
+                  type: query
+              datasource:
+                type: __expr__
+                uid: __expr__
+              expression: A
+              refId: B
+        noDataState: NoData
+        execErrState: Alerting
+        for: 5m
+        annotations:
+          __dashboardUid__: alert-slo-v11
+          __panelId__: "1"
+          description: "Alert accuracy has dropped below the 98% SLO target"
+          summary: "Alert accuracy {{ humanize $value }}% (SLO: 98%)"
+        labels:
+          severity: warning
+          team: platform
+          service: alerts
+      
+      - uid: response-time-slo
+        title: "Alert Processing Time Exceeds SLO"
+        condition: response_time_high
+        data:
+          - refId: A
+            queryType: instant
+            relativeTimeRange:
+              from: 300
+              to: 0
+            datasourceUid: prometheus
+            model:
+              expr: 'histogram_quantile(0.99, rate(alert_processing_duration_bucket[5m]))'
+              instant: true
+              refId: A
+          - refId: B
+            queryType: classic_conditions
+            relativeTimeRange:
+              from: 300
+              to: 0
+            datasourceUid: __expr__
+            model:
+              conditions:
+                - evaluator:
+                    params:
+                      - 0.5  # 500ms
+                    type: gt
+                  operator:
+                    type: and
+                  query:
+                    params:
+                      - A
+                  reducer:
+                    type: avg
+                  type: query
+              datasource:
+                type: __expr__
+                uid: __expr__
+              expression: A
+              refId: B
+        noDataState: NoData
+        execErrState: Alerting
+        for: 5m
+        annotations:
+          __dashboardUid__: alert-slo-v11
+          __panelId__: "3"
+          description: "Alert processing P99 latency is above 500ms SLO"
+          summary: "P99 latency: {{ humanizeDuration $value }}"
+        labels:
+          severity: critical
+          team: platform
+          service: alerts
+      
+      - uid: success-rate-slo
+        title: "Alert Processing Success Rate Below SLO"
+        condition: success_rate_low
+        data:
+          - refId: A
+            queryType: instant
+            relativeTimeRange:
+              from: 300
+              to: 0
+            datasourceUid: prometheus
+            model:
+              expr: '100 * (1 - sum(increase(alert_processing_errors_total[5m])) / sum(increase(alert_total[5m])))'
+              instant: true
+              refId: A
+          - refId: B
+            queryType: classic_conditions
+            relativeTimeRange:
+              from: 300
+              to: 0
+            datasourceUid: __expr__
+            model:
+              conditions:
+                - evaluator:
+                    params:
+                      - 99.9
+                    type: lt
+                  operator:
+                    type: and
+                  query:
+                    params:
+                      - A
+                  reducer:
+                    type: avg
+                  type: query
+              datasource:
+                type: __expr__
+                uid: __expr__
+              expression: A
+              refId: B
+        noDataState: NoData
+        execErrState: Alerting
+        for: 5m
+        annotations:
+          __dashboardUid__: alert-slo-v11
+          __panelId__: "5"
+          description: "Alert processing success rate has dropped below 99.9% SLO"
+          summary: "Success rate: {{ humanize $value }}%"
+        labels:
+          severity: warning
+          team: platform
+          service: alerts
