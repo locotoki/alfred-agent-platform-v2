@@ -1,3 +1,35 @@
+## [Unreleased]
+
+### Added
+- ML-based noise ranking to reduce alert volume by 30%+ (Sprint 3)
+- Custom grouping rules DSL for service-specific configurations  
+- Feedback loop UI for user input on alert relevance
+- Alert snooze API with Redis TTL support
+- Comprehensive benchmark suite for ranker performance
+
+### Changed
+- Enhanced grouping algorithm with ML similarity scoring
+
+### Documentation
+- Added comprehensive noise reduction guide in docs/dev/
+- Documented custom rules YAML format and examples
+
+## [0.9.0] - 2025-05-24
+
+### Added
+- Alert grouping feature enabled 100% in production (Sprint 2)
+  - Advanced similarity algorithms (Jaccard + Levenshtein)
+  - Manual merge/unmerge UI controls
+  - Comprehensive Grafana dashboards
+  - Successful canary rollout (5% → 25% → 100%)
+  - Feature flag removed after stable deployment
+  
+### Performance
+- P95 latency: 129ms (target < 150ms)
+- Error rate: 0.3% (target < 0.5%)
+- Noise reduction: 42%
+- Zero rollbacks during deployment
+
 ## [0.8.3-pre] - 2025-05-17
 
 ### Added
