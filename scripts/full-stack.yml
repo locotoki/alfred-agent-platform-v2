@@ -82,7 +82,7 @@ services:
 
   model-router:
     build:
-      context: ../services/model-router
+      context: ../alfred/model/router
     container_name: model-router
     environment:
       MODEL_REGISTRY_URL: http://model-registry:8079
