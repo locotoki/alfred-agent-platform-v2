@@ -1,0 +1,19 @@
+{
+  "alert_name": "HighCPUUsage",
+  "description": "CPU usage has exceeded 90% threshold for 5 minutes",
+  "severity": "warning",
+  "metric": "cpu_usage_percent",
+  "value": "92.5",
+  "timestamp": "2025-05-17T14:30:00Z",
+  "labels": {
+    "service": "alfred-core",
+    "namespace": "alfred",
+    "instance": "10.0.1.5:9090",
+    "job": "kubernetes-pods"
+  },
+  "annotations": {
+    "summary": "High CPU usage detected on alfred-core",
+    "description": "The alfred-core service is experiencing sustained high CPU usage",
+    "runbook_url": "https://runbooks.alfred.ai/high-cpu-usage"
+  }
+}
