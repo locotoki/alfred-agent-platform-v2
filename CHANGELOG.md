@@ -76,4 +76,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Security
 - Google Workload Identity integration
-- Enhanced authentication mechanisms
+- Enhanced authentication mechanisms- **v0.8.4-pre** – adds Alert Explanation Agent (Phase 8.2)
