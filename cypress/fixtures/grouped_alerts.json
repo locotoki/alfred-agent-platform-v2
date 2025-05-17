@@ -1,0 +1,46 @@
+{
+  "groups": [
+    {
+      "id": "group-1",
+      "key": "api-gateway:HighCPU:warning",
+      "count": 5,
+      "alerts": ["alert-1", "alert-2", "alert-3", "alert-4", "alert-5"],
+      "representative_alert": {
+        "id": "alert-1",
+        "name": "HighCPU",
+        "severity": "warning",
+        "service": "api-gateway",
+        "timestamp": "2025-05-20T10:00:00Z"
+      },
+      "last_updated": "2025-05-20T10:15:00Z"
+    },
+    {
+      "id": "group-2",
+      "key": "web-server:HighMemory:critical",
+      "count": 3,
+      "alerts": ["alert-6", "alert-7", "alert-8"],
+      "representative_alert": {
+        "id": "alert-6",
+        "name": "HighMemory",
+        "severity": "critical",
+        "service": "web-server",
+        "timestamp": "2025-05-20T10:10:00Z"
+      },
+      "last_updated": "2025-05-20T10:20:00Z"
+    },
+    {
+      "id": "group-3",
+      "key": "database:SlowQueries:warning",
+      "count": 2,
+      "alerts": ["alert-9", "alert-10"],
+      "representative_alert": {
+        "id": "alert-9",
+        "name": "SlowQueries",
+        "severity": "warning",
+        "service": "database",
+        "timestamp": "2025-05-20T10:05:00Z"
+      },
+      "last_updated": "2025-05-20T10:18:00Z"
+    }
+  ]
+}
