@@ -1,48 +1,56 @@
-# Staging environment values for Alfred Agent Platform
-global:
-  environment: staging
-  
-# Enable MCP Gateway for Slack integration
+# Staging-specific values for Alfred Helm chart
+
+# Inherit base values
+# Override staging-specific settings
+
+# Enable Slack MCP Gateway for staging
 slackMcpGateway:
   enabled: true
-  replicaCount: 1
   image:
-    repository: slack-mcp-gateway
-    tag: latest
+    repository: ghcr.io/locotoki/slack-mcp-gateway
+    tag: "0.1.0-rc3"
+    digest: "sha256:42bb863efa3faa2fef3a024bd22bbd1a492522488a952397b13c6329ab62ce4a"
     pullPolicy: Always
-  env:
-    LOG_LEVEL: "INFO"
-    REDIS_HOST: "redis"
-    REDIS_PORT: "6379"
-    REDIS_DB: "0"
-  secrets:
-    SLACK_BOT_TOKEN: ""  # To be filled from GitHub Actions secrets
-    SLACK_SIGNING_SECRET: ""  # To be filled from GitHub Actions secrets
-    SLACK_APP_TOKEN: ""  # To be filled from GitHub Actions secrets
-    REDIS_PASSWORD: ""  # To be filled from GitHub Actions secrets
-  config:
-    MCP_REQUEST_STREAM: "mcp.requests"
-    MCP_RESPONSE_STREAM: "mcp.responses"
-    SLACK_APP_ENV: "staging"
-  echoAgent:
-    enabled: true
+  
+  # Environment configuration
+  envFromSecret: slack-mcp-gateway-secrets
+  
+  # Resource allocation for staging
   resources:
     requests:
-      cpu: 100m
-      memory: 128Mi
+      memory: "128Mi"
+      cpu: "100m"
     limits:
-      cpu: 200m
-      memory: 256Mi
+      memory: "256Mi"
+      cpu: "200m"
+  
+  # Replica count for staging
+  replicaCount: 1
+  
+  # Service configuration
+  service:
+    type: ClusterIP
+    port: 80
+    targetPort: 3000
+  
+  # Health check configuration
+  livenessProbe:
+    httpGet:
+      path: /health
+      port: 3000
+    initialDelaySeconds: 10
+    periodSeconds: 30
+  
+  readinessProbe:
+    httpGet:
+      path: /health
+      port: 3000
+    initialDelaySeconds: 5
+    periodSeconds: 10
 
-# Metrics settings for staging
-metrics:
+# Redis configuration for staging
+redis:
   enabled: true
-
-# General settings for staging
-prometheus:
-  enabled: true
-grafana:
-  enabled: true
-  sidecar:
-    dashboards:
-      enabled: true
+  auth:
+    existingSecret: redis-password
+    existingSecretPasswordKey: redis-password

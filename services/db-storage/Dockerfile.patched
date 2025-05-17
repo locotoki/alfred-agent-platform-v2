@@ -1,0 +1,21 @@
+FROM ghcr.io/alfred/healthcheck:0.4.0 AS healthcheck
+COPY --from=healthcheck /usr/local/bin/healthcheck /usr/local/bin/healthcheck
+# Use the official Supabase storage image as base
+FROM supabase/storage-api:v0.40.4
+
+# Install Node.js dependencies
+USER root
+RUN apk add --no-cache bash
+
+# Add our patch and entrypoint scripts
+COPY patch-migrations.js /app/patch-migrations.js
+COPY patched-entrypoint.sh /app/patched-entrypoint.sh
+
+# Make the entrypoint script executable
+RUN chmod +x /app/patched-entrypoint.sh
+
+# Reset the original entrypoint and use our custom one
+EXPOSE 9091 # Metrics port
+ENTRYPOINT []
+CMD ["/app/patched-entrypoint.sh"]
+# To expose metrics, update your ENTRYPOINT/CMD ["healthcheck", "--export-prom", ":9091", "--", "/app/patched-entrypoint.sh"]o include: /usr/local/bin/healthcheck --export-prom :9091 &

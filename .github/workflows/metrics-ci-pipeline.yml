@@ -8,13 +8,17 @@ on:
     branches: [ main, develop ]
 
 jobs:
+  # Detect if code has changed
+  detect-changes:
+    if: github.event_name == 'pull_request'
+    uses: ./.github/workflows/_reusable_changed_code.yml
+
   # Basic validation job
   validate:
+    needs: detect-changes
     runs-on: ubuntu-latest
     # Skip validation on main to get a green run (temporary)
-    if: github.ref != 'refs/heads/main' || github.event_name == 'pull_request'
-    # Allow this job to pass even with errors for PR #12 (black formatting PR) or PR #29 (CI cleanup PR) or PR #46 (CHANGELOG update)
-    continue-on-error: ${{ github.event.pull_request.number == 12 || github.event.pull_request.number == 29 || github.event.pull_request.number == 46 }}
+    if: ${{ always() && (github.event_name != 'pull_request' || needs.detect-changes.outputs.code_changed == 'true' || contains(github.event.pull_request.labels.*.name, 'force-test')) && !contains(github.event.pull_request.labels.*.name, 'docs-only') && (github.ref != 'refs/heads/main' || github.event_name == 'pull_request') }}
     steps:
       - uses: actions/checkout@v3
       
@@ -36,21 +40,10 @@ jobs:
           
       - name: Run minimal linting
         run: |
-          # Special handling for cleanup PR #29
-          if [[ "$GITHUB_HEAD_REF" == *"cleanup/remove-temporary-ci-files"* || "$GITHUB_REF" == *"cleanup/remove-temporary-ci-files"* ]]; then
-            echo "SKIPPING linting checks for cleanup PR #29"
-            chmod +x scripts/skip-ci-for-cleanup.sh
-            ./scripts/skip-ci-for-cleanup.sh
-            exit 0
-          fi
-          
-          # Special handling for update-pr-42 (CHANGELOG PR #46)
-          if [[ "$GITHUB_HEAD_REF" == "update-pr-42" || "$GITHUB_REF" == *"update-pr-42"* ]]; then
-            echo "SKIPPING linting checks for update-pr-42 branch (CHANGELOG update PR #46)"
-            # Only run black and isort (the safe checks)
-            echo "Running only black and isort checks..."
-            black --check --exclude "(youtube-test-env/|migrations/|node_modules/|\.git/|\.mypy_cache/|\.env/|\.venv/|env/|venv/|\.ipynb/)" .
-            isort --check-only --profile black --skip youtube-test-env --skip migrations .
+          # Check if this is a docs-only PR
+          if [[ "${{ contains(github.event.pull_request.labels.*.name, 'docs-only') }}" == "true" ]]; then
+            echo "SKIPPING linting checks for docs-only PR"
+            echo "Documentation-only changes - no Python linting needed"
             exit 0
           fi
           
@@ -197,8 +190,8 @@ jobs:
   # Integration test job - only run if validate and validate-metrics pass
   integration-test:
     runs-on: ubuntu-latest
-    needs: [validate, validate-metrics]
-    if: github.event_name == 'pull_request'
+    needs: [detect-changes, validate, validate-metrics]
+    if: ${{ always() && github.event_name == 'pull_request' && needs.detect-changes.outputs.code_changed == 'true' && !contains(github.event.pull_request.labels.*.name, 'docs-only') }}
     # Allow this job to pass even with errors for PR #12 (black formatting PR) or PR #29 (CI cleanup PR)
     continue-on-error: ${{ github.event.pull_request.number == 12 || github.event.pull_request.number == 29 }}
     steps:
@@ -213,13 +206,18 @@ jobs:
             exit 0
           fi
       
+      - name: Install docker-compose plugin
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y docker-compose-plugin
+          
       - name: Set up Docker Compose
         run: |
-          docker-compose --version
+          docker-compose --version || docker compose version
       
       - name: Start services
         run: |
-          docker-compose -f docker-compose-clean.yml up -d
+          docker compose -f docker-compose-clean.yml up -d
       
       - name: Wait for services to be ready
         run: |
@@ -241,4 +239,4 @@ jobs:
       
       - name: Teardown services
         run: |
-          docker-compose -f docker-compose-clean.yml down
+          docker compose -f docker-compose-clean.yml down

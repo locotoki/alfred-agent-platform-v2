@@ -1,0 +1,11 @@
+services:
+  db-storage:
+    image: ${ALFRED_REGISTRY}/alfred-platform/db-storage:${ALFRED_VERSION}
+    environment:
+    - ALFRED_ENVIRONMENT=${ALFRED_ENVIRONMENT}
+    - ALFRED_LOG_LEVEL=${ALFRED_LOG_LEVEL}
+    restart: unless-stopped
+    networks:
+    - alfred-network
+    volumes:
+    - db-storage-data:/var/lib/postgresql/data

@@ -1,0 +1,11 @@
+services:
+  streamlit-chat:
+    image: ${ALFRED_REGISTRY}/alfred-platform/streamlit-chat:${ALFRED_VERSION}
+    environment:
+    - ALFRED_ENVIRONMENT=${ALFRED_ENVIRONMENT}
+    - ALFRED_LOG_LEVEL=${ALFRED_LOG_LEVEL}
+    restart: unless-stopped
+    networks:
+    - alfred-network
+    ports:
+    - ${UI_PORT:-8501}:8501

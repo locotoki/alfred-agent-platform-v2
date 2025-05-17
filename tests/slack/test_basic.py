@@ -1,6 +1,7 @@
 import os
-import pytest
 from unittest.mock import MagicMock, patch
+
+import pytest
 
 # Import placeholder - this will be replaced when the actual slack_app package is created
 # from alfred.slack import app

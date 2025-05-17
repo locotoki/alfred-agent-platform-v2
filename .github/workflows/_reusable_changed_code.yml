@@ -1,0 +1,25 @@
+name: Detect Code Changes
+on:
+  workflow_call:
+    outputs:
+      code_changed:
+        description: "Whether code files have changed"
+        value: ${{ jobs.diff.outputs.code_changed }}
+
+jobs:
+  diff:
+    runs-on: ubuntu-latest
+    outputs:
+      code_changed: ${{ steps.filter.outputs.any_changed }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: filter
+        uses: tj-actions/changed-files@v39
+        with:
+          files: |
+            **/*.py
+            **/*.go
+            **/*.ts
+            services/**
+            remediation/**
+            charts/alfred/templates/**
