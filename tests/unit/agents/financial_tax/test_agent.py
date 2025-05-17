@@ -56,8 +56,9 @@ def financial_tax_agent(mock_pubsub, mock_supabase, mock_policy):
     """Create Financial Tax Agent with mocks"""
     with patch("agents.financial_tax.agent.ChatOpenAI") as mock_openai:
         # Create a mock that actually inherits from the base class structure expected
-        from langchain.schema.runnable import Runnable
         from typing import Any, Optional
+
+        from langchain.schema.runnable import Runnable
 
         class MockLLM(Runnable):
             def invoke(self, input: Any, config: Optional[Any] = None, **kwargs: Any) -> Any:

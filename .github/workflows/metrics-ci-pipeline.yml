@@ -208,8 +208,12 @@ jobs:
       
       - name: Install docker-compose plugin
         run: |
-          sudo apt-get update -y
-          sudo apt-get install -y docker-compose-plugin
+          # Docker Compose comes pre-installed on GitHub runners
+          # If it's not available, install the standalone version
+          if ! command -v docker-compose &> /dev/null; then
+            sudo apt-get update -y
+            sudo apt-get install -y docker-compose
+          fi
           
       - name: Set up Docker Compose
         run: |
