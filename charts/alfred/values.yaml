@@ -85,3 +85,22 @@ slackMcpGateway:
     type: ClusterIP
     port: 80
     targetPort: 3000
+
+# Slack App configuration
+slackApp:
+  enabled: false
+  image:
+    repository: ghcr.io/locotoki/slack-app
+    tag: "0.1.0"
+    pullPolicy: IfNotPresent
+  resources:
+    requests:
+      memory: "128Mi"
+      cpu: "100m"
+    limits:
+      memory: "256Mi"
+      cpu: "200m"
+  service:
+    type: ClusterIP
+    port: 80
+    targetPort: 8080
