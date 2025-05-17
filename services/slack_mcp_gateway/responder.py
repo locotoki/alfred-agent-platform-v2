@@ -144,7 +144,7 @@ class ResponseHandler:
                 kwargs["thread_ts"] = thread_ts
 
             # Send the message
-            response = self.client.chat_postMessage(**kwargs)
+            self.client.chat_postMessage(**kwargs)  # noqa: F841
             return True
 
         except SlackApiError as e:
