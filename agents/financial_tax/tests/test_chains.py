@@ -24,7 +24,25 @@ from agents.financial_tax.models import (
 def mock_llm():
     """Mock LLM for testing chains."""
     with patch("agents.financial_tax.chains.ChatOpenAI") as mock:
-        llm_instance = MagicMock()
+        from langchain.schema.runnable import Runnable
+        from typing import Any, Optional
+
+        class MockLLM(Runnable):
+            def invoke(self, input: Any, config: Optional[Any] = None, **kwargs: Any) -> Any:
+                return "test response"
+
+            def _call(self, *args, **kwargs):
+                return "test response"
+
+            def generate(self, *args, **kwargs):
+                from langchain.schema import Generation
+
+                return MagicMock(generations=[[Generation(text="test")]])
+
+            def predict(self, *args, **kwargs):
+                return "test response"
+
+        llm_instance = MockLLM()
         mock.return_value = llm_instance
         yield llm_instance
 
@@ -56,7 +74,7 @@ class TestTaxCalculationChain:
         }
         """
 
-        tax_calc_chain.chain.arun = AsyncMock(return_value=mock_result)
+        tax_calc_chain.chain.ainvoke = AsyncMock(return_value={"text": mock_result})
 
         request = TaxCalculationRequest(
             income=100000,
