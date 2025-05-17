@@ -74,7 +74,7 @@ class TestTaxCalculationChain:
         }
         """
 
-        tax_calc_chain.chain.ainvoke = AsyncMock(return_value={"text": mock_result})
+        tax_calc_chain.chain.arun = AsyncMock(return_value=mock_result)
 
         request = TaxCalculationRequest(
             income=100000,
@@ -129,7 +129,7 @@ class TestFinancialAnalysisChain:
         }
         """
 
-        analysis_chain.chain.ainvoke = AsyncMock(return_value={"text": mock_result})
+        analysis_chain.chain.arun = AsyncMock(return_value=mock_result)
 
         request = FinancialAnalysisRequest(
             financial_statements={
@@ -182,7 +182,7 @@ class TestComplianceCheckChain:
         }
         """
 
-        compliance_chain.chain.ainvoke = AsyncMock(return_value={"text": mock_result})
+        compliance_chain.chain.arun = AsyncMock(return_value=mock_result)
 
         request = ComplianceCheckRequest(
             entity_type=EntityType.CORPORATION,
@@ -241,7 +241,7 @@ class TestRateLookupChain:
         }
         """
 
-        rate_lookup_chain.chain.ainvoke = AsyncMock(return_value={"text": mock_result})
+        rate_lookup_chain.chain.arun = AsyncMock(return_value=mock_result)
 
         request = TaxRateRequest(
             jurisdiction=TaxJurisdiction.US_CA,
