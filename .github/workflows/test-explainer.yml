@@ -27,6 +27,12 @@ jobs:
           docker build -f docker/explainer-bot/Dockerfile -t ghcr.io/alfred-platform/explainer-bot:test .
           kind load docker-image ghcr.io/alfred-platform/explainer-bot:test --name kind-explainer-test
       
+      - name: Build helm dependencies
+        run: |
+          cd charts/alfred
+          helm dependency build
+          cd ../..
+      
       - name: Deploy Alfred with explainer
         run: |
           helm upgrade --install alfred ./charts/alfred \
