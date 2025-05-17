@@ -1,0 +1,29 @@
+{{- if .Values.slackApp.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "alfred.fullname" . }}-slack-app-config
+  labels:
+    {{- include "alfred.labels" . | nindent 4 }}
+    app.kubernetes.io/component: slack-app
+data:
+  # Default configuration options for slash commands
+  {{- if .Values.slackApp.config.COMMAND_PREFIX }}
+  COMMAND_PREFIX: {{ .Values.slackApp.config.COMMAND_PREFIX | quote }}
+  {{- else }}
+  COMMAND_PREFIX: "/alfred"
+  {{- end }}
+  {{- if .Values.slackApp.config.DEFAULT_CHANNEL }}
+  DEFAULT_CHANNEL: {{ .Values.slackApp.config.DEFAULT_CHANNEL | quote }}
+  {{- else }}
+  DEFAULT_CHANNEL: "general"
+  {{- end }}
+  {{- if .Values.slackApp.config.ALLOWED_COMMANDS }}
+  ALLOWED_COMMANDS: {{ .Values.slackApp.config.ALLOWED_COMMANDS | quote }}
+  {{- else }}
+  ALLOWED_COMMANDS: "help,status,search,ask,agents"
+  {{- end }}
+  {{- with .Values.slackApp.config.extraConfig }}
+  {{- toYaml . | nindent 2 }}
+  {{- end }}
+{{- end }}

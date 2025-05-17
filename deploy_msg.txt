@@ -1,0 +1,1 @@
+:rocket: *v0.8.1* promoted to GA – metrics health-check stability confirmed 24 h. Prod roll-out commencing.

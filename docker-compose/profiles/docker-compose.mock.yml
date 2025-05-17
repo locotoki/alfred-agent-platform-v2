@@ -1,0 +1,23 @@
+version: '3'
+
+services:
+  # Mock implementation of db-storage
+  mock-storage:
+    build:
+      context: ./services/db-storage
+      dockerfile: Dockerfile
+    image: mock-storage-api:latest
+    container_name: mock-storage
+    ports:
+      - "5000:5000"
+    environment:
+      PORT: 5000
+    volumes:
+      - ./services/db-storage/mock-storage.js:/app/mock-storage.js
+    networks:
+      - alfred-network
+    restart: unless-stopped
+
+networks:
+  alfred-network:
+    external: true
