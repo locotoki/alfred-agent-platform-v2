@@ -14,8 +14,7 @@ os.environ["DATABASE_URL"] = os.environ.get(
     "DATABASE_URL", "postgresql://postgres:your-super-secret-password@localhost:5432/postgres"
 )
 
-# Import after setting environment variable
-from app.database import niche_repository
+from app.database import niche_repository  # noqa: E402
 
 
 @pytest.fixture
