@@ -166,3 +166,12 @@ async def get_chat_completion(request: Request):
             }
         ],
     }
+
+
+def create_router_app() -> FastAPI:
+    """Create and configure the model router app.
+    
+    Returns:
+        Configured FastAPI application.
+    """
+    return app

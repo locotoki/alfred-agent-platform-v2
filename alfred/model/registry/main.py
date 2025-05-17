@@ -184,3 +184,12 @@ async def start_metrics_server():
 @app.on_event("startup")
 async def startup_event():
     logger.info("Model Registry service starting up")
+
+
+def create_registry_app() -> FastAPI:
+    """Create and configure the model registry app.
+    
+    Returns:
+        Configured FastAPI application.
+    """
+    return app
