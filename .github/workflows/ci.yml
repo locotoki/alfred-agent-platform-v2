@@ -128,10 +128,14 @@ jobs:
 
       - name: Run tests with coverage
         run: |
-          pytest tests/ -v --cov=./ --cov-report=xml --cov-report=html
+          pytest tests/ -v --cov=./ --cov-report=xml --cov-report=html -m "not integration"
         env:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/test_db
           PUBSUB_EMULATOR_HOST: localhost:8085
+      
+      - name: Run alert dispatcher tests
+        run: |
+          pytest alfred/alerts/tests/ -v -m "not integration and alerts"
 
       - name: Upload coverage reports
         uses: codecov/codecov-action@v3

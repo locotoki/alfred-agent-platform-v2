@@ -1,0 +1,40 @@
+{
+  "version": "4",
+  "groupKey": "{}:{alertname=\"AlfredCoreHealthCritical\"}",
+  "status": "firing",
+  "receiver": "alfred-alerts",
+  "groupLabels": {
+    "alertname": "AlfredCoreHealthCritical"
+  },
+  "commonLabels": {
+    "alertname": "AlfredCoreHealthCritical",
+    "service": "alfred_core",
+    "severity": "critical",
+    "runbook": "https://github.com/alfred-agent-platform-v2/runbooks/alfred_core_health_critical.md"
+  },
+  "commonAnnotations": {
+    "summary": "Alfred Core DOWN",
+    "description": "The Alfred Core service has been down for more than 5 minutes"
+  },
+  "externalURL": "http://alertmanager.example.com",
+  "alerts": [
+    {
+      "status": "firing",
+      "labels": {
+        "alertname": "AlfredCoreHealthCritical",
+        "instance": "alfred-core-1",
+        "job": "alfred-core",
+        "service": "alfred_core",
+        "severity": "critical",
+        "runbook": "https://github.com/alfred-agent-platform-v2/runbooks/alfred_core_health_critical.md"
+      },
+      "annotations": {
+        "summary": "Alfred Core DOWN",
+        "description": "The Alfred Core service has been down for more than 5 minutes"
+      },
+      "startsAt": "2025-05-17T12:00:00Z",
+      "endsAt": "0001-01-01T00:00:00Z",
+      "generatorURL": "http://prometheus.example.com/graph?g0.expr=service_health%7Bservice%3D%22alfred-core%22%7D+%3D%3D+0"
+    }
+  ]
+}

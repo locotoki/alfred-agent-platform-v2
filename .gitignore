@@ -63,6 +63,7 @@ data/
 !package-lock.json
 !tsconfig.json
 !monitoring/grafana/custom-dashboards/*.json
+!examples/alerts/*.json
 
 # Logs
 logs/
