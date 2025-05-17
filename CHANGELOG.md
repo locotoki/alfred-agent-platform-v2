@@ -1,5 +1,19 @@
 ## [Unreleased]
 
+### Added
+- ML-based noise ranking to reduce alert volume by 30%+ (Sprint 3)
+- Custom grouping rules DSL for service-specific configurations  
+- Feedback loop UI for user input on alert relevance
+- Alert snooze API with Redis TTL support
+- Comprehensive benchmark suite for ranker performance
+
+### Changed
+- Enhanced grouping algorithm with ML similarity scoring
+
+### Documentation
+- Added comprehensive noise reduction guide in docs/dev/
+- Documented custom rules YAML format and examples
+
 ## [0.9.0] - 2025-05-24
 
 ### Added
@@ -16,6 +30,8 @@
 - Noise reduction: 42%
 - Zero rollbacks during deployment
 
+<<<<<<< HEAD
+=======
 ## [0.8.4] - 2025-05-17
 
 ### Added
@@ -34,7 +50,6 @@
 ### Changed
 - Updated git tags from v0.8.4-pre to v0.8.4
 - Enhanced release workflow with version tagging
-
 ## [0.8.3-pre] - 2025-05-17
 
 ### Added
