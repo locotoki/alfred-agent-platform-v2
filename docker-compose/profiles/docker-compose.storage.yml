@@ -1,0 +1,17 @@
+services:
+  db-storage:
+    environment:
+      ANON_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImV4cCI6MTc0OTUzNjEzMH0.zcPCLGlqF3YHBP-gTlXOQ2zjV-h3VmxbThiYEg2I5io
+      SERVICE_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoic2VydmljZV9yb2xlIiwiZXhwIjoxNzQ5NTM2MTMwfQ.EDf3DT0Zl6qQbrLIQLwAXRWAN5kaJ5mvlAh1jm0CY-o
+      PGRST_URL: http://db-api:3000
+      PGRST_JWT_SECRET: jwt-secret-for-development-only
+      DATABASE_URL: postgresql://postgres:postgres@db-postgres:5432/postgres
+      REGION: local
+      GLOBAL_S3_BUCKET: supabase-storage
+      FILE_SIZE_LIMIT: 52428800
+      FILE_STORAGE_BACKEND_PATH: /var/lib/storage
+      TENANT_ID: stub
+      STORAGE_BACKEND: file
+      JWT_SECRET: jwt-secret-for-development-only
+      ENABLE_IMAGE_TRANSFORMATION: "true"
+      SKIP_MIGRATIONS: "true"

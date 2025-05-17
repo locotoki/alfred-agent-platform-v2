@@ -1,0 +1,64 @@
+name: Slack MCP Gateway Tests
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths:
+      - 'services/slack_mcp_gateway/**'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'services/slack_mcp_gateway/**'
+  workflow_dispatch:
+
+env:
+  PYTHON_VERSION: "3.9"
+  REDIS_PORT: 6379
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      redis:
+        image: redis:7
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+
+      - name: Install dependencies
+        working-directory: ./services/slack_mcp_gateway
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest pytest-cov
+          pip install -r requirements.txt
+
+      - name: Run tests with coverage
+        working-directory: ./services/slack_mcp_gateway
+        run: |
+          pytest tests/ -v --cov=slack_mcp_gateway --cov-report=xml
+        env:
+          SLACK_BOT_TOKEN: xoxb-test-token
+          SLACK_APP_TOKEN: xapp-test-token
+          SLACK_SIGNING_SECRET: test-secret
+          REDIS_HOST: localhost
+          REDIS_PORT: ${{ env.REDIS_PORT }}
+
+      - name: Upload coverage reports
+        uses: codecov/codecov-action@v3
+        with:
+          file: ./services/slack_mcp_gateway/coverage.xml
+          flags: slack-mcp-gateway
+          fail_ci_if_error: false

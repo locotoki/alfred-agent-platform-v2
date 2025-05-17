@@ -4,7 +4,7 @@ from unittest.mock import MagicMock, patch
 import pytest
 
 # Import placeholder - this will be replaced when the actual slack_app package is created
-# from slack_app import app
+# from alfred.slack import app
 
 
 @pytest.fixture

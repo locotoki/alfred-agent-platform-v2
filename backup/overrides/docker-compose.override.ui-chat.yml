@@ -1,0 +1,44 @@
+# Docker Compose Override for UI Chat
+# This override fixes the streamlit startup issues
+
+services:
+  ui-chat:
+    image: python:3.11-slim
+    container_name: ui-chat
+    ports:
+      - "8502:8501"  # Map container's 8501 to host's 8502
+    environment:
+      - ALFRED_API_URL=http://agent-core:8011
+      - ALFRED_MODEL_ROUTER_URL=http://model-router:8080
+      - ENABLE_DIRECT_INFERENCE=true
+      - STREAMLIT_SERVER_HEADLESS=true
+      - STREAMLIT_SERVER_ADDRESS=0.0.0.0
+      - STREAMLIT_BROWSER_GATHER_USAGE_STATS=false
+    command: >
+      bash -c "pip install --no-cache-dir streamlit requests &&
+      echo 'import os
+      import streamlit as st
+      
+      st.title(\"Alfred Chat UI\")
+      st.header(\"Welcome to Alfred Chat\")
+      
+      st.write(\"Status: Connected\")
+      
+      with st.sidebar:
+          st.header(\"Settings\")
+          st.checkbox(\"Use direct model inference\", value=True)
+          
+      st.text_input(\"Your message\", placeholder=\"Type your message here...\")
+      st.button(\"Send\")' > /app/streamlit_chat_ui.py &&
+      streamlit run /app/streamlit_chat_ui.py"
+    volumes:
+      - ./services/streamlit-chat:/app/shared
+    restart: unless-stopped
+    networks:
+      - alfred-network
+    healthcheck:
+      test: ["CMD", "healthcheck", "--http", "http://localhost:8501/health"]
+      interval: 30s
+      timeout: 20s
+      retries: 5
+      start_period: 45s

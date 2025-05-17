@@ -141,7 +141,7 @@ services:
   # PubSub Metrics Exporter
   pubsub-metrics:
     build:
-      context: ./services/pubsub-metrics
+      context: ./alfred/metrics
       dockerfile: Dockerfile
     image: pubsub-metrics:latest
     container_name: pubsub-metrics
@@ -194,7 +194,7 @@ services:
   # Model Registry - Manages available LLM models
   model-registry:
     build:
-      context: ./services/model-registry
+      context: ./alfred/model/registry
       dockerfile: Dockerfile
     image: model-registry:latest
     container_name: model-registry
@@ -230,7 +230,7 @@ services:
   # Model Router - Routes LLM requests to appropriate backend
   model-router:
     build:
-      context: ./services/model-router
+      context: ./alfred/model/router
       dockerfile: Dockerfile
     image: model-router:latest
     container_name: model-router
@@ -346,7 +346,7 @@ services:
   # Database Auth Metrics Exporter
   db-auth-metrics:
     build:
-      context: ./services/db-metrics
+      context: ./alfred/metrics
       dockerfile: Dockerfile
     image: db-metrics:latest
     container_name: db-auth-metrics
@@ -400,7 +400,7 @@ services:
   # Database REST API Metrics Exporter
   db-api-metrics:
     build:
-      context: ./services/db-metrics
+      context: ./alfred/metrics
       dockerfile: Dockerfile
     image: db-metrics:latest
     container_name: db-api-metrics
@@ -460,7 +460,7 @@ services:
   # Database Admin UI Metrics Exporter
   db-admin-metrics:
     build:
-      context: ./services/db-metrics
+      context: ./alfred/metrics
       dockerfile: Dockerfile
     image: db-metrics:latest
     container_name: db-admin-metrics
@@ -528,7 +528,7 @@ services:
   # Database Realtime Metrics Exporter
   db-realtime-metrics:
     build:
-      context: ./services/db-metrics
+      context: ./alfred/metrics
       dockerfile: Dockerfile
     image: db-metrics:latest
     container_name: db-realtime-metrics
@@ -599,7 +599,7 @@ services:
   # Database Storage Metrics Exporter
   db-storage-metrics:
     build:
-      context: ./services/db-metrics
+      context: ./alfred/metrics
       dockerfile: Dockerfile
     image: db-metrics:latest
     container_name: db-storage-metrics
@@ -634,7 +634,7 @@ services:
   # Core Agent Service
   agent-core:
     build:
-      context: ./services/alfred-core
+      context: ./alfred/core
       dockerfile: Dockerfile
     image: agent-core:latest
     container_name: agent-core
@@ -803,7 +803,7 @@ services:
   # Social Intelligence Agent
   agent-social:
     build:
-      context: ./services/social-intel
+      context: ./agents/social_intel
       dockerfile: Dockerfile
     image: alfred-agent-platform-v2-social-intel:latest
     container_name: agent-social
@@ -853,7 +853,7 @@ services:
   # Financial Tax Agent
   agent-financial:
     build:
-      context: ./services/financial-tax
+      context: ./agents/financial_tax
       dockerfile: Dockerfile
     image: alfred-agent-platform-v2-financial-tax:latest
     container_name: agent-financial
@@ -911,7 +911,7 @@ services:
   # Legal Compliance Agent
   agent-legal:
     build:
-      context: ./services/legal-compliance
+      context: ./agents/legal_compliance
       dockerfile: Dockerfile
     image: alfred-agent-platform-v2-legal-compliance:latest
     container_name: agent-legal
@@ -973,7 +973,7 @@ services:
   # Chat UI
   ui-chat:
     build:
-      context: ./services/streamlit-chat
+      context: ./alfred/ui
       dockerfile: Dockerfile
     container_name: ui-chat
     ports:

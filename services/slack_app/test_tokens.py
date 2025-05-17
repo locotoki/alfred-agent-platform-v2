@@ -1,6 +1,7 @@
 """
 Test if the Slack tokens are being read correctly.
 """
+
 import os
 
 from dotenv import load_dotenv
@@ -13,6 +14,7 @@ bot_token = os.environ.get("SLACK_BOT_TOKEN")
 app_token = os.environ.get("SLACK_APP_TOKEN")
 signing_secret = os.environ.get("SLACK_SIGNING_SECRET")
 
+
 # Check token format (without revealing the actual tokens)
 def check_token(token, prefix, name):
     if not token:
@@ -22,6 +24,7 @@ def check_token(token, prefix, name):
     # Mask the token except the first 5 and last 4 characters
     masked = f"{token[:5]}...{token[-4:]}" if len(token) > 10 else "too short"
     return f"{name}: ✅ Valid format - {masked}"
+
 
 # Print the token checks
 print(check_token(bot_token, "xoxb-", "SLACK_BOT_TOKEN"))
@@ -34,10 +37,9 @@ try:
 
     # Attempt to call the auth.test API
     response = requests.post(
-        "https://slack.com/api/auth.test",
-        headers={"Authorization": f"Bearer {bot_token}"}
+        "https://slack.com/api/auth.test", headers={"Authorization": f"Bearer {bot_token}"}
     )
-    
+
     # Print the response
     print("\nAPI test result:")
     print(f"Status code: {response.status_code}")

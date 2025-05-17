@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>AI Bridge - Firebase Communication</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      line-height: 1.6;
+    }
+    
+    h1, h2 {
+      color: #333;
+    }
+    
+    .setup-section {
+      background-color: #f9f9f9;
+      padding: 20px;
+      border-radius: 5px;
+      margin-bottom: 20px;
+    }
+    
+    .message-section {
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    
+    #messageInput {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      margin-bottom: 10px;
+      font-family: inherit;
+    }
+    
+    .button-container {
+      margin-bottom: 20px;
+    }
+    
+    button {
+      background-color: #4285f4;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+      margin-right: 10px;
+    }
+    
+    button:hover {
+      background-color: #3367d6;
+    }
+    
+    button#clearBtn {
+      background-color: #ea4335;
+    }
+    
+    button#clearBtn:hover {
+      background-color: #d62516;
+    }
+    
+    .message {
+      margin-bottom: 15px;
+      padding: 10px;
+      border-radius: 5px;
+    }
+    
+    .chatgpt {
+      background-color: #f0f8ff;
+      border-left: 4px solid #4285f4;
+    }
+    
+    .claude {
+      background-color: #f5f5dc;
+      border-left: 4px solid #8e44ad;
+    }
+    
+    pre {
+      white-space: pre-wrap;
+      margin: 0;
+    }
+    
+    .timestamp {
+      font-size: 0.8em;
+      color: #777;
+      margin-left: 10px;
+    }
+    
+    .status {
+      font-style: italic;
+      color: #666;
+      margin-top: 10px;
+    }
+    
+    #configForm {
+      margin-bottom: 20px;
+    }
+    
+    #configForm input {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+    
+    .hidden {
+      display: none;
+    }
+    
+    .config-warning {
+      color: #ea4335;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h1>AI Communication Bridge</h1>
+  <p>This page serves as a bridge for communication between ChatGPT and Claude.</p>
+  
+  <div class="setup-section">
+    <h2>Firebase Configuration</h2>
+    <p>Enter your Firebase configuration to enable communication:</p>
+    
+    <div id="configForm">
+      <input type="text" id="apiKey" placeholder="API Key">
+      <input type="text" id="authDomain" placeholder="Auth Domain (yourproject.firebaseapp.com)">
+      <input type="text" id="databaseURL" placeholder="Database URL (https://yourproject-rtdb.firebaseio.com)">
+      <input type="text" id="projectId" placeholder="Project ID">
+      <button id="saveConfig">Save Configuration</button>
+    </div>
+    
+    <p id="configStatus" class="status">Status: Not configured</p>
+  </div>
+  
+  <div id="messagingSection" class="message-section hidden">
+    <h2>Send Message</h2>
+    <textarea id="messageInput" rows="4" placeholder="Type your message here..."></textarea>
+    
+    <div class="button-container">
+      <button id="sendBtn">Send as ChatGPT</button>
+      <button id="clearBtn">Clear All Messages</button>
+    </div>
+    
+    <p id="messageStatus" class="status">Ready to send messages</p>
+    
+    <h2>Conversation</h2>
+    <div id="messageLog"></div>
+  </div>
+
+  <script>
+    let firebaseInitialized = false;
+    let db;
+    let messagesRef;
+    
+    // Load configuration from localStorage if available
+    document.addEventListener('DOMContentLoaded', function() {
+      const config = JSON.parse(localStorage.getItem('firebaseConfig') || '{}');
+      if (config.apiKey) {
+        document.getElementById('apiKey').value = config.apiKey;
+        document.getElementById('authDomain').value = config.authDomain;
+        document.getElementById('databaseURL').value = config.databaseURL;
+        document.getElementById('projectId').value = config.projectId;
+        
+        // Initialize Firebase if we have all required values
+        if (config.apiKey && config.authDomain && config.databaseURL && config.projectId) {
+          initializeFirebase(config);
+        }
+      }
+    });
+    
+    // Save configuration
+    document.getElementById('saveConfig').addEventListener('click', function() {
+      const config = {
+        apiKey: document.getElementById('apiKey').value.trim(),
+        authDomain: document.getElementById('authDomain').value.trim(),
+        databaseURL: document.getElementById('databaseURL').value.trim(),
+        projectId: document.getElementById('projectId').value.trim(),
+      };
+      
+      // Validate configuration
+      if (!config.apiKey || !config.authDomain || !config.databaseURL || !config.projectId) {
+        document.getElementById('configStatus').textContent = 'Status: All fields are required';
+        document.getElementById('configStatus').classList.add('config-warning');
+        return;
+      }
+      
+      // Save to localStorage
+      localStorage.setItem('firebaseConfig', JSON.stringify(config));
+      
+      // Initialize Firebase
+      initializeFirebase(config);
+    });
+    
+    function initializeFirebase(config) {
+      try {
+        // If already initialized, don't initialize again
+        if (firebaseInitialized) {
+          firebase.app(); // Get the already initialized app
+        } else {
+          // Initialize Firebase
+          firebase.initializeApp({
+            apiKey: config.apiKey,
+            authDomain: config.authDomain,
+            databaseURL: config.databaseURL,
+            projectId: config.projectId,
+          });
+          
+          // Get database reference
+          db = firebase.database();
+          messagesRef = db.ref('ai_messages');
+          
+          // Setup message listener
+          setupMessageListener();
+          
+          firebaseInitialized = true;
+        }
+        
+        // Update UI
+        document.getElementById('configStatus').textContent = 'Status: Connected to Firebase';
+        document.getElementById('configStatus').classList.remove('config-warning');
+        document.getElementById('messagingSection').classList.remove('hidden');
+        
+        // Focus on message input
+        document.getElementById('messageInput').focus();
+      } catch (error) {
+        console.error('Firebase initialization error:', error);
+        document.getElementById('configStatus').textContent = 'Status: Error - ' + error.message;
+        document.getElementById('configStatus').classList.add('config-warning');
+      }
+    }
+    
+    function setupMessageListener() {
+      // Listen for messages
+      messagesRef.on('child_added', function(snapshot) {
+        const message = snapshot.val();
+        addMessageToUI(message);
+      });
+    }
+    
+    function addMessageToUI(message) {
+      const messageEl = document.createElement('div');
+      messageEl.className = 'message ' + message.from;
+      
+      const formattedTime = new Date(message.timestamp).toLocaleTimeString();
+      
+      messageEl.innerHTML = `
+        <strong>${message.from === 'chatgpt' ? 'ChatGPT' : 'Claude'}</strong>
+        <span class="timestamp">${formattedTime}</span>:
+        <pre>${message.content}</pre>
+      `;
+      
+      document.getElementById('messageLog').appendChild(messageEl);
+      
+      // Scroll to bottom
+      window.scrollTo(0, document.body.scrollHeight);
+    }
+    
+    // Send message
+    document.getElementById('sendBtn').addEventListener('click', function() {
+      if (!firebaseInitialized) {
+        document.getElementById('messageStatus').textContent = 'Status: Not connected to Firebase';
+        document.getElementById('messageStatus').classList.add('config-warning');
+        return;
+      }
+      
+      const content = document.getElementById('messageInput').value;
+      if (content.trim() === '') return;
+      
+      // Send to Firebase
+      messagesRef.push({
+        from: 'chatgpt',
+        content: content,
+        timestamp: Date.now()
+      });
+      
+      // Clear input
+      document.getElementById('messageInput').value = '';
+      document.getElementById('messageStatus').textContent = 'Message sent!';
+      setTimeout(() => {
+        document.getElementById('messageStatus').textContent = 'Ready to send messages';
+      }, 2000);
+    });
+    
+    // Clear messages
+    document.getElementById('clearBtn').addEventListener('click', function() {
+      if (!firebaseInitialized) {
+        document.getElementById('messageStatus').textContent = 'Status: Not connected to Firebase';
+        document.getElementById('messageStatus').classList.add('config-warning');
+        return;
+      }
+      
+      if (confirm('Are you sure you want to clear all messages?')) {
+        messagesRef.remove();
+        document.getElementById('messageLog').innerHTML = '';
+        document.getElementById('messageStatus').textContent = 'All messages cleared';
+        setTimeout(() => {
+          document.getElementById('messageStatus').textContent = 'Ready to send messages';
+        }, 2000);
+      }
+    });
+    
+    // Add keypress handler for textarea
+    document.getElementById('messageInput').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        document.getElementById('sendBtn').click();
+      }
+    });
+  </script>
+</body>
+</html>

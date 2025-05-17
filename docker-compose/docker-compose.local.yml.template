@@ -1,0 +1,33 @@
+version: '3.8'
+
+# Local development overrides for Alfred Agent Platform
+# Copy this file to docker-compose.local.yml (which is gitignored)
+# This file will be loaded automatically if exists
+
+services:
+  # Example: Override ports for a service
+  mission-control:
+    ports:
+      - "8080:8080"  # Change the host port if you have conflicts
+    environment:
+      - DEBUG=true   # Enable debug mode
+
+  # Example: Mount source code for hot-reloading
+  social-intel:
+    volumes:
+      - ./agents/social_intel:/app/agents/social_intel
+    environment:
+      - LOG_LEVEL=debug
+
+  # Example: Change container resource limits
+  redis:
+    deploy:
+      resources:
+        limits:
+          memory: 512M  # Reduce memory usage
+
+  # Example: Add environment-specific configurations
+  db-postgres:
+    environment:
+      - POSTGRES_PASSWORD=localdev  # Override for local dev only
+      - POSTGRES_USER=localuser

@@ -11,8 +11,8 @@ from unittest.mock import MagicMock, patch
 import freezegun
 import pytest
 
-from remediation import settings
-from remediation.graphs import (
+from alfred.remediation import settings
+from alfred.remediation.graphs import (
     complete_remediation,
     escalate_issue,
     probe_health,
