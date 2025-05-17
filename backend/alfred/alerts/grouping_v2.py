@@ -66,6 +66,34 @@ class EnhancedAlertGroupingService(AlertGroupingService):
         
         return matches / total if total > 0 else 0.0
     
+    def _jaccard_similarity(self, alert1: AlertProtocol, alert2: AlertProtocol) -> float:
+        """Calculate Jaccard similarity between alert label sets."""
+        labels1 = set(alert1.labels.items())
+        labels2 = set(alert2.labels.items())
+        
+        if not labels1 and not labels2:
+            return 1.0
+        if not labels1 or not labels2:
+            return 0.0
+            
+        intersection = labels1.intersection(labels2)
+        union = labels1.union(labels2)
+        return len(intersection) / len(union)
+    
+    def _group_similarity(self, group1: Dict, group2: Dict) -> float:
+        """Calculate similarity between two alert groups."""
+        # Use representative alerts if available
+        repr1 = group1.get('representative_alert')
+        repr2 = group2.get('representative_alert')
+        
+        if repr1 and repr2:
+            return self.calculate_similarity(repr1, repr2)
+        
+        # Fallback to group key comparison
+        key1 = group1.get('key', '')
+        key2 = group2.get('key', '')
+        return self._levenshtein_similarity(key1, key2)
+    
     def auto_merge_suggestions(self, groups: List[Dict]) -> List[Tuple[str, str]]:
         """Suggest groups that should be merged based on high similarity."""
         suggestions = []
