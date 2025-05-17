@@ -1,0 +1,126 @@
+name: Ranker Benchmark CI
+
+on:
+  push:
+    branches:
+      - 'feat/ml-noise-ranker'
+      - 'test/ranker-benchmark'
+  pull_request:
+    paths:
+      - 'backend/alfred/alerts/ranker.py'
+      - 'alfred/ml/noise_ranker.py'
+      - 'scripts/benchmark_ranker.py'
+      - '.github/workflows/ranker-benchmark.yml'
+
+jobs:
+  benchmark:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+          
+      - name: Cache dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+            
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          pip install -r requirements-dev.txt
+          pip install matplotlib pandas
+          
+      - name: Download models
+        run: |
+          # In production, would download from S3/GCS
+          mkdir -p models
+          echo "Mock model v1" > models/noise_ranker_v1.pkl
+          echo "Mock model v2" > models/noise_ranker_v2.pkl
+          
+      - name: Run benchmark
+        run: |
+          python scripts/benchmark_ranker.py \
+            --alerts 10000 \
+            --output benchmark_report.pdf
+            
+      - name: Check performance targets
+        run: |
+          # Extract metrics from JSON
+          python -c "
+          import json
+          with open('benchmark_report.json') as f:
+              data = json.load(f)
+          
+          # Check performance targets
+          fnr = data['new_ranker']['false_negative_rate']
+          reduction = data['new_ranker']['suppression_rate']
+          latency = data['new_ranker']['p95_latency_ms']
+          
+          print(f'False Negative Rate: {fnr*100:.2f}%')
+          print(f'Volume Reduction: {reduction*100:.1f}%')
+          print(f'P95 Latency: {latency:.1f}ms')
+          
+          # Enforce targets
+          assert fnr <= 0.02, f'FNR {fnr*100:.2f}% exceeds 2% target'
+          assert reduction >= 0.30, f'Reduction {reduction*100:.1f}% below 30% target'
+          assert latency < 150, f'Latency {latency:.1f}ms exceeds 150ms target'
+          
+          print('✅ All performance targets met!')
+          "
+          
+      - name: Upload benchmark report
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: benchmark-report
+          path: |
+            benchmark_report.pdf
+            benchmark_report.json
+            
+      - name: Post results to PR
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const fs = require('fs');
+            const data = JSON.parse(fs.readFileSync('benchmark_report.json'));
+            
+            const comment = `## 📊 Ranker Benchmark Results
+            
+            **Performance Metrics:**
+            - 🎯 False Negative Rate: ${(data.new_ranker.false_negative_rate * 100).toFixed(2)}% (target < 2%)
+            - 📉 Volume Reduction: ${(data.new_ranker.suppression_rate * 100).toFixed(1)}% (target > 30%)
+            - ⚡ P95 Latency: ${data.new_ranker.p95_latency_ms.toFixed(1)}ms (target < 150ms)
+            
+            **Improvements over v1:**
+            - Volume Reduction: ${data.improvements.volume_reduction_improvement.toFixed(1)}%
+            - False Negatives: ${data.improvements.false_negative_improvement.toFixed(1)}%
+            - Speed: ${data.improvements.speed_improvement.toFixed(1)}%
+            - Memory: ${data.improvements.memory_improvement.toFixed(1)}%
+            
+            [Download Full Report](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
+            `;
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });
+            
+      - name: Cache benchmark results
+        run: |
+          mkdir -p .benchmark_cache
+          cp benchmark_report.json .benchmark_cache/latest.json
+          echo "$(date +%s)" > .benchmark_cache/timestamp
