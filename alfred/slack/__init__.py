@@ -1,7 +1,10 @@
 """Alfred Slack integration module."""
 
-from typing import List
+from typing import List, TYPE_CHECKING
 
-from .app import create_slack_app
+if TYPE_CHECKING:
+    from .app import create_slack_app
 
-__all__: List[str] = ["create_slack_app"]
+from .diagnostics import DiagnosticsBot
+
+__all__: List[str] = ["DiagnosticsBot", "create_slack_app"]
