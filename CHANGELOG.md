@@ -1,3 +1,13 @@
+## [Unreleased]
+
+### Added
+- Alert grouping MVP with Jaccard similarity algorithm (flagged) (PR #100)
+  - Core grouping service with configurable time windows
+  - REST API endpoint `/api/v1/alerts/grouped` with feature flag header
+  - UI accordion component with severity badges
+  - Load testing infrastructure with P95 latency monitoring
+  - Feature flag ALERT_GROUPING_ENABLED for controlled rollout
+
 ## [0.8.4] - 2025-05-17
 
 ### Added
