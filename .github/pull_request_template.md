@@ -8,6 +8,9 @@
 - [ ] Phase 0: Foundational changes with basic metrics and monitoring
 - [ ] Phase 1: Enhanced metrics with service_health gauges
 - [ ] Phase 2: Advanced metrics with custom service-specific metrics
+- [ ] Phase 8.1: Type safety enforcement with mypy --strict
+- [ ] Phase 8.2: Prometheus alert enrichment
+- [ ] Phase 8.3: Slack diagnostics enhancements
 
 ## Change Type
 
@@ -26,6 +29,9 @@
 - [ ] All tests pass locally
 - [ ] Code follows project style guidelines
 - [ ] Required documentation has been updated
+- [ ] mypy --strict passes for alfred.* modules
+- [ ] GPT-o3 (Architect) signed off
+- [ ] Reference to phase doc included
 
 ### Metrics and Monitoring
 - [ ] Metrics reach Prometheus (`curl -s http://localhost:9090/api/v1/query?query=service_health`)

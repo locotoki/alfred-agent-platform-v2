@@ -54,3 +54,18 @@ def get_webhook_url(service_name: str) -> str:
 
     # Fall back to default webhook
     return N8N_WEBHOOKS["default"]
+
+
+def get_settings() -> Dict[str, Any]:
+    """Get all remediation settings.
+
+    Returns:
+        Dictionary containing all remediation settings.
+    """
+    return {
+        "max_retries": MAX_RETRIES,
+        "wait_seconds": DEFAULT_WAIT_SECONDS,
+        "probe_timeout": PROBE_TIMEOUT,
+        "debug": DEBUG,
+        "default_webhook": N8N_WEBHOOKS["default"],
+    }

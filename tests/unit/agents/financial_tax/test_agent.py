@@ -55,10 +55,29 @@ def mock_policy():
 def financial_tax_agent(mock_pubsub, mock_supabase, mock_policy):
     """Create Financial Tax Agent with mocks"""
     with patch("agents.financial_tax.agent.ChatOpenAI") as mock_openai:
-        # Make the mock return a properly mocked LLM that behaves like a Runnable
-        mock_llm = MagicMock()
-        mock_llm.invoke = MagicMock(return_value="test response")
+        # Create a mock that actually inherits from the base class structure expected
+        from langchain.schema.runnable import Runnable
+        from typing import Any, Optional
+
+        class MockLLM(Runnable):
+            def invoke(self, input: Any, config: Optional[Any] = None, **kwargs: Any) -> Any:
+                return "test response"
+
+            def _call(self, *args, **kwargs):
+                return "test response"
+
+            def generate(self, *args, **kwargs):
+                from langchain.schema import Generation
+
+                return MagicMock(generations=[[Generation(text="test")]])
+
+            def predict(self, *args, **kwargs):
+                return "test response"
+
+        # Create instance of our mock
+        mock_llm = MockLLM()
         mock_openai.return_value = mock_llm
+
         agent = FinancialTaxAgent(
             pubsub_transport=mock_pubsub,
             supabase_transport=mock_supabase,
@@ -100,30 +119,28 @@ class TestFinancialTaxAgent:
         )
 
         # Mock the workflow execution
-        with patch.object(
-            financial_tax_agent.workflow, "ainvoke", new_callable=AsyncMock
-        ) as mock_workflow:
-            mock_workflow.return_value = {
-                "response": {
-                    "status": "success",
-                    "intent": "TAX_CALCULATION",
-                    "result": {
-                        "gross_income": 100000,
-                        "taxable_income": 86150,
-                        "tax_liability": 14000,
-                        "net_tax_due": 14000,
-                        "effective_tax_rate": 16.25,
-                    },
-                }
+        mock_response = {
+            "response": {
+                "status": "success",
+                "intent": "TAX_CALCULATION",
+                "result": {
+                    "gross_income": 100000,
+                    "taxable_income": 86150,
+                    "tax_liability": 14000,
+                    "net_tax_due": 14000,
+                    "effective_tax_rate": 16.25,
+                },
             }
+        }
+        financial_tax_agent.workflow.ainvoke = AsyncMock(return_value=mock_response)
 
-            result = await financial_tax_agent.process_task(envelope)
+        result = await financial_tax_agent.process_task(envelope)
 
-            assert result["status"] == "success"
-            assert result["intent"] == "TAX_CALCULATION"
-            assert "result" in result
-            assert result["result"]["gross_income"] == 100000
-            assert result["result"]["taxable_income"] == 86150
+        assert result["status"] == "success"
+        assert result["intent"] == "TAX_CALCULATION"
+        assert "result" in result
+        assert result["result"]["gross_income"] == 100000
+        assert result["result"]["taxable_income"] == 86150
 
     async def test_process_financial_analysis(self, financial_tax_agent):
         """Test financial analysis processing"""
@@ -142,10 +159,8 @@ class TestFinancialTaxAgent:
             },
         )
 
-        with patch.object(
-            financial_tax_agent.workflow, "ainvoke", new_callable=AsyncMock
-        ) as mock_workflow:
-            mock_workflow.return_value = {
+        financial_tax_agent.workflow.ainvoke = AsyncMock(
+            return_value={
                 "response": {
                     "status": "success",
                     "intent": "FINANCIAL_ANALYSIS",
@@ -164,13 +179,14 @@ class TestFinancialTaxAgent:
                     },
                 }
             }
+        )
 
-            result = await financial_tax_agent.process_task(envelope)
+        result = await financial_tax_agent.process_task(envelope)
 
-            assert result["status"] == "success"
-            assert result["intent"] == "FINANCIAL_ANALYSIS"
-            assert "result" in result
-            assert result["result"]["metrics"]["net_income"] == 70000
+        assert result["status"] == "success"
+        assert result["intent"] == "FINANCIAL_ANALYSIS"
+        assert "result" in result
+        assert result["result"]["metrics"]["net_income"] == 70000
 
     async def test_process_compliance_check(self, financial_tax_agent):
         """Test compliance check processing"""
@@ -184,10 +200,8 @@ class TestFinancialTaxAgent:
             },
         )
 
-        with patch.object(
-            financial_tax_agent.workflow, "ainvoke", new_callable=AsyncMock
-        ) as mock_workflow:
-            mock_workflow.return_value = {
+        financial_tax_agent.workflow.ainvoke = AsyncMock(
+            return_value={
                 "response": {
                     "status": "success",
                     "intent": "TAX_COMPLIANCE_CHECK",
@@ -205,13 +219,14 @@ class TestFinancialTaxAgent:
                     },
                 }
             }
+        )
 
-            result = await financial_tax_agent.process_task(envelope)
+        result = await financial_tax_agent.process_task(envelope)
 
-            assert result["status"] == "success"
-            assert result["intent"] == "TAX_COMPLIANCE_CHECK"
-            assert result["result"]["compliance_status"] == "partially_compliant"
-            assert len(result["result"]["issues_found"]) == 1
+        assert result["status"] == "success"
+        assert result["intent"] == "TAX_COMPLIANCE_CHECK"
+        assert result["result"]["compliance_status"] == "partially_compliant"
+        assert len(result["result"]["issues_found"]) == 1
 
     async def test_process_rate_lookup(self, financial_tax_agent):
         """Test tax rate lookup processing"""
@@ -225,10 +240,8 @@ class TestFinancialTaxAgent:
             },
         )
 
-        with patch.object(
-            financial_tax_agent.workflow, "ainvoke", new_callable=AsyncMock
-        ) as mock_workflow:
-            mock_workflow.return_value = {
+        financial_tax_agent.workflow.ainvoke = AsyncMock(
+            return_value={
                 "response": {
                     "status": "success",
                     "intent": "RATE_SHEET_LOOKUP",
@@ -246,25 +259,25 @@ class TestFinancialTaxAgent:
                     },
                 }
             }
+        )
 
-            result = await financial_tax_agent.process_task(envelope)
+        result = await financial_tax_agent.process_task(envelope)
 
-            assert result["status"] == "success"
-            assert result["intent"] == "RATE_SHEET_LOOKUP"
-            assert result["result"]["jurisdiction"] == "CA"
-            assert len(result["result"]["tax_brackets"]) == 2
+        assert result["status"] == "success"
+        assert result["intent"] == "RATE_SHEET_LOOKUP"
+        assert result["result"]["jurisdiction"] == "CA"
+        assert len(result["result"]["tax_brackets"]) == 2
 
     async def test_error_handling(self, financial_tax_agent):
         """Test error handling in process_task"""
         envelope = A2AEnvelope(intent="INVALID_INTENT", content={})
 
-        with patch.object(
-            financial_tax_agent.workflow, "ainvoke", new_callable=AsyncMock
-        ) as mock_workflow:
-            mock_workflow.side_effect = ValueError("Unsupported intent")
+        financial_tax_agent.workflow.ainvoke = AsyncMock(
+            side_effect=ValueError("Unsupported intent")
+        )
 
-            with pytest.raises(ValueError):
-                await financial_tax_agent.process_task(envelope)
+        with pytest.raises(ValueError):
+            await financial_tax_agent.process_task(envelope)
 
     async def test_route_by_intent(self, financial_tax_agent):
         """Test intent routing logic"""

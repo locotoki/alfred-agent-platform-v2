@@ -7,7 +7,7 @@ standardized task requests that can be processed by the Mission Control Platform
 
 import uuid
 from datetime import datetime
-from typing import Dict, Any
+from typing import Any, Dict
 
 
 def build_task_request(payload: Dict[str, Any]) -> Dict[str, Any]:

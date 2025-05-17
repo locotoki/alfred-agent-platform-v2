@@ -1,8 +1,9 @@
-import os
 import logging
+import os
+
+from flask import Flask, jsonify
 from slack_bolt import App
 from slack_bolt.adapter.socket_mode import SocketModeHandler
-from flask import Flask, jsonify
 
 # Configure logging
 logging.basicConfig(level=os.getenv("LOG_LEVEL", "INFO").upper())
@@ -56,7 +57,7 @@ def handle_alfred_command(ack, command, say):
         # Split into subcommand and arguments
         parts = command_text.split(" ", 1)
         subcommand = parts[0].lower()
-        args = parts[1] if len(parts) > 1 else ""
+        # args = parts[1] if len(parts) > 1 else ""  # Reserved for future use
 
         # Check if the subcommand is allowed
         if subcommand not in ALLOWED_COMMANDS_SET:
@@ -144,3 +145,12 @@ if __name__ == "__main__":
         # HTTP mode - for production with events API
         app.start(port=3000)
         print("⚡️ Bolt app is running! Listening to HTTP events.")
+
+
+def create_slack_app():
+    """Create and configure the Slack app.
+
+    Returns:
+        Configured Slack app instance.
+    """
+    return app
