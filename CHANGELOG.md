@@ -1,12 +1,20 @@
 ## [Unreleased]
 
+## [0.9.0] - 2025-05-24
+
 ### Added
-- Alert grouping MVP with Jaccard similarity algorithm (flagged) (PR #100)
-  - Core grouping service with configurable time windows
-  - REST API endpoint `/api/v1/alerts/grouped` with feature flag header
-  - UI accordion component with severity badges
-  - Load testing infrastructure with P95 latency monitoring
-  - Feature flag ALERT_GROUPING_ENABLED for controlled rollout
+- Alert grouping feature enabled 100% in production (PR #100, #113)
+  - Advanced similarity algorithms (Jaccard + Levenshtein)
+  - Manual merge/unmerge UI controls
+  - Comprehensive Grafana dashboards
+  - Successful canary rollout (5% → 25% → 100%)
+  - Feature flag removed after stable deployment
+  
+### Performance
+- P95 latency: 129ms (target < 150ms)
+- Error rate: 0.3% (target < 0.5%)
+- Noise reduction: 42%
+- Zero rollbacks during deployment
 
 ## [0.8.4] - 2025-05-17
 
