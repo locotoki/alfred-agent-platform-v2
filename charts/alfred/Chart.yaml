@@ -2,8 +2,8 @@ apiVersion: v2
 name: alfred
 description: A Helm chart for Alfred Agent Platform v2
 type: application
-version: v0.8.5-pre
-appVersion: "v0.8.5-pre"
+version: v0.9.1-pre
+appVersion: "v0.9.1-pre"
 dependencies:
   - name: prometheus
     version: "~15.10.0"
