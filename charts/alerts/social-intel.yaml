@@ -1,15 +1,22 @@
 # charts/alerts/social-intel.yaml
 groups:
- - name: social-intel
-   rules:
-   - alert: SocialIntelHealthCritical
-     expr: service_health{service="social-intel"} == 0
-     for: 5m
-     labels: {severity: "critical"}
-     annotations: {summary: "Social Intel DOWN"}
-
-   - alert: SocialIntelHealthWarning
-     expr: service_health{service="social-intel"} == 0.5
-     for: 10m
-     labels: {severity: "warning"}
-     annotations: {summary: "Social Intel DEGRADED"}
+- name: social-intel
+  rules:
+  - alert: SocialIntelHealthCritical
+    expr: service_health{service="social-intel"} == 0
+    for: 5m
+    labels:
+      severity: critical
+      service: social_intel
+      runbook: https://github.com/alfred-agent-platform-v2/runbooks/social_intel_health_critical.md
+    annotations:
+      summary: Social Intel DOWN
+  - alert: SocialIntelHealthWarning
+    expr: service_health{service="social-intel"} == 0.5
+    for: 10m
+    labels:
+      severity: warning
+      service: social_intel
+      runbook: https://github.com/alfred-agent-platform-v2/runbooks/social_intel_health_warning.md
+    annotations:
+      summary: Social Intel DEGRADED
