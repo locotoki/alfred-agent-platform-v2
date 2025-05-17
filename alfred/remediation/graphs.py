@@ -11,7 +11,7 @@ import time
 import logging
 import requests
 
-from remediation import settings
+from alfred.remediation import settings
 
 logger = logging.getLogger(__name__)
 

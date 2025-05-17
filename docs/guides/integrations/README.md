@@ -1,0 +1,1 @@
+# Cross-LLM Communication\n\nThis section contains guides for integrating different LLM systems.\n\n- [ChatGPT and Claude Code Communication](./cross-llm-communication.md): Comprehensive guide to establishing communication channels between ChatGPT Desktop and Claude Code.

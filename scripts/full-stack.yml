@@ -1,0 +1,158 @@
+version: '3.8'
+
+x-health-check-settings: &basic-health-check
+  interval: 10s
+  timeout: 5s
+  retries: 5
+  start_period: 30s
+
+services:
+  # Health check validator service
+  healthcheck:
+    image: alpine:3.18
+    container_name: health-validator
+    command: ["sh", "-c", "echo 'Validating health checks...' && sleep 30 && exit 0"]
+    depends_on:
+      db-postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      model-registry:
+        condition: service_healthy
+      model-router:
+        condition: service_healthy
+      prometheus:
+        condition: service_healthy
+      grafana:
+        condition: service_healthy
+
+  # Core services
+  db-postgres:
+    image: postgres:15-alpine
+    container_name: db-postgres
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_DB: postgres
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - alfred-network
+
+  redis:
+    image: redis:7-alpine
+    container_name: redis
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    ports:
+      - "6379:6379"
+    networks:
+      - alfred-network
+
+  model-registry:
+    build:
+      context: ../services/model-registry
+    container_name: model-registry
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@db-postgres:5432/postgres
+      HEALTH_CHECK_PORT: 8079
+      HEALTH_CHECK_PATH: /health
+      METRICS_EXPORTER_PORT: 9091
+    healthcheck:
+      test: ["CMD", "healthcheck", "--http", "http://localhost:8079/health"]
+      <<: *basic-health-check
+    ports:
+      - "8079:8079"
+      - "9091:9091"
+    depends_on:
+      db-postgres:
+        condition: service_healthy
+    networks:
+      - alfred-network
+
+  model-router:
+    build:
+      context: ../services/model-router
+    container_name: model-router
+    environment:
+      MODEL_REGISTRY_URL: http://model-registry:8079
+      HEALTH_CHECK_PORT: 8080
+      HEALTH_CHECK_PATH: /health
+      METRICS_EXPORTER_PORT: 9092
+    healthcheck:
+      test: ["CMD", "healthcheck", "--http", "http://localhost:8080/health"]
+      <<: *basic-health-check
+    ports:
+      - "8080:8080"
+      - "9092:9092"
+    depends_on:
+      model-registry:
+        condition: service_healthy
+    networks:
+      - alfred-network
+
+  # Monitoring services
+  prometheus:
+    image: prom/prometheus:v2.43.0
+    container_name: prometheus
+    volumes:
+      - ../monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus-data:/prometheus
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.path=/prometheus
+      - --web.console.libraries=/usr/share/prometheus/console_libraries
+      - --web.console.templates=/usr/share/prometheus/consoles
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "http://localhost:9090/-/healthy"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    ports:
+      - "9090:9090"
+    networks:
+      - alfred-network
+
+  grafana:
+    image: grafana/grafana:10.4.3
+    container_name: grafana
+    volumes:
+      - ../monitoring/grafana/provisioning:/etc/grafana/provisioning
+      - ../monitoring/grafana/custom-dashboards:/etc/grafana/custom-dashboards
+      - grafana-data:/var/lib/grafana
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=alfred
+      - GF_USERS_ALLOW_SIGN_UP=false
+      - GF_INSTALL_PLUGINS=grafana-clock-panel,grafana-simple-json-datasource
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "http://localhost:3000/api/health"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    ports:
+      - "3000:3000"
+    depends_on:
+      prometheus:
+        condition: service_healthy
+    networks:
+      - alfred-network
+
+networks:
+  alfred-network:
+    name: alfred-network
+
+volumes:
+  postgres-data:
+  grafana-data:
+  prometheus-data:
