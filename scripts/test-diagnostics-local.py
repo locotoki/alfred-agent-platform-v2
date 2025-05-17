@@ -13,20 +13,20 @@ async def test_local_diagnostics():
     # Mock Slack client
     slack_client = AsyncMock()
     slack_client.chat_postMessage = AsyncMock()
-    
+
     # Create bot with mocked services
     bot = DiagnosticsBot(
         slack_client=slack_client,
         prometheus_url="http://localhost:9090",  # Local Prometheus if available
-        enabled=True
+        enabled=True,
     )
-    
+
     print("🧪 Testing Diagnostics Bot Locally\n")
-    
+
     # Test /diag health
     print("1. Testing /diag health command:")
     await bot.handle_command("/diag", "test-channel", "test-user", "health")
-    
+
     health_response = slack_client.chat_postMessage.call_args
     if health_response:
         blocks = health_response.kwargs.get("blocks", [])
@@ -34,10 +34,10 @@ async def test_local_diagnostics():
         for block in blocks:
             if block["type"] == "section":
                 print(f"   {block['text']['text']}")
-    
+
     print("\n2. Testing /diag metrics command:")
     await bot.handle_command("/diag", "test-channel", "test-user", "metrics")
-    
+
     metrics_response = slack_client.chat_postMessage.call_args
     if metrics_response:
         blocks = metrics_response.kwargs.get("blocks", [])
@@ -45,7 +45,7 @@ async def test_local_diagnostics():
         for block in blocks:
             if block["type"] == "section":
                 print(f"   {block['text']['text']}")
-    
+
     print("\n✅ Local testing complete!")
     print("\nTo use in production:")
     print("1. Deploy to your cluster when ready")

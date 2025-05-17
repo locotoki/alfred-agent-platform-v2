@@ -18,14 +18,14 @@ async def main() -> None:
         token=os.environ.get("SLACK_BOT_TOKEN"),
         signing_secret=os.environ.get("SLACK_SIGNING_SECRET"),
     )
-    
+
     # Initialize diagnostics bot
     bot = DiagnosticsBot(
         slack_client=app.client,
         prometheus_url=os.environ.get("PROMETHEUS_URL", "http://prometheus:9090"),
         enabled=True,
     )
-    
+
     # Register slash command handler
     @app.command("/diag")
     async def handle_diag_command(ack, command, logger):
@@ -39,7 +39,7 @@ async def main() -> None:
             )
         except Exception as e:
             logger.error(f"Error handling command: {e}")
-    
+
     # Socket mode setup if enabled
     if os.environ.get("SOCKET_MODE_ENABLED", "true").lower() == "true":
         handler = AsyncSocketModeHandler(
