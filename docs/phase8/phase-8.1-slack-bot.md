@@ -90,6 +90,21 @@ export SLACK_APP_TOKEN=xapp-your-app-token
 docker-compose -f docker-compose.diagnostics.yml up
 ```
 
+### Running the diagnostics bot on Docker Desktop
+
+```bash
+cp .env.sample .env.dev      # fill in your Slack tokens
+docker compose -f deploy/docker-compose.diagnostics.yml up
+```
+
+Open Slack and try:
+```
+/diag health
+/diag metrics alfred-core
+```
+
+The container uses Socket-Mode, so no public URL is needed.
+
 ## Troubleshooting
 
 1. Check pod logs:
