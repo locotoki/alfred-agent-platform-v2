@@ -1,0 +1,53 @@
+name: Deploy Terraform Changes
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy'
+        required: true
+        type: choice
+        options:
+          - staging
+          - production
+      action:
+        description: 'Terraform action'
+        required: true
+        type: choice
+        options:
+          - apply
+          - plan
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.environment }}
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.5.0
+      
+      - name: Terraform Init
+        working-directory: terraform/environments/${{ github.event.inputs.environment }}
+        run: terraform init
+      
+      - name: Terraform Plan
+        if: github.event.inputs.action == 'plan'
+        working-directory: terraform/environments/${{ github.event.inputs.environment }}
+        run: terraform plan
+      
+      - name: Terraform Apply
+        if: github.event.inputs.action == 'apply'
+        working-directory: terraform/environments/${{ github.event.inputs.environment }}
+        run: terraform apply -auto-approve
+      
+      - name: Notify Slack
+        if: github.event.inputs.action == 'apply' && success()
+        run: |
+          curl -X POST -H 'Content-type: application/json' \
+            --data "{\"text\":\":rocket: Feature flag ALERT_GROUPING_ENABLED enabled in ${{ github.event.inputs.environment }}\"}" \
+            ${{ secrets.SLACK_ENGINEERING_WEBHOOK }}
