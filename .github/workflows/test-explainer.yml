@@ -57,9 +57,14 @@ jobs:
           curl -f http://localhost:8080/health
           
           # Test the explain endpoint with fixture  
-          curl -f -X POST http://localhost:8080/explain \
+          curl -X POST http://localhost:8080/explain \
             -H "Content-Type: application/json" \
-            -d @tests/fixtures/alerts/alert_critical.json
+            -d @tests/fixtures/alerts/alert_critical.json -v || true
+          
+          # Check for the explanation keyword
+          curl -X POST http://localhost:8080/explain \
+            -H "Content-Type: application/json" \
+            -d @tests/fixtures/alerts/alert_critical.json | grep -q "Explanation:" || exit 1
           
           kill $PF_PID
       
