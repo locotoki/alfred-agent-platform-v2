@@ -60,11 +60,13 @@ def financial_tax_agent(mock_pubsub, mock_supabase, mock_policy):
         mock_llm.invoke = MagicMock(return_value="test response")
         # Add necessary attributes to make it compatible with LangChain
         mock_llm._call = MagicMock(return_value="test response")
-        mock_llm.generate = MagicMock(return_value=MagicMock(generations=[[MagicMock(text="test")]]))
+        mock_llm.generate = MagicMock(
+            return_value=MagicMock(generations=[[MagicMock(text="test")]])
+        )
         mock_llm.predict = MagicMock(return_value="test response")
         # Add __class__ property for type checking
         mock_llm.__class__.__name__ = "ChatOpenAI"
-        
+
         mock_openai.return_value = mock_llm
         agent = FinancialTaxAgent(
             pubsub_transport=mock_pubsub,
