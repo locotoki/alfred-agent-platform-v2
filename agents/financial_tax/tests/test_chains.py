@@ -24,8 +24,9 @@ from agents.financial_tax.models import (
 def mock_llm():
     """Mock LLM for testing chains."""
     with patch("agents.financial_tax.chains.ChatOpenAI") as mock:
-        from langchain.schema.runnable import Runnable
         from typing import Any, Optional
+
+        from langchain.schema.runnable import Runnable
 
         class MockLLM(Runnable):
             def invoke(self, input: Any, config: Optional[Any] = None, **kwargs: Any) -> Any:
