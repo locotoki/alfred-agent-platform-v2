@@ -12,7 +12,10 @@ from alfred.alerts.explainer.agent import ExplainerAgent
 @pytest.fixture
 def alert_payload():
     """Load the alert fixture."""
-    fixture_path = Path(__file__).parents[5] / "tests/fixtures/alerts/alert_critical.json"
+    # test file is at tests/unit/alfred/alerts/explainer/test_agent.py
+    # fixture is at tests/fixtures/alerts/alert_critical.json
+    # so we need to go up to tests/ and then down to fixtures/
+    fixture_path = Path(__file__).parents[4] / "fixtures/alerts/alert_critical.json"
     with open(fixture_path, "r") as f:
         return json.load(f)
 
