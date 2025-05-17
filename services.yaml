@@ -1,0 +1,49 @@
+# Canonical list of services for Alfred Agent Platform v2
+# Used by CI to ensure docker-compose.yml parity
+
+infrastructure:
+  - redis
+  - pubsub
+  - pubsub-metrics
+  - db-storage
+  - vector-db
+  - n8n
+
+database:
+  - db-postgres
+  - db-metrics
+  - supabase-rest
+  - supabase-realtime
+  - supabase-auth
+  - supabase-storage
+  - supabase-imgproxy
+
+llm:
+  - model-registry
+  - model-router
+  - openllm
+  - crewai
+
+core:
+  - alfred-core
+  - agent-orchestrator
+  - agent-rag
+  - financial-tax
+  - legal-compliance
+  - social-intel
+  - slack_app
+  - slack_mcp_gateway
+
+ui:
+  - mission-control
+  - mission-control-simplified
+  - streamlit-chat
+  - auth-ui
+
+monitoring:
+  - prometheus
+  - grafana
+
+other:
+  - api
+  - whatsapp-adapter
