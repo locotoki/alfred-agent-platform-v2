@@ -301,3 +301,53 @@ metrics.increment('predictions', tags={'version': ranker_version})
 - Automated threshold optimization
 - Cross-service correlation analysis
 - Predictive alert suppression
+
+## Database Integration
+
+### Loading Alerts from Database
+
+The ML training pipeline now supports loading alert data directly from databases:
+
+```python
+# Set database connection
+export ALERT_DB_URI="postgresql://user:pass@localhost/alerts"
+
+# Load alerts
+from alfred.ml.alert_dataset import load_alert_dataset
+dataset = load_alert_dataset(days=30)
+```
+
+### Database Schema Requirements
+
+```sql
+CREATE TABLE alerts (
+    id SERIAL PRIMARY KEY,
+    message TEXT NOT NULL,
+    severity VARCHAR(50) NOT NULL,
+    created_at TIMESTAMP NOT NULL
+);
+
+-- Recommended indexes
+CREATE INDEX idx_alerts_created_at ON alerts(created_at);
+CREATE INDEX idx_alerts_severity ON alerts(severity);
+```
+
+### Automatic PII Stripping
+
+The dataset loader automatically removes PII from alert messages:
+- Email addresses → `[EMAIL]`
+- IP addresses → `[IP]`
+- Phone numbers → `[PHONE]`
+
+### Performance Optimization
+
+For large datasets, configure connection pooling:
+```python
+from sqlalchemy.pool import QueuePool
+
+engine = create_engine(
+    settings.ALERT_DB_URI,
+    poolclass=QueuePool,
+    pool_size=10,
+    max_overflow=20
+)
