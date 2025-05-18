@@ -1,9 +1,9 @@
 /**
  * Custom MCP Bridge Server
- * 
+ *
  * This server provides both a REST API for ChatGPT and an MCP interface for Claude Code,
  * allowing them to communicate with each other.
- * 
+ *
  * Usage:
  *   1. Start this server: node custom-mcp-bridge-server.js
  *   2. Add to Claude Code: claude mcp add custom-bridge -- node custom-mcp-bridge-server.js
@@ -39,14 +39,14 @@ app.post('/messages', (req, res) => {
   if (!content) {
     return res.status(400).json({ error: 'Content is required' });
   }
-  
+
   const message = {
     id: messages.length + 1,
     from: 'chatgpt',
     content,
     timestamp: Date.now()
   };
-  
+
   messages.push(message);
   res.status(201).json(message);
 });
@@ -75,14 +75,14 @@ app.get('/chatgpt.html', (req, res) => {
 </head>
 <body>
   <h1>AI Communication Bridge</h1>
-  
+
   <div>
     <h2>Send Message as ChatGPT</h2>
     <textarea id="messageInput" rows="4" placeholder="Type your message here..."></textarea>
     <br><br>
     <button id="sendBtn">Send Message</button>
   </div>
-  
+
   <div>
     <h2>Conversation</h2>
     <div id="messageLog"></div>
@@ -92,21 +92,21 @@ app.get('/chatgpt.html', (req, res) => {
     // API URL - change if needed
     const API_URL = window.location.origin;
     let lastTimestamp = 0;
-    
+
     // Send message
     document.getElementById('sendBtn').addEventListener('click', async function() {
       const content = document.getElementById('messageInput').value;
       if (content.trim() === '') return;
-      
+
       try {
         const response = await fetch(\`\${API_URL}/messages\`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ content })
         });
-        
+
         if (!response.ok) throw new Error('Failed to send message');
-        
+
         document.getElementById('messageInput').value = '';
         await fetchMessages();
       } catch (error) {
@@ -114,32 +114,32 @@ app.get('/chatgpt.html', (req, res) => {
         alert('Failed to send message: ' + error.message);
       }
     });
-    
+
     // Fetch messages
     async function fetchMessages() {
       try {
         const response = await fetch(\`\${API_URL}/messages?since=\${lastTimestamp}\`);
         if (!response.ok) throw new Error('Failed to fetch messages');
-        
+
         const newMessages = await response.json();
-        
+
         if (newMessages.length > 0) {
           // Update lastTimestamp to the most recent message
           lastTimestamp = Math.max(...newMessages.map(m => m.timestamp));
-          
+
           // Add messages to the log
           const messageLog = document.getElementById('messageLog');
           newMessages.forEach(message => {
             const messageEl = document.createElement('div');
             messageEl.className = 'message ' + message.from;
             messageEl.innerHTML = \`
-              <strong>\${message.from === 'chatgpt' ? 'ChatGPT' : 'Claude'}</strong> 
+              <strong>\${message.from === 'chatgpt' ? 'ChatGPT' : 'Claude'}</strong>
               <span class="timestamp">(\${new Date(message.timestamp).toLocaleTimeString()})</span>:
               <pre>\${message.content}</pre>
             \`;
             messageLog.appendChild(messageEl);
           });
-          
+
           // Scroll to bottom
           window.scrollTo(0, document.body.scrollHeight);
         }
@@ -147,13 +147,13 @@ app.get('/chatgpt.html', (req, res) => {
         console.error('Error fetching messages:', error);
       }
     }
-    
+
     // Poll for new messages every 3 seconds
     setInterval(fetchMessages, 3000);
-    
+
     // Initial fetch
     fetchMessages();
-    
+
     // Add keypress handler for textarea
     document.getElementById('messageInput').addEventListener('keypress', function(e) {
       if (e.key === 'Enter' && !e.shiftKey) {
@@ -165,7 +165,7 @@ app.get('/chatgpt.html', (req, res) => {
 </body>
 </html>
   `;
-  
+
   res.send(htmlContent);
 });
 
@@ -208,7 +208,7 @@ const mcpServer = new Server({
           content,
           timestamp: Date.now()
         };
-        
+
         messages.push(message);
         return { success: true, messageId: message.id };
       }

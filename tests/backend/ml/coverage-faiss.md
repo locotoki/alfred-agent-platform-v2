@@ -1,8 +1,8 @@
 # FAISS Index Test Coverage Report
 
-Date: 2025-05-18  
-Module: `backend.alfred.ml.faiss_index`  
-Test File: `tests/backend/ml/test_faiss_index.py`  
+Date: 2025-05-18
+Module: `backend.alfred.ml.faiss_index`
+Test File: `tests/backend/ml/test_faiss_index.py`
 
 ## Coverage Summary
 

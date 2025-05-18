@@ -93,12 +93,12 @@ export const StepThree: React.FC<StepThreeProps> = ({
                 const sourceKey = key as keyof DataSourceConfig;
                 return (
                   <div key={key} className="flex items-center space-x-2">
-                    <Checkbox 
-                      id={`source-${key}`} 
-                      checked={dataSources[sourceKey]} 
+                    <Checkbox
+                      id={`source-${key}`}
+                      checked={dataSources[sourceKey]}
                       onCheckedChange={() => handleDataSourceChange(sourceKey)}
                     />
-                    <label 
+                    <label
                       htmlFor={`source-${key}`}
                       className="flex justify-between items-center w-full text-sm cursor-pointer"
                     >
@@ -123,7 +123,7 @@ export const StepThree: React.FC<StepThreeProps> = ({
 
         <div className="grid grid-cols-2 gap-4 p-4 bg-muted/50 rounded-lg relative">
           {lastAccuracy && (
-            <Badge 
+            <Badge
               variant={Math.max(lastAccuracy.diffCost, lastAccuracy.diffEta) < 0.1 ? "secondary" : "destructive"}
               className="absolute top-2 right-2"
             >

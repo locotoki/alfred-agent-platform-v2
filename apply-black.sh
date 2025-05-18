@@ -7,4 +7,3 @@ echo "Running Black formatter on entire codebase..."
 black --exclude "(youtube-test-env/|migrations/|node_modules/|\.git/|\.mypy_cache/|\.env/|\.venv/|env/|venv/|\.ipynb/)" .
 
 echo "Black formatting complete."
-

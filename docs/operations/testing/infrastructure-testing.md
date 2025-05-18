@@ -1,7 +1,7 @@
 # Infrastructure Component: Infrastructure Testing
 
-*Last Updated: 2025-05-13*  
-*Owner: QA Team*  
+*Last Updated: 2025-05-13*
+*Owner: QA Team*
 *Status: Active*
 
 ## Overview
@@ -22,14 +22,14 @@ graph TB
         security[Security Tests]
         infrastructure[Infrastructure Tests]
     end
-    
+
     subgraph "Test Environments"
         local[Local Development]
         ci[CI Environment]
         staging[Staging Environment]
         production[Production Environment]
     end
-    
+
     subgraph "Test Tooling"
         pytest[Pytest Framework]
         playwright[Playwright]
@@ -38,20 +38,20 @@ graph TB
         terraform_test[Terraform Testing]
         mockito[Test Mocks]
     end
-    
+
     subgraph "Test Data Management"
         fixtures[Test Fixtures]
         mock_data[Mock Data]
         test_db[Test Databases]
     end
-    
+
     unit --> pytest
     integration --> pytest
     e2e --> playwright
     performance --> k6
     security --> trivy
     infrastructure --> terraform_test
-    
+
     pytest --> local
     pytest --> ci
     playwright --> local
@@ -59,7 +59,7 @@ graph TB
     k6 --> staging
     trivy --> ci
     terraform_test --> ci
-    
+
     fixtures --> pytest
     mock_data --> playwright
     test_db --> pytest
@@ -104,12 +104,12 @@ def setup_test_env():
 async def test_db():
     """Provide a clean test database."""
     conn = await asyncpg.connect(os.environ["DATABASE_URL"])
-    
+
     # Clean up existing data
     await conn.execute("TRUNCATE TABLE tasks, task_results, processed_messages CASCADE")
-    
+
     yield conn
-    
+
     await conn.close()
 
 @pytest.fixture
@@ -150,8 +150,8 @@ import { PlaywrightTestConfig } from '@playwright/test';
 
 const config: PlaywrightTestConfig = {
   testDir: './tests',
-  timeout: 120000, // Longer timeout for YouTube workflows 
-  fullyParallel: false, 
+  timeout: 120000, // Longer timeout for YouTube workflows
+  fullyParallel: false,
   retries: 1,
   workers: 1, // Sequential execution to avoid conflicts
   reporter: 'html',
@@ -265,7 +265,7 @@ class TestBaseAgent:
     def agent(self):
         """Create a test agent."""
         return BaseAgent(name="test-agent")
-    
+
     @pytest.mark.asyncio
     async def test_process_message(self, agent, mock_pubsub):
         """Test message processing."""
@@ -273,10 +273,10 @@ class TestBaseAgent:
         message = {"id": "test-id", "intent": "test-intent", "content": {}}
         agent.transport = AsyncMock()
         agent.process_intent = AsyncMock()
-        
+
         # Execute
         await agent.process_message(message)
-        
+
         # Verify
         agent.process_intent.assert_called_once_with("test-intent", {})
 ```
@@ -304,14 +304,14 @@ async def test_exactly_once_processing(supabase_transport, policy_middleware):
     """Test that messages are processed exactly once."""
     # Setup
     message_id = str(uuid4())
-    
+
     # First attempt should succeed
     result1 = await policy_middleware.should_process(message_id)
     assert result1 is True
-    
+
     # Record message as processed
     await supabase_transport.record_processed_message(message_id)
-    
+
     # Second attempt should fail
     result2 = await policy_middleware.should_process(message_id)
     assert result2 is False
@@ -337,22 +337,22 @@ test('Niche Scout Workflow', async ({ page }) => {
   // Login and navigate to Niche Scout
   await login(page);
   await navigateToWorkflow(page, 'niche-scout');
-  
+
   // Enter search keyword
   await page.fill('[data-testid="keyword-input"]', 'sustainable gardening');
   await page.click('[data-testid="search-button"]');
-  
+
   // Wait for results to load
   await page.waitForSelector('[data-testid="results-container"]', { timeout: 60000 });
-  
+
   // Verify results are displayed
   const resultCount = await page.locator('[data-testid="result-card"]').count();
   expect(resultCount).toBeGreaterThan(0);
-  
+
   // Verify report generation
   await page.click('[data-testid="generate-report"]');
   await page.waitForSelector('[data-testid="report-content"]', { timeout: 90000 });
-  
+
   const reportText = await page.textContent('[data-testid="report-content"]');
   expect(reportText).toContain('sustainable gardening');
 });
@@ -392,38 +392,38 @@ export default function() {
       timestamp: new Date().toISOString()
     }
   });
-  
+
   const params = {
     headers: {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${__ENV.API_TOKEN}`
     }
   };
-  
+
   const createTaskResponse = http.post('http://agent-core:8011/api/tasks', payload, params);
-  
+
   // Check if task creation was successful
   const createTaskCheck = check(createTaskResponse, {
     'Task created successfully': (r) => r.status === 201,
     'Has task ID': (r) => JSON.parse(r.body).task_id !== undefined
   });
-  
+
   if (!createTaskCheck) {
     taskCreationErrors.add(1);
     console.error(`Failed to create task: ${createTaskResponse.status} ${createTaskResponse.body}`);
   }
-  
+
   // Get task status (if task was created successfully)
   if (createTaskCheck) {
     const taskId = JSON.parse(createTaskResponse.body).task_id;
     const getTaskResponse = http.get(`http://agent-core:8011/api/tasks/${taskId}`, params);
-    
+
     check(getTaskResponse, {
       'Get task successful': (r) => r.status === 200,
       'Task status exists': (r) => JSON.parse(r.body).status !== undefined
     });
   }
-  
+
   sleep(1);
 }
 ```
@@ -657,7 +657,7 @@ export const mockNicheScoutResponse = {
         title: "Urban Permaculture Design",
         videoId: "def456",
         viewCount: 32000,
-        engagement: 0.92, 
+        engagement: 0.92,
         publishDate: "2024-11-15T10:00:00Z",
         thumbnailUrl: "https://example.com/thumbnail2.jpg"
       }
@@ -755,7 +755,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       # ... (previous steps)
-      
+
       - name: Check coverage
         run: |
           coverage report --fail-under=90
@@ -782,7 +782,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       PYTHON_VERSION: "3.11"
-    
+
     services:
       postgres:
         image: postgres:15
@@ -797,28 +797,28 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
-    
+
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: ${{ env.PYTHON_VERSION }}
-      
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install -r requirements-dev.txt
-      
+
       - name: Run integration tests
         run: |
           pytest tests/integration/ -v -m integration
         env:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/test_db
           PUBSUB_EMULATOR_HOST: localhost:8085
-      
+
       - name: Notify on failure
         if: failure()
         uses: rtCamp/action-slack-notify@v2
@@ -982,7 +982,7 @@ test_config:
     security_tests:
       enabled: true
       scan_depth: "basic"
-  
+
   ci:
     unit_tests: true
     integration_tests: true
@@ -997,7 +997,7 @@ test_config:
     security_tests:
       enabled: true
       scan_depth: "full"
-  
+
   staging:
     unit_tests: false
     integration_tests: true
@@ -1012,7 +1012,7 @@ test_config:
     security_tests:
       enabled: true
       scan_depth: "full"
-  
+
   production:
     unit_tests: false
     integration_tests: false
@@ -1041,7 +1041,7 @@ async def test_isolated_database(test_db):
     """Test with an isolated database."""
     # Each test gets a fresh database state
     await test_db.execute("INSERT INTO tasks (task_id, intent, status) VALUES ('test-1', 'test', 'pending')")
-    
+
     # Verify the data was inserted
     result = await test_db.fetchval("SELECT COUNT(*) FROM tasks WHERE task_id = 'test-1'")
     assert result == 1
@@ -1070,9 +1070,9 @@ def test_data_file():
     # Create test file
     with open("test_data.json", "w") as f:
         f.write('{"test": "data"}')
-    
+
     yield "test_data.json"
-    
+
     # Clean up after the test
     if os.path.exists("test_data.json"):
         os.remove("test_data.json")
@@ -1082,7 +1082,7 @@ def test_file_processing(test_data_file):
     # Use the test data file
     with open(test_data_file, "r") as f:
         data = f.read()
-    
+
     assert "test" in data
 ```
 
@@ -1115,12 +1115,12 @@ def test_youtube_search():
             }
         ]
     }
-    
+
     # Patch the API request method
     with patch("services.youtube_api.YouTubeAPI._make_request", return_value=mock_response):
         api = YouTubeAPI(api_key="test-key")
         results = api.search("test query")
-        
+
         assert len(results) == 1
         assert results[0]["title"] == "Test Video"
         assert results[0]["videoId"] == "abc123"
@@ -1159,16 +1159,16 @@ def debug_fixture():
 def test_with_debugging(debug_fixture):
     """A test with debug logging."""
     logger.debug(f"Running test with {debug_fixture}")
-    
+
     # For additional debugging in CI
     if os.environ.get("CI") == "true":
         # Print environment information
         logger.debug(f"Python version: {sys.version}")
         logger.debug(f"Environment variables: {os.environ}")
-        
+
         # Dump additional diagnostics
         logger.debug(f"Current directory contents: {os.listdir('.')}")
-    
+
     assert True
 ```
 

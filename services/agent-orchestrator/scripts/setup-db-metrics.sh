@@ -75,14 +75,14 @@ EOF
 
   # Find the last monitoring service and insert db-metrics after it
   last_monitoring_line=$(grep -n "com.docker.compose.group: \"monitoring\"" docker-compose-clean.yml | tail -1 | cut -d: -f1)
-  
+
   if [ -n "$last_monitoring_line" ]; then
     # Find the next service after the last monitoring service
     next_service_line=$((last_monitoring_line + 1))
     while ! grep -q "^  [a-zA-Z0-9_-]\+:$" <(sed -n "${next_service_line}p" docker-compose-clean.yml) && [ "$next_service_line" -lt "$(wc -l < docker-compose-clean.yml)" ]; do
       next_service_line=$((next_service_line + 1))
     done
-    
+
     # Insert the db-metrics service before the next service
     sed -i "${next_service_line}r /tmp/db-metrics-service.yml" docker-compose-clean.yml
     echo -e "${GREEN}db-metrics service added to docker-compose-clean.yml.${NC}"
@@ -91,7 +91,7 @@ EOF
     echo -e "${BLUE}Please add the db-metrics service to docker-compose-clean.yml manually.${NC}"
     cat /tmp/db-metrics-service.yml
   fi
-  
+
   # Clean up temporary file
   rm /tmp/db-metrics-service.yml
 fi

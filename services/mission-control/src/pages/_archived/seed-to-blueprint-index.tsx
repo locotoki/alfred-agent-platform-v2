@@ -10,7 +10,7 @@ export default function SeedToBlueprint() {
   const [error, setError] = useState<string | null>(null);
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [inputType, setInputType] = useState<'video' | 'niche'>('video');
-  
+
   // Form state
   const [formData, setFormData] = useState({
     video_url: '',
@@ -34,17 +34,17 @@ export default function SeedToBlueprint() {
       const sourceValue = inputType === 'video' ? formData.video_url : formData.niche;
       console.log(`Running Seed-to-Blueprint workflow with ${sourceType}: ${sourceValue}...`);
       console.log('Form data:', formData);
-      
+
       // Validate input
       if (!sourceValue) {
         throw new Error(`Please provide a valid ${sourceType}`);
       }
-      
+
       // Run the workflow with the appropriate parameters
-      const params = inputType === 'video' 
+      const params = inputType === 'video'
         ? { video_url: formData.video_url, analysisDepth: formData.analysisDepth }
         : { niche: formData.niche, analysisDepth: formData.analysisDepth };
-      
+
       // Try to run the workflow with direct fetch call to ensure correct port
       let result;
       try {
@@ -59,22 +59,22 @@ export default function SeedToBlueprint() {
           params.append('niche', formData.niche.toLowerCase());
         }
         params.append('analysisDepth', formData.analysisDepth);
-        
+
         // Build the URL using window.location.origin to ensure correct port
         const apiUrl = `${window.location.origin}/api/social-intel/seed-to-blueprint?${params.toString()}`;
         console.log('Using API URL:', apiUrl);
-        
+
         const response = await fetch(apiUrl, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           }
         });
-        
+
         if (!response.ok) {
           throw new Error(`API returned status ${response.status}`);
         }
-        
+
         result = await response.json();
         console.log('API response:', result);
         */
@@ -84,18 +84,18 @@ export default function SeedToBlueprint() {
         console.error('API call failed:', apiError);
         throw new Error(`API Error: ${apiError instanceof Error ? apiError.message : 'Unknown error'}`);
       }
-      
+
       if (!result) {
         throw new Error('No result returned from the API');
       }
-      
+
       // Navigate to results page with ID
       // If the result has an _id field, use that, otherwise generate a unique ID
       const resultId = result._id || `blueprint-${new Date().getTime()}-${Math.random().toString(36).substring(2, 10)}`;
-      
+
       // Log the successful workflow execution and redirect
       console.log(`Seed-to-Blueprint workflow completed successfully with ID: ${resultId}`);
-      
+
       // Use a slight delay to ensure the API has time to process before redirect
       setTimeout(() => {
         router.push(`/workflows/seed-to-blueprint/results/${resultId}?dev_bypass_auth=true`);
@@ -116,7 +116,7 @@ export default function SeedToBlueprint() {
             <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
               SEED-TO-BLUEPRINT WORKFLOW
             </h1>
-            <button 
+            <button
               onClick={() => router.back()}
               className="btn-secondary"
             >

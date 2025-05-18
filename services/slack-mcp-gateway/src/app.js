@@ -87,14 +87,14 @@ app.command('/ping', async ({ command, ack, respond }) => {
     // Publish command to Redis channel
     await redis.publish('slack:commands', JSON.stringify(commandData));
     logger.info({ command: 'ping' }, 'Command published to Redis');
-    
+
     // Respond to user
     await respond({
       text: '🏓 Pong! Command received and forwarded to mission control.'
     });
   } catch (error) {
     logger.error({ err: error }, 'Failed to process ping command');
-    
+
     await respond({
       text: '❌ Error processing your request. Please try again later.'
     });
@@ -109,12 +109,12 @@ app.error((error) => {
 // Start the app
 (async () => {
   const port = process.env.PORT || 3000;
-  
+
   // Start both Express (for health checks) and Bolt app
   expressApp.listen(port, () => {
     logger.info(`Express server for health checks is running on port ${port}`);
   });
-  
+
   await app.start();
   logger.info(`⚡️ Slack MCP Gateway is running with Socket Mode`);
 })();

@@ -25,7 +25,7 @@ const Topbar = () => {
     <header className="h-14 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/70 sticky top-0 z-20 border-b border-border flex items-center px-6">
       <div className="flex items-center flex-1">
         <SidebarTrigger onClick={handleSidebarToggle} className="mr-4" />
-        
+
         <div className="relative max-w-2xl w-full">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
           <input
@@ -50,10 +50,10 @@ const Topbar = () => {
             <DropdownMenuItem>Development</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
-        
+
         {/* Direct Niche Scout Button */}
-        <Button 
-          variant="default" 
+        <Button
+          variant="default"
           className="text-sm"
           onClick={() => {
             // Create custom event to trigger the wizard
@@ -64,15 +64,15 @@ const Topbar = () => {
           <Youtube className="h-4 w-4 mr-2" />
           Run Niche Scout
         </Button>
-        
+
         {/* YouTube Results Dialog */}
-        <YouTubeResultsDialog 
+        <YouTubeResultsDialog
           trigger={
             <Button variant="outline" className="text-sm">
               <Youtube className="h-4 w-4 mr-2" />
               View Results
             </Button>
-          } 
+          }
         />
 
         <Button variant="ghost" size="icon" className="relative">

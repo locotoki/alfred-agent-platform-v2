@@ -87,7 +87,7 @@ logger = structlog.get_logger(__name__)
 
 class YourAgentName(BaseAgent):
     """Agent for your specific domain tasks"""
-    
+
     def __init__(self, *args, **kwargs):
         super().__init__(
             name="your-agent-name",
@@ -102,28 +102,28 @@ class YourAgentName(BaseAgent):
         )
         self.setup_chains()
         self.setup_graph()
-    
+
     def setup_chains(self):
         """Initialize LangChain configurations for each intent"""
         llm = ChatOpenAI(temperature=0, model="gpt-4")
-        
+
         self.custom_chain_1 = YourCustomChain1(llm)
         self.custom_chain_2 = YourCustomChain2(llm)
-    
+
     def setup_graph(self):
         """Setup LangGraph for workflow orchestration"""
         self.workflow_graph = Graph()
-        
+
         # Add nodes for different processing steps
         self.workflow_graph.add_node("parse_request", self._parse_request)
         self.workflow_graph.add_node("validate_data", self._validate_data)
         self.workflow_graph.add_node("process_intent_1", self._process_intent_1)
         self.workflow_graph.add_node("process_intent_2", self._process_intent_2)
         self.workflow_graph.add_node("format_response", self._format_response)
-        
+
         # Add edges for workflow
         self.workflow_graph.add_edge("parse_request", "validate_data")
-        
+
         # Add conditional edges based on intent
         self.workflow_graph.add_conditional_edges(
             "validate_data",
@@ -133,20 +133,20 @@ class YourAgentName(BaseAgent):
                 "intent_2": "process_intent_2",
             }
         )
-        
+
         # All processing nodes lead to format_response
         self.workflow_graph.add_edge("process_intent_1", "format_response")
         self.workflow_graph.add_edge("process_intent_2", "format_response")
-        
+
         # format_response leads to END
         self.workflow_graph.add_edge("format_response", END)
-        
+
         # Set entry point
         self.workflow_graph.set_entry_point("parse_request")
-        
+
         # Compile the graph
         self.workflow = self.workflow_graph.compile()
-    
+
     async def process_task(self, envelope: A2AEnvelope) -> Dict[str, Any]:
         """Process a task"""
         logger.info(
@@ -154,7 +154,7 @@ class YourAgentName(BaseAgent):
             task_id=envelope.task_id,
             intent=envelope.intent
         )
-        
+
         try:
             # Execute the workflow
             result = await self.workflow.ainvoke({
@@ -162,9 +162,9 @@ class YourAgentName(BaseAgent):
                 "intent": envelope.intent,
                 "content": envelope.content
             })
-            
+
             return result.get("response", {})
-            
+
         except Exception as e:
             logger.error(
                 "task_processing_failed",
@@ -173,19 +173,19 @@ class YourAgentName(BaseAgent):
                 intent=envelope.intent
             )
             raise
-    
+
     # Workflow node implementations
     async def _parse_request(self, state: Dict[str, Any]) -> Dict[str, Any]:
         """Parse the incoming request"""
         state["parsed_content"] = state["content"]
         return state
-    
+
     async def _validate_data(self, state: Dict[str, Any]) -> Dict[str, Any]:
         """Validate the request data"""
         # Add validation logic here
         state["is_valid"] = True
         return state
-    
+
     def _route_by_intent(self, state: Dict[str, Any]) -> str:
         """Route to appropriate processor based on intent"""
         intent = state["intent"]
@@ -195,20 +195,20 @@ class YourAgentName(BaseAgent):
             return "intent_2"
         else:
             raise ValueError(f"Unsupported intent: {intent}")
-    
+
     async def _process_intent_1(self, state: Dict[str, Any]) -> Dict[str, Any]:
         """Process intent 1 request"""
         request = YourRequestModel1(**state["parsed_content"])
         result = await self.custom_chain_1.process(request)
         state["result"] = result.dict()
         return state
-    
+
     async def _process_intent_2(self, state: Dict[str, Any]) -> Dict[str, Any]:
         """Process intent 2 request"""
         # Process intent 2 similarly
         # ...
         return state
-    
+
     async def _format_response(self, state: Dict[str, Any]) -> Dict[str, Any]:
         """Format the response for output"""
         state["response"] = {
@@ -265,11 +265,11 @@ from .models import YourRequestModel1, YourResponseModel1
 
 class YourCustomChain1:
     """Chain for processing your first intent"""
-    
+
     def __init__(self, llm: ChatOpenAI = None):
         self.llm = llm or ChatOpenAI(temperature=0, model="gpt-4")
         self.output_parser = PydanticOutputParser(pydantic_object=YourResponseModel1)
-        
+
         self.prompt = PromptTemplate(
             template="""You are an expert in [your domain]. Process the following information:
 
@@ -289,9 +289,9 @@ Provide a detailed response including:
             input_variables=["field1", "field2", "option", "metadata"],
             partial_variables={"format_instructions": self.output_parser.get_format_instructions()}
         )
-        
+
         self.chain = LLMChain(llm=self.llm, prompt=self.prompt)
-    
+
     async def process(self, request: YourRequestModel1) -> YourResponseModel1:
         """Process request"""
         result = await self.chain.arun(
@@ -300,7 +300,7 @@ Provide a detailed response including:
             option=request.option.value,
             metadata=request.metadata
         )
-        
+
         return self.output_parser.parse(result)
 
 # Add more chains as needed
@@ -400,7 +400,7 @@ async def _register_agent(self):
         "capabilities": self.supported_intents,
         "last_heartbeat": datetime.utcnow().isoformat() + "Z"
     }
-    
+
     await self.supabase.execute(
         """
         INSERT INTO agent_registry (name, version, type, status, capabilities, last_heartbeat)
@@ -432,12 +432,12 @@ async def store_task(self, envelope):
         "priority": envelope.priority,
         "created_at": envelope.timestamp
     }
-    
+
     await self.execute(
         """
-        INSERT INTO tasks (task_id, intent, status, content, trace_id, 
+        INSERT INTO tasks (task_id, intent, status, content, trace_id,
                           correlation_id, priority, created_at)
-        VALUES (:task_id, :intent, :status, :content, :trace_id, 
+        VALUES (:task_id, :intent, :status, :content, :trace_id,
                 :correlation_id, :priority, :created_at)
         """,
         task_data
@@ -456,7 +456,7 @@ async def store_embedding(self, task_id, embedding, metadata):
         "embedding": embedding,
         "metadata": json.dumps(metadata)
     }
-    
+
     await self.execute(
         """
         INSERT INTO embeddings (task_id, embedding, metadata)
@@ -482,13 +482,13 @@ async def publish_task(self, envelope, topic=None):
     """Publish task to Pub/Sub."""
     topic_path = topic or self.create_topic_path
     message = envelope.to_pubsub_message()
-    
+
     message_id = await self.publish(
         topic_path,
         message["data"].encode("utf-8"),
         message["attributes"]
     )
-    
+
     return message_id
 ```
 
@@ -500,32 +500,32 @@ async def subscribe(self, subscription, callback, error_callback=None):
     subscription_path = self.client.subscription_path(
         self.project_id, subscription
     )
-    
+
     # Create subscription if it doesn't exist
     if not self.subscription_exists(subscription):
         self.create_subscription(subscription, self.create_topic_path)
-    
+
     async def process_message(message):
         try:
             envelope = A2AEnvelope.from_pubsub_message({
                 "data": message.data,
                 "attributes": message.attributes
             })
-            
+
             await callback(envelope)
             message.ack()
-            
+
         except Exception as e:
             if error_callback:
                 await error_callback(e)
             message.nack()
-    
+
     # Create subscriber
     subscriber = self.client.subscribe(
         subscription_path,
         process_message
     )
-    
+
     return subscriber
 ```
 
@@ -547,7 +547,7 @@ output_parser = PydanticOutputParser(pydantic_object=YourResponseModel)
 # Create prompt template
 prompt = PromptTemplate(
     template="""You are an expert in [your domain]. Process the following information:
-    
+
 Field1: {field1}
 Field2: {field2}
 Option: {option}
@@ -665,7 +665,7 @@ async def test_process_task(agent):
             "option": "option_a"
         }
     )
-    
+
     # Mock chain response
     with patch.object(agent.custom_chain_1, 'process') as mock_process:
         mock_process.return_value = YourResponseModel1(
@@ -675,10 +675,10 @@ async def test_process_task(agent):
             details=[{"key": "value"}],
             timestamp="2025-05-01T12:00:00Z"
         )
-        
+
         # Process task
         result = await agent.process_task(envelope)
-        
+
         # Assert result
         assert result["status"] == "success"
         assert result["intent"] == "YOUR_INTENT_1"
@@ -697,17 +697,17 @@ async def test_agent_workflow():
     pubsub = PubSubTransport(project_id="test-project")
     supabase = SupabaseTransport(database_url="postgresql://user:pass@localhost:5432/postgres")
     policy = PolicyMiddleware()
-    
+
     # Create agent
     agent = YourAgentName(
         pubsub_transport=pubsub,
         supabase_transport=supabase,
         policy_middleware=policy
     )
-    
+
     # Start agent
     await agent.start()
-    
+
     # Create test envelope
     envelope = A2AEnvelope(
         intent="YOUR_INTENT_1",
@@ -717,17 +717,17 @@ async def test_agent_workflow():
             "option": "option_a"
         }
     )
-    
+
     # Publish task
     await pubsub.publish_task(envelope)
-    
+
     # Wait for processing
     await asyncio.sleep(2)
-    
+
     # Check result in Supabase
     task_status = await supabase.get_task_status(envelope.task_id)
     assert task_status["status"] == "completed"
-    
+
     # Cleanup
     await agent.stop()
 ```
@@ -784,7 +784,7 @@ ACTIVE_TASKS = Gauge(
 async def process_task(self, envelope):
     ACTIVE_TASKS.inc()
     start_time = time.time()
-    
+
     try:
         result = await self._process_task_internal(envelope)
         REQUESTS_TOTAL.labels(envelope.intent, "success").inc()
@@ -883,7 +883,7 @@ async def _handle_message_with_dlq(self, envelope):
             error=str(e),
             task_id=envelope.task_id
         )
-        
+
         # Send to DLQ
         await self.pubsub.publish_task(
             envelope,
@@ -903,7 +903,7 @@ async def get_data(self, query):
         return await self.database.query(query)
     except DatabaseError:
         logger.warning("database_unavailable_using_cache")
-        
+
         # Fall back to cache
         return await self.cache.get(query)
 ```
@@ -936,7 +936,7 @@ async def load_state(self, agent_id):
         "SELECT state_data FROM agent_state WHERE agent_id = :agent_id",
         {"agent_id": agent_id}
     )
-    
+
     if result:
         return json.loads(result["state_data"])
     else:
@@ -976,7 +976,7 @@ async def query_similar_embeddings(self, query_embedding, limit=5):
             "limit": limit
         }
     )
-    
+
     return [
         {
             "task_id": row["task_id"],

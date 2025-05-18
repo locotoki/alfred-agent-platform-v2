@@ -76,7 +76,7 @@ if [ $INACTIVE_COUNT -gt 0 ]; then
   read -r response
   if [[ "$response" =~ ^([yY][eE][sS]|[yY])$ ]]; then
     echo -e "${BLUE}Deleting inactive files...${NC}"
-    
+
     for file in $FOUND_FILES; do
       # Check if file is in active list
       ACTIVE=false
@@ -86,13 +86,13 @@ if [ $INACTIVE_COUNT -gt 0 ]; then
           break
         fi
       done
-      
+
       if [ "$ACTIVE" = false ]; then
         echo -e "${YELLOW}Deleting: $file${NC}"
         rm "$file"
       fi
     done
-    
+
     echo -e "${GREEN}Deletion complete. All inactive files were backed up to $BACKUP_DIR${NC}"
   else
     echo -e "${BLUE}No files were deleted. All inactive files were backed up to $BACKUP_DIR${NC}"

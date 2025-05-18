@@ -57,6 +57,6 @@ The fix has successfully addressed the core issue:
 Based on the mid-soak metrics, v0.8.1-rc2 is performing exceptionally well and appears ready for production promotion pending completion of the full 24-hour soak test.
 
 ---
-Generated at: 2025-05-17T08:22:36Z  
-Environment: staging  
+Generated at: 2025-05-17T08:22:36Z
+Environment: staging
 Version: v0.8.1-rc2

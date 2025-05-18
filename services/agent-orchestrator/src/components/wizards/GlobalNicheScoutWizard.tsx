@@ -11,7 +11,7 @@ const GlobalNicheScoutWizard = () => {
 
   const handleComplete = (payload: FinalPayload & { actualCost?: number; actualEta?: number }) => {
     console.log("Niche Scout completed with:", payload);
-    
+
     // Navigate to results page when available, for now log to console
     navigate("/youtube-results");
   };

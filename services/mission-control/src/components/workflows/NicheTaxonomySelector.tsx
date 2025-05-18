@@ -9,11 +9,11 @@ interface NicheTaxonomySelectorProps {
 
 const NicheTaxonomySelector: React.FC<NicheTaxonomySelectorProps> = ({ onSelect, onClose, step }) => {
   const [selectedCategory, setSelectedCategory] = useState('');
-  
+
   // Step indicator based on the current step
   const getStepClass = (stepNum: number) => {
-    return step >= stepNum 
-      ? 'bg-blue-500 text-white' 
+    return step >= stepNum
+      ? 'bg-blue-500 text-white'
       : 'bg-gray-200 text-gray-500';
   };
 
@@ -45,7 +45,7 @@ const NicheTaxonomySelector: React.FC<NicheTaxonomySelectorProps> = ({ onSelect,
             </svg>
           </button>
         </div>
-        
+
         {/* Step indicators */}
         <div className="flex justify-center mb-6">
           <div className="flex items-center">
@@ -56,12 +56,12 @@ const NicheTaxonomySelector: React.FC<NicheTaxonomySelectorProps> = ({ onSelect,
             <div className={`rounded-full w-8 h-8 flex items-center justify-center ${getStepClass(3)}`}>3</div>
           </div>
         </div>
-        
+
         {/* Instructions */}
         <p className="text-gray-600 dark:text-gray-300 mb-4">
           Choose the main category for your niche research
         </p>
-        
+
         {/* Category selection */}
         {!selectedCategory && (
           <div className="grid grid-cols-1 gap-2 max-h-80 overflow-y-auto">
@@ -76,12 +76,12 @@ const NicheTaxonomySelector: React.FC<NicheTaxonomySelectorProps> = ({ onSelect,
             ))}
           </div>
         )}
-        
+
         {/* Subcategory selection */}
         {selectedCategory && (
           <>
             <div className="flex items-center mb-4">
-              <button 
+              <button
                 onClick={() => setSelectedCategory('')}
                 className="text-blue-500 hover:text-blue-700 flex items-center"
               >
@@ -91,11 +91,11 @@ const NicheTaxonomySelector: React.FC<NicheTaxonomySelectorProps> = ({ onSelect,
                 Back to categories
               </button>
             </div>
-            
+
             <h3 className="font-medium mb-3">
               {categories.find(c => c.value === selectedCategory)?.label}
             </h3>
-            
+
             <div className="grid grid-cols-1 gap-2 max-h-80 overflow-y-auto">
               {getSubcategories(selectedCategory).map((subcategory) => (
                 <button

@@ -1,7 +1,7 @@
 # Market Analysis Workflow
 
-**Last Updated:** 2025-05-10  
-**Owner:** Business Strategy Team  
+**Last Updated:** 2025-05-10
+**Owner:** Business Strategy Team
 **Status:** Active
 
 ## Overview
@@ -197,12 +197,12 @@ The workflow implements checkpointing after each major step, allowing recovery f
 ## Performance Considerations
 
 - **Average Runtime:** 45-60 minutes for standard analysis, up to 3 hours for complex industries
-- **Resource Requirements:** 
+- **Resource Requirements:**
   - CPU: 4-8 cores during peak processing
   - Memory: 8-16GB depending on dataset size
   - Storage: 1-5GB temporary storage for data processing
 - **Scalability Notes:** Scales linearly with number of competitors up to approximately 25, beyond which additional optimization is required
-- **Optimization Tips:** 
+- **Optimization Tips:**
   - Pre-cache commonly analyzed industries and competitors
   - Schedule updates during off-peak hours
   - Use incremental data updates rather than full refreshes when appropriate

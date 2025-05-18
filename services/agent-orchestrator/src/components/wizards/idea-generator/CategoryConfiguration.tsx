@@ -45,13 +45,13 @@ export function CategoryConfiguration({
       <h3 className="font-medium">Customize Categories</h3>
       <div className="space-y-2">
         <div className="flex items-center space-x-2">
-          <Input 
-            placeholder="New category" 
+          <Input
+            placeholder="New category"
             value={newCategory}
             onChange={(e) => setNewCategory(e.target.value)}
             className="h-8"
           />
-          <Button 
+          <Button
             size="sm"
             className="h-8"
             onClick={handleAddCategory}
@@ -62,7 +62,7 @@ export function CategoryConfiguration({
           </Button>
         </div>
       </div>
-      
+
       <div className="space-y-2 max-h-48 overflow-y-auto border rounded-md p-2">
         {categories.map((category) => (
           <div
@@ -94,13 +94,13 @@ export function CategoryConfiguration({
         <>
           <h3 className="font-medium">Subcategories for {selectedConfigCategory}</h3>
           <div className="flex items-center space-x-2">
-            <Input 
-              placeholder="New subcategory" 
+            <Input
+              placeholder="New subcategory"
               value={newSubcategory}
               onChange={(e) => setNewSubcategory(e.target.value)}
               className="h-8"
             />
-            <Button 
+            <Button
               size="sm"
               className="h-8"
               onClick={handleAddSubcategory}
@@ -112,7 +112,7 @@ export function CategoryConfiguration({
           </div>
           <div className="space-y-1 max-h-48 overflow-y-auto border rounded-md p-2">
             {subcategories[selectedConfigCategory]?.map((sub) => (
-              <div 
+              <div
                 key={sub}
                 className="flex items-center justify-between p-1.5 text-sm rounded-md hover:bg-accent/50"
               >

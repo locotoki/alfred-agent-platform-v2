@@ -28,17 +28,17 @@ class MarketAnalyzerAgent(BaseAgent):
             version="1.0.0",
             supported_intents=["ANALYZE_MARKET", "MARKET_FORECAST"]
         )
-    
+
     async def process_task(self, envelope: A2AEnvelope) -> Dict[str, Any]:
         if envelope.intent == "ANALYZE_MARKET":
             return await self._analyze_market(envelope)
         elif envelope.intent == "MARKET_FORECAST":
             return await self._forecast_market(envelope)
-        
+
     async def _analyze_market(self, envelope: A2AEnvelope) -> Dict[str, Any]:
         # Implement market analysis logic
         pass
-    
+
     async def _forecast_market(self, envelope: A2AEnvelope) -> Dict[str, Any]:
         # Implement forecasting logic
         pass

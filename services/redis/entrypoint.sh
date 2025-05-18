@@ -41,25 +41,25 @@ WRAPPER_PID=$!
 # Handle cleanup when container is stopped
 cleanup() {
     echo "Stopping redis service and healthcheck..."
-    
+
     # Kill the Redis server process
     if [ -n "${REDIS_PID}" ] && kill -0 ${REDIS_PID} 2>/dev/null; then
         kill -TERM ${REDIS_PID}
         wait ${REDIS_PID} || true
     fi
-    
+
     # Kill the health wrapper process
     if [ -n "${WRAPPER_PID}" ] && kill -0 ${WRAPPER_PID} 2>/dev/null; then
         kill -TERM ${WRAPPER_PID}
         wait ${WRAPPER_PID} || true
     fi
-    
+
     # Kill the healthcheck process
     if [ -n "${HEALTHCHECK_PID}" ] && kill -0 ${HEALTHCHECK_PID} 2>/dev/null; then
         kill -TERM ${HEALTHCHECK_PID}
         wait ${HEALTHCHECK_PID} || true
     fi
-    
+
     exit 0
 }
 

@@ -1,6 +1,6 @@
 /**
  * YouTube Workflows Port Fix
- * 
+ *
  * This script demonstrates the correct approach to connect to the API endpoints
  * when the server is running on port 3005.
  */
@@ -148,11 +148,11 @@ async function testNicheScout() {
     // Generate mock data with an ID
     const mockData = getMockNicheScoutData();
     console.log('Mock Niche-Scout data generated with ID:', mockData._id);
-    
+
     // Use this ID to create a direct URL to the results page
     const resultsUrl = `http://localhost:3005/workflows/niche-scout/results/${mockData._id}?dev_bypass_auth=true`;
     console.log('Direct results URL (Niche-Scout):', resultsUrl);
-    
+
     return mockData;
   } catch (error) {
     console.error('Error:', error);
@@ -165,11 +165,11 @@ async function testSeedToBlueprint() {
     // Generate mock data with an ID for Gaming niche
     const mockData = getMockBlueprintData('Gaming');
     console.log('Mock Blueprint data generated with ID:', mockData._id);
-    
+
     // Use this ID to create a direct URL to the results page
     const resultsUrl = `http://localhost:3005/workflows/seed-to-blueprint/results/${mockData._id}?dev_bypass_auth=true`;
     console.log('Direct results URL (Blueprint):', resultsUrl);
-    
+
     return mockData;
   } catch (error) {
     console.error('Error:', error);
@@ -182,15 +182,15 @@ testSeedToBlueprint().then(data => console.log('Blueprint test completed'));
 
 /**
  * Instructions for fixing the port issue:
- * 
+ *
  * 1. In youtube-workflows.ts:
  *    - Update the baseUrl to explicitly use port 3005 when not in browser:
  *    const baseUrl = typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3005';
- * 
+ *
  * 2. In workflow page components (index.tsx):
  *    - Replace API calls through the service with direct fetch calls using window.location.origin:
  *    const apiUrl = `${window.location.origin}/api/social-intel/niche-scout?query=${encodeURIComponent(query)}`;
- * 
+ *
  * 3. Mock data fallback:
  *    - Ensure all API handlers have robust mock data generation for testing
  */

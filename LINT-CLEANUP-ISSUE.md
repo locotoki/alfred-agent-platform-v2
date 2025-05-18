@@ -7,7 +7,7 @@ During PR #55 development, the CI lint check failed on ~30 files with various li
 
 ## Issues Found
 - `F841`: Local variables assigned but never used
-- `W291`: Trailing whitespace 
+- `W291`: Trailing whitespace
 - `E402`: Module level import not at top of file
 - `E712`: Incorrect boolean comparisons
 - `E722`: Bare except statements

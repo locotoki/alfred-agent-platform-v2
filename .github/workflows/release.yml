@@ -13,12 +13,12 @@ on:
 jobs:
   announce:
     runs-on: ubuntu-latest
-    
+
     steps:
       - uses: actions/checkout@v4
         with:
           ref: ${{ github.event.inputs.ref || github.ref }}
-      
+
       - name: Get version
         id: version
         run: |
@@ -28,15 +28,15 @@ jobs:
             VERSION="${{ github.event.inputs.ref }}"
           fi
           echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
-      
+
       - name: Announce deploy
         env:
           SLACK_RELEASE_WEBHOOK: ${{ secrets.SLACK_RELEASE_WEBHOOK }}
         run: |
           MESSAGE=":rocket: Released ${{ steps.version.outputs.VERSION }}"
-          
+
           if [[ "${{ github.event_name }}" == "release" ]]; then
             MESSAGE="$MESSAGE - ${{ github.event.release.name }}"
           fi
-          
+
           ./scripts/slack/announce-deploy.sh "$MESSAGE"

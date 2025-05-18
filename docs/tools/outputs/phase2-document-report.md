@@ -1,7 +1,7 @@
 # Phase 2 Document Migration Report: A2A Protocol
 
-*Last Updated: 2025-05-10*  
-*Owner: API Team*  
+*Last Updated: 2025-05-10*
+*Owner: API Team*
 *Status: Completed*
 
 ## Document Overview

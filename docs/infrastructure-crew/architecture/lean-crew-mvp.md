@@ -3,10 +3,10 @@
 # 🏗️ Autonomous Infra Platform – Lean-Crew MVP (v0.1)
 
 > Purpose
-> 
-> 
+>
+>
 > Establish a minimal yet production‑ready agent crew capable of designing, building, validating, and deploying cloud infrastructure for a single user or service—while leaving clear seams for future agents and scale‑out.
-> 
+>
 
 ---
 
@@ -169,7 +169,7 @@ graph LR
 ## 7 CI Workflow – Auto‑build Diagrams
 
 - .github/workflows/diagram-autogen.yml
-    
+
     ```yaml
     name: Build & Commit Diagramson:  push:    paths:      - 'docs/diagrams/src/**/*.mmd'      - '.github/workflows/diagram-autogen.yml'  workflow_dispatch:jobs:  render-mermaid:    runs-on: ubuntu-latest    steps:      - uses: actions/checkout@v4        with: {fetch-depth: 0}      - uses: actions/setup-node@v4        with: {node-version: '20'}      - run: npm install -g @mermaid-js/mermaid-cli@10      - name: Lint diagrams        run: |          shopt -s globstar
               for f in docs/diagrams/src/**/*.mmd; do
@@ -183,7 +183,7 @@ graph LR
               done
           - uses: stefanzweifel/git-auto-commit-action@v5        with:          commit_message: "docs(diagrams): auto-update SVGs"          branch: ${{ github.head_ref }}          commit_user_name: diagram-bot          commit_user_email: bot@example.com
     ```
-    
+
 
 ---
 

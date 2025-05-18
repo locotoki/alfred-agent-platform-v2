@@ -14,9 +14,9 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { CategoryConfiguration } from "./idea-generator/CategoryConfiguration";
 import { GeneratorForm } from "./idea-generator/GeneratorForm";
 import { IdeaList } from "./idea-generator/IdeaList";
-import { 
-  DEFAULT_CATEGORIES, 
-  DEFAULT_SUBCATEGORIES, 
+import {
+  DEFAULT_CATEGORIES,
+  DEFAULT_SUBCATEGORIES,
   IDEAS,
   IdeaProps
 } from "./idea-generator/constants";
@@ -148,7 +148,7 @@ export function IdeaGeneratorWizard({ trigger, onAdopt }: IdeaGeneratorWizardPro
 
         <div className="py-4">
           <form>
-            <GeneratorForm 
+            <GeneratorForm
               control={form.control}
               categories={categories}
               currentSubcategories={currentSubcategories}
@@ -162,7 +162,7 @@ export function IdeaGeneratorWizard({ trigger, onAdopt }: IdeaGeneratorWizardPro
         </div>
 
         {generatedIdeas.length > 0 && (
-          <IdeaList 
+          <IdeaList
             ideas={generatedIdeas}
             searchQuery={searchQuery}
             selectedIdea={selectedIdea}
@@ -196,7 +196,7 @@ export function IdeaGeneratorWizard({ trigger, onAdopt }: IdeaGeneratorWizardPro
             {/* Hidden trigger, we control open state programmatically */}
           </PopoverTrigger>
           <PopoverContent className="w-80 p-4" align="end">
-            <CategoryConfiguration 
+            <CategoryConfiguration
               categories={categories}
               subcategories={subcategories}
               onAddCategory={handleAddCategory}

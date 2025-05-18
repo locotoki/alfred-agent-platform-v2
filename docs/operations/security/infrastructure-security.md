@@ -1,7 +1,7 @@
 # Infrastructure Component: Infrastructure Security
 
-*Last Updated: 2025-05-13*  
-*Owner: Security Team*  
+*Last Updated: 2025-05-13*
+*Owner: Security Team*
 *Status: Active*
 
 ## Overview
@@ -19,64 +19,64 @@ graph TB
         ddos["DDoS Protection"]
         cdn["CDN / Edge Security"]
     end
-    
+
     subgraph "Network Security"
         firewall["Network Firewall"]
         netpol["Kubernetes Network Policies"]
         sg["Security Groups"]
     end
-    
+
     subgraph "Authentication & Authorization"
         auth["Auth Service"]
         rbac["RBAC"]
         jwt["JWT Token Service"]
     end
-    
+
     subgraph "Data Security"
         enc_transit["TLS Encryption"]
         enc_rest["Data Encryption at Rest"]
         secrets["Secret Management"]
     end
-    
+
     subgraph "Runtime Security"
         psp["Pod Security Policies"]
         seccomp["Seccomp Profiles"]
         imgscan["Image Scanning"]
     end
-    
+
     subgraph "Monitoring & Response"
         siem["Security Monitoring"]
         ids["Intrusion Detection"]
         audit["Audit Logging"]
     end
-    
+
     subgraph "Compliance"
         pci["PCI Compliance"]
         gdpr["GDPR Controls"]
         hipaa["HIPAA Controls"]
     end
-    
+
     External_User --> waf
     waf --> cdn
     cdn --> firewall
-    
+
     firewall --> netpol
     netpol --> auth
-    
+
     auth --> rbac
     rbac --> jwt
-    
+
     jwt --> enc_transit
     enc_transit --> enc_rest
-    
+
     enc_rest --> psp
     psp --> seccomp
     seccomp --> imgscan
-    
+
     imgscan --> siem
     siem --> ids
     ids --> audit
-    
+
     audit --> pci
     audit --> gdpr
     audit --> hipaa
@@ -808,15 +808,15 @@ data:
     server {
       listen 80;
       server_name _;
-      
+
       # Redirect all HTTP to HTTPS
       return 301 https://$host$request_uri;
     }
-    
+
     server {
       listen 443 ssl;
       server_name _;
-      
+
       # SSL configuration
       ssl_certificate /etc/nginx/ssl/tls.crt;
       ssl_certificate_key /etc/nginx/ssl/tls.key;
@@ -825,7 +825,7 @@ data:
       ssl_ciphers 'ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256';
       ssl_session_cache shared:SSL:10m;
       ssl_session_timeout 10m;
-      
+
       # Security headers
       add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
       add_header X-Content-Type-Options "nosniff" always;
@@ -852,10 +852,10 @@ data:
    ```bash
    # Install cert-manager for certificate management
    kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.11.0/cert-manager.yaml
-   
+
    # Install Istio with security features enabled
    istioctl install --set profile=default --set values.global.mtls.enabled=true --set values.global.proxy.privileged=false
-   
+
    # Install security tools
    kubectl apply -f k8s/security/falco.yaml
    kubectl apply -f k8s/security/trivy-operator.yaml
@@ -865,7 +865,7 @@ data:
    ```bash
    # Apply default deny policy
    kubectl apply -f k8s/security/default-deny-policy.yaml
-   
+
    # Apply service-specific network policies
    kubectl apply -f k8s/security/network-policies/
    ```
@@ -874,10 +874,10 @@ data:
    ```bash
    # Deploy Prometheus with security alerts
    kubectl apply -f k8s/monitoring/prometheus-security.yaml
-   
+
    # Deploy Security Dashboard
    kubectl apply -f k8s/monitoring/security-dashboard.yaml
-   
+
    # Configure alert rules
    kubectl apply -f k8s/monitoring/security-alerts.yaml
    ```
@@ -886,10 +886,10 @@ data:
    ```bash
    # Validate network policies
    kubectl get networkpolicies -n alfred-platform
-   
+
    # Verify mTLS is enabled
    istioctl x authz check agent-core-pod-name.alfred-platform
-   
+
    # Check security context constraints
    kubectl describe pod agent-core -n alfred-platform | grep -A20 "Security Context"
    ```

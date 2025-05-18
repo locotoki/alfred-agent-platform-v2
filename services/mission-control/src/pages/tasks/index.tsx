@@ -91,7 +91,7 @@ export default function Tasks() {
 
   // Filter tasks based on search query and status filter
   const filteredTasks = tasks.filter(task => {
-    const matchesSearch = task.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+    const matchesSearch = task.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
                           task.agent.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesFilter = filterStatus === 'all' || task.status === filterStatus;
     return matchesSearch && matchesFilter;
@@ -163,7 +163,7 @@ export default function Tasks() {
                       <td>{task.agent}</td>
                       <td>
                         <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
-                          ${task.status === 'running' ? 'bg-primary-100 text-primary-800 dark:bg-primary-900 dark:text-primary-200' : 
+                          ${task.status === 'running' ? 'bg-primary-100 text-primary-800 dark:bg-primary-900 dark:text-primary-200' :
                             task.status === 'queued' ? 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200' :
                             task.status === 'completed' ? 'bg-success-100 text-success-800 dark:bg-success-900 dark:text-success-200' :
                             'bg-danger-100 text-danger-800 dark:bg-danger-900 dark:text-danger-200'}`}>
@@ -178,7 +178,7 @@ export default function Tasks() {
                           <div className="w-24 bg-gray-200 dark:bg-gray-700 rounded-full h-2">
                             <div
                               className={`h-2 rounded-full ${
-                                task.status === 'failed' ? 'bg-danger-500' : 
+                                task.status === 'failed' ? 'bg-danger-500' :
                                 task.status === 'completed' ? 'bg-success-500' : 'bg-primary-500'
                               }`}
                               style={{ width: `${task.progress}%` }}
@@ -191,7 +191,7 @@ export default function Tasks() {
                       <td className="text-sm">{formatDate(task.dueAt)}</td>
                       <td>
                         <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
-                          ${task.priority === 'high' ? 'bg-danger-100 text-danger-800 dark:bg-danger-900 dark:text-danger-200' : 
+                          ${task.priority === 'high' ? 'bg-danger-100 text-danger-800 dark:bg-danger-900 dark:text-danger-200' :
                             task.priority === 'medium' ? 'bg-warning-100 text-warning-800 dark:bg-warning-900 dark:text-warning-200' :
                             'bg-success-100 text-success-800 dark:bg-success-900 dark:text-success-200'}`}>
                           {task.priority.toUpperCase()}

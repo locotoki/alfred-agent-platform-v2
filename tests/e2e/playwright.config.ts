@@ -2,8 +2,8 @@ import { PlaywrightTestConfig } from '@playwright/test';
 
 const config: PlaywrightTestConfig = {
   testDir: './tests',
-  timeout: 120000, // Longer timeout for YouTube workflows 
-  fullyParallel: false, 
+  timeout: 120000, // Longer timeout for YouTube workflows
+  fullyParallel: false,
   retries: 1,
   workers: 1, // Sequential execution to avoid conflicts
   reporter: 'html',

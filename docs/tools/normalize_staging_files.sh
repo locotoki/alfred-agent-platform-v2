@@ -86,7 +86,7 @@ if [ -n "$DRY_RUN" ]; then
 else
     echo "Normalizing filenames..."
     python3 "${PYTHON_SCRIPT}" --staging-dir="${STAGING_DIR}" --output-mapping="${MAPPING_FILE}" ${ZONE_OPTION}
-    
+
     # Make a backup of the mapping file
     cp "${MAPPING_FILE}" "${SCRIPT_DIR}/outputs/latest_filename_mapping.csv"
     echo "Latest mapping file also saved to ${SCRIPT_DIR}/outputs/latest_filename_mapping.csv"

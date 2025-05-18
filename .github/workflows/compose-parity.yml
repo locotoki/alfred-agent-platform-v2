@@ -18,12 +18,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Install yq
         run: |
           sudo wget -O /usr/local/bin/yq https://github.com/mikefarah/yq/releases/download/v4.35.1/yq_linux_amd64
           sudo chmod +x /usr/local/bin/yq
-      
+
       - name: Extract services from docker-compose files
         run: |
           echo "=== Services in docker-compose files ==="
@@ -33,13 +33,13 @@ jobs:
           done
           sort -u compose-services.txt -o compose-services.txt
           cat compose-services.txt
-      
+
       - name: Extract services from services.yaml
         run: |
           echo "=== Services in services.yaml ==="
           yq '.[] | .[]' services.yaml | sort -u > canonical-services.txt
           cat canonical-services.txt
-      
+
       - name: Check for missing services
         run: |
           echo "=== Services in compose but not in services.yaml ==="
@@ -51,7 +51,7 @@ jobs:
           else
             echo "✓ All compose services are in services.yaml"
           fi
-          
+
           echo "=== Services in services.yaml but not in compose ==="
           comm -13 compose-services.txt canonical-services.txt > missing-in-compose.txt
           if [ -s missing-in-compose.txt ]; then
@@ -60,7 +60,7 @@ jobs:
           else
             echo "✓ All canonical services are in docker-compose"
           fi
-      
+
       - name: Summary
         if: always()
         run: |

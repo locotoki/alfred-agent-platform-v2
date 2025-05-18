@@ -140,11 +140,11 @@ For proper inter-service communication, ensure:
 To confirm that the Social Intelligence service is properly detected:
 
 1. Access http://localhost:8080/agents/agent-1
-2. The service should show as "Available" 
+2. The service should show as "Available"
 3. The workflows should connect to the real API instead of using mock data
 4. Check the logs for confirmation:
    ```bash
    docker logs agent-orchestrator | grep "\[Health\]"
    ```
-   
+
 You should see: `[Health] Service socialIntel available: true`

@@ -42,7 +42,7 @@ The service previously used:
 
 The service now uses:
 - A standardized Dockerfile based on the template
-- The standard health check binary 
+- The standard health check binary
 - A standardized entrypoint script that starts both the service and health check
 - Consistent health check parameters and metrics export
 

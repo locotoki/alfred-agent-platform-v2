@@ -5,6 +5,10 @@ A scalable, modular AI agent platform built with Docker, Supabase, and Pub/Sub m
 [![Black Code Style](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![Black Format Check](https://github.com/locotoki/alfred-agent-platform-v2/actions/workflows/black-check.yml/badge.svg?branch=main)](https://github.com/locotoki/alfred-agent-platform-v2/actions/workflows/black-check.yml)
 
+## Recent Highlights
+
+- 🛠 OPQ + HNSW support
+
 ## Features
 
 - 🤖 Multiple AI agents with LangChain and LangGraph
@@ -56,16 +60,16 @@ A scalable, modular AI agent platform built with Docker, Supabase, and Pub/Sub m
    ```bash
    # One-command full local stack (all 34 services)
    make up
-   
+
    # Production-like environment
    docker compose up -d
-   
+
    # Development environment with hot-reloading and debugging
    docker compose -f docker-compose.yml -f docker-compose.dev.yml --profile dev up -d
-   
+
    # Include mock services for development
    docker compose -f docker-compose.yml -f docker-compose.dev.yml --profile dev --profile mocks up -d
-   
+
    # Stop the full stack
    make down
    ```

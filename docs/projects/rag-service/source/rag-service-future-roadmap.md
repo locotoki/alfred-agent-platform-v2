@@ -3,10 +3,10 @@
 # RAG Service – Future Roadmap
 
 > Status: Draft (rev 0.1 – 2025‑05‑09)
-> 
-> 
+>
+>
 > This roadmap lists post‑MVP investments that harden, measure, and extend the shared RAG platform.
-> 
+>
 
 | # | Epic | Why it matters | Deliverables | Target window |
 | --- | --- | --- | --- | --- |

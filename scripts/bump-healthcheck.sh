@@ -59,13 +59,13 @@ bump_dockerfiles() {
 
 update_changelog() {
   echo "Updating CHANGELOG.md..."
-  
+
   # Get today's date in YYYY-MM-DD format
   TODAY=$(date +"%Y-%m-%d")
-  
+
   # Prepare the entry to add
   ENTRY="\n## [Unreleased]\n\n### Changed\n- Updated healthcheck binary from v$CURRENT_VERSION to v$NEW_VERSION\n\n"
-  
+
   # Insert after the first occurrence of "# Changelog"
   sed -i "/# Changelog/a\\$ENTRY" CHANGELOG.md
 }

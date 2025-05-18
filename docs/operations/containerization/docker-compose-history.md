@@ -87,7 +87,7 @@ Many services were using a non-existent `healthcheck` binary in their Docker hea
 
 ### Changes Made
 
-1. **Replaced Non-Existent Binary**: 
+1. **Replaced Non-Existent Binary**:
    - HTTP endpoints: Using `curl -f http://localhost:<PORT>/health`
    - TCP endpoints: Using `nc -z localhost <PORT>` or `curl -f telnet://localhost:<PORT>`
    - Redis: Using `curl -f http://localhost:9091/health` (via health wrapper)
@@ -100,7 +100,7 @@ Many services were using a non-existent `healthcheck` binary in their Docker hea
 
 3. **Affected Services**:
    - All core services including Redis, Vector DB, Model Registry
-   - All agent services including Agent Core, Agent RAG, Social Intelligence 
+   - All agent services including Agent Core, Agent RAG, Social Intelligence
    - UI services including UI Chat and Auth UI
 
 ### Implementation Example

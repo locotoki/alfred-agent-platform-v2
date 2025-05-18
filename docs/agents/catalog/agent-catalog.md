@@ -4,7 +4,7 @@ This document provides a comprehensive overview of all agents in the Alfred Agen
 
 ## Migration Progress Summary
 
-As part of the documentation migration initiative, this catalog tracks the migration status of all agent documentation. 
+As part of the documentation migration initiative, this catalog tracks the migration status of all agent documentation.
 
 | Category | Total Docs | Migrated | Status | Completion % |
 |----------|------------|----------|--------|--------------|

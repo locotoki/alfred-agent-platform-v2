@@ -21,7 +21,7 @@ All DB metrics targets are UP:
    - db-realtime: 5,724 requests
    - db-storage: 5,725 requests
 
-2. **DB Connection Errors**: 
+2. **DB Connection Errors**:
    - No connection errors recorded (`db_connection_errors_total` returns empty result)
 
 3. **Health Status**:

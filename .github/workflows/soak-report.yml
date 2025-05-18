@@ -12,7 +12,7 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-        
+
       - name: Generate Soak Report
         run: |
           echo "# 24-Hour Soak Test Report" > soak_report.md
@@ -29,13 +29,13 @@ jobs:
           echo "### Recommendation" >> soak_report.md
           echo "✅ v0.8.1-rc2 passed all soak test criteria" >> soak_report.md
           echo "✅ Ready for promotion to GA" >> soak_report.md
-          
+
       - name: Upload Report
         uses: actions/upload-artifact@v3
         with:
           name: soak-report
           path: soak_report.md
-          
+
       - name: Notify Coordinator
         run: |
           echo "Soak test completed. Report available for review."

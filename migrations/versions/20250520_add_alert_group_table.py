@@ -1,12 +1,12 @@
 """Add alert group table
 
 Revision ID: 20250520_001
-Revises: 
+Revises:
 Create Date: 2025-05-20 00:00:00.000000
 
 """
-from alembic import op
 import sqlalchemy as sa
+from alembic import op
 from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
@@ -30,7 +30,7 @@ def upgrade():
         sa.PrimaryKeyConstraint('id')
     )
     op.create_index(op.f('ix_alert_groups_group_key'), 'alert_groups', ['group_key'], unique=False)
-    
+
     # Add group_id to existing alerts table
     op.add_column('alerts', sa.Column('group_id', postgresql.UUID(as_uuid=True), nullable=True))
     op.create_foreign_key(None, 'alerts', 'alert_groups', ['group_id'], ['id'])

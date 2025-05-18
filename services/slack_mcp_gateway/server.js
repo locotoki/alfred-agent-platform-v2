@@ -90,10 +90,10 @@ slack.command('/alfred', async ({ command, ack, say }) => {
   try {
     // Immediately acknowledge the command
     await ack();
-    
+
     const requestId = randomUUID();
     const timestamp = Date.now();
-    
+
     // Prepare the request for Redis
     const request = {
       id: requestId,
@@ -107,30 +107,30 @@ slack.command('/alfred', async ({ command, ack, say }) => {
       team_id: command.team_id,
       response_url: command.response_url
     };
-    
+
     logger.info('Received Slack command', { requestId, command: command.text });
-    
+
     // Save response metadata for later
     await redis.hSet(`request:${requestId}`, {
       channel_id: command.channel_id,
       user_id: command.user_id,
       timestamp: timestamp.toString()
     });
-    
+
     // Set expiry for metadata (1 hour)
     await redis.expire(`request:${requestId}`, 3600);
-    
+
     // Publish to Redis stream
     await redis.xAdd(config.redis.requestStream, '*', request);
-    
+
     logger.info('Published command to Redis', { requestId, stream: config.redis.requestStream });
-    
+
     // Send initial acknowledgment to user
     await say({
       text: `Processing your request "${command.text}"...`,
       thread_ts: timestamp.toString()
     });
-    
+
   } catch (error) {
     logger.error('Error processing command', { error: error.message, stack: error.stack });
     try {
@@ -157,13 +157,13 @@ async function handleRedisResponses() {
         throw error;
       }
     }
-    
+
     logger.info('Starting Redis response consumer', {
       stream: config.redis.responseStream,
       group: config.redis.consumerGroup,
       consumer: config.redis.consumerName
     });
-    
+
     while (isHealthy) {
       try {
         // Read from stream
@@ -176,7 +176,7 @@ async function handleRedisResponses() {
             COUNT: 10
           }
         );
-        
+
         if (messages && messages.length > 0) {
           for (const stream of messages) {
             for (const message of stream.messages) {
@@ -200,17 +200,17 @@ async function processResponse(message) {
   try {
     const { id: messageId, message: data } = message;
     const requestId = data.request_id;
-    
+
     logger.info('Processing response', { messageId, requestId });
-    
+
     // Get original request metadata
     const metadata = await redis.hGetAll(`request:${requestId}`);
-    
+
     if (!metadata.channel_id) {
       logger.warn('No metadata found for request', { requestId });
       return;
     }
-    
+
     // Send response to Slack
     await slack.client.chat.postMessage({
       channel: metadata.channel_id,
@@ -218,16 +218,16 @@ async function processResponse(message) {
       thread_ts: metadata.timestamp,
       blocks: data.blocks ? JSON.parse(data.blocks) : undefined
     });
-    
+
     // Acknowledge message
     await redisSubscriber.xAck(
       config.redis.responseStream,
       config.redis.consumerGroup,
       messageId
     );
-    
+
     logger.info('Response sent to Slack', { requestId, channel: metadata.channel_id });
-    
+
   } catch (error) {
     logger.error('Error processing response', { error: error.message, messageId: message.id });
   }
@@ -237,18 +237,18 @@ async function processResponse(message) {
 async function shutdown(signal) {
   logger.info(`Received ${signal}, shutting down gracefully`);
   isHealthy = false;
-  
+
   try {
     // Stop accepting new connections
     healthServer.close();
-    
+
     // Disconnect from Redis
     await redis.quit();
     await redisSubscriber.quit();
-    
+
     // Stop Slack app
     await slack.stop();
-    
+
     logger.info('Shutdown complete');
     process.exit(0);
   } catch (error) {
@@ -264,25 +264,25 @@ async function start() {
     await redis.connect();
     await redisSubscriber.connect();
     logger.info('Connected to Redis');
-    
+
     // Start Slack app
     await slack.start();
     logger.info('Connected to Slack');
-    
+
     // Start health check server
     const healthServer = healthApp.listen(config.server.port, () => {
       logger.info(`Health check server listening on port ${config.server.port}`);
     });
-    
+
     // Start Redis response handler
     handleRedisResponses();
-    
+
     // Register shutdown handlers
     process.on('SIGTERM', () => shutdown('SIGTERM'));
     process.on('SIGINT', () => shutdown('SIGINT'));
-    
+
     logger.info('Slack MCP Gateway started successfully');
-    
+
   } catch (error) {
     logger.error('Failed to start service', { error: error.message });
     process.exit(1);

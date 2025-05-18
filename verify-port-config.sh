@@ -24,14 +24,14 @@ echo -e "${BLUE}Checking package.json port configuration...${NC}"
 if [ -f "$MISSION_CONTROL/package.json" ]; then
   DEV_PORT=$(grep -o '"dev": "[^"]*"' "$MISSION_CONTROL/package.json" | grep -o 'next dev -p [0-9]*' | grep -o '[0-9]*')
   START_PORT=$(grep -o '"start": "[^"]*"' "$MISSION_CONTROL/package.json" | grep -o 'next start -p [0-9]*' | grep -o '[0-9]*')
-  
+
   if [ "$DEV_PORT" == "3007" ]; then
     echo -e "${GREEN}✓ Dev port correctly set to 3007 in package.json${NC}"
   else
     echo -e "${RED}✗ Dev port NOT set to 3007 in package.json! Found: $DEV_PORT${NC}"
     echo -e "${YELLOW}  - Fix: Change 'dev' script to \"next dev -p 3007\"${NC}"
   fi
-  
+
   if [ "$START_PORT" == "3007" ]; then
     echo -e "${GREEN}✓ Start port correctly set to 3007 in package.json${NC}"
   else
@@ -54,7 +54,7 @@ if [ -f "$MISSION_CONTROL/.env.local" ]; then
     echo -e "${YELLOW}  - Found: $INTEL_URL${NC}"
     echo -e "${YELLOW}  - Fix: Set SOCIAL_INTEL_URL=http://localhost:9000${NC}"
   fi
-  
+
   if grep -q "NEXT_PUBLIC_SERVER_URL=http://localhost:3007" "$MISSION_CONTROL/.env.local"; then
     echo -e "${GREEN}✓ NEXT_PUBLIC_SERVER_URL correctly set to http://localhost:3007${NC}"
   else
@@ -83,7 +83,7 @@ if [ -f "$SERVICE_FILE" ]; then
     echo -e "${YELLOW}  - Fix: Implement dynamic URL detection:${NC}"
     echo -e "${YELLOW}    const baseUrl = typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3007';${NC}"
   fi
-  
+
   if grep -q "baseUrl = typeof window !== 'undefined'" "$SERVICE_FILE"; then
     echo -e "${GREEN}✓ Fallback URL defined for non-browser environments${NC}"
   else
@@ -103,7 +103,7 @@ MC_RUNNING=$(ps aux | grep "next dev" | grep -v grep | wc -l)
 if [ "$MC_RUNNING" -gt 0 ]; then
   MC_PORT=$(ps aux | grep "next dev" | grep -v grep | grep -o -- "-p [0-9]*" | grep -o "[0-9]*")
   echo -e "${GREEN}✓ Mission Control is running on port $MC_PORT${NC}"
-  
+
   if [ "$MC_PORT" != "3007" ]; then
     echo -e "${YELLOW}⚠ Mission Control is running on port $MC_PORT instead of 3007${NC}"
   fi
@@ -146,7 +146,7 @@ if command -v lsof &> /dev/null; then
   else
     echo -e "${GREEN}✓ Port 3007 is available${NC}"
   fi
-  
+
   PORT_9000_USAGE=$(lsof -i :9000 | wc -l)
   if [ "$PORT_9000_USAGE" -gt 0 ]; then
     if [ "$SOCIAL_INTEL_RUNNING" -gt 0 ]; then

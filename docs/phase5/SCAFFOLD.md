@@ -6,7 +6,7 @@ This document outlines the scaffold for Phase 5 implementation, which will focus
 
 ### Database Services
 - db-api
-- db-admin 
+- db-admin
 - db-realtime
 
 ### Infrastructure Services
@@ -74,7 +74,7 @@ Implement alert rules for `service_health` in Prometheus:
 ## Timeline
 
 1. Week 1: Fix and test database services
-2. Week 2: Fix and test infrastructure services  
+2. Week 2: Fix and test infrastructure services
 3. Week 3: Fix and test monitoring services
 4. Week 4: Clean up legacy health checks and implement alert rules
 

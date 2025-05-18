@@ -15,13 +15,13 @@ WORKFLOW_FILES=(
 for file in "${WORKFLOW_FILES[@]}"; do
   if [ -f "$file" ]; then
     echo "Updating $file..."
-    
+
     # Update flake8 to use our config file
     sed -i 's/flake8 \./flake8 --config=.flake8 ./' "$file"
-    
+
     # Update mypy to use our config file
     sed -i 's/mypy libs agents tests/mypy --config-file=mypy.ini libs\/agent_core\/health/' "$file"
-    
+
     # Update pytest to use our specific config
     sed -i 's/pytest -v tests\/unit/pytest -v -c pytest-ci.ini tests\/unit\/test_health_module.py/' "$file"
   else

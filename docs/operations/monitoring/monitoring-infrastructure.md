@@ -1,7 +1,7 @@
 # Monitoring Infrastructure
 
-*Last Updated: 2025-05-13*  
-*Owner: Infrastructure Team*  
+*Last Updated: 2025-05-13*
+*Owner: Infrastructure Team*
 *Status: Active*
 
 ## Overview
@@ -967,40 +967,40 @@ Storage requirements:
    global:
      scrape_interval: 15s
      evaluation_interval: 15s
-   
+
    rule_files:
      - /etc/prometheus/rules/*.yml
-   
+
    alerting:
      alertmanagers:
        - static_configs:
            - targets:
                - alertmanager:9093
-   
+
    scrape_configs:
      # ... scrape configs as shown above ...
    EOF
-   
+
    # Create Alert Manager configuration
    cat > monitoring/alertmanager/alertmanager.yml << EOF
    global:
      resolve_timeout: 5m
      slack_api_url: 'https://hooks.slack.com/services/TXXXXX/BXXXXX/XXXXXXXXXX'
-   
+
    # ... alert manager config as shown above ...
    EOF
-   
+
    # Create Loki configuration
    cat > monitoring/loki/loki-config.yaml << EOF
    auth_enabled: false
-   
+
    # ... loki config as shown above ...
    EOF
-   
+
    # Create Grafana dashboard provisioning
    cat > monitoring/grafana/provisioning/dashboards/dashboards.yaml << EOF
    apiVersion: 1
-   
+
    providers:
      - name: 'default'
        orgId: 1
@@ -1013,11 +1013,11 @@ Storage requirements:
          path: /var/lib/grafana/dashboards
          foldersFromFilesStructure: true
    EOF
-   
+
    # Create Grafana datasource provisioning
    cat > monitoring/grafana/provisioning/datasources/datasources.yaml << EOF
    apiVersion: 1
-   
+
    datasources:
      - name: Prometheus
        type: prometheus
@@ -1025,7 +1025,7 @@ Storage requirements:
        url: http://monitoring-metrics:9090
        isDefault: true
        editable: false
-   
+
      - name: Loki
        type: loki
        access: proxy

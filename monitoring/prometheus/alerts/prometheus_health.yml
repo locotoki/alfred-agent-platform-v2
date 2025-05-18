@@ -10,7 +10,7 @@ groups:
     annotations:
       summary: "Prometheus instance is down"
       description: "Prometheus health check is reporting ERROR status: {{ $labels.instance }}"
-      
+
   - alert: PrometheusDegraded
     expr: prometheus_health_status == 1
     for: 5m
@@ -20,7 +20,7 @@ groups:
     annotations:
       summary: "Prometheus instance is degraded"
       description: "Prometheus health check is reporting DEGRADED status (some targets are down): {{ $labels.instance }}"
-      
+
   - alert: PrometheusTargetsDown
     expr: up == 0
     for: 2m
@@ -30,7 +30,7 @@ groups:
     annotations:
       summary: "Target is down in Prometheus"
       description: "Target {{ $labels.instance }} of job {{ $labels.job }} is down"
-      
+
   - alert: PrometheusScrapeFailures
     expr: increase(prometheus_target_scrapes_sample_out_of_order_total[5m]) > 0
     for: 5m
@@ -40,7 +40,7 @@ groups:
     annotations:
       summary: "Prometheus is experiencing scrape failures"
       description: "Prometheus is experiencing scrape failures for {{ $labels.instance }} of job {{ $labels.job }}"
-      
+
   - alert: PrometheusRuleEvaluationFailures
     expr: increase(prometheus_rule_evaluation_failures_total[5m]) > 0
     for: 5m

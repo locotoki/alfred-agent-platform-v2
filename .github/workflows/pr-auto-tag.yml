@@ -12,14 +12,14 @@ jobs:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
-      
+
       - name: Validate CHANGELOG.md format
         id: check-changelog
         run: |
           # Check if CHANGELOG.md exists
           if [ -f "CHANGELOG.md" ]; then
             echo "CHANGELOG.md exists, checking format"
-            
+
             # Check if there's an Unreleased section
             if grep -q "## \[Unreleased\]" CHANGELOG.md; then
               echo "CHANGELOG.md contains an Unreleased section, check passes"

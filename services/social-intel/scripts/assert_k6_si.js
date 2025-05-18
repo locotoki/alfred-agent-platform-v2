@@ -29,12 +29,12 @@ function analyzeResults() {
 
     const results = JSON.parse(fs.readFileSync(resultsPath, 'utf8'));
     const metrics = results.metrics;
-    
+
     console.log('📊 Social-Intel Load Test Results Analysis');
     console.log('=========================================');
-    
+
     let failures = 0;
-    
+
     // Analyze each threshold
     Object.entries(THRESHOLDS).forEach(([metricName, threshold]) => {
       // Skip if metric not found in results (rare but possible if test failed early)
@@ -42,41 +42,41 @@ function analyzeResults() {
         console.log(`⚠️ Metric ${metricName} not found in results`);
         return;
       }
-      
+
       const metricData = metrics[metricName];
-      
+
       // Check error rate
       if (metricName === 'error_rate') {
         const rate = metricData.values.rate;
         const passed = rate <= threshold.max;
-        
+
         console.log(`${passed ? '✅' : '❌'} ${threshold.description}`);
         console.log(`   Actual: ${(rate * 100).toFixed(2)}%, Expected: <${threshold.max * 100}%\n`);
-        
+
         if (!passed) failures++;
       }
       // Check percentile thresholds (p95)
       else if (threshold.p95) {
         const p95Value = metricData.values['p(95)'];
         const passed = p95Value <= threshold.p95;
-        
+
         console.log(`${passed ? '✅' : '❌'} ${threshold.description}`);
         console.log(`   Actual p95: ${p95Value.toFixed(2)}ms, Expected: <${threshold.p95}ms\n`);
-        
+
         if (!passed) failures++;
       }
       // Check max thresholds
       if (threshold.max && metricName !== 'error_rate') {
         const maxValue = metricData.values.max;
         const passed = maxValue <= threshold.max;
-        
+
         console.log(`${passed ? '✅' : '❌'} ${threshold.description} (max)`);
         console.log(`   Actual max: ${maxValue.toFixed(2)}ms, Expected: <${threshold.max}ms\n`);
-        
+
         if (!passed) failures++;
       }
     });
-    
+
     // Provide summary and exit with appropriate code
     console.log('=========================================');
     if (failures > 0) {
@@ -87,7 +87,7 @@ function analyzeResults() {
       console.log('✅ All performance thresholds passed!');
       process.exit(0);
     }
-    
+
   } catch (error) {
     console.error('❌ Error analyzing results:', error);
     process.exit(1);

@@ -70,7 +70,7 @@ import { useTheme } from "@/components/theme/ThemeProvider";
 
 export function ThemeAwareComponent() {
   const { theme, setTheme } = useTheme();
-  
+
   return (
     <div>
       <p>Current theme: {theme}</p>

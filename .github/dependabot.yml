@@ -12,7 +12,7 @@ updates:
       - "dependencies"
     allow:
       - dependency-name: "alfred/healthcheck"
-    
+
   # Python dependency updates
   - package-ecosystem: "pip"
     directory: "/"
@@ -30,8 +30,8 @@ updates:
       - dependency-name: "flake8"
       - dependency-name: "mypy"
       - dependency-name: "pytest"
-      
-  # GitHub Actions dependency updates 
+
+  # GitHub Actions dependency updates
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:

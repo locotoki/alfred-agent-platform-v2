@@ -9,10 +9,10 @@ try {
   useSupabaseClient = supabaseAuth.useSupabaseClient;
 } catch (error) {
   console.warn('Supabase auth helpers not available, using mock');
-  useSupabaseClient = () => ({ 
-    auth: { 
+  useSupabaseClient = () => ({
+    auth: {
       signInWithPassword: () => Promise.resolve({ error: null })
-    } 
+    }
   });
 }
 
@@ -142,7 +142,7 @@ export default function SignIn() {
                 {loading ? 'Signing in...' : 'Sign in'}
               </button>
             </div>
-            
+
             {process.env.NODE_ENV === 'development' && (
               <div className="mt-4 text-center text-sm text-gray-500 dark:text-gray-400">
                 Development mode: Click Sign in or wait for auto-redirect

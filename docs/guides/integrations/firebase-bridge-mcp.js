@@ -1,10 +1,10 @@
 /**
  * Firebase Bridge MCP Server
- * 
+ *
  * This MCP server connects Claude Code to a Firebase Realtime Database
  * to enable communication with ChatGPT or other AI systems.
- * 
- * Usage: 
+ *
+ * Usage:
  *   claude mcp add firebase-bridge -- node firebase-bridge-mcp.js
  */
 

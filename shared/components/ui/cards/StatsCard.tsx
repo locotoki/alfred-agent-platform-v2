@@ -26,14 +26,14 @@ export interface StatsCardProps {
 
 /**
  * StatsCard Component
- * 
+ *
  * Displays a statistic with optional icon and trend information
- * 
+ *
  * @example
  * ```tsx
- * <StatsCard 
- *   title="Active Tasks" 
- *   value={127} 
+ * <StatsCard
+ *   title="Active Tasks"
+ *   value={127}
  *   icon={<TaskIcon />}
  *   trend={{ value: 12, isPositive: true }}
  *   colorClass="bg-blue-500"
@@ -66,12 +66,12 @@ export const StatsCard: React.FC<StatsCardProps> = ({
             </div>
           )}
         </div>
-        
+
         {trend && (
           <div className="mt-4">
             <div className={`flex items-center text-sm ${
-              trend.isPositive 
-                ? 'text-green-500 dark:text-green-400' 
+              trend.isPositive
+                ? 'text-green-500 dark:text-green-400'
                 : 'text-red-500 dark:text-red-400'
             }`}>
               <span className="font-medium">

@@ -15,18 +15,18 @@ docker exec financial-tax python3.11 -m pytest /app/tests/unit/agents/financial_
 # Check if tests passed
 if [ $? -eq 0 ]; then
     echo -e "${GREEN}✓ Unit tests passed${NC}"
-    
+
     # Run integration tests
     echo -e "${YELLOW}Running Integration Tests${NC}"
     docker exec financial-tax python3.11 -m pytest /app/tests/integration/agents/financial_tax/ -v -m integration
-    
+
     if [ $? -eq 0 ]; then
         echo -e "${GREEN}✓ Integration tests passed${NC}"
-        
+
         # Display coverage report
         echo -e "${YELLOW}Coverage Report${NC}"
         docker exec financial-tax python3.11 -m coverage report --show-missing
-        
+
         # Generate HTML report
         docker exec financial-tax python3.11 -m coverage html -d /app/coverage_html
         echo -e "${GREEN}HTML coverage report generated at coverage_html/${NC}"

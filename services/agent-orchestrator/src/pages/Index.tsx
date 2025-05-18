@@ -4,12 +4,12 @@ import { useEffect } from "react";
 
 const Index = () => {
   const navigate = useNavigate();
-  
+
   // Redirect to dashboard
   useEffect(() => {
     navigate("/");
   }, [navigate]);
-  
+
   return null;
 };
 

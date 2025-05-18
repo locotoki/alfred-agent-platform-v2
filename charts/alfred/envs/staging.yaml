@@ -6,7 +6,7 @@ global:
 metrics:
   enabled: true
 
-# Database Metrics service configuration 
+# Database Metrics service configuration
 dbMetrics:
   image:
     repository: db-metrics

@@ -20,7 +20,7 @@ gh pr create -t "Sprint 4: ML Enhancements & SLO [Umbrella]" \
 
 Tracks all Sprint 4 features:
 - ML model retraining pipeline
-- Dynamic noise thresholds  
+- Dynamic noise thresholds
 - HuggingFace model integration
 - SLO dashboard implementation
 

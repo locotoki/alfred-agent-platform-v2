@@ -52,7 +52,7 @@ You can run the tests using the following commands:
 # Run all tests
 npm test
 
-# Run only component tests 
+# Run only component tests
 npm run test:components
 
 # Run tests in watch mode

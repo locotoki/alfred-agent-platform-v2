@@ -68,18 +68,18 @@ scrape_configs:
   - job_name: 'postgres-exporter'
     static_configs:
       - targets: ['postgres-exporter:9187']
-      
+
   # Service health metrics from v0.4.0 healthcheck binary
   - job_name: 'service_health'
     static_configs:
       - targets: [
-          'alfred-bot:9091', 
-          'social-intel:9091', 
-          'financial-tax:9091', 
-          'legal-compliance:9091', 
+          'alfred-bot:9091',
+          'social-intel:9091',
+          'financial-tax:9091',
+          'legal-compliance:9091',
           'rag-service:9091',
           'mission-control:9091',
-          'agent-rag:9091', 
+          'agent-rag:9091',
           'agent-atlas:9091',
           'agent-core:9091',
           'agent-financial:9091',

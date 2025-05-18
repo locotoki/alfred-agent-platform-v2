@@ -16,10 +16,10 @@ echo "Found $DOCKERFILE_COUNT Dockerfiles to update"
 # Update each Dockerfile
 for DOCKERFILE in $LEGACY_DOCKERFILES; do
   echo "Updating $DOCKERFILE..."
-  
+
   # Upgrade healthcheck version to 0.4.0
   sed -i 's/healthcheck:0\.[0-3]\.[0-9]\+/healthcheck:0.4.0/' "$DOCKERFILE"
-  
+
   # Ensure EXPOSE 9091 is present for metrics
   if ! grep -q 'EXPOSE 9091' "$DOCKERFILE"; then
     # Find the last EXPOSE line and add our metrics port after it
@@ -35,14 +35,14 @@ for DOCKERFILE in $LEGACY_DOCKERFILES; do
       fi
     fi
   fi
-  
+
   # Update healthcheck command to export Prometheus metrics if needed
   if grep -q 'CMD \["healthcheck"' "$DOCKERFILE" && ! grep -q 'healthcheck.*export-prom' "$DOCKERFILE"; then
     sed -i 's|CMD \["healthcheck"\(.*\)]|CMD ["healthcheck", "--export-prom", ":9091"\1]|' "$DOCKERFILE"
   elif grep -q 'ENTRYPOINT \["healthcheck"' "$DOCKERFILE" && ! grep -q 'healthcheck.*export-prom' "$DOCKERFILE"; then
     sed -i 's|ENTRYPOINT \["healthcheck"\(.*\)]|ENTRYPOINT ["healthcheck", "--export-prom", ":9091"\1]|' "$DOCKERFILE"
   fi
-  
+
   echo "✅ Updated $DOCKERFILE"
 done
 

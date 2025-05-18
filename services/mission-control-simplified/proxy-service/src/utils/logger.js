@@ -1,6 +1,6 @@
 /**
  * Logging utility for the proxy service
- * 
+ *
  * Creates a standardized logger with consistent formatting and log levels.
  */
 

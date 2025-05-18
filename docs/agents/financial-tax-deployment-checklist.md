@@ -191,5 +191,5 @@ kubectl apply -f k8s/financial-tax/production/config-v1.yaml
 - [ ] Platform Lead: _______________
 - [ ] Product Owner: _______________
 
-Date: _______________ 
+Date: _______________
 Version: ______________

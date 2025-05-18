@@ -37,13 +37,13 @@ export default function NicheScout() {
 
   // Navigation handlers -------------------------------------------------------
   const goToStep = (newStep: 1 | 2 | 3) => setStep(newStep);
-  
+
   const handleNext = () => {
     if (step < 3) {
       setStep((prev) => (prev + 1) as 1 | 2 | 3);
     }
   };
-  
+
   const handleBack = () => {
     if (step > 1) {
       setStep((prev) => (prev - 1) as 1 | 2 | 3);
@@ -53,12 +53,12 @@ export default function NicheScout() {
   // Run workflow handler ------------------------------------------------------
   const handleRunWorkflow = async () => {
     setIsLoading(true);
-    
+
     try {
       // Here you would make the API call to trigger the workflow
       // For now, we'll simulate the API call with a timeout
       await new Promise(resolve => setTimeout(resolve, 2000));
-      
+
       // Navigate to results page (would normally use router.push)
       alert('Workflow completed! Redirecting to results page...');
     } catch (error) {
@@ -74,11 +74,11 @@ export default function NicheScout() {
     <MainLayout title="Mission Control">
       <div className="p-6">
         <h1 className="text-2xl font-bold mb-6">Niche-Scout Workflow</h1>
-        
+
         {/* Progress Steps */}
         <div className="flex justify-between items-center mb-10 relative">
           <div className="absolute top-1/2 left-0 right-0 h-0.5 bg-gray-200 -translate-y-1/2 z-0"></div>
-          
+
           <div className="flex flex-col items-center relative z-10" onClick={() => goToStep(1)}>
             <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
               step === 1 ? 'bg-blue-500 text-white' : 'bg-white text-gray-500 border border-gray-300'
@@ -87,7 +87,7 @@ export default function NicheScout() {
             </div>
             <span className={`mt-2 text-sm ${step === 1 ? 'text-blue-500' : 'text-gray-500'}`}>Define Niche</span>
           </div>
-          
+
           <div className="flex flex-col items-center relative z-10" onClick={() => goToStep(2)}>
             <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
               step === 2 ? 'bg-blue-500 text-white' : 'bg-white text-gray-500 border border-gray-300'
@@ -96,7 +96,7 @@ export default function NicheScout() {
             </div>
             <span className={`mt-2 text-sm ${step === 2 ? 'text-blue-500' : 'text-gray-500'}`}>Research Parameters</span>
           </div>
-          
+
           <div className="flex flex-col items-center relative z-10" onClick={() => goToStep(3)}>
             <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
               step === 3 ? 'bg-blue-500 text-white' : 'bg-white text-gray-500 border border-gray-300'
@@ -106,12 +106,12 @@ export default function NicheScout() {
             <span className={`mt-2 text-sm ${step === 3 ? 'text-blue-500' : 'text-gray-500'}`}>Review & Run</span>
           </div>
         </div>
-        
+
         {/* Step 1: Define Niche */}
         {step === 1 && (
           <div className="bg-white p-6 rounded-lg shadow-sm">
             <h2 className="text-xl font-bold mb-6">Define Your Niche</h2>
-            
+
             <div className="mb-6">
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 What niche are you interested in exploring?
@@ -127,7 +127,7 @@ export default function NicheScout() {
                 Enter keywords that describe your content area of interest
               </p>
             </div>
-            
+
             <div className="mb-6">
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Select a Primary Category
@@ -143,11 +143,11 @@ export default function NicheScout() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
                   </svg>
                 </button>
-                
+
                 {showDropdown && (
                   <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto">
                     <ul>
-                      <li 
+                      <li
                         className="px-4 py-2 hover:bg-blue-50 cursor-pointer"
                         onClick={() => {
                           updateForm("category", "");
@@ -175,7 +175,7 @@ export default function NicheScout() {
                 )}
               </div>
             </div>
-            
+
             {form.category && (
               <div className="mb-6">
                 <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -198,7 +198,7 @@ export default function NicheScout() {
                 </div>
               </div>
             )}
-            
+
             <div className="flex justify-end">
               <button
                 onClick={handleNext}
@@ -209,12 +209,12 @@ export default function NicheScout() {
             </div>
           </div>
         )}
-        
+
         {/* Step 2: Research Parameters */}
         {step === 2 && (
           <div className="bg-white p-6 rounded-lg shadow-sm">
             <h2 className="text-xl font-bold mb-6">Research Parameters</h2>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -234,7 +234,7 @@ export default function NicheScout() {
                   Select how far back to analyze trends
                 </p>
               </div>
-              
+
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Target Demographics
@@ -256,7 +256,7 @@ export default function NicheScout() {
                 </p>
               </div>
             </div>
-            
+
             <div className="mb-6">
               <button
                 onClick={() => setShowAdvanced(!showAdvanced)}
@@ -265,7 +265,7 @@ export default function NicheScout() {
                 {showAdvanced ? '- Hide Advanced Options' : '+ Advanced Options'}
               </button>
             </div>
-            
+
             {showAdvanced && (
               <div className="border border-gray-200 rounded-md p-4 mb-6">
                 <h3 className="text-lg font-medium mb-4">Advanced Filters</h3>
@@ -303,7 +303,7 @@ export default function NicheScout() {
                 </div>
               </div>
             )}
-            
+
             <div className="flex justify-between">
               <button
                 onClick={handleBack}
@@ -320,15 +320,15 @@ export default function NicheScout() {
             </div>
           </div>
         )}
-        
+
         {/* Step 3: Review & Run */}
         {step === 3 && (
           <div className="bg-white p-6 rounded-lg shadow-sm">
             <h2 className="text-xl font-bold mb-6">Review & Run</h2>
-            
+
             <div className="bg-gray-50 p-4 rounded-lg mb-6">
               <h3 className="text-lg font-medium mb-4">Niche Scout Summary</h3>
-              
+
               <div className="space-y-3">
                 <div className="grid grid-cols-3 gap-2">
                   <span className="font-medium">Niche Query:</span>
@@ -368,10 +368,10 @@ export default function NicheScout() {
                 )}
               </div>
             </div>
-            
+
             <div className="bg-blue-50 p-4 rounded-lg mb-6">
               <h3 className="text-lg font-medium text-blue-800 mb-4">What You'll Get</h3>
-              
+
               <ul className="space-y-2 text-blue-700 ml-5 list-disc">
                 <li>Top performing niches based on views and engagement</li>
                 <li>Growth rate analysis for trending content areas</li>
@@ -391,7 +391,7 @@ export default function NicheScout() {
                 </div>
               </div>
             </div>
-            
+
             <div className="flex justify-between">
               <button
                 onClick={handleBack}

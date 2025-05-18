@@ -68,7 +68,7 @@ export default function Agents() {
 
   // Filter agents based on search query and status filter
   const filteredAgents = agents.filter(agent => {
-    const matchesSearch = agent.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+    const matchesSearch = agent.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
                           agent.description.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesFilter = filterStatus === 'all' || agent.status === filterStatus;
     return matchesSearch && matchesFilter;
@@ -137,7 +137,7 @@ export default function Agents() {
                       <td className="text-sm text-gray-600 dark:text-gray-400">{agent.description}</td>
                       <td>
                         <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
-                          ${agent.status === 'active' ? 'bg-success-100 text-success-800 dark:bg-success-900 dark:text-success-200' : 
+                          ${agent.status === 'active' ? 'bg-success-100 text-success-800 dark:bg-success-900 dark:text-success-200' :
                             agent.status === 'idle' ? 'bg-warning-100 text-warning-800 dark:bg-warning-900 dark:text-warning-200' :
                             'bg-danger-100 text-danger-800 dark:bg-danger-900 dark:text-danger-200'}`}>
                           {agent.status.toUpperCase()}
@@ -149,7 +149,7 @@ export default function Agents() {
                           <div className="w-24 bg-gray-200 dark:bg-gray-700 rounded-full h-2">
                             <div
                               className={`h-2 rounded-full ${
-                                agent.cpu > 80 ? 'bg-danger-500' : 
+                                agent.cpu > 80 ? 'bg-danger-500' :
                                 agent.cpu > 50 ? 'bg-warning-500' : 'bg-success-500'
                               }`}
                               style={{ width: `${agent.cpu}%` }}

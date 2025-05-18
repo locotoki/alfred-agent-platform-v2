@@ -7,7 +7,7 @@ import { BlueprintResult } from '../../../../types/youtube-workflows';
 export default function SeedToBlueprintResults() {
   const router = useRouter();
   const { id } = router.query;
-  
+
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [results, setResults] = useState<BlueprintResult | null>(null);
@@ -16,20 +16,20 @@ export default function SeedToBlueprintResults() {
   useEffect(() => {
     async function fetchResults() {
       if (!id) return;
-      
+
       try {
         setIsLoading(true);
         console.log(`Fetching Seed-to-Blueprint results for ID: ${id}`);
-        
+
         // Introduce a small delay for UX so loading state is visible
         await new Promise(resolve => setTimeout(resolve, 1000));
-        
+
         const data = await getWorkflowResult(id as string, 'seed-to-blueprint');
-        
+
         if (!data) {
           throw new Error('No data returned from the server');
         }
-        
+
         console.log(`Successfully fetched Seed-to-Blueprint results for ID: ${id}`);
         setResults(data as BlueprintResult);
       } catch (err) {
@@ -51,7 +51,7 @@ export default function SeedToBlueprintResults() {
             <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
               CHANNEL BLUEPRINT
             </h1>
-            <button 
+            <button
               onClick={() => router.push('/workflows/seed-to-blueprint')}
               className="btn-secondary"
             >
@@ -71,7 +71,7 @@ export default function SeedToBlueprintResults() {
           <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-800 dark:text-red-200 p-4 rounded-md">
             <h3 className="font-bold">Error</h3>
             <p>{error}</p>
-            <button 
+            <button
               onClick={() => router.push('/workflows/seed-to-blueprint')}
               className="mt-2 text-red-600 dark:text-red-400 underline"
             >
@@ -217,8 +217,8 @@ export default function SeedToBlueprintResults() {
                       {results.blueprint.coppa_checklist.map((item, index) => (
                         <div key={index} className="flex items-start">
                           <div className={`flex-shrink-0 h-5 w-5 rounded-full flex items-center justify-center mt-0.5 ${
-                            item.status === 'Required' 
-                              ? 'bg-red-100 text-red-500 dark:bg-red-900/30 dark:text-red-400' 
+                            item.status === 'Required'
+                              ? 'bg-red-100 text-red-500 dark:bg-red-900/30 dark:text-red-400'
                               : 'bg-yellow-100 text-yellow-500 dark:bg-yellow-900/30 dark:text-yellow-400'
                           }`}>
                             {item.status === 'Required' ? '!' : '?'}
@@ -288,7 +288,7 @@ export default function SeedToBlueprintResults() {
                             <td>{gap.keyword}</td>
                             <td>{(gap.seed_coverage * 100).toFixed(0)}%</td>
                             <td>
-                              {Object.entries(gap.competitor_coverage).length > 0 
+                              {Object.entries(gap.competitor_coverage).length > 0
                                 ? Object.entries(gap.competitor_coverage)
                                   .filter(([_, coverage]) => coverage > 0)
                                   .map(([channel, _]) => channel)

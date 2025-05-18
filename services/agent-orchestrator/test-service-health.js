@@ -2,7 +2,7 @@
 
 async function testHealthCheck() {
   console.log('Testing service health check...');
-  
+
   // Endpoints to try
   const endpoints = [
     'http://localhost:9000/health/',
@@ -10,11 +10,11 @@ async function testHealthCheck() {
     'http://social-intel:9000/health/',
     'http://social-intel:9000/health'
   ];
-  
+
   for (const endpoint of endpoints) {
     try {
       console.log(`Testing endpoint: ${endpoint}`);
-      
+
       const response = await fetch(endpoint, {
         method: 'GET',
         headers: {
@@ -22,14 +22,14 @@ async function testHealthCheck() {
         },
         signal: AbortSignal.timeout(5000)
       });
-      
+
       console.log(`Response status for ${endpoint}: ${response.status}`);
-      
+
       // Handle redirects
       if (response.status >= 300 && response.status < 400 && response.headers.has('location')) {
         const redirectUrl = response.headers.get('location');
         console.log(`Following redirect to: ${redirectUrl}`);
-        
+
         const redirectResponse = await fetch(redirectUrl, {
           method: 'GET',
           headers: {
@@ -37,9 +37,9 @@ async function testHealthCheck() {
           },
           signal: AbortSignal.timeout(5000)
         });
-        
+
         console.log(`Redirect response status: ${redirectResponse.status}`);
-        
+
         if (redirectResponse.ok) {
           const data = await redirectResponse.json();
           console.log(`Service is AVAILABLE (via redirect) at ${endpoint}`);
@@ -47,7 +47,7 @@ async function testHealthCheck() {
           return true;
         }
       }
-      
+
       // Check direct response
       if (response.ok) {
         const data = await response.json();
@@ -59,7 +59,7 @@ async function testHealthCheck() {
       console.error(`Error testing ${endpoint}:`, error.message);
     }
   }
-  
+
   console.error('All endpoints failed - service is UNAVAILABLE');
   return false;
 }

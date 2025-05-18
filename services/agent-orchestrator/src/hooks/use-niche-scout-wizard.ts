@@ -32,7 +32,7 @@ export function useNicheScoutWizard() {
   const calculateEstimates = useMemo(() => {
     // Count active data sources
     const activeSourcesCount = Object.entries(dataSources).filter(([_, active]) => active).length;
-    
+
     // Calculate cost based on active sources
     let cost = 0;
     Object.entries(dataSources).forEach(([source, active]) => {
@@ -41,15 +41,15 @@ export function useNicheScoutWizard() {
         cost += COST_PER_SOURCE[sourceKey];
       }
     });
-    
+
     // Scale cost based on budget
     const scaledCost = cost * (budget / 100);
-    
+
     // Calculate estimated time
     const baseTime = ETA_BASE_SEC;
     const scaledTime = (budget / 100) * ETA_PER_1K_SEC;
     const totalTime = baseTime + scaledTime * activeSourcesCount;
-    
+
     return {
       estimatedCost: scaledCost,
       estimatedTime: totalTime

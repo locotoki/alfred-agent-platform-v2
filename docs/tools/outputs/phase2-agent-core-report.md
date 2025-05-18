@@ -1,7 +1,7 @@
 # Phase 2 Document Migration Report: Agent Core Framework
 
-*Last Updated: 2025-05-10*  
-*Owner: Architecture Team*  
+*Last Updated: 2025-05-10*
+*Owner: Architecture Team*
 *Status: Completed*
 
 ## Document Overview

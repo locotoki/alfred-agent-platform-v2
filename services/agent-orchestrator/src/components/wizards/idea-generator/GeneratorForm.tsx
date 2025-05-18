@@ -31,8 +31,8 @@ export function GeneratorForm({
 }: GeneratorFormProps) {
   return (
     <div className="space-y-4">
-      <CategorySelector 
-        control={control} 
+      <CategorySelector
+        control={control}
         categories={categories}
         currentSubcategories={currentSubcategories}
         dropdownOpen={dropdownOpen}
@@ -46,8 +46,8 @@ export function GeneratorForm({
           name="language"
           render={({ field }) => (
             <FormItem>
-              <Select 
-                onValueChange={field.onChange} 
+              <Select
+                onValueChange={field.onChange}
                 defaultValue={field.value}
               >
                 <FormControl>
@@ -75,11 +75,11 @@ export function GeneratorForm({
           <FormItem>
             <FormLabel>Discovery Budget (credits) — {field.value}</FormLabel>
             <FormControl>
-              <Slider 
-                defaultValue={[field.value]} 
-                min={10} 
-                max={100} 
-                step={10} 
+              <Slider
+                defaultValue={[field.value]}
+                min={10}
+                max={100}
+                step={10}
                 onValueChange={(values) => field.onChange(values[0])}
                 className="py-4"
               />
@@ -88,9 +88,9 @@ export function GeneratorForm({
         )}
       />
 
-      <Button 
-        type="button" 
-        onClick={onGenerate} 
+      <Button
+        type="button"
+        onClick={onGenerate}
         className="w-full"
         disabled={isGenerating}
       >

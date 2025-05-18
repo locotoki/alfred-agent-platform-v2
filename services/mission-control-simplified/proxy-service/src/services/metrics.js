@@ -1,6 +1,6 @@
 /**
  * Metrics service for the proxy service
- * 
+ *
  * Provides Prometheus metrics for monitoring the proxy service performance.
  */
 
@@ -104,22 +104,22 @@ const RESPONSE_WINDOW_MS = 60000; // 1 minute window
  */
 function recordMetrics(type, data = {}) {
   const config = getConfig();
-  
+
   // Skip if metrics are disabled
   if (!config.featureFlags.metricsEnabled) {
     return;
   }
-  
+
   try {
     const { query = '', category = '' } = data;
     const now = Date.now();
-    
+
     switch (type) {
       case 'transformation':
         // Record transformation metrics
         if (data.transformationTime) {
           transformDurationHistogram.labels(query, category).observe(data.transformationTime);
-          
+
           // Add to response time history for p95 calculation
           responseTimeHistory.push({
             time: now,
@@ -127,84 +127,84 @@ function recordMetrics(type, data = {}) {
           });
           // Clean up old entries
           cleanupHistory(responseTimeHistory, now, RESPONSE_WINDOW_MS);
-          
+
           // Update p95 latency
           updateP95Latency();
         }
-        
+
         if (data.relevanceScore !== undefined) {
           relevanceScoreGauge.labels(query, category).set(data.relevanceScore);
         }
-        
+
         if (data.relevantNicheCount !== undefined) {
           relevantNicheCountGauge.labels(query, category).set(data.relevantNicheCount);
         }
-        
+
         // Record match types
         if (data.matchTypes) {
           Object.entries(data.matchTypes).forEach(([matchType, count]) => {
             matchTypesCounter.labels(query, category, matchType).inc(count);
           });
         }
-        
+
         break;
-        
+
       case 'api_request':
         // Record API request metrics
         totalRequestsCounter.labels('/api/youtube/niche-scout', 'success').inc();
-        
+
         if (data.apiResponseTime) {
           apiResponseTimeHistogram.labels('/api/youtube/niche-scout').observe(data.apiResponseTime);
         }
-        
+
         // Record cache miss
         cacheMisses++;
         updateCacheHitRatio();
-        
+
         break;
-        
+
       case 'cache_hit':
         // Record cache hit metrics
         totalRequestsCounter.labels('/api/youtube/niche-scout', 'success').inc();
-        
+
         // Record cache hit
         cacheHits++;
         updateCacheHitRatio();
-        
+
         break;
-        
+
       case 'redis_operation':
         // Record Redis operation metrics
         if (data.operation && data.result) {
           redisOpsCounter.labels(data.operation, data.result).inc();
         }
-        
+
         // Update memory cache stats if provided
         if (data.memoryCache) {
           memoryCacheGauge.set(data.memoryCache.size || 0);
           memoryCacheActiveGauge.set(data.memoryCache.activeItems || 0);
         }
-        
+
         break;
-        
+
       case 'error':
         // Record error metrics
         totalRequestsCounter.labels(data.endpoint || '/api/youtube/niche-scout', 'error').inc();
-        
+
         // Add to error history for error rate calculation
         errorHistory.push({
           time: now,
           endpoint: data.endpoint || '/api/youtube/niche-scout'
         });
-        
+
         // Clean up old entries
         cleanupHistory(errorHistory, now, ERROR_WINDOW_MS);
-        
+
         // Update error rate
         updateErrorRate();
-        
+
         break;
-        
+
       default:
         logger.warn(`Unknown metrics type: ${type}`);
     }
@@ -229,7 +229,7 @@ function updateCacheHitRatio() {
 function updateErrorRate() {
   const now = Date.now();
   const total = errorHistory.length + responseTimeHistory.length;
-  
+
   if (total > 0) {
     const errorRate = errorHistory.length / total;
     errorRateGauge.set(errorRate);
@@ -246,16 +246,16 @@ function updateP95Latency() {
     p95LatencyGauge.set(0);
     return;
   }
-  
+
   // Sort durations ascending
   const durations = responseTimeHistory.map(entry => entry.duration).sort((a, b) => a - b);
-  
+
   // Calculate p95 index
   const p95Index = Math.floor(durations.length * 0.95);
-  
+
   // Get p95 value
   const p95Value = durations[Math.min(p95Index, durations.length - 1)];
-  
+
   // Update gauge
   p95LatencyGauge.set(p95Value);
 }
@@ -269,12 +269,12 @@ function updateP95Latency() {
 function cleanupHistory(array, now, windowMs) {
   const cutoff = now - windowMs;
   let i = 0;
-  
+
   // Find index of first entry to keep
   while (i < array.length && array[i].time < cutoff) {
     i++;
   }
-  
+
   // Remove old entries
   if (i > 0) {
     array.splice(0, i);
@@ -286,11 +286,11 @@ function cleanupHistory(array, now, windowMs) {
  */
 function recordRedisMetrics() {
   const { getMemoryCacheStats } = require('./redis');
-  
+
   try {
     // Get memory cache stats
     const memoryCacheStats = getMemoryCacheStats();
-    
+
     // Record metrics
     recordMetrics('redis_operation', {
       operation: 'stats',
@@ -309,7 +309,7 @@ function recordRedisMetrics() {
 function getMetricsRegistry() {
   // Update memory cache metrics before returning
   recordRedisMetrics();
-  
+
   return promClient.register;
 }
 

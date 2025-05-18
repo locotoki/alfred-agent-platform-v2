@@ -18,10 +18,10 @@ FOUND=0
 # Check for direct references in shell scripts, Dockerfiles, etc.
 for script in "${DEPRECATED_SCRIPTS[@]}"; do
   echo "Checking for references to $script..."
-  
+
   # Find direct references to the script name
   REFERENCES=$(grep -r --include="*.sh" --include="*.yml" --include="*.yaml" --include="Dockerfile*" --include="*.json" "$script" . --exclude-dir={node_modules,.git,backup,archive} || true)
-  
+
   if [ -n "$REFERENCES" ]; then
     echo "⚠️ Found references to deprecated script $script:"
     echo "$REFERENCES" | sed 's/^/  - /'

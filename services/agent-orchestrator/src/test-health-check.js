@@ -5,25 +5,25 @@ import { checkServiceHealth, getServiceStatus, forceCheckAllServices } from './l
 
 async function runHealthCheck() {
   console.log('Starting direct health check test...');
-  
+
   // Check initial state
   console.log('Initial service status:');
   const initialStatus = getServiceStatus('socialIntel');
   console.log('Status:', initialStatus);
-  
+
   // Force a check
   console.log('Forcing a health check...');
   try {
     const result = await checkServiceHealth('socialIntel');
     console.log('Health check result:', result);
-    
+
     // Get updated status
     const updatedStatus = getServiceStatus('socialIntel');
     console.log('Updated status:', updatedStatus);
   } catch (error) {
     console.error('Error during health check:', error);
   }
-  
+
   console.log('Health check test completed.');
 }
 

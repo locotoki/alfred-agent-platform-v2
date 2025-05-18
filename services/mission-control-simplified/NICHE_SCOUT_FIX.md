@@ -49,19 +49,19 @@ After implementing these changes:
 const data = response.data;
 if (data.niches && (data.query === null || data.category === null)) {
   console.log('API did not respect search parameters, applying client-side filtering');
-  
+
   // Add the search parameters to the response
   filteredData.query = params.query;
   filteredData.category = params.category;
-  
+
   // Filter or generate relevant niches based on the search parameters
   const mockNichesForQuery = getMockNichesForCategory(params.query, params.category);
-  
+
   // Use the growth rates from the API but with relevant niche names
   filteredData.niches = mockNichesForQuery.map((name, index) => {
     // Get the growth rate and other metrics from the real data if available
     const originalNiche = data.niches[index % data.niches.length] || {};
-    
+
     return {
       name: name,
       growth_rate: originalNiche.growth_rate || (Math.floor(Math.random() * 40) + 20),
@@ -79,11 +79,11 @@ if (data.niches && (data.query === null || data.category === null)) {
 let relevantNiches = [...niches];
 if (searchQuery && searchCategory !== 'All') {
   // Try to find niches that match the query or category
-  const matchingNiches = niches.filter(niche => 
-    niche.name.toLowerCase().includes(searchQuery) || 
+  const matchingNiches = niches.filter(niche =>
+    niche.name.toLowerCase().includes(searchQuery) ||
     niche.name.toLowerCase().includes(searchCategory.toLowerCase())
   );
-  
+
   // Use matching niches if we found any, otherwise use all
   if (matchingNiches.length > 0) {
     relevantNiches = matchingNiches;

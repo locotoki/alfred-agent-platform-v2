@@ -5,7 +5,7 @@ global:
 # Metrics are disabled in development
 metrics:
   enabled: false
-  
+
 # DB Metrics service configuration (not active in dev)
 dbMetrics:
   image:

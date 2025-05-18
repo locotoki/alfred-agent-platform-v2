@@ -1,7 +1,7 @@
 # Infrastructure Component: {Component Name}
 
-*Last Updated: YYYY-MM-DD*  
-*Owner: {Owner}*  
+*Last Updated: YYYY-MM-DD*
+*Owner: {Owner}*
 *Status: {Draft|Active|Deprecated|Replaced}*
 
 ## Overview

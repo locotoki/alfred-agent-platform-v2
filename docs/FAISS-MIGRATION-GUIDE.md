@@ -95,13 +95,13 @@ faiss:
 faiss:
   index_type: HNSW  # or OPQ+HNSW
   device: cpu
-  
+
   # Optional: Custom configuration
   config:
     m: 32
     ef_construction: 200
     ef_search: 64
-    
+
   # OPQ+HNSW specific (if using)
   # config:
   #   m_pq: 8
@@ -127,7 +127,7 @@ ml:
 ml:
   faiss:
     indexType: HNSW  # or OPQ+HNSW
-    
+
     # Optional: Override default config
     config:
       m: 32
@@ -209,16 +209,16 @@ print(f"Total vectors: {stats['total_vectors']}")
 
 ## FAQ
 
-**Q: Will my existing IVF index still work?**  
+**Q: Will my existing IVF index still work?**
 A: Yes, the code maintains full backward compatibility.
 
-**Q: When should I use OPQ+HNSW instead of HNSW?**  
+**Q: When should I use OPQ+HNSW instead of HNSW?**
 A: Use OPQ+HNSW when you have >1M alerts or memory constraints.
 
-**Q: How do I tune the configuration?**  
+**Q: How do I tune the configuration?**
 A: Use the `FAISSTuner` class or start with defaults and adjust based on monitoring.
 
-**Q: What's the minimum Python/FAISS version?**  
+**Q: What's the minimum Python/FAISS version?**
 A: Python 3.8+ and faiss-cpu 1.7.4+ (or faiss-gpu for GPU support).
 
 ## Support

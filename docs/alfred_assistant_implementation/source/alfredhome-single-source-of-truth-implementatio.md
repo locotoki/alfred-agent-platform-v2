@@ -32,7 +32,7 @@ Outbound Worker ◀──────── Redis Stream «alfred‑outbox»◀�
 | Metrics & Logs | Prometheus, Grafana, Loki on Fly | EU‑MAD |
 
 > Cost: ≈ €6 / mo (1 Lite VM + WhatsApp message fees).
-> 
+>
 
 ---
 

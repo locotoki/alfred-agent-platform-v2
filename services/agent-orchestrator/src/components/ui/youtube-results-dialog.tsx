@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  Dialog, 
-  DialogContent, 
-  DialogDescription, 
-  DialogHeader, 
-  DialogTitle, 
-  DialogTrigger 
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -15,18 +15,18 @@ interface YouTubeResultsDialogProps {
   trigger?: React.ReactNode;
 }
 
-const YouTubeResultsDialog: React.FC<YouTubeResultsDialogProps> = ({ 
-  trigger = <Button variant="outline" size="sm"><Youtube className="mr-2 h-4 w-4" />View Niche Scout Results</Button> 
+const YouTubeResultsDialog: React.FC<YouTubeResultsDialogProps> = ({
+  trigger = <Button variant="outline" size="sm"><Youtube className="mr-2 h-4 w-4" />View Niche Scout Results</Button>
 }) => {
   const [open, setOpen] = useState(false);
   const [results, setResults] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  
+
   // Load results when dialog opens
   useEffect(() => {
     if (open) {
       setLoading(true);
-      
+
       // Try to get results from localStorage if available
       const storedResults = localStorage.getItem('youtube-results');
       if (storedResults) {
@@ -41,12 +41,12 @@ const YouTubeResultsDialog: React.FC<YouTubeResultsDialogProps> = ({
           console.error('Failed to parse stored results:', e);
         }
       }
-      
+
       // If no stored results, check for console logs
       const checkLogs = () => {
         const originalConsoleLog = console.log;
         let foundResults = [];
-        
+
         // Temporarily replace console.log to check for results
         console.log = function(...args) {
           if ((args[0] === 'Niche scout completed:' || args[0] === 'YouTube API test result:') && args[1]) {
@@ -54,25 +54,25 @@ const YouTubeResultsDialog: React.FC<YouTubeResultsDialogProps> = ({
           }
           originalConsoleLog.apply(console, args);
         };
-        
+
         // Restore original console.log
         console.log = originalConsoleLog;
-        
+
         return foundResults;
       };
-      
+
       const logResults = checkLogs();
       if (logResults.length > 0) {
         setResults(logResults);
       }
-      
+
       setLoading(false);
     }
   }, [open]);
-  
+
   const renderResultContent = (resultData: any) => {
     if (!resultData) return null;
-    
+
     return (
       <div className="space-y-4">
         <div className="grid grid-cols-2 gap-4 p-4 bg-muted/50 rounded-lg">
@@ -85,7 +85,7 @@ const YouTubeResultsDialog: React.FC<YouTubeResultsDialogProps> = ({
             <div className="font-medium">Kids &gt; Nursery Rhymes</div>
           </div>
         </div>
-        
+
         <div>
           <h3 className="text-sm font-medium mb-2">Top Niches</h3>
           <ul className="space-y-1">
@@ -96,7 +96,7 @@ const YouTubeResultsDialog: React.FC<YouTubeResultsDialogProps> = ({
             ))}
           </ul>
         </div>
-        
+
         <div>
           <h3 className="text-sm font-medium mb-2">Trending Niches</h3>
           <ul className="space-y-1">
@@ -107,7 +107,7 @@ const YouTubeResultsDialog: React.FC<YouTubeResultsDialogProps> = ({
             ))}
           </ul>
         </div>
-        
+
         {resultData.actual_processing_time && (
           <div className="text-sm text-muted-foreground">
             Processing time: {resultData.actual_processing_time.toFixed(2)}s
@@ -129,7 +129,7 @@ const YouTubeResultsDialog: React.FC<YouTubeResultsDialogProps> = ({
             View results from your Niche Scout analysis
           </DialogDescription>
         </DialogHeader>
-        
+
         <div className="py-4">
           {loading ? (
             <div className="flex items-center justify-center py-12">
@@ -147,11 +147,11 @@ const YouTubeResultsDialog: React.FC<YouTubeResultsDialogProps> = ({
                 <TabsTrigger value="latest">Latest Result</TabsTrigger>
                 <TabsTrigger value="history">Previous Results</TabsTrigger>
               </TabsList>
-              
+
               <TabsContent value="latest">
                 {renderResultContent(results[0])}
               </TabsContent>
-              
+
               <TabsContent value="history">
                 <div className="space-y-6">
                   {results.slice(1).map((historyResult, idx) => (
@@ -160,7 +160,7 @@ const YouTubeResultsDialog: React.FC<YouTubeResultsDialogProps> = ({
                       {renderResultContent(historyResult)}
                     </div>
                   ))}
-                  
+
                   {results.length <= 1 && (
                     <div className="text-center py-6 text-muted-foreground">
                       <p>No previous results available</p>

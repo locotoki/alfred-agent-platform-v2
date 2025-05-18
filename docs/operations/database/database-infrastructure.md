@@ -1,7 +1,7 @@
 # Infrastructure Component: Database Infrastructure
 
-*Last Updated: 2025-05-13*  
-*Owner: Infrastructure Team*  
+*Last Updated: 2025-05-13*
+*Owner: Infrastructure Team*
 *Status: Active*
 
 ## Overview
@@ -19,14 +19,14 @@ graph TB
         redis["Redis"]
         qdrant["Qdrant Vector DB"]
     end
-    
+
     subgraph "PostgreSQL Schemas"
         pg --> public["Public Schema"]
         pg --> auth["Auth Schema"]
         pg --> storage["Storage Schema"]
         pg --> model_registry["Model Registry Schema"]
     end
-    
+
     subgraph "Services"
         agent-core["Agent Core"]
         agent-rag["RAG Service"]
@@ -35,7 +35,7 @@ graph TB
         agent-social["Social Agent"]
         model-registry["Model Registry"]
     end
-    
+
     agent-core --> pg
     agent-core --> redis
     agent-rag --> qdrant
@@ -414,7 +414,7 @@ Qdrant vector database is organized into collections:
    ```bash
    # Using Docker Compose
    docker-compose -f docker-compose.yml up -d db-postgres redis vector-db
-   
+
    # Or using Kubernetes
    kubectl apply -f k8s/database/postgres.yaml
    kubectl apply -f k8s/database/redis.yaml
@@ -426,7 +426,7 @@ Qdrant vector database is organized into collections:
    # For PostgreSQL, migrations are run automatically from the mounted volume
    # Verify migration status
    docker exec -it db-postgres psql -U postgres -c "SELECT * FROM migrations ORDER BY id DESC LIMIT 5;"
-   
+
    # For Qdrant, create collections if needed
    curl -X PUT "http://localhost:6333/collections/general-knowledge" \
      -H "Content-Type: application/json" \
@@ -437,10 +437,10 @@ Qdrant vector database is organized into collections:
    ```bash
    # Check PostgreSQL
    docker exec -it db-postgres psql -U postgres -c "\dt"
-   
+
    # Check Redis
    docker exec -it redis redis-cli ping
-   
+
    # Check Qdrant
    curl -X GET "http://localhost:6333/collections"
    ```

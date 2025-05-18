@@ -24,20 +24,20 @@ const StatsCard: React.FC<{
   'data-testid': testId,
 }) => {
   return (
-    <div 
+    <div
       className={`dashboard-card overflow-hidden bg-white dark:bg-gray-800 rounded-lg shadow ${className}`}
       data-testid={testId}
     >
       <div className="p-5">
         <div className="flex items-center justify-between">
           <div>
-            <p 
+            <p
               className="text-sm font-medium text-gray-500 dark:text-gray-400 truncate"
               data-testid="stats-card-title"
             >
               {title}
             </p>
-            <p 
+            <p
               className="mt-1 text-3xl font-semibold text-gray-900 dark:text-white"
               data-testid="stats-card-value"
             >
@@ -45,7 +45,7 @@ const StatsCard: React.FC<{
             </p>
           </div>
           {icon && (
-            <div 
+            <div
               className={`p-3 rounded-full ${colorClass} text-white`}
               data-testid="stats-card-icon"
             >
@@ -53,12 +53,12 @@ const StatsCard: React.FC<{
             </div>
           )}
         </div>
-        
+
         {trend && (
           <div className="mt-4" data-testid="stats-card-trend">
             <div className={`flex items-center text-sm ${
-              trend.isPositive 
-                ? 'text-green-500 dark:text-green-400' 
+              trend.isPositive
+                ? 'text-green-500 dark:text-green-400'
                 : 'text-red-500 dark:text-red-400'
             }`}>
               <span className="font-medium" data-testid="stats-card-trend-value">
@@ -76,13 +76,13 @@ const StatsCard: React.FC<{
 describe('StatsCard Component', () => {
   it('renders title and value correctly', () => {
     render(
-      <StatsCard 
-        title="Active Tasks" 
+      <StatsCard
+        title="Active Tasks"
         value={127}
         data-testid="stats-card"
       />
     );
-    
+
     expect(screen.getByTestId('stats-card')).toBeInTheDocument();
     expect(screen.getByTestId('stats-card-title')).toHaveTextContent('Active Tasks');
     expect(screen.getByTestId('stats-card-value')).toHaveTextContent('127');
@@ -90,14 +90,14 @@ describe('StatsCard Component', () => {
 
   it('renders the icon when provided', () => {
     render(
-      <StatsCard 
-        title="Active Tasks" 
+      <StatsCard
+        title="Active Tasks"
         value={127}
         icon={<span>📊</span>}
         data-testid="stats-card"
       />
     );
-    
+
     const iconContainer = screen.getByTestId('stats-card-icon');
     expect(iconContainer).toBeInTheDocument();
     expect(iconContainer).toHaveClass('from-blue-500 to-blue-600');
@@ -106,15 +106,15 @@ describe('StatsCard Component', () => {
 
   it('applies custom color class to the icon', () => {
     render(
-      <StatsCard 
-        title="Active Tasks" 
+      <StatsCard
+        title="Active Tasks"
         value={127}
         icon={<span>📊</span>}
         colorClass="bg-green-500"
         data-testid="stats-card"
       />
     );
-    
+
     const iconContainer = screen.getByTestId('stats-card-icon');
     expect(iconContainer).toHaveClass('bg-green-500');
     expect(iconContainer).not.toHaveClass('from-blue-500 to-blue-600');
@@ -122,17 +122,17 @@ describe('StatsCard Component', () => {
 
   it('renders positive trend correctly', () => {
     render(
-      <StatsCard 
-        title="Active Tasks" 
+      <StatsCard
+        title="Active Tasks"
         value={127}
         trend={{ value: 12, isPositive: true }}
         data-testid="stats-card"
       />
     );
-    
+
     const trendElement = screen.getByTestId('stats-card-trend');
     expect(trendElement).toBeInTheDocument();
-    
+
     const trendValueElement = screen.getByTestId('stats-card-trend-value');
     expect(trendValueElement).toHaveTextContent('↑ 12');
     expect(trendValueElement.parentElement).toHaveClass('text-green-500');
@@ -140,17 +140,17 @@ describe('StatsCard Component', () => {
 
   it('renders negative trend correctly', () => {
     render(
-      <StatsCard 
-        title="Active Tasks" 
+      <StatsCard
+        title="Active Tasks"
         value={127}
         trend={{ value: 5, isPositive: false }}
         data-testid="stats-card"
       />
     );
-    
+
     const trendElement = screen.getByTestId('stats-card-trend');
     expect(trendElement).toBeInTheDocument();
-    
+
     const trendValueElement = screen.getByTestId('stats-card-trend-value');
     expect(trendValueElement).toHaveTextContent('↓ 5');
     expect(trendValueElement.parentElement).toHaveClass('text-red-500');
@@ -158,65 +158,65 @@ describe('StatsCard Component', () => {
 
   it('applies additional className', () => {
     render(
-      <StatsCard 
-        title="Active Tasks" 
+      <StatsCard
+        title="Active Tasks"
         value={127}
         className="custom-class"
         data-testid="stats-card"
       />
     );
-    
+
     const statsCard = screen.getByTestId('stats-card');
     expect(statsCard).toHaveClass('custom-class');
   });
 
   it('handles string values', () => {
     render(
-      <StatsCard 
-        title="Status" 
+      <StatsCard
+        title="Status"
         value="Operational"
         data-testid="stats-card"
       />
     );
-    
+
     expect(screen.getByTestId('stats-card-value')).toHaveTextContent('Operational');
   });
 
   it('handles string trend values', () => {
     render(
-      <StatsCard 
-        title="Revenue" 
+      <StatsCard
+        title="Revenue"
         value="$10,000"
         trend={{ value: '15%', isPositive: true }}
         data-testid="stats-card"
       />
     );
-    
+
     const trendValueElement = screen.getByTestId('stats-card-trend-value');
     expect(trendValueElement).toHaveTextContent('↑ 15%');
   });
 
   it('does not render trend section when trend is not provided', () => {
     render(
-      <StatsCard 
-        title="Active Tasks" 
+      <StatsCard
+        title="Active Tasks"
         value={127}
         data-testid="stats-card"
       />
     );
-    
+
     expect(screen.queryByTestId('stats-card-trend')).not.toBeInTheDocument();
   });
 
   it('does not render icon when icon is not provided', () => {
     render(
-      <StatsCard 
-        title="Active Tasks" 
+      <StatsCard
+        title="Active Tasks"
         value={127}
         data-testid="stats-card"
       />
     );
-    
+
     expect(screen.queryByTestId('stats-card-icon')).not.toBeInTheDocument();
   });
 });

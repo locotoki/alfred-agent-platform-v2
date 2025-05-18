@@ -1,16 +1,16 @@
 /**
  * Unit tests for Phase 0 Niche-Scout ↔ Social-Intel Integration
- * 
+ *
  * Tests the string similarity function, niche generation, and metrics calculation
  */
 
-const { 
-  stringSimilarity, 
-  getMockNichesForCategory, 
+const {
+  stringSimilarity,
+  getMockNichesForCategory,
   getTopicsForNiche,
-  calculateRelevanceMetrics, 
+  calculateRelevanceMetrics,
   SIMILARITY_THRESHOLD,
-  DEFAULT_NICHE_COUNT 
+  DEFAULT_NICHE_COUNT
 } = require('./integrate-with-social-intel');
 
 // Flag to display extra debug info
@@ -103,28 +103,28 @@ function runTests() {
   test('Gaming category should return gaming-related niches', () => {
     const niches = getMockNichesForCategory('mobile', 'Gaming');
     if (DEBUG) console.log(`   Result: ${niches.join(', ')}`);
-    
+
     // Count how many niches contain 'mobile', 'game', or 'gaming'
-    const relevantCount = niches.filter(niche => 
-      niche.toLowerCase().includes('mobile') || 
-      niche.toLowerCase().includes('game') || 
+    const relevantCount = niches.filter(niche =>
+      niche.toLowerCase().includes('mobile') ||
+      niche.toLowerCase().includes('game') ||
       niche.toLowerCase().includes('gaming')
     ).length;
-    
+
     assert(relevantCount >= 3, `Expected at least 3 relevant niches, got ${relevantCount}`);
   });
 
   test('Education category should return education-related niches', () => {
     const niches = getMockNichesForCategory('tutorial', 'Education');
     if (DEBUG) console.log(`   Result: ${niches.join(', ')}`);
-    
+
     // Count how many niches contain 'tutorial', 'education', or 'learning'
-    const relevantCount = niches.filter(niche => 
-      niche.toLowerCase().includes('tutorial') || 
-      niche.toLowerCase().includes('education') || 
+    const relevantCount = niches.filter(niche =>
+      niche.toLowerCase().includes('tutorial') ||
+      niche.toLowerCase().includes('education') ||
       niche.toLowerCase().includes('learning')
     ).length;
-    
+
     assert(relevantCount >= 3, `Expected at least 3 relevant niches, got ${relevantCount}`);
   });
 
@@ -149,12 +149,12 @@ function runTests() {
   test('All category should still return relevant niches for query', () => {
     const niches = getMockNichesForCategory('mobile', 'All');
     if (DEBUG) console.log(`   Result: ${niches.join(', ')}`);
-    
+
     // Count how many niches contain 'mobile'
-    const mobilenNiches = niches.filter(niche => 
+    const mobilenNiches = niches.filter(niche =>
       niche.toLowerCase().includes('mobile')
     ).length;
-    
+
     assert(mobilenNiches >= 1, `Expected at least 1 mobile niche, got ${mobilenNiches}`);
   });
 
@@ -166,14 +166,14 @@ function runTests() {
     const topics = getTopicsForNiche('Mobile Gaming');
     if (DEBUG) console.log(`   Result: ${topics.join(', ')}`);
     assert(topics.length === 3, `Expected 3 topics, got ${topics.length}`);
-    
+
     // Check if topics are related to mobile or gaming
-    const relevantCount = topics.filter(topic => 
-      topic.toLowerCase().includes('mobile') || 
-      topic.toLowerCase().includes('game') || 
+    const relevantCount = topics.filter(topic =>
+      topic.toLowerCase().includes('mobile') ||
+      topic.toLowerCase().includes('game') ||
       topic.toLowerCase().includes('gaming')
     ).length;
-    
+
     assert(relevantCount >= 1, `Expected at least 1 relevant topic, got ${relevantCount}`);
   });
 
@@ -181,15 +181,15 @@ function runTests() {
     const topics = getTopicsForNiche('Online Courses');
     if (DEBUG) console.log(`   Result: ${topics.join(', ')}`);
     assert(topics.length === 3, `Expected 3 topics, got ${topics.length}`);
-    
+
     // Check if topics are related to education or courses
-    const relevantCount = topics.filter(topic => 
-      topic.toLowerCase().includes('course') || 
-      topic.toLowerCase().includes('education') || 
+    const relevantCount = topics.filter(topic =>
+      topic.toLowerCase().includes('course') ||
+      topic.toLowerCase().includes('education') ||
       topic.toLowerCase().includes('learning') ||
       topic.toLowerCase().includes('online')
     ).length;
-    
+
     assert(relevantCount >= 1, `Expected at least 1 relevant topic, got ${relevantCount}`);
   });
 
@@ -214,12 +214,12 @@ function runTests() {
         { name: 'unrelated' }
       ]
     };
-    
+
     const searchParams = { query: 'mobile', category: 'Gaming' };
-    
+
     const metrics = calculateRelevanceMetrics(transformedData, searchParams);
     if (DEBUG) console.log('   Result:', metrics);
-    
+
     assert(metrics.relevantNicheCount >= 3, `Expected at least 3 relevant niches, got ${metrics.relevantNicheCount}`);
     assert(metrics.averageRelevanceScore >= 0.5, `Expected avg relevance >= 0.5, got ${metrics.averageRelevanceScore}`);
     assert(metrics.matchTypes.exact === 1, `Expected 1 exact match, got ${metrics.matchTypes.exact}`);
@@ -235,12 +235,12 @@ function runTests() {
         { name: 'Unrelated' }
       ]
     };
-    
+
     const searchParams = { query: '', category: 'Gaming' };
-    
+
     const metrics = calculateRelevanceMetrics(transformedData, searchParams);
     if (DEBUG) console.log('   Result:', metrics);
-    
+
     assert(metrics.relevantNicheCount >= 3, `Expected at least 3 relevant niches, got ${metrics.relevantNicheCount}`);
     assert(metrics.matchTypes.category >= 3, `Expected at least 3 category matches, got ${metrics.matchTypes.category}`);
   });
@@ -253,13 +253,13 @@ function runTests() {
     const niches = getMockNichesForCategory('mobile', 'Gaming');
     const data = { niches: niches.map(name => ({ name })) };
     const params = { query: 'mobile', category: 'Gaming' };
-    
+
     const metrics = calculateRelevanceMetrics(data, params);
     if (DEBUG) {
       console.log(`   Niches: ${niches.join(', ')}`);
       console.log('   Metrics:', metrics);
     }
-    
+
     assert(metrics.relevantNicheCount >= 3, `Expected at least 3 relevant niches, got ${metrics.relevantNicheCount}`);
     assert(metrics.averageRelevanceScore >= 0.6, `Expected avg relevance >= 0.6, got ${metrics.averageRelevanceScore}`);
   });
@@ -268,13 +268,13 @@ function runTests() {
     const niches = getMockNichesForCategory('tutorial', 'Education');
     const data = { niches: niches.map(name => ({ name })) };
     const params = { query: 'tutorial', category: 'Education' };
-    
+
     const metrics = calculateRelevanceMetrics(data, params);
     if (DEBUG) {
       console.log(`   Niches: ${niches.join(', ')}`);
       console.log('   Metrics:', metrics);
     }
-    
+
     assert(metrics.relevantNicheCount >= 3, `Expected at least 3 relevant niches, got ${metrics.relevantNicheCount}`);
     assert(metrics.averageRelevanceScore >= 0.6, `Expected avg relevance >= 0.6, got ${metrics.averageRelevanceScore}`);
   });
@@ -283,13 +283,13 @@ function runTests() {
     const niches = getMockNichesForCategory('makeup', 'Howto & Style');
     const data = { niches: niches.map(name => ({ name })) };
     const params = { query: 'makeup', category: 'Howto & Style' };
-    
+
     const metrics = calculateRelevanceMetrics(data, params);
     if (DEBUG) {
       console.log(`   Niches: ${niches.join(', ')}`);
       console.log('   Metrics:', metrics);
     }
-    
+
     assert(metrics.relevantNicheCount >= 3, `Expected at least 3 relevant niches, got ${metrics.relevantNicheCount}`);
     assert(metrics.averageRelevanceScore >= 0.6, `Expected avg relevance >= 0.6, got ${metrics.averageRelevanceScore}`);
   });
@@ -328,7 +328,7 @@ function runTests() {
   console.log('\n📊 TEST RESULTS SUMMARY 📊');
   console.log('=========================');
   console.log(`Passed: ${passedTests}/${totalTests} tests (${Math.round(passedTests/totalTests*100)}%)`);
-  
+
   if (passedTests === totalTests) {
     console.log('\n🎉 All tests passed!');
   } else {

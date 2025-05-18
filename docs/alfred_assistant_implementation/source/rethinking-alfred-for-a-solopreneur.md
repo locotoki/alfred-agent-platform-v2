@@ -7,7 +7,7 @@
 ### 1. Re-state the real goal
 
 > “One assistant that can juggle my life and my company—without any chance of personal ↔ business data bleed, and without me running a mini AWS.”
-> 
+>
 
 ---
 

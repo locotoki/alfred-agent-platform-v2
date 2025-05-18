@@ -35,7 +35,7 @@ The platform currently provides several Grafana dashboards:
 All services expose metrics at the `/health/metrics` endpoint in Prometheus format. The key metrics currently collected include:
 
 ### System Metrics
-- CPU and memory usage 
+- CPU and memory usage
 - Container metrics
 - Network metrics
 
@@ -64,7 +64,7 @@ To add a new dashboard:
 When extending dashboards:
 
 1. Follow the naming conventions for metrics and labels
-2. Ensure metrics are registered in agent code 
+2. Ensure metrics are registered in agent code
 3. Verify that metrics are being scraped by Prometheus
 4. Test dashboards with different time ranges
 

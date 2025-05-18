@@ -1,8 +1,8 @@
 # AI Agent Platform v2 - Technical Design Guide
 
-**Last Updated:** 2025-05-10  
-**Owner:** Platform Engineering Team  
-**Status:** Active  
+**Last Updated:** 2025-05-10
+**Owner:** Platform Engineering Team
+**Status:** Active
 **Related Project:** [Master Plan](./master-plan.md)
 
 ## Overview
@@ -103,35 +103,35 @@ This document serves as a comprehensive technical design guide for the Alfred Ag
 ```mermaid
 flowchart TD
     S[Slack / UI] --> A[Alfred\nSlack Bot]
-    
+
     subgraph "Local Docker Compose"
         A --> |a2a.tasks.create| PE[Pub/Sub Emulator]
         PE --> SI[SocialIntelligenceAgent\nLangChain]
         PE --> LC[LegalComplianceAgent\nLangGraph]
         PE --> FT[FinancialTaxAgent]
         PE --> N8N[N8N\nWorker]
-        
+
         SI --> |a2a.tasks.completed| PE
         LC --> PE
         FT --> PE
-        
+
         PE --> |>5 attempts| DLQ[Dead-Letter Topic]
-        
+
         SI --> QD[Qdrant\nVector DB]
         SI --> R[Supabase DB\nPostgres + pgvector]
         N8N --> R
         N8N --> S
-        
+
         LS[LangSmith] --> SI
         FE[Firebase Emulator\nFunctions + Firestore] --> R
     end
-    
+
     subgraph "Google Cloud (Prod option)"
         GCPPS[Cloud Pub/Sub]
         GCF[Supabase DB]
         CRA[Cloud Run\nAgents]
     end
-    
+
     A --> |when prod| GCPPS
     PE -.-> |same topics| GCPPS
 ```
@@ -167,7 +167,7 @@ flowchart TD
 
 2. **Integrate LangChain**: Orchestrate agent workflows with LangChain.
    - Use LangChain's AgentExecutor to define and execute task chains.
-   
+
 3. **Real-Time Updates**: For live updates, integrate Supabase Realtime via WebSockets in the UI.
 
 ## Future-Proofing Considerations

@@ -1,6 +1,6 @@
 /**
  * Integration script for connecting Simplified Mission Control with the Social Intelligence Agent
- * 
+ *
  * This script provides the connection layer between Mission Control and the Social Intelligence agent,
  * with robust error handling and configurable fallback to mock data.
  */
@@ -41,35 +41,35 @@ async function callNicheScout(params) {
     // Use the actual endpoint structure we discovered
     const response = await apiClient.post('/api/youtube/niche-scout', params);
     console.log('Niche-Scout API call successful');
-    
+
     // Check if the API respected our search parameters
     const data = response.data;
     if (data.niches && (data.query === null || data.category === null)) {
       console.log('API did not respect search parameters, applying client-side filtering');
-      
+
       // Copy the original data
       const filteredData = { ...data };
-      
+
       // Store the original data for debugging
       filteredData._originalApiData = JSON.parse(JSON.stringify(data));
       filteredData._filtered = true;
-      
+
       // Add the search parameters to the response
       filteredData.query = params.query;
       filteredData.category = params.category;
       filteredData.subcategory = params.subcategories ? params.subcategories.join(', ') : null;
-      
+
       // Filter or generate relevant niches based on the search parameters
       const mockNichesForQuery = getMockNichesForCategory(params.query, params.category);
-      
+
       if (mockNichesForQuery.length > 0) {
         console.log('Using search parameter-based niches instead of unrelated API results');
-        
+
         // Use the growth rates from the API but with relevant niche names
         filteredData.niches = mockNichesForQuery.map((name, index) => {
           // Get the growth rate and other metrics from the real data if available
           const originalNiche = data.niches[index % data.niches.length] || {};
-          
+
           return {
             name: name,
             growth_rate: originalNiche.growth_rate || (Math.floor(Math.random() * 40) + 20),
@@ -86,14 +86,14 @@ async function callNicheScout(params) {
             ]
           };
         });
-        
+
         // Update the analysis summary
         filteredData.analysis_summary = {
           fastest_growing: filteredData.niches[0].name,
           most_shorts_friendly: filteredData.niches[0].name,
           lowest_competition: filteredData.niches[0].name
         };
-        
+
         // Update recommendations
         filteredData.recommendations = [
           `Focus on ${filteredData.niches[0].name} for highest growth potential`,
@@ -101,18 +101,18 @@ async function callNicheScout(params) {
           `Target trending topics like ${filteredData.niches[0].trending_topics[0]}`
         ];
       }
-      
+
       return filteredData;
     }
-    
+
     return data;
   } catch (error) {
     console.error('Error calling Niche-Scout workflow:', error.message);
-    
+
     if (!ENABLE_MOCK_FALLBACK) {
       throw new Error(`Failed to call Niche-Scout API: ${error.message}`);
     }
-    
+
     console.log('Using mock data fallback for Niche-Scout workflow');
     // Fall back to mock data if the API call fails
     return {
@@ -140,13 +140,13 @@ async function callNicheScout(params) {
 function getMockNichesForCategory(query, category) {
   // Default niches if no match found
   let niches = ['Content Creation', 'Video Tutorials', 'Educational Content'];
-  
+
   // Category-specific niches (with query integration when possible)
   const categoryMap = {
     'Gaming': [
-      'Mobile Gaming', 
-      'Game Development', 
-      'Indie Games', 
+      'Mobile Gaming',
+      'Game Development',
+      'Indie Games',
       'Strategy Games',
       'Gaming Tutorials',
       'Game Reviews',
@@ -181,11 +181,11 @@ function getMockNichesForCategory(query, category) {
       `${query} Technology`.trim()
     ]
   };
-  
+
   // Return category-specific niches if available
   if (category && categoryMap[category]) {
     niches = categoryMap[category];
-    
+
     // If there's a query, prioritize niches that contain the query
     if (query) {
       const queryLower = query.toLowerCase();
@@ -193,14 +193,14 @@ function getMockNichesForCategory(query, category) {
       niches.sort((a, b) => {
         const aContainsQuery = a.toLowerCase().includes(queryLower);
         const bContainsQuery = b.toLowerCase().includes(queryLower);
-        
+
         if (aContainsQuery && !bContainsQuery) return -1;
         if (!aContainsQuery && bContainsQuery) return 1;
         return 0;
       });
     }
   }
-  
+
   // Return the top 3-4 niches
   return niches.slice(0, Math.floor(Math.random() * 2) + 3);
 }
@@ -212,7 +212,7 @@ function getMockNichesForCategory(query, category) {
  */
 function getTopicsForNiche(nicheName) {
   const nicheLower = nicheName.toLowerCase();
-  
+
   // Gaming-related topics
   if (nicheLower.includes('game') || nicheLower.includes('gaming')) {
     return [
@@ -222,7 +222,7 @@ function getTopicsForNiche(nicheName) {
       'Gaming tips and tricks'
     ].slice(0, 3);
   }
-  
+
   // Tech-related topics
   if (nicheLower.includes('tech') || nicheLower.includes('coding')) {
     return [
@@ -232,7 +232,7 @@ function getTopicsForNiche(nicheName) {
       'Software tutorials'
     ].slice(0, 3);
   }
-  
+
   // Education-related topics
   if (nicheLower.includes('education') || nicheLower.includes('tutorial')) {
     return [
@@ -242,7 +242,7 @@ function getTopicsForNiche(nicheName) {
       'Teaching strategies'
     ].slice(0, 3);
   }
-  
+
   // Default topics
   return [
     'Content creation tips',
@@ -266,11 +266,11 @@ async function callSeedToBlueprint(params) {
     return response.data;
   } catch (error) {
     console.error('Error calling Seed-to-Blueprint workflow:', error.message);
-    
+
     if (!ENABLE_MOCK_FALLBACK) {
       throw new Error(`Failed to call Seed-to-Blueprint API: ${error.message}`);
     }
-    
+
     console.log('Using mock data fallback for Seed-to-Blueprint workflow');
     // Fall back to mock data if the API call fails
     return {
@@ -278,7 +278,7 @@ async function callSeedToBlueprint(params) {
       status: 'completed',
       result: {
         channel_blueprint: {
-          focus: params.input_type === 'niche' 
+          focus: params.input_type === 'niche'
             ? `${params.niche_subcategory} within the ${params.niche_category} space`
             : "programming tutorials and coding guides",
           audience_potential: 4200000,
@@ -332,17 +332,17 @@ async function getAgentStatuses() {
     { name: 'Legal Compliance', host: 'http://legal-compliance', port: 9002, path: '/api/health' },
     { name: 'Alfred Bot', host: 'http://alfred-bot', port: 8011, path: '/api/health' }
   ];
-  
+
   const agentStatuses = [];
-  
+
   await Promise.all(agents.map(async (agent) => {
     try {
       const url = `${agent.host}:${agent.port}${agent.path}`;
       console.log(`Checking agent status: ${agent.name} at ${url}`);
-      
+
       const response = await axios.get(url, { timeout: 2000 });
       const isHealthy = response.status === 200;
-      
+
       agentStatuses.push({
         name: agent.name,
         status: isHealthy ? 'online' : 'idle',
@@ -350,7 +350,7 @@ async function getAgentStatuses() {
         memory: isHealthy ? (Math.floor(Math.random() * 512) + 128) : 0, // Mock memory usage
         tasks: isHealthy ? (Math.floor(Math.random() * 5)) : 0 // Mock active tasks
       });
-      
+
       console.log(`${agent.name} status: ${isHealthy ? 'online' : 'offline'}`);
     } catch (error) {
       console.error(`Error checking ${agent.name} status:`, error.message);
@@ -363,7 +363,7 @@ async function getAgentStatuses() {
       });
     }
   }));
-  
+
   return { agents: agentStatuses };
 }
 
