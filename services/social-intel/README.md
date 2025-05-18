@@ -1,6 +1,6 @@
 # Social Intelligence Service (v1.0.0)
 
-The Social Intelligence service provides niche analysis, YouTube trend monitoring, and content strategy generation through a REST API. 
+The Social Intelligence service provides niche analysis, YouTube trend monitoring, and content strategy generation through a REST API.
 
 **Current Status**: ✅ Phase 2 Complete, Production Ready
 

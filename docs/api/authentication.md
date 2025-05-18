@@ -1,7 +1,7 @@
 # Authentication
 
-*Last Updated: 2025-05-13*  
-*Owner: API Team*  
+*Last Updated: 2025-05-13*
+*Owner: API Team*
 *Status: Active*
 
 ## Overview
@@ -221,10 +221,10 @@ def has_permission(payload, required_permission):
     """Check if token has required permission."""
     if "permissions" not in payload:
         return False
-    
+
     if "admin" in payload.get("role", "").lower():
         return True  # Admin role has all permissions
-        
+
     permissions = payload["permissions"]
     return required_permission in permissions
 ```
@@ -289,11 +289,11 @@ function hasPermission(payload, requiredPermission) {
   if (!payload.permissions) {
     return false;
   }
-  
+
   if (payload.role && payload.role.toLowerCase().includes('admin')) {
     return true;  // Admin role has all permissions
   }
-  
+
   return payload.permissions.includes(requiredPermission);
 }
 ```
@@ -313,12 +313,12 @@ def generate_api_key(service_id, environment="dev"):
     key_id = secrets.token_hex(8)
     key_value = secrets.token_hex(16)
     key = f"alfred_api_{environment}_{key_id}"
-    
+
     # In a real implementation, store the hashed key value
     hashed_key = hashlib.sha256(key_value.encode()).hexdigest()
-    
+
     # Store in database: service_id, key, hashed_key, creation time, etc.
-    
+
     return f"{key}_{key_value}"
 
 # Using API key in requests
@@ -343,20 +343,20 @@ def validate_api_key(api_key):
     """Validate an API key against stored keys."""
     if not api_key or "_" not in api_key:
         return None
-    
+
     # Parse the key to extract key ID
     parts = api_key.split("_")
     if len(parts) < 4:
         return None
-    
+
     prefix, api_text, environment, key_id = parts[0], parts[1], parts[2], parts[3]
-    
+
     if prefix != "alfred" or api_text != "api":
         return None
-    
+
     # In a real implementation, look up the key_id in the database
     # and verify the key value by comparing hashes
-    
+
     # If valid, return the service context
     return {
         "service_id": "example-service",
@@ -376,12 +376,12 @@ function generateApiKey(serviceId, environment = 'dev') {
   const keyId = crypto.randomBytes(8).toString('hex');
   const keyValue = crypto.randomBytes(16).toString('hex');
   const key = `alfred_api_${environment}_${keyId}`;
-  
+
   // In a real implementation, store the hashed key value
   const hashedKey = crypto.createHash('sha256').update(keyValue).digest('hex');
-  
+
   // Store in database: serviceId, key, hashedKey, creation time, etc.
-  
+
   return `${key}_${keyValue}`;
 }
 
@@ -409,22 +409,22 @@ function validateApiKey(apiKey) {
   if (!apiKey || !apiKey.includes('_')) {
     return null;
   }
-  
+
   // Parse the key to extract key ID
   const parts = apiKey.split('_');
   if (parts.length < 4) {
     return null;
   }
-  
+
   const [prefix, apiText, environment, keyId] = parts;
-  
+
   if (prefix !== 'alfred' || apiText !== 'api') {
     return null;
   }
-  
+
   // In a real implementation, look up the keyId in the database
   // and verify the key value by comparing hashes
-  
+
   // If valid, return the service context
   return {
     serviceId: 'example-service',

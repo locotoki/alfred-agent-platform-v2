@@ -4,11 +4,11 @@ This module provides standardized health check endpoints for services in the Alf
 
 ## Overview
 
-The health check module implements the three required endpoints as specified in 
+The health check module implements the three required endpoints as specified in
 `docs/HEALTH_CHECK_STANDARD.md`:
 
 1. `/health` - Detailed health status
-2. `/healthz` - Simple health probe 
+2. `/healthz` - Simple health probe
 3. `/metrics` - Prometheus metrics
 
 ## Usage

@@ -4,9 +4,9 @@ info:
   description: |
     Social Intelligence Service provides trend analysis and social media monitoring capabilities,
     with a focus on YouTube niche discovery and channel strategy generation.
-    
+
     ## Features
-    
+
     - **Niche Scout**: Identifies high-potential YouTube niches with opportunity scoring
     - **Seed to Blueprint**: Generates channel strategy blueprints from seed videos
     - **Workflow Management**: Schedule and manage analysis workflows
@@ -56,7 +56,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-  
+
   /niche-scout:
     get:
       summary: Run Niche-Scout workflow
@@ -101,7 +101,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-  
+
   /youtube/niche-scout:
     get:
       summary: Alternative endpoint for Niche-Scout workflow
@@ -141,7 +141,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-  
+
   /api/youtube/niche-scout:
     get:
       summary: Alternative endpoint for Niche-Scout workflow
@@ -181,7 +181,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-  
+
   /seed-to-blueprint:
     post:
       summary: Run Seed-to-Blueprint workflow
@@ -238,7 +238,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-  
+
   /workflow-result/{result_id}:
     get:
       summary: Retrieve workflow results
@@ -281,7 +281,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-  
+
   /workflow-history:
     get:
       summary: Retrieve workflow history
@@ -310,7 +310,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-  
+
   /scheduled-workflows:
     get:
       summary: Retrieve scheduled workflows
@@ -339,7 +339,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-  
+
   /schedule-workflow:
     post:
       summary: Schedule a new workflow
@@ -408,7 +408,7 @@ components:
         - version
         - status
         - supported_intents
-    
+
     NicheScoutResult:
       type: object
       properties:
@@ -472,7 +472,7 @@ components:
         - trending_niches
         - top_niches
         - _id
-    
+
     NicheData:
       type: object
       properties:
@@ -515,7 +515,7 @@ components:
       required:
         - query
         - score
-    
+
     BlueprintResult:
       type: object
       properties:
@@ -575,7 +575,7 @@ components:
         - channel_strategy
         - execution_plan
         - _id
-    
+
     CompetitorAnalysis:
       type: object
       properties:
@@ -621,7 +621,7 @@ components:
         - channel
         - subscribers
         - avg_views
-    
+
     ChannelStrategy:
       type: object
       properties:
@@ -672,7 +672,7 @@ components:
           items:
             type: string
           example: ["Collaborate with complementary channels", "Create consistent intro/outro template"]
-    
+
     ExecutionPlan:
       type: object
       properties:
@@ -691,7 +691,7 @@ components:
           items:
             type: string
           example: ["View-to-subscriber conversion rate > 5%"]
-    
+
     WorkflowHistoryEntry:
       type: object
       properties:
@@ -738,7 +738,7 @@ components:
         - parameters
         - status
         - started_at
-    
+
     ScheduledWorkflow:
       type: object
       properties:
@@ -792,7 +792,7 @@ components:
         - frequency
         - next_run
         - status
-    
+
     ScheduleWorkflowRequest:
       type: object
       properties:
@@ -821,7 +821,7 @@ components:
         - parameters
         - frequency
         - next_run
-    
+
     Error:
       type: object
       properties:

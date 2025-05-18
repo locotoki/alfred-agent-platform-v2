@@ -15,7 +15,7 @@ Successfully completed the namespace refactor, migrating all core services to th
 ### 2. Code Organization
 ```
 alfred/
-├── core/         # Core platform functionality  
+├── core/         # Core platform functionality
 ├── metrics/      # All metrics services
 ├── model/        # Model registry and router
 ├── remediation/  # Remediation workflows

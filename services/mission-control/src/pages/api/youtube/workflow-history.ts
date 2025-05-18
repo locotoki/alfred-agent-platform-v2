@@ -11,7 +11,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(200).json(mockWorkflowHistory);
   } catch (error) {
     console.error('Error in workflow-history API:', error);
-    return res.status(500).json({ 
+    return res.status(500).json({
       error: 'Failed to retrieve workflow history',
       detail: error instanceof Error ? error.message : 'Unknown error'
     });

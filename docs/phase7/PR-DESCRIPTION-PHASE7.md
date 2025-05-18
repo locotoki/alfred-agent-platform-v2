@@ -30,7 +30,7 @@ Before merging this PR, a repository maintainer must add the following secrets i
 - `SLACK_APP_TOKEN` - From Slack → Basic Info → App-Level Token (connections:write)
 - `SLACK_SIGNING_SECRET` - From Slack → Basic Info → Signing Secret
 
-### Prod Environment 
+### Prod Environment
 - `CREWAI_ENDPOINT_PROD` - Set to https://crewai.prod.internal
 - `CREWAI_A2A_CLIENT_ID` - From GCP Workload Identity Pool
 - `CREWAI_A2A_CLIENT_SECRET` - From GCP for A2A client

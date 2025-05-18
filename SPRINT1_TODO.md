@@ -40,12 +40,12 @@ locust -f load/alert_group.py --headless -u 50 -r 10 -t 2m
 
 ## 4 ▸ Required Files
 ```
-backend/alfred/alerts/grouping.py  
-backend/alfred/alerts/models/alert_group.py  
-migrations/versions/20250520_add_alert_group_table.py  
-api/routes/alerts.py  
-frontend/src/components/GroupedAlerts.tsx  
-docs/dev/alert-grouping.md  
+backend/alfred/alerts/grouping.py
+backend/alfred/alerts/models/alert_group.py
+migrations/versions/20250520_add_alert_group_table.py
+api/routes/alerts.py
+frontend/src/components/GroupedAlerts.tsx
+docs/dev/alert-grouping.md
 ```
 
 ## 5 ▸ CI Requirements

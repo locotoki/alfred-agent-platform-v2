@@ -21,7 +21,7 @@ import (
     "context"
     "log"
     "time"
-    
+
     "github.com/locotoki/alfred-agent-platform-v2/internal/db"
 )
 
@@ -29,33 +29,33 @@ func main() {
     // Create a database driver with default configuration
     cfg := db.DefaultConfig()
     cfg.DSN = "postgres://user:password@localhost:5432/dbname"
-    
+
     driver, err := db.NewDriver(cfg)
     if err != nil {
         log.Fatalf("Failed to create driver: %v", err)
     }
-    
+
     // Connect to the database
     ctx := context.Background()
     if err := driver.Connect(ctx); err != nil {
         log.Fatalf("Failed to connect: %v", err)
     }
     defer driver.Close()
-    
+
     // Check database health
     if err := driver.Ping(ctx); err != nil {
         log.Printf("Ping failed: %v", err)
     }
-    
+
     // Perform read/write test
     if err := driver.CheckReadWrite(ctx); err != nil {
         log.Printf("Read/write test failed: %v", err)
     }
-    
+
     // Get database status
     status := driver.Status()
     log.Printf("Database status: %s", status)
-    
+
     // Get metrics for Prometheus
     metrics := driver.Metrics()
     for name, value := range metrics {

@@ -10,7 +10,7 @@ These scripts are part of the core health check standardization:
 - `bulk-update-health-binary.sh`: Automatically updates Dockerfiles to use healthcheck v0.4.0
 - `ensure-metrics-exported.sh`: Verifies all services are properly exporting metrics on port 9091
 
-## Temporary CI Fix Scripts 
+## Temporary CI Fix Scripts
 
 These scripts are temporary workarounds for CI issues during the health check consolidation PR:
 

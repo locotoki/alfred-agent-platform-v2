@@ -43,7 +43,7 @@ Then visit:
    - Category and subcategory selection
    - Research parameter configuration
    - Results visualization with multiple tabs
-   
+
 3. **Seed-to-Blueprint Workflow**:
    - Three-step wizard interface
    - Seed video or niche-based input options

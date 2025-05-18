@@ -2,16 +2,16 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 
 /**
  * Seed-to-Blueprint API Endpoint
- * 
+ *
  * This API proxy forwards requests to the Social Intelligence Agent's Seed-to-Blueprint workflow.
  * It transforms request parameters into the proper A2A envelope format expected by the agent.
- * 
+ *
  * Query Parameters:
  * - video_url: URL of a YouTube video to use as seed (required if niche not provided)
  * - niche: Niche keyword to use instead of a seed video (required if video_url not provided)
  * - analysisDepth: Level of analysis depth (optional, defaults to 'Standard')
  *   Options: 'Quick', 'Standard', 'Deep'
- * 
+ *
  * Returns:
  * - 200: BlueprintResult object with channel strategy data
  * - 400: Bad request (missing required parameters)
@@ -62,10 +62,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       `${SOCIAL_INTEL_URL}/api/youtube/blueprint`,
       `${SOCIAL_INTEL_URL}/blueprint`
     ];
-    
+
     let response: Response | null = null;
     let lastError: any = null;
-    
+
     // Try each endpoint until one works
     for (const endpoint of endpoints) {
       try {
@@ -79,7 +79,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           // Add timeout to prevent hanging requests
           signal: AbortSignal.timeout(120000) // 120 second timeout for this complex workflow which may take longer
         });
-        
+
         if (response.ok) {
           console.log(`Successfully called endpoint: ${endpoint}`);
           break;
@@ -97,7 +97,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     // If all endpoints failed or returned errors
     if (!response || !response.ok) {
       console.error('All endpoints failed, returning mock data for development');
-      
+
       // Create mock data for development/testing
       const mockData = {
         run_date: new Date().toISOString(),
@@ -202,24 +202,24 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         blueprint_url: "#",
         _id: `mock-blueprint-${Date.now()}`
       };
-      
+
       console.log('Returning mock data with ID:', mockData._id);
       return res.status(200).json(mockData);
     }
 
     // Parse and return the successful API response
     const data = await response.json();
-    
+
     // Add an _id field if not present (for result page retrieval)
     if (!data._id) {
       data._id = `blueprint-${Date.now()}`;
     }
-    
+
     console.log('Successfully ran Seed-to-Blueprint workflow, returning data with ID:', data._id);
     return res.status(200).json(data);
   } catch (error) {
     console.error('Error in Seed-to-Blueprint API handler:', error);
-    
+
     // Return mock data if there's an error connecting to the service
     console.warn('Unexpected error, returning mock data');
     // Reference the query parameter correctly
@@ -326,7 +326,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       blueprint_url: "#",
       _id: `mock-blueprint-${Date.now()}`
     };
-    
+
     console.log('Returning mock data with ID:', mockData._id);
     return res.status(200).json(mockData);
   }

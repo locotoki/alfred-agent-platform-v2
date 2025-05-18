@@ -13,26 +13,26 @@ def create_health_app(service_name: str, version: str) -> FastAPI:
         description=f"Health checks for {service_name}",
         version=version,
     )
-    
+
     @health_app.get("/")
     async def health_check():
         """Basic health check endpoint."""
         return {"status": "healthy", "service": service_name, "version": version}
-    
+
     @health_app.get("/metrics")
     async def metrics():
         """Prometheus metrics endpoint."""
         return prometheus_client.generate_latest()
-    
+
     @health_app.get("/ready")
     async def readiness_check():
         """Readiness check endpoint."""
         return {"status": "ready"}
-    
+
     @health_app.get("/live")
     async def liveness_check():
         """Liveness check endpoint."""
         return {"status": "alive"}
-    
+
     logger.info("Created health app", service=service_name, version=version)
     return health_app

@@ -2,14 +2,14 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 
 /**
  * API Health Check Endpoint
- * 
+ *
  * This endpoint returns information about the running services and their connectivity status.
  * It's useful for diagnosing API connection issues with the Social Intelligence Agent.
  */
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const SOCIAL_INTEL_URL = process.env.SOCIAL_INTEL_URL || 'http://localhost:9000';
-  
+
   // Check connections and build status information
   const status = {
     mission_control: {
@@ -42,14 +42,14 @@ async function checkServiceStatus(url: string): Promise<{status: string, message
   try {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 5000);
-    
+
     const response = await fetch(`${url}/health`, {
       method: 'GET',
       signal: controller.signal,
     }).catch(() => null);
-    
+
     clearTimeout(timeoutId);
-    
+
     if (response && response.ok) {
       return { status: 'online', message: 'Service is responding correctly' };
     } else {

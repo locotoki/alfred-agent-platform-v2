@@ -16,7 +16,7 @@ dashboards/
 ├── infrastructure/     # Infrastructure dashboards
 │   ├── postgres-dashboard.json
 │   └── redis-dashboard.json
-└── backup/             # Backup of dashboards 
+└── backup/             # Backup of dashboards
     └── platform-health-dashboard-20250513-120000.json
 ```
 

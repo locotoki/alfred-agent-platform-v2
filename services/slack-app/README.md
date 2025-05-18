@@ -45,7 +45,7 @@ The `/alfred` command supports the following subcommands:
 
 ### Testing
 
-Run the tests with: 
+Run the tests with:
 ```
 pytest tests/slack
 ```

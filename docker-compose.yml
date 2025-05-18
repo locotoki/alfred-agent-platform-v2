@@ -9,7 +9,7 @@
 # Common service label templates
 x-common-labels: &common-labels
   com.docker.compose.project: "alfred"
-  
+
 x-infra-service-labels: &infra-service-labels
   <<: *common-labels
   com.docker.compose.group: "infrastructure"
@@ -55,7 +55,7 @@ services:
   #############################################################################
   # CORE INFRASTRUCTURE SERVICES
   #############################################################################
-  
+
   # Redis - In-memory data store
   redis:
     image: redis:7-alpine
@@ -74,7 +74,7 @@ services:
     labels:
       <<: *infra-service-labels
       com.docker.compose.service: "redis"
-      
+
   # Redis Exporter - Metrics for Redis
   redis-exporter:
     image: oliver006/redis_exporter:v1.55.0
@@ -137,7 +137,7 @@ services:
     labels:
       <<: *infra-service-labels
       com.docker.compose.service: "pubsub-emulator"
-      
+
   # PubSub Metrics Exporter
   pubsub-metrics:
     build:
@@ -342,7 +342,7 @@ services:
       <<: *database-service-labels
       com.docker.compose.service: "db-auth"
       prometheus.metrics.port: "9091"
-      
+
   # Database Auth Metrics Exporter
   db-auth-metrics:
     build:
@@ -396,7 +396,7 @@ services:
     labels:
       <<: *database-service-labels
       com.docker.compose.service: "db-api"
-      
+
   # Database REST API Metrics Exporter
   db-api-metrics:
     build:
@@ -456,7 +456,7 @@ services:
     labels:
       <<: *database-service-labels
       com.docker.compose.service: "db-admin"
-      
+
   # Database Admin UI Metrics Exporter
   db-admin-metrics:
     build:
@@ -524,7 +524,7 @@ services:
     labels:
       <<: *database-service-labels
       com.docker.compose.service: "db-realtime"
-      
+
   # Database Realtime Metrics Exporter
   db-realtime-metrics:
     build:
@@ -595,7 +595,7 @@ services:
     labels:
       <<: *database-service-labels
       com.docker.compose.service: "db-storage"
-      
+
   # Database Storage Metrics Exporter
   db-storage-metrics:
     build:

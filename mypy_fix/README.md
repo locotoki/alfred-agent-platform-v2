@@ -5,7 +5,7 @@ This directory contains scripts and configurations for fixing mypy issues in CI.
 ## Files
 
 - `run-mypy-fixed.sh`: A script that runs mypy with special handling for our codebase
-  
+
 ## Purpose
 
 This directory exists to ensure CI checks pass for cleanup PRs while we're transitioning

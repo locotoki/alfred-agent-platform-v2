@@ -103,3 +103,9 @@ terraform.tfvars
 
 # Jupyter
 .ipynb_checkpoints/
+
+# Archived directories (moved to /home/locotoki/alfred-archives-20250518)
+backup/
+backup-tmp/
+cleanup-temp/
+*.bak-*
