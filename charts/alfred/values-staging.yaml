@@ -7,9 +7,9 @@
 slackMcpGateway:
   enabled: true
   image:
-    repository: ghcr.io/locotoki/slack-mcp-gateway
+    repository: ghcr.io/locotoki/alfred-platform/slack_mcp_gateway
     tag: "0.1.0-rc3"
-    digest: "sha256:42bb863efa3faa2fef3a024bd22bbd1a492522488a952397b13c6329ab62ce4a"
+    digest: "sha256:3cf61e62e5e26849e4aa4ed3da53c8a5e03141739a0fd5a9cd2473aca772c057"
     pullPolicy: Always
   
   # Environment configuration

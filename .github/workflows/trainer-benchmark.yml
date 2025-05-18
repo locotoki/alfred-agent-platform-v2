@@ -62,7 +62,20 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
+<<<<<<< HEAD
+<<<<<<< HEAD
           pip install sentence-transformers psutil ray[default]
+=======
+<<<<<<< HEAD
+          pip install sentence-transformers psutil ray[default]
+=======
+          pip install -r requirements-dev.txt
+          pip install ray[default] sentence-transformers psutil
+>>>>>>> origin/feat/phase8.3-sprint4
+>>>>>>> origin/feat/phase8.3-sprint4
+=======
+          pip install sentence-transformers psutil ray[default]
+>>>>>>> origin/main
       
       - name: Initialize test database
         env:
@@ -115,14 +128,39 @@ jobs:
           print('Test database initialized with 1000 alerts')
           "
       
+<<<<<<< HEAD
+<<<<<<< HEAD
       - name: Run HF transformer benchmark
         run: |
           echo "Running HuggingFace transformer benchmark..."
+=======
+<<<<<<< HEAD
+      - name: Run HF transformer benchmark
+        run: |
+          echo "Running HuggingFace transformer benchmark..."
+=======
+      - name: Run training benchmark
+        run: |
+          echo "Running training benchmark..."
+>>>>>>> origin/feat/phase8.3-sprint4
+>>>>>>> origin/feat/phase8.3-sprint4
+=======
+      - name: Run HF transformer benchmark
+        run: |
+          echo "Running HuggingFace transformer benchmark..."
+>>>>>>> origin/main
           python -c "
           import time
           import json
           import psutil
           import os
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> origin/feat/phase8.3-sprint4
+=======
+>>>>>>> origin/main
           from alfred.ml import HFEmbedder
           
           # Initialize embedder
@@ -145,11 +183,48 @@ jobs:
           
           # Calculate per-text latency
           per_text_latency = (total_time / len(test_texts)) * 1000  # ms
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+          from alfred.alerts.dataset import AlertDataset
+          from alfred.alerts.trainer import AlertTrainer
+          from alfred.ml.thresholds import ThresholdService
+          
+          # Benchmark dataset loading
+          start_time = time.time()
+          dataset = AlertDataset(os.environ['ALERT_DB_URI'])
+          alerts = dataset.load_recent_alerts(1000)
+          load_time = time.time() - start_time
+          
+          # Benchmark training
+          trainer = AlertTrainer()
+          start_time = time.time()
+          model = trainer.train(alerts)
+          train_time = time.time() - start_time
+          
+          # Benchmark inference
+          test_alerts = dataset.load_recent_alerts(100)
+          start_time = time.time()
+          for alert in test_alerts:
+              model.predict(alert)
+          inference_time = (time.time() - start_time) / len(test_alerts) * 1000  # ms per alert
+>>>>>>> origin/feat/phase8.3-sprint4
+>>>>>>> origin/feat/phase8.3-sprint4
+=======
+>>>>>>> origin/main
           
           # Memory usage
           process = psutil.Process()
           memory_usage = process.memory_info().rss / 1024 / 1024  # MB
           
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> origin/feat/phase8.3-sprint4
+=======
+>>>>>>> origin/main
           # Test similarity calculation
           start_time = time.time()
           for i in range(10):
@@ -174,6 +249,34 @@ jobs:
           print(f'Similarity latency: {similarity_time:.2f}ms')
           print(f'Memory usage: {memory_usage:.0f}MB')
           print(f'Embedding dimension: {embeddings.shape[1]}')
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+          # Calculate noise reduction rate
+          noise_count = sum(1 for a in test_alerts if model.predict(a) > 0.7)
+          noise_rate = (len(test_alerts) - noise_count) / len(test_alerts)
+          
+          results = {
+              'dataset_load_time': load_time,
+              'training_time': train_time,
+              'inference_latency_ms': inference_time,
+              'memory_usage_mb': memory_usage,
+              'noise_reduction_rate': noise_rate
+          }
+          
+          with open('benchmark_results.json', 'w') as f:
+              json.dump(results, f, indent=2)
+          
+          print(f'Dataset load time: {load_time:.2f}s')
+          print(f'Training time: {train_time:.2f}s')
+          print(f'Inference P99: {inference_time:.2f}ms')
+          print(f'Memory usage: {memory_usage:.0f}MB')
+          print(f'Noise reduction: {noise_rate*100:.1f}%')
+>>>>>>> origin/feat/phase8.3-sprint4
+>>>>>>> origin/feat/phase8.3-sprint4
+=======
+>>>>>>> origin/main
           "
       
       - name: Check performance targets
@@ -181,6 +284,13 @@ jobs:
           python -c "
           import json
           
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> origin/feat/phase8.3-sprint4
+=======
+>>>>>>> origin/main
           with open('hf_benchmark_results.json') as f:
               data = json.load(f)
           
@@ -197,10 +307,41 @@ jobs:
           assert latency < 15, f'Inference latency {latency:.1f}ms exceeds 15ms target'
           assert similarity_latency < 1, f'Similarity calc {similarity_latency:.1f}ms exceeds 1ms target'
           assert memory < 1000, f'Memory usage {memory:.0f}MB exceeds 1GB target'
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+          with open('benchmark_results.json') as f:
+              data = json.load(f)
+          
+          # Check performance targets
+          load_time = data['dataset_load_time']
+          latency = data['inference_latency_ms']
+          memory = data['memory_usage_mb']
+          noise_cut = data['noise_reduction_rate']
+          
+          print(f'Dataset load time: {load_time:.2f}s')
+          print(f'Inference P99: {latency:.2f}ms')
+          print(f'Memory usage: {memory:.0f}MB')
+          print(f'Noise reduction: {noise_cut*100:.1f}%')
+          
+          # Enforce targets
+          assert load_time < 10, f'Dataset load {load_time:.1f}s exceeds 10s target'
+          assert latency < 15, f'Inference latency {latency:.1f}ms exceeds 15ms target'
+          assert memory < 500, f'Memory usage {memory:.0f}MB exceeds 500MB target'
+          assert noise_cut >= 0.45, f'Noise reduction {noise_cut*100:.1f}% below 45% target'
+>>>>>>> origin/feat/phase8.3-sprint4
+>>>>>>> origin/feat/phase8.3-sprint4
+=======
+>>>>>>> origin/main
           
           print('✅ All performance targets met!')
           "
       
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> origin/main
       - name: Run MLflow integration test
         run: |
           echo "Testing MLflow model registry integration..."
@@ -251,14 +392,70 @@ jobs:
                   f.write(model_uri)
           "
       
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+      - name: Run threshold optimization test
+        run: |
+          echo "Testing threshold optimization..."
+          python -c "
+          import json
+          from alfred.ml.thresholds import ThresholdService
+          
+          # Test threshold optimization
+          service = ThresholdService()
+          initial = service.get_thresholds()
+          
+          # Simulate performance metrics
+          metrics = {
+              'false_positive_rate': 0.08,
+              'accuracy': 0.92
+          }
+          
+          optimized = service.optimize_thresholds(metrics)
+          
+          results = {
+              'initial_thresholds': initial,
+              'optimized_thresholds': optimized,
+              'performance_metrics': metrics
+          }
+          
+          with open('threshold_results.json', 'w') as f:
+              json.dump(results, f, indent=2)
+          
+          print(f'Initial noise threshold: {initial[\"noise_threshold\"]}')
+          print(f'Optimized noise threshold: {optimized[\"noise_threshold\"]}')
+          print(f'Adjustment: {(optimized[\"noise_threshold\"] - initial[\"noise_threshold\"]) * 100:.1f}%')
+          "
+      
+>>>>>>> origin/feat/phase8.3-sprint4
+>>>>>>> origin/feat/phase8.3-sprint4
+=======
+>>>>>>> origin/main
       - name: Upload benchmark report
         uses: actions/upload-artifact@v3
         if: always()
         with:
           name: trainer-benchmark-report
           path: |
+<<<<<<< HEAD
+<<<<<<< HEAD
             hf_benchmark_results.json
             model_uri.txt
+=======
+<<<<<<< HEAD
+            hf_benchmark_results.json
+=======
+            benchmark_results.json
+            threshold_results.json
+            .benchmarks/
+>>>>>>> origin/feat/phase8.3-sprint4
+>>>>>>> origin/feat/phase8.3-sprint4
+=======
+            hf_benchmark_results.json
+            model_uri.txt
+>>>>>>> origin/main
       
       - name: Post results to PR
         if: github.event_name == 'pull_request'
@@ -267,6 +464,10 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const fs = require('fs');
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> origin/main
             const data = JSON.parse(fs.readFileSync('hf_benchmark_results.json'));
             let modelUri = '';
             
@@ -275,11 +476,29 @@ jobs:
             } catch(e) {
               modelUri = 'Not available';
             }
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+            const data = JSON.parse(fs.readFileSync('hf_benchmark_results.json'));
+=======
+            const data = JSON.parse(fs.readFileSync('benchmark_results.json'));
+            const thresholds = JSON.parse(fs.readFileSync('threshold_results.json'));
+>>>>>>> origin/feat/phase8.3-sprint4
+>>>>>>> origin/feat/phase8.3-sprint4
+=======
+>>>>>>> origin/main
             
             const comment = `## 🎯 ML Trainer Benchmark Results
             
             ✅ Completed in < 3 minutes
             
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> origin/feat/phase8.3-sprint4
+=======
+>>>>>>> origin/main
             **HuggingFace Transformer Metrics:**
             - 📦 Total Texts: ${data.total_texts}
             - ⚡ Per-text Inference: ${data.per_text_latency_ms.toFixed(2)}ms (target < 15ms)
@@ -287,6 +506,10 @@ jobs:
             - 🧠 Memory Usage: ${data.memory_usage_mb.toFixed(0)}MB (target < 1GB)
             - 📏 Embedding Dimension: ${data.embedding_dimension}
             
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> origin/main
             **MLflow Integration:**
             - ✅ Model logged to MLflow registry
             - 📦 Model URI: \`${modelUri}\`
@@ -295,6 +518,27 @@ jobs:
             **Model Caching:**
             - ✅ HuggingFace models cached via GitHub Actions
             - ✅ Cache key: ${process.env.RUNNER_OS}-hf-models-*
+<<<<<<< HEAD
+=======
+            **Model Caching:**
+            - ✅ HuggingFace models cached via GitHub Actions
+            - ✅ Cache key: ${process.env.RUNNER_OS}-hf-models-*
+=======
+            **Performance Metrics:**
+            - 📦 Dataset Load: ${data.dataset_load_time.toFixed(2)}s (target < 10s)
+            - 🏃 Training Time: ${data.training_time.toFixed(2)}s
+            - ⚡ Inference P99: ${data.inference_latency_ms.toFixed(2)}ms (target < 15ms)
+            - 🧠 Memory Usage: ${data.memory_usage_mb.toFixed(0)}MB (target < 500MB)
+            - 🔇 Noise Reduction: ${(data.noise_reduction_rate * 100).toFixed(1)}% (target ≥ 45%)
+            
+            **Threshold Optimization:**
+            - Initial Noise Threshold: ${thresholds.initial_thresholds.noise_threshold}
+            - Optimized Noise Threshold: ${thresholds.optimized_thresholds.noise_threshold}
+            - Adjustment: ${((thresholds.optimized_thresholds.noise_threshold - thresholds.initial_thresholds.noise_threshold) * 100).toFixed(1)}%
+>>>>>>> origin/feat/phase8.3-sprint4
+>>>>>>> origin/feat/phase8.3-sprint4
+=======
+>>>>>>> origin/main
             
             [Download Full Report](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
             `;
