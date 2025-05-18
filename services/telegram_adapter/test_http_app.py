@@ -1,5 +1,6 @@
 """Test script for Telegram adapter."""
 import socket
+
 import pytest
 
 # Skip tests if socketpair is not supported (e.g., restricted environment).

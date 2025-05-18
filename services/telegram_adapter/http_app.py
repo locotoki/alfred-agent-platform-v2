@@ -3,7 +3,7 @@
 
 import os
 
-from fastapi import FastAPI, Request, Header, HTTPException
+from fastapi import FastAPI, Header, HTTPException, Request
 from prometheus_client import Counter
 
 # TODO: import IntentRouter
