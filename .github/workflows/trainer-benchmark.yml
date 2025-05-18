@@ -13,6 +13,7 @@ on:
       - 'alfred/ml/**'
       - 'alfred/alerts/**'
       - 'backend/alfred/ml/**'
+      - 'backend/alfred/alerts/**'
       - '.github/workflows/trainer-benchmark.yml'
 
 jobs:
@@ -62,6 +63,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 <<<<<<< HEAD
+<<<<<<< HEAD
           pip install sentence-transformers psutil ray[default]
 =======
 <<<<<<< HEAD
@@ -71,6 +73,9 @@ jobs:
           pip install ray[default] sentence-transformers psutil
 >>>>>>> origin/feat/phase8.3-sprint4
 >>>>>>> origin/feat/phase8.3-sprint4
+=======
+          pip install sentence-transformers psutil ray[default]
+>>>>>>> origin/main
       
       - name: Initialize test database
         env:
@@ -124,6 +129,7 @@ jobs:
           "
       
 <<<<<<< HEAD
+<<<<<<< HEAD
       - name: Run HF transformer benchmark
         run: |
           echo "Running HuggingFace transformer benchmark..."
@@ -138,15 +144,23 @@ jobs:
           echo "Running training benchmark..."
 >>>>>>> origin/feat/phase8.3-sprint4
 >>>>>>> origin/feat/phase8.3-sprint4
+=======
+      - name: Run HF transformer benchmark
+        run: |
+          echo "Running HuggingFace transformer benchmark..."
+>>>>>>> origin/main
           python -c "
           import time
           import json
           import psutil
           import os
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 <<<<<<< HEAD
 >>>>>>> origin/feat/phase8.3-sprint4
+=======
+>>>>>>> origin/main
           from alfred.ml import HFEmbedder
           
           # Initialize embedder
@@ -169,6 +183,7 @@ jobs:
           
           # Calculate per-text latency
           per_text_latency = (total_time / len(test_texts)) * 1000  # ms
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 =======
@@ -196,15 +211,20 @@ jobs:
           inference_time = (time.time() - start_time) / len(test_alerts) * 1000  # ms per alert
 >>>>>>> origin/feat/phase8.3-sprint4
 >>>>>>> origin/feat/phase8.3-sprint4
+=======
+>>>>>>> origin/main
           
           # Memory usage
           process = psutil.Process()
           memory_usage = process.memory_info().rss / 1024 / 1024  # MB
           
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 <<<<<<< HEAD
 >>>>>>> origin/feat/phase8.3-sprint4
+=======
+>>>>>>> origin/main
           # Test similarity calculation
           start_time = time.time()
           for i in range(10):
@@ -230,6 +250,7 @@ jobs:
           print(f'Memory usage: {memory_usage:.0f}MB')
           print(f'Embedding dimension: {embeddings.shape[1]}')
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 =======
           # Calculate noise reduction rate
@@ -254,6 +275,8 @@ jobs:
           print(f'Noise reduction: {noise_rate*100:.1f}%')
 >>>>>>> origin/feat/phase8.3-sprint4
 >>>>>>> origin/feat/phase8.3-sprint4
+=======
+>>>>>>> origin/main
           "
       
       - name: Check performance targets
@@ -262,9 +285,12 @@ jobs:
           import json
           
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 <<<<<<< HEAD
 >>>>>>> origin/feat/phase8.3-sprint4
+=======
+>>>>>>> origin/main
           with open('hf_benchmark_results.json') as f:
               data = json.load(f)
           
@@ -281,6 +307,7 @@ jobs:
           assert latency < 15, f'Inference latency {latency:.1f}ms exceeds 15ms target'
           assert similarity_latency < 1, f'Similarity calc {similarity_latency:.1f}ms exceeds 1ms target'
           assert memory < 1000, f'Memory usage {memory:.0f}MB exceeds 1GB target'
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 =======
@@ -305,11 +332,16 @@ jobs:
           assert noise_cut >= 0.45, f'Noise reduction {noise_cut*100:.1f}% below 45% target'
 >>>>>>> origin/feat/phase8.3-sprint4
 >>>>>>> origin/feat/phase8.3-sprint4
+=======
+>>>>>>> origin/main
           
           print('✅ All performance targets met!')
           "
       
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> origin/main
       - name: Run MLflow integration test
         run: |
           echo "Testing MLflow model registry integration..."
@@ -360,6 +392,7 @@ jobs:
                   f.write(model_uri)
           "
       
+<<<<<<< HEAD
 =======
 <<<<<<< HEAD
 =======
@@ -398,12 +431,15 @@ jobs:
       
 >>>>>>> origin/feat/phase8.3-sprint4
 >>>>>>> origin/feat/phase8.3-sprint4
+=======
+>>>>>>> origin/main
       - name: Upload benchmark report
         uses: actions/upload-artifact@v3
         if: always()
         with:
           name: trainer-benchmark-report
           path: |
+<<<<<<< HEAD
 <<<<<<< HEAD
             hf_benchmark_results.json
             model_uri.txt
@@ -416,6 +452,10 @@ jobs:
             .benchmarks/
 >>>>>>> origin/feat/phase8.3-sprint4
 >>>>>>> origin/feat/phase8.3-sprint4
+=======
+            hf_benchmark_results.json
+            model_uri.txt
+>>>>>>> origin/main
       
       - name: Post results to PR
         if: github.event_name == 'pull_request'
@@ -425,6 +465,9 @@ jobs:
           script: |
             const fs = require('fs');
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> origin/main
             const data = JSON.parse(fs.readFileSync('hf_benchmark_results.json'));
             let modelUri = '';
             
@@ -433,6 +476,7 @@ jobs:
             } catch(e) {
               modelUri = 'Not available';
             }
+<<<<<<< HEAD
 =======
 <<<<<<< HEAD
             const data = JSON.parse(fs.readFileSync('hf_benchmark_results.json'));
@@ -441,15 +485,20 @@ jobs:
             const thresholds = JSON.parse(fs.readFileSync('threshold_results.json'));
 >>>>>>> origin/feat/phase8.3-sprint4
 >>>>>>> origin/feat/phase8.3-sprint4
+=======
+>>>>>>> origin/main
             
             const comment = `## 🎯 ML Trainer Benchmark Results
             
             ✅ Completed in < 3 minutes
             
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 <<<<<<< HEAD
 >>>>>>> origin/feat/phase8.3-sprint4
+=======
+>>>>>>> origin/main
             **HuggingFace Transformer Metrics:**
             - 📦 Total Texts: ${data.total_texts}
             - ⚡ Per-text Inference: ${data.per_text_latency_ms.toFixed(2)}ms (target < 15ms)
@@ -458,6 +507,9 @@ jobs:
             - 📏 Embedding Dimension: ${data.embedding_dimension}
             
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> origin/main
             **MLflow Integration:**
             - ✅ Model logged to MLflow registry
             - 📦 Model URI: \`${modelUri}\`
@@ -466,6 +518,7 @@ jobs:
             **Model Caching:**
             - ✅ HuggingFace models cached via GitHub Actions
             - ✅ Cache key: ${process.env.RUNNER_OS}-hf-models-*
+<<<<<<< HEAD
 =======
             **Model Caching:**
             - ✅ HuggingFace models cached via GitHub Actions
@@ -484,6 +537,8 @@ jobs:
             - Adjustment: ${((thresholds.optimized_thresholds.noise_threshold - thresholds.initial_thresholds.noise_threshold) * 100).toFixed(1)}%
 >>>>>>> origin/feat/phase8.3-sprint4
 >>>>>>> origin/feat/phase8.3-sprint4
+=======
+>>>>>>> origin/main
             
             [Download Full Report](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
             `;
