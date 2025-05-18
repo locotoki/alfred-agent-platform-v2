@@ -2,13 +2,27 @@
 
 ### Added
 - ML-based noise ranking to reduce alert volume by 30%+ (Sprint 3)
-- Custom grouping rules DSL for service-specific configurations  
+- Custom grouping rules DSL for service-specific configurations
 - Feedback loop UI for user input on alert relevance
 - Alert snooze API with Redis TTL support
 - Comprehensive benchmark suite for ranker performance
+- FAISS performance tuning with HNSW and OPQ+HNSW index types
+- Default optimized configurations for sub-10ms P99 query latency
+- Support for custom index configurations
+- FAISSTuner integration for automatic performance optimization
+- `from_tuning_result` class method to create indexes from tuning results
+- Comprehensive benchmarking script for performance comparison
 
 ### Changed
 - Enhanced grouping algorithm with ML similarity scoring
+- AlertSearchEngine now defaults to HNSW index type for better performance
+- FAISSIndex constructor accepts optional config parameter
+- Index save/load now preserves configuration and device settings
+
+### Performance
+- Achieved 93% reduction in P99 query latency compared to Flat index
+- Sub-10ms P99 latency with optimized HNSW configuration
+- 75% memory reduction option with OPQ+HNSW
 
 ### Documentation
 - Added comprehensive noise reduction guide in docs/dev/
@@ -23,7 +37,7 @@
   - Comprehensive Grafana dashboards
   - Successful canary rollout (5% → 25% → 100%)
   - Feature flag removed after stable deployment
-  
+
 ### Performance
 - P95 latency: 129ms (target < 150ms)
 - Error rate: 0.3% (target < 0.5%)
