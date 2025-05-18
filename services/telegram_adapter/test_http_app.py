@@ -1,4 +1,12 @@
 """Test script for Telegram adapter."""
+import socket
+import pytest
+
+# Skip tests if socketpair is not supported (e.g., restricted environment).
+try:
+    socket.socketpair()
+except (AttributeError, OSError):
+    pytest.skip("socket.socketpair is not supported, skipping module", allow_module_level=True)
 
 from fastapi.testclient import TestClient
 
