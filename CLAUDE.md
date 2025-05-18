@@ -115,10 +115,13 @@ Only the following must be green to merge:
 To execute Sprint workflows and automated tasks, ensure GitHub CLI has proper permissions:
 
 ### Required Token Scopes
-- `repo` - Full repository access
-- `workflow` - Update GitHub Actions
-- `write:discussion` - Comment on issues
-- `project` - Manage project boards
+**IMPORTANT**: Your current token is missing critical scopes. You need:
+- ✅ `repo` - Full repository access (you have this)
+- ✅ `workflow` - Update GitHub Actions (you have this)
+- ❌ `write:discussion` - Comment on issues (MISSING - add this!)
+- ❌ `project` - Manage project boards (MISSING - add this!)
+
+See `docs/GITHUB_TOKEN_REQUIREMENTS.md` for fix instructions.
 
 ### Quick Setup Check
 ```bash
