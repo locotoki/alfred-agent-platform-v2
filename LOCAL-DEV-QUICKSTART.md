@@ -143,3 +143,6 @@ For detailed deployment guides, see:
 - [Deployment Documentation](docs/deployment/)
 - [Service Documentation](docs/services/)
 - [Agent Development Guide](docs/agents/)
+
+> **Tip :** If `pre-commit` throws a read-only DB error, run:
+> `export PRE_COMMIT_HOME=$HOME/.cache/pre-commit`

@@ -73,3 +73,7 @@ Each milestone consists of:
 | 8.1 | Typing + Alert enrichment | 🟡 Active |
 | 8.2 | Slack-based Alert Explanation Agent | 🔜 Planning |
 | 8.3 | CrewAI Graph Builder | ⬜ Pending |
+
+### Local Setup
+
+* If pre-commit fails with a read-only DB, export `PRE_COMMIT_HOME=$HOME/.cache/pre-commit`.

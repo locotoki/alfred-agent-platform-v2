@@ -1,5 +1,8 @@
 ## [Unreleased]
 
+### Docs
+- Added PRE_COMMIT_HOME tip to Project Instructions and Quick-start.
+
 ### Added
 - ML-based noise ranking to reduce alert volume by 30%+ (Sprint 3)
 - Custom grouping rules DSL for service-specific configurations
@@ -44,8 +47,6 @@
 - Noise reduction: 42%
 - Zero rollbacks during deployment
 
-<<<<<<< HEAD
-=======
 ## [0.8.4] - 2025-05-17
 
 ### Added
