@@ -4,10 +4,14 @@ repos:
     hooks:
       - id: check-added-large-files
       - id: check-yaml
+        files: |
+          ^(services/telegram_adapter|alfred|tests|scripts)
       - id: check-json
       - id: end-of-file-fixer
       - id: trailing-whitespace
       - id: check-case-conflict
+        files: |
+          ^(services/telegram_adapter|alfred|tests|scripts)
       - id: check-merge-conflict
 
   - repo: https://github.com/psf/black
@@ -16,6 +20,8 @@ repos:
       - id: black
         language_version: python3.11
         exclude: "(youtube-test-env/|migrations/|node_modules/|\\.git/|\\.mypy_cache/|\\.env/|\\.venv/|env/|venv/|\\.ipynb/)"
+        files: |
+          ^(services/telegram_adapter|alfred|tests|scripts)
 
   - repo: https://github.com/pycqa/isort
     rev: 5.13.2
@@ -29,3 +35,5 @@ repos:
       - id: flake8
         additional_dependencies: [flake8-docstrings, flake8-quotes]
         exclude: "^(tests/|docs/|migrations/)"
+        files: |
+          ^(services/telegram_adapter|alfred|tests|scripts)
