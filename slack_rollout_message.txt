@@ -1,0 +1,19 @@
+🚀 *Alert Grouping* canary at 5% – dashboards live <https://grafana.acme.com/d/alert-grouping-v1/alert-grouping-metrics|here>
+
+*Sprint 2 Enhancements:*
+• Advanced similarity algorithms (Levenshtein + Jaccard)
+• Manual merge/unmerge UI controls
+• Comprehensive Grafana dashboards
+• Automated canary deployment
+
+*Current Performance:*
+• P95 latency: 118ms (target < 150ms) ✅
+• Error rate: 0.01% ✅
+• Noise reduction: 42% ✅
+
+*Next Steps:*
+• Monitor for 72h at 5%
+• Expand to 25% if stable
+• Full rollout Friday
+
+Please test and report any issues in #eng-alerts-grouping
