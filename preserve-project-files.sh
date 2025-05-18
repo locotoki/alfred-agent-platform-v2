@@ -9,42 +9,42 @@ PRESERVE_PATTERNS=(
     "backend/alfred/(ml|search)/.*"
     "tests/backend/(ml|search)/.*"
     "docs/sprint5/.*"
-    
+
     # Benchmark configurations
     "\.github/workflows/.*benchmark\.yml"
-    
+
     # Sprint documentation
     "SPRINT.*\.md"
     "docs/phase8/SPRINT.*"
     "docs/phase8/.*\.md"
-    
+
     # Core project files
     "requirements.*\.txt$"
     "pyproject\.toml$"
     "Makefile$"
     "docker-compose.*\.yml$"
-    
+
     # GitHub workflows (keep all for CI/CD)
     "\.github/workflows/.*\.yml$"
-    
+
     # Project documentation
     "README.*\.md$"
     "CHANGELOG.*\.md$"
     "docs/(phase8|sprint5|phase6|phase7)/.*"
-    
+
     # Helm charts
     "charts/alfred/.*"
-    
+
     # Core configuration
     "\.env\.sample$"
     "\.github/CODEOWNERS$"
     "\.github/pull_request_template\.md$"
-    
+
     # Alfred namespace
     "alfred/.*"
     "libs/.*"
     "api/.*"
-    
+
     # Services (keep requirements and docker files)
     "services/.*/requirements\.txt$"
     "services/.*/Dockerfile$"
