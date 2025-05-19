@@ -94,7 +94,7 @@ graph LR
 ## 5 · Coding & Quality Gates
 
 * **pre‑commit hooks**: Black, isort, Ruff, forbid `services.` imports.
-* **flake8** must pass with repo‑level config (`E203,W503,Q000` ignored only).
+* **flake8** must pass with strict repo‑level config (`E203,W503,Q000` ignored only, all others enforced).
 * **pytest‑core** smoke suite green.
 * Write tests for new scripts when feasible (e.g., run script with env‑fixtures).
 
