@@ -1,4 +1,4 @@
-"""LangChain implementations for Financial Tax Agent"""
+"""LangChain implementations for Financial Tax Agent."""
 
 from langchain.chains import LLMChain
 from langchain.output_parsers import PydanticOutputParser
@@ -18,9 +18,10 @@ from .models import (
 
 
 class TaxCalculationChain:
-    """Chain for tax calculation processing"""
+    """Chain for tax calculation processing."""
 
     def __init__(self, llm: ChatOpenAI = None):
+        """Initialize the tax calculation chain with an optional LLM."""
         self.llm = llm or ChatOpenAI(temperature=0, model="gpt-4")
         self.output_parser = PydanticOutputParser(pydantic_object=TaxCalculationResponse)
 
@@ -62,24 +63,27 @@ Provide a detailed tax calculation including:
         self.chain = LLMChain(llm=self.llm, prompt=self.prompt)
 
     async def calculate(self, request: TaxCalculationRequest) -> TaxCalculationResponse:
-        """Process tax calculation request"""
-        result = await self.chain.arun(
-            income=request.income,
-            deductions=request.deductions,
-            credits=request.credits,
-            jurisdiction=request.jurisdiction.value,
-            tax_year=request.tax_year,
-            entity_type=request.entity_type.value,
-            additional_info=request.additional_info,
+        """Process tax calculation request."""
+        result = await self.chain.ainvoke(
+            {
+                "income": request.income,
+                "deductions": request.deductions,
+                "credits": request.credits,
+                "jurisdiction": request.jurisdiction.value,
+                "tax_year": request.tax_year,
+                "entity_type": request.entity_type.value,
+                "additional_info": request.additional_info,
+            }
         )
 
         return self.output_parser.parse(result)
 
 
 class FinancialAnalysisChain:
-    """Chain for financial analysis processing"""
+    """Chain for financial analysis processing."""
 
     def __init__(self, llm: ChatOpenAI = None):
+        """Initialize the financial analysis chain with an optional LLM."""
         self.llm = llm or ChatOpenAI(temperature=0, model="gpt-4")
         self.output_parser = PydanticOutputParser(pydantic_object=FinancialAnalysisResponse)
 
@@ -115,22 +119,25 @@ Provide a comprehensive financial analysis including:
         self.chain = LLMChain(llm=self.llm, prompt=self.prompt)
 
     async def analyze(self, request: FinancialAnalysisRequest) -> FinancialAnalysisResponse:
-        """Process financial analysis request"""
-        result = await self.chain.arun(
-            financial_statements=request.financial_statements,
-            analysis_type=request.analysis_type,
-            period=request.period,
-            industry=request.industry,
-            custom_metrics=request.custom_metrics,
+        """Process financial analysis request."""
+        result = await self.chain.ainvoke(
+            {
+                "financial_statements": request.financial_statements,
+                "analysis_type": request.analysis_type,
+                "period": request.period,
+                "industry": request.industry,
+                "custom_metrics": request.custom_metrics,
+            }
         )
 
         return self.output_parser.parse(result)
 
 
 class ComplianceCheckChain:
-    """Chain for tax compliance checking"""
+    """Chain for tax compliance checking."""
 
     def __init__(self, llm: ChatOpenAI = None):
+        """Initialize the compliance check chain with an optional LLM."""
         self.llm = llm or ChatOpenAI(temperature=0, model="gpt-4")
         self.output_parser = PydanticOutputParser(pydantic_object=ComplianceCheckResponse)
 
@@ -166,22 +173,25 @@ Perform a comprehensive compliance check and provide:
         self.chain = LLMChain(llm=self.llm, prompt=self.prompt)
 
     async def check_compliance(self, request: ComplianceCheckRequest) -> ComplianceCheckResponse:
-        """Process compliance check request"""
-        result = await self.chain.arun(
-            entity_type=request.entity_type.value,
-            transactions=request.transactions,
-            jurisdiction=request.jurisdiction.value,
-            tax_year=request.tax_year,
-            compliance_areas=request.compliance_areas,
+        """Process compliance check request."""
+        result = await self.chain.ainvoke(
+            {
+                "entity_type": request.entity_type.value,
+                "transactions": request.transactions,
+                "jurisdiction": request.jurisdiction.value,
+                "tax_year": request.tax_year,
+                "compliance_areas": request.compliance_areas,
+            }
         )
 
         return self.output_parser.parse(result)
 
 
 class RateLookupChain:
-    """Chain for tax rate lookup"""
+    """Chain for tax rate lookup."""
 
     def __init__(self, llm: ChatOpenAI = None):
+        """Initialize the tax rate lookup chain with an optional LLM."""
         self.llm = llm or ChatOpenAI(temperature=0, model="gpt-4")
         self.output_parser = PydanticOutputParser(pydantic_object=TaxRateResponse)
 
@@ -216,13 +226,15 @@ Return comprehensive tax rate information including:
         self.chain = LLMChain(llm=self.llm, prompt=self.prompt)
 
     async def lookup_rates(self, request: TaxRateRequest) -> TaxRateResponse:
-        """Process tax rate lookup request"""
-        result = await self.chain.arun(
-            jurisdiction=request.jurisdiction.value,
-            tax_year=request.tax_year,
-            entity_type=request.entity_type.value,
-            income_level=request.income_level,
-            special_categories=request.special_categories,
+        """Process tax rate lookup request."""
+        result = await self.chain.ainvoke(
+            {
+                "jurisdiction": request.jurisdiction.value,
+                "tax_year": request.tax_year,
+                "entity_type": request.entity_type.value,
+                "income_level": request.income_level,
+                "special_categories": request.special_categories,
+            }
         )
 
         return self.output_parser.parse(result)

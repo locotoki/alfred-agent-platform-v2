@@ -34,14 +34,10 @@ def upgrade():
         ),
         sa.PrimaryKeyConstraint("id"),
     )
-    op.create_index(
-        op.f("ix_alert_groups_group_key"), "alert_groups", ["group_key"], unique=False
-    )
+    op.create_index(op.f("ix_alert_groups_group_key"), "alert_groups", ["group_key"], unique=False)
 
     # Add group_id to existing alerts table
-    op.add_column(
-        "alerts", sa.Column("group_id", postgresql.UUID(as_uuid=True), nullable=True)
-    )
+    op.add_column("alerts", sa.Column("group_id", postgresql.UUID(as_uuid=True), nullable=True))
     op.create_foreign_key(None, "alerts", "alert_groups", ["group_id"], ["id"])
 
 
