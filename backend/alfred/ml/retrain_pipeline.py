@@ -116,7 +116,7 @@ class RetrainPipeline(Service):
         # Calculate noise reduction
         noise_threshold = 0.7
         predicted_noise = (y_proba > noise_threshold).sum()
-        actual_noise = y_test.sum()
+        y_test.sum()
         reduction_rate = predicted_noise / len(y_test) if len(y_test) > 0 else 0
 
         metrics["noise_reduction_rate"] = reduction_rate
@@ -125,7 +125,10 @@ class RetrainPipeline(Service):
         return model, metrics
 
     def log_model_to_mlflow(
-        self, model: RandomForestClassifier, metrics: Dict[str, float], dataset_info: Dict
+        self,
+        model: RandomForestClassifier,
+        metrics: Dict[str, float],
+        dataset_info: Dict,
     ) -> str:
         """Log model and metrics to MLflow.
 
@@ -233,7 +236,7 @@ class RetrainPipeline(Service):
         """
         # Load staging model
         model_uri = f"models:/{self.model_name}/{version}"
-        model = mlflow.sklearn.load_model(model_uri)
+        mlflow.sklearn.load_model(model_uri)
 
         # Run validation tests
         # This would use a separate validation dataset in production

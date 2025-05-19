@@ -140,7 +140,10 @@ class TestModels:
             ],
             recommendations=["Fix sales tax", "Review income tax"],
             risk_level="medium",
-            detailed_findings={"sales_tax": "Non-compliant", "income_tax": "Mostly compliant"},
+            detailed_findings={
+                "sales_tax": "Non-compliant",
+                "income_tax": "Mostly compliant",
+            },
         )
 
         assert response.compliance_status == "partial_compliance"

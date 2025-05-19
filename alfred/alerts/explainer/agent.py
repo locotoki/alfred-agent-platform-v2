@@ -75,10 +75,16 @@ Runbook: <link if available>
 
         try:
             explanation = self._chain.run(
-                alert_name=alert_name, alert_details=alert_details, metric_value=metric_value
+                alert_name=alert_name,
+                alert_details=alert_details,
+                metric_value=metric_value,
             )
 
-            return {"alert_name": alert_name, "explanation": explanation, "success": True}
+            return {
+                "alert_name": alert_name,
+                "explanation": explanation,
+                "success": True,
+            }
         except Exception as e:
             logger.error(f"Failed to generate explanation: {e}")
             return {

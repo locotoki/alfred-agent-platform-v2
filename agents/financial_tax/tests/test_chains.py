@@ -97,7 +97,10 @@ class TestTaxCalculationChain:
                 credits_applied=2000,
                 net_tax_due=18000,
                 breakdown={"federal": 15000, "state": 5000},
-                calculation_details=["Standard deduction applied", "Tax credit applied"],
+                calculation_details=[
+                    "Standard deduction applied",
+                    "Tax credit applied",
+                ],
             )
 
             result = await tax_calc_chain.calculate(request)
@@ -148,7 +151,10 @@ class TestFinancialAnalysisChain:
                 key_metrics={"gross_margin": 0.25, "debt_to_equity": 0.4},
                 trends={"revenue_growth": [0.05, 0.07, 0.06, 0.08]},
                 insights=["Strong revenue growth", "Healthy profit margins"],
-                recommendations=["Consider expanding operations", "Maintain current debt levels"],
+                recommendations=[
+                    "Consider expanding operations",
+                    "Maintain current debt levels",
+                ],
                 visualizations=None,
                 benchmark_comparison={"industry_avg": 0.20},
             )
@@ -203,9 +209,15 @@ class TestComplianceCheckChain:
                         "description": "Missing tax collection",
                     }
                 ],
-                recommendations=["Register for sales tax collection", "File amended returns"],
+                recommendations=[
+                    "Register for sales tax collection",
+                    "File amended returns",
+                ],
                 risk_level="medium",
-                detailed_findings={"sales_tax": "Non-compliant", "income_tax": "Compliant"},
+                detailed_findings={
+                    "sales_tax": "Non-compliant",
+                    "income_tax": "Compliant",
+                },
             )
 
             result = await compliance_chain.check_compliance(request)

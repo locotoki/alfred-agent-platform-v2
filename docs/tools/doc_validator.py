@@ -51,7 +51,7 @@ from collections import defaultdict
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Set, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
 # Configure logging
 logging.basicConfig(
@@ -363,7 +363,7 @@ class DocumentValidator:
 
         for match in code_block_matches:
             language = match.group(1)
-            code_content = match.group(2)
+            match.group(2)
 
             # Find line number
             line_number = content[: match.start()].count("\n") + 1
@@ -391,7 +391,7 @@ class DocumentValidator:
         link_matches = INTERNAL_LINK_PATTERN.finditer(content)
 
         for match in link_matches:
-            link_text = match.group(1)
+            match.group(1)
             link_target = match.group(2)
 
             # Find line number
@@ -502,7 +502,10 @@ class DocumentValidator:
         # Sort results by validity and number of issues
         sorted_results = sorted(
             self.results,
-            key=lambda r: (r.is_valid, len([i for i in r.issues if i.severity == "error"])),
+            key=lambda r: (
+                r.is_valid,
+                len([i for i in r.issues if i.severity == "error"]),
+            ),
         )
 
         # Add issues section
@@ -527,7 +530,7 @@ class DocumentValidator:
             sorted_issues = sorted(
                 result.issues,
                 key=lambda i: (
-                    0 if i.severity == "error" else (1 if i.severity == "warning" else 2),
+                    (0 if i.severity == "error" else (1 if i.severity == "warning" else 2)),
                     i.line_number,
                 ),
             )
@@ -610,7 +613,9 @@ def main():
         help="Automatically add missing metadata to documents",
     )
     parser.add_argument(
-        "--owner", default="Documentation Team", help="Specify the owner for metadata fixes"
+        "--owner",
+        default="Documentation Team",
+        help="Specify the owner for metadata fixes",
     )
     parser.add_argument("--verbose", action="store_true", help="Show detailed output")
     parser.add_argument("--check-links", action="store_true", help="Perform link validation")
@@ -674,7 +679,10 @@ class MetadataFixer:
     """
 
     def __init__(
-        self, owner: str = "Documentation Team", dry_run: bool = False, verbose: bool = False
+        self,
+        owner: str = "Documentation Team",
+        dry_run: bool = False,
+        verbose: bool = False,
     ):
         """
         Initialize the metadata fixer.
@@ -886,7 +894,10 @@ class MetadataFixer:
             if format_type == "yaml":
                 # Remove YAML frontmatter
                 new_content = re.sub(
-                    r"^---\s*$(.+?)^---\s*$", "", content, flags=re.DOTALL | re.MULTILINE
+                    r"^---\s*$(.+?)^---\s*$",
+                    "",
+                    content,
+                    flags=re.DOTALL | re.MULTILINE,
                 )
             elif format_type == "simple":
                 # Remove simple format metadata from the top

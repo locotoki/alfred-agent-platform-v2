@@ -15,7 +15,14 @@ from typing import List
 
 # Directory to search for Python files
 ROOT_DIR = Path(__file__).parent.parent
-EXCLUDE_DIRS = {".git", "node_modules", "venv", "__pycache__", "cleanup-temp", "docs/archive"}
+EXCLUDE_DIRS = {
+    ".git",
+    "node_modules",
+    "venv",
+    "__pycache__",
+    "cleanup-temp",
+    "docs/archive",
+}
 
 # Import pattern replacements
 IMPORT_REPLACEMENTS = {

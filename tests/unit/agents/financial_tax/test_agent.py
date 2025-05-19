@@ -1,21 +1,10 @@
 """Tests for Financial Tax Agent"""
 
-from datetime import datetime
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
 from agents.financial_tax.agent import FinancialTaxAgent
-from agents.financial_tax.models import (
-    ComplianceCheckRequest,
-    ComplianceCheckResponse,
-    FinancialAnalysisRequest,
-    FinancialAnalysisResponse,
-    TaxCalculationRequest,
-    TaxCalculationResponse,
-    TaxRateRequest,
-    TaxRateResponse,
-)
 from libs.a2a_adapter import A2AEnvelope, PolicyMiddleware, PubSubTransport, SupabaseTransport
 
 

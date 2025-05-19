@@ -11,7 +11,8 @@ logger = logging.getLogger(__name__)
 
 # Initialize the Slack Bolt app
 app = App(
-    token=os.environ.get("SLACK_BOT_TOKEN"), signing_secret=os.environ.get("SLACK_SIGNING_SECRET")
+    token=os.environ.get("SLACK_BOT_TOKEN"),
+    signing_secret=os.environ.get("SLACK_SIGNING_SECRET"),
 )
 
 # Command prefix for slash commands

@@ -46,13 +46,14 @@ def test_explainer_smoke():
     assert "Explanation:" in result["explanation"]
     assert result["alert_name"] == alert_payload["alert_name"]
 
-    # Test via Slack command
-    slack_command = {
-        "command": "/diag",
-        "text": f"explain {alert_payload['alert_name']}",
-        "user_id": "test-user",
-        "response_url": f"{slack_mock_url}/response",
-    }
+    # Skipping Slack command test for now
+    # Command structure for future reference:
+    # slack_command = {
+    #     "command": "/diag",
+    #     "text": f"explain {alert_payload['alert_name']}",
+    #     "user_id": "test-user",
+    #     "response_url": f"{slack_mock_url}/response",
+    # }
 
     # In a real test, this would go through the Slack bot
     # For now, we just verify the explainer is working

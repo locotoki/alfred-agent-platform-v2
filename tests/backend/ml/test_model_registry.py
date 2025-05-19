@@ -1,7 +1,5 @@
 """Tests for MLflow model registry."""
 
-import json
-from datetime import datetime
 from unittest.mock import Mock, patch
 
 import pytest
@@ -48,7 +46,10 @@ class TestModelRegistry:
 
         assert success
         registry.client.transition_model_version_stage.assert_called_once_with(
-            name="test-model", version="2", stage="Production", archive_existing_versions=True
+            name="test-model",
+            version="2",
+            stage="Production",
+            archive_existing_versions=True,
         )
 
     def test_promote_model_to_staging(self, registry):
@@ -57,7 +58,10 @@ class TestModelRegistry:
 
         assert success
         registry.client.transition_model_version_stage.assert_called_once_with(
-            name="test-model", version="3", stage="Staging", archive_existing_versions=False
+            name="test-model",
+            version="3",
+            stage="Staging",
+            archive_existing_versions=False,
         )
 
     def test_promote_model_error(self, registry):

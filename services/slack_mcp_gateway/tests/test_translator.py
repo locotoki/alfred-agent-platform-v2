@@ -2,7 +2,6 @@
 Tests for the translator module.
 """
 
-import json
 import re
 import uuid
 from datetime import datetime

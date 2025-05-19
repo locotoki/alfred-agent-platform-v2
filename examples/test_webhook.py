@@ -9,7 +9,7 @@ from pathlib import Path
 # Add the project root to Python path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from alfred.alerts.dispatcher import handle_alert
+from alfred.alerts.dispatcher import handle_alert  # noqa: E402
 
 
 def test_with_webhook(webhook_url):

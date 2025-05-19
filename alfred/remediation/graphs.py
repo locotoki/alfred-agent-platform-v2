@@ -20,8 +20,6 @@ logger = logging.getLogger(__name__)
 class RemediationState(Dict[str, Any]):
     """Type definition for remediation graph state"""
 
-    pass
-
 
 def restart_service(state: RemediationState) -> RemediationState:
     """Restart a service using n8n workflow"""

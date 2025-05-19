@@ -31,7 +31,12 @@ def test_cpu_endpoint_returns_expected_keys_and_values(client):
     response = client.get("/cpu")
     assert response.status_code == 200
     data = response.json()
-    assert set(data.keys()) == {"used_percent", "load_avg_1m", "load_avg_5m", "load_avg_15m"}
+    assert set(data.keys()) == {
+        "used_percent",
+        "load_avg_1m",
+        "load_avg_5m",
+        "load_avg_15m",
+    }
     assert data["used_percent"] == 42.5
     assert data["load_avg_1m"] == 1.1
     assert data["load_avg_5m"] == 2.2

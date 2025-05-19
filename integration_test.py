@@ -50,7 +50,10 @@ class MockSocialIntelAgent:
 
         if envelope.intent not in self.intents_supported:
             print(f"ERROR: Unsupported intent: {envelope.intent}")
-            return {"status": "error", "error": f"Unsupported intent: {envelope.intent}"}
+            return {
+                "status": "error",
+                "error": f"Unsupported intent: {envelope.intent}",
+            }
 
         if envelope.intent == "YOUTUBE_NICHE_SCOUT":
             return await self._youtube_niche_scout(envelope.data)
@@ -72,7 +75,13 @@ class MockSocialIntelAgent:
         # Get queries
         queries = content.get(
             "queries",
-            ["nursery rhymes", "diy woodworking", "urban gardening", "ai news", "budget travel"],
+            [
+                "nursery rhymes",
+                "diy woodworking",
+                "urban gardening",
+                "ai news",
+                "budget travel",
+            ],
         )
 
         print(f"Queries: {queries}")
@@ -226,7 +235,8 @@ async def test_a2a_integration():
     )
 
     blueprint_envelope = A2AEnvelope(
-        intent="YOUTUBE_BLUEPRINT", data={"seed_url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ"}
+        intent="YOUTUBE_BLUEPRINT",
+        data={"seed_url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ"},
     )
 
     # Process tasks

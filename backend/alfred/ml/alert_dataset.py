@@ -222,8 +222,10 @@ class AlertDataset(Service):
             "severity_distribution": self.data["severity"].value_counts().to_dict(),
             "source_count": self.data["source"].nunique(),
             "time_range": {
-                "start": self.data["created_at"].min().isoformat() if not self.data.empty else None,
-                "end": self.data["created_at"].max().isoformat() if not self.data.empty else None,
+                "start": (
+                    self.data["created_at"].min().isoformat() if not self.data.empty else None
+                ),
+                "end": (self.data["created_at"].max().isoformat() if not self.data.empty else None),
             },
         }
 

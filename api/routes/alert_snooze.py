@@ -65,7 +65,10 @@ async def snooze_alert(
     """Snooze an alert for a specified duration."""
     try:
         snooze = await snooze_service.snooze_alert(
-            alert_id=alert_id, duration=request.ttl, reason=request.reason, user_id=current_user.id
+            alert_id=alert_id,
+            duration=request.ttl,
+            reason=request.reason,
+            user_id=current_user.id,
         )
 
         return SnoozeResponse(
@@ -124,7 +127,9 @@ async def get_snooze_status(
 
 @router.get("/{alert_id}/snooze/history", response_model=SnoozeHistoryResponse)
 async def get_snooze_history(
-    alert_id: str, limit: int = 10, snooze_service: AlertSnoozeService = Depends(get_snooze_service)
+    alert_id: str,
+    limit: int = 10,
+    snooze_service: AlertSnoozeService = Depends(get_snooze_service),
 ):
     """Get snooze history for an alert."""
     history = await snooze_service.get_snooze_history(alert_id, limit)
@@ -133,7 +138,9 @@ async def get_snooze_history(
 
 
 @router.get("/snoozed", response_model=List[str])
-async def list_snoozed_alerts(snooze_service: AlertSnoozeService = Depends(get_snooze_service)):
+async def list_snoozed_alerts(
+    snooze_service: AlertSnoozeService = Depends(get_snooze_service),
+):
     """List all currently snoozed alert IDs."""
     return await snooze_service.list_snoozed_alerts()
 
@@ -147,7 +154,9 @@ async def extend_snooze(
 ):
     """Extend an existing snooze."""
     snooze = await snooze_service.extend_snooze(
-        alert_id=alert_id, additional_duration=additional_seconds, user_id=current_user.id
+        alert_id=alert_id,
+        additional_duration=additional_seconds,
+        user_id=current_user.id,
     )
 
     if not snooze:

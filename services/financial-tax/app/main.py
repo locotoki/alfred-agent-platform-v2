@@ -30,7 +30,9 @@ TASK_DURATION = Histogram(
 )
 
 API_REQUESTS = Counter(
-    "financial_tax_api_requests_total", "Total API requests", ["endpoint", "method", "status"]
+    "financial_tax_api_requests_total",
+    "Total API requests",
+    ["endpoint", "method", "status"],
 )
 
 ACTIVE_TASKS = Gauge("financial_tax_active_tasks", "Currently processing tasks")
@@ -94,7 +96,8 @@ app.mount("/health", health_app)
 # API Routes
 @app.post("/api/v1/financial-tax/calculate-tax")
 async def calculate_tax(
-    request: TaxCalculationRequest, credentials: HTTPAuthorizationCredentials = Security(security)
+    request: TaxCalculationRequest,
+    credentials: HTTPAuthorizationCredentials = Security(security),
 ):
     """Calculate tax liability based on input data."""
     API_REQUESTS.labels(endpoint="calculate-tax", method="POST", status="processing").inc()
@@ -104,7 +107,7 @@ async def calculate_tax(
         envelope = A2AEnvelope(intent="TAX_CALCULATION", content=request.dict())
 
         # Store task
-        task_id = await supabase_transport.store_task(envelope)
+        await supabase_transport.store_task(envelope)
 
         # Publish task
         message_id = await pubsub_transport.publish_task(envelope)
@@ -134,7 +137,7 @@ async def analyze_financials(
     try:
         envelope = A2AEnvelope(intent="FINANCIAL_ANALYSIS", content=request.dict())
 
-        task_id = await supabase_transport.store_task(envelope)
+        await supabase_transport.store_task(envelope)
         message_id = await pubsub_transport.publish_task(envelope)
 
         API_REQUESTS.labels(endpoint="analyze-financials", method="POST", status="success").inc()
@@ -153,7 +156,8 @@ async def analyze_financials(
 
 @app.post("/api/v1/financial-tax/check-compliance")
 async def check_compliance(
-    request: ComplianceCheckRequest, credentials: HTTPAuthorizationCredentials = Security(security)
+    request: ComplianceCheckRequest,
+    credentials: HTTPAuthorizationCredentials = Security(security),
 ):
     """Check tax compliance for given transactions."""
     API_REQUESTS.labels(endpoint="check-compliance", method="POST", status="processing").inc()
@@ -161,7 +165,7 @@ async def check_compliance(
     try:
         envelope = A2AEnvelope(intent="TAX_COMPLIANCE_CHECK", content=request.dict())
 
-        task_id = await supabase_transport.store_task(envelope)
+        await supabase_transport.store_task(envelope)
         message_id = await pubsub_transport.publish_task(envelope)
 
         API_REQUESTS.labels(endpoint="check-compliance", method="POST", status="success").inc()
@@ -198,7 +202,7 @@ async def get_tax_rates(
 
         envelope = A2AEnvelope(intent="RATE_SHEET_LOOKUP", content=rate_request.dict())
 
-        task_id = await supabase_transport.store_task(envelope)
+        await supabase_transport.store_task(envelope)
         message_id = await pubsub_transport.publish_task(envelope)
 
         API_REQUESTS.labels(endpoint="tax-rates", method="GET", status="success").inc()

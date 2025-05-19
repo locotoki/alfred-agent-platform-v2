@@ -178,7 +178,10 @@ class AlertNoiseRanker:
             self.metrics.gauge(
                 "alert_noise_score",
                 noise_score,
-                {"service": alert.labels.get("service", "unknown"), "severity": alert.severity},
+                {
+                    "service": alert.labels.get("service", "unknown"),
+                    "severity": alert.severity,
+                },
             )
 
         return noise_score

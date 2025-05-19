@@ -101,7 +101,10 @@ class FAISSIndex(Service):
         return index
 
     def add_embeddings(
-        self, embeddings: np.ndarray, alert_ids: List[str], metadata: Optional[List[Dict]] = None
+        self,
+        embeddings: np.ndarray,
+        alert_ids: List[str],
+        metadata: Optional[List[Dict]] = None,
     ):
         """Add embeddings to the index.
 
@@ -188,7 +191,9 @@ class FAISSIndex(Service):
             if score >= threshold:
                 alert_id = self.id_map.get(idx, str(idx))
                 result = SearchResult(
-                    alert_id=alert_id, score=score, metadata=self.metadata.get(alert_id, {})
+                    alert_id=alert_id,
+                    score=score,
+                    metadata=self.metadata.get(alert_id, {}),
                 )
                 results.append(result)
 
@@ -235,7 +240,9 @@ class FAISSIndex(Service):
                 if score >= threshold:
                     alert_id = self.id_map.get(idx, str(idx))
                     result = SearchResult(
-                        alert_id=alert_id, score=score, metadata=self.metadata.get(alert_id, {})
+                        alert_id=alert_id,
+                        score=score,
+                        metadata=self.metadata.get(alert_id, {}),
                     )
                     results.append(result)
 
@@ -323,7 +330,6 @@ class FAISSIndex(Service):
             # Rebalance IVF clusters
             print("Optimizing IVF index...")
             # This would involve retraining with better centroids
-            pass
 
         elif self.index_type == "HNSW":
             # Adjust HNSW parameters
@@ -346,7 +352,10 @@ class AlertSearchEngine:
     """High-level search engine combining embedder and index."""
 
     def __init__(
-        self, embedder: Optional[HFEmbedder] = None, index_type: str = "IVF", device: str = "cpu"
+        self,
+        embedder: Optional[HFEmbedder] = None,
+        index_type: str = "IVF",
+        device: str = "cpu",
     ):
         """Initialize search engine.
 
@@ -374,9 +383,11 @@ class AlertSearchEngine:
         metadata = []
 
         for alert in alerts:
-            text = (
-                f"{alert.get('name', '')} {alert.get('description', '')} {alert.get('summary', '')}"
-            )
+            # Combine alert fields for indexing
+            name = alert.get("name", "")
+            desc = alert.get("description", "")
+            summary = alert.get("summary", "")
+            text = f"{name} {desc} {summary}".strip()
             texts.append(text)
             alert_ids.append(alert["id"])
             metadata.append(

@@ -153,7 +153,8 @@ class ResponseHandler:
 
                                     # After successful processing, acknowledge the message
                                     await loop.run_in_executor(
-                                        None, lambda: client.xack(stream, group, message_id)
+                                        None,
+                                        lambda: client.xack(stream, group, message_id),
                                     )
 
                                 except json.JSONDecodeError as e:
@@ -259,7 +260,10 @@ class ResponseHandler:
                 {
                     "type": "context",
                     "elements": [
-                        {"type": "mrkdwn", "text": f"Status: `{state}` • Type: `{task_type}`"}
+                        {
+                            "type": "mrkdwn",
+                            "text": f"Status: `{state}` • Type: `{task_type}`",
+                        }
                     ],
                 },
             ]
@@ -267,7 +271,14 @@ class ResponseHandler:
             # Add any additional data as fields
             details = []
             for key, value in response.items():
-                if key not in ["text", "state", "type", "request_id", "channel_id", "thread_ts"]:
+                if key not in [
+                    "text",
+                    "state",
+                    "type",
+                    "request_id",
+                    "channel_id",
+                    "thread_ts",
+                ]:
                     # Format based on type
                     if isinstance(value, dict):
                         value_text = json.dumps(value, indent=2)

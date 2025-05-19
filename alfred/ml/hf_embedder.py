@@ -71,7 +71,10 @@ class HFEmbedder(Service):
 
         # Generate embeddings
         embeddings = self.model.encode(
-            texts, batch_size=self.batch_size, show_progress_bar=False, convert_to_numpy=True
+            texts,
+            batch_size=self.batch_size,
+            show_progress_bar=False,
+            convert_to_numpy=True,
         )
 
         # Return single embedding if single input

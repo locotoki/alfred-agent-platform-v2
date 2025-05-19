@@ -17,7 +17,7 @@ def main():
 
     try:
         # Run the command in the shell
-        result = subprocess.run(cmd_str, shell=True, check=True, text=True)
+        subprocess.run(cmd_str, shell=True, check=True, text=True)
         print("Black formatting successful!")
         return 0
     except subprocess.CalledProcessError as e:

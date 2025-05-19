@@ -1,6 +1,5 @@
 """Unit tests for alert dispatcher module."""
 
-import json
 import os
 from unittest.mock import Mock, patch
 

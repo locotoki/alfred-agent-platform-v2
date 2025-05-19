@@ -38,7 +38,10 @@ class RankerBenchmark:
     """Benchmark harness for noise rankers."""
 
     def __init__(
-        self, new_ranker: AlertNoiseRanker, old_ranker: LegacyRanker, num_alerts: int = 50000
+        self,
+        new_ranker: AlertNoiseRanker,
+        old_ranker: LegacyRanker,
+        num_alerts: int = 50000,
     ):
         self.new_ranker = new_ranker
         self.old_ranker = old_ranker
@@ -79,14 +82,14 @@ class RankerBenchmark:
 
             # Historical data
             historical = {
-                "count_24h": random.randint(1, 100) if is_noise else random.randint(0, 5),
-                "count_7d": random.randint(10, 500) if is_noise else random.randint(0, 20),
+                "count_24h": (random.randint(1, 100) if is_noise else random.randint(0, 5)),
+                "count_7d": (random.randint(10, 500) if is_noise else random.randint(0, 20)),
                 "avg_resolution_time": random.uniform(100, 10000),
                 "false_positive_rate": (
                     random.uniform(0.7, 0.95) if is_noise else random.uniform(0, 0.3)
                 ),
-                "snooze_count": random.randint(0, 50) if is_noise else random.randint(0, 5),
-                "ack_rate": random.uniform(0.1, 0.5) if is_noise else random.uniform(0.5, 0.9),
+                "snooze_count": (random.randint(0, 50) if is_noise else random.randint(0, 5)),
+                "ack_rate": (random.uniform(0.1, 0.5) if is_noise else random.uniform(0.5, 0.9)),
             }
 
             alerts.append((alert, historical, is_noise))
@@ -285,11 +288,17 @@ Key Findings:
 
             # Confusion matrix for new ranker
             cm_data = [
-                [results["new_ranker"]["true_positives"], results["new_ranker"]["false_negatives"]],
-                [results["new_ranker"]["false_positives"], results["new_ranker"]["true_negatives"]],
+                [
+                    results["new_ranker"]["true_positives"],
+                    results["new_ranker"]["false_negatives"],
+                ],
+                [
+                    results["new_ranker"]["false_positives"],
+                    results["new_ranker"]["true_negatives"],
+                ],
             ]
 
-            im = ax2.imshow(cm_data, cmap="Blues")
+            ax2.imshow(cm_data, cmap="Blues")
             ax2.set_xticks([0, 1])
             ax2.set_yticks([0, 1])
             ax2.set_xticklabels(["Predicted Noise", "Predicted Signal"])
@@ -299,13 +308,13 @@ Key Findings:
             # Add text annotations
             for i in range(2):
                 for j in range(2):
-                    text = ax2.text(
+                    ax2.text(
                         j,
                         i,
                         cm_data[i][j],
                         ha="center",
                         va="center",
-                        color="white" if cm_data[i][j] > sum(sum(cm_data, [])) / 4 else "black",
+                        color=("white" if cm_data[i][j] > sum(sum(cm_data, [])) / 4 else "black"),
                     )
 
             # Processing performance
@@ -414,7 +423,10 @@ Key Findings:
             ]
 
             table = ax.table(
-                cellText=table_data, cellLoc="center", loc="center", colWidths=[0.3, 0.2, 0.2, 0.3]
+                cellText=table_data,
+                cellLoc="center",
+                loc="center",
+                colWidths=[0.3, 0.2, 0.2, 0.3],
             )
             table.auto_set_font_size(False)
             table.set_fontsize(10)
@@ -425,7 +437,12 @@ Key Findings:
                 table[(0, i)].set_facecolor("#4CAF50")
                 table[(0, i)].set_text_props(weight="bold", color="white")
 
-            ax.set_title("Detailed Performance Comparison", fontsize=14, fontweight="bold", pad=20)
+            ax.set_title(
+                "Detailed Performance Comparison",
+                fontsize=14,
+                fontweight="bold",
+                pad=20,
+            )
 
             pdf.savefig(fig, bbox_inches="tight")
             plt.close()
@@ -464,7 +481,7 @@ def main():
     with open(json_path, "w") as f:
         json.dump(results, f, indent=2)
 
-    print(f"Benchmark complete!")
+    print("Benchmark complete!")
     print(f"Report: {report_path}")
     print(f"Raw data: {json_path}")
 

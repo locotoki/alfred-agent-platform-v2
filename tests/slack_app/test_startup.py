@@ -3,7 +3,6 @@ Test the Slack app startup functionality.
 This is a basic smoke test to verify the application can initialize without errors.
 """
 
-import logging
 import os
 import sys
 from unittest.mock import MagicMock, patch
@@ -94,37 +93,35 @@ def test_app_starts_without_error(mock_bolt_app, capture_stdout):
         signing_secret=os.environ.get("SLACK_SIGNING_SECRET"),
     )
 
-    # Patch the logger to capture output
-    with patch("logging.Logger.info") as mock_logger:
-        # Try to start the app (this should be a no-op due to our mocks)
-        app.start(port=3000)
+    # Try to start the app (this should be a no-op due to our mocks)
+    app.start(port=3000)
 
-        # Create a flask app to check health endpoints
-        from flask import Flask
+    # Create a flask app to check health endpoints
+    from flask import Flask
 
-        flask_app = Flask(__name__)
+    flask_app = Flask(__name__)
 
-        @flask_app.route("/healthz")
-        def health():
-            return {"status": "ok"}
+    @flask_app.route("/healthz")
+    def health():
+        return {"status": "ok"}
 
-        @flask_app.route("/readyz")
-        def ready():
-            return {"status": "ready"}
+    @flask_app.route("/readyz")
+    def ready():
+        return {"status": "ready"}
 
-        # Verify the app was created and methods were called
-        mock_app_class.assert_called_once()
+    # Verify the app was created and methods were called
+    mock_app_class.assert_called_once()
 
-        # Print the expected success message
-        print("⚡️ Bolt app is running!")
+    # Print the expected success message
+    print("⚡️ Bolt app is running!")
 
-        # Verify the output contains our success message
-        assert "⚡️ Bolt app is running!" in capture_stdout["stdout"]
+    # Verify the output contains our success message
+    assert "⚡️ Bolt app is running!" in capture_stdout["stdout"]
 
-        # Test the health endpoints
-        with flask_app.test_client() as client:
-            response = client.get("/healthz")
-            assert response.status_code == 200
+    # Test the health endpoints
+    with flask_app.test_client() as client:
+        response = client.get("/healthz")
+        assert response.status_code == 200
 
-            response = client.get("/readyz")
-            assert response.status_code == 200
+        response = client.get("/readyz")
+        assert response.status_code == 200

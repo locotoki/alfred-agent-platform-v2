@@ -18,7 +18,9 @@ class ModelRegistry(Service):
     """Manages ML model registry and lifecycle."""
 
     def __init__(
-        self, mlflow_uri: str = "http://localhost:5000", model_name: str = "alert-noise-ranker"
+        self,
+        mlflow_uri: str = "http://localhost:5000",
+        model_name: str = "alert-noise-ranker",
     ):
         """Initialize model registry client.
 
@@ -33,7 +35,10 @@ class ModelRegistry(Service):
         self.client = MlflowClient()
 
     def register_model(
-        self, run_id: str, artifact_path: str = "model", model_name: Optional[str] = None
+        self,
+        run_id: str,
+        artifact_path: str = "model",
+        model_name: Optional[str] = None,
     ) -> str:
         """Register a model from an MLflow run.
 
@@ -267,7 +272,9 @@ class ModelRegistry(Service):
         model_name = model_name or self.model_name
 
         versions = self.client.search_model_versions(
-            f"name='{model_name}'", order_by=["creation_timestamp DESC"], max_results=limit
+            f"name='{model_name}'",
+            order_by=["creation_timestamp DESC"],
+            max_results=limit,
         )
 
         lineage = []
@@ -321,9 +328,9 @@ class ModelRegistry(Service):
 
         # Try to get model signature
         try:
-            model = mlflow.sklearn.load_model(metadata["model_uri"])
+            mlflow.sklearn.load_model(metadata["model_uri"])
             # Model signature would be extracted here if available
-        except:
+        except Exception:
             pass
 
         return metadata

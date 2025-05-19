@@ -16,7 +16,10 @@ class PubSubTransport:
         logger.info("Initialized stub PubSubTransport", project_id=project_id)
 
     async def publish(
-        self, topic: str, message: Dict[str, Any], attributes: Optional[Dict[str, str]] = None
+        self,
+        topic: str,
+        message: Dict[str, Any],
+        attributes: Optional[Dict[str, str]] = None,
     ) -> str:
         """Stub method to publish a message to a topic."""
         logger.info("STUB: Publishing message to topic", topic=topic)

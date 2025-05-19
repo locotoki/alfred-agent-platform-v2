@@ -62,7 +62,8 @@ async def update_thresholds(updates: ThresholdUpdate) -> ThresholdResponse:
 
         if not update_dict:
             raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST, detail="No valid updates provided"
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="No valid updates provided",
             )
 
         updated = threshold_service.update_thresholds(update_dict)

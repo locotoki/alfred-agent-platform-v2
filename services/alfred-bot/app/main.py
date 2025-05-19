@@ -22,7 +22,8 @@ policy_middleware = PolicyMiddleware(redis_client)
 
 # Initialize Slack app
 slack_app = App(
-    token=os.environ.get("SLACK_BOT_TOKEN"), signing_secret=os.environ.get("SLACK_SIGNING_SECRET")
+    token=os.environ.get("SLACK_BOT_TOKEN"),
+    signing_secret=os.environ.get("SLACK_SIGNING_SECRET"),
 )
 
 
@@ -64,7 +65,8 @@ async def handle_alfred_command(ack, body, client):
     except Exception as e:
         logger.error("command_handling_failed", error=str(e))
         await client.chat_postMessage(
-            channel=channel_id, text="Sorry, something went wrong. Please try again later."
+            channel=channel_id,
+            text="Sorry, something went wrong. Please try again later.",
         )
 
 
@@ -110,7 +112,8 @@ async def handle_trend_analysis(client, channel_id, user_id, query):
         await pubsub_transport.publish_task(envelope)
 
         await client.chat_postMessage(
-            channel=channel_id, text=f"Analyzing trends for: {query}\nTask ID: {envelope.task_id}"
+            channel=channel_id,
+            text=f"Analyzing trends for: {query}\nTask ID: {envelope.task_id}",
         )
     except Exception as e:
         logger.error("trend_analysis_failed", error=str(e))

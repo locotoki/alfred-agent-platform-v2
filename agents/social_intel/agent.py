@@ -15,7 +15,11 @@ class SocialIntelAgent:
         self.supabase_transport = supabase_transport
         self.policy_middleware = policy_middleware
         self.is_running = False
-        self.supported_intents = ["TREND_ANALYSIS", "SOCIAL_MONITOR", "SENTIMENT_ANALYSIS"]
+        self.supported_intents = [
+            "TREND_ANALYSIS",
+            "SOCIAL_MONITOR",
+            "SENTIMENT_ANALYSIS",
+        ]
         logger.info("Initialized stub SocialIntelAgent")
 
     async def start(self):

@@ -16,11 +16,10 @@ Options:
 
 import argparse
 import json
-import os
 import sys
 import time
 from datetime import datetime
-from typing import Any, Dict, Optional
+from typing import Any, Dict
 
 import requests
 

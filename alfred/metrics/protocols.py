@@ -24,7 +24,11 @@ class MetricsCollector(Protocol):
 
     @abstractmethod
     def register_metric(
-        self, name: str, metric_type: str, description: str, labels: Optional[List[str]] = None
+        self,
+        name: str,
+        metric_type: str,
+        description: str,
+        labels: Optional[List[str]] = None,
     ) -> None:
         """Register a new metric.
 

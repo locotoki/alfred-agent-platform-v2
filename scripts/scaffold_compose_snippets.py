@@ -51,7 +51,10 @@ def create_compose_snippet(service_name, service_dir):
         elif service_name == "vector-db":
             snippet["services"][service_name]["ports"].append("${QDRANT_PORT:-6333}:6333")
 
-    if service_name.endswith("-ui") or service_name in ["mission-control", "streamlit-chat"]:
+    if service_name.endswith("-ui") or service_name in [
+        "mission-control",
+        "streamlit-chat",
+    ]:
         snippet["services"][service_name]["ports"] = []
         base_port = 3000 if "mission" in service_name else 8501
         snippet["services"][service_name]["ports"].append(f"${{UI_PORT:-{base_port}}}:{base_port}")

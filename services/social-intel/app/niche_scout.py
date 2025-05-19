@@ -5,12 +5,11 @@ This module provides functionality to identify fast-growing, high-potential,
 and Shorts-friendly YouTube niches on a daily basis.
 """
 
-import asyncio
 import json
 import os
 import time
 from datetime import datetime
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, Optional, Tuple
 
 import structlog
 from app.database import niche_repository
@@ -63,7 +62,10 @@ class NicheScout:
                 - Path to the HTML report
         """
         self.logger.info(
-            "Starting NicheScout workflow", query=query, category=category, subcategory=subcategory
+            "Starting NicheScout workflow",
+            query=query,
+            category=category,
+            subcategory=subcategory,
         )
 
         # Track total request count
@@ -198,7 +200,8 @@ class NicheScout:
                         except YouTubeAPIError as e:
                             # Log the error and fall back to simulated data
                             self.logger.error(
-                                "YouTube API error, falling back to simulated data", error=str(e)
+                                "YouTube API error, falling back to simulated data",
+                                error=str(e),
                             )
                             results = self._generate_simulated_results(query, category, subcategory)
 
@@ -292,7 +295,11 @@ class NicheScout:
                     "age_groups": ["25-34", "35-44"],
                     "gender_split": {"male": 55, "female": 45},
                 },
-                "trending_topics": ["Quick home repairs", "Budget renovations", "IKEA hacks"],
+                "trending_topics": [
+                    "Quick home repairs",
+                    "Budget renovations",
+                    "IKEA hacks",
+                ],
                 "top_channels": [
                     {"name": "QuickFixDIY", "subs": 3500000},
                     {"name": "HomeTricks", "subs": 2100000},
@@ -331,7 +338,11 @@ class NicheScout:
                         "age_groups": ["0-2", "3-5", "25-34"],
                         "gender_split": {"male": 40, "female": 60},
                     },
-                    "trending_topics": ["Alphabet songs", "Counting songs", "Bedtime lullabies"],
+                    "trending_topics": [
+                        "Alphabet songs",
+                        "Counting songs",
+                        "Bedtime lullabies",
+                    ],
                     "top_channels": [
                         {"name": "KidsSongs", "subs": 8500000},
                         {"name": "LittleRhymes", "subs": 6200000},
@@ -346,7 +357,11 @@ class NicheScout:
                         "age_groups": ["3-5", "6-8", "25-34"],
                         "gender_split": {"male": 45, "female": 55},
                     },
-                    "trending_topics": ["Alphabet learning", "Number learning", "Animal facts"],
+                    "trending_topics": [
+                        "Alphabet learning",
+                        "Number learning",
+                        "Animal facts",
+                    ],
                     "top_channels": [
                         {"name": "KidsLearn", "subs": 7800000},
                         {"name": "TinyToons", "subs": 5500000},
@@ -361,7 +376,11 @@ class NicheScout:
                         "age_groups": ["3-5", "6-8", "25-34"],
                         "gender_split": {"male": 40, "female": 60},
                     },
-                    "trending_topics": ["Surprise toys", "New toy releases", "Educational toys"],
+                    "trending_topics": [
+                        "Surprise toys",
+                        "New toy releases",
+                        "Educational toys",
+                    ],
                     "top_channels": [
                         {"name": "ToyOpenings", "subs": 6200000},
                         {"name": "KidsToyReview", "subs": 4800000},
@@ -397,7 +416,11 @@ class NicheScout:
                         "age_groups": ["18-24", "25-34"],
                         "gender_split": {"male": 80, "female": 20},
                     },
-                    "trending_topics": ["Budget gaming PCs", "RTX 40 series builds", "RGB setups"],
+                    "trending_topics": [
+                        "Budget gaming PCs",
+                        "RTX 40 series builds",
+                        "RGB setups",
+                    ],
                     "top_channels": [
                         {"name": "TechBuilds", "subs": 5800000},
                         {"name": "PCMasterRace", "subs": 4200000},
@@ -456,7 +479,11 @@ class NicheScout:
                         "age_groups": ["0-2", "25-34"],
                         "gender_split": {"male": 30, "female": 70},
                     },
-                    "trending_topics": ["Bedtime songs", "Relaxing music for babies", "Sleep aids"],
+                    "trending_topics": [
+                        "Bedtime songs",
+                        "Relaxing music for babies",
+                        "Sleep aids",
+                    ],
                     "top_channels": [
                         {"name": "SleepyTunes", "subs": 5800000},
                         {"name": "BabyLullaby", "subs": 4100000},
@@ -471,7 +498,11 @@ class NicheScout:
                         "age_groups": ["2-4", "4-6", "25-34"],
                         "gender_split": {"male": 40, "female": 60},
                     },
-                    "trending_topics": ["ABC songs", "Counting songs", "Shape and color songs"],
+                    "trending_topics": [
+                        "ABC songs",
+                        "Counting songs",
+                        "Shape and color songs",
+                    ],
                     "top_channels": [
                         {"name": "LearnWithSongs", "subs": 8500000},
                         {"name": "KidsEduTunes", "subs": 6700000},

@@ -225,7 +225,7 @@ def calculate_freshness_score(published_at):
             return 0.4
         else:
             return 0.2
-    except Exception:
+    except (ValueError, TypeError):
         return 0.5  # Default if we can't parse date
 
 
@@ -417,7 +417,7 @@ def identify_video_pattern(videos):
 
                 days_of_week[day] = days_of_week.get(day, 0) + 1
                 hours_of_day[hour] = hours_of_day.get(hour, 0) + 1
-            except:
+            except (ValueError, KeyError, TypeError):
                 pass
 
         top_day = max(days_of_week.items(), key=lambda x: x[1])[0] if days_of_week else "Unknown"

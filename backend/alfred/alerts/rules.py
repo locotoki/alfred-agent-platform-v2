@@ -68,7 +68,7 @@ class RuleCondition:
 
         try:
             return op(value, self.value)
-        except:
+        except Exception:
             return False
 
 
@@ -163,7 +163,9 @@ class RulesEngine:
                 for cond in rule_config.get("conditions", []):
                     conditions.append(
                         RuleCondition(
-                            field=cond["field"], operator=cond["operator"], value=cond["value"]
+                            field=cond["field"],
+                            operator=cond["operator"],
+                            value=cond["value"],
                         )
                     )
 

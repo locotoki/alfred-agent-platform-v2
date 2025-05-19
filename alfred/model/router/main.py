@@ -100,7 +100,8 @@ async def get_models():
     except httpx.RequestError as exc:
         if DEBUG:
             raise HTTPException(
-                status_code=503, detail=f"Error connecting to model registry: {str(exc)}"
+                status_code=503,
+                detail=f"Error connecting to model registry: {str(exc)}",
             )
         else:
             # Return mock data in debug mode if model registry is not available

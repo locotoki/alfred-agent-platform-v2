@@ -32,8 +32,8 @@ def test_slack_environment_variables():
 @pytest.mark.skip(reason="Waiting for slack_app package implementation")
 def test_alfred_help_command(mock_ack, mock_slack_client):
     """Test the /alfred help command"""
-    # Mock command payload
-    command = {"text": "help", "channel_id": "C123456"}
+    # Mock command payload would look like this:
+    # command = {"text": "help", "channel_id": "C123456"}
 
     with patch("slack_app.app.client", mock_slack_client):
         # Call the command handler directly

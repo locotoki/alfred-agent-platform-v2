@@ -2,10 +2,9 @@ import asyncio
 import os
 from datetime import datetime, timedelta
 
-import asyncpg
 import pytest
 
-from libs.a2a_adapter import A2AEnvelope, SupabaseTransport
+from libs.a2a_adapter import SupabaseTransport
 
 
 @pytest.mark.integration
@@ -47,7 +46,8 @@ class TestExactlyOnceProcessing:
         # Verify the message is in the database
         async with supabase_transport._pool.acquire() as conn:
             result = await conn.fetchval(
-                "SELECT COUNT(*) FROM processed_messages WHERE message_id = $1", message_id
+                "SELECT COUNT(*) FROM processed_messages WHERE message_id = $1",
+                message_id,
             )
             assert result == 1
 
@@ -99,13 +99,15 @@ class TestExactlyOnceProcessing:
 
             # Verify expired message is gone
             expired_count = await conn.fetchval(
-                "SELECT COUNT(*) FROM processed_messages WHERE message_id = $1", "test_expired_789"
+                "SELECT COUNT(*) FROM processed_messages WHERE message_id = $1",
+                "test_expired_789",
             )
             assert expired_count == 0
 
             # Verify valid message still exists
             valid_count = await conn.fetchval(
-                "SELECT COUNT(*) FROM processed_messages WHERE message_id = $1", "test_valid_101112"
+                "SELECT COUNT(*) FROM processed_messages WHERE message_id = $1",
+                "test_valid_101112",
             )
             assert valid_count == 1
 
