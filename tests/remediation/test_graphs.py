@@ -10,8 +10,6 @@ from unittest.mock import MagicMock, patch
 
 import freezegun
 import pytest
-
-from alfred.remediation import settings
 from alfred.remediation.graphs import (
     complete_remediation,
     escalate_issue,
@@ -21,6 +19,8 @@ from alfred.remediation.graphs import (
     should_retry_or_complete,
     wait_for_stabilization,
 )
+
+from alfred.remediation import settings
 
 
 @pytest.fixture
