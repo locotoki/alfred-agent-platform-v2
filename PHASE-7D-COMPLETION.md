@@ -56,7 +56,7 @@ from slack_app.app import create_app
 
 **After:**
 ```python
-from alfred.remediation.graphs import create_graph  
+from alfred.remediation.graphs import create_graph
 from alfred.slack.app import create_app
 ```
 

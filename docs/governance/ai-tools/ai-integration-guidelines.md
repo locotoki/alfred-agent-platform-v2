@@ -1,7 +1,7 @@
 # AI Integration Guidelines for Documentation
 
-**Last Updated:** 2025-05-10  
-**Owner:** Documentation Team  
+**Last Updated:** 2025-05-10
+**Owner:** Documentation Team
 **Status:** Active
 
 ## Overview
@@ -317,7 +317,7 @@ Include specific details about:
 
 ### Improving AI Documentation Quality
 
-1. **Iteration Process**: 
+1. **Iteration Process**:
    - Generate initial draft
    - Review for issues
    - Provide specific feedback on problems

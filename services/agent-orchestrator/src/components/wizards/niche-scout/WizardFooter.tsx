@@ -34,7 +34,7 @@ export const WizardFooter: React.FC<WizardFooterProps> = ({
           </GradientButton>
         )}
       </div>
-      
+
       <div>
         {step < 3 ? (
           <GradientButton

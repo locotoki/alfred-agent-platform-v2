@@ -24,62 +24,62 @@ check_kpis() {
     # Randomly generate values within normal ranges
     p95=$(printf "0.%03d" $((100 + RANDOM % 50)))  # 0.100-0.149
     err=$(printf "0.00%d" $((RANDOM % 5)))         # 0.000-0.004
-    
+
     log "Checking KPIs: P95=${p95}s, Error rate=${err}"
-    
+
     # Check thresholds
     if (( $(echo "$p95 > $P95_THRESHOLD" | bc -l) )); then
         return 1
     fi
-    
+
     if (( $(echo "$err > $ERROR_THRESHOLD" | bc -l) )); then
         return 1
     fi
-    
+
     return 0
 }
 
 trigger_rollback() {
     local p95=$1
     local err=$2
-    
+
     log "🔥 KPI breach detected! P95=${p95}s, Error rate=${err}"
-    
+
     # Send Slack alert
     local message=":fire: Alert Grouping rollback triggered (p95=${p95}s, err=${err})"
     curl -X POST -H 'Content-Type: application/json' \
          -d "{\"text\":\"$message\"}" \
          "$SLACK_PROD_WEBHOOK" 2>/dev/null || true
-    
+
     # Trigger rollback workflow
     gh workflow run grouping-canary.yml -f ref=main -f action=rollback || true
-    
+
     # Create hotfix branch
     git checkout -b hotfix/alert_grouping_rollback
     git push -u origin HEAD
-    
+
     exit 1
 }
 
 main() {
     log "Starting continuous telemetry monitoring for Alert Grouping"
     log "Monitoring for ${MAX_ITERATIONS} iterations (72 hours)"
-    
+
     for iteration in $(seq 1 $MAX_ITERATIONS); do
         log "Iteration $iteration/$MAX_ITERATIONS"
-        
+
         # Get current metrics
         p95=$(printf "0.%03d" $((100 + RANDOM % 50)))
         err=$(printf "0.00%d" $((RANDOM % 5)))
-        
+
         # Check KPIs
         if ! check_kpis; then
             trigger_rollback "$p95" "$err"
         fi
-        
+
         # Log success
         log "✅ KPIs within thresholds"
-        
+
         # Sleep for polling interval (skip in test mode)
         if [ "${TEST_MODE:-false}" != "true" ]; then
             sleep $POLLING_INTERVAL
@@ -90,7 +90,7 @@ main() {
             fi
         fi
     done
-    
+
     log "Monitoring completed successfully - no KPI breaches detected"
 }
 

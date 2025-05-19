@@ -53,14 +53,14 @@ docker exec alfred-agent-platform-v2-alfred-bot-1 /bin/sh -c "
     -H \"Content-Type: application/json\" \
     -d @/tmp/test_data.json \
     \"http://supabase-rest:3000/rest/v1/architect_in\" | jq . || echo 'Write to architect_in failed'
-  
+
   # Test reading from architect_in table
   echo 'Testing read from architect_in table...'
   curl -s -X GET \
     -H \"apikey: $TOKEN\" \
     -H \"Authorization: Bearer $TOKEN\" \
     \"http://supabase-rest:3000/rest/v1/architect_in?select=*\" | jq . || echo 'Read from architect_in failed'
-  
+
   # Test alfred_bot_tasks table
   echo 'Testing write to alfred_bot_tasks table...'
   echo '{\"data\":{\"task\":\"test task\",\"status\":\"pending\"}}' > /tmp/bot_task.json
@@ -70,7 +70,7 @@ docker exec alfred-agent-platform-v2-alfred-bot-1 /bin/sh -c "
     -H \"Content-Type: application/json\" \
     -d @/tmp/bot_task.json \
     \"http://supabase-rest:3000/rest/v1/alfred_bot_tasks\" | jq . || echo 'Write to alfred_bot_tasks failed'
-  
+
   # Test reading from alfred_bot_tasks table
   echo 'Testing read from alfred_bot_tasks table...'
   curl -s -X GET \

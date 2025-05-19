@@ -11,7 +11,7 @@ original_author: "{Original author}"
 
 > [!IMPORTANT]
 > # ARCHIVED DOCUMENTATION
-> This document has been archived and is no longer actively maintained. 
+> This document has been archived and is no longer actively maintained.
 > It is preserved for historical context and reference purposes only.
 > For current information, please refer to [{Replacement Document Title}]({replacement_link}).
 
@@ -19,10 +19,10 @@ original_author: "{Original author}"
 
 **Date Archived:** {YYYY-MM-DD}
 
-**Reason for Archiving:** 
+**Reason for Archiving:**
 {Provide a brief explanation of why this document was archived - e.g., replaced by newer documentation, feature deprecation, organizational changes, etc.}
 
-**Current Documentation:** 
+**Current Documentation:**
 The active documentation covering this topic can be found at [{Replacement Document Title}]({replacement_link}).
 
 ## Migration Notes
@@ -42,8 +42,8 @@ The active documentation covering this topic can be found at [{Replacement Docum
 
 # {Original Document Title}
 
-*Last Updated: 2025-05-10*  
-*Owner: Documentation Team*  
+*Last Updated: 2025-05-10*
+*Owner: Documentation Team*
 *Status: Active*
 
 

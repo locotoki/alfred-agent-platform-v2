@@ -91,8 +91,8 @@ This is a Domain-specific agent that focuses on social media trend analysis. The
 
 # [Agent Name]
 
-**Last Updated:** YYYY-MM-DD  
-**Owner:** [Owner Name/Team]  
+**Last Updated:** YYYY-MM-DD
+**Owner:** [Owner Name/Team]
 **Status:** [Planned/In Development/Active]
 
 ## Overview

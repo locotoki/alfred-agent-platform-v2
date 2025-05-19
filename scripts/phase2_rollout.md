@@ -208,9 +208,9 @@ The rollout will be considered successful when:
 
 ## Rollout Team
 
-- **Rollout Lead**: 
-- **Engineering Lead**: 
-- **QA Lead**: 
-- **DevOps Engineer**: 
-- **DBA**: 
+- **Rollout Lead**:
+- **Engineering Lead**:
+- **QA Lead**:
+- **DevOps Engineer**:
+- **DBA**:
 - **Customer Support Lead**:

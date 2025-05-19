@@ -1,6 +1,6 @@
 /**
  * Configuration management for the proxy service
- * 
+ *
  * Manages loading configuration from environment variables and Redis
  * with support for dynamic updates.
  */
@@ -20,7 +20,7 @@ const DEFAULT_CONFIG = {
     apiKey: process.env.SI_API_KEY || '',
     enableMockFallback: process.env.ENABLE_MOCK_FALLBACK !== 'false'
   },
-  
+
   // Transformation config
   transformation: {
     similarityThreshold: parseFloat(process.env.SIMILARITY_THRESHOLD || '0.55'),
@@ -31,13 +31,13 @@ const DEFAULT_CONFIG = {
       jaroWinkler: parseFloat(process.env.WEIGHT_JARO_WINKLER || '0.2')
     }
   },
-  
+
   // Caching config
   cache: {
     enabled: process.env.CACHE_ENABLED !== 'false',
     ttl: parseInt(process.env.CACHE_TTL || '3600', 10) // 1 hour default
   },
-  
+
   // Feature flags
   featureFlags: {
     proxyEnabled: process.env.FEATURE_FLAG_PROXY_ENABLED !== 'false',
@@ -55,10 +55,10 @@ let activeConfig = { ...DEFAULT_CONFIG };
 async function loadConfig() {
   try {
     const redis = getRedisClient();
-    
+
     // Check if we have stored config in Redis
     const storedConfig = await redis.get('proxy:config');
-    
+
     if (storedConfig) {
       // Parse and merge with defaults (to ensure all properties exist)
       const parsedConfig = JSON.parse(storedConfig);
@@ -68,14 +68,14 @@ async function loadConfig() {
       // Use default config
       activeConfig = { ...DEFAULT_CONFIG };
       logger.info('Using default configuration');
-      
+
       // Store default config in Redis for future reference
       await redis.set('proxy:config', JSON.stringify(DEFAULT_CONFIG));
     }
-    
+
     // Validate configuration
     validateConfig(activeConfig);
-    
+
     return activeConfig;
   } catch (error) {
     logger.error('Error loading configuration', { error: error.message });
@@ -92,17 +92,17 @@ async function updateConfig(newConfig) {
   try {
     // Merge with current config
     const updatedConfig = mergeConfigs(activeConfig, newConfig);
-    
+
     // Validate configuration
     validateConfig(updatedConfig);
-    
+
     // Store in Redis
     const redis = getRedisClient();
     await redis.set('proxy:config', JSON.stringify(updatedConfig));
-    
+
     // Update active config
     activeConfig = updatedConfig;
-    
+
     logger.info('Configuration updated and stored in Redis');
     return activeConfig;
   } catch (error) {
@@ -127,7 +127,7 @@ function getConfig() {
  */
 function mergeConfigs(target, source) {
   const output = { ...target };
-  
+
   if (isObject(target) && isObject(source)) {
     Object.keys(source).forEach(key => {
       if (isObject(source[key])) {
@@ -141,7 +141,7 @@ function mergeConfigs(target, source) {
       }
     });
   }
-  
+
   return output;
 }
 
@@ -164,20 +164,20 @@ function validateConfig(config) {
   if (config.transformation.similarityThreshold < 0 || config.transformation.similarityThreshold > 1) {
     throw new Error('Similarity threshold must be between 0 and 1');
   }
-  
+
   // Check algorithm weights sum to 1.0
   const { levenshtein, jaccard, jaroWinkler } = config.transformation.algorithmWeights;
   const weightSum = levenshtein + jaccard + jaroWinkler;
-  
+
   if (Math.abs(weightSum - 1.0) > 0.01) {
     throw new Error(`Algorithm weights must sum to 1.0, got ${weightSum}`);
   }
-  
+
   // Check niche count is positive
   if (config.transformation.defaultNicheCount <= 0) {
     throw new Error('Default niche count must be positive');
   }
-  
+
   // Check cache TTL is positive
   if (config.cache.ttl <= 0) {
     throw new Error('Cache TTL must be positive');

@@ -73,7 +73,7 @@ The agent core service now has a complete health check implementation:
 
 The agent core library (`libs/agent_core/health`) provides:
 - A factory function to create compliant health endpoints
-- Standard dependency tracking functionality 
+- Standard dependency tracking functionality
 - Proper response formats according to the standard
 
 #### Social Intelligence Agent
@@ -158,7 +158,7 @@ The script will:
    - agent-legal: Added healthcheck binary usage and metrics export
    - ui-chat: Added dedicated health server with FastAPI
    - ui-admin: Added Express.js health routes and metrics server
-   
+
 2. ✅ All core services now have standardized health checks!
 
 2. For each service:

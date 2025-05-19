@@ -8,7 +8,7 @@ Part of **Phase 7B – LangGraph plans & verification** milestone.
    * New `remediation/` package with LangGraph-based workflows
    * `restart_then_verify()` function that orchestrates service recovery
    * Decision nodes that handle retry vs. escalation logic
-   
+
 2. **Nodes Architecture**
    * `restart_service` - Uses n8n webhook to trigger service restart
    * `wait_for_stabilization` - Configurable wait period
@@ -53,6 +53,6 @@ pytest tests/remediation/test_graphs.py -v --cov=remediation.graphs --cov-report
 ## 📋 Definition of Done
 * ✅ LangGraph framework implemented
 * ✅ Unit tests with ≥95% coverage
-* ✅ orchestration-integration test verifies graph execution 
+* ✅ orchestration-integration test verifies graph execution
 * ✅ Documentation updated in CHANGELOG
 * ❌ Not yet: Production deployment with integration testing

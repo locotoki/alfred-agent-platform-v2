@@ -2,8 +2,8 @@
 DO $$
 BEGIN
   IF EXISTS (
-    SELECT FROM information_schema.tables 
-    WHERE table_schema = 'auth' 
+    SELECT FROM information_schema.tables
+    WHERE table_schema = 'auth'
     AND table_name = 'config'
   ) THEN
     UPDATE auth.config SET jwt_secret = 'Dch9y6o9ih/DrzAjUtYS9a3/pEw+v8MFy8k+LYBv0uk=';

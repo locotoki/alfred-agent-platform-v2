@@ -15,7 +15,7 @@ if (fs.existsSync(dotenvPath)) {
 // Mock redis client
 jest.mock('../../src/services/redis', () => {
   const mockStorage = new Map();
-  
+
   return {
     initializeRedis: jest.fn().mockResolvedValue(true),
     getRedisClient: jest.fn(() => ({

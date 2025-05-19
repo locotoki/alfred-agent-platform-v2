@@ -30,10 +30,10 @@ function show_error() {
 function cleanup_containers() {
   show_progress "Stopping all running containers..."
   docker stop $(docker ps -aq) > /dev/null 2>&1 || true
-  
+
   show_progress "Removing all containers..."
   docker rm $(docker ps -aq) > /dev/null 2>&1 || true
-  
+
   show_success "Container cleanup completed"
 }
 
@@ -60,7 +60,7 @@ function ensure_volumes() {
     "monitoring-metrics-data"
     "monitoring-dashboard-data"
   )
-  
+
   for volume in "${VOLUMES_TO_CREATE[@]}"; do
     VOLUME_EXISTS=$(docker volume ls --format "{{.Name}}" | grep -x "$volume" || true)
     if [[ -z "$VOLUME_EXISTS" ]]; then
@@ -75,7 +75,7 @@ function ensure_volumes() {
 function start_containers() {
   show_progress "Starting containers with unified configuration..."
   docker-compose -f docker-compose.unified.yml up -d
-  
+
   if [ $? -eq 0 ]; then
     show_success "Containers started successfully"
   else

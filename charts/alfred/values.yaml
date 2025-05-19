@@ -1,7 +1,7 @@
 # Global settings
 global:
   environment: development
-  
+
 # Metrics settings
 metrics:
   enabled: false  # Set to true in staging/prod

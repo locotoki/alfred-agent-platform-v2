@@ -159,13 +159,13 @@ Enabling communication between different LLM systems like ChatGPT and Claude Cod
 </head>
 <body>
   <h1>AI Communication Bridge</h1>
-  
+
   <div>
     <h2>Send Message</h2>
     <textarea id="messageInput" rows="4" cols="50"></textarea>
     <button id="sendBtn">Send as ChatGPT</button>
   </div>
-  
+
   <div>
     <h2>Messages</h2>
     <div id="messageLog"></div>
@@ -182,26 +182,26 @@ Enabling communication between different LLM systems like ChatGPT and Claude Cod
       messagingSenderId: "your-messaging-id",
       appId: "your-app-id"
     };
-    
+
     // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
     const messagesRef = db.ref('ai_messages');
-    
+
     // Send message
     document.getElementById('sendBtn').addEventListener('click', function() {
       const content = document.getElementById('messageInput').value;
       if (content.trim() === '') return;
-      
+
       messagesRef.push({
         from: 'chatgpt',
         content: content,
         timestamp: Date.now()
       });
-      
+
       document.getElementById('messageInput').value = '';
     });
-    
+
     // Listen for messages
     messagesRef.on('child_added', function(snapshot) {
       const message = snapshot.val();
@@ -214,7 +214,7 @@ Enabling communication between different LLM systems like ChatGPT and Claude Cod
       document.getElementById('messageLog').appendChild(messageEl);
     });
   </script>
-  
+
   <style>
     .message { margin-bottom: 10px; padding: 8px; border-radius: 4px; }
     .chatgpt { background-color: #f0f8ff; }
@@ -356,7 +356,7 @@ const server = new Server({
             repo: REPO_NAME,
             path: CONVERSATION_FILE,
           });
-          
+
           const content = Buffer.from(response.data.content, 'base64').toString();
           return { content, sha: response.data.sha };
         } catch (error) {
@@ -376,14 +376,14 @@ const server = new Server({
       handler: async ({ message }) => {
         // First get the current content
         const { content, sha } = await server.tools.getConversation.handler({});
-        
+
         // Format the message
         const timestamp = new Date().toISOString();
         const formattedMessage = `\n\n## Claude (${timestamp})\n\n${message}`;
-        
+
         // Append the message
         const newContent = content + formattedMessage;
-        
+
         // Update the file
         const response = await octokit.repos.createOrUpdateFileContents({
           owner: REPO_OWNER,
@@ -393,7 +393,7 @@ const server = new Server({
           content: Buffer.from(newContent).toString('base64'),
           sha: sha,
         });
-        
+
         return { success: true, sha: response.data.content.sha };
       }
     }
@@ -437,14 +437,14 @@ app.post('/messages', (req, res) => {
   if (!content) {
     return res.status(400).json({ error: 'Content is required' });
   }
-  
+
   const message = {
     id: messages.length + 1,
     from: 'chatgpt',
     content,
     timestamp: Date.now()
   };
-  
+
   messages.push(message);
   res.status(201).json(message);
 });
@@ -481,7 +481,7 @@ const mcpServer = new Server({
           content,
           timestamp: Date.now()
         };
-        
+
         messages.push(message);
         return { success: true, messageId: message.id };
       }
@@ -504,13 +504,13 @@ mcpServer.listen(3001, () => {
 </head>
 <body>
   <h1>AI Communication Bridge</h1>
-  
+
   <div>
     <h2>Send Message</h2>
     <textarea id="messageInput" rows="4" cols="50"></textarea>
     <button id="sendBtn">Send as ChatGPT</button>
   </div>
-  
+
   <div>
     <h2>Messages</h2>
     <div id="messageLog"></div>
@@ -520,21 +520,21 @@ mcpServer.listen(3001, () => {
     // API URL - change to your deployed server
     const API_URL = 'http://localhost:3000';
     let lastTimestamp = 0;
-    
+
     // Send message
     document.getElementById('sendBtn').addEventListener('click', async function() {
       const content = document.getElementById('messageInput').value;
       if (content.trim() === '') return;
-      
+
       try {
         const response = await fetch(`${API_URL}/messages`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ content })
         });
-        
+
         if (!response.ok) throw new Error('Failed to send message');
-        
+
         document.getElementById('messageInput').value = '';
         await fetchMessages();
       } catch (error) {
@@ -542,19 +542,19 @@ mcpServer.listen(3001, () => {
         alert('Failed to send message: ' + error.message);
       }
     });
-    
+
     // Fetch messages
     async function fetchMessages() {
       try {
         const response = await fetch(`${API_URL}/messages?since=${lastTimestamp}`);
         if (!response.ok) throw new Error('Failed to fetch messages');
-        
+
         const newMessages = await response.json();
-        
+
         if (newMessages.length > 0) {
           // Update lastTimestamp to the most recent message
           lastTimestamp = Math.max(...newMessages.map(m => m.timestamp));
-          
+
           // Add messages to the log
           const messageLog = document.getElementById('messageLog');
           newMessages.forEach(message => {
@@ -571,14 +571,14 @@ mcpServer.listen(3001, () => {
         console.error('Error fetching messages:', error);
       }
     }
-    
+
     // Poll for new messages every 3 seconds
     setInterval(fetchMessages, 3000);
-    
+
     // Initial fetch
     fetchMessages();
   </script>
-  
+
   <style>
     .message { margin-bottom: 10px; padding: 8px; border-radius: 4px; }
     .chatgpt { background-color: #f0f8ff; }

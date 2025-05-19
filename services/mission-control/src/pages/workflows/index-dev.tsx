@@ -57,7 +57,7 @@ export default function WorkflowsDev() {
           <div className="flex justify-between h-12">
             <div className="flex">
               {navigation.map((item) => (
-                <Link 
+                <Link
                   key={item.name}
                   href={item.href}
                   className={
@@ -96,7 +96,7 @@ export default function WorkflowsDev() {
                   <p>Last run: May 5, 2025</p>
                   <p>Status: Available</p>
                 </div>
-                <Link 
+                <Link
                   href="/workflows/niche-scout"
                   className="px-4 py-2 rounded-md font-medium transition-colors bg-blue-600 hover:bg-blue-700 text-white text-center"
                 >
@@ -114,7 +114,7 @@ export default function WorkflowsDev() {
                   <p>Last run: May 5, 2025</p>
                   <p>Status: Available</p>
                 </div>
-                <Link 
+                <Link
                   href="/workflows/seed-to-blueprint"
                   className="px-4 py-2 rounded-md font-medium transition-colors bg-blue-600 hover:bg-blue-700 text-white text-center"
                 >

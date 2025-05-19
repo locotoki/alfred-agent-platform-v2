@@ -10,7 +10,7 @@
     h1 {font-size:1.5rem; margin:0;}
     main {max-width:1200px; margin:0 auto; padding:1.5rem;}
     .card {background:#fff; border-radius:0.5rem; box-shadow:0 2px 4px rgba(0,0,0,0.05); padding:1.5rem; margin-bottom:1.5rem;}
-    
+
     /* Wizard Progress */
     .steps {display:flex; margin-bottom:2rem; position:relative;}
     .steps::before {content:""; position:absolute; top:14px; left:24px; right:24px; height:2px; background:#e2e8f0; z-index:0;}
@@ -19,25 +19,25 @@
     .step.active .step-circle, .step.completed .step-circle {background:#3b82f6; border-color:#3b82f6; color:#fff;}
     .step-text {font-size:0.875rem; color:#64748b; font-weight:500;}
     .step.active .step-text {color:#3b82f6; font-weight:600;}
-    
+
     /* Form Elements */
     .form-group {margin-bottom:1.5rem;}
     label {display:block; font-size:0.875rem; font-weight:500; margin-bottom:0.5rem; color:#4b5563;}
     input, select {width:100%; padding:0.75rem; border:1px solid #d1d5db; border-radius:0.375rem; font-size:1rem;}
     .help-text {font-size:0.75rem; color:#6b7280; margin-top:0.25rem;}
-    
+
     /* Grid Layout */
     .grid {display:grid; gap:1.5rem;}
     .grid-2 {grid-template-columns:repeat(2, 1fr);}
     @media (max-width:768px) {.grid-2 {grid-template-columns:1fr;}}
-    
+
     /* Button Styles */
     .btn {padding:0.75rem 1.5rem; border-radius:0.375rem; font-weight:500; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; transition:all 0.2s;}
     .btn-primary {background:#3b82f6; color:#fff; border:none;}
     .btn-primary:hover {background:#2563eb;}
     .btn-secondary {background:#f3f4f6; color:#374151; border:1px solid #d1d5db;}
     .btn-secondary:hover {background:#e5e7eb;}
-    
+
     /* Layout Utilities */
     .flex {display:flex;}
     .flex-wrap {flex-wrap:wrap;}
@@ -45,7 +45,7 @@
     .justify-end {justify-content:flex-end;}
     .gap-2 {gap:0.5rem;}
     .mt-6 {margin-top:1.5rem;}
-    
+
     /* Step Content Animation */
     @keyframes fadeIn {
       from {opacity:0; transform:translateY(10px);}
@@ -53,19 +53,19 @@
     }
     .step-content {display:none;}
     .step-content.active {display:block; animation:fadeIn 0.3s ease-out;}
-    
+
     /* Subcategory Tags */
     .subcategory-grid {display:grid; grid-template-columns:repeat(auto-fill, minmax(150px, 1fr)); gap:0.5rem;}
     .tag {padding:0.5rem; border:1px solid #d1d5db; border-radius:0.375rem; text-align:center; cursor:pointer; transition:all 0.2s;}
     .tag:hover {transform:translateY(-2px); border-color:#93c5fd;}
     .tag.selected {background:#eff6ff; border-color:#3b82f6; color:#2563eb;}
-    
+
     /* Summary Section */
     .summary-section {background:#f8fafc; border-radius:0.5rem; padding:1.5rem; margin-bottom:1.5rem;}
     .summary-item {display:flex; margin-bottom:0.5rem;}
     .summary-label {font-weight:500; width:8rem;}
     .summary-value {color:#3b82f6;}
-    
+
     /* Benefits Section */
     .benefits-section {background:#eff6ff; border-radius:0.5rem; padding:1.5rem;}
     .benefits-title {color:#1e40af; margin-top:0;}
@@ -152,7 +152,7 @@
       justify-content: center;
       color: #64748b;
     }
-    
+
     .back-button {
       display: inline-flex;
       align-items: center;
@@ -170,17 +170,17 @@
   <header>
     <h1>MISSION CONTROL</h1>
   </header>
-  
+
   <main>
     <a href="/" class="back-button">
       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
       <span class="ml-2">Back to Dashboard</span>
     </a>
-    
+
     <div style="border-bottom:1px solid #e2e8f0; margin-bottom:1.5rem; padding-bottom:1rem;">
       <h1>Niche-Scout Workflow</h1>
     </div>
-    
+
     <div id="wizard-container">
       <!-- Wizard Steps -->
       <div class="steps">
@@ -197,18 +197,18 @@
           <div class="step-text">Review & Run</div>
         </div>
       </div>
-      
+
       <!-- Step 1: Define Niche -->
       <div id="step-1" class="step-content active">
         <div class="card">
           <h2>Define Your Niche</h2>
-          
+
           <div class="form-group">
             <label for="niche-query">What niche are you interested in exploring?</label>
             <input id="niche-query" type="text" placeholder="e.g. gaming, cooking, fitness, photography">
             <p class="help-text">Enter keywords that describe your content area of interest</p>
           </div>
-          
+
           <div class="form-group">
             <label for="category">Select a Primary Category</label>
             <select id="category">
@@ -220,23 +220,23 @@
               <option value="Science & Technology">Science & Technology</option>
             </select>
           </div>
-          
+
           <div id="subcategories-container" class="form-group" style="display:none;">
             <label>Refine with Subcategories (Optional)</label>
             <div id="subcategories-grid" class="subcategory-grid"></div>
           </div>
-          
+
           <div class="flex justify-end mt-6">
             <button id="next-1" class="btn btn-primary">Next: Research Parameters</button>
           </div>
         </div>
       </div>
-      
+
       <!-- Step 2: Research Parameters -->
       <div id="step-2" class="step-content">
         <div class="card">
           <h2>Set Research Parameters</h2>
-          
+
           <div class="grid grid-2">
             <div class="form-group">
               <label for="time-range">Time Range</label>
@@ -248,7 +248,7 @@
               </select>
               <p class="help-text">Select how far back to analyze trends</p>
             </div>
-            
+
             <div class="form-group">
               <label for="demographics">Target Demographics</label>
               <select id="demographics">
@@ -262,21 +262,21 @@
               <p class="help-text">Filter results by audience age group</p>
             </div>
           </div>
-          
+
           <div class="form-group">
             <button id="toggle-advanced" class="btn btn-secondary">+ Advanced Options</button>
           </div>
-          
+
           <div id="advanced-options" style="display:none; border:1px solid #e2e8f0; border-radius:0.5rem; padding:1rem; margin-bottom:1.5rem;">
             <h3 style="margin-top:0;">Advanced Filters</h3>
-            
+
             <div class="grid grid-2">
               <div class="form-group">
                 <label for="min-views">Minimum Views</label>
                 <input id="min-views" type="number" placeholder="e.g. 10000">
                 <p class="help-text">Exclude videos with fewer views</p>
               </div>
-              
+
               <div class="form-group">
                 <label for="min-growth">Minimum Growth (%)</label>
                 <input id="min-growth" type="number" placeholder="e.g. 20">
@@ -284,51 +284,51 @@
               </div>
             </div>
           </div>
-          
+
           <div class="flex justify-between mt-6">
             <button id="prev-2" class="btn btn-secondary">Back: Define Niche</button>
             <button id="next-2" class="btn btn-primary">Next: Review & Run</button>
           </div>
         </div>
       </div>
-      
+
       <!-- Step 3: Review & Run -->
       <div id="step-3" class="step-content">
         <div class="card">
           <h2>Review & Run Analysis</h2>
-          
+
           <div class="summary-section">
             <h3 style="margin-top:0; margin-bottom:1rem;">Niche Scout Summary</h3>
-            
+
             <div class="summary-item">
               <div class="summary-label">Niche Query:</div>
               <div id="summary-query" class="summary-value">(not specified)</div>
             </div>
-            
+
             <div class="summary-item">
               <div class="summary-label">Category:</div>
               <div id="summary-category" class="summary-value">All</div>
             </div>
-            
+
             <div id="summary-subcategories-container" class="summary-item" style="display:none;">
               <div class="summary-label">Subcategories:</div>
               <div id="summary-subcategories" class="summary-value"></div>
             </div>
-            
+
             <div class="summary-item">
               <div class="summary-label">Time Range:</div>
               <div id="summary-timerange" class="summary-value">Last 30 days</div>
             </div>
-            
+
             <div class="summary-item">
               <div class="summary-label">Demographics:</div>
               <div id="summary-demographics" class="summary-value">All</div>
             </div>
           </div>
-          
+
           <div class="benefits-section">
             <h3 class="benefits-title">What You'll Get</h3>
-            
+
             <ul class="benefits-list">
               <li>Top performing niches based on views and engagement</li>
               <li>Growth rate analysis for trending content areas</li>
@@ -337,10 +337,10 @@
               <li>Recommended content strategies</li>
             </ul>
           </div>
-          
+
           <div class="flex justify-between mt-6">
             <button id="prev-3" class="btn btn-secondary">Back: Research Parameters</button>
-            
+
             <div class="flex gap-2">
               <button id="schedule-btn" class="btn btn-secondary">SCHEDULE</button>
               <button id="run-btn" class="btn btn-primary">RUN ANALYSIS NOW</button>
@@ -349,7 +349,7 @@
         </div>
       </div>
     </div>
-    
+
     <!-- Results Section (Initially Hidden) -->
     <div id="results-container">
       <div class="card">
@@ -357,7 +357,7 @@
           <h2>Niche-Scout Results</h2>
           <button id="new-search-btn" class="btn btn-secondary">New Search</button>
         </div>
-        
+
         <!-- Result Tabs -->
         <div class="result-tabs">
           <div class="result-tab active" data-tab="overview">Overview</div>
@@ -365,7 +365,7 @@
           <div class="result-tab" data-tab="visualization">Visualization</div>
           <div class="result-tab" data-tab="recommendations">Recommendations</div>
         </div>
-        
+
         <!-- Overview Tab -->
         <div id="overview-tab" class="result-content active">
           <div class="summary-section">
@@ -382,7 +382,7 @@
               </div>
             </div>
           </div>
-          
+
           <div style="margin-top: 1.5rem;">
             <h3>Key Insights</h3>
             <ul>
@@ -393,7 +393,7 @@
             </ul>
           </div>
         </div>
-        
+
         <!-- Trending Niches Tab -->
         <div id="trending-tab" class="result-content">
           <h3>Top Trending Niches</h3>
@@ -401,7 +401,7 @@
             <!-- Niche cards will be added dynamically -->
           </div>
         </div>
-        
+
         <!-- Visualization Tab -->
         <div id="visualization-tab" class="result-content">
           <h3>Niche Positioning Map</h3>
@@ -410,11 +410,11 @@
             [Interactive Chart Would Appear Here]
           </div>
         </div>
-        
+
         <!-- Recommendations Tab -->
         <div id="recommendations-tab" class="result-content">
           <h3>Strategic Recommendations</h3>
-          
+
           <div style="margin-bottom: 1.5rem;">
             <h4>Content Strategy</h4>
             <ul>
@@ -424,7 +424,7 @@
               <li>Consider a weekly review series for new mobile game releases</li>
             </ul>
           </div>
-          
+
           <div style="margin-bottom: 1.5rem;">
             <h4>Channel Positioning</h4>
             <ul>
@@ -434,7 +434,7 @@
               <li>Engage with indie developer communities for cross-promotion</li>
             </ul>
           </div>
-          
+
           <div>
             <h4>Technical Considerations</h4>
             <ul>
@@ -448,7 +448,7 @@
       </div>
     </div>
   </main>
-  
+
   <script>
     // Subcategories data
     const subcategoriesMap = {
@@ -458,10 +458,10 @@
       'Howto & Style': ['Beauty', 'Fashion', 'Home Decor', 'Cooking', 'Crafts'],
       'Science & Technology': ['Gadget Reviews', 'Coding', 'AI & ML', 'Engineering', 'Science News']
     };
-    
+
     // Initialize selected subcategories
     let selectedSubcategories = [];
-    
+
     // DOM references
     const steps = document.querySelectorAll('.step');
     const stepContents = document.querySelectorAll('.step-content');
@@ -475,7 +475,7 @@
     const wizardContainer = document.getElementById('wizard-container');
     const resultsContainer = document.getElementById('results-container');
     const newSearchBtn = document.getElementById('new-search-btn');
-    
+
     // Summary elements
     const summaryQuery = document.getElementById('summary-query');
     const summaryCategory = document.getElementById('summary-category');
@@ -483,7 +483,7 @@
     const summarySubcategories = document.getElementById('summary-subcategories');
     const summaryTimeRange = document.getElementById('summary-timerange');
     const summaryDemographics = document.getElementById('summary-demographics');
-    
+
     // Result elements
     const resultDate = document.getElementById('result-date');
     const resultQuery = document.getElementById('result-query');
@@ -491,7 +491,7 @@
     const resultTabs = document.querySelectorAll('.result-tab');
     const resultContents = document.querySelectorAll('.result-content');
     const nicheGrid = document.getElementById('niche-grid');
-    
+
     // Navigation handlers
     document.getElementById('next-1').addEventListener('click', () => goToStep(2));
     document.getElementById('prev-2').addEventListener('click', () => goToStep(1));
@@ -500,7 +500,7 @@
       goToStep(3);
     });
     document.getElementById('prev-3').addEventListener('click', () => goToStep(2));
-    
+
     // Advanced options toggle
     toggleAdvanced.addEventListener('click', () => {
       if (advancedOptions.style.display === 'none') {
@@ -511,16 +511,16 @@
         toggleAdvanced.textContent = '+ Advanced Options';
       }
     });
-    
+
     // Run workflow button
     runBtn.addEventListener('click', () => {
       const originalText = runBtn.textContent;
       runBtn.textContent = 'Running...';
       runBtn.disabled = true;
-      
+
       const query = document.getElementById('niche-query').value || 'gaming';
       const category = categorySelect.value;
-      
+
       // Call the API endpoint
       fetch('/api/workflows/niche-scout', {
         method: 'POST',
@@ -540,27 +540,27 @@
         // Show results
         wizardContainer.style.display = 'none';
         resultsContainer.style.display = 'block';
-        
+
         // Update result data
-        resultDate.textContent = new Date().toLocaleDateString('en-US', { 
-          year: 'numeric', 
-          month: 'long', 
-          day: 'numeric' 
+        resultDate.textContent = new Date().toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric'
         });
         resultQuery.textContent = query;
         resultCategory.textContent = category;
-        
+
         // Log the received data so we can see what we're getting
         console.log('Received API data:', data);
-        
+
         // Check if this is mock data
         if (data._mock) {
           console.log('Received mock data from fallback mechanism');
         }
-        
+
         // Check which data format we have
         let trendingNiches = [];
-        
+
         if (data.result && data.result.trending_niches) {
           // Old format (mock data)
           console.log('Detected mock data format');
@@ -568,12 +568,12 @@
         } else if (data.niches) {
           // New format (API data)
           console.log('Detected API data format');
-          
+
           // Log if this is client-side filtered data
           if (data.query !== null && data.category !== null) {
             console.log(`Using client-side filtered data relevant to query "${data.query}" in category "${data.category}"`);
           }
-          
+
           // Transform API data to match the format expected by our UI
           trendingNiches = data.niches.map(niche => {
             // Extract metrics from API response
@@ -584,58 +584,58 @@
               score: calculateOpportunityScore(niche)
             };
           });
-          
+
           // Validate niches are related to the search query if possible
           const searchQuery = document.getElementById('niche-query').value.toLowerCase();
           const searchCategory = categorySelect.value;
-          
+
           if (searchQuery && searchCategory !== 'All') {
             console.log(`Validating niches are relevant to "${searchQuery}" in "${searchCategory}"`);
-            
+
             // Check if any niches contain the search query or category
-            const hasRelevantNiches = trendingNiches.some(niche => 
-              niche.name.toLowerCase().includes(searchQuery) || 
+            const hasRelevantNiches = trendingNiches.some(niche =>
+              niche.name.toLowerCase().includes(searchQuery) ||
               niche.name.toLowerCase().includes(searchCategory.toLowerCase())
             );
-            
+
             if (!hasRelevantNiches) {
               console.warn('No niches match the search query. Our client-side filtering should have handled this.');
             }
           }
-          
+
           // Log the transformed data
           console.log('Transformed niches:', trendingNiches);
         }
-        
+
         if (trendingNiches.length > 0) {
           // Update the niche grid with the data
           updateNicheGrid(trendingNiches);
-          
+
           // Update overview insights based on the data
           updateOverviewInsights(trendingNiches);
         }
-        
+
         runBtn.textContent = originalText;
         runBtn.disabled = false;
       })
       .catch(error => {
         console.error('Error running workflow:', error);
-        
+
         // Show error in UI but still show results with mock data
         alert(`Error: ${error.message}. Loading with mock data.`);
-        
+
         // Fallback to mock data
         wizardContainer.style.display = 'none';
         resultsContainer.style.display = 'block';
-        
-        resultDate.textContent = new Date().toLocaleDateString('en-US', { 
-          year: 'numeric', 
-          month: 'long', 
-          day: 'numeric' 
+
+        resultDate.textContent = new Date().toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric'
         });
         resultQuery.textContent = query;
         resultCategory.textContent = category;
-        
+
         // Create mock data that matches our expected format
         const mockNiches = [
           { name: 'Mobile Gaming', growth: 32, views: 3200000, score: 85 },
@@ -645,21 +645,21 @@
         ];
         updateNicheGrid(mockNiches);
         updateOverviewInsights(mockNiches);
-        
+
         runBtn.textContent = originalText;
         runBtn.disabled = false;
       });
     });
-    
+
     // Update niche grid with data
     function updateNicheGrid(niches) {
       if (!nicheGrid) return;
-      
+
       let html = '';
-      
+
       niches.forEach(niche => {
         const viewsM = Math.round(niche.views / 1000000 * 10) / 10;
-        
+
         html += `
           <div class="niche-card">
             <div class="niche-title">${niche.name}</div>
@@ -684,26 +684,26 @@
           </div>
         `;
       });
-      
+
       nicheGrid.innerHTML = html;
     }
-    
+
     function getCompetitionLevel(score) {
       if (score > 80) return 'Low';
       if (score > 65) return 'Medium';
       return 'High';
     }
-    
+
     // Calculate opportunity score based on niche data
     function calculateOpportunityScore(niche) {
       // Base score
       let score = 70;
-      
+
       // Adjust based on growth rate
       if (niche.growth_rate) {
         score += niche.growth_rate / 10; // Higher growth rate = higher score
       }
-      
+
       // Adjust based on competition level
       if (niche.competition_level) {
         switch (niche.competition_level.toLowerCase()) {
@@ -721,48 +721,48 @@
             break;
         }
       }
-      
+
       // Cap the score between 0 and 100
       return Math.min(100, Math.max(0, Math.round(score)));
     }
-    
+
     // Update overview insights based on actual trending niches data
     function updateOverviewInsights(niches) {
       // Make sure we're using niches that match the search query
       const searchQuery = document.getElementById('niche-query').value.toLowerCase();
       const searchCategory = categorySelect.value;
-      
+
       // Filter or prioritize niches that match the query if needed
       let relevantNiches = [...niches];
       if (searchQuery && searchCategory !== 'All') {
         // Try to find niches that match the query or category
-        const matchingNiches = niches.filter(niche => 
-          niche.name.toLowerCase().includes(searchQuery) || 
+        const matchingNiches = niches.filter(niche =>
+          niche.name.toLowerCase().includes(searchQuery) ||
           niche.name.toLowerCase().includes(searchCategory.toLowerCase())
         );
-        
+
         // Use matching niches if we found any, otherwise use all
         if (matchingNiches.length > 0) {
           relevantNiches = matchingNiches;
         }
       }
-      
+
       // Find the highest growth niches
       let sortedByGrowth = [...relevantNiches].sort((a, b) => b.growth - a.growth);
       let topGrowthNiches = sortedByGrowth.slice(0, 3);
-      
+
       // Find the highest score (best opportunity) niches
       let sortedByScore = [...relevantNiches].sort((a, b) => b.score - a.score);
       let topOpportunityNiches = sortedByScore.slice(0, 2);
-      
+
       // Find the lowest score (most saturated) niches
       let lowestScoreNiches = [...relevantNiches].sort((a, b) => a.score - b.score).slice(0, 2);
-      
+
       // Create insights text
       const growthText = topGrowthNiches.map(n => `${n.name} (+${n.growth}%)`).join(', ');
       const saturatedText = lowestScoreNiches.map(n => n.name).join(', ');
       const opportunityText = topOpportunityNiches[0].name + ' content with focus on tutorials and community building';
-      
+
       // Generate relevant trending topics based on niches and category
       const categoryKeywords = {
         'Gaming': ['gameplay', 'tutorials', 'tips and tricks', 'reviews'],
@@ -771,17 +771,17 @@
         'Howto & Style': ['tutorials', 'guides', 'demonstrations', 'reviews'],
         'Science & Technology': ['explanations', 'reviews', 'innovations', 'guides']
       };
-      
+
       // Get relevant keywords for the selected category
       const keywords = categoryKeywords[searchCategory] || ['content', 'videos', 'tutorials'];
-      
+
       // Generate trending topics incorporating the category and search query
       const trendingTopics = [
         `${topGrowthNiches[0].name} ${keywords[0] || 'content'}`,
         `${topOpportunityNiches[0].name} ${keywords[1] || 'tutorials'}`,
         `trending ${searchCategory?.toLowerCase() || ''} ${searchQuery || 'content'}`
       ].join(', ');
-      
+
       // Update the overview insights in the DOM
       const keyInsightsElement = document.querySelector('#overview-tab ul');
       if (keyInsightsElement) {
@@ -792,7 +792,7 @@
           <li><strong>Trending topics:</strong> ${trendingTopics}</li>
         `;
       }
-      
+
       // Update the data points count (a bit randomized based on number of niches)
       const dataPointsElement = document.querySelector('#overview-tab .grid-2 div:first-child div:last-child');
       if (dataPointsElement) {
@@ -800,7 +800,7 @@
         const randomizedDataPoints = baseDataPoints + Math.floor(Math.random() * 500);
         dataPointsElement.textContent = randomizedDataPoints.toLocaleString();
       }
-      
+
       // Update the processing time (randomized)
       const processingTimeElement = document.querySelector('#overview-tab .grid-2 div:last-child div:last-child');
       if (processingTimeElement) {
@@ -808,28 +808,28 @@
         processingTimeElement.textContent = `${processingTime}s`;
       }
     }
-    
+
     // New search button
     newSearchBtn.addEventListener('click', () => {
       wizardContainer.style.display = 'block';
       resultsContainer.style.display = 'none';
       goToStep(1);
     });
-    
+
     // Schedule button
     scheduleBtn.addEventListener('click', () => {
       alert('Workflow scheduled successfully!');
     });
-    
+
     // Category change handler
     categorySelect.addEventListener('change', updateSubcategories);
-    
+
     // Result tabs
     resultTabs.forEach(tab => {
       tab.addEventListener('click', () => {
         resultTabs.forEach(t => t.classList.remove('active'));
         tab.classList.add('active');
-        
+
         const tabId = tab.dataset.tab;
         resultContents.forEach(content => {
           content.classList.remove('active');
@@ -839,7 +839,7 @@
         });
       });
     });
-    
+
     // Navigate to step
     function goToStep(stepNumber) {
       // Update steps
@@ -854,36 +854,36 @@
           step.classList.remove('active', 'completed');
         }
       });
-      
+
       // Update content
       stepContents.forEach(content => {
         content.classList.remove('active');
       });
       document.getElementById('step-' + stepNumber).classList.add('active');
     }
-    
+
     // Update subcategories based on selected category
     function updateSubcategories() {
       const category = categorySelect.value;
-      
+
       if (category !== 'All' && subcategoriesMap[category]) {
         subcategoriesContainer.style.display = 'block';
         subcategoriesGrid.innerHTML = '';
-        
+
         subcategoriesMap[category].forEach(subcategory => {
           const tag = document.createElement('div');
           tag.className = 'tag';
           tag.textContent = subcategory;
-          
+
           // Check if already selected
           if (selectedSubcategories.includes(subcategory)) {
             tag.classList.add('selected');
           }
-          
+
           tag.addEventListener('click', () => {
             toggleSubcategory(tag, subcategory);
           });
-          
+
           subcategoriesGrid.appendChild(tag);
         });
       } else {
@@ -891,7 +891,7 @@
         selectedSubcategories = [];
       }
     }
-    
+
     // Toggle subcategory selection
     function toggleSubcategory(element, subcategory) {
       if (element.classList.contains('selected')) {
@@ -902,25 +902,25 @@
         selectedSubcategories.push(subcategory);
       }
     }
-    
+
     // Update summary information
     function updateSummary() {
       const query = document.getElementById('niche-query').value;
       summaryQuery.textContent = query || '(not specified)';
-      
+
       summaryCategory.textContent = categorySelect.value;
-      
+
       if (selectedSubcategories.length > 0) {
         summarySubcategoriesContainer.style.display = 'flex';
         summarySubcategories.textContent = selectedSubcategories.join(', ');
       } else {
         summarySubcategoriesContainer.style.display = 'none';
       }
-      
+
       summaryTimeRange.textContent = document.getElementById('time-range').value;
       summaryDemographics.textContent = document.getElementById('demographics').value;
     }
-    
+
     // Initialize subcategories
     updateSubcategories();
   </script>

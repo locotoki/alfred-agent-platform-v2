@@ -21,4 +21,3 @@ $PYTHON_CMD -m black --exclude "(youtube-test-env/|migrations/|node_modules/|\.g
 
 # Report completion
 echo "Black formatting complete\!"
-

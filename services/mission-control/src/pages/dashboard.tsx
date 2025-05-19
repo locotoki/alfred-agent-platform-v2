@@ -61,7 +61,7 @@ export default function Dashboard() {
         {/* System Overview Stats */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {/* CPU Usage */}
-          <StatsCard 
+          <StatsCard
             title="CPU Usage"
             value={`${systemMetrics.cpuUsage}%`}
             icon={FiCpu}
@@ -73,7 +73,7 @@ export default function Dashboard() {
           />
 
           {/* Memory Usage */}
-          <StatsCard 
+          <StatsCard
             title="Memory Usage"
             value={`${systemMetrics.memoryUsage}%`}
             icon={FiDatabase}
@@ -85,7 +85,7 @@ export default function Dashboard() {
           />
 
           {/* Active Tasks */}
-          <StatsCard 
+          <StatsCard
             title="Active Tasks"
             value={systemMetrics.activeTasks}
             icon={FiActivity}
@@ -97,7 +97,7 @@ export default function Dashboard() {
           />
 
           {/* Success Rate */}
-          <StatsCard 
+          <StatsCard
             title="Success Rate"
             value={`${systemMetrics.successRate}%`}
             icon={FiCheckCircle}
@@ -119,7 +119,7 @@ export default function Dashboard() {
                 {systemMetrics.activeAgents} / {systemMetrics.totalAgents} Online
               </span>
             </div>
-            
+
             <div className="space-y-4">
               <div className="border dark:border-gray-700 rounded-lg p-4 transition-all hover:border-primary-500 dark:hover:border-primary-500">
                 <div className="flex justify-between items-center mb-2">
@@ -203,7 +203,7 @@ export default function Dashboard() {
                 <FiRefreshCw className="mr-1 h-3 w-3" /> Refresh
               </button>
             </div>
-            
+
             <div className="space-y-4">
               <div className="relative">
                 <div className="absolute top-0 left-5 h-full w-0.5 bg-gradient-to-b from-green-500 via-blue-500 to-red-500 dark:from-green-400 dark:via-blue-400 dark:to-red-400"></div>
@@ -291,7 +291,7 @@ export default function Dashboard() {
                   </div>
                 </div>
               </div>
-              
+
               <button className="btn-primary w-full py-2 text-white font-medium flex items-center justify-center mt-4 hover:shadow-lg transition-all">
                 <span>View All Activity</span>
                 <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -324,7 +324,7 @@ export default function Dashboard() {
                   </div>
                   <span className="mt-1 text-xs text-gray-500 dark:text-gray-400">42% of tasks</span>
                 </div>
-                
+
                 <div className="flex flex-col items-center justify-center p-5 rounded-lg bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/30 dark:to-purple-800/30 border border-purple-200 dark:border-purple-800 shadow-sm hover:shadow-md transition-all duration-200 transform hover:-translate-y-1">
                   <div className="w-16 h-16 rounded-full bg-gradient-to-r from-purple-500 to-fuchsia-600 flex items-center justify-center mb-3 shadow-lg">
                     <span className="text-2xl font-bold text-white">3</span>
@@ -335,7 +335,7 @@ export default function Dashboard() {
                   </div>
                   <span className="mt-1 text-xs text-gray-500 dark:text-gray-400">25% of tasks</span>
                 </div>
-                
+
                 <div className="flex flex-col items-center justify-center p-5 rounded-lg bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/30 dark:to-green-800/30 border border-green-200 dark:border-green-800 shadow-sm hover:shadow-md transition-all duration-200 transform hover:-translate-y-1">
                   <div className="w-16 h-16 rounded-full bg-gradient-to-r from-green-500 to-emerald-600 flex items-center justify-center mb-3 shadow-lg">
                     <span className="text-2xl font-bold text-white">2</span>
@@ -346,7 +346,7 @@ export default function Dashboard() {
                   </div>
                   <span className="mt-1 text-xs text-gray-500 dark:text-gray-400">17% of tasks</span>
                 </div>
-                
+
                 <div className="flex flex-col items-center justify-center p-5 rounded-lg bg-gradient-to-br from-yellow-50 to-yellow-100 dark:from-yellow-900/30 dark:to-yellow-800/30 border border-yellow-200 dark:border-yellow-800 shadow-sm hover:shadow-md transition-all duration-200 transform hover:-translate-y-1">
                   <div className="w-16 h-16 rounded-full bg-gradient-to-r from-yellow-500 to-amber-600 flex items-center justify-center mb-3 shadow-lg">
                     <span className="text-2xl font-bold text-white">2</span>
@@ -387,7 +387,7 @@ export default function Dashboard() {
                   <div className="h-full rounded-full bg-gradient-to-r from-green-400 to-green-600" style={{ width: '92%' }}></div>
                 </div>
               </div>
-              
+
               <div>
                 <div className="flex justify-between mb-2">
                   <div>
@@ -405,7 +405,7 @@ export default function Dashboard() {
                   <div className="h-full rounded-full bg-gradient-to-r from-green-400 to-blue-500" style={{ width: '88%' }}></div>
                 </div>
               </div>
-              
+
               <div>
                 <div className="flex justify-between mb-2">
                   <div>
@@ -420,7 +420,7 @@ export default function Dashboard() {
                   <div className="h-full rounded-full bg-gradient-to-r from-blue-400 to-indigo-500" style={{ width: '76%' }}></div>
                 </div>
               </div>
-              
+
               <div>
                 <div className="flex justify-between mb-2">
                   <div>
@@ -435,7 +435,7 @@ export default function Dashboard() {
                   <div className="h-full rounded-full bg-gradient-to-r from-yellow-400 to-orange-500" style={{ width: '65%' }}></div>
                 </div>
               </div>
-              
+
               <div className="pt-4 border-t border-gray-200 dark:border-gray-700 mt-4">
                 <div className="flex items-center justify-between">
                   <div>

@@ -6,7 +6,7 @@ This document describes the configuration and setup of agent services in the uni
 
 If you experience issues with the agent-financial or agent-legal services, two helper scripts are provided:
 
-1. **Fix Intent Constants**: 
+1. **Fix Intent Constants**:
    ```bash
    ./helpers/fix-intent-constants.py
    ```
@@ -162,7 +162,7 @@ from agents.legal_compliance.models import (
 
 If health checks are failing, use the `minimal-health-services.py` script to set up minimal health endpoints.
 
-## Troubleshooting 
+## Troubleshooting
 
 1. Check container logs:
    ```bash

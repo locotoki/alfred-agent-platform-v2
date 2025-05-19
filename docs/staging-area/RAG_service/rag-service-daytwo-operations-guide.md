@@ -3,12 +3,12 @@
 # RAG Service – Day‑Two Operations Guide
 
 > Audience: SRE / on‑call engineer operating the RAG stack in production (single‑node on‑prem).
-> 
-> 
+>
+>
 > **Revision**: 0.1 ‑‑ 2025‑05‑09
-> 
+>
 > **Prerequisite**: MVP rolled out per *Implementation Plan & Test Instructions*.
-> 
+>
 
 ---
 

@@ -117,7 +117,7 @@ graph LR
 **4 ️⃣ GitHub Actions workflow — auto-build diagrams**
 
 > Assumptions
-> 
+>
 - Mermaid source files live in docs/diagrams/src/*.mmd.
 - Generated SVGs go to docs/diagrams/svg/.
 - You have write permission to push back to the branch (or you can switch the final step to upload artifacts instead of committing).
@@ -245,5 +245,3 @@ Last consolidated: 2025-05-14
 - Infra_Crew/infra-architect-lean-crew-mvp.md
 - Infra_Crew/ai-aent-team-crew---autonomous-infrastructure.md
 - alfred__AI_Assistant/interfaces-initial-infra-assessment.md
-
-

@@ -1,9 +1,9 @@
 /**
  * Manual test cases for Phase 0 of Niche-Scout ↔ Social-Intel Integration
- * 
+ *
  * This script tests the specific test cases required in the implementation guide:
  * 1. "mobile" in "Gaming" category
- * 2. "tutorial" in "Education" category  
+ * 2. "tutorial" in "Education" category
  * 3. "makeup" in "Howto & Style" category
  * 4. Empty query with category only
  * 5. Query with no category (set to "All")
@@ -15,8 +15,8 @@
  * - Non-existent category
  */
 
-const { 
-  getMockNichesForCategory, 
+const {
+  getMockNichesForCategory,
   calculateRelevanceMetrics,
   stringSimilarity,
   SIMILARITY_THRESHOLD
@@ -34,7 +34,7 @@ const formatPercentage = val => `${(val * 100).toFixed(1)}%`;
 // Helper function to calculate statistics
 function calculateStats(values) {
   if (!values || values.length === 0) return { min: 0, max: 0, avg: 0, p95: 0 };
-  
+
   values.sort((a, b) => a - b);
   const sum = values.reduce((acc, val) => acc + val, 0);
   const avg = sum / values.length;
@@ -42,18 +42,18 @@ function calculateStats(values) {
   const max = values[values.length - 1];
   const p95Index = Math.ceil(values.length * 0.95) - 1;
   const p95 = values[p95Index];
-  
+
   return { min, max, avg, p95 };
 }
 
 // Helper function to check and display relevance
 function checkRelevance(query, category, printDetails = true) {
   console.log(`\nTesting "${query}" in "${category}"`);
-  
+
   // Performance testing
   const transformTimes = [];
   let niches = [];
-  
+
   // Run multiple iterations for performance statistics
   for (let i = 0; i < PERFORMANCE_TEST_ITERATIONS; i++) {
     const startTime = performance.now();
@@ -61,30 +61,30 @@ function checkRelevance(query, category, printDetails = true) {
     const endTime = performance.now();
     transformTimes.push(endTime - startTime);
   }
-  
+
   // Get statistics
   const timeStats = calculateStats(transformTimes);
-  
+
   // Prepare niche data for relevance calculation
   const data = { niches: niches.map(name => ({ name })) };
   const params = { query, category };
-  
+
   // Calculate relevance metrics
   const metrics = calculateRelevanceMetrics(data, params);
-  
+
   // Print results
   console.log(`Generated niches: ${niches.join(', ')}`);
   console.log(`Relevance score: ${formatPercentage(metrics.averageRelevanceScore)}`);
   console.log(`Relevant niches: ${metrics.relevantNicheCount}/${niches.length} (${formatPercentage(metrics.relevantNichePercentage)})`);
   console.log(`Match types: Exact: ${metrics.matchTypes.exact}, Partial: ${metrics.matchTypes.partial}, Category: ${metrics.matchTypes.category}, None: ${metrics.matchTypes.none}`);
-  
+
   // Performance metrics
   console.log(`\nPerformance metrics (${PERFORMANCE_TEST_ITERATIONS} iterations):`);
   console.log(`- Average transform time: ${formatMs(timeStats.avg)}`);
   console.log(`- Min transform time: ${formatMs(timeStats.min)}`);
   console.log(`- Max transform time: ${formatMs(timeStats.max)}`);
   console.log(`- P95 transform time: ${formatMs(timeStats.p95)}`);
-  
+
   if (printDetails) {
     // Individual relevance scores
     console.log('\nIndividual niche relevance scores:');
@@ -105,7 +105,7 @@ function checkRelevance(query, category, printDetails = true) {
       console.log(`- ${name}: ${scoreDetails || 'N/A'}`);
     });
   }
-  
+
   return {
     niches,
     metrics,
@@ -201,10 +201,10 @@ function avgRelevancePercentage(results) {
 }
 
 const standardTestRelevance = [
-  mobileGamingResults, 
-  tutorialEduResults, 
-  makeupStyleResults, 
-  emptyQueryResults, 
+  mobileGamingResults,
+  tutorialEduResults,
+  makeupStyleResults,
+  emptyQueryResults,
   noCategoryResults
 ].map(avgRelevancePercentage);
 
@@ -224,15 +224,15 @@ console.log('========================');
 console.log(`Transformation time requirement (<100ms): ${overallStats.avg < 100 ? 'PASS ✓' : 'FAIL ✗'} (avg: ${formatMs(overallStats.avg)})`);
 
 // Check if we have at least 5 relevant niches for our key test cases
-const relevantRequirement = 
+const relevantRequirement =
   mobileGamingResults.metrics.relevantNicheCount >= 5 &&
   tutorialEduResults.metrics.relevantNicheCount >= 5 &&
   makeupStyleResults.metrics.relevantNicheCount >= 5;
 
 console.log(`Relevance requirement (≥5 relevant niches): ${relevantRequirement ? 'PASS ✓' : 'FAIL ✗'} (${mobileGamingResults.metrics.relevantNicheCount}, ${tutorialEduResults.metrics.relevantNicheCount}, ${makeupStyleResults.metrics.relevantNicheCount})`);
 
-const successfulImplementation = 
-  overallStats.avg < 100 && 
+const successfulImplementation =
+  overallStats.avg < 100 &&
   relevantRequirement &&
   standardAvgRelevance >= 80;
 

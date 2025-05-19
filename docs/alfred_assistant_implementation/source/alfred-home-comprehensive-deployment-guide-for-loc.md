@@ -387,12 +387,12 @@ To receive WhatsApp messages, the webhook (`http://<your-ip>:8000/webhook`) must
 
 - **Option 1**: Public IP/domain (if available, €0). Configure your router to forward port 8000.
 - **Option 2**: Use ngrok for tunneling:
-    
+
     ```bash
     ngrok http 8000
-    
+
     ```
-    
+
     - Free tier for testing; paid plan (~€8/month) for production with a static domain.
 
 Set the webhook URL in Meta’s Business Manager for your WABA.

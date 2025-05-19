@@ -2,13 +2,14 @@
 
 ### Added
 - ML-based noise ranking to reduce alert volume by 30%+ (Sprint 3)
-- Custom grouping rules DSL for service-specific configurations  
+- Custom grouping rules DSL for service-specific configurations
 - Feedback loop UI for user input on alert relevance
 - Alert snooze API with Redis TTL support
 - Comprehensive benchmark suite for ranker performance
 
 ### Changed
 - Enhanced grouping algorithm with ML similarity scoring
+- Established repository-wide Black and isort formatting baseline (ops/black-baseline-fix)
 
 ### Documentation
 - Added comprehensive noise reduction guide in docs/dev/
@@ -23,7 +24,7 @@
   - Comprehensive Grafana dashboards
   - Successful canary rollout (5% → 25% → 100%)
   - Feature flag removed after stable deployment
-  
+
 ### Performance
 - P95 latency: 129ms (target < 150ms)
 - Error rate: 0.3% (target < 0.5%)

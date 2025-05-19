@@ -11,14 +11,14 @@
 A modular, data‑driven agent that automates competitive research, content ideation, production optimisation, and publishing on YouTube. The goal is to shorten the feedback loop between audience insights and creative output while preserving an authentic creator voice.
 
 > Core architectural decisions locked‑in (May 2025)
-> 
-> 
+>
+>
 > • **Single orchestrator:** Prefect (runs inside agent containers)
-> 
+>
 > • **Vector store:** Qdrant primary, pgvector in Supabase Postgres for light/ephemeral embeddings
-> 
+>
 > • **Unified UI:** Next.js “Mission Control” dashboard, with Streamlit panels embedded where data‑scientist velocity matters
-> 
+>
 
 ---
 

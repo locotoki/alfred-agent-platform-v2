@@ -1,7 +1,7 @@
 # Documentation Migration Plan
 
-*Last Updated: 2025-05-10*  
-*Owner: Documentation Team*  
+*Last Updated: 2025-05-10*
+*Owner: Documentation Team*
 *Status: Planned*
 
 ## Executive Summary
@@ -28,11 +28,11 @@ We have identified the following documentation sources that need consolidation:
    - Project plans and design guides
    - System design documents
 
-4. **Service-Specific Documentation**: 
+4. **Service-Specific Documentation**:
    - In various service directories like `/services/agent-orchestrator/docs/`
    - Individual README files in subdirectories
 
-5. **Staging Area Content**: 
+5. **Staging Area Content**:
    - Large number of documents in `/docs/staging-area/` that need proper categorization
 
 ### 1.2 Documentation Format Analysis
@@ -251,7 +251,7 @@ For each document to be migrated:
    - Similar titles and headings
    - Content similarity analysis
    - Topic detection
-   
+
 2. Manual review of identified potential duplicates by:
    - Documentation team initial assessment
    - Subject matter expert confirmation
@@ -400,7 +400,7 @@ The new documentation structure will significantly improve developer productivit
 
 ## Appendices
 
-### Appendix A: Document Inventory 
+### Appendix A: Document Inventory
 
 <Detailed inventory of all documents identified for migration>
 

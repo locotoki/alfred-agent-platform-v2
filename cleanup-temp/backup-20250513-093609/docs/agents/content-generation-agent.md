@@ -1,7 +1,7 @@
 # Content Generation Agent
 
-**Last Updated:** 2025-05-14  
-**Owner:** Alfred Platform Team  
+**Last Updated:** 2025-05-14
+**Owner:** Alfred Platform Team
 **Status:** In Development
 
 ## Overview
@@ -105,7 +105,7 @@ Generate complete SEO-optimized blog posts based on topic outlines and keywords.
 
 **Example:**
 ```
-Input: 
+Input:
 {
   "content_type": "blog_post",
   "topic": "Sustainable Home Gardening",
@@ -116,7 +116,7 @@ Input:
   "sections": ["Introduction", "Benefits", "Getting Started", "Sustainable Practices", "Conclusion"]
 }
 
-Output: 
+Output:
 {
   "title": "10 Sustainable Practices for Your Home Garden That Save Time and Money",
   "meta_description": "Learn how organic gardening and sustainable practices can transform your home garden while saving resources. Perfect for busy homeowners.",

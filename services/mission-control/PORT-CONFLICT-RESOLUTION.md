@@ -68,7 +68,7 @@ const baseUrl = typeof window !== 'undefined' ? window.location.origin : 'http:/
 const SOCIAL_INTEL_URL = `${baseUrl}/api/social-intel`;
 ```
 
-### 3. Update Port-Fix Script 
+### 3. Update Port-Fix Script
 
 #### public/port-fix.js
 
@@ -76,7 +76,7 @@ Modified the port-fix.js script to handle port 3007:
 
 ```javascript
 // Replace hardcoded ports with current window origin
-if (url.includes('localhost:3000') || url.includes('localhost:3003') || 
+if (url.includes('localhost:3000') || url.includes('localhost:3003') ||
     url.includes('localhost:3005') || url.includes('localhost:3007')) {
   url = url.replace(/http:\/\/localhost:(3000|3003|3005|3007)/g, currentOrigin);
   console.log('Port fix: Redirecting API call to', url);
@@ -110,7 +110,7 @@ To test that the port conflict has been resolved:
    ./restart-server.sh
    ```
 
-2. Access the workflow interface at: 
+2. Access the workflow interface at:
    ```
    http://localhost:3007/workflows
    ```

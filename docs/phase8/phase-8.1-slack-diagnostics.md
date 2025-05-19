@@ -32,7 +32,7 @@ slack:
 
 Checks the following services:
 - alfred-core
-- mission-control  
+- mission-control
 - social-intel
 - model-registry
 - model-router

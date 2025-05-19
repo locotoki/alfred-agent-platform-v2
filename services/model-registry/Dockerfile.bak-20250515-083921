@@ -41,4 +41,3 @@ EXPOSE 9091
 # Use the entrypoint script to run the application
 ENTRYPOINT ["/app/entrypoint.sh"]
 CMD ["healthcheck", "--export-prom", ":9091", "--", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8079"]
-

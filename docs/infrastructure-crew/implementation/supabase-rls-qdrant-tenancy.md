@@ -53,10 +53,10 @@ ALTER TABLE vector_collections ENABLE ROW LEVEL SECURITY;
 ALTER TABLE vector_documents ENABLE ROW LEVEL SECURITY;
 
 -- Create default deny policies
-CREATE POLICY "deny all by default" ON vector_collections 
+CREATE POLICY "deny all by default" ON vector_collections
   USING (false);
-  
-CREATE POLICY "deny all by default" ON vector_documents 
+
+CREATE POLICY "deny all by default" ON vector_documents
   USING (false);
 ```
 
@@ -90,7 +90,7 @@ CREATE POLICY "users can insert into their tenant's collections" ON vector_docum
     auth.jwt() ->> 'tenant_id' = tenant_id::text
     AND
     collection_id IN (
-      SELECT id FROM vector_collections 
+      SELECT id FROM vector_collections
       WHERE tenant_id::text = auth.jwt() ->> 'tenant_id'
     )
   );
@@ -163,7 +163,7 @@ BEGIN
     NULL,
     1000 -- Timeout in ms
   );
-  
+
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
@@ -193,20 +193,20 @@ async def tenant_middleware(request, call_next):
     if auth_header.startswith("Bearer "):
         token = auth_header[7:]
         claims = decode_jwt(token)
-        
+
         # Extract tenant_id
         tenant_id = claims.get("tenant_id")
         user_id = claims.get("sub")
         role = claims.get("role")
-        
+
         # Skip tenant check for service accounts
         if role == "service_role":
             return await call_next(request)
-            
+
         # For search/retrieve operations, check collection access
         if request.url.path.startswith("/collections/") and request.method in ["GET", "POST"]:
             collection_name = extract_collection_from_path(request.url.path)
-            
+
             # Check if user has access to this collection
             has_access = await check_collection_access(collection_name, tenant_id, user_id)
             if not has_access:
@@ -214,7 +214,7 @@ async def tenant_middleware(request, call_next):
                     status_code=403,
                     content={"error": "Access denied to this collection"}
                 )
-                
+
     return await call_next(request)
 ```
 

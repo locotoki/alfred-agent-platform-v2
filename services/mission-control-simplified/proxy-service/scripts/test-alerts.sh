@@ -46,12 +46,12 @@ fi
 # Function to simulate high error rate
 simulate_high_error_rate() {
   echo "🔥 Simulating high error rate (>5%)..."
-  
+
   # Use Docker exec to run curl commands that will artificially increase error rate
   for i in {1..10}; do
     docker exec -it niche-proxy curl -s -X POST "http://localhost:3020/api/youtube/niche-scout" -H "Content-Type: application/json" -d '{"invalid": "request"}' > /dev/null
   done
-  
+
   echo "✅ Sent 10 invalid requests to increase error rate"
   echo "Check Prometheus at http://localhost:9090 and Grafana at http://localhost:3000 to see the alert"
   echo "Alert should fire within 1 minute if error rate exceeds threshold"
@@ -60,15 +60,15 @@ simulate_high_error_rate() {
 # Function to simulate high latency
 simulate_high_latency() {
   echo "🔥 Simulating high latency (>800ms)..."
-  
+
   # Create a temporary endpoint that introduces delay
   docker exec -it niche-proxy curl -s -X POST "http://localhost:3020/config" -H "Content-Type: application/json" -d '{"transformation": {"simulateDelay": 1000}}' > /dev/null
-  
+
   # Make some requests to this slow endpoint
   for i in {1..5}; do
     docker exec -it niche-proxy curl -s -X POST "http://localhost:3020/api/youtube/niche-scout" -H "Content-Type: application/json" -d '{"query": "cooking recipes", "category": "Food"}' > /dev/null
   done
-  
+
   echo "✅ Sent 5 requests with artificial latency"
   echo "Check Prometheus at http://localhost:9090 and Grafana at http://localhost:3000 to see the alert"
   echo "Alert should fire within 2 minutes if p95 latency exceeds threshold"
@@ -77,15 +77,15 @@ simulate_high_latency() {
 # Function to simulate low cache hit ratio
 simulate_low_cache_hit() {
   echo "🔥 Simulating low cache hit ratio (<20%)..."
-  
+
   # First, clear the cache
   docker exec -it niche-proxy curl -s -X DELETE "http://localhost:3020/cache/*?token=$(docker exec niche-proxy env | grep CACHE_BUST_TOKEN | cut -d= -f2)" > /dev/null
-  
+
   # Then send many unique requests to ensure low cache hit ratio
   for i in {1..20}; do
     docker exec -it niche-proxy curl -s -X POST "http://localhost:3020/api/youtube/niche-scout" -H "Content-Type: application/json" -d "{\"query\": \"unique query $i\", \"category\": \"Test\"}" > /dev/null
   done
-  
+
   echo "✅ Cleared cache and sent 20 unique requests to reduce cache hit ratio"
   echo "Check Prometheus at http://localhost:9090 and Grafana at http://localhost:3000 to see the alert"
   echo "Alert should fire within 5 minutes if cache hit ratio stays below threshold"
@@ -94,15 +94,15 @@ simulate_low_cache_hit() {
 # Function to resolve alerts
 resolve_alerts() {
   echo "🔄 Resolving any firing alerts..."
-  
+
   # Reset configuration to normal
   docker exec -it niche-proxy curl -s -X POST "http://localhost:3020/config" -H "Content-Type: application/json" -d '{"transformation": {"simulateDelay": 0}}' > /dev/null
-  
+
   # Make some successful requests to improve error rate
   for i in {1..20}; do
     docker exec -it niche-proxy curl -s -X POST "http://localhost:3020/api/youtube/niche-scout" -H "Content-Type: application/json" -d '{"query": "gaming", "category": "Gaming"}' > /dev/null
   done
-  
+
   echo "✅ Reset configuration and sent 20 valid requests"
   echo "Alerts should resolve within a few minutes"
 }

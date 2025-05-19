@@ -37,7 +37,7 @@ done
 if [ -n "$EXPORT_PROM" ]; then
   # Extract port number from PORT format (:9091 -> 9091)
   PORT=$(echo $EXPORT_PROM | sed 's/^://')
-  
+
   # Create a simple metrics response
   mkdir -p /tmp/metrics
   cat > /tmp/metrics/index.html << EOF

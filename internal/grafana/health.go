@@ -36,63 +36,63 @@ type HealthChecker struct {
 // Check performs a health check against the Grafana instance
 func (c *HealthChecker) Check() (HealthStatus, error) {
 	client := c.createHTTPClient()
-	
+
 	// Check Grafana core health
 	startTime := time.Now()
 	req, err := c.createAuthRequest("GET", fmt.Sprintf("%s/api/health", c.GrafanaURL), nil)
 	if err != nil {
 		return StatusError, fmt.Errorf("error creating request: %w", err)
 	}
-	
+
 	resp, err := client.Do(req)
 	if err != nil {
 		return StatusError, fmt.Errorf("error checking Grafana health: %w", err)
 	}
 	defer resp.Body.Close()
-	
+
 	// Record API latency
 	apiLatencyHistogram.Observe(time.Since(startTime).Seconds())
-	
+
 	if resp.StatusCode != http.StatusOK {
 		return StatusError, fmt.Errorf("Grafana health check failed with status: %d", resp.StatusCode)
 	}
-	
+
 	// Parse health response
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return StatusError, fmt.Errorf("error reading health response: %w", err)
 	}
-	
+
 	var healthResp HealthResponse
 	if err := json.Unmarshal(body, &healthResp); err != nil {
 		return StatusError, fmt.Errorf("error parsing health response: %w", err)
 	}
-	
+
 	// Check if database is OK
 	if healthResp.Database != "ok" {
 		return StatusError, fmt.Errorf("Grafana database is not healthy: %s", healthResp.Database)
 	}
-	
+
 	// Check datasources health
 	if err := c.collectMetrics(); err != nil {
 		// If we can't check datasources, consider Grafana degraded but not down
 		return StatusDegraded, fmt.Errorf("error checking datasources: %w", err)
 	}
-	
+
 	// Return status based on metrics
 	metrics := getPrometheusMetrics()
 	dsMetrics, ok := metrics["grafana_datasource_up_total"].(map[string]float64)
 	if !ok {
 		return StatusOK, nil // No datasources is still OK
 	}
-	
+
 	// Check if any datasource is down
 	for _, status := range dsMetrics {
 		if status == 0 {
 			return StatusDegraded, nil
 		}
 	}
-	
+
 	return StatusOK, nil
 }
 
@@ -165,43 +165,43 @@ func resetMetrics() {
 // collectMetrics collects metrics from Grafana
 func (c *HealthChecker) collectMetrics() error {
 	client := c.createHTTPClient()
-	
+
 	// Get datasources
 	req, err := c.createAuthRequest("GET", fmt.Sprintf("%s/api/datasources", c.GrafanaURL), nil)
 	if err != nil {
 		return fmt.Errorf("error creating datasources request: %w", err)
 	}
-	
+
 	startTime := time.Now()
 	resp, err := client.Do(req)
 	if err != nil {
 		return fmt.Errorf("error getting datasources: %w", err)
 	}
 	defer resp.Body.Close()
-	
+
 	// Record API latency
 	apiLatencyHistogram.Observe(time.Since(startTime).Seconds())
-	
+
 	if resp.StatusCode != http.StatusOK {
 		return fmt.Errorf("failed to get datasources with status: %d", resp.StatusCode)
 	}
-	
+
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return fmt.Errorf("error reading datasources response: %w", err)
 	}
-	
+
 	var datasources []DataSource
 	if err := json.Unmarshal(body, &datasources); err != nil {
 		return fmt.Errorf("error parsing datasources: %w", err)
 	}
-	
+
 	// Check each datasource's health
 	for _, ds := range datasources {
 		// Use a function to handle the defer properly in a loop
 		checkDatasourceHealth(c, client, ds)
 	}
-	
+
 	return nil
 }
 
@@ -214,7 +214,7 @@ func checkDatasourceHealth(c *HealthChecker, client *http.Client, ds DataSource)
 		datasourceUpGauge.WithLabelValues(ds.Type).Set(0)
 		return
 	}
-	
+
 	startTime := time.Now()
 	resp, err := client.Do(req)
 	if err != nil {
@@ -223,30 +223,30 @@ func checkDatasourceHealth(c *HealthChecker, client *http.Client, ds DataSource)
 		return
 	}
 	defer resp.Body.Close()
-	
+
 	// Record API latency
 	apiLatencyHistogram.Observe(time.Since(startTime).Seconds())
-	
+
 	if resp.StatusCode != http.StatusOK {
 		// Mark datasource as down
 		datasourceUpGauge.WithLabelValues(ds.Type).Set(0)
 		return
 	}
-	
+
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		// Mark datasource as down
 		datasourceUpGauge.WithLabelValues(ds.Type).Set(0)
 		return
 	}
-	
+
 	var healthResp DataSourceHealthResponse
 	if err := json.Unmarshal(body, &healthResp); err != nil {
 		// Mark datasource as down
 		datasourceUpGauge.WithLabelValues(ds.Type).Set(0)
 		return
 	}
-	
+
 	// Check if datasource is healthy (case insensitive match on "OK")
 	if strings.ToUpper(healthResp.Status) == "OK" {
 		datasourceUpGauge.WithLabelValues(ds.Type).Set(1)
@@ -258,16 +258,16 @@ func checkDatasourceHealth(c *HealthChecker, client *http.Client, ds DataSource)
 // getPrometheusMetrics returns metrics for testing
 func getPrometheusMetrics() map[string]interface{} {
 	metrics := make(map[string]interface{})
-	
+
 	// Add datasource metrics
 	dsMetrics := make(map[string]float64)
 	datasourceUpGauge.WithLabelValues("prometheus").Set(1)
 	dsMetrics["prometheus"] = 1
-	
+
 	// Add API latency
 	metrics["grafana_datasource_up_total"] = dsMetrics
 	metrics["grafana_api_latency_seconds"] = 0.5
-	
+
 	return metrics
 }
 

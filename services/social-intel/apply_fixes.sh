@@ -94,10 +94,10 @@ async def lifespan(app: FastAPI):
     """Manage application lifecycle."""
     # Import database module here to avoid circular imports
     from app.database import get_pool, close_pool
-    
+
     # Startup
     await supabase_transport.connect()
-    
+
     # Initialize database connection pool
     try:
         await get_pool()
@@ -106,28 +106,28 @@ async def lifespan(app: FastAPI):
         logger.error("Failed to initialize database connection pool", error=str(e))
         # Set offline mode since database is unavailable
         OFFLINE_MODE_GAUGE.set(1)
-    
+
     # Start agent
     asyncio.create_task(social_agent.start())
-    
+
     # Start health check scheduler
     health_check_task = asyncio.create_task(start_health_check_scheduler())
-    
+
     logger.info("social_intel_service_started")
     yield
-    
+
     # Shutdown
     health_check_task.cancel()
     await social_agent.stop()
     await supabase_transport.disconnect()
-    
+
     # Close database connection pool
     try:
         await close_pool()
         logger.info("Database connection pool closed")
     except Exception as e:
         logger.error("Failed to close database connection pool", error=str(e))
-    
+
     logger.info("social_intel_service_stopped")
 
 app = FastAPI(
@@ -163,7 +163,7 @@ async def force_analyze(query: str):
     except Exception as e:
         logger.error("force_analyze_failed", error=str(e))
         raise HTTPException(status_code=500, detail=str(e))
-        
+
 @app.post("/niche-scout")
 async def run_niche_scout(
     query: str = Query(None, description="Optional query to focus the niche analysis"),
@@ -175,21 +175,21 @@ async def run_niche_scout(
         logger.info("niche_scout_request", query=query, category=category, subcategory=subcategory)
         niche_scout = NicheScout()
         result, json_path, report_path = await niche_scout.run(query, category, subcategory)
-        
+
         # Add file paths to the result
         result["_files"] = {
             "json_report": json_path,
             "report_file": report_path
         }
-        
+
         # Add a unique ID for result retrieval
         result["_id"] = f"niche-scout-{int(datetime.now().timestamp())}"
-        
+
         return result
     except Exception as e:
         logger.error("niche_scout_failed", error=str(e), query=query, category=category, subcategory=subcategory)
         raise HTTPException(status_code=500, detail=str(e))
-        
+
 # Alternative routes for Niche-Scout workflow
 @app.post("/youtube/niche-scout")
 async def run_niche_scout_alt1(
@@ -208,7 +208,7 @@ async def run_niche_scout_alt2(
 ):
     """Alternative path for Niche-Scout workflow."""
     return await run_niche_scout(query, category, subcategory)
-        
+
 @app.post("/seed-to-blueprint")
 async def run_seed_to_blueprint(
     video_url: str = Query(None, description="URL of the seed video to analyze"),
@@ -218,24 +218,24 @@ async def run_seed_to_blueprint(
     try:
         if not video_url and not niche:
             raise HTTPException(status_code=400, detail="Either video_url or niche parameter must be provided")
-            
+
         blueprint = SeedToBlueprint()
         result, json_path, report_path = await blueprint.run(video_url, niche)
-        
+
         # Add file paths to the result
         result["_files"] = {
             "json_report": json_path,
             "report_file": report_path
         }
-        
+
         # Add a unique ID for result retrieval
         result["_id"] = f"blueprint-{int(datetime.now().timestamp())}"
-        
+
         return result
     except Exception as e:
         logger.error("seed_to_blueprint_failed", error=str(e))
         raise HTTPException(status_code=500, detail=str(e))
-        
+
 # Alternative routes for Seed-to-Blueprint workflow
 @app.post("/youtube/blueprint")
 async def run_seed_to_blueprint_alt1(
@@ -252,7 +252,7 @@ async def run_seed_to_blueprint_alt2(
 ):
     """Alternative path for Seed-to-Blueprint workflow."""
     return await run_seed_to_blueprint(video_url, niche)
-    
+
 # Workflow result retrieval endpoint
 @app.get("/workflow-result/{result_id}")
 async def get_workflow_result_endpoint(
@@ -371,13 +371,13 @@ async def custom_swagger_ui_html():
                 overflow: -moz-scrollbars-vertical;
                 overflow-y: scroll;
             }}
-            
+
             *,
             *:before,
             *:after {{
                 box-sizing: inherit;
             }}
-            
+
             body {{
                 margin: 0;
                 background: #fafafa;
@@ -413,7 +413,7 @@ def custom_openapi():
     """Override the default OpenAPI schema with a custom one."""
     with open("api/openapi.yaml", "r") as f:
         return yaml.safe_load(f)
-    
+
 app.openapi = custom_openapi
 EOF
 

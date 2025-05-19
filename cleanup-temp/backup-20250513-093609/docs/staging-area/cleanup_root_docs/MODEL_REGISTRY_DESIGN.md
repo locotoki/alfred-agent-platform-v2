@@ -123,20 +123,20 @@ class ModelDiscoveryService:
     def __init__(self, db_connection, config):
         self.db = db_connection
         self.config = config
-        
+
     async def discover_ollama_models(self):
         # Connect to Ollama API
         # List available models
         # Register discovered models
-        
+
     async def discover_openai_models(self):
         # Query OpenAI API for available models
         # Register discovered models
-        
+
     async def discover_anthropic_models(self):
         # Query Anthropic API for available models
         # Register discovered models
-        
+
     async def update_model_registry(self):
         # Sync discovered models with registry
         # Update capabilities and parameters

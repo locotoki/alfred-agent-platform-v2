@@ -12,7 +12,7 @@ The issue stemmed from a mismatch between the symlink structure and the import p
 
 ## Root Causes
 
-1. **Inconsistent Path References**: 
+1. **Inconsistent Path References**:
    - The application was using `../shared-components/components/...` but the actual symlink path was different
    - The symlink was set up as `src/shared-components -> ../../../shared`
 

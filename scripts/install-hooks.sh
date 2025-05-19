@@ -52,7 +52,7 @@ for df in $(git diff --cached --name-only | grep 'Dockerfile'); do
     echo -e "\033[32mRUN chmod +x /usr/local/bin/healthcheck\033[0m"
     exit 1
   fi
-  
+
   if ! grep -q 'EXPOSE.*9091' "$df"; then
     echo -e "\033[31m❌ $df missing EXPOSE 9091 directive for metrics\033[0m"
     echo -e "\033[33mPlease add the following to your Dockerfile:\033[0m"

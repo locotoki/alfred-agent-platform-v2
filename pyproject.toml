@@ -67,7 +67,7 @@ disallow_untyped_defs = true
 ignore_missing_imports = true
 show_error_codes = true
 exclude = [
-    "cleanup-temp/.*", 
+    "cleanup-temp/.*",
     "node_modules/.*",
     "docs/archive/.*"
 ]

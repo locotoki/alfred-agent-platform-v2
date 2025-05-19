@@ -1,7 +1,7 @@
 # Infrastructure Component: CI/CD Pipeline Infrastructure
 
-*Last Updated: 2025-05-13*  
-*Owner: DevOps Team*  
+*Last Updated: 2025-05-13*
+*Owner: DevOps Team*
 *Status: Active*
 
 ## Overview
@@ -17,7 +17,7 @@ graph TD
     subgraph "Source Control"
         repo[GitHub Repository]
     end
-    
+
     subgraph "CI Pipeline"
         security[Security Scanning]
         lint[Linting and Code Quality]
@@ -25,20 +25,20 @@ graph TD
         build[Docker Image Building]
         integration[Integration Testing]
     end
-    
+
     subgraph "CD Pipeline"
         registry[Container Registry]
         deploy_dev[Development Deployment]
         deploy_staging[Staging Deployment]
         deploy_prod[Production Deployment]
     end
-    
+
     subgraph "Infrastructure"
         terraform[Terraform IaC]
         k8s[Kubernetes Manifests]
         compose[Docker Compose]
     end
-    
+
     developer[Developer] --> |commit| repo
     repo --> |trigger| security
     security --> lint
@@ -46,18 +46,18 @@ graph TD
     unitTest --> build
     build --> integration
     integration --> registry
-    
+
     registry --> deploy_dev
     deploy_dev --> |approval| deploy_staging
     deploy_staging --> |approval| deploy_prod
-    
+
     terraform --> deploy_dev
     terraform --> deploy_staging
     terraform --> deploy_prod
-    
+
     k8s --> deploy_staging
     k8s --> deploy_prod
-    
+
     compose --> deploy_dev
 ```
 
@@ -292,40 +292,40 @@ jobs:
       - uses: actions/checkout@v4
         with:
           lfs: true
-      
+
       - name: Set up Python ${{ env.PYTHON_VERSION }}
         uses: actions/setup-python@v4
         with:
           python-version: ${{ env.PYTHON_VERSION }}
           cache: 'pip'
-      
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install -r requirements-dev.txt
-      
+
       - name: Run unit tests
         run: |
           pytest agents/financial_tax/tests/ -v --cov=agents/financial_tax
-      
+
       - name: Check coverage
         run: |
           coverage report --fail-under=90
-  
+
   build:
     needs: test
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop'
-    
+
     steps:
       - uses: actions/checkout@v4
         with:
           lfs: true
-      
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
-      
+
       - name: Cache Docker layers
         uses: actions/cache@v3
         with:
@@ -333,7 +333,7 @@ jobs:
           key: ${{ runner.os }}-buildx-financial-tax-${{ github.sha }}
           restore-keys: |
             ${{ runner.os }}-buildx-financial-tax-
-      
+
       - name: Build Docker image
         uses: docker/build-push-action@v4
         with:
@@ -345,12 +345,12 @@ jobs:
             alfred-platform/financial-tax:latest
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
-      
+
       - name: Move cache
         run: |
           rm -rf /tmp/.buildx-cache
           mv /tmp/.buildx-cache-new /tmp/.buildx-cache
-  
+
   # Additional stages for integration testing and deployment
 ```
 
@@ -875,7 +875,7 @@ updates:
     labels:
       - "dependencies"
       - "python"
-    
+
   - package-ecosystem: "docker"
     directory: "/services/financial-tax/"
     schedule:

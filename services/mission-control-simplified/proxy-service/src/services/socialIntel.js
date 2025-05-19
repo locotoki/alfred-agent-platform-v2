@@ -1,6 +1,6 @@
 /**
  * Social Intelligence API client
- * 
+ *
  * Handles communication with the Social Intelligence API.
  */
 
@@ -17,23 +17,23 @@ const logger = createLogger('social-intel');
 function createApiClient() {
   const config = getConfig();
   const { host, port, timeout, apiKey } = config.socialIntel;
-  
+
   const baseURL = `${host}:${port}`;
-  
+
   logger.info(`Creating Social Intelligence API client with baseURL: ${baseURL}`);
-  
+
   // Create headers with authentication if API key is provided
   const headers = {
     'Content-Type': 'application/json'
   };
-  
+
   if (apiKey) {
     logger.info('Using API key authentication for Social Intelligence API');
     headers['x-api-key'] = apiKey;
   } else {
     logger.warn('No API key provided for Social Intelligence API');
   }
-  
+
   return axios.create({
     baseURL,
     timeout,
@@ -50,19 +50,19 @@ function createApiClient() {
 async function callSocialIntelApi(endpoint, data) {
   try {
     const apiClient = createApiClient();
-    
+
     logger.info(`Calling Social Intelligence API: ${endpoint}`, {
       data: data ? JSON.stringify(data).substring(0, 100) + '...' : null
     });
-    
+
     const startTime = Date.now();
     const response = await apiClient.post(endpoint, data);
     const responseTime = Date.now() - startTime;
-    
+
     logger.info(`Social Intelligence API response received in ${responseTime}ms`, {
       statusCode: response.status
     });
-    
+
     return response.data;
   } catch (error) {
     logger.error('Error calling Social Intelligence API', {
@@ -70,14 +70,14 @@ async function callSocialIntelApi(endpoint, data) {
       error: error.message,
       status: error.response ? error.response.status : null
     });
-    
+
     // Check if mock fallback is enabled
     const config = getConfig();
     if (config.socialIntel.enableMockFallback !== false) {
       logger.info('Using mock fallback for Social Intelligence API');
       return generateMockResponse(endpoint, data);
     }
-    
+
     throw error;
   }
 }
@@ -107,12 +107,12 @@ async function checkSocialIntelStatus() {
  */
 function generateMockResponse(endpoint, data) {
   logger.warn('Generating mock response for API endpoint', { endpoint });
-  
+
   // Different mock responses based on endpoint
   if (endpoint === '/api/youtube/niche-scout') {
     const query = data.query || '';
     const category = data.category || 'All';
-    
+
     return {
       date: new Date().toISOString().split('T')[0],
       query: query,
@@ -179,7 +179,7 @@ function generateMockResponse(endpoint, data) {
       _mock: true
     };
   }
-  
+
   // Default mock response
   return {
     status: 'completed',

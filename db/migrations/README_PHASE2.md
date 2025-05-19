@@ -23,7 +23,7 @@ The following new tables will be created:
 
 The following existing tables will be modified:
 
-1. **features**: 
+1. **features**:
    - Add `trend_vector` column (JSONB) for time-series data
    - Add `last_analyzed_at` timestamp
    - Add `analytics_version` integer for tracking analysis version
@@ -74,7 +74,7 @@ CREATE INDEX idx_analytics_events_user_id ON analytics.analytics_events(user_id)
 
 For historical data, we'll implement a backfill process:
 
-1. **Initial Backfill**: 
+1. **Initial Backfill**:
    - Run during non-peak hours
    - Process in batches of 10,000 records
    - Prioritize most recent 90 days

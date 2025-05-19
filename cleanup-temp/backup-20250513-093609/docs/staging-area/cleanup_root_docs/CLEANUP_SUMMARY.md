@@ -60,13 +60,13 @@ After cleanup, the platform environment structure is as follows:
      ```bash
      # Start all services in development mode
      ./start-platform.sh
-     
+
      # Start in production mode
      ./start-platform.sh -e prod
-     
+
      # Stop all services
      ./start-platform.sh -a down
-     
+
      # Show logs for specific service
      ./start-platform.sh -a logs redis
      ```

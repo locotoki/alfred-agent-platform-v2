@@ -34,7 +34,7 @@ BEGIN
       'exp', extract(epoch from now() + interval '1 year')::integer
     )
   ) INTO token;
-  
+
   RETURN token;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;

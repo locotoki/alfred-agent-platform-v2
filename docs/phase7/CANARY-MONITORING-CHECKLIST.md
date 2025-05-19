@@ -34,7 +34,7 @@ This checklist outlines what needs to be monitored during the 24-hour canary per
    ```bash
    # Manually stop a service to force a failure
    docker stop alfred-agent-platform-v2_model-router_1
-   
+
    # Trigger remediation via Slack
    /alfred remediate model-router
    ```

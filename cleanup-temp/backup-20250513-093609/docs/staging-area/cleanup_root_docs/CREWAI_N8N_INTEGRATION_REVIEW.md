@@ -224,7 +224,7 @@ To properly support the new services, the following schema changes are recommend
      completed_at TIMESTAMP WITH TIME ZONE,
      result JSONB
    );
-   
+
    -- RLS policies for tenant isolation
    ALTER TABLE crew_tasks ENABLE ROW LEVEL SECURITY;
    CREATE POLICY tenant_isolation_crew_tasks ON crew_tasks
@@ -235,7 +235,7 @@ To properly support the new services, the following schema changes are recommend
    ```sql
    -- Create schema for n8n
    CREATE SCHEMA IF NOT EXISTS n8n;
-   
+
    -- Grant permissions to n8n schema
    GRANT USAGE ON SCHEMA n8n TO ${DB_USER};
    GRANT ALL ON ALL TABLES IN SCHEMA n8n TO ${DB_USER};

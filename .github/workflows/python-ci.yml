@@ -15,19 +15,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      
+
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.11'
-          
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install black isort flake8 mypy
           pip install -r requirements.txt
           pip install -r requirements-dev.txt
-          
+
       - name: Run black
         run: |
           # Special handling for cleanup PR #29
@@ -38,7 +38,7 @@ jobs:
           else
             black --check .
           fi
-          
+
       - name: Run isort
         run: |
           # Special handling for cleanup PR #29
@@ -49,7 +49,7 @@ jobs:
           else
             isort --check-only --profile black .
           fi
-          
+
       - name: Run flake8
         run: |
           # Special handling for cleanup PR #29
@@ -60,7 +60,7 @@ jobs:
           else
             flake8 --config=.flake8 .
           fi
-          
+
       - name: Run mypy
         run: |
           # Special handling for cleanup PR #29
@@ -73,23 +73,23 @@ jobs:
             chmod +x mypy_fix/run-mypy-fixed.sh
             ./mypy_fix/run-mypy-fixed.sh libs agents tests
           fi
-  
+
   test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      
+
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.11'
-          
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install -r requirements-dev.txt
-          
+
       - name: Run tests with improved module isolation
         run: |
           # Special handling for cleanup PR #29
@@ -100,12 +100,12 @@ jobs:
           else
             python scripts/run_python_tests.py -v tests/unit
           fi
-          
+
   validate-health:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      
+
       - name: Validate health endpoint structure
         run: |
           # Special handling for cleanup PR #29

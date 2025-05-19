@@ -122,7 +122,7 @@ export async function runNicheScout(config: {
 }): Promise<NicheScoutResult> {
   // Return mock data if feature flag is enabled or in offline mode
   const useOfflineMode = FEATURES.USE_MOCK_DATA || config.forceOfflineMode;
-  
+
   if (useOfflineMode) {
     console.log('Using mock data for Niche-Scout workflow');
     await new Promise(resolve => setTimeout(resolve, 1500));
@@ -178,11 +178,11 @@ export async function runNicheScout(config: {
     }
   } catch (error) {
     console.error('Error running Niche-Scout workflow:', error);
-    
+
     // Return mock data for graceful degradation
     console.warn('Falling back to mock data due to network error');
     forceCheckAllServices(); // Re-check service health
-    
+
     return {
       ...mockNicheScoutResult,
       actual_cost: config.budget ? config.budget * 0.95 : 100,
@@ -195,15 +195,15 @@ export async function runNicheScout(config: {
 /**
  * Run the Seed-to-Blueprint workflow to create a channel strategy
  */
-export async function runSeedToBlueprint(params: { 
-  video_url?: string; 
-  niche?: string; 
+export async function runSeedToBlueprint(params: {
+  video_url?: string;
+  niche?: string;
   analysisDepth?: string;
   forceOfflineMode?: boolean;
 }): Promise<BlueprintResult> {
   // Return mock data if feature flag is enabled or in offline mode
   const useOfflineMode = FEATURES.USE_MOCK_DATA || params.forceOfflineMode;
-  
+
   if (useOfflineMode) {
     console.log('Using mock data for Seed-to-Blueprint workflow');
     await new Promise(resolve => setTimeout(resolve, 2500));
@@ -260,12 +260,12 @@ export async function runSeedToBlueprint(params: {
     }
   } catch (error) {
     console.error('Error running Seed-to-Blueprint workflow:', error);
-    
+
     // Update service status if there's a network issue
     if (error instanceof TypeError || (error instanceof Error && error.name === 'AbortError')) {
       forceCheckAllServices(); // Re-check service health
     }
-    
+
     // Fall back to mock data for graceful degradation
     console.warn('Falling back to mock data due to network error');
     return {
@@ -281,7 +281,7 @@ export async function runSeedToBlueprint(params: {
 export async function getWorkflowHistory(options?: { forceOfflineMode?: boolean }): Promise<WorkflowHistory[]> {
   // Return mock data if feature flag is enabled or in offline mode
   const useOfflineMode = FEATURES.USE_MOCK_DATA || options?.forceOfflineMode;
-  
+
   if (useOfflineMode) {
     console.log('Using mock data for workflow history');
     await new Promise(resolve => setTimeout(resolve, 800));
@@ -321,10 +321,10 @@ export async function getWorkflowHistory(options?: { forceOfflineMode?: boolean 
     }
   } catch (error) {
     console.error('Error getting workflow history:', error);
-    
+
     // Check service health
     forceCheckAllServices(); // Re-check service health
-    
+
     // Fall back to mock data for graceful degradation
     console.warn('Falling back to mock workflow history due to error');
     return mockWorkflowHistory;
@@ -335,13 +335,13 @@ export async function getWorkflowHistory(options?: { forceOfflineMode?: boolean 
  * Get workflow result by ID
  */
 export async function getWorkflowResult(
-  id: string, 
+  id: string,
   type: 'niche-scout' | 'seed-to-blueprint',
   options?: { forceOfflineMode?: boolean }
 ): Promise<NicheScoutResult | BlueprintResult> {
   // Return mock data if feature flag is enabled or in offline mode
   const useOfflineMode = FEATURES.USE_MOCK_DATA || options?.forceOfflineMode;
-  
+
   if (useOfflineMode) {
     console.log(`Using mock data for ${type} result`);
     await new Promise(resolve => setTimeout(resolve, 1000));
@@ -357,7 +357,7 @@ export async function getWorkflowResult(
 
   const params = new URLSearchParams();
   params.append('type', type);
-  
+
   try {
     console.log(`Fetching workflow result for ${type} with ID ${id}`);
     const response = await fetch(createApiUrl(`${ENDPOINTS.WORKFLOW_RESULT}/${id}`, params.toString()), {
@@ -384,10 +384,10 @@ export async function getWorkflowResult(
     }
   } catch (error) {
     console.error(`Error getting ${type} workflow result:`, error);
-    
+
     // Check service health
     forceCheckAllServices(); // Re-check service health
-    
+
     // Fall back to mock data if API fails
     console.warn(`Falling back to mock ${type} result data due to error`);
     return type === 'niche-scout' ? mockNicheScoutResult : mockBlueprintResult;
@@ -406,7 +406,7 @@ export async function scheduleWorkflow(config: {
 }): Promise<WorkflowSchedule> {
   // Return mock data if feature flag is enabled or in offline mode
   const useOfflineMode = FEATURES.USE_MOCK_DATA || config.forceOfflineMode;
-  
+
   if (useOfflineMode) {
     console.log('Using mock data for scheduling workflow');
     await new Promise(resolve => setTimeout(resolve, 800));
@@ -472,10 +472,10 @@ export async function scheduleWorkflow(config: {
     }
   } catch (error) {
     console.error('Error scheduling workflow:', error);
-    
+
     // Check service health
     forceCheckAllServices(); // Re-check service health
-    
+
     // Create a mock response for graceful degradation
     console.warn('Creating mock schedule response due to error');
     return {

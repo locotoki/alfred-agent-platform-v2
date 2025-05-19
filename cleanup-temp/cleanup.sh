@@ -8,7 +8,7 @@ while read -r file; do
   # Create directory structure if needed
   dir=$(dirname "$file")
   mkdir -p "$BACKUP_DIR/$dir"
-  
+
   # Move file to backup directory with same structure
   mv "$file" "$BACKUP_DIR/$file"
   echo "Moved: $file"

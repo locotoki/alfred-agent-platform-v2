@@ -1,6 +1,6 @@
 # Infra Architect : Role & Definition
 
-### 
+###
 
 ### **"Atlas" Infrastructure-Architect Agent — Role & Definition**
 

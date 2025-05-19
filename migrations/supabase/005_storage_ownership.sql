@@ -9,11 +9,11 @@ ALTER TABLE storage.buckets OWNER TO supabase_storage_admin;
 ALTER ROLE supabase_storage_admin WITH SUPERUSER;
 
 -- Make sure all future objects in storage schema are owned by supabase_storage_admin
-ALTER DEFAULT PRIVILEGES IN SCHEMA storage 
+ALTER DEFAULT PRIVILEGES IN SCHEMA storage
   GRANT ALL ON TABLES TO supabase_storage_admin;
-  
-ALTER DEFAULT PRIVILEGES IN SCHEMA storage 
+
+ALTER DEFAULT PRIVILEGES IN SCHEMA storage
   GRANT ALL ON SEQUENCES TO supabase_storage_admin;
-  
-ALTER DEFAULT PRIVILEGES IN SCHEMA storage 
+
+ALTER DEFAULT PRIVILEGES IN SCHEMA storage
   GRANT EXECUTE ON FUNCTIONS TO supabase_storage_admin;

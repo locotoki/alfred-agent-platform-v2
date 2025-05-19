@@ -1,7 +1,7 @@
 # Infrastructure Component: Scaling Configuration
 
-*Last Updated: 2025-05-13*  
-*Owner: Infrastructure Team*  
+*Last Updated: 2025-05-13*
+*Owner: Infrastructure Team*
 *Status: Active*
 
 ## Overview
@@ -17,50 +17,50 @@ graph TB
     subgraph "Client Layer"
         clients[Client Applications]
     end
-    
+
     subgraph "Load Balancing"
         ingress[Ingress Controller/Gateway]
         lb[Load Balancer]
     end
-    
+
     subgraph "Service Layer"
         api_services[API Services]
         agent_services[Agent Services]
         ui_services[UI Services]
     end
-    
+
     subgraph "Infrastructure Layer"
         databases[Databases]
         storage[Storage]
         monitoring[Monitoring]
     end
-    
+
     subgraph "Scaling Controllers"
         hpa[Horizontal Pod Autoscaler]
         vpa[Vertical Pod Autoscaler]
         ca[Cluster Autoscaler]
     end
-    
+
     clients --> ingress
     ingress --> lb
     lb --> api_services
     lb --> agent_services
     lb --> ui_services
-    
+
     api_services --> databases
     api_services --> storage
     agent_services --> databases
     agent_services --> storage
-    
+
     hpa --> api_services
     hpa --> agent_services
     hpa --> ui_services
-    
+
     vpa --> api_services
     vpa --> agent_services
-    
+
     ca --> EC2[EC2/VM Instances]
-    
+
     monitoring --> api_services
     monitoring --> agent_services
     monitoring --> ui_services
@@ -329,7 +329,7 @@ Resources:
         PredefinedMetricSpecification:
           PredefinedMetricType: ASGAverageCPUUtilization
         TargetValue: 75.0
-        
+
   RequestCountScaleOutPolicy:
     Type: AWS::AutoScaling::ScalingPolicy
     Properties:
@@ -338,7 +338,7 @@ Resources:
       TargetTrackingConfiguration:
         PredefinedMetricSpecification:
           PredefinedMetricType: ALBRequestCountPerTarget
-          ResourceLabel: !Join 
+          ResourceLabel: !Join
             - '/'
             - - !GetAtt ALBTargetGroup.LoadBalancerArn
               - !GetAtt ALBTargetGroup.TargetGroupArn
@@ -583,31 +583,31 @@ graph TB
         us_east_services[Services]
         us_east_db[(Database)]
     end
-    
+
     subgraph "US-West"
         us_west_lb[Load Balancer]
         us_west_services[Services]
         us_west_db[(Database)]
     end
-    
+
     subgraph "Europe"
         eu_lb[Load Balancer]
         eu_services[Services]
         eu_db[(Database)]
     end
-    
+
     global_lb[Global Load Balancer] --> us_east_lb
     global_lb --> us_west_lb
     global_lb --> eu_lb
-    
+
     us_east_lb --> us_east_services
     us_west_lb --> us_west_services
     eu_lb --> eu_services
-    
+
     us_east_services --> us_east_db
     us_west_services --> us_west_db
     eu_services --> eu_db
-    
+
     us_east_db <--> us_west_db
     us_west_db <--> eu_db
     eu_db <--> us_east_db
@@ -725,7 +725,7 @@ export default function () {
 
 ### Capacity Planning Benchmarks
 
-| Service | Min Instances | Max Instances | CPU per Instance | Memory per Instance | Max RPS per Instance | 
+| Service | Min Instances | Max Instances | CPU per Instance | Memory per Instance | Max RPS per Instance |
 |---------|--------------|---------------|------------------|---------------------|----------------------|
 | agent-core | 2 | 10 | 2 CPU | 4 GB | 500 |
 | agent-rag | 2 | 8 | 2 CPU | 4 GB | 250 |

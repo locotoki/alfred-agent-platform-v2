@@ -31,7 +31,7 @@ if ! git diff --quiet || ! git diff --cached --quiet; then
     echo -e "3. View changes and decide later"
     echo -e "4. Proceed anyway (not recommended)"
     read -p "Choose an option (1-4): " choice
-    
+
     case $choice in
         1)
             echo -e "${BLUE}Committing changes...${NC}"
@@ -95,7 +95,7 @@ if [ $BEHIND -gt 0 ]; then
     echo -e "3. View what would change and decide later"
     echo -e "4. Skip pulling changes"
     read -p "Choose an option (1-4): " pull_choice
-    
+
     case $pull_choice in
         1)
             echo -e "${BLUE}Pulling changes with merge...${NC}"
@@ -128,7 +128,7 @@ if [ $AHEAD -gt 0 ]; then
     echo -e "2. View commits to be pushed"
     echo -e "3. Skip pushing changes"
     read -p "Choose an option (1-3): " push_choice
-    
+
     case $push_choice in
         1)
             echo -e "${BLUE}Pushing changes to remote...${NC}"

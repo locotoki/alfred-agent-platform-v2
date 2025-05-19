@@ -26,7 +26,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         console.warn('Social Intel API not available, returning mock data');
         return res.status(200).json(getMockWorkflowHistory());
       }
-      
+
       const errorData = await response.json();
       console.error('Social Intel API error:', errorData);
       return res.status(response.status).json({
@@ -39,7 +39,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(200).json(data);
   } catch (error) {
     console.error('Error in workflow history API handler:', error);
-    
+
     // Return mock data if there's an error
     console.warn('Error connecting to Social Intel API, returning mock data');
     return res.status(200).json(getMockWorkflowHistory());

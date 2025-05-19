@@ -36,13 +36,13 @@ export default function NicheScout() {
 
   // Navigation handlers -------------------------------------------------------
   const goToStep = (newStep: 1 | 2 | 3) => setStep(newStep);
-  
+
   const handleNext = () => {
     if (step < 3) {
       setStep((prev) => (prev + 1) as 1 | 2 | 3);
     }
   };
-  
+
   const handleBack = () => {
     if (step > 1) {
       setStep((prev) => (prev - 1) as 1 | 2 | 3);
@@ -69,12 +69,12 @@ export default function NicheScout() {
     <MainLayout title="MISSION CONTROL">
       <div className="p-6">
         <h1 className="text-2xl font-bold mb-6">Niche-Scout Workflow</h1>
-        
+
         {/* Progress Steps */}
         <div className="relative flex justify-between items-center mb-12">
           <div className="absolute h-0.5 bg-gray-200 left-0 right-0 top-1/2 -translate-y-1/2"></div>
-          
-          <div 
+
+          <div
             className="relative flex flex-col items-center cursor-pointer"
             onClick={() => goToStep(1)}
           >
@@ -87,8 +87,8 @@ export default function NicheScout() {
               Define Niche
             </span>
           </div>
-          
-          <div 
+
+          <div
             className="relative flex flex-col items-center cursor-pointer"
             onClick={() => goToStep(2)}
           >
@@ -101,8 +101,8 @@ export default function NicheScout() {
               Research Parameters
             </span>
           </div>
-          
-          <div 
+
+          <div
             className="relative flex flex-col items-center cursor-pointer"
             onClick={() => goToStep(3)}
           >
@@ -116,12 +116,12 @@ export default function NicheScout() {
             </span>
           </div>
         </div>
-        
+
         {/* Step 1: Define Niche */}
         {step === 1 && (
           <div className="bg-white rounded-lg shadow-sm p-6">
             <h2 className="text-xl font-bold mb-6">Define Your Niche</h2>
-            
+
             <div className="mb-6">
               <label className="block font-medium text-gray-700 mb-2">
                 What niche are you interested in exploring?
@@ -137,12 +137,12 @@ export default function NicheScout() {
                 Enter keywords that describe your content area of interest
               </p>
             </div>
-            
+
             <div className="mb-6">
               <label className="block font-medium text-gray-700 mb-2">
                 Select a Primary Category
               </label>
-              <CategoryDropdown 
+              <CategoryDropdown
                 value={form.category}
                 onChange={(value) => {
                   updateForm("category", value);
@@ -150,7 +150,7 @@ export default function NicheScout() {
                 }}
               />
             </div>
-            
+
             <div className="flex justify-end mt-6">
               <button
                 onClick={handleNext}
@@ -161,7 +161,7 @@ export default function NicheScout() {
             </div>
           </div>
         )}
-        
+
         {/* Step 2 content would go here */}
         {/* Step 3 content would go here */}
       </div>

@@ -37,12 +37,12 @@ const StatsCard: React.FC<StatsCardProps> = ({
             </div>
           )}
         </div>
-        
+
         {trend && (
           <div className="mt-4">
             <div className={`flex items-center text-sm ${
-              trend.isPositive 
-                ? 'text-green-500 dark:text-green-400' 
+              trend.isPositive
+                ? 'text-green-500 dark:text-green-400'
                 : 'text-red-500 dark:text-red-400'
             }`}>
               <span className="font-medium">

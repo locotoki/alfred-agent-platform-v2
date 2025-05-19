@@ -13,7 +13,7 @@ Primary operational dashboard showing key metrics and performance trends.
 ![Niche-Scout Overview Dashboard](https://i.imgur.com/vNDmWKg.png)
 
 Features:
-- **Key Metrics Section**: 
+- **Key Metrics Section**:
   - Error Rate gauge (with 3% threshold)
   - P95 Latency gauge (with 400ms/800ms thresholds)
   - Cache Hit Ratio gauge (with 20% threshold)
@@ -41,7 +41,7 @@ Dashboard dedicated to monitoring alert status and thresholds.
 ![Niche-Scout Alerts Dashboard](https://i.imgur.com/ZnF9dMD.png)
 
 Features:
-- **Alert Status**: 
+- **Alert Status**:
   - High Error Rate
   - High Latency
   - Low Cache Hit Ratio
@@ -70,7 +70,7 @@ The dashboards are automatically provisioned when Grafana starts through Docker 
 - `provisioning/dashboards/dashboard.yml`: Configures dashboard provisioning
 - `provisioning/dashboards/*.json`: The dashboard definition files
 
-## Manual Import 
+## Manual Import
 
 If you need to import the dashboards manually:
 
@@ -105,7 +105,7 @@ To add a custom dashboard:
 
 The dashboards are configured with the following SLO thresholds:
 
-- **Latency**: 
+- **Latency**:
   - Target: p95 < 400ms
   - Warning: p95 > 400ms
   - Critical: p95 > 800ms

@@ -98,12 +98,12 @@ HEALTHCHECK --interval=30s --timeout=20s --retries=3 \
 
 ## Deployment Recommendations
 
-1. **High Availability Configurations**: 
+1. **High Availability Configurations**:
    For HA Prometheus setups, configure the health probe with multiple Prometheus instances:
    ```bash
    # Primary Prometheus
    prometheus-probe --prometheus --prometheus-url http://prometheus-1:9090/api/v1/query?query=up
-   
+
    # Secondary Prometheus (if primary fails)
    prometheus-probe --prometheus --prometheus-url http://prometheus-2:9090/api/v1/query?query=up
    ```

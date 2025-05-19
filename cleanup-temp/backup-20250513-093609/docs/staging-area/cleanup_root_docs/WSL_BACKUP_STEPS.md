@@ -50,10 +50,10 @@ If you want a smaller backup of just the project (in addition to the full backup
    From inside WSL:
    ```bash
    mkdir -p /mnt/f/WSLBackups/alfred-platform
-   
+
    # Backup project files
    tar -czvf /mnt/f/WSLBackups/alfred-platform/alfred-backup-$(date +%Y%m%d).tar.gz -C /home/locotoki/projects alfred-agent-platform-v2
-   
+
    # Backup Docker volumes (optional)
    docker run --rm -v alfred-agent-platform-v2_supabase-db-data:/data -v /mnt/f/WSLBackups/alfred-platform:/backup alpine tar -czvf /backup/db-backup-$(date +%Y%m%d).tar.gz -C /data .
    ```

@@ -11,34 +11,34 @@ graph TB
     TT[TikTok API] --> DC
     IG[Instagram API] --> DC
     UA[User Activity] --> DC
-    
+
     %% Data Processing
     DC --> DL[Data Lake]
     DL --> ETL[ETL Pipeline]
     ETL --> |Structured Data| PG[(PostgreSQL)]
     ETL --> |Embeddings| VS[(Vector Store)]
-    
+
     %% Analytics Services
     PG --> AE[Analytics Engine]
     VS --> AE
     PG --> TS[Trend Service]
     VS --> IR[Insight Recommender]
-    
+
     %% Agent Integration
     AE --> OA[Observer Agent]
     AE --> FP[FinPilot Agent]
-    
+
     %% Frontend
     AE --> API[REST API]
     TS --> API
     IR --> API
     API --> DASH[Analytics Dashboard]
     API --> MC[Mission Control UI]
-    
+
     %% Scheduled Jobs
     CRON[Cron Jobs] --> ETL
     CRON --> TS
-    
+
     %% Notifications
     AE --> NS[Notification Service]
     NS --> SLACK[Slack]
@@ -150,13 +150,13 @@ graph LR
     TD[Trend Data] --> FE[Feature Engineering]
     HD[Historical Data] --> FE
     UD[User Data] --> FE
-    
+
     %% ML Pipeline
     FE --> FS[Feature Store]
     FS --> TM[Training Module]
     TM --> MR[Model Registry]
     MR --> MS[Model Serving]
-    
+
     %% Prediction
     MS --> PP[Prediction Pipeline]
     PP --> PC[Prediction Cache]

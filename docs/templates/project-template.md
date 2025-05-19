@@ -1,7 +1,7 @@
 # [Project Name]
 
-**Last Updated:** YYYY-MM-DD  
-**Owner:** [Owner Name/Team]  
+**Last Updated:** YYYY-MM-DD
+**Owner:** [Owner Name/Team]
 **Status:** [Planning/In Development/Active/Maintenance]
 
 ## Overview

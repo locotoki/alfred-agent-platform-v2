@@ -1,7 +1,7 @@
 # [Workflow Name]
 
-**Last Updated:** YYYY-MM-DD  
-**Owner:** [Owner Name/Team]  
+**Last Updated:** YYYY-MM-DD
+**Owner:** [Owner Name/Team]
 **Status:** [Planned/In Development/Active]
 
 ## Overview

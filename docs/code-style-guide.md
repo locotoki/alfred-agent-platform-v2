@@ -117,14 +117,14 @@ Example:
 ```python
 def calculate_metrics(data: pd.DataFrame, threshold: float = 0.5) -> Dict[str, float]:
     """Calculate performance metrics for the given data.
-    
+
     Args:
         data: DataFrame containing the input data with columns 'prediction' and 'actual'
         threshold: Decision threshold for binary classification
-        
+
     Returns:
         Dictionary containing metrics (accuracy, precision, recall, f1)
-        
+
     Raises:
         ValueError: If data is empty or required columns are missing
     """

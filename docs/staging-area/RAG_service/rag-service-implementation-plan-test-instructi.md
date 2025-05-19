@@ -3,10 +3,10 @@
 # RAG Service – Implementation Plan & Test Instructions
 
 > Audience: Solo developer working inside Claude Code. All commands assume Ubuntu 22.04 host with Docker ≥ 24, NVIDIA runtime, and existing alfred-agent-platform-v2 compose project.
-> 
-> 
+>
+>
 > **Convention**: Replace `$❯` with your shell prompt. All code blocks are copy‑pasta‑ready for Claude Code’s terminal.
-> 
+>
 
 ---
 

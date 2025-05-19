@@ -105,11 +105,11 @@
       <strong>Severity:</strong> {{ .Labels.severity }}<br>
       <strong>Started:</strong> {{ .StartsAt.Format "2006-01-02 15:04:05 MST" }}<br>
       <strong>Description:</strong> {{ .Annotations.description }}<br>
-      
+
       <div class="alert-details">
         <h5>Alert Details</h5>
         <p><strong>Value:</strong> <span class="metric">{{ .Annotations.value }}</span></p>
-        
+
         <h5>Labels</h5>
         <table>
           <tr>

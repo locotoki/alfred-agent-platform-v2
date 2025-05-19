@@ -9,7 +9,7 @@ const YouTubeTestPage = () => {
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-3xl font-bold">YouTube API Test</h1>
         </div>
-        
+
         <div className="grid grid-cols-1 gap-6">
           <YouTubeApiTest />
         </div>

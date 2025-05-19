@@ -14,10 +14,10 @@ type Status string
 const (
 	// StatusUp indicates the database is fully operational
 	StatusUp Status = "up"
-	
+
 	// StatusDown indicates the database is not available
 	StatusDown Status = "down"
-	
+
 	// StatusDegraded indicates the database is available but experiencing issues
 	StatusDegraded Status = "degraded"
 )
@@ -26,19 +26,19 @@ const (
 type Driver interface {
 	// Connect establishes a connection to the database
 	Connect(ctx context.Context) error
-	
+
 	// Ping verifies the database connection is still alive
 	Ping(ctx context.Context) error
-	
+
 	// CheckReadWrite performs a read/write test on the health check table
 	CheckReadWrite(ctx context.Context) error
-	
+
 	// Close closes the database connection
 	Close() error
-	
+
 	// Status returns the current database status
 	Status() Status
-	
+
 	// Metrics returns the database metrics
 	Metrics() map[string]float64
 }
@@ -47,40 +47,40 @@ type Driver interface {
 type Config struct {
 	// DSN is the data source name for the database connection
 	DSN string
-	
+
 	// ConnectTimeout is the maximum time allowed for connecting to the database
 	ConnectTimeout time.Duration
-	
+
 	// PingTimeout is the maximum time allowed for ping operations
 	PingTimeout time.Duration
-	
+
 	// ReadTimeout is the maximum time allowed for read operations
 	ReadTimeout time.Duration
-	
+
 	// WriteTimeout is the maximum time allowed for write operations
 	WriteTimeout time.Duration
-	
+
 	// TableCreationTimeout is the maximum time allowed for table creation
 	TableCreationTimeout time.Duration
-	
+
 	// MaxRetries is the number of times to retry operations before giving up
 	MaxRetries int
-	
+
 	// RetryInterval is the time to wait between retries
 	RetryInterval time.Duration
-	
+
 	// CreateHealthTable determines whether to create the health check table if it doesn't exist
 	CreateHealthTable bool
-	
+
 	// MaxOpenConns sets the maximum number of open connections to the database
 	MaxOpenConns int
-	
+
 	// MaxIdleConns sets the maximum number of connections in the idle connection pool
 	MaxIdleConns int
-	
+
 	// ConnMaxLifetime sets the maximum amount of time a connection may be reused
 	ConnMaxLifetime time.Duration
-	
+
 	// ConnMaxIdleTime sets the maximum amount of time a connection may be idle
 	ConnMaxIdleTime time.Duration
 }

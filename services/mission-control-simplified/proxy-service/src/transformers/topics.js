@@ -1,6 +1,6 @@
 /**
  * Topic generation for niches
- * 
+ *
  * Extracted from the client-side implementation with minor adjustments
  * for server-side execution.
  */
@@ -18,7 +18,7 @@ const logger = createLogger('topics');
 function getTopicsForNiche(nicheName) {
   const nicheLower = nicheName.toLowerCase();
   const words = nicheLower.split(/\s+/);
-  
+
   // Create a mapping of keywords to topic lists
   const topicMap = {
     // Gaming-related topics
@@ -94,7 +94,7 @@ function getTopicsForNiche(nicheName) {
       'Multi-tasking methods',
       'Advanced tactics showcases'
     ],
-    
+
     // Tech-related topics
     'tech': [
       'Latest gadget reviews',
@@ -132,7 +132,7 @@ function getTopicsForNiche(nicheName) {
       'Open source contribution guides',
       'Database optimization'
     ],
-    
+
     // Education-related topics
     'education': [
       'Study techniques',
@@ -170,7 +170,7 @@ function getTopicsForNiche(nicheName) {
       'Certification pathways',
       'Learning management systems'
     ],
-    
+
     // Style and beauty topics
     'beauty': [
       'Seasonal makeup trends',
@@ -221,17 +221,17 @@ function getTopicsForNiche(nicheName) {
       'Styling challenges'
     ]
   };
-  
+
   // Find matching topics based on niche keywords
   let matchingTopics = [];
-  
+
   // Check each word in the niche name against our topic map
   for (const word of words) {
     if (topicMap[word]) {
       matchingTopics = [...matchingTopics, ...topicMap[word]];
     }
   }
-  
+
   // If no specific matches found, check broader categories
   if (matchingTopics.length === 0) {
     // Gaming-related
@@ -266,10 +266,10 @@ function getTopicsForNiche(nicheName) {
       ];
     }
   }
-  
+
   // Deduplicate topics
   matchingTopics = [...new Set(matchingTopics)];
-  
+
   // Add the niche name itself to some topics for more relevance
   const nicheSpecificTopics = [
     `${nicheName} for beginners`,
@@ -278,16 +278,16 @@ function getTopicsForNiche(nicheName) {
     `Trending ${nicheName} content`,
     `${nicheName} case studies`
   ];
-  
+
   // Combine and shuffle all topics
   const allTopics = [...nicheSpecificTopics, ...matchingTopics];
-  
+
   // Shuffle array using Fisher-Yates algorithm
   for (let i = allTopics.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [allTopics[i], allTopics[j]] = [allTopics[j], allTopics[i]];
   }
-  
+
   // Return random selection of 3 topics
   return allTopics.slice(0, 3);
 }
@@ -300,16 +300,16 @@ async function getTopicMap() {
   try {
     // Try to get from Redis first
     const cachedTopicMap = await getCachedData('topic-map');
-    
+
     if (cachedTopicMap) {
       logger.info('Using cached topic map');
       return cachedTopicMap;
     }
-    
+
     // If not in cache, use default and store it
     // (Default map is defined in getTopicsForNiche function)
     logger.info('Topic map not found in cache, using default');
-    
+
     return {};
   } catch (error) {
     logger.error('Error getting topic map', { error: error.message });

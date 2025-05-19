@@ -1,7 +1,7 @@
 #!/bin/bash
 # Youtube Workflow Environment Check & Fix Script
 # For Alfred Agent Platform v2
-# 
+#
 # This script checks the environment for common issues with the YouTube workflow implementation
 # and applies fixes where possible.
 
@@ -63,11 +63,11 @@ else
     echo "SOCIAL_INTEL_URL=http://localhost:9000" >> "$ENV_LOCAL"
     echo -e "${GREEN}Added SOCIAL_INTEL_URL=http://localhost:9000 to .env.local${NC}"
   fi
-  
+
   if grep -q "NEXT_PUBLIC_SERVER_URL" "$ENV_LOCAL"; then
     SERVER_URL=$(grep "NEXT_PUBLIC_SERVER_URL" "$ENV_LOCAL" | cut -d '=' -f2)
     echo -e "${GREEN}Found NEXT_PUBLIC_SERVER_URL=$SERVER_URL in .env.local${NC}"
-    
+
     if [[ "$SERVER_URL" != *"3007"* ]]; then
       echo -e "${YELLOW}WARNING: NEXT_PUBLIC_SERVER_URL should be http://localhost:3007${NC}"
       echo -e "${YELLOW}Current value: $SERVER_URL${NC}"
@@ -88,7 +88,7 @@ if [ ! -f "$PACKAGE_JSON" ]; then
 else
   DEV_PORT=$(grep -o '"dev": "[^"]*"' "$PACKAGE_JSON" | grep -o 'next dev -p [0-9]*' | grep -o '[0-9]*')
   START_PORT=$(grep -o '"start": "[^"]*"' "$PACKAGE_JSON" | grep -o 'next start -p [0-9]*' | grep -o '[0-9]*')
-  
+
   if [ "$DEV_PORT" == "3007" ]; then
     echo -e "${GREEN}Dev port correctly set to 3007 in package.json${NC}"
   else
@@ -96,7 +96,7 @@ else
     echo -e "${YELLOW}Current value: $(grep -o '"dev": "[^"]*"' "$PACKAGE_JSON")${NC}"
     echo -e "${YELLOW}Consider changing to: \"dev\": \"next dev -p 3007\"${NC}"
   fi
-  
+
   if [ "$START_PORT" == "3007" ]; then
     echo -e "${GREEN}Start port correctly set to 3007 in package.json${NC}"
   else
@@ -115,7 +115,7 @@ MC_RUNNING=$(ps aux | grep "next dev\|next start" | grep -v grep | wc -l)
 if [ "$MC_RUNNING" -gt 0 ]; then
   MC_PORT=$(ps aux | grep "next dev\|next start" | grep -v grep | grep -o -- "-p [0-9]*" | grep -o "[0-9]*")
   echo -e "${GREEN}Mission Control is running on port $MC_PORT${NC}"
-  
+
   if [ "$MC_PORT" != "3007" ]; then
     echo -e "${YELLOW}WARNING: Mission Control is running on port $MC_PORT, but should be on port 3007${NC}"
     echo -e "${YELLOW}Recommendation: Restart Mission Control with proper port configuration${NC}"
@@ -130,7 +130,7 @@ fi
 DOCKER_RUNNING=$(ps aux | grep "dockerd" | grep -v grep | wc -l)
 if [ "$DOCKER_RUNNING" -gt 0 ]; then
   echo -e "${GREEN}Docker daemon is running${NC}"
-  
+
   # Check if Social Intelligence Agent container is running
   SOCIAL_INTEL_CONTAINER=$(docker ps | grep "social-intel" | wc -l)
   if [ "$SOCIAL_INTEL_CONTAINER" -gt 0 ]; then
@@ -162,7 +162,7 @@ if command -v curl &> /dev/null; then
   else
     echo -e "${YELLOW}WARNING: Mission Control not responding properly (status: $MC_RESPONSE)${NC}"
   fi
-  
+
   echo -e "Testing connection to Social Intelligence Agent (may take a few seconds)..."
   SI_RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:9000/api/health 2>/dev/null || echo "Connection failed")
   if [ "$SI_RESPONSE" == "200" ] || [ "$SI_RESPONSE" == "404" ]; then
@@ -196,7 +196,7 @@ ANY_ENDPOINT_SUCCESS=false
 for endpoint in "${endpoints[@]}"; do
   echo -e "Testing endpoint: $endpoint"
   RESPONSE_CODE=$(curl -s -o /dev/null -w "%{http_code}" -X OPTIONS "$endpoint" 2>/dev/null || echo "Connection failed")
-  
+
   if [ "$RESPONSE_CODE" == "200" ] || [ "$RESPONSE_CODE" == "204" ]; then
     echo -e "${GREEN}✅ Endpoint $endpoint is available${NC}"
     ANY_ENDPOINT_SUCCESS=true

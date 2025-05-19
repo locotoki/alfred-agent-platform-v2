@@ -1,6 +1,6 @@
 # Phase 8 – Architect Notes
 
-This file is maintained by GPT-o3 (Architect role) and captures milestone-level reasoning, design choices, GPT-o3 directives, and retrospective guidance.  
+This file is maintained by GPT-o3 (Architect role) and captures milestone-level reasoning, design choices, GPT-o3 directives, and retrospective guidance.
 All Claude Code contributors must review this before contributing to the milestone.
 
 ## 🧭 Phase Context

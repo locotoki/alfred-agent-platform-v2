@@ -1,7 +1,7 @@
 # Legal Compliance Agent
 
-*Last Updated: 2025-05-10*  
-*Owner: Legal Compliance Team*  
+*Last Updated: 2025-05-10*
+*Owner: Legal Compliance Team*
 *Status: Active*
 
 ## Overview

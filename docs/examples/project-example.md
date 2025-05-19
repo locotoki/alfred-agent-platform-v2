@@ -1,7 +1,7 @@
 # Content Factory
 
-**Last Updated:** 2025-05-10  
-**Owner:** Digital Content Division  
+**Last Updated:** 2025-05-10
+**Owner:** Digital Content Division
 **Status:** Active
 
 ## Overview

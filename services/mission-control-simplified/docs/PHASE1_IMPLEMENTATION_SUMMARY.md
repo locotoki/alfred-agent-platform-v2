@@ -117,7 +117,7 @@ The proxy service exposes the following configuration options:
 
 - `SIMILARITY_THRESHOLD`: Default: 0.55
 - `DEFAULT_NICHE_COUNT`: Default: 5
-- `ALGORITHM_WEIGHTS`: 
+- `ALGORITHM_WEIGHTS`:
   - Levenshtein: 0.5
   - Jaccard: 0.3
   - Jaro-Winkler: 0.2

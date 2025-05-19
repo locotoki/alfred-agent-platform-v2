@@ -27,7 +27,7 @@ Phase 8.3 will focus on expanding the alert system capabilities and enhancing th
 
 ## Timeline
 - Sprint 1: Alert grouping implementation
-- Sprint 2: Slack interactivity 
+- Sprint 2: Slack interactivity
 - Sprint 3: Analytics dashboard
 - Sprint 4: Testing and documentation
 

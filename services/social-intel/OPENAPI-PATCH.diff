@@ -10,9 +10,9 @@ index 0000000..f48ffa8
 +  description: |
 +    Social Intelligence Service provides trend analysis and social media monitoring capabilities,
 +    with a focus on YouTube niche discovery and channel strategy generation.
-+    
++
 +    ## Features
-+    
++
 +    - **Niche Scout**: Identifies high-potential YouTube niches with opportunity scoring
 +    - **Seed to Blueprint**: Generates channel strategy blueprints from seed videos
 +    - **Workflow Management**: Schedule and manage analysis workflows
@@ -35,7 +35,7 @@ index 1e8cc39..a49ba46 100644
 +++ b/services/social-intel/app/main.py
 @@ -1,12 +1,16 @@
  """Social Intelligence Service Main Application."""
- 
+
 -from fastapi import FastAPI, HTTPException, Query, Body
 +from fastapi import FastAPI, HTTPException, Query, Body, Request
  from contextlib import asynccontextmanager
@@ -49,7 +49,7 @@ index 1e8cc39..a49ba46 100644
 +from fastapi.responses import HTMLResponse, JSONResponse
 +from fastapi.staticfiles import StaticFiles
 +from fastapi.openapi.utils import get_openapi
- 
+
  from app.niche_scout import NicheScout
  from app.blueprint import SeedToBlueprint
 @@ -292,3 +296,71 @@ async def schedule_workflow_alt2(
@@ -83,13 +83,13 @@ index 1e8cc39..a49ba46 100644
 +                overflow: -moz-scrollbars-vertical;
 +                overflow-y: scroll;
 +            }}
-+            
++
 +            *,
 +            *:before,
 +            *:after {{
 +                box-sizing: inherit;
 +            }}
-+            
++
 +            body {{
 +                margin: 0;
 +                background: #fafafa;
@@ -125,7 +125,7 @@ index 1e8cc39..a49ba46 100644
 +    """Override the default OpenAPI schema with a custom one."""
 +    with open("api/openapi.yaml", "r") as f:
 +        return yaml.safe_load(f)
-+    
++
 +app.openapi = custom_openapi
 
 diff --git a/services/social-intel/Dockerfile b/services/social-intel/Dockerfile
@@ -135,7 +135,7 @@ index 4fbc85f..f2da7c8 100644
 @@ -13,6 +13,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
  # Copy application code
  COPY . .
- 
+
 +# Ensure API directory exists
 +RUN mkdir -p /app/api
 +
@@ -150,21 +150,21 @@ index cb61f5a..12b27be 100644
 @@ -146,16 +146,23 @@ The alert rules are designed to work with the tuned histogram buckets to:
  2. Balance alert sensitivity with minimizing noise
  3. Provide meaningful alerts for SLO violations
- 
+
 -## API Endpoints
 +## API Documentation
- 
+
 -For a complete API reference, see the [API Documentation](API.md).
 +The service provides a Swagger UI interface for browsing and testing the API:
 +
 +- **Swagger UI**: http://localhost:9000/docs
- 
+
  Key endpoints:
  - `POST /niche-scout`: Run niche analysis
  - `POST /seed-to-blueprint`: Generate channel strategy
  - `GET /workflow-history`: View past workflow executions
  - `POST /schedule-workflow`: Schedule a new workflow
- 
+
 +The OpenAPI specification is available at:
 +- `/openapi.yaml`: Raw OpenAPI 3.0 specification
 +
@@ -204,7 +204,7 @@ index 8bd7723..f9f05b0 100644
  pydantic==2.6.0
  pydantic-settings==2.1.0
 +PyYAML==6.0.1
- 
+
  # Async Support
  asyncio==3.4.3
 

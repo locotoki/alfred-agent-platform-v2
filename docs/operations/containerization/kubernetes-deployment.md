@@ -1,7 +1,7 @@
 # Kubernetes Deployment
 
-*Last Updated: 2025-05-13*  
-*Owner: Infrastructure Team*  
+*Last Updated: 2025-05-13*
+*Owner: Infrastructure Team*
 *Status: Active*
 
 ## Overview

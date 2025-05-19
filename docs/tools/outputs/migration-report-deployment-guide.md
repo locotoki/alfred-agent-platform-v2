@@ -105,5 +105,5 @@ The migration consolidates information from multiple sources, enhances technical
 
 ---
 
-**Migration Completed By**: Documentation Team  
+**Migration Completed By**: Documentation Team
 **Date**: 2025-05-10

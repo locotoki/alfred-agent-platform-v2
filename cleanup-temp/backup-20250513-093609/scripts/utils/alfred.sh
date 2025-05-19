@@ -95,14 +95,14 @@ function remove_network() {
 # Select and configure environment
 function select_environment() {
   local env=$1
-  
+
   if [[ "$env" == "prod" ]]; then
     echo -e "${YELLOW}Using production environment${NC}"
     ENV_CONFIG="-f docker-compose.prod.yml"
   else
     echo -e "${YELLOW}Using development environment${NC}"
     ENV_CONFIG="-f docker-compose.dev.yml"
-    
+
     # Use docker-compose.override.yml if it exists
     if [[ -f "docker-compose.override.yml" ]]; then
       echo -e "${YELLOW}Including docker-compose.override.yml${NC}"
@@ -121,10 +121,10 @@ function select_components() {
     # No additional files needed for 'all' as base docker-compose.yml includes everything
   else
     echo -e "${YELLOW}Including components: $components${NC}"
-    
+
     # Split components string into array
     IFS=',' read -r -a COMPONENTS <<< "$components"
-    
+
     # Add component-specific docker-compose files
     for component in "${COMPONENTS[@]}"; do
       if [[ -f "docker-compose.${component}.yml" ]]; then
@@ -134,7 +134,7 @@ function select_components() {
       fi
     done
   fi
-  
+
   # Update compose files
   COMPOSE_FILES="$COMPOSE_FILES $component_config"
 }
@@ -142,46 +142,46 @@ function select_components() {
 # Start services with selected configuration
 function start_services() {
   echo -e "${YELLOW}Starting services...${NC}"
-  
+
   # Create network if it doesn't exist
   create_network
-  
+
   # Build if requested
   if [[ "$BUILD" == true ]]; then
     echo -e "${YELLOW}Building services...${NC}"
     $DOCKER_COMPOSE_COMMAND $COMPOSE_FILES $ENV_CONFIG build
   fi
-  
+
   # Start services
   $DOCKER_COMPOSE_COMMAND $COMPOSE_FILES $ENV_CONFIG up -d
-  
+
   echo -e "${GREEN}Services started${NC}"
 }
 
 # Stop services
 function stop_services() {
   echo -e "${YELLOW}Stopping services...${NC}"
-  
+
   if [[ "$FORCE" == true ]]; then
     $DOCKER_COMPOSE_COMMAND $COMPOSE_FILES $ENV_CONFIG down --remove-orphans
   else
     $DOCKER_COMPOSE_COMMAND $COMPOSE_FILES $ENV_CONFIG stop
   fi
-  
+
   echo -e "${GREEN}Services stopped${NC}"
 }
 
 # Restart services
 function restart_services() {
   echo -e "${YELLOW}Restarting services...${NC}"
-  
+
   if [[ "$FORCE" == true ]]; then
     stop_services
     start_services
   else
     $DOCKER_COMPOSE_COMMAND $COMPOSE_FILES $ENV_CONFIG restart
   fi
-  
+
   echo -e "${GREEN}Services restarted${NC}"
 }
 
@@ -195,7 +195,7 @@ function show_status() {
 function view_logs() {
   if [[ -n "$SERVICE" ]]; then
     echo -e "${YELLOW}Viewing logs for $SERVICE...${NC}"
-    
+
     if [[ "$FOLLOW" == true ]]; then
       $DOCKER_COMPOSE_COMMAND $COMPOSE_FILES $ENV_CONFIG logs -f "$SERVICE"
     else
@@ -203,7 +203,7 @@ function view_logs() {
     fi
   else
     echo -e "${YELLOW}Viewing logs for all services...${NC}"
-    
+
     if [[ "$FOLLOW" == true ]]; then
       $DOCKER_COMPOSE_COMMAND $COMPOSE_FILES $ENV_CONFIG logs -f
     else
@@ -218,13 +218,13 @@ function exec_command() {
     echo -e "${RED}Error: --service is required for exec command${NC}"
     exit 1
   fi
-  
+
   # Shift past all the options to get the command
   local cmd=""
   for arg in "${EXTRA_ARGS[@]}"; do
     cmd="$cmd $arg"
   done
-  
+
   echo -e "${YELLOW}Executing in $SERVICE:${NC} $cmd"
   $DOCKER_COMPOSE_COMMAND $COMPOSE_FILES $ENV_CONFIG exec "$SERVICE" $cmd
 }
@@ -232,26 +232,26 @@ function exec_command() {
 # Build service images
 function build_services() {
   echo -e "${YELLOW}Building services...${NC}"
-  
+
   if [[ -n "$SERVICE" ]]; then
     $DOCKER_COMPOSE_COMMAND $COMPOSE_FILES $ENV_CONFIG build "$SERVICE"
   else
     $DOCKER_COMPOSE_COMMAND $COMPOSE_FILES $ENV_CONFIG build
   fi
-  
+
   echo -e "${GREEN}Services built${NC}"
 }
 
 # Clean up resources
 function clean_resources() {
   echo -e "${YELLOW}Cleaning up resources...${NC}"
-  
+
   # Stop all containers
   $DOCKER_COMPOSE_COMMAND $COMPOSE_FILES $ENV_CONFIG down --remove-orphans
-  
+
   # Remove network
   remove_network
-  
+
   # Prune resources
   if [[ "$FORCE" == true ]]; then
     echo -e "${YELLOW}Pruning containers, networks, and volumes...${NC}"
@@ -259,7 +259,7 @@ function clean_resources() {
     docker network prune -f
     docker volume prune -f
   fi
-  
+
   echo -e "${GREEN}Resources cleaned${NC}"
 }
 
@@ -269,11 +269,11 @@ function parse_args() {
   ENV="$DEFAULT_ENV"
   COMPONENTS_LIST="$DEFAULT_COMPONENTS"
   EXTRA_ARGS=()
-  
+
   # First argument is the command
   OPERATION="$1"
   shift
-  
+
   # Process remaining arguments
   while [[ $# -gt 0 ]]; do
     case "$1" in
@@ -304,7 +304,7 @@ function parse_args() {
     esac
     shift
   done
-  
+
   # Configure based on options
   select_environment "$ENV"
   select_components "$COMPONENTS_LIST"
@@ -313,20 +313,20 @@ function parse_args() {
 # Main function
 function main() {
   print_banner
-  
+
   if [[ $# -eq 0 || "$1" == "help" ]]; then
     print_help
     exit 0
   fi
-  
+
   # Parse arguments
   parse_args "$@"
-  
+
   # Clean if requested
   if [[ "$CLEAN" == true ]]; then
     clean_resources
   fi
-  
+
   # Execute the requested operation
   case "$OPERATION" in
     start)

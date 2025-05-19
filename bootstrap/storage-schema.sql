@@ -85,7 +85,7 @@ CREATE POLICY "Objects are public" ON storage.objects
     FOR SELECT USING (
         bucket_id IN (
             SELECT id FROM storage.buckets WHERE public = true
-        ) 
+        )
         OR owner = auth.uid()
     );
 

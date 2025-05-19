@@ -82,7 +82,7 @@ Test the full functionality of the LLM integration:
 
 ### Streamlit UI
 
-Access the Streamlit UI at http://localhost:8502 
+Access the Streamlit UI at http://localhost:8502
 
 1. Select "ollama" as the provider
 2. Choose "TinyLlama" or "Llama2" as the model

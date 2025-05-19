@@ -55,25 +55,25 @@ flowchart TB
     ContribDev -->|References| Dev
     Operators -->|References| Ops
     ProdUsers -->|Reads| User
-    
+
     Markdown -->|Format for| DocTypes
     MermaidDiagrams -->|Visualizes| Arch
     APIDocTool -->|Generates| API
     StaticSiteGen -->|Builds| User
     StaticSiteGen -->|Builds| Dev
     StaticSiteGen -->|Builds| Ops
-    
+
     Create -->|Begins Workflow| Review
     Review -->|Ensures Quality| Approve
     Approve -->|Triggers| Publish
     Publish -->|Leads to| Maintain
-    
+
     GitHub -->|Hosts| DocTypes
     GitHub -->|Manages| Workflow
     CI -->|Validates| DocTypes
     CI -->|Automates| Publish
     ReviewSystem -->|Facilitates| Review
-    
+
     DocTypes -->|Stored in| GitHub
     Workflow -->|Implemented in| GitHub
     Tools -->|Integrated with| CI

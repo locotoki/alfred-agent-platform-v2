@@ -43,7 +43,7 @@
 - Fixed agent-social Dockerfile
   - Added proper permissions and dependencies
   - Created fallback healthcheck.sh script
-  - Fixed the complex CMD nested shell structure 
+  - Fixed the complex CMD nested shell structure
   - Updated docker-compose.yml to use direct curl
 - Fixed llm-service configuration in docker-compose.yml
   - Added port mapping for metrics exposure (9094:9091)

@@ -35,7 +35,7 @@ export async function checkServiceHealth(service: 'socialIntel'): Promise<boolea
   }
 
   console.log(`[Health] Cache expired or not available, performing fresh check`);
-  
+
   // Try multiple endpoint variations, prioritizing direct container access
   const endpoints = [
     // Container DNS name (works in Docker network)
@@ -54,14 +54,14 @@ export async function checkServiceHealth(service: 'socialIntel'): Promise<boolea
     `http://localhost:9000/health/`,
     `http://localhost:9000/health`
   ];
-  
+
   for (const endpoint of endpoints) {
     try {
       console.log(`[Health] Checking ${service} health at ${endpoint}`);
-      
+
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 5000);
-      
+
       const response = await fetch(endpoint, {
         method: 'GET',
         headers: {
@@ -69,16 +69,16 @@ export async function checkServiceHealth(service: 'socialIntel'): Promise<boolea
         },
         signal: controller.signal
       });
-      
+
       clearTimeout(timeoutId);
-      
+
       console.log(`[Health] Response status for ${endpoint}: ${response.status}`);
-      
+
       // If we got a redirect, follow it
       if (response.status >= 300 && response.status < 400 && response.headers.has('location')) {
         const redirectUrl = response.headers.get('location') || '';
         console.log(`[Health] Following redirect to: ${redirectUrl}`);
-        
+
         const redirectResponse = await fetch(redirectUrl, {
           method: 'GET',
           headers: {
@@ -86,9 +86,9 @@ export async function checkServiceHealth(service: 'socialIntel'): Promise<boolea
           },
           signal: AbortSignal.timeout(5000)
         });
-        
+
         console.log(`[Health] Redirect response status: ${redirectResponse.status}`);
-        
+
         if (redirectResponse.ok) {
           let responseData;
           try {
@@ -97,7 +97,7 @@ export async function checkServiceHealth(service: 'socialIntel'): Promise<boolea
           } catch (e) {
             console.log(`[Health] Failed to parse redirect response: ${e.message}`);
           }
-          
+
           const now = new Date();
           serviceStatus[service] = {
             available: true,
@@ -110,7 +110,7 @@ export async function checkServiceHealth(service: 'socialIntel'): Promise<boolea
           return true;
         }
       }
-      
+
       // Check if original response was successful
       if (response.ok) {
         let responseData;
@@ -120,7 +120,7 @@ export async function checkServiceHealth(service: 'socialIntel'): Promise<boolea
         } catch (e) {
           console.log(`[Health] Failed to parse response: ${e.message}`);
         }
-        
+
         const now = new Date();
         serviceStatus[service] = {
           available: true,
@@ -137,7 +137,7 @@ export async function checkServiceHealth(service: 'socialIntel'): Promise<boolea
       // Continue to the next endpoint
     }
   }
-  
+
   // If we reach here, all endpoints failed
   console.error(`[Health] All health check endpoints failed for ${service}`);
 

@@ -23,7 +23,7 @@ scrape_configs:
       - targets: ['proxy-service:3020']
     metrics_path: '/metrics'
     scrape_interval: 5s  # More frequent scraping for the proxy service
-    
+
   - job_name: 'alertmanager'
     static_configs:
       - targets: ['alertmanager:9093']

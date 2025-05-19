@@ -24,7 +24,7 @@ export default function NicheScout() {
       // Call workflow service to run niche scout
       const result = await runNicheScout(query);
       setResultData(result);
-      
+
       // If the result has an ID, navigate to the results page
       if (result._id) {
         router.push(`/workflows/niche-scout/results/${result._id}`);
@@ -49,11 +49,11 @@ export default function NicheScout() {
             Niche-Scout Workflow
           </h1>
         </div>
-        
+
         {/* Configuration Section */}
         <div className="card p-6">
           <h2 className="text-xl font-bold mb-4">Configuration</h2>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
             <div>
               <label htmlFor="niche-query" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
@@ -87,7 +87,7 @@ export default function NicheScout() {
               </select>
             </div>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
             <div>
               <label htmlFor="time-range" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
@@ -124,7 +124,7 @@ export default function NicheScout() {
               </select>
             </div>
           </div>
-          
+
           <div className="mb-4">
             <button
               onClick={() => setShowAdvanced(!showAdvanced)}
@@ -133,7 +133,7 @@ export default function NicheScout() {
               {showAdvanced ? '- Hide Advanced Options' : '+ Advanced Options'}
             </button>
           </div>
-          
+
           {showAdvanced && (
             <div className="border border-gray-200 dark:border-gray-700 rounded-md p-4 mb-4">
               <h3 className="text-lg font-semibold mb-2">Advanced Options</h3>
@@ -163,7 +163,7 @@ export default function NicheScout() {
               </div>
             </div>
           )}
-          
+
           <div className="flex flex-wrap gap-3">
             <button
               onClick={handleRunWorkflow}
@@ -186,13 +186,13 @@ export default function NicheScout() {
           </div>
         </div>
       </div>
-      
+
       {/* Schedule Modal */}
       {showScheduleModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-md w-full">
             <h2 className="text-xl font-bold mb-4">Schedule Workflow</h2>
-            
+
             <div className="mb-4">
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Frequency
@@ -208,7 +208,7 @@ export default function NicheScout() {
                 <option value="once">Once</option>
               </select>
             </div>
-            
+
             {frequency === 'once' && (
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
@@ -222,7 +222,7 @@ export default function NicheScout() {
                 />
               </div>
             )}
-            
+
             <div className="flex justify-end space-x-2">
               <button
                 onClick={() => setShowScheduleModal(false)}

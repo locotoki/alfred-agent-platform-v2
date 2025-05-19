@@ -18,16 +18,16 @@ services:
       bash -c "pip install --no-cache-dir streamlit requests &&
       echo 'import os
       import streamlit as st
-      
+
       st.title(\"Alfred Chat UI\")
       st.header(\"Welcome to Alfred Chat\")
-      
+
       st.write(\"Status: Connected\")
-      
+
       with st.sidebar:
           st.header(\"Settings\")
           st.checkbox(\"Use direct model inference\", value=True)
-          
+
       st.text_input(\"Your message\", placeholder=\"Type your message here...\")
       st.button(\"Send\")' > /app/streamlit_chat_ui.py &&
       streamlit run /app/streamlit_chat_ui.py"

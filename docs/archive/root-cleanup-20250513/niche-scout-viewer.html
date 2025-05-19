@@ -3,7 +3,7 @@
 <head>
   <title>Niche Scout Results Viewer</title>
   <style>
-    body { 
+    body {
       font-family: -apple-system, system-ui, sans-serif;
       margin: 20px;
       line-height: 1.6;
@@ -67,14 +67,14 @@
 </head>
 <body>
   <h1>Niche Scout Results Viewer</h1>
-  
+
   <div>
     <button id="loadResults">Load Results from Storage</button>
     <button id="clearResults">Clear Results</button>
   </div>
-  
+
   <div id="results"></div>
-  
+
   <script>
     document.getElementById('loadResults').addEventListener('click', () => {
       try {
@@ -83,33 +83,33 @@
           document.getElementById('results').innerHTML = '<p>No results found in localStorage</p>';
           return;
         }
-        
+
         const resultsArray = JSON.parse(storedResults);
         if (!Array.isArray(resultsArray) || resultsArray.length === 0) {
           document.getElementById('results').innerHTML = '<p>Invalid results format or empty results</p>';
           return;
         }
-        
+
         let html = '';
         resultsArray.forEach((result, index) => {
           html += generateResultCard(result, index);
         });
-        
+
         document.getElementById('results').innerHTML = html;
       } catch (err) {
         document.getElementById('results').innerHTML = `<p>Error loading results: ${err.message}</p>`;
         console.error('Error loading results:', err);
       }
     });
-    
+
     document.getElementById('clearResults').addEventListener('click', () => {
       localStorage.removeItem('youtube-results');
       document.getElementById('results').innerHTML = '<p>Results cleared</p>';
     });
-    
+
     function generateResultCard(result, index) {
       const runDate = new Date(result.run_date).toLocaleString();
-      
+
       // Generate top niches table
       let topNichesHtml = '<tr><th>Query</th><th>Score</th><th>Views</th></tr>';
       result.top_niches.slice(0, 5).forEach(niche => {
@@ -121,7 +121,7 @@
           </tr>
         `;
       });
-      
+
       // Generate trending niches table
       let trendingNichesHtml = '<tr><th>Query</th><th>Views</th><th>Rank</th></tr>';
       result.trending_niches.slice(0, 5).forEach(niche => {
@@ -133,35 +133,35 @@
           </tr>
         `;
       });
-      
+
       // Assemble the complete card
       return `
         <div class="card">
           <h2>Result #${index + 1}</h2>
           <p><strong>Run Date:</strong> ${runDate}</p>
-          
+
           <div class="grid">
             <div>
               <h3>Top Niches</h3>
               <table>${topNichesHtml}</table>
             </div>
-            
+
             <div>
               <h3>Trending Niches</h3>
               <table>${trendingNichesHtml}</table>
             </div>
           </div>
-          
+
           <div class="stats">
-            ${result.actual_processing_time ? 
+            ${result.actual_processing_time ?
               `<div><strong>Processing Time:</strong> ${result.actual_processing_time.toFixed(2)}s</div>` : ''}
-            ${result.actual_cost ? 
+            ${result.actual_cost ?
               `<div><strong>Cost:</strong> $${result.actual_cost.toFixed(2)}</div>` : ''}
           </div>
         </div>
       `;
     }
-    
+
     // Load example data
     function loadExampleData() {
       const exampleData = {
@@ -239,18 +239,18 @@
         "actual_cost": 95.5,
         "actual_processing_time": 120.5
       };
-      
+
       localStorage.setItem('youtube-results', JSON.stringify([exampleData]));
       document.getElementById('results').innerHTML = '<p>Example data loaded. Click "Load Results from Storage" to view.</p>';
     }
-    
+
     // Add example data button
     const exampleButton = document.createElement('button');
     exampleButton.textContent = 'Load Example Data';
     exampleButton.style.backgroundColor = '#27ae60';
     exampleButton.addEventListener('click', loadExampleData);
     document.querySelector('div').appendChild(exampleButton);
-    
+
     // Load results on page load
     document.getElementById('loadResults').click();
   </script>

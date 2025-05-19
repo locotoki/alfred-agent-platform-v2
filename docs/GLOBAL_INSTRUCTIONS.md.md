@@ -15,25 +15,25 @@ These instructions apply to all infrastructure, LLM, and automation projects tha
 All future projects should follow these layers:
 
 1. **Namespace-Based Code Layout**
-    
+
     All source code is placed under a root package (`project_name.*`) with a clear domain-specific folder hierarchy.
-    
+
 2. **Strict Typing from Day 1**
-    
+
     Use `mypy --strict` and CI enforcement. Add `typing.Protocol` to formalize agent contracts.
-    
+
 3. **Single Responsibility Agents**
-    
+
     Every agent (slackbot, remediator, planner, observer, graph-builder) should be a stand-alone process with a health endpoint, metrics, and lifecycle hooks.
-    
+
 4. **Phased Milestone Planning**
-    
+
     Each milestone is tracked in `/docs/phaseX/` and scoped via `feature/phase-X-*` branches.
-    
+
 5. **Structured Prompting for LLM Coordination**
-    
+
     Start all sessions with the Architect by restating milestone context and current checklist.
-    
+
 
 ## 🛡️ CI/CD Guidelines
 

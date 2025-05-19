@@ -35,7 +35,7 @@ All tests are successful:
 
 1. **Social Intelligence Agent Integration**
    - Updated API endpoints to try multiple path formats:
-     - Primary path: `/youtube/{workflow}` 
+     - Primary path: `/youtube/{workflow}`
      - Secondary path: `/api/youtube/{workflow}`
    - Added timeout handling to prevent hanging requests
    - Enhanced error handling with helpful user feedback

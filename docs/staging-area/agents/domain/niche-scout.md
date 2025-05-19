@@ -1,9 +1,9 @@
 # Niche-Scout
 
 ## Overview
-**Category:** Domain  
-**Status:** Active  
-**Tier:** Solo-Biz  
+**Category:** Domain
+**Status:** Active
+**Tier:** Solo-Biz
 **Description:** An agent that finds trending YouTube niches with growth metrics and opportunities for content creators.
 
 ## Core Functionality

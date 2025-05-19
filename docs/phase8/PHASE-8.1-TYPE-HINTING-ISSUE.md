@@ -68,7 +68,7 @@ class MetricsCollector:
     def __init__(self, service_name: str) -> None:
         self.service_name: str = service_name
         self.metrics: dict[str, float] = {}
-    
+
     def add_metric(self, name: str, value: float) -> None:
         self.metrics[name] = value
 ```

@@ -61,7 +61,7 @@ docker exec alfred-agent-platform-v2-alfred-bot-1 /bin/sh -c "
   # Test direct table access
   echo 'Testing read from architect_in...'
   curl -s -X GET \"http://supabase-rest:3000/architect_in\" | jq . || echo 'Read failed'
-  
+
   # Test writing to architect_in
   echo 'Testing write to architect_in...'
   echo '{\"data\":{\"message\":\"testing disabled auth\"}}' > /tmp/test.json
@@ -69,7 +69,7 @@ docker exec alfred-agent-platform-v2-alfred-bot-1 /bin/sh -c "
     -H \"Content-Type: application/json\" \
     -d @/tmp/test.json \
     \"http://supabase-rest:3000/architect_in\" | jq . || echo 'Write failed'
-  
+
   # Verify again
   echo 'Verifying data was written...'
   curl -s -X GET \"http://supabase-rest:3000/architect_in\" | jq . || echo 'Verification failed'

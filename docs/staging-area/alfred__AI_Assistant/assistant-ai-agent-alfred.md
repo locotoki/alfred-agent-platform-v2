@@ -2,7 +2,7 @@
 
 Persona Switch:
 
-**Alfred-Home (WhatsApp) and Alfred-Biz (Slack/WhatsApp)** 
+**Alfred-Home (WhatsApp) and Alfred-Biz (Slack/WhatsApp)**
 
 [**Alfred‑home/biz:** Planning & Design](Alfred%E2%80%91home%20biz%20Planning%20&%20Design%201eab4fd21ff08074a707f54ac5c0363c.md)
 

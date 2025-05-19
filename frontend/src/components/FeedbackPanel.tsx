@@ -22,11 +22,11 @@ interface FeedbackSubmission {
   metadata?: Record<string, any>;
 }
 
-export function FeedbackPanel({ 
-  alertId, 
-  isNoise, 
+export function FeedbackPanel({
+  alertId,
+  isNoise,
   groupId,
-  onFeedbackComplete 
+  onFeedbackComplete
 }: FeedbackPanelProps) {
   const [showComment, setShowComment] = useState(false);
   const [comment, setComment] = useState('');
@@ -41,12 +41,12 @@ export function FeedbackPanel({
       if (groupId) {
         queryClient.invalidateQueries({ queryKey: ['alertGroups', groupId] });
       }
-      
+
       toast({
         title: 'Feedback recorded',
         description: 'Thank you for improving our alerting system',
       });
-      
+
       setShowComment(false);
       setComment('');
       onFeedbackComplete?.();
@@ -114,7 +114,7 @@ export function FeedbackPanel({
           <ThumbsUp className="h-4 w-4 mr-2" />
           Useful
         </Button>
-        
+
         <Button
           variant="outline"
           size="sm"
@@ -125,7 +125,7 @@ export function FeedbackPanel({
           <ThumbsDown className="h-4 w-4 mr-2" />
           Noise
         </Button>
-        
+
         <Button
           variant="outline"
           size="sm"
@@ -190,8 +190,8 @@ export function OptimisticFeedbackPanel(props: FeedbackPanelProps) {
   };
 
   const wrappedPanel = (
-    <FeedbackPanel 
-      {...props} 
+    <FeedbackPanel
+      {...props}
       onFeedbackComplete={handleFeedbackComplete}
     />
   );
@@ -210,9 +210,9 @@ export function OptimisticFeedbackPanel(props: FeedbackPanelProps) {
 }
 
 // Batch feedback component for multiple alerts
-export function BatchFeedbackPanel({ 
+export function BatchFeedbackPanel({
   alertIds,
-  groupId 
+  groupId
 }: {
   alertIds: string[];
   groupId?: string;
@@ -229,12 +229,12 @@ export function BatchFeedbackPanel({
       if (groupId) {
         queryClient.invalidateQueries({ queryKey: ['alertGroups', groupId] });
       }
-      
+
       toast({
         title: 'Batch feedback recorded',
         description: `Updated ${Object.keys(selectedFeedback).length} alerts`,
       });
-      
+
       setSelectedFeedback({});
     },
   });
@@ -261,7 +261,7 @@ export function BatchFeedbackPanel({
       <h3 className="text-sm font-medium">
         Batch Feedback ({alertIds.length} alerts)
       </h3>
-      
+
       <div className="space-y-2 max-h-60 overflow-y-auto">
         {alertIds.map((alertId) => (
           <div key={alertId} className="flex items-center gap-2">
@@ -270,7 +270,7 @@ export function BatchFeedbackPanel({
               <Button
                 variant={selectedFeedback[alertId] === 'signal' ? 'default' : 'outline'}
                 size="xs"
-                onClick={() => 
+                onClick={() =>
                   setSelectedFeedback(prev => ({ ...prev, [alertId]: 'signal' }))
                 }
               >
@@ -279,7 +279,7 @@ export function BatchFeedbackPanel({
               <Button
                 variant={selectedFeedback[alertId] === 'noise' ? 'default' : 'outline'}
                 size="xs"
-                onClick={() => 
+                onClick={() =>
                   setSelectedFeedback(prev => ({ ...prev, [alertId]: 'noise' }))
                 }
               >
@@ -289,7 +289,7 @@ export function BatchFeedbackPanel({
           </div>
         ))}
       </div>
-      
+
       <Button
         className="w-full"
         onClick={handleBatchSubmit}

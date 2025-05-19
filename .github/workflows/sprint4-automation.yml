@@ -10,18 +10,18 @@ jobs:
   sprint-automation:
     if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          
+
       - name: Configure git
         run: |
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
-          
+
       - name: Run Sprint-4 automation
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

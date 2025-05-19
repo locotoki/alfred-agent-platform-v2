@@ -2,9 +2,9 @@
  * Mock data for YouTube workflows
  */
 
-import { 
-  NicheScoutResult, 
-  BlueprintResult, 
+import {
+  NicheScoutResult,
+  BlueprintResult,
   WorkflowHistory,
   YouTubeNiche,
   YouTubeVideo,
@@ -161,8 +161,8 @@ export const mockBlueprintResult: BlueprintResult = {
 export const mockWorkflowHistory: WorkflowHistory[] = Array(10).fill(null).map((_, i) => ({
   id: `workflow-${i+1}`,
   workflow_type: i % 2 === 0 ? 'niche-scout' : 'seed-to-blueprint',
-  parameters: i % 2 === 0 
-    ? { query: "sample query" } 
+  parameters: i % 2 === 0
+    ? { query: "sample query" }
     : { video_url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ" },
   status: ["running", "completed", "completed", "error"][Math.floor(Math.random() * 4)],
   started_at: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000).toISOString(),

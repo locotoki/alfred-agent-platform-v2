@@ -51,7 +51,7 @@ The orchestrator interacts with other services as follows:
 
 - **Primary Interface**: REST API
 - **Connection**: http://social-intel:9000/api/*
-- **Functionality**: 
+- **Functionality**:
   - YouTube workflow execution (Niche-Scout, Seed-to-Blueprint)
   - Workflow history and results retrieval
   - Scheduled workflow management

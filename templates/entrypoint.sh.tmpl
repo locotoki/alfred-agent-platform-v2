@@ -29,7 +29,7 @@ HEALTHCHECK_PID=$!
 # Handle cleanup when container is stopped
 cleanup() {
     echo "Stopping service and healthcheck..."
-    
+
     # CUSTOMIZE: Add any service-specific cleanup here
     # ...
 
@@ -38,7 +38,7 @@ cleanup() {
         kill -TERM ${HEALTHCHECK_PID}
         wait ${HEALTHCHECK_PID}
     fi
-    
+
     exit 0
 }
 

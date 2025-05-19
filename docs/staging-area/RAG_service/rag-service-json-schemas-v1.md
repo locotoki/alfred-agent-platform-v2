@@ -3,7 +3,7 @@
 # RAG Service – JSON Schemas (v1)
 
 > Version : aligned with RFC draft dated 2025‑05‑09 – section 7.
-> 
+>
 
 ## 1. RetrievalRequest.schema.json
 

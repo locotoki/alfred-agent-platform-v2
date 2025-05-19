@@ -2,12 +2,12 @@
 
 After a successful rollout with zero incidents:
 • 5% canary: 72h stable ✅
-• 25% expansion: 24h stable ✅  
+• 25% expansion: 24h stable ✅
 • 100% deployment: Complete ✅
 • Feature flag: Removed ✅
 
 **Final Production Metrics:**
-• P95 latency: 129ms (< 150ms) 
+• P95 latency: 129ms (< 150ms)
 • Error rate: 0.3% (< 0.5%)
 • Noise reduction: 42%
 • User adoption: 127 merges/day

@@ -2,7 +2,7 @@
 
 ## Current Status
 
-The `apply-black-format` branch contains Black formatting applied to 98 Python files in the project. 
+The `apply-black-format` branch contains Black formatting applied to 98 Python files in the project.
 These formatting changes include:
 
 - Reordering imports (generally alphabetically with standard library first)
@@ -34,7 +34,7 @@ Currently, we're experiencing issues with running Black directly:
 3. Create a PR to merge these changes
 4. Update CI pipeline to enforce Black formatting going forward
 
-## Reference 
+## Reference
 
 The Black configuration is in pyproject.toml:
 

@@ -23,7 +23,7 @@ To replace the current category dropdown with the shared taxonomy version:
 import CategoryDropdown from "../../../components/workflows/CategoryDropdown";
 
 // Then in your component
-<CategoryDropdown 
+<CategoryDropdown
   value={form.category}
   onChange={(value) => {
     updateForm("category", value);

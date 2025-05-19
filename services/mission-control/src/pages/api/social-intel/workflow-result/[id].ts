@@ -27,8 +27,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     // Check if this is a mock result (IDs starting with "mock-")
     if (id.toString().startsWith('mock-')) {
       console.log(`Mock result detected, returning mock data for ${type}`);
-      return res.status(200).json(type === 'niche-scout' 
-        ? getMockNicheScoutResult(id as string) 
+      return res.status(200).json(type === 'niche-scout'
+        ? getMockNicheScoutResult(id as string)
         : getMockBlueprintResult(id as string));
     }
 
@@ -39,10 +39,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       `${SOCIAL_INTEL_URL}/api/youtube/workflow-result/${id}?type=${type}`,
       `${SOCIAL_INTEL_URL}/workflow-result/${id}?type=${type}`
     ];
-    
+
     let response: Response | null = null;
     let lastError: any = null;
-    
+
     // Try each endpoint until one works
     for (const endpoint of endpoints) {
       try {
@@ -55,7 +55,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           // Add timeout to prevent hanging requests
           signal: AbortSignal.timeout(30000) // 30 second timeout
         });
-        
+
         if (response.ok) {
           console.log(`Successfully called endpoint: ${endpoint}`);
           break;
@@ -73,24 +73,24 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     // If all endpoints failed or returned errors
     if (!response || !response.ok) {
       console.error('All endpoints failed, returning mock data for development');
-      
+
       // Generate persistent mock data based on the ID
-      return res.status(200).json(type === 'niche-scout' 
-        ? getMockNicheScoutResult(id as string) 
+      return res.status(200).json(type === 'niche-scout'
+        ? getMockNicheScoutResult(id as string)
         : getMockBlueprintResult(id as string));
     }
 
     // Return the API response
     try {
       const data = await response.json();
-      
+
       // Add any additional client-side fields if needed
       if (type === 'niche-scout') {
         (data as NicheScoutResult)._id = id as string;
       } else {
         (data as BlueprintResult)._id = id as string;
       }
-      
+
       console.log(`Successfully retrieved ${type} result`);
       return res.status(200).json(data);
     } catch (parseError) {
@@ -102,12 +102,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
   } catch (error) {
     console.error('Error in workflow result API handler:', error);
-    
+
     // Return mock data if there's an error
     console.warn('Error connecting to Social Intel API, returning mock data');
     const { id, type } = req.query;
-    return res.status(200).json(type === 'niche-scout' 
-      ? getMockNicheScoutResult(id as string) 
+    return res.status(200).json(type === 'niche-scout'
+      ? getMockNicheScoutResult(id as string)
       : getMockBlueprintResult(id as string));
   }
 }
@@ -121,13 +121,13 @@ function getMockNicheScoutResult(id: string): NicheScoutResult {
     const x = Math.sin(seed + offset) * 10000;
     return x - Math.floor(x);
   };
-  
+
   // Sample queries that will be consistent for the same ID
   const queries = [
-    'mobile gaming tips', 
-    'coding tutorials', 
-    'fitness workouts', 
-    'cooking recipes', 
+    'mobile gaming tips',
+    'coding tutorials',
+    'fitness workouts',
+    'cooking recipes',
     'travel vlogs',
     'guitar lessons',
     'home automation',
@@ -135,7 +135,7 @@ function getMockNicheScoutResult(id: string): NicheScoutResult {
     'digital art',
     'language learning'
   ];
-  
+
   // Generate mock trending niches
   const trendingNiches = Array.from({ length: 20 }, (_, i) => ({
     query: queries[Math.floor(seedRandom(i) * queries.length)],
@@ -148,12 +148,12 @@ function getMockNicheScoutResult(id: string): NicheScoutResult {
     y: seedRandom(i + 600) * 100,
     niche: Math.floor(seedRandom(i + 700) * 5)
   }));
-  
+
   // Sort by score to get top niches
   const topNiches = [...trendingNiches]
     .sort((a, b) => b.score - a.score)
     .slice(0, 10);
-  
+
   return {
     run_date: new Date(Date.now() - Math.floor(seedRandom(800) * 86400000)).toISOString(), // Random time within the last 24 hours
     trending_niches: trendingNiches,
@@ -170,7 +170,7 @@ function getMockBlueprintResult(id: string): BlueprintResult {
     const x = Math.sin(seed + offset) * 10000;
     return x - Math.floor(x);
   };
-  
+
   // Sample niches that will be consistent for the same ID
   const niches = [
     'mobile gaming',
@@ -184,14 +184,14 @@ function getMockBlueprintResult(id: string): BlueprintResult {
     'digital art',
     'language learning'
   ];
-  
+
   // Pick a niche based on the ID
   const nicheIndex = Math.floor(seedRandom(0) * niches.length);
   const niche = niches[nicheIndex];
-  
+
   // Generate a mock video ID based on the ID
   const videoId = `v${idHash.toString(16).substring(0, 8)}`;
-  
+
   // Generate mock data
   return {
     run_date: new Date(Date.now() - Math.floor(seedRandom(800) * 86400000)).toISOString(), // Random time within the last 24 hours
@@ -238,7 +238,7 @@ function getMockBlueprintResult(id: string): BlueprintResult {
         "community",
         "trends"
       ];
-      
+
       return {
         keyword: keywords[i],
         seed_coverage: seedRandom(i + 1400) * 0.8 + 0.2,

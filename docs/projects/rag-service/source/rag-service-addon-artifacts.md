@@ -3,10 +3,10 @@
 # RAG Service – Add‑On Artifacts
 
 > Purpose : Capture the supporting dev‑experience and ops files that were discussed but not yet codified.
-> 
-> 
+>
+>
 > These snippets can be copied verbatim into the repo.  Paths are relative to repo root.
-> 
+>
 
 ---
 

@@ -24,25 +24,25 @@ check_var() {
     local format_regex=$4
     local format_description=$5
     local service_name=$6
-    
+
     # Check .env file first
     if [ -f .env ]; then
         value=$(grep "^${var_name}=" .env | cut -d '=' -f2-)
     else
         value=""
     fi
-    
+
     # If not in .env, check environment variables
     if [ -z "$value" ]; then
         value=${!var_name}
     fi
-    
+
     # Format the service name display if provided
     local service_display=""
     if [ -n "$service_name" ]; then
         service_display=" [${service_name}]"
     fi
-    
+
     # Check if the variable is set
     if [ -z "$value" ]; then
         if [ "$required" = "true" ]; then
@@ -63,12 +63,12 @@ check_var() {
                 return 1
             fi
         fi
-        
+
         # If the value contains a variable reference like ${VAR}, check if the referenced var exists
         if [[ "$value" == *"\${"*"}"* ]]; then
             ref_var=$(echo "$value" | grep -o '\${[^}]*}' | sed 's/\${//g' | sed 's/}//g' | cut -d ':' -f1)
             ref_default=$(echo "$value" | grep -o '\${[^}]*}' | grep -q ':' && echo "$value" | grep -o '\${[^}]*}' | sed 's/\${[^:]*://g' | sed 's/}//g' || echo "")
-            
+
             # Check if the referenced variable exists
             if [ -z "${!ref_var}" ]; then
                 if [ -n "$ref_default" ]; then
@@ -79,7 +79,7 @@ check_var() {
                 fi
             fi
         fi
-        
+
         echo -e "${GREEN}OK: $var_name$service_display is set${NC}"
         return 0
     fi
@@ -92,23 +92,23 @@ check_url() {
     local default_value=$3
     local test_connection=$4
     local service_name=$5
-    
+
     # First check if the variable is set
     local url_value=""
     if [ -f .env ]; then
         url_value=$(grep "^${var_name}=" .env | cut -d '=' -f2-)
     fi
-    
+
     if [ -z "$url_value" ]; then
         url_value=${!var_name}
     fi
-    
+
     # Format the service name display if provided
     local service_display=""
     if [ -n "$service_name" ]; then
         service_display=" [${service_name}]"
     fi
-    
+
     # Check if the variable is set
     if [ -z "$url_value" ]; then
         if [ "$required" = "true" ]; then
@@ -127,18 +127,18 @@ check_url() {
             echo -e "${RED}ERROR: $var_name$service_display does not have a valid URL format (should start with http:// or https://)${NC}"
             return 1
         fi
-        
+
         # Test connection if requested
         if [ "$test_connection" = "true" ] && command -v curl &>/dev/null; then
             # Extract domain/host for hostname resolution test
             local domain=$(echo "$url_value" | sed -E 's|^https?://||' | cut -d/ -f1 | cut -d: -f1)
-            
+
             # Skip connectivity test for localhost, Docker service names, or private IP addresses
-            if [[ "$domain" == "localhost" ]] || 
+            if [[ "$domain" == "localhost" ]] ||
                [[ "$domain" =~ ^[a-zA-Z0-9_-]+$ ]] || # Docker service name pattern
-               [[ "$domain" =~ ^127\. ]] || 
-               [[ "$domain" =~ ^10\. ]] || 
-               [[ "$domain" =~ ^172\.(1[6-9]|2[0-9]|3[0-1])\. ]] || 
+               [[ "$domain" =~ ^127\. ]] ||
+               [[ "$domain" =~ ^10\. ]] ||
+               [[ "$domain" =~ ^172\.(1[6-9]|2[0-9]|3[0-1])\. ]] ||
                [[ "$domain" =~ ^192\.168\. ]]; then
                 echo -e "${GREEN}OK: $var_name$service_display is a valid URL format (connection test skipped for internal resource)${NC}"
             else
@@ -155,7 +155,7 @@ check_url() {
         else
             echo -e "${GREEN}OK: $var_name$service_display is a valid URL format${NC}"
         fi
-        
+
         return 0
     fi
 }
@@ -166,23 +166,23 @@ check_api_key() {
     local required=$2
     local key_prefix=$3
     local service_name=$4
-    
+
     # First check if the variable is set
     local key_value=""
     if [ -f .env ]; then
         key_value=$(grep "^${var_name}=" .env | cut -d '=' -f2-)
     fi
-    
+
     if [ -z "$key_value" ]; then
         key_value=${!var_name}
     fi
-    
+
     # Format the service name display if provided
     local service_display=""
     if [ -n "$service_name" ]; then
         service_display=" [${service_name}]"
     fi
-    
+
     # Check if the variable is set
     if [ -z "$key_value" ]; then
         if [ "$required" = "true" ]; then
@@ -198,14 +198,14 @@ check_api_key() {
             echo -e "${RED}ERROR: $var_name$service_display has invalid format (should start with $key_prefix)${NC}"
             return 1
         fi
-        
+
         # Handle mock keys for development
         if [[ "$key_value" == *"mock-key"* ]] || [[ "$key_value" == *"placeholder"* ]]; then
             echo -e "${YELLOW}WARN: $var_name$service_display appears to be a mock key${NC}"
         else
             echo -e "${GREEN}OK: $var_name$service_display is set with correct format${NC}"
         fi
-        
+
         return 0
     fi
 }
@@ -214,9 +214,9 @@ check_api_key() {
 validate_service() {
     local service=$1
     local status=0
-    
+
     echo -e "\n${BLUE}${BOLD}Validating environment variables for $service...${NC}"
-    
+
     case "$service" in
         "social-intel")
             check_var "DATABASE_URL" true "" "" "" "$service" || status=1
@@ -302,7 +302,7 @@ validate_service() {
             echo -e "${YELLOW}No specific validation rules for $service${NC}"
             ;;
     esac
-    
+
     return $status
 }
 
@@ -311,38 +311,38 @@ validate_db_connection() {
     local db_url=$1
     local db_name=$2
     local status=0
-    
+
     # Check if the connection string seems valid
     if [[ ! "$db_url" =~ ^(postgresql|postgres):// ]]; then
         echo -e "${RED}ERROR: $db_name does not appear to be a valid PostgreSQL connection string${NC}"
         status=1
     fi
-    
+
     # Extract host and port for more detailed checks
     local db_host=$(echo "$db_url" | sed -E 's|^postgresql://[^@]+@([^:/]+).*|\1|')
     local db_port=$(echo "$db_url" | sed -E 's|^postgresql://[^@]+@[^:]+:([0-9]+).*|\1|')
-    
+
     if [[ -z "$db_host" ]]; then
         echo -e "${RED}ERROR: Could not extract host from $db_name${NC}"
         status=1
     fi
-    
+
     if [[ -z "$db_port" ]]; then
         echo -e "${YELLOW}WARN: Could not extract port from $db_name, assuming default port 5432${NC}"
         db_port=5432
     fi
-    
+
     echo -e "${GREEN}OK: $db_name appears to be properly formatted (host: $db_host, port: $db_port)${NC}"
-    
+
     return $status
 }
 
 # Function to check for duplicate service URLs
 check_for_duplicate_ports() {
     local status=0
-    
+
     echo -e "\n${BLUE}${BOLD}Checking for potential port conflicts...${NC}"
-    
+
     # Define an array of URL variables to check
     declare -a url_vars=(
         "ALFRED_API_URL"
@@ -353,26 +353,26 @@ check_for_duplicate_ports() {
         "MODEL_REGISTRY_URL"
         "NEXT_PUBLIC_SOCIAL_INTEL_URL"
     )
-    
+
     # Create associative arrays for ports and hosts
     declare -A port_to_vars
     declare -A host_port_pair
-    
+
     for var in "${url_vars[@]}"; do
         local url_value=""
         if [ -f .env ]; then
             url_value=$(grep "^${var}=" .env | cut -d '=' -f2-)
         fi
-        
+
         if [ -z "$url_value" ]; then
             url_value=${!var}
         fi
-        
+
         if [ -n "$url_value" ]; then
             # Extract host and port
             local host=$(echo "$url_value" | sed -E 's|^https?://([^:/]+).*|\1|')
             local port=$(echo "$url_value" | sed -E 's|^https?://[^:]+:([0-9]+).*|\1|')
-            
+
             if [ -z "$port" ]; then
                 # Default ports for HTTP/HTTPS
                 if [[ "$url_value" =~ ^https:// ]]; then
@@ -381,14 +381,14 @@ check_for_duplicate_ports() {
                     port=80
                 fi
             fi
-            
+
             # Check for duplicate ports on the same host
             if [ -n "${host_port_pair[$host:$port]}" ]; then
                 echo -e "${YELLOW}WARN: Possible port conflict detected: $host:$port is used by both ${host_port_pair[$host:$port]} and $var${NC}"
             else
                 host_port_pair[$host:$port]=$var
             fi
-            
+
             # Track which variables use the same port
             if [ -n "${port_to_vars[$port]}" ]; then
                 port_to_vars[$port]="${port_to_vars[$port]}, $var"
@@ -397,13 +397,13 @@ check_for_duplicate_ports() {
             fi
         fi
     done
-    
+
     # Check for port conflicts on localhost
     for port in "${!port_to_vars[@]}"; do
         if [ -n "${host_port_pair[localhost:$port]}" ] && [ -n "${host_port_pair[127.0.0.1:$port]}" ]; then
             echo -e "${YELLOW}WARN: Possible port conflict detected: port $port is used by both localhost and 127.0.0.1 (${port_to_vars[$port]})${NC}"
         fi
-        
+
         # Check if a port is used by multiple variables with different hosts
         if [[ "${port_to_vars[$port]}" == *","* ]]; then
             num_vars=$(echo "${port_to_vars[$port]}" | tr ',' '\n' | wc -l)
@@ -412,16 +412,16 @@ check_for_duplicate_ports() {
             fi
         fi
     done
-    
+
     return $status
 }
 
 # Function to validate critical pairs of variables
 validate_variable_pairs() {
     local status=0
-    
+
     echo -e "\n${BLUE}${BOLD}Validating related variable pairs...${NC}"
-    
+
     # Check DATABASE_URL and ALFRED_DATABASE_URL match
     if [ -n "$DATABASE_URL" ] && [ -n "$ALFRED_DATABASE_URL" ]; then
         if [ "$DATABASE_URL" != "$ALFRED_DATABASE_URL" ]; then
@@ -433,7 +433,7 @@ validate_variable_pairs() {
             echo -e "${GREEN}OK: DATABASE_URL and ALFRED_DATABASE_URL match${NC}"
         fi
     fi
-    
+
     # Check REDIS_URL and ALFRED_REDIS_URL match
     if [ -n "$REDIS_URL" ] && [ -n "$ALFRED_REDIS_URL" ]; then
         if [ "$REDIS_URL" != "$ALFRED_REDIS_URL" ]; then
@@ -445,7 +445,7 @@ validate_variable_pairs() {
             echo -e "${GREEN}OK: REDIS_URL and ALFRED_REDIS_URL match${NC}"
         fi
     fi
-    
+
     # Check PUBSUB_EMULATOR_HOST and ALFRED_PUBSUB_EMULATOR_HOST match
     if [ -n "$PUBSUB_EMULATOR_HOST" ] && [ -n "$ALFRED_PUBSUB_EMULATOR_HOST" ]; then
         if [ "$PUBSUB_EMULATOR_HOST" != "$ALFRED_PUBSUB_EMULATOR_HOST" ]; then
@@ -457,7 +457,7 @@ validate_variable_pairs() {
             echo -e "${GREEN}OK: PUBSUB_EMULATOR_HOST and ALFRED_PUBSUB_EMULATOR_HOST match${NC}"
         fi
     fi
-    
+
     # Check YOUTUBE_API_KEY and ALFRED_YOUTUBE_API_KEY match
     if [ -n "$YOUTUBE_API_KEY" ] && [ -n "$ALFRED_YOUTUBE_API_KEY" ]; then
         if [ "$YOUTUBE_API_KEY" != "$ALFRED_YOUTUBE_API_KEY" ]; then
@@ -469,7 +469,7 @@ validate_variable_pairs() {
             echo -e "${GREEN}OK: YOUTUBE_API_KEY and ALFRED_YOUTUBE_API_KEY match${NC}"
         fi
     fi
-    
+
     # Check OPENAI_API_KEY and ALFRED_OPENAI_API_KEY match
     if [ -n "$OPENAI_API_KEY" ] && [ -n "$ALFRED_OPENAI_API_KEY" ]; then
         if [ "$OPENAI_API_KEY" != "$ALFRED_OPENAI_API_KEY" ]; then
@@ -481,7 +481,7 @@ validate_variable_pairs() {
             echo -e "${GREEN}OK: OPENAI_API_KEY and ALFRED_OPENAI_API_KEY match${NC}"
         fi
     fi
-    
+
     # Check SLACK_BOT_TOKEN and ALFRED_SLACK_BOT_TOKEN match
     if [ -n "$SLACK_BOT_TOKEN" ] && [ -n "$ALFRED_SLACK_BOT_TOKEN" ]; then
         if [ "$SLACK_BOT_TOKEN" != "$ALFRED_SLACK_BOT_TOKEN" ]; then
@@ -493,7 +493,7 @@ validate_variable_pairs() {
             echo -e "${GREEN}OK: SLACK_BOT_TOKEN and ALFRED_SLACK_BOT_TOKEN match${NC}"
         fi
     fi
-    
+
     # Check SLACK_SIGNING_SECRET and ALFRED_SLACK_SIGNING_SECRET match
     if [ -n "$SLACK_SIGNING_SECRET" ] && [ -n "$ALFRED_SLACK_SIGNING_SECRET" ]; then
         if [ "$SLACK_SIGNING_SECRET" != "$ALFRED_SLACK_SIGNING_SECRET" ]; then
@@ -505,7 +505,7 @@ validate_variable_pairs() {
             echo -e "${GREEN}OK: SLACK_SIGNING_SECRET and ALFRED_SLACK_SIGNING_SECRET match${NC}"
         fi
     fi
-    
+
     return $status
 }
 
@@ -518,7 +518,7 @@ load_env() {
         set +o allexport
     else
         echo -e "${YELLOW}No .env file found. Using environment variables only.${NC}"
-        
+
         # Check if .env.example exists and offer to copy it
         if [ -f .env.example ] && [ -t 1 ]; then
             echo -e "${YELLOW}Would you like to create a .env file from .env.example? (y/N)${NC}"
@@ -526,7 +526,7 @@ load_env() {
             if [[ "$choice" =~ ^[Yy]$ ]]; then
                 cp .env.example .env
                 echo -e "${GREEN}Created .env from .env.example. Please edit it with your values.${NC}"
-                
+
                 # Load the newly created .env file
                 set -o allexport
                 source .env
@@ -539,9 +539,9 @@ load_env() {
 # Function to check for sensitive values in plaintext
 check_for_sensitive_values() {
     local status=0
-    
+
     echo -e "\n${BLUE}${BOLD}Checking for potentially sensitive values in plaintext...${NC}"
-    
+
     # Check for variables with potentially sensitive values
     declare -a sensitive_vars=(
         "POSTGRES_PASSWORD"
@@ -560,27 +560,27 @@ check_for_sensitive_values() {
         "GRAFANA_ADMIN_PASSWORD"
         "MONITORING_ADMIN_PASSWORD"
     )
-    
+
     for var in "${sensitive_vars[@]}"; do
         local value=""
         if [ -f .env ]; then
             value=$(grep "^${var}=" .env | cut -d '=' -f2-)
         fi
-        
+
         if [ -z "$value" ]; then
             value=${!var}
         fi
-        
+
         if [ -n "$value" ]; then
             # Check for default or placeholder values
-            if [[ "$value" == *"admin"* ]] || 
-               [[ "$value" == *"password"* ]] || 
-               [[ "$value" == *"postgres"* ]] || 
-               [[ "$value" == *"development-only"* ]] || 
-               [[ "$value" == *"dev-only"* ]] || 
-               [[ "$value" == *"placeholder"* ]] || 
+            if [[ "$value" == *"admin"* ]] ||
+               [[ "$value" == *"password"* ]] ||
+               [[ "$value" == *"postgres"* ]] ||
+               [[ "$value" == *"development-only"* ]] ||
+               [[ "$value" == *"dev-only"* ]] ||
+               [[ "$value" == *"placeholder"* ]] ||
                [[ "$value" == *"mock"* ]]; then
-                
+
                 if [[ "$ALFRED_ENVIRONMENT" == "production" ]]; then
                     echo -e "${RED}ERROR: $var appears to have a default/test value in production environment: $value${NC}"
                     status=1
@@ -600,41 +600,41 @@ check_for_sensitive_values() {
             fi
         fi
     done
-    
+
     return $status
 }
 
 # Main function
 main() {
     local status=0
-    
+
     # Load environment variables from .env file
     load_env
-    
+
     # Process arguments
     if [ "$#" -eq 0 ]; then
         # No specific service given, validate common variables
         echo -e "${BLUE}${BOLD}Validating common environment variables...${NC}"
-        
+
         # Check common required variables
         check_var "DATABASE_URL" true "" "" "" "common" || status=1
         check_var "REDIS_URL" false "redis://redis:6379" "" "" "common" || status=1
         check_var "ALFRED_ENVIRONMENT" false "development" "^(development|production|test)$" "Should be 'development', 'production', or 'test'" "common" || status=1
-        
+
         # For non-empty DATABASE_URL, validate its format
         if [ -n "$DATABASE_URL" ]; then
             validate_db_connection "$DATABASE_URL" "DATABASE_URL" || status=1
         fi
-        
+
         # Check for duplicate ports
         check_for_duplicate_ports || status=1
-        
+
         # Validate related variable pairs
         validate_variable_pairs || status=1
-        
+
         # Check for sensitive values in plaintext
         check_for_sensitive_values || status=1
-        
+
         # Check if specific services are requested in interactive mode
         if [ -t 1 ]; then
             echo -e "\n${YELLOW}Would you like to validate environment variables for specific services? (y/N)${NC}"
@@ -642,7 +642,7 @@ main() {
             if [[ "$choice" =~ ^[Yy]$ ]]; then
                 echo -e "${YELLOW}Enter space-separated service names (e.g., social-intel agent-core):${NC}"
                 read -r services
-                
+
                 for service in $services; do
                     validate_service "$service" || status=1
                 done
@@ -654,7 +654,7 @@ main() {
             validate_service "$service" || status=1
         done
     fi
-    
+
     # Print summary
     if [ $status -eq 0 ]; then
         echo -e "\n${GREEN}${BOLD}Environment validation passed!${NC}"
@@ -664,7 +664,7 @@ main() {
         echo -e "${YELLOW}For more detailed information, see the Environment Variables Documentation:${NC}"
         echo -e "${YELLOW}  docs/ENVIRONMENT_VARIABLES.md${NC}"
     fi
-    
+
     return $status
 }
 

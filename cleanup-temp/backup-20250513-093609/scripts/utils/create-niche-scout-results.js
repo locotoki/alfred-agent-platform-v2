@@ -16,16 +16,16 @@ const options = {
 
 const req = http.request(options, (res) => {
   let data = '';
-  
+
   res.on('data', (chunk) => {
     data += chunk;
   });
-  
+
   res.on('end', () => {
     try {
       const apiResponse = JSON.parse(data);
       console.log('API response received successfully');
-      
+
       // Transform to NicheScoutResult format
       const nicheScoutResult = {
         run_date: new Date().toISOString(),
@@ -54,11 +54,11 @@ const req = http.request(options, (res) => {
         actual_cost: 95.50,
         actual_processing_time: 120.5
       };
-      
+
       // Write to file
       const resultsPath = './niche-scout-results.json';
       fs.writeFileSync(resultsPath, JSON.stringify(nicheScoutResult, null, 2));
-      
+
       console.log(`Results written to ${resultsPath}`);
       console.log('To view these results:');
       console.log('1. Open the viewer at http://localhost:8090/');
@@ -66,7 +66,7 @@ const req = http.request(options, (res) => {
       console.log('3. Run the following command in the console:');
       console.log(`   localStorage.setItem('youtube-results', JSON.stringify([${JSON.stringify(nicheScoutResult)}]))`);
       console.log('4. Click the "Load Results" button');
-      
+
     } catch (e) {
       console.error('Error processing results:', e);
     }

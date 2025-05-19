@@ -72,9 +72,9 @@ DOC_TYPES = {
 TEMPLATES = {
     "agent": """# {title}
 
-**Last Updated:** {date}  
-**Owner:** {owner}  
-**Status:** {status}  
+**Last Updated:** {date}
+**Owner:** {owner}
+**Status:** {status}
 
 ## Overview
 *Brief description of this agent's purpose and functionality.*
@@ -102,9 +102,9 @@ TEMPLATES = {
 """,
     "workflow": """# {title}
 
-**Last Updated:** {date}  
-**Owner:** {owner}  
-**Status:** {status}  
+**Last Updated:** {date}
+**Owner:** {owner}
+**Status:** {status}
 
 ## Overview
 *Brief description of this workflow's purpose.*
@@ -126,9 +126,9 @@ TEMPLATES = {
 """,
     "project": """# {title}
 
-**Last Updated:** {date}  
-**Owner:** {owner}  
-**Status:** {status}  
+**Last Updated:** {date}
+**Owner:** {owner}
+**Status:** {status}
 
 ## Project Overview
 *Brief description of this project.*
@@ -150,9 +150,9 @@ TEMPLATES = {
 """,
     "architecture": """# {title}
 
-**Last Updated:** {date}  
-**Owner:** {owner}  
-**Status:** {status}  
+**Last Updated:** {date}
+**Owner:** {owner}
+**Status:** {status}
 
 ## Overview
 *High-level description of this architecture.*
@@ -174,9 +174,9 @@ TEMPLATES = {
 """,
     "guide": """# {title}
 
-**Last Updated:** {date}  
-**Owner:** {owner}  
-**Status:** {status}  
+**Last Updated:** {date}
+**Owner:** {owner}
+**Status:** {status}
 
 ## Overview
 *Purpose of this guide.*
@@ -198,9 +198,9 @@ TEMPLATES = {
 """,
     "api": """# {title}
 
-**Last Updated:** {date}  
-**Owner:** {owner}  
-**Status:** {status}  
+**Last Updated:** {date}
+**Owner:** {owner}
+**Status:** {status}
 
 ## Overview
 *Brief description of this API.*
@@ -225,9 +225,9 @@ TEMPLATES = {
 """,
     "general": """# {title}
 
-**Last Updated:** {date}  
-**Owner:** {owner}  
-**Status:** {status}  
+**Last Updated:** {date}
+**Owner:** {owner}
+**Status:** {status}
 
 ## Overview
 *Brief description of this document.*

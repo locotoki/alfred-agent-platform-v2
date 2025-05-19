@@ -59,7 +59,7 @@ const YouTubeTestOnly: React.FC = () => {
                 <CardDescription>
                   Discover high-potential YouTube niches with detailed opportunity scoring
                 </CardDescription>
-                
+
                 <Tabs value={activeTab} onValueChange={setActiveTab} className="mt-4">
                   <TabsList>
                     <TabsTrigger value="overview" className="flex items-center">
@@ -77,7 +77,7 @@ const YouTubeTestOnly: React.FC = () => {
                   </TabsList>
                 </Tabs>
               </CardHeader>
-              
+
               <CardContent className="p-0">
                 <TabsContent value="overview" className="p-4 mt-0">
                   <FadeIn direction="up">
@@ -99,7 +99,7 @@ const YouTubeTestOnly: React.FC = () => {
                           </div>
                         </CardContent>
                       </Card>
-                      
+
                       <Card className="bg-purple-50 dark:bg-purple-900/10 border-0">
                         <CardContent className="pt-6">
                           <div className="flex items-center">
@@ -117,7 +117,7 @@ const YouTubeTestOnly: React.FC = () => {
                           </div>
                         </CardContent>
                       </Card>
-                      
+
                       <Card className="bg-green-50 dark:bg-green-900/10 border-0">
                         <CardContent className="pt-6">
                           <div className="flex items-center">
@@ -136,7 +136,7 @@ const YouTubeTestOnly: React.FC = () => {
                         </CardContent>
                       </Card>
                     </div>
-                    
+
                     {results ? (
                       <div className="space-y-6">
                         <div>
@@ -161,20 +161,20 @@ const YouTubeTestOnly: React.FC = () => {
                             ))}
                           </div>
                         </div>
-                        
+
                         <div>
                           <h3 className="text-lg font-medium mb-3">Analysis Summary</h3>
                           <p className="text-gray-600 dark:text-gray-400">
-                            The analysis identified {results.trending_niches?.length} potential niches, 
+                            The analysis identified {results.trending_niches?.length} potential niches,
                             with the highest opportunity score of {Math.round(results.top_niches?.[0]?.score || 0)}.
-                            {results.top_niches?.[0]?.shorts_friendly && 
+                            {results.top_niches?.[0]?.shorts_friendly &&
                               " The top opportunity is suitable for YouTube Shorts format."}
                           </p>
                         </div>
-                        
+
                         <div className="flex justify-end">
-                          <GradientButton 
-                            variant="primary" 
+                          <GradientButton
+                            variant="primary"
                             onClick={() => setActiveTab('visualization')}
                             iconAfter={<BarChart3 className="h-4 w-4 ml-1" />}
                           >
@@ -192,12 +192,12 @@ const YouTubeTestOnly: React.FC = () => {
                     )}
                   </FadeIn>
                 </TabsContent>
-                
+
                 <TabsContent value="visualization" className="mt-0">
                   <FadeIn direction="up">
                     {results ? (
-                      <NicheScoutVisualizer 
-                        data={results} 
+                      <NicheScoutVisualizer
+                        data={results}
                         darkMode={document.documentElement.classList.contains('dark')}
                       />
                     ) : (
@@ -210,7 +210,7 @@ const YouTubeTestOnly: React.FC = () => {
                     )}
                   </FadeIn>
                 </TabsContent>
-                
+
                 <TabsContent value="data" className="p-4 mt-0">
                   <FadeIn direction="up">
                     <div className="overflow-auto">
@@ -224,7 +224,7 @@ const YouTubeTestOnly: React.FC = () => {
             </Card>
           </FadeIn>
         </div>
-        
+
         <div>
           <FadeIn direction="up" delay={200}>
             <YouTubeApiTest onResultsUpdate={updateResults} />

@@ -32,7 +32,7 @@ CREATE INDEX IF NOT EXISTS hot_niches_today_opportunity_idx ON hot_niches_today(
 -- Add some sample data for testing
 -- This can be removed in production
 INSERT INTO features (phrase, demand_score, monetise_score, supply_score, opportunity)
-VALUES 
+VALUES
   ('Financial Literacy Shorts', 0.8750, 0.9200, 0.6500, 1.2346),
   ('DIY Home Improvement', 0.6230, 0.7800, 0.5500, 0.8829)
 ON CONFLICT (phrase) DO NOTHING;

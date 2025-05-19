@@ -24,7 +24,7 @@ jobs:
           curl -s -X POST http://localhost:5678/webhook/alertmanager \
           -H 'Content-Type: application/json' \
           -d '{"alerts":[{"labels":{"namespace":"default","deployment":"api"}}]}'
-      
+
       # Verify CrewAI is running
       - name: Verify CrewAI container
         run: |

@@ -61,14 +61,14 @@ for br in feature/phase-8.1-type-safety-alerts; do
     echo "   Rebasing $br..."
     git checkout $br || continue
     git rebase origin/main
-    
+
     # Run tests if tox is available
     if command -v tox &> /dev/null; then
         tox -e lint,typing,py
     else
         echo "   Warning: tox not found, skipping tests"
     fi
-    
+
     git push --force-with-lease origin $br
 done
 

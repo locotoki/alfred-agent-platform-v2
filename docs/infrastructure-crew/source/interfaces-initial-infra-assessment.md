@@ -34,19 +34,19 @@ With the foundation this mature, hitting the June target looks realistic—**if*
 Although Phase 6 only starts after the Financial-Tax agent, a little groundwork now avoids surprises:
 
 1. **Design tokens & component library**
-    
+
     *Pick Tailwind with shadcn/ui (you already used this stack for Alfred dashboards).*
-    
+
 2. **Realtime layer**
-    
+
     You already have Supabase Realtime. Verify that **change-feeds** for Qdrant and Redis metrics can be proxied through the same channel, or decide to pipe them into Prometheus/Grafana instead.
-    
+
 3. **Wireframe**
-    
+
     One page per topic is enough for v1:
-    
+
     *Agents list*, *Message queue*, *DB health*, *Audit log*.
-    
+
 
 Capture these as Figma frames now; development will go faster.
 

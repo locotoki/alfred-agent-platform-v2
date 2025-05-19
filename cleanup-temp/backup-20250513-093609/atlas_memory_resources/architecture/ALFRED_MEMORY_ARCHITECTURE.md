@@ -1,7 +1,7 @@
 # Alfred Memory Architecture
 
-*Document Created: May 13, 2025*  
-*Prepared for: Atlas (Architecture Agent)*  
+*Document Created: May 13, 2025*
+*Prepared for: Atlas (Architecture Agent)*
 *Status: Planning Phase*
 
 ## 1. Overview
@@ -112,19 +112,19 @@ class Memory:
     async def add_message(self, session_id: str, message: Dict[str, Any]) -> None:
         """Add a message to the conversation memory."""
         pass
-        
+
     async def get_recent_messages(self, session_id: str, limit: int = 10) -> List[Dict[str, Any]]:
         """Get recent messages from the conversation memory."""
         pass
-        
+
     async def get_conversation_summary(self, session_id: str) -> str:
         """Get a summary of the conversation."""
         pass
-        
+
     async def search_semantic_memory(self, query: str, limit: int = 5) -> List[Dict[str, Any]]:
         """Search semantic memory for relevant information."""
         pass
-        
+
     async def clear_session(self, session_id: str) -> None:
         """Clear the conversation memory for a session."""
         pass
@@ -147,35 +147,35 @@ class MemoryEnabledAgent(BaseAgent):
         memory: UnifiedMemory
     ):
         super().__init__(
-            name, version, supported_intents, 
+            name, version, supported_intents,
             pubsub_transport, supabase_transport, policy_middleware
         )
         self.memory = memory
-        
+
     async def process_task(self, envelope: A2AEnvelope) -> Dict[str, Any]:
         """Process a task with memory context enhancement."""
         # Extract session information
         session_id = envelope.content.get("session_id", f"session-{envelope.task_id}")
-        
+
         # Get memory context
         context = await self.memory.get_context(session_id, envelope.content.get("message", ""))
-        
+
         # Add user message to memory
         await self.memory.add_message(session_id, {
             "role": "user",
             "content": envelope.content.get("message", ""),
             "user_id": envelope.content.get("user_id", "unknown")
         })
-        
+
         # Process with context
         result = await self._process_with_context(envelope, context)
-        
+
         # Add assistant response to memory
         await self.memory.add_message(session_id, {
             "role": "assistant",
             "content": result.get("response", "")
         })
-        
+
         return result
 ```
 
@@ -186,15 +186,15 @@ Service for optimizing and managing memory:
 ```python
 class MemoryConsolidationService:
     """Service for memory optimization and consolidation."""
-    
+
     async def generate_conversation_summary(self, conversation_id: str) -> str:
         """Generate a summary of a conversation using LLM."""
         # Implementation details...
-        
+
     async def generate_embeddings_batch(self, limit: int = 100) -> int:
         """Generate embeddings for messages without them."""
         # Implementation details...
-        
+
     async def archive_old_conversations(self, days: int = 90) -> int:
         """Archive conversations older than specified days."""
         # Implementation details...
@@ -246,13 +246,13 @@ WITH (lists = 100);
 ### 4.2 Redis Schema
 
 ```
-# Session key structure 
+# Session key structure
 session:{session_id}:messages = [JSON array of recent messages]
 session:{session_id}:metadata = {JSON object with session metadata}
 session:{session_id}:active_tasks = [JSON array of active task IDs]
 session:{session_id}:context = {JSON object with current context}
 
-# Set reasonable TTL 
+# Set reasonable TTL
 EXPIRE session:{session_id}:* 3600  # 1 hour default
 ```
 
@@ -286,12 +286,12 @@ class RedisMemory(Memory):
     def __init__(self, redis_client):
         self.redis = redis_client
         self.ttl = 3600  # 1 hour default
-        
+
     async def add_message(self, session_id: str, message: Dict[str, Any]) -> None:
         """Add a message to the Redis memory."""
         key = f"session:{session_id}:messages"
         # Get existing messages
-        messages_json = await self.redis.get(key) 
+        messages_json = await self.redis.get(key)
         messages = json.loads(messages_json) if messages_json else []
         # Add new message
         messages.append({
@@ -301,10 +301,10 @@ class RedisMemory(Memory):
         # Store back with TTL
         await self.redis.setex(key, self.ttl, json.dumps(messages))
         # Update last accessed timestamp
-        await self.redis.setex(f"session:{session_id}:last_accessed", 
-                              self.ttl, 
+        await self.redis.setex(f"session:{session_id}:last_accessed",
+                              self.ttl,
                               datetime.now().isoformat())
-        
+
     async def get_recent_messages(self, session_id: str, limit: int = 10) -> List[Dict[str, Any]]:
         """Get recent messages from Redis memory."""
         key = f"session:{session_id}:messages"
@@ -322,7 +322,7 @@ class RedisMemory(Memory):
 class PostgresMemory(Memory):
     def __init__(self, db_pool):
         self.db = db_pool
-        
+
     async def add_message(self, session_id: str, message: Dict[str, Any]) -> None:
         """Add a message to PostgreSQL memory."""
         async with self.db.acquire() as conn:
@@ -342,31 +342,31 @@ class PostgresMemory(Memory):
             # Update conversation last_message_at
             await conn.execute(
                 """
-                UPDATE memory.conversations 
+                UPDATE memory.conversations
                 SET last_message_at = now(), updated_at = now()
                 WHERE id = $1
                 """,
                 conversation_id
             )
-            
+
     async def _get_or_create_conversation(self, conn, session_id: str, message: Dict[str, Any]) -> str:
         """Get or create a conversation and return its ID."""
         # Check if conversation exists
         result = await conn.fetchrow(
             """
-            SELECT id FROM memory.conversations 
+            SELECT id FROM memory.conversations
             WHERE session_id = $1
-            """, 
+            """,
             session_id
         )
-        
+
         if result:
             return result["id"]
-        
+
         # Create new conversation
         result = await conn.fetchrow(
             """
-            INSERT INTO memory.conversations 
+            INSERT INTO memory.conversations
             (session_id, user_id, interface, title, metadata)
             VALUES ($1, $2, $3, $4, $5)
             RETURNING id
@@ -377,7 +377,7 @@ class PostgresMemory(Memory):
             message.get("content", "")[:50] + "...",  # Simple title from first message
             json.dumps(message.get("metadata", {}))
         )
-        
+
         return result["id"]
 ```
 
@@ -389,13 +389,13 @@ class VectorMemory(Memory):
         self.qdrant = qdrant_client
         self.embedding_service = embedding_service
         self.collection_name = "conversation_memory"
-        
+
     async def add_to_semantic_memory(self, message: Dict[str, Any]) -> None:
         """Add a message to semantic memory with embedding."""
         # Generate embedding
         content = message.get("content", "")
         embedding = await self.embedding_service.get_embedding(content)
-        
+
         # Store in vector DB
         await self.qdrant.upsert(
             collection_name=self.collection_name,
@@ -412,19 +412,19 @@ class VectorMemory(Memory):
                 }
             }]
         )
-        
+
     async def search_semantic_memory(self, query: str, limit: int = 5) -> List[Dict[str, Any]]:
         """Search semantic memory for relevant information."""
         # Generate query embedding
         query_embedding = await self.embedding_service.get_embedding(query)
-        
+
         # Search vector DB
         search_result = await self.qdrant.search(
             collection_name=self.collection_name,
             query_vector=query_embedding,
             limit=limit
         )
-        
+
         # Format results
         return [item.payload for item in search_result]
 ```
@@ -434,49 +434,49 @@ class VectorMemory(Memory):
 ```python
 class UnifiedMemory(Memory):
     def __init__(
-        self, 
-        short_term: RedisMemory, 
-        medium_term: PostgresMemory, 
+        self,
+        short_term: RedisMemory,
+        medium_term: PostgresMemory,
         long_term: VectorMemory
     ):
         self.short_term = short_term
         self.medium_term = medium_term
         self.long_term = long_term
-        
+
     async def add_message(self, session_id: str, message: Dict[str, Any]) -> None:
         """Add a message to all memory systems."""
         # Add to short-term memory
         await self.short_term.add_message(session_id, message)
-        
+
         # Add to medium-term memory
         message_id = await self.medium_term.add_message(session_id, message)
-        
+
         # Add to long-term memory if appropriate
         # Only store assistant and user messages, not system
         if message.get("role") in ["assistant", "user"]:
             # Ensure the message has the conversation_id from postgres
             semantic_message = {**message, "conversation_id": message_id}
             await self.long_term.add_to_semantic_memory(semantic_message)
-            
+
     async def get_context(self, session_id: str, query: str = None) -> Dict[str, Any]:
         """Get complete context including short, medium and long-term memory."""
         # Get recent messages from short-term memory
         recent_messages = await self.short_term.get_recent_messages(session_id)
-        
+
         # Get conversation summary from medium-term memory
         summary = await self.medium_term.get_conversation_summary(session_id)
-        
+
         # Build context dictionary
         context = {
             "recent_messages": recent_messages,
             "summary": summary,
         }
-        
+
         # Add semantic search results if query provided
         if query:
             semantic_results = await self.long_term.search_semantic_memory(query)
             context["semantic_results"] = semantic_results
-            
+
         return context
 ```
 
@@ -495,14 +495,14 @@ async def get_memory():
 
 @app.post("/api/memory/{session_id}/messages")
 async def add_message(
-    session_id: str, 
+    session_id: str,
     message: Dict[str, Any],
     memory: UnifiedMemory = Depends(get_memory)
 ):
     """Add a message to memory."""
     await memory.add_message(session_id, message)
     return {"status": "success"}
-    
+
 @app.get("/api/memory/{session_id}/context")
 async def get_context(
     session_id: str,
@@ -512,7 +512,7 @@ async def get_context(
     """Get memory context."""
     context = await memory.get_context(session_id, query)
     return context
-    
+
 @app.delete("/api/memory/{session_id}")
 async def clear_session(
     session_id: str,
@@ -544,7 +544,7 @@ async def send_message_async(message: str) -> str:
             "session_id": st.session_state.session_id,
             "user_id": SESSION_USER_ID
         }
-        
+
         # Get memory context if available
         try:
             memory_response = await asyncio.wait_for(
@@ -559,7 +559,7 @@ async def send_message_async(message: str) -> str:
                 payload["context"] = memory_data
         except Exception as e:
             st.debug(f"Failed to get memory context: {e}")
-        
+
         # Process the message with context
         response = await st.session_state.model_router_client.process_message(
             message=message,
@@ -569,7 +569,7 @@ async def send_message_async(message: str) -> str:
             context=payload.get("context"),
             debug_mode=st.session_state.debug_mode
         )
-        
+
         # Store response in memory if available
         try:
             await asyncio.wait_for(
@@ -586,7 +586,7 @@ async def send_message_async(message: str) -> str:
             )
         except Exception as e:
             st.debug(f"Failed to store response in memory: {e}")
-        
+
         return response.get("response") or response.get("content")
     # Error handling...
 ```
@@ -601,7 +601,7 @@ async def process_message(client, channel_id, user_id, text, thread_ts=None, is_
         session_id = f"slack-{channel_id}"
         if thread_ts:
             session_id += f"-{thread_ts}"
-        
+
         # Get memory context if available
         context = {}
         try:
@@ -615,7 +615,7 @@ async def process_message(client, channel_id, user_id, text, thread_ts=None, is_
                     context = response.json()
         except Exception as e:
             logger.warning(f"Failed to get memory context: {e}")
-        
+
         # Create an A2A envelope for chat processing with context
         envelope = A2AEnvelope(
             intent="CHAT",
@@ -628,7 +628,7 @@ async def process_message(client, channel_id, user_id, text, thread_ts=None, is_
                 "context": context
             }
         )
-        
+
         # Store and process message
         # Implementation details...
     # Error handling...

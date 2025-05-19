@@ -82,41 +82,41 @@ export default function () {
   {
     const randomIndex = Math.floor(Math.random() * testQueries.length);
     const { category, query } = testQueries[randomIndex];
-    
+
     const nicheScoutResponse = http.get(
       `http://localhost:9000/niche-scout?category=${encodeURIComponent(category)}&query=${encodeURIComponent(query)}`,
       { tags: { name: 'niche-scout' } }
     );
-    
+
     // Record metrics
     nicheScoutLatency.add(nicheScoutResponse.timings.duration);
     errorRate.add(nicheScoutResponse.status !== 200);
-    
+
     // Assert response
     check(nicheScoutResponse, {
       'niche-scout status is 200': (r) => r.status === 200,
       'niche-scout response has niches': (r) => r.json().niches && r.json().niches.length > 0,
     });
   }
-  
+
   // Test /hot-niches endpoint
   {
     const hotNichesResponse = http.get(
       'http://localhost:9000/hot-niches?limit=10',
       { tags: { name: 'hot-niches' } }
     );
-    
+
     // Record metrics
     hotNichesLatency.add(hotNichesResponse.timings.duration);
     errorRate.add(hotNichesResponse.status !== 200);
-    
+
     // Assert response
     check(hotNichesResponse, {
       'hot-niches status is 200': (r) => r.status === 200,
       'hot-niches response has niches': (r) => r.json().niches && r.json().niches.length > 0,
     });
   }
-  
+
   // Test /seed-to-blueprint endpoint
   {
     const seedPhrase = `Test Seed ${Date.now()}`;
@@ -125,18 +125,18 @@ export default function () {
       JSON.stringify({ seed_phrase: seedPhrase }),
       { headers: { 'Content-Type': 'application/json' }, tags: { name: 'seed-to-blueprint' } }
     );
-    
+
     // Record metrics
     seedToBlueprintLatency.add(seedToBlueprintResponse.timings.duration);
     errorRate.add(seedToBlueprintResponse.status !== 200);
-    
+
     // Assert response
     check(seedToBlueprintResponse, {
       'seed-to-blueprint status is 200': (r) => r.status === 200,
       'seed-to-blueprint has channel info': (r) => r.json().channel_info && r.json().channel_info.title,
     });
   }
-  
+
   sleep(1);
 }
 
@@ -144,7 +144,7 @@ export default function () {
 export function handleSummary(data) {
   // Save JSON results for later analysis
   writeFileSync('k6-results.json', JSON.stringify(data));
-  
+
   // Return text summary for console output
   return {
     stdout: textSummary(data, { indent: ' ', enableColors: true }),

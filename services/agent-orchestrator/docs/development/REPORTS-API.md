@@ -8,8 +8,8 @@ The Reports feature uses the following API endpoints:
 
 ### Get Report List
 
-**Endpoint:** `${API_BASE_URL}/api/reports`  
-**Method:** GET  
+**Endpoint:** `${API_BASE_URL}/api/reports`
+**Method:** GET
 **Description:** Retrieves a list of available reports
 
 **Response Format:**
@@ -38,8 +38,8 @@ The Reports feature uses the following API endpoints:
 
 ### Get Report Data
 
-**Endpoint:** `${API_BASE_URL}/api/reports/${reportId}`  
-**Method:** GET  
+**Endpoint:** `${API_BASE_URL}/api/reports/${reportId}`
+**Method:** GET
 **Description:** Retrieves data for a specific report
 
 **Parameters:**
@@ -95,8 +95,8 @@ The Reports feature uses the following API endpoints:
 
 ### Generate Report
 
-**Endpoint:** `${API_BASE_URL}/api/reports/generate`  
-**Method:** POST  
+**Endpoint:** `${API_BASE_URL}/api/reports/generate`
+**Method:** POST
 **Description:** Generates a new report
 
 **Request Body:**

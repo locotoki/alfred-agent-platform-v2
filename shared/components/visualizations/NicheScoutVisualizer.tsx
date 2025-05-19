@@ -53,7 +53,7 @@ export const NicheScoutVisualizer: React.FC<NicheScoutVisualizerProps> = ({
 }) => {
   const [selectedTab, setSelectedTab] = useState<'scatter'|'top'|'trending'>('scatter');
   const [selectedNiche, setSelectedNiche] = useState<NicheData | null>(null);
-  
+
   if (!data || !data.trending_niches || !data.top_niches) {
     return (
       <div className="flex items-center justify-center p-8 text-gray-500 bg-gray-50 dark:bg-gray-800 dark:text-gray-400 rounded-lg">
@@ -61,7 +61,7 @@ export const NicheScoutVisualizer: React.FC<NicheScoutVisualizerProps> = ({
       </div>
     );
   }
-  
+
   // Prepare scatter plot data
   const scatterData = data.trending_niches
     .filter(niche => typeof niche.x === 'number' && typeof niche.y === 'number')
@@ -70,7 +70,7 @@ export const NicheScoutVisualizer: React.FC<NicheScoutVisualizerProps> = ({
       z: Math.sqrt(niche.score || 1), // Size based on score
       fillColor: getColorByNiche(niche.niche || 0)
     }));
-  
+
   // Get color based on niche group
   function getColorByNiche(nicheGroup: number): string {
     const colors = [
@@ -80,10 +80,10 @@ export const NicheScoutVisualizer: React.FC<NicheScoutVisualizerProps> = ({
       '#f59e0b', // amber
       '#ef4444'  // red
     ];
-    
+
     return colors[nicheGroup % colors.length];
   }
-  
+
   const CustomTooltip = ({ active, payload }: any) => {
     if (active && payload && payload.length) {
       const data = payload[0].payload as NicheData;
@@ -105,12 +105,12 @@ export const NicheScoutVisualizer: React.FC<NicheScoutVisualizerProps> = ({
     }
     return null;
   };
-  
+
   return (
     <div className={`bg-white dark:bg-gray-800 rounded-lg overflow-hidden ${className}`}>
       {/* Tabs */}
       <div className="flex border-b border-gray-200 dark:border-gray-700">
-        <button 
+        <button
           className={`flex items-center px-4 py-3 text-sm font-medium ${
             selectedTab === 'scatter'
               ? 'text-blue-600 dark:text-blue-400 border-b-2 border-blue-500'
@@ -121,7 +121,7 @@ export const NicheScoutVisualizer: React.FC<NicheScoutVisualizerProps> = ({
           <BarChart3 className="h-4 w-4 mr-2" />
           Opportunity Map
         </button>
-        <button 
+        <button
           className={`flex items-center px-4 py-3 text-sm font-medium ${
             selectedTab === 'top'
               ? 'text-blue-600 dark:text-blue-400 border-b-2 border-blue-500'
@@ -132,7 +132,7 @@ export const NicheScoutVisualizer: React.FC<NicheScoutVisualizerProps> = ({
           <TrendingUp className="h-4 w-4 mr-2" />
           Top Opportunities
         </button>
-        <button 
+        <button
           className={`flex items-center px-4 py-3 text-sm font-medium ${
             selectedTab === 'trending'
               ? 'text-blue-600 dark:text-blue-400 border-b-2 border-blue-500'
@@ -144,7 +144,7 @@ export const NicheScoutVisualizer: React.FC<NicheScoutVisualizerProps> = ({
           Trending Niches
         </button>
       </div>
-      
+
       {/* Main Visualization Content */}
       <div className="p-4">
         {selectedTab === 'scatter' && (
@@ -153,47 +153,47 @@ export const NicheScoutVisualizer: React.FC<NicheScoutVisualizerProps> = ({
               This map visualizes niche opportunities based on supply and demand.
               Larger bubbles indicate higher opportunity score.
             </div>
-            
+
             <div className="h-80 w-full">
               <ResponsiveContainer width="100%" height="100%">
                 <ScatterChart
                   margin={{ top: 20, right: 20, bottom: 20, left: 20 }}
                 >
                   <CartesianGrid strokeDasharray="3 3" stroke={darkMode ? '#374151' : '#e5e7eb'} />
-                  <XAxis 
-                    type="number" 
-                    dataKey="x" 
-                    name="Supply" 
+                  <XAxis
+                    type="number"
+                    dataKey="x"
+                    name="Supply"
                     tick={{fill: darkMode ? '#9ca3af' : '#6b7280'}}
-                    label={{ 
-                      value: 'Supply', 
+                    label={{
+                      value: 'Supply',
                       position: 'bottom',
                       fill: darkMode ? '#e5e7eb' : '#4b5563'
                     }}
                   />
-                  <YAxis 
-                    type="number" 
-                    dataKey="y" 
-                    name="Demand" 
+                  <YAxis
+                    type="number"
+                    dataKey="y"
+                    name="Demand"
                     tick={{fill: darkMode ? '#9ca3af' : '#6b7280'}}
-                    label={{ 
-                      value: 'Demand', 
-                      angle: -90, 
+                    label={{
+                      value: 'Demand',
+                      angle: -90,
                       position: 'left',
                       fill: darkMode ? '#e5e7eb' : '#4b5563'
                     }}
                   />
-                  <ZAxis 
-                    type="number" 
-                    dataKey="z" 
-                    range={[20, 200]} 
-                    name="Score" 
+                  <ZAxis
+                    type="number"
+                    dataKey="z"
+                    range={[20, 200]}
+                    name="Score"
                   />
                   <Tooltip content={<CustomTooltip />} />
                   <Legend />
-                  <Scatter 
-                    name="Niche Opportunities" 
-                    data={scatterData} 
+                  <Scatter
+                    name="Niche Opportunities"
+                    data={scatterData}
                     fill="#3b82f6"
                     fillOpacity={0.8}
                     strokeOpacity={0.9}
@@ -205,16 +205,16 @@ export const NicheScoutVisualizer: React.FC<NicheScoutVisualizerProps> = ({
             </div>
           </div>
         )}
-        
+
         {selectedTab === 'top' && (
           <div className="space-y-4">
             <div className="text-sm text-gray-600 dark:text-gray-400 mb-2">
               These are the highest-opportunity niches based on our proprietary scoring algorithm.
             </div>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {data.top_niches.slice(0, 10).map((niche, index) => (
-                <div 
+                <div
                   key={index}
                   className="p-4 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all duration-150"
                   onClick={() => setSelectedNiche(niche)}
@@ -222,7 +222,7 @@ export const NicheScoutVisualizer: React.FC<NicheScoutVisualizerProps> = ({
                   <div className="flex items-start justify-between">
                     <div>
                       <div className="flex items-center">
-                        <div 
+                        <div
                           className="h-6 w-6 rounded-full mr-2 flex items-center justify-center text-xs text-white"
                           style={{ background: getColorByNiche(niche.niche || 0) }}
                         >
@@ -241,9 +241,9 @@ export const NicheScoutVisualizer: React.FC<NicheScoutVisualizerProps> = ({
                         )}
                       </div>
                     </div>
-                    <div 
+                    <div
                       className={`text-xs px-2 py-1 rounded-full ${
-                        niche.competition_level === 'Low' 
+                        niche.competition_level === 'Low'
                           ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300'
                           : niche.competition_level === 'Medium'
                             ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300'
@@ -258,13 +258,13 @@ export const NicheScoutVisualizer: React.FC<NicheScoutVisualizerProps> = ({
             </div>
           </div>
         )}
-        
+
         {selectedTab === 'trending' && (
           <div className="space-y-4">
             <div className="text-sm text-gray-600 dark:text-gray-400 mb-2">
               These are the currently trending topics based on recent view patterns.
             </div>
-            
+
             <div className="overflow-auto">
               <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                 <thead className="bg-gray-50 dark:bg-gray-800">
@@ -278,7 +278,7 @@ export const NicheScoutVisualizer: React.FC<NicheScoutVisualizerProps> = ({
                 </thead>
                 <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                   {data.trending_niches.slice(0, 15).map((niche, index) => (
-                    <tr 
+                    <tr
                       key={index}
                       className="hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer transition-colors duration-150"
                       onClick={() => setSelectedNiche(niche)}
@@ -296,7 +296,7 @@ export const NicheScoutVisualizer: React.FC<NicheScoutVisualizerProps> = ({
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                          niche.competition_level === 'Low' 
+                          niche.competition_level === 'Low'
                             ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300'
                             : niche.competition_level === 'Medium'
                               ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300'
@@ -324,7 +324,7 @@ export const NicheScoutVisualizer: React.FC<NicheScoutVisualizerProps> = ({
           </div>
         )}
       </div>
-      
+
       {/* Footer with metadata */}
       <div className="px-4 py-3 bg-gray-50 dark:bg-gray-900/50 border-t border-gray-200 dark:border-gray-700 text-xs text-gray-500 dark:text-gray-400">
         <div className="flex justify-between items-center">
