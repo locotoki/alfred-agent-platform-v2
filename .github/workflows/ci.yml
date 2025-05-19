@@ -204,7 +204,18 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build and push ${{ matrix.service }}
+      - name: Build ${{ matrix.service }} image locally
+        uses: docker/build-push-action@v4
+        with:
+          context: ./services/${{ matrix.service }}
+          load: true              # build locally for test, no registry push
+          tags: |
+            ${{ matrix.service }}:local
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
+
+      - name: Push ${{ matrix.service }} image to GHCR
+        if: ${{ secrets.GHCR_PAT != '' }}
         uses: docker/build-push-action@v4
         with:
           context: ./services/${{ matrix.service }}
@@ -213,7 +224,7 @@ jobs:
             ghcr.io/${{ github.repository_owner }}/alfred-platform/${{ matrix.service }}:${{ github.sha }}
             ghcr.io/${{ github.repository_owner }}/alfred-platform/${{ matrix.service }}:latest
           cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
+          provenance: false       # speed up CI
 
       - name: Move cache
         run: |
