@@ -205,6 +205,11 @@ jobs:
         service:
           - slack_mcp_gateway
           - telegram-adapter
+        include:
+          - service: slack_mcp_gateway
+            context: ./services/slack_mcp_gateway
+          - service: telegram-adapter
+            context: ./adapters/telegram
 
     steps:
       - uses: actions/checkout@v4
@@ -230,19 +235,20 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Determine build context
-        id: context
-        run: |
-          if [ "${{ matrix.service }}" == "telegram-adapter" ]; then
-            echo "context=./adapters/telegram" >> $GITHUB_OUTPUT
-          else
-            echo "context=./services/${{ matrix.service }}" >> $GITHUB_OUTPUT
-          fi
+      - name: Build ${{ matrix.service }} image locally
+        uses: docker/build-push-action@v4
+        with:
+          context: ${{ matrix.context }}
+          load: true              # build locally for test, no registry push
+          tags: |
+            ${{ matrix.service }}:local
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
 
       - name: Build and push ${{ matrix.service }}
         uses: docker/build-push-action@v4
         with:
-          context: ${{ steps.context.outputs.context }}
+          context: ${{ matrix.context }}
           push: ${{ secrets.GHCR_PAT != '' }}
           tags: |
             ghcr.io/${{ github.repository_owner }}/alfred-platform/${{ matrix.service }}:${{ github.sha }}

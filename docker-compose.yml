@@ -634,7 +634,7 @@ services:
   # Core Agent Service
   agent-core:
     build:
-      context: ./alfred/core/alfred_core
+      context: ./alfred/core
       dockerfile: Dockerfile
     image: agent-core:latest
     container_name: agent-core
@@ -678,7 +678,7 @@ services:
   # Slack MCP Gateway Service
   slack_mcp_gateway:
     build:
-      context: ./alfred/slack/mcp_gateway
+      context: ./services/slack_mcp_gateway
       dockerfile: Dockerfile
     image: slack-mcp-gateway:latest
     container_name: slack_mcp_gateway
@@ -706,22 +706,62 @@ services:
       com.docker.compose.service: "slack-mcp-gateway"
       prometheus.metrics.port: "9091"
 
-  # Telegram Adapter
+  # Slack Adapter Service
+  slack-adapter:
+    build:
+      context: .
+      dockerfile: ./alfred/adapters/slack/Dockerfile
+    image: alfred-slack-adapter:latest
+    container_name: slack-adapter
+    ports:
+      - "3001:8000"  # Map host port 3001 to container port 8000
+      - "9128:9091"  # Metrics port
+    environment:
+      - SLACK_SIGNING_SECRET=${SLACK_SIGNING_SECRET}
+      - ALFRED_LOG_LEVEL=${ALFRED_LOG_LEVEL:-INFO}
+      - PROMETHEUS_MULTIPROC_DIR=/tmp/prometheus
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/healthz"]
+      <<: *basic-health-check
+    depends_on:
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - alfred-network
+    labels:
+      <<: *agent-service-labels
+      com.docker.compose.service: "slack-adapter"
+      prometheus.metrics.port: "9091"
+
+  # Telegram Adapter Service
   telegram-adapter:
     build:
       context: ./adapters/telegram
       dockerfile: Dockerfile
+    image: ${ALFRED_REGISTRY}/alfred-platform/telegram-adapter:${ALFRED_VERSION:-latest}
+    container_name: telegram-adapter
     ports:
-      - "8080:8080"
+      - "3002:8080"  # Map host port 3002 to container port 8080
+      - "9129:9091"  # Metrics port
+    environment:
+      - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}
+      - ALFRED_ENVIRONMENT=${ALFRED_ENVIRONMENT:-development}
+      - ALFRED_LOG_LEVEL=${ALFRED_LOG_LEVEL:-INFO}
+      - PROMETHEUS_MULTIPROC_DIR=/tmp/prometheus
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/telegram/webhook"]
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
       <<: *basic-health-check
+    depends_on:
+      redis:
+        condition: service_healthy
     restart: unless-stopped
     networks:
       - alfred-network
     labels:
       <<: *agent-service-labels
       com.docker.compose.service: "telegram-adapter"
+      prometheus.metrics.port: "9091"
 
   # RAG Service
   agent-rag:
@@ -1023,7 +1063,7 @@ services:
   # Admin Dashboard
   ui-admin:
     build:
-      context: ./alfred/ui/mission_control_simplified
+      context: ./services/mission-control-simplified
       dockerfile: Dockerfile
     image: mission-control-simplified:latest
     container_name: ui-admin
