@@ -1,6 +1,6 @@
 """Financial Tax Agent implementation"""
 
-from typing import Any, Dict, List
+from typing import Any, Dict
 
 import structlog
 from langchain_openai import ChatOpenAI

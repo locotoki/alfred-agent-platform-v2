@@ -7,7 +7,7 @@ the intent router and handles different intents appropriately.
 import structlog
 from prometheus_client import Counter
 
-from alfred.agents.intent_router import Intent, router
+from alfred.agents.intent_router import router
 
 # Prometheus metrics
 orchestrator_requests_total = Counter(
