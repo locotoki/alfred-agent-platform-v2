@@ -45,9 +45,9 @@ def fix_f401_violations(violations_file):
                         import_line = import_line.replace("import ,", "import")
                         lines[line_num] = import_line
 
-                elif "from " in import_line and import_name in import_line:
+                elif f"from " in import_line and import_name in import_line:
                     # From import
-                    import_name.rsplit(".", 1)[0] if "." in import_name else None
+                    module_part = import_name.rsplit(".", 1)[0] if "." in import_name else None
                     import_part = import_name.rsplit(".", 1)[-1]
 
                     if (
