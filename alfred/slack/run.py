@@ -24,7 +24,7 @@ if missing_vars:
     sys.exit(1)
 
 # Import the app
-from app import app, flask_app
+from .app import app, flask_app
 
 if __name__ == "__main__":
     # Start Flask app for health checks in a separate thread

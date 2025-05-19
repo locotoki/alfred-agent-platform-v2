@@ -106,10 +106,10 @@ async def audit_compliance(
         envelope = A2AEnvelope(intent="COMPLIANCE_AUDIT", content=request.dict())
 
         # Store task
-        task_id = await supabase_transport.store_task(envelope)
+        await supabase_transport.store_task(envelope)
 
         # Publish task
-        message_id = await pubsub_transport.publish_task(envelope)
+        await pubsub_transport.publish_task(envelope)
 
         API_REQUESTS.labels(endpoint="audit-compliance", method="POST", status="success").inc()
 
@@ -117,7 +117,7 @@ async def audit_compliance(
             "status": "accepted",
             "task_id": envelope.task_id,
             "message": "Compliance audit task has been queued",
-            "tracking": {"task_id": envelope.task_id, "message_id": message_id},
+            "tracking": {"task_id": envelope.task_id},
         }
     except Exception as e:
         API_REQUESTS.labels(endpoint="audit-compliance", method="POST", status="error").inc()
@@ -135,8 +135,8 @@ async def analyze_document(
     try:
         envelope = A2AEnvelope(intent="DOCUMENT_ANALYSIS", content=request.dict())
 
-        task_id = await supabase_transport.store_task(envelope)
-        message_id = await pubsub_transport.publish_task(envelope)
+        await supabase_transport.store_task(envelope)
+        await pubsub_transport.publish_task(envelope)
 
         API_REQUESTS.labels(endpoint="analyze-document", method="POST", status="success").inc()
 
@@ -144,7 +144,7 @@ async def analyze_document(
             "status": "accepted",
             "task_id": envelope.task_id,
             "message": "Document analysis task has been queued",
-            "tracking": {"task_id": envelope.task_id, "message_id": message_id},
+            "tracking": {"task_id": envelope.task_id},
         }
     except Exception as e:
         API_REQUESTS.labels(endpoint="analyze-document", method="POST", status="error").inc()
@@ -162,8 +162,8 @@ async def check_regulations(
     try:
         envelope = A2AEnvelope(intent="REGULATION_CHECK", content=request.dict())
 
-        task_id = await supabase_transport.store_task(envelope)
-        message_id = await pubsub_transport.publish_task(envelope)
+        await supabase_transport.store_task(envelope)
+        await pubsub_transport.publish_task(envelope)
 
         API_REQUESTS.labels(endpoint="check-regulations", method="POST", status="success").inc()
 
@@ -171,7 +171,7 @@ async def check_regulations(
             "status": "accepted",
             "task_id": envelope.task_id,
             "message": "Regulation check task has been queued",
-            "tracking": {"task_id": envelope.task_id, "message_id": message_id},
+            "tracking": {"task_id": envelope.task_id},
         }
     except Exception as e:
         API_REQUESTS.labels(endpoint="check-regulations", method="POST", status="error").inc()
@@ -189,8 +189,8 @@ async def review_contract(
     try:
         envelope = A2AEnvelope(intent="CONTRACT_REVIEW", content=request.dict())
 
-        task_id = await supabase_transport.store_task(envelope)
-        message_id = await pubsub_transport.publish_task(envelope)
+        await supabase_transport.store_task(envelope)
+        await pubsub_transport.publish_task(envelope)
 
         API_REQUESTS.labels(endpoint="review-contract", method="POST", status="success").inc()
 
@@ -198,7 +198,7 @@ async def review_contract(
             "status": "accepted",
             "task_id": envelope.task_id,
             "message": "Contract review task has been queued",
-            "tracking": {"task_id": envelope.task_id, "message_id": message_id},
+            "tracking": {"task_id": envelope.task_id},
         }
     except Exception as e:
         API_REQUESTS.labels(endpoint="review-contract", method="POST", status="error").inc()

@@ -407,7 +407,7 @@ async def get_custom_openapi_yaml():
 @app.get("/docs", include_in_schema=False)
 async def custom_swagger_ui_html():
     """Serve Swagger UI with the custom OpenAPI definition."""
-    swagger_ui_html = f"""
+    swagger_ui_html = """
     <!DOCTYPE html>
     <html>
     <head>

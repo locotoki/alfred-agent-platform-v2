@@ -20,7 +20,9 @@ def test_command_registration():
     listeners = app.listeners
 
     # Find slash command listeners
-    command_listeners = [l for l in listeners if l.matcher.match_function_name == "match_event"]
+    command_listeners = [
+        listener for listener in listeners if listener.matcher.match_function_name == "match_event"
+    ]  # noqa: E501
 
     # Check if we have at least one command listener
     assert len(command_listeners) > 0, "No command listeners registered"
@@ -33,9 +35,9 @@ def test_command_registration():
     # Note: Slack Bolt expects command without the slash prefix
     command_name = COMMAND_PREFIX.lstrip("/")
     alfred_listeners = [
-        l
-        for l in command_listeners
-        if hasattr(l.matcher, "command") and l.matcher.command == command_name
+        listener
+        for listener in command_listeners
+        if hasattr(listener.matcher, "command") and listener.matcher.command == command_name
     ]
 
     # This assertion will fail if the command is registered WITH the slash

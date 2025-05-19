@@ -73,7 +73,7 @@ async def handle_ping(client, channel_id, user_id):
     envelope = A2AEnvelope(intent="PING", content={"message": "ping", "user_id": user_id})
 
     try:
-        message_id = await pubsub_transport.publish_task(envelope)
+        await pubsub_transport.publish_task(envelope)
 
         await client.chat_postMessage(
             channel=channel_id, text=f"Ping task created! Task ID: {envelope.task_id}"
@@ -101,10 +101,10 @@ async def handle_trend_analysis(client, channel_id, user_id, query):
 
     try:
         # Store task
-        task_id = await supabase_transport.store_task(envelope)
+        await supabase_transport.store_task(envelope)
 
         # Publish task
-        message_id = await pubsub_transport.publish_task(envelope)
+        await pubsub_transport.publish_task(envelope)
 
         await client.chat_postMessage(
             channel=channel_id, text=f"Analyzing trends for: {query}\nTask ID: {envelope.task_id}"

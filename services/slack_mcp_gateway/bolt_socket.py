@@ -62,7 +62,7 @@ def create_app() -> App:
             task_request = translator.build_task_request(command)
 
             # Add the request_id to the in-flight set for the response handler
-            request_id = task_request.get("request_id")
+            request_id = task_request.get("request_id")  # noqa: F841
 
             # Publish the request to Redis
             redis_bus.publish(task_request)

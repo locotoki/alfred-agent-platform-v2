@@ -290,7 +290,7 @@ Key Findings:
                 [results["new_ranker"]["false_positives"], results["new_ranker"]["true_negatives"]],
             ]
 
-            im = ax2.imshow(cm_data, cmap="Blues")
+            ax2.imshow(cm_data, cmap="Blues")
             ax2.set_xticks([0, 1])
             ax2.set_yticks([0, 1])
             ax2.set_xticklabels(["Predicted Noise", "Predicted Signal"])
@@ -300,7 +300,7 @@ Key Findings:
             # Add text annotations
             for i in range(2):
                 for j in range(2):
-                    text = ax2.text(
+                    ax2.text(
                         j,
                         i,
                         cm_data[i][j],
@@ -465,7 +465,7 @@ def main():
     with open(json_path, "w") as f:
         json.dump(results, f, indent=2)
 
-    print(f"Benchmark complete!")
+    print("Benchmark complete!")
     print(f"Report: {report_path}")
     print(f"Raw data: {json_path}")
 

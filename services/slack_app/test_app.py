@@ -11,9 +11,8 @@ from dotenv import load_dotenv
 # Load environment variables
 load_dotenv()
 
-# Mock Slack API to avoid real API calls
-import unittest
-from unittest.mock import MagicMock, patch
+import unittest  # noqa: E402
+from unittest.mock import MagicMock, patch  # noqa: E402
 
 # Apply patches to avoid real network calls
 with (

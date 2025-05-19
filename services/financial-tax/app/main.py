@@ -104,10 +104,10 @@ async def calculate_tax(
         envelope = A2AEnvelope(intent="TAX_CALCULATION", content=request.dict())
 
         # Store task
-        task_id = await supabase_transport.store_task(envelope)
+        await supabase_transport.store_task(envelope)
 
         # Publish task
-        message_id = await pubsub_transport.publish_task(envelope)
+        await pubsub_transport.publish_task(envelope)
 
         API_REQUESTS.labels(endpoint="calculate-tax", method="POST", status="success").inc()
 
@@ -115,7 +115,7 @@ async def calculate_tax(
             "status": "accepted",
             "task_id": envelope.task_id,
             "message": "Tax calculation task has been queued",
-            "tracking": {"task_id": envelope.task_id, "message_id": message_id},
+            "tracking": {"task_id": envelope.task_id},
         }
     except Exception as e:
         API_REQUESTS.labels(endpoint="calculate-tax", method="POST", status="error").inc()
@@ -134,8 +134,8 @@ async def analyze_financials(
     try:
         envelope = A2AEnvelope(intent="FINANCIAL_ANALYSIS", content=request.dict())
 
-        task_id = await supabase_transport.store_task(envelope)
-        message_id = await pubsub_transport.publish_task(envelope)
+        await supabase_transport.store_task(envelope)
+        await pubsub_transport.publish_task(envelope)
 
         API_REQUESTS.labels(endpoint="analyze-financials", method="POST", status="success").inc()
 
@@ -143,7 +143,7 @@ async def analyze_financials(
             "status": "accepted",
             "task_id": envelope.task_id,
             "message": "Financial analysis task has been queued",
-            "tracking": {"task_id": envelope.task_id, "message_id": message_id},
+            "tracking": {"task_id": envelope.task_id},
         }
     except Exception as e:
         API_REQUESTS.labels(endpoint="analyze-financials", method="POST", status="error").inc()
@@ -161,8 +161,8 @@ async def check_compliance(
     try:
         envelope = A2AEnvelope(intent="TAX_COMPLIANCE_CHECK", content=request.dict())
 
-        task_id = await supabase_transport.store_task(envelope)
-        message_id = await pubsub_transport.publish_task(envelope)
+        await supabase_transport.store_task(envelope)
+        await pubsub_transport.publish_task(envelope)
 
         API_REQUESTS.labels(endpoint="check-compliance", method="POST", status="success").inc()
 
@@ -170,7 +170,7 @@ async def check_compliance(
             "status": "accepted",
             "task_id": envelope.task_id,
             "message": "Compliance check task has been queued",
-            "tracking": {"task_id": envelope.task_id, "message_id": message_id},
+            "tracking": {"task_id": envelope.task_id},
         }
     except Exception as e:
         API_REQUESTS.labels(endpoint="check-compliance", method="POST", status="error").inc()
@@ -198,8 +198,8 @@ async def get_tax_rates(
 
         envelope = A2AEnvelope(intent="RATE_SHEET_LOOKUP", content=rate_request.dict())
 
-        task_id = await supabase_transport.store_task(envelope)
-        message_id = await pubsub_transport.publish_task(envelope)
+        await supabase_transport.store_task(envelope)
+        await pubsub_transport.publish_task(envelope)
 
         API_REQUESTS.labels(endpoint="tax-rates", method="GET", status="success").inc()
 
@@ -207,7 +207,7 @@ async def get_tax_rates(
             "status": "accepted",
             "task_id": envelope.task_id,
             "message": "Tax rate lookup task has been queued",
-            "tracking": {"task_id": envelope.task_id, "message_id": message_id},
+            "tracking": {"task_id": envelope.task_id},
         }
     except Exception as e:
         API_REQUESTS.labels(endpoint="tax-rates", method="GET", status="error").inc()

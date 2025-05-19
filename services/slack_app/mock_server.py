@@ -247,7 +247,7 @@ def ui():
                 .then(response => response.json())
                 .then(data => {
                     const resultDiv = document.getElementById('result');
-                    resultDiv.innerHTML = `<div class="success">Command executed!</div><div class="terminal"><div class="output">${data.text.replace(/\n/g, '<br>').replace(/\*/g, '<strong>').replace(/`/g, '<code>').replace(/```/g, '')}</div></div>`;
+                    resultDiv.innerHTML = `<div class="success">Command executed!</div><div class="terminal"><div class="output">${data.text.replace(/\\n/g, '<br>').replace(/\\*/g, '<strong>').replace(/`/g, '<code>').replace(/```/g, '')}</div></div>`;
                 })
                 .catch(error => {
                     console.error('Error:', error);

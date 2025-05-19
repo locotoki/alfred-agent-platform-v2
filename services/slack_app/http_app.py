@@ -47,7 +47,7 @@ def handle_alfred_command(ack, command, say):
     # Split into subcommand and arguments
     parts = command_text.split(" ", 1)
     subcommand = parts[0].lower()
-    args = parts[1] if len(parts) > 1 else ""
+    args = parts[1] if len(parts) > 1 else ""  # noqa: F841
 
     # Check if the subcommand is allowed
     if subcommand not in ALLOWED_COMMANDS_SET:

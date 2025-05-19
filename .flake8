@@ -1,10 +1,14 @@
 [flake8]
 max-line-length = 100
-exclude = .git,__pycache__,docs/source/conf.py,old,build,dist,venv,cleanup-temp,node_modules,docs/archive,youtube-test-env,docs/tools,services/social-intel/app
-extend-ignore = E203,W503,F401,E501,Q000
+exclude = .git,__pycache__,docs/source/conf.py,old,build,dist,venv,.venv,cleanup-temp,node_modules,docs/archive,youtube-test-env,docs/tools,services/social-intel/app,services/agent-orchestrator/node_modules,services/mission-control.old/node_modules
+extend-ignore = E203,W503,E501,F401
 per-file-ignores =
     # Allow unused imports in __init__.py files
     __init__.py: F401
     # Allow unused imports and other issues in test files
     test_*.py: F401,F811,F841
     tests/*: F401,F811,F841
+    # Allow module level imports not at top for special cases
+    alfred/slack/run.py: E402
+    scripts/test_youtube_agent.py: E402
+    services/slack_app/test_app.py: E402
