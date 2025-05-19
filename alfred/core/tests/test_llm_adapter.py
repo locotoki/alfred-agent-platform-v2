@@ -32,44 +32,43 @@ class TestOpenAIAdapter:
 
     @pytest.fixture
     def adapter(self):
-        return OpenAIAdapter(api_key="test-key")
-
-    @pytest.fixture
-    def mock_openai_client(self):
-        with patch('alfred.core.llm_adapter.AsyncOpenAI') as mock:
-            client = AsyncMock()
-            mock.return_value = client
-            yield client
+        # Mock environment variable
+        with patch.dict('os.environ', {'OPENAI_API_KEY': 'test-key'}):
+            return OpenAIAdapter(api_key="test-key")
 
     @pytest.mark.asyncio
-    async def test_generate_non_streaming(self, adapter, mock_openai_client):
+    async def test_generate_non_streaming(self, adapter):
+        # Mock the client property
+        mock_client = AsyncMock()
+
         # Mock response
         mock_response = MagicMock()
         mock_response.choices = [MagicMock()]
         mock_response.choices[0].message.content = "Test response"
         mock_response.usage.total_tokens = 50
 
-        mock_openai_client.chat.completions.create.return_value = mock_response
+        mock_client.chat.completions.create.return_value = mock_response
 
-        # Test
-        messages = [Message("user", "Hello")]
-        result = await adapter.generate(messages)
+        # Patch the client property
+        with patch.object(adapter, '_client', mock_client):
+            messages = [Message("user", "Hello")]
+            result = await adapter.generate(messages)
 
-        assert result == "Test response"
+            assert result == "Test response"
 
-        # Check metrics were updated
-        # Note: In real tests, you'd use prometheus_client.REGISTRY to check
-
-        # Verify API call
-        mock_openai_client.chat.completions.create.assert_called_once()
-        call_args = mock_openai_client.chat.completions.create.call_args[1]
-        assert call_args["model"] == "gpt-4o-turbo"
-        assert call_args["messages"] == [{"role": "user", "content": "Hello"}]
-        assert call_args["temperature"] == 0.7
-        assert call_args["stream"] is False
+            # Verify API call
+            mock_client.chat.completions.create.assert_called_once()
+            call_args = mock_client.chat.completions.create.call_args[1]
+            assert call_args["model"] == "gpt-4o-turbo"
+            assert call_args["messages"] == [{"role": "user", "content": "Hello"}]
+            assert call_args["temperature"] == 0.7
+            assert call_args["stream"] is False
 
     @pytest.mark.asyncio
-    async def test_generate_streaming(self, adapter, mock_openai_client):
+    async def test_generate_streaming(self, adapter):
+        # Mock the client property
+        mock_client = AsyncMock()
+
         # Mock streaming response
         async def mock_stream():
             chunks = [
@@ -79,18 +78,19 @@ class TestOpenAIAdapter:
             for chunk in chunks:
                 yield chunk
 
-        mock_openai_client.chat.completions.create.return_value = mock_stream()
+        mock_client.chat.completions.create.return_value = mock_stream()
 
-        # Test
-        messages = [Message("user", "Hi")]
-        result = await adapter.generate(messages, stream=True)
+        # Patch the client property
+        with patch.object(adapter, '_client', mock_client):
+            messages = [Message("user", "Hi")]
+            result = await adapter.generate(messages, stream=True)
 
-        # Collect stream
-        chunks = []
-        async for chunk in result:
-            chunks.append(chunk)
+            # Collect stream
+            chunks = []
+            async for chunk in result:
+                chunks.append(chunk)
 
-        assert chunks == ["Hello", " world"]
+            assert chunks == ["Hello", " world"]
 
     def test_estimate_tokens(self, adapter):
         # Test rough estimation
@@ -99,8 +99,16 @@ class TestOpenAIAdapter:
         assert tokens == len(text) // 4
 
     def test_missing_api_key(self):
-        with pytest.raises(ValueError, match="OpenAI API key not provided"):
-            OpenAIAdapter(api_key=None)
+        # Temporarily clear the env var
+        with patch.dict('os.environ', {}, clear=True):
+            with pytest.raises(ValueError, match="OpenAI API key not provided"):
+                OpenAIAdapter(api_key=None)
+
+    def test_missing_api_key_with_env(self):
+        # Test with env var set
+        with patch.dict('os.environ', {'OPENAI_API_KEY': 'env-key'}):
+            adapter = OpenAIAdapter()
+            assert adapter.api_key == 'env-key'
 
 
 class TestClaudeAdapter:
@@ -108,39 +116,37 @@ class TestClaudeAdapter:
 
     @pytest.fixture
     def adapter(self):
-        return ClaudeAdapter(api_key="test-key")
-
-    @pytest.fixture
-    def mock_claude_client(self):
-        with patch('alfred.core.llm_adapter.AsyncAnthropic') as mock:
-            client = AsyncMock()
-            mock.return_value = client
-            yield client
+        with patch.dict('os.environ', {'ANTHROPIC_API_KEY': 'test-key'}):
+            return ClaudeAdapter(api_key="test-key")
 
     @pytest.mark.asyncio
-    async def test_generate_with_system_message(self, adapter, mock_claude_client):
+    async def test_generate_with_system_message(self, adapter):
+        # Mock the client property
+        mock_client = AsyncMock()
+
         # Mock response
         mock_response = MagicMock()
         mock_response.content = [MagicMock(text="Claude response")]
         mock_response.usage.total_tokens = 40
 
-        mock_claude_client.messages.create.return_value = mock_response
+        mock_client.messages.create.return_value = mock_response
 
-        # Test with system message
-        messages = [
-            Message("system", "You are a helpful assistant"),
-            Message("user", "Hello")
-        ]
-        result = await adapter.generate(messages)
+        # Patch the client property
+        with patch.object(adapter, '_client', mock_client):
+            messages = [
+                Message("system", "You are a helpful assistant"),
+                Message("user", "Hello")
+            ]
+            result = await adapter.generate(messages)
 
-        assert result == "Claude response"
+            assert result == "Claude response"
 
-        # Verify API call
-        call_args = mock_claude_client.messages.create.call_args[1]
-        assert call_args["model"] == "claude-3-sonnet-20240229"
-        assert call_args["system"] == "You are a helpful assistant"
-        assert call_args["messages"] == [{"role": "user", "content": "Hello"}]
-        assert call_args["max_tokens"] == 4096
+            # Verify API call
+            call_args = mock_client.messages.create.call_args[1]
+            assert call_args["model"] == "claude-3-sonnet-20240229"
+            assert call_args["system"] == "You are a helpful assistant"
+            assert call_args["messages"] == [{"role": "user", "content": "Hello"}]
+            assert call_args["max_tokens"] == 4096
 
     def test_estimate_tokens(self, adapter):
         text = "Test message for Claude"
@@ -152,12 +158,14 @@ class TestFactory:
     """Test factory function."""
 
     def test_create_openai_adapter(self):
-        adapter = create_llm_adapter("openai", api_key="test")
-        assert isinstance(adapter, OpenAIAdapter)
+        with patch.dict('os.environ', {'OPENAI_API_KEY': 'test'}):
+            adapter = create_llm_adapter("openai")
+            assert isinstance(adapter, OpenAIAdapter)
 
     def test_create_claude_adapter(self):
-        adapter = create_llm_adapter("claude", api_key="test")
-        assert isinstance(adapter, ClaudeAdapter)
+        with patch.dict('os.environ', {'ANTHROPIC_API_KEY': 'test'}):
+            adapter = create_llm_adapter("claude")
+            assert isinstance(adapter, ClaudeAdapter)
 
     def test_unknown_provider(self):
         with pytest.raises(ValueError, match="Unknown provider: gpt-j"):

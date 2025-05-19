@@ -151,7 +151,7 @@ class IntentRouter:
         self.register_handler(
             "greeting",
             self._handle_greeting,
-            pattern=r"(hello|hi|hey|greetings|good morning|good afternoon|good evening)"
+            pattern=r"\b(hello|hi|hey|greetings|good morning|good afternoon|good evening)\b"
         )
 
         # Help intent
@@ -165,7 +165,7 @@ class IntentRouter:
         self.register_handler(
             "status_check",
             self._handle_status,
-            pattern=r"(status|health|ping|alive|working)"
+            pattern=r"\b(status|health|ping|alive|working)\b"
         )
 
         # Unknown intent

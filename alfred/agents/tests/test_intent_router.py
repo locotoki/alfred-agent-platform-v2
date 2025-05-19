@@ -168,14 +168,10 @@ class TestIntentRouter:
 
     def test_error_handling_in_route(self, router, monkeypatch):
         """Test error handling during routing."""
-        # Mock an exception
-        def mock_search(*args, **kwargs):
-            raise RuntimeError("Test error")
+        # Mock the patterns dictionary to cause an error
+        monkeypatch.setattr(router, "_patterns", {"error_pattern": None})
 
-        # Replace the search method to trigger an error
-        import re
-        monkeypatch.setattr(re.Pattern, "search", mock_search)
-
+        # This should cause an AttributeError when trying to call .search() on None
         intent = router.route("Test message")
         assert intent.type == "error_intent"
         assert intent.confidence == 0.0
