@@ -14,6 +14,15 @@ repos:
           ^(services/telegram_adapter|alfred|tests|scripts)
       - id: check-merge-conflict
 
+  - repo: local
+    hooks:
+      - id: forbid-legacy-imports
+        name: "Forbid legacy `services.` imports"
+        entry: bash -c "grep -R --line-number -E '(^|\\s)(from|import) services\\.' --exclude '__init__.py' --exclude-dir '.venv' . && echo '❌ Legacy import found' && exit 1 || exit 0"
+        language: system
+        types: [python]
+        exclude: |
+          (^alfred/__init__\.py$)
   - repo: https://github.com/psf/black
     rev: 24.1.1
     hooks:

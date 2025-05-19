@@ -1,0 +1,1 @@
+- [ ] Remove legacy import shims in alfred/__init__.py (due 2025-07-01)
