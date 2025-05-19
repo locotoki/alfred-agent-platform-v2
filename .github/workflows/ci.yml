@@ -146,6 +146,31 @@ jobs:
           name: codecov-umbrella
           fail_ci_if_error: false
 
+  # Run smoke tests
+  smoke-tests:
+    needs: lint-and-test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install -r requirements-dev.txt
+
+      - name: Run smoke tests
+        run: pytest tests/smoke -v -m smoke
+
+      - name: Build Telegram adapter image
+        run: docker build -t telegram-adapter ./adapters/telegram
+
   # Health check smoke tests
   smoke-health:
     runs-on: ubuntu-latest
@@ -179,6 +204,7 @@ jobs:
       matrix:
         service:
           - slack_mcp_gateway
+          - telegram-adapter
 
     steps:
       - uses: actions/checkout@v4
@@ -204,11 +230,20 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Determine build context
+        id: context
+        run: |
+          if [ "${{ matrix.service }}" == "telegram-adapter" ]; then
+            echo "context=./adapters/telegram" >> $GITHUB_OUTPUT
+          else
+            echo "context=./services/${{ matrix.service }}" >> $GITHUB_OUTPUT
+          fi
+
       - name: Build and push ${{ matrix.service }}
         uses: docker/build-push-action@v4
         with:
-          context: ./services/${{ matrix.service }}
-          push: true
+          context: ${{ steps.context.outputs.context }}
+          push: ${{ secrets.GHCR_PAT != '' }}
           tags: |
             ghcr.io/${{ github.repository_owner }}/alfred-platform/${{ matrix.service }}:${{ github.sha }}
             ghcr.io/${{ github.repository_owner }}/alfred-platform/${{ matrix.service }}:latest

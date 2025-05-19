@@ -706,6 +706,23 @@ services:
       com.docker.compose.service: "slack-mcp-gateway"
       prometheus.metrics.port: "9091"
 
+  # Telegram Adapter
+  telegram-adapter:
+    build:
+      context: ./adapters/telegram
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/telegram/webhook"]
+      <<: *basic-health-check
+    restart: unless-stopped
+    networks:
+      - alfred-network
+    labels:
+      <<: *agent-service-labels
+      com.docker.compose.service: "telegram-adapter"
+
   # RAG Service
   agent-rag:
     build:
