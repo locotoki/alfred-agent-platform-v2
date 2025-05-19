@@ -634,7 +634,7 @@ services:
   # Core Agent Service
   agent-core:
     build:
-      context: ./alfred/core
+      context: ./alfred/core/alfred_core
       dockerfile: Dockerfile
     image: agent-core:latest
     container_name: agent-core
