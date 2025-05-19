@@ -47,7 +47,7 @@ def mock_bolt_app():
 def slack_app_module():
     try:
         # Try to import the actual module
-        from services.slack_app import app
+        from alfred.slack.app import app
 
         return app
     except ImportError:

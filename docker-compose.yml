@@ -678,7 +678,7 @@ services:
   # Slack MCP Gateway Service
   slack_mcp_gateway:
     build:
-      context: ./services/slack_mcp_gateway
+      context: ./alfred/slack/mcp_gateway
       dockerfile: Dockerfile
     image: slack-mcp-gateway:latest
     container_name: slack_mcp_gateway

@@ -11,7 +11,7 @@ from unittest.mock import MagicMock, call, patch
 import pytest
 
 # Import the application module
-from services.slack_app.app import COMMAND_PREFIX, app, handle_alfred_command, handle_help_command
+from alfred.slack.app.app import COMMAND_PREFIX, app, handle_alfred_command, handle_help_command
 
 
 def test_command_registration():
