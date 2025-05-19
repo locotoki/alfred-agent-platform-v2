@@ -1,19 +1,10 @@
 """Unit tests for Financial Tax Agent"""
 
-from datetime import datetime
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
 from agents.financial_tax import FinancialTaxAgent
-from agents.financial_tax.models import (
-    ComplianceCheckRequest,
-    EntityType,
-    FinancialAnalysisRequest,
-    TaxCalculationRequest,
-    TaxJurisdiction,
-    TaxRateRequest,
-)
 from libs.a2a_adapter import A2AEnvelope
 
 
@@ -162,7 +153,10 @@ class TestFinancialTaxAgent:
             "key_metrics": {"gross_margin": 0.25, "debt_to_equity": 0.4},
             "trends": {"revenue_growth": [0.05, 0.07, 0.06, 0.08]},
             "insights": ["Strong revenue growth", "Healthy profit margins"],
-            "recommendations": ["Consider expanding operations", "Maintain current debt levels"],
+            "recommendations": [
+                "Consider expanding operations",
+                "Maintain current debt levels",
+            ],
         }
 
         with patch.object(financial_tax_agent.analysis_chain, "analyze", return_value=mock_result):
@@ -194,9 +188,16 @@ class TestFinancialTaxAgent:
         mock_result.dict.return_value = {
             "compliance_status": "partial_compliance",
             "issues_found": [
-                {"area": "sales_tax", "severity": "medium", "description": "Missing tax collection"}
+                {
+                    "area": "sales_tax",
+                    "severity": "medium",
+                    "description": "Missing tax collection",
+                }
             ],
-            "recommendations": ["Register for sales tax collection", "File amended returns"],
+            "recommendations": [
+                "Register for sales tax collection",
+                "File amended returns",
+            ],
             "risk_level": "medium",
             "detailed_findings": {
                 "sales_tax": "Non-compliant",
@@ -205,7 +206,9 @@ class TestFinancialTaxAgent:
         }
 
         with patch.object(
-            financial_tax_agent.compliance_chain, "check_compliance", return_value=mock_result
+            financial_tax_agent.compliance_chain,
+            "check_compliance",
+            return_value=mock_result,
         ):
             result = await financial_tax_agent.process_task(envelope)
 
@@ -244,7 +247,9 @@ class TestFinancialTaxAgent:
         }
 
         with patch.object(
-            financial_tax_agent.rate_lookup_chain, "lookup_rates", return_value=mock_result
+            financial_tax_agent.rate_lookup_chain,
+            "lookup_rates",
+            return_value=mock_result,
         ):
             result = await financial_tax_agent.process_task(envelope)
 
@@ -278,7 +283,8 @@ class TestFinancialTaxAgent:
     async def test_error_handling(self, financial_tax_agent):
         """Test error handling in process_task."""
         envelope = A2AEnvelope(
-            intent="TAX_CALCULATION", content={"invalid": "data"}  # Missing required fields
+            intent="TAX_CALCULATION",
+            content={"invalid": "data"},  # Missing required fields
         )
 
         with pytest.raises(Exception):

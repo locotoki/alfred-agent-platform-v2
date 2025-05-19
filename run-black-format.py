@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 
-import os
 import subprocess
 import sys
 
@@ -11,14 +10,14 @@ def main():
     cmd_str = (
         f"{sys.executable} -m pip install --quiet --user black==24.1.1 && "
         f"{sys.executable} -m black "
-        f'--exclude "(youtube-test-env/|migrations/|node_modules/|\\.git/|\\.mypy_cache/|\\.env/|\\.venv/|env/|venv/|\\.ipynb/)" '
+        f'--exclude "(youtube-test-env/|migrations/|node_modules/|\\.git/|\\.mypy_cache/|\\.env/|\\.venv/|env/|venv/|\\.ipynb/)" '  # noqa: E501
         f"."
     )
     print(f"Running command: {cmd_str}")
 
     try:
         # Run the command in the shell
-        result = subprocess.run(cmd_str, shell=True, check=True, text=True)
+        subprocess.run(cmd_str, shell=True, check=True, text=True)
         print("Black formatting successful!")
         return 0
     except subprocess.CalledProcessError as e:

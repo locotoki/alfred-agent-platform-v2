@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """Script to fix Prometheus metrics content type."""
 
-import os
 import re
 
 # Path to health.py

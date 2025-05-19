@@ -37,7 +37,8 @@ try:
 
     # Attempt to call the auth.test API
     response = requests.post(
-        "https://slack.com/api/auth.test", headers={"Authorization": f"Bearer {bot_token}"}
+        "https://slack.com/api/auth.test",
+        headers={"Authorization": f"Bearer {bot_token}"},
     )
 
     # Print the response

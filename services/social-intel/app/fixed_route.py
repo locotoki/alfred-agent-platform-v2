@@ -15,7 +15,10 @@ async def run_niche_scout(
         # Try to extract parameters from JSON body if present
         try:
             body = await request.json()
-            logger.info("Received JSON payload", content_type=request.headers.get("content-type"))
+            logger.info(
+                "Received JSON payload",
+                content_type=request.headers.get("content-type"),
+            )
 
             # If this is an A2A envelope, extract the relevant fields
             if body.get("intent") == "YOUTUBE_NICHE_SCOUT":
@@ -51,7 +54,12 @@ async def run_niche_scout(
             logger.warning("Failed to parse JSON body", error=str(e))
 
         # Log the parameters being used
-        logger.info("niche_scout_request", query=query, category=category, subcategory=subcategory)
+        logger.info(
+            "niche_scout_request",
+            query=query,
+            category=category,
+            subcategory=subcategory,
+        )
 
         # Run the workflow
         niche_scout = NicheScout()

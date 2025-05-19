@@ -1,7 +1,6 @@
 """Configuration settings for Alfred ML components."""
 
 import os
-from typing import Optional
 
 
 class Settings:

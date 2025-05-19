@@ -8,7 +8,6 @@ ensuring that the LangGraph-based remediation processes work correctly.
 import time
 from unittest.mock import MagicMock, patch
 
-import freezegun
 import pytest
 
 from alfred.remediation import settings

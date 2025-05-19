@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 import argparse
-import json
 import os
 import socket
 import sys
@@ -151,7 +150,10 @@ def health():
     if is_healthy:
         return jsonify({"status": "ok", "version": "1.0.0", "service": SERVICE_NAME})
     else:
-        return jsonify({"status": "error", "version": "1.0.0", "service": SERVICE_NAME}), 500
+        return (
+            jsonify({"status": "error", "version": "1.0.0", "service": SERVICE_NAME}),
+            500,
+        )
 
 
 @app.route("/healthz")

@@ -5,25 +5,20 @@ Automates training, validation, and model registry updates.
 """
 
 import json
-import os
 import time
 from datetime import datetime
-from typing import Dict, Optional, Tuple
+from typing import Dict, Tuple
 
 import mlflow
 import mlflow.sklearn
-import numpy as np
 import ray
 from mlflow.tracking import MlflowClient
-from ray import train
-from sentence_transformers import SentenceTransformer
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import f1_score, precision_score, recall_score, roc_auc_score
 from sklearn.model_selection import train_test_split
 
 from alfred.core.protocols import Service
 from alfred.ml.alert_dataset import AlertDataset
-from alfred.ml.model_registry import ModelRegistry
 
 
 class RetrainPipeline(Service):
@@ -121,7 +116,7 @@ class RetrainPipeline(Service):
         # Calculate noise reduction
         noise_threshold = 0.7
         predicted_noise = (y_proba > noise_threshold).sum()
-        actual_noise = y_test.sum()
+        y_test.sum()
         reduction_rate = predicted_noise / len(y_test) if len(y_test) > 0 else 0
 
         metrics["noise_reduction_rate"] = reduction_rate
@@ -130,7 +125,10 @@ class RetrainPipeline(Service):
         return model, metrics
 
     def log_model_to_mlflow(
-        self, model: RandomForestClassifier, metrics: Dict[str, float], dataset_info: Dict
+        self,
+        model: RandomForestClassifier,
+        metrics: Dict[str, float],
+        dataset_info: Dict,
     ) -> str:
         """Log model and metrics to MLflow.
 
@@ -238,7 +236,7 @@ class RetrainPipeline(Service):
         """
         # Load staging model
         model_uri = f"models:/{self.model_name}/{version}"
-        model = mlflow.sklearn.load_model(model_uri)
+        mlflow.sklearn.load_model(model_uri)
 
         # Run validation tests
         # This would use a separate validation dataset in production

@@ -2,7 +2,6 @@
 Unit tests for the features table and opportunity scoring.
 """
 
-import asyncio
 import os
 from datetime import datetime
 
@@ -11,7 +10,8 @@ import pytest
 
 # Set test database URL
 os.environ["DATABASE_URL"] = os.environ.get(
-    "DATABASE_URL", "postgresql://postgres:your-super-secret-password@localhost:5432/postgres"
+    "DATABASE_URL",
+    "postgresql://postgres:your-super-secret-password@localhost:5432/postgres",
 )
 
 from app.database import niche_repository  # noqa: E402
@@ -83,7 +83,10 @@ async def test_insert_feature(test_db):
     # Insert a new test feature
     test_phrase = f"TEST_NewFeature_{int(datetime.now().timestamp())}"
     feature = await niche_repository.insert_feature(
-        phrase=test_phrase, demand_score=0.9000, monetise_score=0.8500, supply_score=0.4000
+        phrase=test_phrase,
+        demand_score=0.9000,
+        monetise_score=0.8500,
+        supply_score=0.4000,
     )
 
     # Verify the returned feature
@@ -112,7 +115,10 @@ async def test_update_feature_scores(test_db):
 
     # Update scores
     result = await niche_repository.update_feature_scores(
-        niche_id=niche_id, demand_score=0.9500, monetise_score=0.8000, supply_score=0.6000
+        niche_id=niche_id,
+        demand_score=0.9500,
+        monetise_score=0.8000,
+        supply_score=0.6000,
     )
 
     # Verify update was successful

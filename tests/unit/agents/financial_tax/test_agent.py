@@ -1,21 +1,10 @@
 """Tests for Financial Tax Agent"""
 
-from datetime import datetime
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
 from agents.financial_tax.agent import FinancialTaxAgent
-from agents.financial_tax.models import (
-    ComplianceCheckRequest,
-    ComplianceCheckResponse,
-    FinancialAnalysisRequest,
-    FinancialAnalysisResponse,
-    TaxCalculationRequest,
-    TaxCalculationResponse,
-    TaxRateRequest,
-    TaxRateResponse,
-)
 from libs.a2a_adapter import A2AEnvelope, PolicyMiddleware, PubSubTransport, SupabaseTransport
 
 
@@ -156,7 +145,10 @@ class TestFinancialTaxAgent:
                     "state": "CA",
                 },
                 "time_period": "2024",
-                "goals": ["minimize_tax_liability", "optimize_retirement_contributions"],
+                "goals": [
+                    "minimize_tax_liability",
+                    "optimize_retirement_contributions",
+                ],
             },
         )
 
@@ -175,8 +167,11 @@ class TestFinancialTaxAgent:
                             "Consider QBI deduction",
                             "Maximize retirement contributions",
                         ],
-                        "insights": ["Profitability is strong", "Tax burden could be reduced"],
-                        "summary": "Healthy financial position with opportunities for tax optimization",
+                        "insights": [
+                            "Profitability is strong",
+                            "Tax burden could be reduced",
+                        ],
+                        "summary": "Healthy financial position with opportunities for tax optimization",  # noqa: E501
                     },
                 }
             }
@@ -251,11 +246,22 @@ class TestFinancialTaxAgent:
                         "tax_year": 2024,
                         "entity_type": "individual",
                         "tax_brackets": [
-                            {"rate": 1.0, "threshold": 10412, "description": "First bracket"},
-                            {"rate": 2.0, "threshold": 24684, "description": "Second bracket"},
+                            {
+                                "rate": 1.0,
+                                "threshold": 10412,
+                                "description": "First bracket",
+                            },
+                            {
+                                "rate": 2.0,
+                                "threshold": 24684,
+                                "description": "Second bracket",
+                            },
                         ],
                         "special_rates": {
-                            "capital_gains": {"long_term": 20.0, "short_term": "ordinary_income"}
+                            "capital_gains": {
+                                "long_term": 20.0,
+                                "short_term": "ordinary_income",
+                            }
                         },
                     },
                 }

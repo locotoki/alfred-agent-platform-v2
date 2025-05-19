@@ -26,7 +26,6 @@ from ..models.youtube_models import (
     YouTubeChannel,
     YouTubeGap,
     YouTubeNiche,
-    YouTubeVideo,
 )
 from ..models.youtube_vectors import YouTubeVectorStorage
 
@@ -378,7 +377,10 @@ async def perform_gap_analysis(
 
     # Pivot to get keyword x channel coverage
     pivot_df = gap_df.pivot_table(
-        index="keyword", columns="channel_name", values="competitor_coverage", fill_value=0.0
+        index="keyword",
+        columns="channel_name",
+        values="competitor_coverage",
+        fill_value=0.0,
     ).reset_index()
 
     # Add seed coverage column
@@ -477,10 +479,19 @@ def generate_blueprint(
     # COPPA checklist
     coppa_checklist = [
         {"item": "Content appropriate for all ages", "status": "Required"},
-        {"item": "No collection of personal information from children", "status": "Required"},
-        {"item": "Comments disabled if targeting children under 13", "status": "Required"},
+        {
+            "item": "No collection of personal information from children",
+            "status": "Required",
+        },
+        {
+            "item": "Comments disabled if targeting children under 13",
+            "status": "Required",
+        },
         {"item": "Correct audience setting in YouTube Studio", "status": "Required"},
-        {"item": "No call to actions that lead to external websites", "status": "Recommended"},
+        {
+            "item": "No call to actions that lead to external websites",
+            "status": "Recommended",
+        },
     ]
 
     # Create positioning statement
@@ -560,7 +571,8 @@ def package_outputs() -> str:
 @flow(name="YouTube Niche Scout")
 @sync_compatible
 async def youtube_niche_scout_flow(
-    queries: Optional[List[str]] = None, vector_storage: Optional[YouTubeVectorStorage] = None
+    queries: Optional[List[str]] = None,
+    vector_storage: Optional[YouTubeVectorStorage] = None,
 ) -> NicheScoutResult:
     """Run the Niche-Scout workflow."""
     log = get_run_logger()

@@ -10,7 +10,7 @@ import json
 import os
 import time
 from datetime import datetime
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, Optional, Tuple
 
 import structlog
 
@@ -126,7 +126,11 @@ class SeedToBlueprint:
                         "Minecraft builds",
                         "Roblox secrets",
                     ],
-                    "strengths": ["Consistent daily uploads", "Strong thumbnails", "Clear audio"],
+                    "strengths": [
+                        "Consistent daily uploads",
+                        "Strong thumbnails",
+                        "Clear audio",
+                    ],
                     "weaknesses": [
                         "Long intros",
                         "Repetitive content",
@@ -161,8 +165,16 @@ class SeedToBlueprint:
                     "avg_views": 420000,
                     "engagement_rate": 9.3,
                     "posting_frequency": "daily",
-                    "top_video_topics": ["Game glitches", "Speedruns", "Character builds"],
-                    "strengths": ["High-energy delivery", "Focused niche", "Consistent branding"],
+                    "top_video_topics": [
+                        "Game glitches",
+                        "Speedruns",
+                        "Character builds",
+                    ],
+                    "strengths": [
+                        "High-energy delivery",
+                        "Focused niche",
+                        "Consistent branding",
+                    ],
                     "weaknesses": ["Too many ads", "Clickbait titles", "Poor lighting"],
                 },
             ]
@@ -174,7 +186,11 @@ class SeedToBlueprint:
                     "avg_views": 720000,
                     "engagement_rate": 8.7,
                     "posting_frequency": "daily",
-                    "top_video_topics": ["5-minute meals", "Air fryer recipes", "One-pot dinners"],
+                    "top_video_topics": [
+                        "5-minute meals",
+                        "Air fryer recipes",
+                        "One-pot dinners",
+                    ],
                     "strengths": [
                         "Beautiful food presentation",
                         "Clear instructions",
@@ -192,13 +208,21 @@ class SeedToBlueprint:
                     "avg_views": 390000,
                     "engagement_rate": 7.5,
                     "posting_frequency": "2x weekly",
-                    "top_video_topics": ["College meal prep", "Budget meals", "Food hacks"],
+                    "top_video_topics": [
+                        "College meal prep",
+                        "Budget meals",
+                        "Food hacks",
+                    ],
                     "strengths": [
                         "Budget-friendly focus",
                         "Personal story elements",
                         "Good lighting",
                     ],
-                    "weaknesses": ["Inconsistent quality", "Too much talking", "Complex recipes"],
+                    "weaknesses": [
+                        "Inconsistent quality",
+                        "Too much talking",
+                        "Complex recipes",
+                    ],
                 },
                 {
                     "channel": "MealIn60",
@@ -206,7 +230,11 @@ class SeedToBlueprint:
                     "avg_views": 280000,
                     "engagement_rate": 9.1,
                     "posting_frequency": "3x weekly",
-                    "top_video_topics": ["Instant pot recipes", "Keto meals", "Dessert hacks"],
+                    "top_video_topics": [
+                        "Instant pot recipes",
+                        "Keto meals",
+                        "Dessert hacks",
+                    ],
                     "strengths": [
                         "Dietary restriction options",
                         "Clear measurements",
@@ -227,7 +255,11 @@ class SeedToBlueprint:
                     "avg_views": 520000,
                     "engagement_rate": 7.8,
                     "posting_frequency": "daily",
-                    "top_video_topics": ["Stock tips", "Passive income", "Investing basics"],
+                    "top_video_topics": [
+                        "Stock tips",
+                        "Passive income",
+                        "Investing basics",
+                    ],
                     "strengths": [
                         "Clear explanations",
                         "Professional graphics",
@@ -250,8 +282,16 @@ class SeedToBlueprint:
                         "Credit card hacks",
                         "Saving strategies",
                     ],
-                    "strengths": ["Relatable stories", "Clear visuals", "Diverse topics"],
-                    "weaknesses": ["Overly promotional", "Inconsistent posting", "Limited sources"],
+                    "strengths": [
+                        "Relatable stories",
+                        "Clear visuals",
+                        "Diverse topics",
+                    ],
+                    "weaknesses": [
+                        "Overly promotional",
+                        "Inconsistent posting",
+                        "Limited sources",
+                    ],
                 },
                 {
                     "channel": "WealthShorts",
@@ -259,9 +299,17 @@ class SeedToBlueprint:
                     "avg_views": 180000,
                     "engagement_rate": 6.9,
                     "posting_frequency": "2x weekly",
-                    "top_video_topics": ["Real estate investing", "Side hustles", "Tax strategies"],
+                    "top_video_topics": [
+                        "Real estate investing",
+                        "Side hustles",
+                        "Tax strategies",
+                    ],
                     "strengths": ["Expert interviews", "Data-driven", "Good lighting"],
-                    "weaknesses": ["Too technical", "Long intros", "Poor sound quality"],
+                    "weaknesses": [
+                        "Too technical",
+                        "Long intros",
+                        "Poor sound quality",
+                    ],
                 },
             ]
 
@@ -304,19 +352,31 @@ class SeedToBlueprint:
                     "name": f"{analyzed_niche} Basics",
                     "description": "Foundational content for beginners",
                     "frequency": "2x weekly",
-                    "example_topics": ["Getting started", "Essential knowledge", "Common mistakes"],
+                    "example_topics": [
+                        "Getting started",
+                        "Essential knowledge",
+                        "Common mistakes",
+                    ],
                 },
                 {
                     "name": f"{analyzed_niche} Advanced",
                     "description": "Next-level content for enthusiasts",
                     "frequency": "1x weekly",
-                    "example_topics": ["Expert techniques", "Deep dives", "Case studies"],
+                    "example_topics": [
+                        "Expert techniques",
+                        "Deep dives",
+                        "Case studies",
+                    ],
                 },
                 {
                     "name": f"{analyzed_niche} News",
                     "description": "Latest updates and trends",
                     "frequency": "1x weekly",
-                    "example_topics": ["Breaking news", "Trend analysis", "Industry updates"],
+                    "example_topics": [
+                        "Breaking news",
+                        "Trend analysis",
+                        "Industry updates",
+                    ],
                 },
             ],
             "posting_schedule": {

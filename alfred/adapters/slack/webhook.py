@@ -177,7 +177,10 @@ async def handle_slack_events(request: Request) -> Response:
                     return JSONResponse({"response_type": "in_channel", "text": "pong"})
                 else:
                     return JSONResponse(
-                        {"response_type": "ephemeral", "text": f"Received command: {text}"}
+                        {
+                            "response_type": "ephemeral",
+                            "text": f"Received command: {text}",
+                        }
                     )
 
             # Unknown command

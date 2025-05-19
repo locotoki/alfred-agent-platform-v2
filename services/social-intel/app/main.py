@@ -4,7 +4,7 @@ import asyncio
 import os
 from contextlib import asynccontextmanager
 from datetime import datetime
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict
 
 import redis
 import structlog
@@ -18,9 +18,7 @@ from app.workflow_endpoints import (
     schedule_workflow,
 )
 from fastapi import Body, FastAPI, HTTPException, Query, Request
-from fastapi.openapi.utils import get_openapi
 from fastapi.responses import HTMLResponse, JSONResponse
-from fastapi.staticfiles import StaticFiles
 
 from agents.social_intel.agent import SocialIntelAgent
 from libs.a2a_adapter import PolicyMiddleware, PubSubTransport, SupabaseTransport
@@ -243,7 +241,8 @@ async def run_seed_to_blueprint(
 
         if not video_url and not niche:
             raise HTTPException(
-                status_code=400, detail="Either video_url or niche parameter must be provided"
+                status_code=400,
+                detail="Either video_url or niche parameter must be provided",
             )
 
         logger.info(
@@ -294,7 +293,8 @@ async def run_seed_to_blueprint_alt2(
 async def get_workflow_result_endpoint(
     result_id: str,
     type: str = Query(
-        ..., description="Type of workflow result to retrieve (niche-scout or seed-to-blueprint)"
+        ...,
+        description="Type of workflow result to retrieve (niche-scout or seed-to-blueprint)",
     ),
 ):
     """Retrieve previously generated workflow results by ID."""
@@ -304,7 +304,8 @@ async def get_workflow_result_endpoint(
 # Alternative routes for workflow results
 @app.get("/youtube/workflow-result/{result_id}")
 async def get_workflow_result_alt1(
-    result_id: str, type: str = Query(..., description="Type of workflow result to retrieve")
+    result_id: str,
+    type: str = Query(..., description="Type of workflow result to retrieve"),
 ):
     """Alternative path for workflow results."""
     return await get_workflow_result(result_id, type)
@@ -312,7 +313,8 @@ async def get_workflow_result_alt1(
 
 @app.get("/api/youtube/workflow-result/{result_id}")
 async def get_workflow_result_alt2(
-    result_id: str, type: str = Query(..., description="Type of workflow result to retrieve")
+    result_id: str,
+    type: str = Query(..., description="Type of workflow result to retrieve"),
 ):
     """Alternative path for workflow results."""
     return await get_workflow_result(result_id, type)

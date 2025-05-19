@@ -1,9 +1,8 @@
 """Report generation utilities for Social Intelligence Agent."""
 
-import json
 import os
 from datetime import datetime
-from typing import Any, Dict, Optional
+from typing import Any, Dict
 
 from jinja2 import Environment, FileSystemLoader
 

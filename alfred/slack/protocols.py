@@ -29,7 +29,11 @@ class SlackClient(Protocol):
 
     @abstractmethod
     async def update_message(
-        self, channel: str, timestamp: str, text: str, blocks: Optional[List[Dict[str, Any]]] = None
+        self,
+        channel: str,
+        timestamp: str,
+        text: str,
+        blocks: Optional[List[Dict[str, Any]]] = None,
     ) -> Dict[str, Any]:
         """Update an existing message.
 
@@ -62,7 +66,10 @@ class CommandHandler(Protocol):
 
     @abstractmethod
     def handle_command(
-        self, command: Dict[str, Any], ack: Callable[[], None], say: Callable[[str], None]
+        self,
+        command: Dict[str, Any],
+        ack: Callable[[], None],
+        say: Callable[[str], None],
     ) -> None:
         """Handle a slash command.
 

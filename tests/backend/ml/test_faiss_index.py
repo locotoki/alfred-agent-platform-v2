@@ -2,7 +2,7 @@
 
 import os
 import tempfile
-from unittest.mock import Mock, patch
+from unittest.mock import Mock
 
 import numpy as np
 import pytest
@@ -268,8 +268,18 @@ class TestAlertSearchEngine:
     def test_index_alerts(self, engine, mock_embedder):
         """Test indexing alerts."""
         alerts = [
-            {"id": "1", "name": "DB Error", "description": "Connection lost", "severity": "high"},
-            {"id": "2", "name": "API Slow", "description": "High latency", "severity": "medium"},
+            {
+                "id": "1",
+                "name": "DB Error",
+                "description": "Connection lost",
+                "severity": "high",
+            },
+            {
+                "id": "2",
+                "name": "API Slow",
+                "description": "High latency",
+                "severity": "medium",
+            },
             {
                 "id": "3",
                 "name": "Disk Full",
@@ -294,8 +304,18 @@ class TestAlertSearchEngine:
         """Test similarity search."""
         # First index some alerts
         alerts = [
-            {"id": "1", "name": "DB Error", "description": "Connection lost", "severity": "high"},
-            {"id": "2", "name": "API Slow", "description": "High latency", "severity": "medium"},
+            {
+                "id": "1",
+                "name": "DB Error",
+                "description": "Connection lost",
+                "severity": "high",
+            },
+            {
+                "id": "2",
+                "name": "API Slow",
+                "description": "High latency",
+                "severity": "medium",
+            },
         ]
 
         # Mock embeddings for indexing

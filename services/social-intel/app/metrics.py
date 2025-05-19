@@ -53,20 +53,28 @@ OFFLINE_MODE_GAUGE = Gauge(
 
 # YouTube API metrics (NEW)
 YOUTUBE_API_CALLS = Counter(
-    "si_youtube_api_calls_total", "Total number of YouTube API calls", ["endpoint", "status"]
+    "si_youtube_api_calls_total",
+    "Total number of YouTube API calls",
+    ["endpoint", "status"],
 )
 
 YOUTUBE_API_LATENCY = Summary(
-    "si_youtube_api_latency_seconds", "YouTube API call latency in seconds", ["endpoint"]
+    "si_youtube_api_latency_seconds",
+    "YouTube API call latency in seconds",
+    ["endpoint"],
 )
 
 # Circuit breaker metrics (NEW)
 CIRCUIT_STATE = Gauge(
-    "si_circuit_state", "Circuit breaker state (0=closed, 1=half-open, 2=open)", ["circuit"]
+    "si_circuit_state",
+    "Circuit breaker state (0=closed, 1=half-open, 2=open)",
+    ["circuit"],
 )
 
 CIRCUIT_REJECTED = Counter(
-    "si_circuit_rejected_total", "Number of requests rejected by circuit breakers", ["circuit"]
+    "si_circuit_rejected_total",
+    "Number of requests rejected by circuit breakers",
+    ["circuit"],
 )
 
 

@@ -3,12 +3,7 @@ Test the Slack app command handler functionality.
 This test simulates a slash command payload and verifies the handler works correctly.
 """
 
-import json
-import os
-import sys
-from unittest.mock import MagicMock, call, patch
-
-import pytest
+from unittest.mock import MagicMock
 
 # Import the application module
 from services.slack_app.app import COMMAND_PREFIX, app, handle_alfred_command, handle_help_command
@@ -20,7 +15,9 @@ def test_command_registration():
     listeners = app.listeners
 
     # Find slash command listeners
-    command_listeners = [l for l in listeners if l.matcher.match_function_name == "match_event"]
+    command_listeners = [
+        listener for listener in listeners if listener.matcher.match_function_name == "match_event"
+    ]
 
     # Check if we have at least one command listener
     assert len(command_listeners) > 0, "No command listeners registered"
@@ -33,9 +30,9 @@ def test_command_registration():
     # Note: Slack Bolt expects command without the slash prefix
     command_name = COMMAND_PREFIX.lstrip("/")
     alfred_listeners = [
-        l
-        for l in command_listeners
-        if hasattr(l.matcher, "command") and l.matcher.command == command_name
+        listener
+        for listener in command_listeners
+        if hasattr(listener.matcher, "command") and listener.matcher.command == command_name
     ]
 
     # This assertion will fail if the command is registered WITH the slash
@@ -135,7 +132,12 @@ def test_ack_timing():
         timestamps["say"] = time.time()
 
     # Create a command
-    command = {"command": "/alfred", "text": "help", "user_id": "U12345", "channel_id": "C12345"}
+    command = {
+        "command": "/alfred",
+        "text": "help",
+        "user_id": "U12345",
+        "channel_id": "C12345",
+    }
 
     # Call the handler and record the start time
     timestamps["start"] = time.time()

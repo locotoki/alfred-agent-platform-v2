@@ -1,6 +1,6 @@
 """Stub implementation of middleware for A2A Adapter."""
 
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any, Callable, Dict, List
 
 import redis
 import structlog

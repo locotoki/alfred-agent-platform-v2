@@ -1,7 +1,5 @@
 """Tests for alert dataset loader."""
 
-import pytest
-
 from backend.alfred.ml.alert_dataset import load_alert_dataset
 
 

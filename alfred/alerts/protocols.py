@@ -3,7 +3,7 @@ Protocol definitions for alert system.
 """
 
 from abc import abstractmethod
-from typing import Any, Dict, List, Optional, Protocol
+from typing import Any, Optional, Protocol
 
 
 class SnoozeService(Protocol):

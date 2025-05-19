@@ -5,7 +5,6 @@ Cleanup job for expired processed messages to maintain deduplication efficiency.
 
 import asyncio
 import os
-from datetime import datetime
 
 import asyncpg
 import structlog

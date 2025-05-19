@@ -14,7 +14,9 @@ from .models import (
 
 # Initialize the LLM
 llm = ChatOpenAI(
-    model="gpt-4-turbo-preview", temperature=0.1, openai_api_key="sk-mock-key-for-development-only"
+    model="gpt-4-turbo-preview",
+    temperature=0.1,
+    openai_api_key="sk-mock-key-for-development-only",
 )
 
 # Compliance Audit Chain
@@ -37,7 +39,12 @@ Identify any compliance issues, assess risk levels, and provide detailed recomme
 
 Provide a thorough compliance audit result:
 """,
-    input_variables=["organization_name", "audit_scope", "compliance_categories", "documents"],
+    input_variables=[
+        "organization_name",
+        "audit_scope",
+        "compliance_categories",
+        "documents",
+    ],
     partial_variables={"format_instructions": audit_parser.get_format_instructions()},
 )
 
@@ -62,7 +69,12 @@ identifiable information (PII), and assess the risk level of any findings.
 
 Provide a comprehensive document analysis:
 """,
-    input_variables=["document_type", "document_content", "compliance_frameworks", "check_for_pii"],
+    input_variables=[
+        "document_type",
+        "document_content",
+        "compliance_frameworks",
+        "check_for_pii",
+    ],
     partial_variables={"format_instructions": document_parser.get_format_instructions()},
 )
 

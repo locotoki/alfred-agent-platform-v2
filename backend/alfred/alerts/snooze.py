@@ -8,7 +8,7 @@ import json
 import uuid
 from dataclasses import dataclass
 from datetime import datetime, timedelta
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Union
 
 import redis
 
@@ -116,7 +116,8 @@ class AlertSnoozeService(SnoozeService):
         # Emit metrics
         if self.metrics:
             self.metrics.increment(
-                "alert_snoozes_created", {"duration_bucket": self._get_duration_bucket(duration)}
+                "alert_snoozes_created",
+                {"duration_bucket": self._get_duration_bucket(duration)},
             )
 
         return snooze
@@ -274,7 +275,10 @@ class AlertSnoozeService(SnoozeService):
 
         # Re-snooze with new duration
         return await self.snooze_alert(
-            alert_id, new_duration, reason=f"Extended by {additional_duration}s", user_id=user_id
+            alert_id,
+            new_duration,
+            reason=f"Extended by {additional_duration}s",
+            user_id=user_id,
         )
 
     async def get_snooze_history(self, alert_id: str, limit: int = 10) -> List[Dict[str, Any]]:

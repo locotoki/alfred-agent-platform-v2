@@ -3,7 +3,6 @@
 Simple script to request a joke from Ollama.
 """
 
-import json
 import sys
 
 import requests

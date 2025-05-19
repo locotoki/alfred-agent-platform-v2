@@ -2,7 +2,7 @@
 
 import pytest
 
-from alfred.agents.intent_router import Intent, IntentRouter, intents_total
+from alfred.agents.intent_router import Intent, IntentRouter
 
 
 class TestIntent:
@@ -10,7 +10,10 @@ class TestIntent:
 
     def test_intent_creation(self):
         intent = Intent(
-            type="greeting", confidence=0.95, entities={"name": "John"}, raw_message="Hello John"
+            type="greeting",
+            confidence=0.95,
+            entities={"name": "John"},
+            raw_message="Hello John",
         )
 
         assert intent.type == "greeting"
@@ -58,7 +61,13 @@ class TestIntentRouter:
 
     def test_route_status_intent(self, router):
         """Test routing of status check messages."""
-        test_messages = ["Status", "Health check", "Ping", "Are you alive?", "Is it working?"]
+        test_messages = [
+            "Status",
+            "Health check",
+            "Ping",
+            "Are you alive?",
+            "Is it working?",
+        ]
 
         for message in test_messages:
             intent = router.route(message)

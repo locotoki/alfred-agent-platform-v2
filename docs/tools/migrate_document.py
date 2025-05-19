@@ -39,15 +39,13 @@ import argparse
 import difflib
 import getpass
 import hashlib
-import json
 import logging
 import os
 import re
-import shutil
 import sys
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Set, Tuple, Union
+from typing import Any, Dict, List, Optional
 
 # Configure logging
 logging.basicConfig(
@@ -598,7 +596,11 @@ class DocumentMigrator:
                     file_hash = hashlib.sha256(content.encode("utf-8")).hexdigest()
                     if file_hash == source_hash:
                         potential_duplicates.append(
-                            {"path": str(file_path), "similarity": 1.0, "type": "exact_match"}
+                            {
+                                "path": str(file_path),
+                                "similarity": 1.0,
+                                "type": "exact_match",
+                            }
                         )
                         continue
 
@@ -776,7 +778,9 @@ def main():
     )
     parser.add_argument("--verbose", action="store_true", help="Show detailed output")
     parser.add_argument(
-        "--dry-run", action="store_true", help="Show what would happen without making changes"
+        "--dry-run",
+        action="store_true",
+        help="Show what would happen without making changes",
     )
 
     args = parser.parse_args()

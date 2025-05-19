@@ -1,5 +1,3 @@
-import asyncio
-import json
 import os
 import time
 from datetime import datetime
@@ -195,7 +193,7 @@ async def send_message_async(message: str) -> str:
             and st.session_state.use_direct_inference
         ):
             # Import the client lazily to avoid circular imports
-            import asyncio
+            pass
 
             from send_message import create_model_router_client
 
@@ -571,7 +569,9 @@ def sidebar_config():
 
     # Create radio buttons for model selection
     selected_provider = st.sidebar.radio(
-        "Provider", providers, index=providers.index("system") if "system" in providers else 0
+        "Provider",
+        providers,
+        index=providers.index("system") if "system" in providers else 0,
     )
 
     # Filter models by selected provider
@@ -713,7 +713,7 @@ def sidebar_config():
                             f"Model Registry health check failed: {registry_response.status_code}"
                         )
                         st.info("Using built-in model list instead of dynamic model discovery.")
-                except Exception as e:
+                except Exception:
                     st.info("Model Registry service is not running.")
                     st.success("✅ Using built-in model list with OpenAI and Ollama models.")
 
@@ -964,7 +964,11 @@ def main():
 
         # Add assistant response to history
         st.session_state.messages.append(
-            {"role": "assistant", "content": response, "time": datetime.now().isoformat()}
+            {
+                "role": "assistant",
+                "content": response,
+                "time": datetime.now().isoformat(),
+            }
         )
 
         # Trim history if it exceeds the maximum size

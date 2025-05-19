@@ -18,10 +18,10 @@ app_token = os.environ.get("SLACK_APP_TOKEN", "")
 signing_secret = os.environ.get("SLACK_SIGNING_SECRET", "")
 
 print(
-    f"SLACK_BOT_TOKEN: {'✓ Present' if bot_token else '✗ Missing'} {'(Valid format)' if bot_token.startswith('xoxb-') else '(Invalid format)'}"
+    f"SLACK_BOT_TOKEN: {'✓ Present' if bot_token else '✗ Missing'} {'(Valid format)' if bot_token.startswith('xoxb-') else '(Invalid format)'}"  # noqa: E501
 )
 print(
-    f"SLACK_APP_TOKEN: {'✓ Present' if app_token else '✗ Missing'} {'(Valid format)' if app_token.startswith('xapp-') else '(Invalid format)'}"
+    f"SLACK_APP_TOKEN: {'✓ Present' if app_token else '✗ Missing'} {'(Valid format)' if app_token.startswith('xapp-') else '(Invalid format)'}"  # noqa: E501
 )
 print(f"SLACK_SIGNING_SECRET: {'✓ Present' if signing_secret else '✗ Missing'}")
 

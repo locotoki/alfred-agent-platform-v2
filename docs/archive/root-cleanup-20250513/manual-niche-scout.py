@@ -15,17 +15,13 @@ from datetime import datetime, timedelta
 
 # Check if we have the required libraries
 try:
-    import aiohttp
     import googleapiclient.discovery
     import matplotlib.pyplot as plt
-    import numpy as np
 except ImportError:
     print("Installing required dependencies...")
     os.system("pip install aiohttp google-api-python-client matplotlib numpy")
-    import aiohttp
     import googleapiclient.discovery
     import matplotlib.pyplot as plt
-    import numpy as np
 
 # API Key from environment or direct input
 API_KEY = os.environ.get("YOUTUBE_API_KEY", "AIzaSyDG7o4pRFOjRQzGcsNrc-fmF-O77EbfZDM")
@@ -196,7 +192,6 @@ def build_youtube_client():
 
 def parse_duration(duration_str):
     """Parse ISO 8601 duration string to seconds."""
-    import datetime
     import re
 
     # Parse the duration string
@@ -328,7 +323,10 @@ async def get_channel_details(channel_ids, youtube=None):
     for batch in batches:
         channels_response = (
             youtube.channels()
-            .list(part="snippet,statistics,contentDetails,brandingSettings", id=",".join(batch))
+            .list(
+                part="snippet,statistics,contentDetails,brandingSettings",
+                id=",".join(batch),
+            )
             .execute()
         )
 
@@ -816,7 +814,9 @@ async def analyze_niche(category, subcategory):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Manual Niche Scout Workflow")
     parser.add_argument(
-        "--category", default="kids", help="Content category (e.g., kids, tech, finance, health)"
+        "--category",
+        default="kids",
+        help="Content category (e.g., kids, tech, finance, health)",
     )
     parser.add_argument(
         "--subcategory",
@@ -824,7 +824,8 @@ if __name__ == "__main__":
         help="Content subcategory (e.g., kids.nursery, tech.programming)",
     )
     parser.add_argument(
-        "--api-key", help="YouTube API Key (optional, will use env variable if not provided)"
+        "--api-key",
+        help="YouTube API Key (optional, will use env variable if not provided)",
     )
 
     args = parser.parse_args()

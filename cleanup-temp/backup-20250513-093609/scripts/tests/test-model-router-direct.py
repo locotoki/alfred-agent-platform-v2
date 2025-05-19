@@ -5,7 +5,6 @@ Test script for directly calling the Model Router with a specific numeric model 
 
 import json
 import sys
-import time
 
 import requests
 

@@ -3,7 +3,6 @@
 Create a direct replacement of the process_command function in streamlit_chat_ui.py
 """
 
-import os
 import re
 
 # The new process_command function

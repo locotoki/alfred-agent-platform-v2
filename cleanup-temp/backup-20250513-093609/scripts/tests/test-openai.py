@@ -3,7 +3,6 @@
 Simple script to test OpenAI API access using the key from .env.llm
 """
 
-import json
 import os
 import re
 

@@ -1,8 +1,6 @@
 """Stub transport implementation for A2A Adapter."""
 
-import asyncio
-import json
-from typing import Any, Awaitable, Callable, Dict, List, Optional
+from typing import Any, Callable, Dict, List, Optional
 
 import structlog
 
@@ -18,7 +16,10 @@ class PubSubTransport:
         logger.info("Initialized stub PubSubTransport", project_id=project_id)
 
     async def publish(
-        self, topic: str, message: Dict[str, Any], attributes: Optional[Dict[str, str]] = None
+        self,
+        topic: str,
+        message: Dict[str, Any],
+        attributes: Optional[Dict[str, str]] = None,
     ) -> str:
         """Stub method to publish a message to a topic."""
         logger.info("STUB: Publishing message to topic", topic=topic)

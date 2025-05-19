@@ -9,7 +9,7 @@ from unittest.mock import patch
 import pytest
 from fastapi.testclient import TestClient
 
-from alfred.adapters.slack.webhook import SlackVerifier, app, slack_events_total
+from alfred.adapters.slack.webhook import SlackVerifier, app
 
 
 class TestSlackVerifier:
@@ -99,7 +99,10 @@ class TestSlackWebhook:
         """Test URL verification challenge response."""
         mock_verifier.verify_signature.return_value = True
 
-        challenge_data = {"type": "url_verification", "challenge": "test-challenge-string"}
+        challenge_data = {
+            "type": "url_verification",
+            "challenge": "test-challenge-string",
+        }
 
         response = client.post(
             "/slack/events",
@@ -180,7 +183,9 @@ class TestSlackWebhook:
             mock_verifier.verify_signature.return_value = True
 
             response = client.post(
-                "/slack/events", json={"test": "data"}, headers={"Content-Type": "application/json"}
+                "/slack/events",
+                json={"test": "data"},
+                headers={"Content-Type": "application/json"},
             )
 
             assert response.status_code == 401
@@ -232,7 +237,9 @@ class TestSlackWebhook:
         """Test behavior when verifier is not configured."""
         # Should still accept requests when verifier is None
         response = client.post(
-            "/slack/events", json={"type": "test"}, headers={"Content-Type": "application/json"}
+            "/slack/events",
+            json={"type": "test"},
+            headers={"Content-Type": "application/json"},
         )
 
         assert response.status_code == 200

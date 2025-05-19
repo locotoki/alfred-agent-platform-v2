@@ -6,7 +6,7 @@ import glob
 import json
 import os
 from datetime import datetime, timedelta
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List
 
 import structlog
 
@@ -165,7 +165,10 @@ async def get_workflow_result(result_id: str, type: str) -> Dict[str, Any]:
         return data
     except Exception as e:
         logger.error(
-            "error_retrieving_workflow_result", result_id=result_id, type=type, error=str(e)
+            "error_retrieving_workflow_result",
+            result_id=result_id,
+            type=type,
+            error=str(e),
         )
         return {"error": str(e)}
 

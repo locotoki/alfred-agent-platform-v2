@@ -11,7 +11,9 @@ from alfred.agents.intent_router import router
 
 # Prometheus metrics
 orchestrator_requests_total = Counter(
-    "alfred_orchestrator_requests_total", "Total requests processed by orchestrator", ["status"]
+    "alfred_orchestrator_requests_total",
+    "Total requests processed by orchestrator",
+    ["status"],
 )
 
 orchestrator_route_total = Counter(

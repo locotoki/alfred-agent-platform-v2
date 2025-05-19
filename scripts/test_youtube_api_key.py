@@ -218,7 +218,7 @@ def main():
 
     if not api_key:
         print(
-            "Error: No YouTube API key provided. Use --api-key option or set YOUTUBE_API_KEY in .env file."
+            "Error: No YouTube API key provided. Use --api-key option or set YOUTUBE_API_KEY in .env file."  # noqa: E501
         )
         sys.exit(1)
 

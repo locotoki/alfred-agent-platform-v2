@@ -3,17 +3,12 @@ Test script for the Slack app.
 This allows us to test basic functionality without real tokens.
 """
 
-import os
-import sys
+from unittest.mock import MagicMock, patch
 
 from dotenv import load_dotenv
 
 # Load environment variables
 load_dotenv()
-
-# Mock Slack API to avoid real API calls
-import unittest
-from unittest.mock import MagicMock, patch
 
 # Apply patches to avoid real network calls
 with (

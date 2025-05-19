@@ -2,16 +2,7 @@
 Unit tests for the metrics module.
 """
 
-import pytest
-from app.metrics import (
-    DB_QUERY_SECONDS,
-    NICHE_OPPORTUNITY_SCORE,
-    NICHE_SCOUT_RESULTS_COUNT,
-    SI_LATENCY_SECONDS,
-    SI_REQUESTS_TOTAL,
-    WORKER_LAG_SECONDS,
-    LatencyTimer,
-)
+from app.metrics import SI_LATENCY_SECONDS, LatencyTimer
 from prometheus_client import REGISTRY
 
 

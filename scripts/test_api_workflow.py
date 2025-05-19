@@ -2,7 +2,6 @@
 """Test script for YouTube workflows via the API."""
 
 import argparse
-import json
 import time
 from datetime import datetime
 

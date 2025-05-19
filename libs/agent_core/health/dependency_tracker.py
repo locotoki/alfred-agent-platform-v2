@@ -31,7 +31,10 @@ class DependencyTracker:
         """
         self.dependencies[name] = status
         logger.info(
-            "Registered dependency", service=self.service_name, dependency=name, status=status
+            "Registered dependency",
+            service=self.service_name,
+            dependency=name,
+            status=status,
         )
 
     def update_dependency_status(self, name: str, status: str) -> None:
@@ -51,7 +54,9 @@ class DependencyTracker:
             )
         else:
             logger.warning(
-                "Attempted to update unknown dependency", service=self.service_name, dependency=name
+                "Attempted to update unknown dependency",
+                service=self.service_name,
+                dependency=name,
             )
 
     def check_dependencies(self) -> Dict[str, str]:

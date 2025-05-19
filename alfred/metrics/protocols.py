@@ -7,7 +7,7 @@ subsystem for metrics collection, monitoring, and observability.
 from abc import abstractmethod
 from typing import Any, Dict, List, Optional, Protocol
 
-from prometheus_client import CollectorRegistry, Metric
+from prometheus_client import CollectorRegistry
 
 
 class MetricsCollector(Protocol):
@@ -24,7 +24,11 @@ class MetricsCollector(Protocol):
 
     @abstractmethod
     def register_metric(
-        self, name: str, metric_type: str, description: str, labels: Optional[List[str]] = None
+        self,
+        name: str,
+        metric_type: str,
+        description: str,
+        labels: Optional[List[str]] = None,
     ) -> None:
         """Register a new metric.
 

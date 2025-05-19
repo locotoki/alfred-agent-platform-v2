@@ -1,7 +1,5 @@
 from unittest.mock import MagicMock, patch
 
-import pytest
-
 from backend.alfred.ml import retrain_pipeline
 
 
@@ -16,7 +14,12 @@ def test_schedule_stub():
 @patch("backend.alfred.ml.retrain_pipeline.save_promoted_model")
 @patch("backend.alfred.ml.retrain_pipeline.should_promote")
 def test_schedule_full_pipeline(
-    mock_should_promote, mock_save_model, mock_load_dataset, mock_transformer, mock_mlflow, mock_ray
+    mock_should_promote,
+    mock_save_model,
+    mock_load_dataset,
+    mock_transformer,
+    mock_mlflow,
+    mock_ray,
 ):
     """Test the full retrain pipeline flow."""
     # Setup mocks

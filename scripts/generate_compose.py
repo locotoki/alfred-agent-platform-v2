@@ -2,7 +2,6 @@
 """
 Generate docker-compose.yml from individual service compose snippets
 """
-import os
 from pathlib import Path
 
 import yaml
@@ -83,10 +82,10 @@ def main():
     write_compose_file(compose_data, output_file)
 
     # Summary
-    print(f"\nSummary:")
+    print("\nSummary:")
     print(f"Total services: {len(compose_data['services'])}")
     print(
-        f"Profiles: {set(svc.get('profiles', [])[0] for svc in compose_data['services'].values() if svc.get('profiles'))}"
+        f"Profiles: {set(svc.get('profiles', [])[0] for svc in compose_data['services'].values() if svc.get('profiles'))}"  # noqa: E501
     )
 
 

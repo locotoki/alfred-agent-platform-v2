@@ -5,9 +5,8 @@ Loads alert data from database and prepares for ML training.
 """
 
 import hashlib
-import os
 import re
-from typing import Dict, List, Tuple
+from typing import Dict, Tuple
 
 import numpy as np
 import pandas as pd
@@ -25,7 +24,10 @@ class AlertDataset(Service):
         (r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b", "EMAIL"),  # Email
         (r"\b\d{3}[-.]?\d{3}[-.]?\d{4}\b", "PHONE"),  # Phone
         (
-            r"\b(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\b",
+            r"\b(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\."
+            r"(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\."
+            r"(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\."
+            r"(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\b",
             "IP_ADDRESS",
         ),  # IP
     ]
@@ -220,8 +222,10 @@ class AlertDataset(Service):
             "severity_distribution": self.data["severity"].value_counts().to_dict(),
             "source_count": self.data["source"].nunique(),
             "time_range": {
-                "start": self.data["created_at"].min().isoformat() if not self.data.empty else None,
-                "end": self.data["created_at"].max().isoformat() if not self.data.empty else None,
+                "start": (
+                    self.data["created_at"].min().isoformat() if not self.data.empty else None
+                ),
+                "end": (self.data["created_at"].max().isoformat() if not self.data.empty else None),
             },
         }
 

@@ -22,7 +22,10 @@ class TracingProvider:
     def _setup_tracing(self) -> trace.Tracer:
         """Set up OpenTelemetry tracing."""
         resource = Resource(
-            attributes={SERVICE_NAME: self.service_name, SERVICE_VERSION: self.service_version}
+            attributes={
+                SERVICE_NAME: self.service_name,
+                SERVICE_VERSION: self.service_version,
+            }
         )
 
         provider = TracerProvider(resource=resource)

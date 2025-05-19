@@ -152,7 +152,12 @@ class NoiseRankingModel:
             raise ValueError("No model to save. Train a model first.")
 
         joblib.dump(
-            {"model": self.model, "scaler": self.scaler, "feature_names": self.feature_names}, path
+            {
+                "model": self.model,
+                "scaler": self.scaler,
+                "feature_names": self.feature_names,
+            },
+            path,
         )
 
     def load_model(self, path: str):

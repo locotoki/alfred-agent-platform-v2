@@ -2,7 +2,6 @@
 Template service with standardized health and metrics endpoints.
 """
 
-import json
 import logging
 import os
 from typing import Any, Dict
