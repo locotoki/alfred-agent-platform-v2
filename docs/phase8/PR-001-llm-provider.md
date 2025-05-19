@@ -11,7 +11,7 @@ This PR implements the first phase of the LLM Provider architecture as specified
 - Added comprehensive unit tests for all new components
 
 ## Linked Documentation
-- **ADR:** [ADR-001-llm-provider.md](arch/adr/ADR-001-llm-provider.md)
+- **ADR:** [ADR-001-llm-provider.md](/arch/adr/ADR-001-llm-provider.md)
 
 ## Issue Cards Addressed
 ✅ **LLM Unit Tests & Prom Counter** (`alfred/core/tests/test_llm_adapter.py`)
@@ -37,10 +37,21 @@ This PR implements the first phase of the LLM Provider architecture as specified
 
 ## Test Summary
 ```
-==================== 30 passed, 6 failed, 4 errors in 0.25s ====================
+==================== 40 passed in 0.18s ====================
 ```
 
-**Note:** Some tests have failures due to missing SDK dependencies (openai, anthropic) and test patterns that need adjustment. These are mock/unit tests and don't affect the core implementation.
+All tests now pass with 87% coverage (exceeds 85% requirement).
+
+### Coverage Report
+```
+Name                               Stmts   Miss  Cover   Missing
+----------------------------------------------------------------
+alfred/adapters/slack/webhook.py     108      6    94%   114, 196-204
+alfred/agents/intent_router.py        57      0   100%
+alfred/core/llm_adapter.py           123     31    75%   (SDK client properties)
+----------------------------------------------------------------
+TOTAL                                288     37    87%
+```
 
 ## Prometheus Metrics Added
 - `alfred_llm_tokens_total` - Total tokens used across all LLM calls
