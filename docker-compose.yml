@@ -734,6 +734,36 @@ services:
       com.docker.compose.service: "slack-adapter"
       prometheus.metrics.port: "9091"
 
+  # Telegram Adapter Service
+  telegram-adapter:
+    build:
+      context: ./adapters/telegram
+      dockerfile: Dockerfile
+    image: ${ALFRED_REGISTRY}/alfred-platform/telegram-adapter:${ALFRED_VERSION:-latest}
+    container_name: telegram-adapter
+    ports:
+      - "3002:8080"  # Map host port 3002 to container port 8080
+      - "9129:9091"  # Metrics port
+    environment:
+      - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}
+      - ALFRED_ENVIRONMENT=${ALFRED_ENVIRONMENT:-development}
+      - ALFRED_LOG_LEVEL=${ALFRED_LOG_LEVEL:-INFO}
+      - ALFRED_CORE_URL=http://agent-core:8011
+      - PROMETHEUS_MULTIPROC_DIR=/tmp/prometheus
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      <<: *basic-health-check
+    depends_on:
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - alfred-network
+    labels:
+      <<: *agent-service-labels
+      com.docker.compose.service: "telegram-adapter"
+      prometheus.metrics.port: "9091"
+
   # RAG Service
   agent-rag:
     build:
