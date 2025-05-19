@@ -15,6 +15,27 @@
 - Added comprehensive noise reduction guide in docs/dev/
 - Documented custom rules YAML format and examples
 
+## [v0.2.0-alpha] - 2025-05-19
+
+### Added
+- Containerized Slack adapter service with health checks (PR #169)
+  - Dockerfile, docker-compose integration, and smoke test script
+  - `/healthz` endpoint returning service status
+- IntentRouter ↔ Orchestrator integration (PR #170)
+  - AgentOrchestrator class with router integration
+  - Special handling for unknown_intent without LLM usage
+  - Prometheus metrics tracking (alfred_orchestrator_route_total)
+- Grafana dashboard for LLM cost monitoring (PR #171)
+  - Token consumption rate visualization
+  - Monthly cost projection
+  - Volume by intent type
+  - Token usage trends over time
+
+### Developer Experience
+- Streamlined containerization with Makefile targets
+- Comprehensive unit tests for orchestrator functionality
+- Auto-provisioning for Grafana dashboards
+
 ## [0.9.0] - 2025-05-24
 
 ### Added
