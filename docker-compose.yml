@@ -706,6 +706,34 @@ services:
       com.docker.compose.service: "slack-mcp-gateway"
       prometheus.metrics.port: "9091"
 
+  # Slack Adapter Service
+  slack-adapter:
+    build:
+      context: .
+      dockerfile: ./alfred/adapters/slack/Dockerfile
+    image: alfred-slack-adapter:latest
+    container_name: slack-adapter
+    ports:
+      - "3001:8000"  # Map host port 3001 to container port 8000
+      - "9128:9091"  # Metrics port
+    environment:
+      - SLACK_SIGNING_SECRET=${SLACK_SIGNING_SECRET}
+      - ALFRED_LOG_LEVEL=${ALFRED_LOG_LEVEL:-INFO}
+      - PROMETHEUS_MULTIPROC_DIR=/tmp/prometheus
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/healthz"]
+      <<: *basic-health-check
+    depends_on:
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - alfred-network
+    labels:
+      <<: *agent-service-labels
+      com.docker.compose.service: "slack-adapter"
+      prometheus.metrics.port: "9091"
+
   # RAG Service
   agent-rag:
     build:
