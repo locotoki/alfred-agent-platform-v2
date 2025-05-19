@@ -7,9 +7,8 @@ from unittest.mock import MagicMock, Mock, patch
 import pytest
 import ray
 from apscheduler.triggers.cron import CronTrigger
-from ray import tune
-
 from backend.alfred.ml.retrain_scheduler import RetrainScheduler
+from ray import tune
 
 
 class TestRetrainScheduler(unittest.TestCase):

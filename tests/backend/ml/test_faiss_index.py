@@ -6,7 +6,6 @@ from unittest.mock import Mock, patch
 
 import numpy as np
 import pytest
-
 from backend.alfred.ml.faiss_index import AlertSearchEngine, FAISSIndex, SearchResult
 
 

@@ -5,7 +5,6 @@ from datetime import datetime
 from unittest.mock import Mock, patch
 
 import pytest
-
 from backend.alfred.ml.model_registry import ModelRegistry
 
 

@@ -4,7 +4,6 @@ import time
 from datetime import datetime
 
 import pytest
-
 from backend.alfred.ml.alert_dataset import load_alert_dataset
 from backend.alfred.ml.retrain_pipeline import schedule
 
