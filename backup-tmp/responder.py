@@ -12,6 +12,7 @@ import os
 import socket
 from typing import Any, Dict, Optional, Set
 
+import redis
 from slack_sdk import WebClient
 from slack_sdk.errors import SlackApiError
 
@@ -68,9 +69,7 @@ class ResponseHandler:
             logger.info("Stopped response handler task")
 
     async def _response_loop(self) -> None:
-        """
-        Main loop for processing responses from Redis.
-        """
+        """Process responses from Redis in a continuous loop."""
         logger.info("Response handler task started")
 
         # Use the stream, group, and consumer ID as specified
@@ -245,14 +244,11 @@ class ResponseHandler:
             state = response.get("state", "unknown")
             task_type = response.get("type", "unknown")
 
-            # Color based on state
-            color = {
-                "succeeded": "#36a64f",  # Green
-                "failed": "#dc3545",  # Red
-                "in_progress": "#ffc107",  # Yellow
-            }.get(
-                state, "#6c757d"
-            )  # Gray default
+            # State mapping for visual reference in comments
+            # "succeeded": "#36a64f" (Green)
+            # "failed": "#dc3545" (Red)
+            # "in_progress": "#ffc107" (Yellow)
+            # default: "#6c757d" (Gray)
 
             # Create blocks for a nicer display
             blocks = [
