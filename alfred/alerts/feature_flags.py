@@ -1,6 +1,7 @@
 """Feature flags for alert system features."""
 
 import os
+from typing import Dict
 
 
 class AlertFeatureFlags:

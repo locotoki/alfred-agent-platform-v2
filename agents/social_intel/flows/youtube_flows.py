@@ -20,6 +20,7 @@ from sentence_transformers import SentenceTransformer
 
 from ..models.youtube_api import YouTubeAPI
 from ..models.youtube_models import (
+    BlueprintResult,
     NicheScoutResult,
     YouTubeBlueprint,
     YouTubeChannel,
