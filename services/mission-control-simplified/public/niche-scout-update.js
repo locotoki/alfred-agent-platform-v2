@@ -1,6 +1,6 @@
 /**
  * Proxy service integration for Niche-Scout UI
- * 
+ *
  * This script adds support for the proxy service to the Niche-Scout UI,
  * allowing users to view and configure the proxy service.
  */
@@ -15,29 +15,29 @@ document.addEventListener('DOMContentLoaded', function() {
     proxyTab.dataset.tab = 'proxy';
     proxyTab.textContent = 'Proxy Config';
     resultTabs.appendChild(proxyTab);
-    
+
     // Add proxy content
     const resultsContainer = document.getElementById('results-container');
     if (resultsContainer) {
       const proxyContent = document.createElement('div');
       proxyContent.id = 'proxy-tab';
       proxyContent.className = 'result-content';
-      
+
       proxyContent.innerHTML = `
         <h3>Proxy Service Configuration</h3>
-        
+
         <div class="summary-section">
           <h4>Current Configuration</h4>
           <div id="proxy-status">Loading proxy configuration...</div>
-          
+
           <div style="margin-top: 1rem;">
             <button id="refresh-proxy-config" class="btn btn-secondary">Refresh Configuration</button>
           </div>
         </div>
-        
+
         <div style="margin-top: 1.5rem;">
           <h4>Update Configuration</h4>
-          
+
           <div style="background: #f1f5f9; border-radius: 0.375rem; padding: 1rem; margin: 1rem 0;">
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
               <div>
@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', function() {
                   <span id="proxy-threshold-value" style="font-size: 0.875rem; font-weight: 500; min-width: 2.5rem; text-align: center;">0.55</span>
                 </div>
               </div>
-              
+
               <div>
                 <label for="proxy-niche-count" style="display: block; font-size: 0.875rem; margin-bottom: 0.25rem;">Niche Count</label>
                 <div style="display: flex; align-items: center; gap: 0.5rem;">
@@ -56,7 +56,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 </div>
               </div>
             </div>
-            
+
             <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.5rem;">
               <div>
                 <label for="proxy-weight-levenshtein" style="display: block; font-size: 0.75rem; margin-bottom: 0.25rem;">Levenshtein Weight</label>
@@ -65,7 +65,7 @@ document.addEventListener('DOMContentLoaded', function() {
                   <span id="proxy-levenshtein-value" style="font-size: 0.75rem; min-width: 2rem; text-align: center;">0.5</span>
                 </div>
               </div>
-              
+
               <div>
                 <label for="proxy-weight-jaccard" style="display: block; font-size: 0.75rem; margin-bottom: 0.25rem;">Jaccard Weight</label>
                 <div style="display: flex; align-items: center; gap: 0.5rem;">
@@ -73,7 +73,7 @@ document.addEventListener('DOMContentLoaded', function() {
                   <span id="proxy-jaccard-value" style="font-size: 0.75rem; min-width: 2rem; text-align: center;">0.3</span>
                 </div>
               </div>
-              
+
               <div>
                 <label for="proxy-weight-jaro" style="display: block; font-size: 0.75rem; margin-bottom: 0.25rem;">Jaro-Winkler Weight</label>
                 <div style="display: flex; align-items: center; gap: 0.5rem;">
@@ -82,7 +82,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 </div>
               </div>
             </div>
-            
+
             <div style="margin-top: 1rem;">
               <div>
                 <label for="proxy-cache-enabled" style="display: block; font-size: 0.875rem; margin-bottom: 0.25rem;">Cache</label>
@@ -93,7 +93,7 @@ document.addEventListener('DOMContentLoaded', function() {
                   </label>
                 </div>
               </div>
-              
+
               <div style="margin-top: 0.5rem;">
                 <label for="proxy-cache-ttl" style="display: block; font-size: 0.875rem; margin-bottom: 0.25rem;">Cache TTL (seconds)</label>
                 <div style="display: flex; align-items: center; gap: 0.5rem;">
@@ -101,41 +101,41 @@ document.addEventListener('DOMContentLoaded', function() {
                 </div>
               </div>
             </div>
-            
+
             <div style="margin-top: 0.75rem; display: flex; justify-content: space-between;">
               <button id="proxy-reset-config" class="btn btn-secondary" style="font-size: 0.75rem; padding: 0.25rem 0.5rem;">Reset to Defaults</button>
               <button id="proxy-apply-config" class="btn btn-primary" style="font-size: 0.75rem; padding: 0.25rem 0.5rem;">Apply Changes</button>
             </div>
           </div>
         </div>
-        
+
         <div style="margin-top: 1.5rem;">
           <h4>Proxy Metrics</h4>
           <p>View detailed metrics in Prometheus at <a href="http://localhost:9090" target="_blank">http://localhost:9090</a></p>
-          
+
           <div style="margin-top: 1rem;">
             <button id="view-prometheus" class="btn btn-secondary">Open Prometheus</button>
           </div>
         </div>
       `;
-      
+
       resultsContainer.appendChild(proxyContent);
-      
+
       // Add tab click handler
       proxyTab.addEventListener('click', () => {
         document.querySelectorAll('.result-tab').forEach(t => t.classList.remove('active'));
         proxyTab.classList.add('active');
-        
+
         document.querySelectorAll('.result-content').forEach(content => {
           content.classList.remove('active');
         });
-        
+
         proxyContent.classList.add('active');
-        
+
         // Load proxy configuration
         loadProxyConfig();
       });
-      
+
       // Initialize proxy configuration UI
       initProxyConfigUI();
     }
@@ -146,7 +146,7 @@ document.addEventListener('DOMContentLoaded', function() {
 function loadProxyConfig() {
   const proxyStatus = document.getElementById('proxy-status');
   if (!proxyStatus) return;
-  
+
   fetch('/api/proxy/config')
     .then(response => response.json())
     .then(data => {
@@ -159,7 +159,7 @@ function loadProxyConfig() {
         `;
         return;
       }
-      
+
       // Update status
       proxyStatus.innerHTML = `
         <div style="padding: 1rem; background-color: #dcfce7; border-radius: 0.375rem; color: #166534;">
@@ -167,13 +167,13 @@ function loadProxyConfig() {
           <p>Current traffic percentage: ${data.trafficPercentage}%</p>
           <p>Proxy URL: ${data.url}</p>
         </div>
-        
+
         <div style="margin-top: 1rem;">
           <h5>Active Configuration</h5>
           <pre style="background: #f1f5f9; padding: 0.5rem; border-radius: 0.375rem; font-size: 0.75rem; overflow: auto;">${JSON.stringify(data.config, null, 2)}</pre>
         </div>
       `;
-      
+
       // Update UI controls with current values
       updateProxyControls(data.config);
     })
@@ -195,7 +195,7 @@ function initProxyConfigUI() {
   if (refreshButton) {
     refreshButton.addEventListener('click', loadProxyConfig);
   }
-  
+
   // Prometheus button
   const prometheusButton = document.getElementById('view-prometheus');
   if (prometheusButton) {
@@ -203,62 +203,62 @@ function initProxyConfigUI() {
       window.open('http://localhost:9090', '_blank');
     });
   }
-  
+
   // Slider controls
   const similaritySlider = document.getElementById('proxy-similarity-threshold');
   const thresholdValue = document.getElementById('proxy-threshold-value');
-  
+
   if (similaritySlider && thresholdValue) {
     similaritySlider.addEventListener('input', () => {
       thresholdValue.textContent = similaritySlider.value;
     });
   }
-  
+
   const nicheCountSlider = document.getElementById('proxy-niche-count');
   const countValue = document.getElementById('proxy-count-value');
-  
+
   if (nicheCountSlider && countValue) {
     nicheCountSlider.addEventListener('input', () => {
       countValue.textContent = nicheCountSlider.value;
     });
   }
-  
+
   const levenshteinSlider = document.getElementById('proxy-weight-levenshtein');
   const levenshteinValue = document.getElementById('proxy-levenshtein-value');
-  
+
   if (levenshteinSlider && levenshteinValue) {
     levenshteinSlider.addEventListener('input', () => {
       levenshteinValue.textContent = levenshteinSlider.value;
       updateWeights('levenshtein');
     });
   }
-  
+
   const jaccardSlider = document.getElementById('proxy-weight-jaccard');
   const jaccardValue = document.getElementById('proxy-jaccard-value');
-  
+
   if (jaccardSlider && jaccardValue) {
     jaccardSlider.addEventListener('input', () => {
       jaccardValue.textContent = jaccardSlider.value;
       updateWeights('jaccard');
     });
   }
-  
+
   const jaroSlider = document.getElementById('proxy-weight-jaro');
   const jaroValue = document.getElementById('proxy-jaro-value');
-  
+
   if (jaroSlider && jaroValue) {
     jaroSlider.addEventListener('input', () => {
       jaroValue.textContent = jaroSlider.value;
       updateWeights('jaro');
     });
   }
-  
+
   // Apply button
   const applyButton = document.getElementById('proxy-apply-config');
   if (applyButton) {
     applyButton.addEventListener('click', applyProxyConfig);
   }
-  
+
   // Reset button
   const resetButton = document.getElementById('proxy-reset-config');
   if (resetButton) {
@@ -271,19 +271,19 @@ function updateWeights(changedWeight) {
   const levenshteinSlider = document.getElementById('proxy-weight-levenshtein');
   const jaccardSlider = document.getElementById('proxy-weight-jaccard');
   const jaroSlider = document.getElementById('proxy-weight-jaro');
-  
+
   const levenshteinValue = document.getElementById('proxy-levenshtein-value');
   const jaccardValue = document.getElementById('proxy-jaccard-value');
   const jaroValue = document.getElementById('proxy-jaro-value');
-  
+
   if (!levenshteinSlider || !jaccardSlider || !jaroSlider) return;
-  
+
   const levenshtein = parseFloat(levenshteinSlider.value);
   const jaccard = parseFloat(jaccardSlider.value);
   const jaro = parseFloat(jaroSlider.value);
-  
+
   const sum = levenshtein + jaccard + jaro;
-  
+
   if (Math.abs(sum - 1.0) > 0.05) {
     // Adjust the other weights proportionally
     if (changedWeight !== 'levenshtein') {
@@ -291,13 +291,13 @@ function updateWeights(changedWeight) {
       levenshteinSlider.value = newLevenshtein.toFixed(1);
       levenshteinValue.textContent = newLevenshtein.toFixed(1);
     }
-    
+
     if (changedWeight !== 'jaccard') {
       const newJaccard = Math.max(0.1, Math.min(0.9, jaccard * (1.0 / sum)));
       jaccardSlider.value = newJaccard.toFixed(1);
       jaccardValue.textContent = newJaccard.toFixed(1);
     }
-    
+
     if (changedWeight !== 'jaro') {
       const newJaro = Math.max(0.1, Math.min(0.9, jaro * (1.0 / sum)));
       jaroSlider.value = newJaro.toFixed(1);
@@ -312,53 +312,53 @@ function updateProxyControls(config) {
   const thresholdValue = document.getElementById('proxy-threshold-value');
   const nicheCountSlider = document.getElementById('proxy-niche-count');
   const countValue = document.getElementById('proxy-count-value');
-  
+
   const levenshteinSlider = document.getElementById('proxy-weight-levenshtein');
   const levenshteinValue = document.getElementById('proxy-levenshtein-value');
   const jaccardSlider = document.getElementById('proxy-weight-jaccard');
   const jaccardValue = document.getElementById('proxy-jaccard-value');
   const jaroSlider = document.getElementById('proxy-weight-jaro');
   const jaroValue = document.getElementById('proxy-jaro-value');
-  
+
   const cacheEnabled = document.getElementById('proxy-cache-enabled');
   const cacheTtl = document.getElementById('proxy-cache-ttl');
-  
+
   if (config.transformation) {
     if (similaritySlider && thresholdValue && config.transformation.similarityThreshold) {
       similaritySlider.value = config.transformation.similarityThreshold;
       thresholdValue.textContent = config.transformation.similarityThreshold;
     }
-    
+
     if (nicheCountSlider && countValue && config.transformation.defaultNicheCount) {
       nicheCountSlider.value = config.transformation.defaultNicheCount;
       countValue.textContent = config.transformation.defaultNicheCount;
     }
-    
+
     if (config.transformation.algorithmWeights) {
       const weights = config.transformation.algorithmWeights;
-      
+
       if (levenshteinSlider && levenshteinValue && weights.levenshtein !== undefined) {
         levenshteinSlider.value = weights.levenshtein;
         levenshteinValue.textContent = weights.levenshtein;
       }
-      
+
       if (jaccardSlider && jaccardValue && weights.jaccard !== undefined) {
         jaccardSlider.value = weights.jaccard;
         jaccardValue.textContent = weights.jaccard;
       }
-      
+
       if (jaroSlider && jaroValue && weights.jaroWinkler !== undefined) {
         jaroSlider.value = weights.jaroWinkler;
         jaroValue.textContent = weights.jaroWinkler;
       }
     }
   }
-  
+
   if (config.cache) {
     if (cacheEnabled && config.cache.enabled !== undefined) {
       cacheEnabled.checked = config.cache.enabled;
     }
-    
+
     if (cacheTtl && config.cache.ttl !== undefined) {
       cacheTtl.value = config.cache.ttl;
     }
@@ -374,7 +374,7 @@ function applyProxyConfig() {
   const jaroSlider = document.getElementById('proxy-weight-jaro');
   const cacheEnabled = document.getElementById('proxy-cache-enabled');
   const cacheTtl = document.getElementById('proxy-cache-ttl');
-  
+
   const config = {
     transformation: {
       similarityThreshold: parseFloat(similaritySlider.value),
@@ -390,7 +390,7 @@ function applyProxyConfig() {
       ttl: parseInt(cacheTtl.value)
     }
   };
-  
+
   fetch('/api/proxy/config', {
     method: 'POST',
     headers: {
@@ -419,33 +419,33 @@ function resetProxyConfig() {
   const thresholdValue = document.getElementById('proxy-threshold-value');
   const nicheCountSlider = document.getElementById('proxy-niche-count');
   const countValue = document.getElementById('proxy-count-value');
-  
+
   const levenshteinSlider = document.getElementById('proxy-weight-levenshtein');
   const levenshteinValue = document.getElementById('proxy-levenshtein-value');
   const jaccardSlider = document.getElementById('proxy-weight-jaccard');
   const jaccardValue = document.getElementById('proxy-jaccard-value');
   const jaroSlider = document.getElementById('proxy-weight-jaro');
   const jaroValue = document.getElementById('proxy-jaro-value');
-  
+
   const cacheEnabled = document.getElementById('proxy-cache-enabled');
   const cacheTtl = document.getElementById('proxy-cache-ttl');
-  
+
   // Set default values
   similaritySlider.value = 0.55;
   thresholdValue.textContent = '0.55';
-  
+
   nicheCountSlider.value = 5;
   countValue.textContent = '5';
-  
+
   levenshteinSlider.value = 0.5;
   levenshteinValue.textContent = '0.5';
-  
+
   jaccardSlider.value = 0.3;
   jaccardValue.textContent = '0.3';
-  
+
   jaroSlider.value = 0.2;
   jaroValue.textContent = '0.2';
-  
+
   cacheEnabled.checked = true;
   cacheTtl.value = 3600;
 }
@@ -454,13 +454,13 @@ function resetProxyConfig() {
 function addProxyToggle() {
   const debugPanel = document.getElementById('debug-panel');
   if (!debugPanel) return;
-  
+
   const proxyToggleContainer = document.createElement('div');
   proxyToggleContainer.style.marginTop = '1rem';
   proxyToggleContainer.style.padding = '0.5rem';
   proxyToggleContainer.style.backgroundColor = '#eff6ff';
   proxyToggleContainer.style.borderRadius = '0.375rem';
-  
+
   proxyToggleContainer.innerHTML = `
     <div style="display: flex; justify-content: space-between; align-items: center;">
       <div>
@@ -473,7 +473,7 @@ function addProxyToggle() {
       </label>
     </div>
   `;
-  
+
   // Insert before metrics history
   const metricsHistory = document.getElementById('metric-history');
   if (metricsHistory) {
@@ -481,7 +481,7 @@ function addProxyToggle() {
   } else {
     debugPanel.appendChild(proxyToggleContainer);
   }
-  
+
   // Add event listener
   const proxyToggle = document.getElementById('toggle-proxy-routing');
   if (proxyToggle) {
@@ -489,7 +489,7 @@ function addProxyToggle() {
       // Store in localStorage
       localStorage.setItem('useProxyRouting', proxyToggle.checked);
     });
-    
+
     // Load from localStorage
     const savedSetting = localStorage.getItem('useProxyRouting');
     if (savedSetting !== null) {
@@ -510,7 +510,7 @@ document.addEventListener('DOMContentLoaded', function() {
         obs.disconnect(); // Stop observing
       }
     });
-    
+
     observer.observe(document.body, {
       childList: true,
       subtree: true,
@@ -525,24 +525,24 @@ document.addEventListener('DOMContentLoaded', function() {
   const runBtn = document.getElementById('run-btn');
   if (runBtn) {
     const originalFetch = window.fetch;
-    
+
     window.fetch = function(url, options) {
       // Only intercept our API call
       if (url === '/api/workflows/niche-scout' && options && options.method === 'POST') {
         // Check if proxy routing is enabled
         const useProxyRouting = localStorage.getItem('useProxyRouting') === 'true';
-        
+
         if (useProxyRouting) {
           // Clone options
           const newOptions = { ...options };
-          
+
           // Add header to request proxy routing
           newOptions.headers = { ...newOptions.headers, 'x-use-proxy': 'true' };
-          
+
           return originalFetch(url, newOptions);
         }
       }
-      
+
       // Otherwise proceed normally
       return originalFetch(url, options);
     };

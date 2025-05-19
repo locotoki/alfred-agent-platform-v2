@@ -12,7 +12,7 @@ const AgentDetailView = () => {
   const { agentId } = useParams<{ agentId: string }>();
   const navigate = useNavigate();
   const [agent, setAgent] = useState<(typeof agents)[0] | undefined>(undefined);
-  
+
   useEffect(() => {
     const foundAgent = agents.find(a => a.id === agentId);
     if (foundAgent) {
@@ -21,7 +21,7 @@ const AgentDetailView = () => {
       navigate("/agents");
     }
   }, [agentId, navigate]);
-  
+
   if (!agent) {
     return (
       <div className="flex items-center justify-center h-64">
@@ -29,18 +29,18 @@ const AgentDetailView = () => {
       </div>
     );
   }
-  
+
   return (
     <div className="space-y-6">
       <div>
-        <Link 
+        <Link
           to="/agents"
           className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-4"
         >
           <ArrowLeft className="mr-1 h-4 w-4" />
           Back to agents
         </Link>
-        
+
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div>
             <div className="flex items-center gap-3">
@@ -49,15 +49,15 @@ const AgentDetailView = () => {
             </div>
             <p className="text-muted-foreground mt-1">{agent.description}</p>
           </div>
-          
+
           <div className="flex items-center gap-3">
             <Button variant="outline" size="sm">
               <Settings className="mr-2 h-4 w-4" />
               Configure
             </Button>
-            
-            <Button 
-              size="sm" 
+
+            <Button
+              size="sm"
               disabled={agent.status === "offline" || agent.status === "error"}
             >
               <Play className="mr-2 h-4 w-4" />
@@ -66,30 +66,30 @@ const AgentDetailView = () => {
           </div>
         </div>
       </div>
-      
+
       <Tabs defaultValue="workflows" className="w-full">
         <TabsList className="w-full sm:w-auto">
           <TabsTrigger value="workflows" className="flex items-center gap-1.5">
             <Activity className="h-4 w-4" />
             Workflows
           </TabsTrigger>
-          
+
           <TabsTrigger value="config" className="flex items-center gap-1.5">
             <Settings className="h-4 w-4" />
             Config
           </TabsTrigger>
-          
+
           <TabsTrigger value="logs" className="flex items-center gap-1.5">
             <Code className="h-4 w-4" />
             Logs
           </TabsTrigger>
-          
+
           <TabsTrigger value="metrics" className="flex items-center gap-1.5">
             <Activity className="h-4 w-4" />
             Metrics
           </TabsTrigger>
         </TabsList>
-        
+
         <TabsContent value="workflows" className="mt-6">
           {agent.type === "social-intel" ? (
             <SocialIntelWorkflowsView agentId={agent.id} />
@@ -103,7 +103,7 @@ const AgentDetailView = () => {
             </div>
           )}
         </TabsContent>
-        
+
         <TabsContent value="config" className="mt-6">
           <div className="card-shadow p-5">
             <h3 className="font-medium mb-4">Agent Configuration</h3>
@@ -126,7 +126,7 @@ const AgentDetailView = () => {
             </div>
           </div>
         </TabsContent>
-        
+
         <TabsContent value="logs" className="mt-6">
           <div className="card-shadow p-5">
             <div className="flex items-center justify-between mb-4">
@@ -153,7 +153,7 @@ const AgentDetailView = () => {
             </div>
           </div>
         </TabsContent>
-        
+
         <TabsContent value="metrics" className="mt-6">
           <div className="card-shadow p-5 h-96 flex items-center justify-center">
             <p className="text-muted-foreground">Metrics visualization coming soon</p>

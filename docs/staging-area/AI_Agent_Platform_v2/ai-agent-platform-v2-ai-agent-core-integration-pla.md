@@ -1,6 +1,6 @@
 # AI Agent Platform v2 : AI Agent Core Integration Plan
 
-### 
+###
 
 ### **1. LangChain Integration**
 

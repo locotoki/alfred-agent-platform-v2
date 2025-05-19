@@ -39,12 +39,12 @@ while true; do
     echo "Redis server has stopped unexpectedly"
     exit 1
   fi
-  
+
   # Check if health check wrapper is still running
   if ! kill -0 $HEALTH_PID 2>/dev/null; then
     echo "Health check wrapper has stopped unexpectedly"
     exit 1
   fi
-  
+
   sleep 5
 done

@@ -52,7 +52,7 @@
 Currently, the service implements a scheduled workflow API but does not have any running cron jobs or scheduled tasks. The scheduling functionality is designed around an API that allows users to:
 
 - Schedule workflows with `/schedule-workflow` endpoint
-- Retrieve scheduled workflows with `/scheduled-workflows` endpoint 
+- Retrieve scheduled workflows with `/scheduled-workflows` endpoint
 
 However, the implementation is simulated with mock data and does not actually execute scheduled jobs.
 
@@ -82,7 +82,7 @@ However, actual database operations are not implemented in the current codebase.
 
 ## 5. Prometheus Metrics
 
-Metrics are exposed through the `/health/metrics` endpoint using the Prometheus client. 
+Metrics are exposed through the `/health/metrics` endpoint using the Prometheus client.
 
 From the code analysis, there are no explicitly defined custom metrics (no direct references to counter, gauge, or histogram implementations). However, the service uses `create_health_app` which implements standard metrics exposure:
 

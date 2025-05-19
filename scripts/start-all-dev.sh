@@ -50,7 +50,7 @@ start_service() {
   local port=$4
 
   echo -e "${BLUE}Starting $service_name on port $port...${NC}"
-  
+
   # For WSL use this approach
   if grep -q Microsoft /proc/version; then
     cmd.exe /c start wsl.exe -d Ubuntu-20.04 -e bash -c "cd $service_dir && $start_command; exec bash"
@@ -58,7 +58,7 @@ start_service() {
     # For native Linux use this approach
     gnome-terminal --title="$service_name" -- bash -c "cd $service_dir && $start_command; exec bash" &
   fi
-  
+
   echo -e "${GREEN}✓ Started $service_name${NC}"
   echo -e "  Access at: ${BLUE}http://localhost:$port${NC}"
 }

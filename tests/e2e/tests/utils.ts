@@ -163,21 +163,21 @@ export async function waitForNicheScoutResults(page: Page, timeout = 60000) {
   try {
     // Wait for redirect to results page
     await page.waitForURL(/\/workflows\/niche-scout\/results\//, { timeout });
-    
+
     // Wait for results to load
     await page.waitForSelector('h1:has-text("NICHE-SCOUT RESULTS")', { timeout: 10000 });
-    
+
     // Check for visualization or table
-    const resultsExist = 
-      await page.isVisible('.trend-visualization') || 
+    const resultsExist =
+      await page.isVisible('.trend-visualization') ||
       await page.isVisible('.trending-niches-table') ||
       await page.isVisible('.niche-visualization');
-    
+
     return { success: resultsExist, error: null };
   } catch (error) {
-    return { 
-      success: false, 
-      error: error instanceof Error ? error.message : 'Unknown error' 
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Unknown error'
     };
   }
 }
@@ -189,21 +189,21 @@ export async function waitForBlueprintResults(page: Page, timeout = 90000) {
   try {
     // Wait for redirect to results page
     await page.waitForURL(/\/workflows\/seed-to-blueprint\/results\//, { timeout });
-    
+
     // Wait for results to load
     await page.waitForSelector('h1:has-text("BLUEPRINT RESULTS")', { timeout: 10000 });
-    
+
     // Check for blueprint content
-    const resultsExist = 
-      await page.isVisible('.blueprint-section') || 
+    const resultsExist =
+      await page.isVisible('.blueprint-section') ||
       await page.isVisible('.content-pillars') ||
       await page.isVisible('.roadmap-section');
-    
+
     return { success: resultsExist, error: null };
   } catch (error) {
-    return { 
-      success: false, 
-      error: error instanceof Error ? error.message : 'Unknown error' 
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Unknown error'
     };
   }
 }

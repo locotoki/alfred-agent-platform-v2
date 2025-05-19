@@ -16,7 +16,7 @@ Changed `app/metrics.py` to use optimized buckets:
 # Before
 buckets=[0.01, 0.05, 0.1, 0.2, 0.3, 0.4, 0.5, 0.75, 1.0, 2.0, 5.0, 10.0]
 
-# After 
+# After
 buckets=[0.05, 0.1, 0.2, 0.4, 0.8, 2]
 ```
 

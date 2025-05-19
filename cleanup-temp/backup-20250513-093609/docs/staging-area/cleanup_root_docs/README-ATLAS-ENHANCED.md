@@ -57,7 +57,7 @@ The enhanced implementation includes:
 ### Quick Start
 
 1. **Set up environment variables**
-   
+
    Copy the example environment file and add your OpenAI API key:
    ```bash
    cp .env.dev.example .env.dev
@@ -65,35 +65,35 @@ The enhanced implementation includes:
    ```
 
 2. **Start Atlas with monitoring**
-   
+
    This will start Atlas worker, RAG gateway, Prometheus, and Grafana:
    ```bash
    make atlas-monitor
    ```
 
 3. **Set up Supabase tables** (optional)
-   
+
    If you want to use Supabase for message persistence:
    ```bash
    make atlas-setup-supabase
    ```
 
 4. **Index documents**
-   
+
    Add documents to the RAG knowledge base:
    ```bash
    make atlas-index PATH=/path/to/docs
    ```
 
 5. **Send a test task**
-   
+
    Request an architecture specification:
    ```bash
    make atlas-publish MSG="Design a logging system for microservices"
    ```
 
 6. **Monitor the system**
-   
+
    - Grafana: http://localhost:3000 (admin/admin)
    - Prometheus: http://localhost:9090
    - RAG Gateway: http://localhost:8501/healthz

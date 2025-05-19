@@ -1,8 +1,8 @@
 # Phase 5: Database and Infrastructure Health Checks - Implementation Tracking
 
-**Status**: In Progress  
-**Target Completion**: June 12, 2025  
-**Label**: phase/5  
+**Status**: In Progress
+**Target Completion**: June 12, 2025
+**Label**: phase/5
 **Issue Number**: 123 (Once created, update the hardcoded number in phase5-summary.yml)
 
 ## Overview
@@ -52,7 +52,7 @@ This issue tracks the implementation progress of Phase 5 of our health check sta
 ## Timeline
 
 1. Week 1 (May 15-22): Fix and test database services
-2. Week 2 (May 22-29): Fix and test infrastructure services  
+2. Week 2 (May 22-29): Fix and test infrastructure services
 3. Week 3 (May 29-June 5): Fix and test monitoring services
 4. Week 4 (June 5-12): Clean up legacy health checks and implement alert rules
 

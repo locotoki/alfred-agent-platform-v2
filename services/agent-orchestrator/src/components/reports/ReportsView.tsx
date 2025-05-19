@@ -1,8 +1,8 @@
 
 import { useState } from "react";
 import { format } from "date-fns";
-import { 
-  Download, 
+import {
+  Download,
   FileText,
   Star,
   StarOff,
@@ -16,13 +16,13 @@ import {
 
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { 
-  Table, 
-  TableBody, 
-  TableCell, 
-  TableHead, 
-  TableHeader, 
-  TableRow 
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow
 } from "@/components/ui/table";
 import StatusPill from "@/components/ui/StatusPill";
 import { reports } from "@/data/reports";
@@ -40,8 +40,8 @@ const ReportsView = () => {
   });
 
   const handleToggleStar = (reportId: string) => {
-    setStarredReports(prev => 
-      prev.includes(reportId) 
+    setStarredReports(prev =>
+      prev.includes(reportId)
         ? prev.filter(id => id !== reportId)
         : [...prev, reportId]
     );
@@ -108,8 +108,8 @@ const ReportsView = () => {
       </div>
 
       <div className="flex items-center justify-between">
-        <Tabs 
-          defaultValue="all" 
+        <Tabs
+          defaultValue="all"
           value={activeTab}
           onValueChange={(value) => setActiveTab(value as ReportType)}
           className="w-full"

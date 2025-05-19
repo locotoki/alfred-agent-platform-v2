@@ -38,10 +38,10 @@ If you only need to backup your Alfred Agent Platform v2 project:
    ```bash
    # First, list all volumes used by the project
    docker volume ls | grep alfred
-   
+
    # Export important volumes (example for supabase-db-data)
    docker run --rm -v alfred-agent-platform-v2_supabase-db-data:/data -v /mnt/c/backups/alfred-platform:/backup alpine tar -czvf /backup/supabase-db-data-$(date +%Y%m%d).tar.gz -C /data .
-   
+
    # Repeat for other important volumes
    ```
 
@@ -74,7 +74,7 @@ If you only need to backup the database:
 # Create a directory for the backup
 mkdir -p /mnt/c/backups/alfred-platform/database
 
-# Get the database container ID 
+# Get the database container ID
 DB_CONTAINER=$(docker ps -qf "name=supabase-db")
 
 # Export the database

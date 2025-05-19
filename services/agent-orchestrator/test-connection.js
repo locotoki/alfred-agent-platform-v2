@@ -10,7 +10,7 @@ async function testConnection() {
   ];
 
   console.log('Trying to connect to social-intel service...');
-  
+
   for (const url of urls) {
     try {
       console.log(`Testing: ${url}`);
@@ -22,7 +22,7 @@ async function testConnection() {
       console.error(`Error connecting to ${url}:`, error.message);
     }
   }
-  
+
   console.error('All connection attempts failed');
   return false;
 }

@@ -26,20 +26,20 @@ const fetchTrendingVideos = () => {
   return new Promise((resolve, reject) => {
     // API endpoint for trending videos
     const url = `https://www.googleapis.com/youtube/v3/videos?part=snippet,statistics&chart=mostPopular&regionCode=US&maxResults=10&key=${API_KEY}`;
-    
+
     console.log(`Fetching trending videos from YouTube API...`);
-    
+
     https.get(url, (res) => {
       if (res.statusCode !== 200) {
         reject(new Error(`API returned status code ${res.statusCode}`));
         return;
       }
-      
+
       let data = '';
       res.on('data', (chunk) => {
         data += chunk;
       });
-      
+
       res.on('end', () => {
         try {
           const response = JSON.parse(data);
@@ -59,23 +59,23 @@ const searchVideos = (query) => {
   return new Promise((resolve, reject) => {
     // Encode the query for URL
     const encodedQuery = encodeURIComponent(query);
-    
+
     // API endpoint for search
     const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodedQuery}&type=video&maxResults=5&key=${API_KEY}`;
-    
+
     console.log(`Searching YouTube for: "${query}"...`);
-    
+
     https.get(url, (res) => {
       if (res.statusCode !== 200) {
         reject(new Error(`API returned status code ${res.statusCode}`));
         return;
       }
-      
+
       let data = '';
       res.on('data', (chunk) => {
         data += chunk;
       });
-      
+
       res.on('end', () => {
         try {
           const response = JSON.parse(data);
@@ -95,20 +95,20 @@ const getChannelDetails = (channelId) => {
   return new Promise((resolve, reject) => {
     // API endpoint for channel details
     const url = `https://www.googleapis.com/youtube/v3/channels?part=snippet,statistics&id=${channelId}&key=${API_KEY}`;
-    
+
     console.log(`Fetching channel details for ID: ${channelId}...`);
-    
+
     https.get(url, (res) => {
       if (res.statusCode !== 200) {
         reject(new Error(`API returned status code ${res.statusCode}`));
         return;
       }
-      
+
       let data = '';
       res.on('data', (chunk) => {
         data += chunk;
       });
-      
+
       res.on('end', () => {
         try {
           const response = JSON.parse(data);
@@ -127,47 +127,47 @@ const getChannelDetails = (channelId) => {
 const analyzeNiche = async (keywords) => {
   try {
     console.log(`Starting niche analysis for keywords: ${keywords.join(', ')}`);
-    
+
     const results = [];
-    
+
     // Search for each keyword
     for (const keyword of keywords) {
       const searchResult = await searchVideos(keyword);
-      
+
       if (!searchResult.items || searchResult.items.length === 0) {
         console.log(`No results found for keyword: ${keyword}`);
         continue;
       }
-      
+
       let totalViews = 0;
       let totalLikes = 0;
       let videoCount = 0;
-      
+
       // Get video statistics and accumulate totals
       const channelIds = new Set();
-      
+
       for (const item of searchResult.items) {
         const videoId = item.id.videoId;
         const channelId = item.snippet.channelId;
         channelIds.add(channelId);
-        
+
         // Get video details to access statistics (would need separate API call)
         // For simplicity, we're not making that additional call for each video
-        
+
         videoCount++;
       }
-      
+
       // Get channel details for the first channel
       let channelDetails = null;
       if (channelIds.size > 0) {
         const firstChannelId = Array.from(channelIds)[0];
         const channelResult = await getChannelDetails(firstChannelId);
-        
+
         if (channelResult.items && channelResult.items.length > 0) {
           channelDetails = channelResult.items[0];
         }
       }
-      
+
       results.push({
         keyword,
         videoCount,
@@ -181,7 +181,7 @@ const analyzeNiche = async (keywords) => {
         } : null
       });
     }
-    
+
     return {
       searchDate: new Date().toISOString(),
       nicheAnalysis: results,
@@ -203,12 +203,12 @@ const runTests = async () => {
       console.log('Then place it in a file named youtube-api-key.txt in the root directory');
       return;
     }
-    
+
     // 1. Test trending videos
     console.log('\n===== TEST 1: TRENDING VIDEOS =====');
     const trendingVideos = await fetchTrendingVideos();
     console.log(`Found ${trendingVideos.items?.length || 0} trending videos`);
-    
+
     if (trendingVideos.items && trendingVideos.items.length > 0) {
       console.log('\nTop trending videos:');
       trendingVideos.items.slice(0, 3).forEach((video, i) => {
@@ -216,13 +216,13 @@ const runTests = async () => {
         console.log(`   Views: ${video.statistics.viewCount}, Likes: ${video.statistics.likeCount}`);
       });
     }
-    
+
     // 2. Test search
     console.log('\n===== TEST 2: SEARCH VIDEOS =====');
     const searchQuery = 'Financial Literacy';
     const searchResults = await searchVideos(searchQuery);
     console.log(`Found ${searchResults.items?.length || 0} videos for "${searchQuery}"`);
-    
+
     if (searchResults.items && searchResults.items.length > 0) {
       console.log('\nTop search results:');
       searchResults.items.slice(0, 3).forEach((video, i) => {
@@ -230,25 +230,25 @@ const runTests = async () => {
         console.log(`   Published: ${video.snippet.publishedAt}`);
       });
     }
-    
+
     // 3. Test niche analysis
     console.log('\n===== TEST 3: NICHE ANALYSIS =====');
     const nicheKeywords = ['Financial Literacy', 'Tech Review Shorts', 'DIY Home Improvement'];
     const nicheAnalysis = await analyzeNiche(nicheKeywords);
-    
+
     console.log('\nNiche Analysis Results:');
     nicheAnalysis.nicheAnalysis.forEach((niche) => {
       console.log(`\nKeyword: ${niche.keyword}`);
       console.log(`Videos Found: ${niche.videoCount}`);
       console.log(`Unique Channels: ${niche.channelCount}`);
-      
+
       if (niche.topChannel) {
         console.log(`Top Channel: ${niche.topChannel.title}`);
         console.log(`Subscribers: ${niche.topChannel.subscriberCount}`);
         console.log(`Channel Views: ${niche.topChannel.viewCount}`);
       }
     });
-    
+
     // Save results to a file
     const outputFile = './youtube-api-test-results.json';
     fs.writeFileSync(outputFile, JSON.stringify({
@@ -257,9 +257,9 @@ const runTests = async () => {
       search: searchResults,
       nicheAnalysis: nicheAnalysis
     }, null, 2));
-    
+
     console.log(`\nAll tests completed. Results saved to ${outputFile}`);
-    
+
   } catch (error) {
     console.error('Error during tests:', error);
   }

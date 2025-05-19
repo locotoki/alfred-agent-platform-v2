@@ -27,8 +27,8 @@ Claude Desktop is excellent for:
 
 **Example Prompt:**
 ```
-I'm creating documentation for the Social Intelligence agent in the Alfred Agent Platform. 
-Please help me draft this document following the agent template. 
+I'm creating documentation for the Social Intelligence agent in the Alfred Agent Platform.
+Please help me draft this document following the agent template.
 
 The agent documentation should be placed at /docs/agents/domain/social-intelligence.md
 
@@ -48,7 +48,7 @@ Claude Code is ideal for:
 
 **Example Prompt:**
 ```
-I'm documenting the API for the Social Intelligence agent. Please help me create 
+I'm documenting the API for the Social Intelligence agent. Please help me create
 technical documentation that includes code examples for the API endpoints.
 
 The documentation should follow our standard format and include:
@@ -150,7 +150,7 @@ See the [document review prompt](./prompts/doc-review-prompt.md) for a specializ
 ### Creating a New Document
 
 ```
-I need to create a new [agent/workflow/project] document for [name]. 
+I need to create a new [agent/workflow/project] document for [name].
 The document should follow our standard template and be placed at [path].
 
 Here's what I know about this [agent/workflow/project]:
@@ -162,7 +162,7 @@ Please help me draft this document according to our standards.
 ### Updating an Existing Document
 
 ```
-I need to update our documentation for [name] at [path]. 
+I need to update our documentation for [name] at [path].
 Specifically, I need to update the [section] with new information about [topic].
 
 Here's the current document:

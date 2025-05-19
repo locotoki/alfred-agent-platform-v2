@@ -25,7 +25,7 @@ docker exec alfred-agent-platform-v2-supabase-db-1 bash -c "
   apt-get update >/dev/null 2>&1
   apt-get install -y python3 python3-pip >/dev/null 2>&1
   pip3 install pyjwt >/dev/null 2>&1
-  
+
   python3 -c \"
 import jwt
 import time
@@ -91,8 +91,8 @@ cat > ./update_auth.sql << EOF
 DO \$\$
 BEGIN
   IF EXISTS (
-    SELECT FROM information_schema.tables 
-    WHERE table_schema = 'auth' 
+    SELECT FROM information_schema.tables
+    WHERE table_schema = 'auth'
     AND table_name = 'config'
   ) THEN
     UPDATE auth.config SET jwt_secret = '$JWT_SECRET';
@@ -120,10 +120,10 @@ sleep 5
 echo -e "${YELLOW}Testing with new service role token...${NC}"
 docker exec alfred-agent-platform-v2-alfred-bot-1 /bin/sh -c "
   apk add --no-cache curl jq >/dev/null 2>&1 || true
-  
+
   # Set environment variables
   export SUPABASE_SERVICE_ROLE_KEY='$SERVICE_ROLE_KEY'
-  
+
   # Test writing to architect_in table
   echo 'Testing write to architect_in table...'
   echo '{\"data\":{\"message\":\"test message with new token\"}}' > /tmp/test_data.json

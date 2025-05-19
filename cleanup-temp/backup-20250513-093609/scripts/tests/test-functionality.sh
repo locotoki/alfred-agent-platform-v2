@@ -16,7 +16,7 @@ echo -e "\nStep 3: Testing direct access to TinyLlama...\n"
 RESPONSE=$(curl -s -X POST http://localhost:11434/api/chat \
   -H "Content-Type: application/json" \
   -d '{"model":"tinyllama","messages":[{"role":"user","content":"Tell me a joke"}],"stream":false}')
-  
+
 echo "Response from TinyLlama:"
 echo "$RESPONSE" | grep -o '"content":"[^"]*"' | sed 's/"content":"//;s/"$//'
 
@@ -25,7 +25,7 @@ echo -e "\nStep 4: Testing direct access to Llama2...\n"
 RESPONSE=$(curl -s -X POST http://localhost:11434/api/chat \
   -H "Content-Type: application/json" \
   -d '{"model":"llama2","messages":[{"role":"user","content":"Tell me a joke"}],"stream":false}')
-  
+
 echo "Response from Llama2:"
 echo "$RESPONSE" | grep -o '"content":"[^"]*"' | sed 's/"content":"//;s/"$//'
 

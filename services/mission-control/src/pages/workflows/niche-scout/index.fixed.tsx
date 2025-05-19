@@ -55,7 +55,7 @@ export default function NicheScout() {
           'Content-Type': 'application/json',
         },
       });
-      
+
       if (response.ok) {
         const data = await response.json();
         setResultData(data);
@@ -87,11 +87,11 @@ export default function NicheScout() {
             Niche-Scout Workflow
           </h1>
         </div>
-        
+
         {/* Configuration Section */}
         <div className="card p-6">
           <h2 className="text-xl font-bold mb-4">Configuration</h2>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
             <div>
               <label htmlFor="niche-query" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
@@ -125,7 +125,7 @@ export default function NicheScout() {
               </select>
             </div>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
             <div>
               <label htmlFor="time-range" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
@@ -162,7 +162,7 @@ export default function NicheScout() {
               </select>
             </div>
           </div>
-          
+
           <div className="mb-4">
             <button
               onClick={() => setShowAdvanced(!showAdvanced)}
@@ -171,7 +171,7 @@ export default function NicheScout() {
               {showAdvanced ? '- Hide Advanced Options' : '+ Advanced Options'}
             </button>
           </div>
-          
+
           {showAdvanced && (
             <div className="border border-gray-200 dark:border-gray-700 rounded-md p-4 mb-4">
               <h3 className="text-lg font-semibold mb-2">Advanced Options</h3>
@@ -201,7 +201,7 @@ export default function NicheScout() {
               </div>
             </div>
           )}
-          
+
           <div className="flex flex-wrap gap-3">
             <button
               onClick={handleRunWorkflow}
@@ -223,7 +223,7 @@ export default function NicheScout() {
             </button>
           </div>
         </div>
-        
+
         {/* Results Section */}
         {resultData && (
           <div className="card p-6">
@@ -234,7 +234,7 @@ export default function NicheScout() {
                 <p>Found: {resultData.trending_niches.length} niches</p>
               </div>
             </div>
-            
+
             <div className="flex flex-wrap justify-between mb-4">
               <div className="flex items-center space-x-2">
                 <label htmlFor="sort-by" className="text-sm font-medium">
@@ -251,13 +251,13 @@ export default function NicheScout() {
                   <option>Overall Score</option>
                 </select>
               </div>
-              
+
               <div className="flex space-x-2">
                 <button className="btn-secondary py-1">Filter</button>
                 <button className="btn-secondary py-1">Export</button>
               </div>
             </div>
-            
+
             {/* Niche Cards */}
             <div className="space-y-6">
               {resultData.top_niches.slice(0, 4).map((niche, index) => (
@@ -268,7 +268,7 @@ export default function NicheScout() {
                       📈 {(niche.score * 100).toFixed(1)}% GROWTH
                     </span>
                   </div>
-                  
+
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mb-3 text-sm">
                     <div>
                       <span className="font-medium">Competition:</span> HIGH
@@ -283,7 +283,7 @@ export default function NicheScout() {
                       <span className="font-medium">Gender:</span> 80% M, 20% F
                     </div>
                   </div>
-                  
+
                   <div className="mb-3">
                     <h4 className="font-medium mb-1">Trending Topics:</h4>
                     <ul className="list-disc list-inside text-sm ml-2">
@@ -292,14 +292,14 @@ export default function NicheScout() {
                       <li>{niche.query} secrets</li>
                     </ul>
                   </div>
-                  
+
                   <div className="mb-3">
                     <h4 className="font-medium mb-1">Top Channels:</h4>
                     <p className="text-sm">
                       {niche.query.replace(/\s+/g, '')}Shorts (4.7M), {niche.query.replace(/\s+/g, '')}Masters (2.9M)
                     </p>
                   </div>
-                  
+
                   <div className="flex flex-wrap gap-2">
                     <button className="btn-secondary py-1 text-sm">VIEW DETAILS</button>
                     <button className="btn-secondary py-1 text-sm">CREATE BLUEPRINT</button>
@@ -311,13 +311,13 @@ export default function NicheScout() {
           </div>
         )}
       </div>
-      
+
       {/* Schedule Modal */}
       {showScheduleModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-md w-full">
             <h2 className="text-xl font-bold mb-4">Schedule Workflow</h2>
-            
+
             <div className="mb-4">
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Frequency
@@ -333,7 +333,7 @@ export default function NicheScout() {
                 <option value="once">Once</option>
               </select>
             </div>
-            
+
             {frequency === 'once' && (
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
@@ -347,7 +347,7 @@ export default function NicheScout() {
                 />
               </div>
             )}
-            
+
             <div className="flex justify-end space-x-2">
               <button
                 onClick={() => setShowScheduleModal(false)}

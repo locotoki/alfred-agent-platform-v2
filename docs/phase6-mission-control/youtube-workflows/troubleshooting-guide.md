@@ -92,7 +92,7 @@ netstat -tuln | grep -E '3005|9000'
     message: string;
     technical?: string;
   } | null>(null);
-  
+
   // When catching errors:
   setError({
     message: 'User-friendly message',
@@ -104,7 +104,7 @@ netstat -tuln | grep -E '3005|9000'
   const timeout = 45000; // 45 seconds
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), timeout);
-  
+
   try {
     const response = await fetch(url, {
       signal: controller.signal,
@@ -146,7 +146,7 @@ netstat -tuln | grep -E '3005|9000'
       data.trending_niches.length > 0
     );
   };
-  
+
   // In component:
   if (!isValidResult(result)) {
     return <ErrorState message="Invalid result data structure" />;
@@ -210,7 +210,7 @@ grep -A 5 "scripts" /home/locotoki/projects/alfred-agent-platform-v2/services/mi
 ### "Failed to fetch" in Console
 This typically indicates a CORS issue or network connectivity problem.
 
-**Solution:** 
+**Solution:**
 - Ensure API calls are made to the same origin or proper CORS headers are set
 - Verify Social Intelligence Agent is running
 - Check network connectivity between services

@@ -64,30 +64,30 @@ def check_postgres_health(dsn):
         # Basic connectivity check
         conn = psycopg2.connect(dsn)
         cursor = conn.cursor()
-        
+
         # Connection pool metrics
         cursor.execute("SELECT count(*) FROM pg_stat_activity")
         connections = cursor.fetchone()[0]
         pg_connections.set(connections)
-        
+
         cursor.execute("SHOW max_connections")
         max_conn = cursor.fetchone()[0]
         pg_max_connections.set(int(max_conn))
-        
+
         # Simple query test for health validation
         start_time = time.time()
         cursor.execute("SELECT 1")
         end_time = time.time()
         pg_query_duration.set(end_time - start_time)
         pg_queries_total.inc()
-        
+
         cursor.close()
         conn.close()
-        
+
         # Database is up
         pg_up.set(1)
         return True
-        
+
     except Exception as e:
         pg_up.set(0)
         return False
@@ -114,24 +114,24 @@ redis_commands_total = Counter('redis_commands_total', 'Total number of commands
 def check_redis_health(host, port):
     try:
         client = redis.Redis(host=host, port=port)
-        
+
         # Basic health check
         if client.ping():
             redis_up.set(1)
-            
+
             # Get detailed info
             info = client.info()
-            
+
             # Update metrics
             redis_memory_used.set(info.get('used_memory', 0))
             redis_clients.set(info.get('connected_clients', 0))
             redis_commands_total._value.set(info.get('total_commands_processed', 0))
-            
+
             return True
         else:
             redis_up.set(0)
             return False
-            
+
     except Exception as e:
         redis_up.set(0)
         return False
@@ -160,17 +160,17 @@ def check_http_health(service_name, url):
     try:
         response = requests.get(f"{url}/health", timeout=5)
         http_requests_total.labels(service=service_name, endpoint='/health').inc()
-        
+
         duration = time.time() - start_time
         http_request_duration.labels(service=service_name, endpoint='/health').observe(duration)
-        
+
         if response.status_code == 200:
             service_up.labels(service=service_name).set(1)
             return True
         else:
             service_up.labels(service=service_name).set(0)
             return False
-            
+
     except Exception as e:
         duration = time.time() - start_time
         http_request_duration.labels(service=service_name, endpoint='/health').observe(duration)
@@ -275,12 +275,12 @@ def monitoring_thread():
                     is_healthy = check_tcp_health(service_name, config)
                 else:
                     is_healthy = False
-                
+
                 service_health.labels(service=service_name).set(1 if is_healthy else 0)
             except Exception as e:
                 print(f"Error checking {service_name}: {str(e)}")
                 service_health.labels(service=service_name).set(0)
-        
+
         # Check every 15 seconds
         time.sleep(15)
 
@@ -292,13 +292,13 @@ threading.Thread(target=monitoring_thread, daemon=True).start()
 async def health():
     service_requests_total.inc()
     services_status = {}
-    
+
     for service_name in services:
         health_value = service_health.labels(service=service_name)._value.get()
         services_status[service_name] = "ok" if health_value == 1 else "error"
-    
+
     overall_status = "ok" if all(status == "ok" for status in services_status.values()) else "degraded"
-    
+
     return {
         "status": overall_status,
         "version": "1.0.0",
@@ -319,7 +319,7 @@ async def metrics():
 if __name__ == "__main__":
     # Start Prometheus metrics server
     start_http_server(9091)
-    
+
     # Start FastAPI app
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)
@@ -389,7 +389,7 @@ db-metrics:
 # Add to prometheus.yml
 scrape_configs:
   # Other jobs...
-  
+
   - job_name: 'db-metrics'
     static_configs:
       - targets: ['db-metrics:9091']

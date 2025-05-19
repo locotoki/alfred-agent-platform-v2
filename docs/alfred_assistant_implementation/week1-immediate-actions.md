@@ -91,16 +91,16 @@ async def lifespan(app: FastAPI):
     await master_alfred.start()
     await supabase_transport.connect()
     logger.info("master_alfred_started")
-    
+
     yield
-    
+
     # Shutdown
     await master_alfred.stop()
     await supabase_transport.disconnect()
     logger.info("master_alfred_stopped")
 
 app = FastAPI(
-    title="Master Alfred", 
+    title="Master Alfred",
     version="2.0.0",
     lifespan=lifespan
 )
@@ -139,7 +139,7 @@ class MasterAlfredAgent(BaseAgent):
     """
     Master Alfred Orchestrator - The central controller for all Alfred operations.
     """
-    
+
     def __init__(self):
         super().__init__(
             name="master-alfred",
@@ -159,22 +159,22 @@ class MasterAlfredAgent(BaseAgent):
                 "PRIORITY_OVERRIDE"
             ]
         )
-        
+
         self.personality_engine = AlfredPersonality()
         self.context_manager = ContextManager()
         self.family_profiles = FamilyProfileManager()
         self.proactive_monitor = ProactiveMonitor()
-        
+
     async def process_task(self, envelope: A2AEnvelope) -> Dict[str, Any]:
         """Process incoming requests with Alfred's personality."""
         try:
             # Extract user context
             user_id = envelope.content.get("user_id")
             interface = envelope.content.get("interface", "unknown")
-            
+
             # Get family profile
             family_member = await self.family_profiles.get_member(user_id)
-            
+
             # Get context
             context = await self.context_manager.get_context(
                 user_id=user_id,
@@ -182,23 +182,23 @@ class MasterAlfredAgent(BaseAgent):
                 interface=interface,
                 intent=envelope.intent
             )
-            
+
             # Route to appropriate handler
             response = await self._route_request(envelope, context)
-            
+
             # Apply personality to response
             final_response = await self.personality_engine.format_response(
                 response=response,
                 context=context,
                 family_member=family_member
             )
-            
+
             return final_response
-            
+
         except Exception as e:
             logger.error("master_alfred_error", error=str(e))
             return self._create_error_response(e, envelope)
-    
+
     async def _route_request(self, envelope: A2AEnvelope, context: Dict[str, Any]) -> Dict[str, Any]:
         """Route requests to appropriate handlers."""
         if envelope.intent == "GENERAL_ASSISTANCE":
@@ -210,11 +210,11 @@ class MasterAlfredAgent(BaseAgent):
                 "response": f"Master Alfred acknowledges: {envelope.intent}",
                 "task_id": envelope.task_id
             }
-    
+
     async def _handle_general_assistance(self, envelope: A2AEnvelope, context: Dict[str, Any]) -> Dict[str, Any]:
         """Handle general assistance requests."""
         query = envelope.content.get("query", "")
-        
+
         return {
             "status": "success",
             "response": f"Certainly! I understand you need assistance with: {query}",
@@ -235,7 +235,7 @@ logger = structlog.get_logger(__name__)
 
 class AlfredPersonality:
     """Alfred's personality engine."""
-    
+
     def __init__(self):
         self.traits = {
             "discretion": 0.95,
@@ -246,14 +246,14 @@ class AlfredPersonality:
             "crisis_competence": 0.95,
             "loyalty": 1.0
         }
-    
+
     async def format_response(self, response: Dict[str, Any], context: Dict[str, Any], family_member: Dict[str, Any]) -> Dict[str, Any]:
         """Format response with Alfred's personality."""
         # Add personality touches
         if "response" in response:
             response["response"] = self._apply_alfred_style(response["response"])
         return response
-    
+
     def _apply_alfred_style(self, text: str) -> str:
         """Apply Alfred's speaking style."""
         # TODO: Implement sophisticated style application
@@ -270,10 +270,10 @@ logger = structlog.get_logger(__name__)
 
 class ContextManager:
     """Manages conversation and situational context."""
-    
+
     def __init__(self):
         self.contexts = {}
-    
+
     async def get_context(self, user_id: str, family_member: Dict[str, Any], interface: str, intent: str) -> Dict[str, Any]:
         """Get current context for user."""
         return {
@@ -294,10 +294,10 @@ logger = structlog.get_logger(__name__)
 
 class FamilyProfileManager:
     """Manages family member profiles."""
-    
+
     def __init__(self):
         self.profiles = {}
-    
+
     async def get_member(self, user_id: str) -> Optional[Dict[str, Any]]:
         """Get family member profile."""
         # TODO: Implement database lookup
@@ -317,15 +317,15 @@ logger = structlog.get_logger(__name__)
 
 class ProactiveMonitor:
     """Monitors for proactive assistance opportunities."""
-    
+
     def __init__(self):
         self.is_running = False
-    
+
     async def start(self):
         """Start monitoring."""
         self.is_running = True
         logger.info("proactive_monitor_started")
-    
+
     async def stop(self):
         """Stop monitoring."""
         self.is_running = False
@@ -382,11 +382,11 @@ async def execute_command(request: CommandRequest):
                 "context": request.context
             }
         )
-        
+
         # Process through Master Alfred
         from app.main import master_alfred
         response = await master_alfred.process_task(envelope)
-        
+
         return response
     except Exception as e:
         logger.error("command_execution_failed", error=str(e))
@@ -404,7 +404,7 @@ cp docker-compose.yml docker-compose-alfred.yml
 cat >> docker-compose-alfred.yml << 'EOF'
 
   master-alfred:
-    build: 
+    build:
       context: ./services/master-alfred
       dockerfile: Dockerfile
     ports:
@@ -447,7 +447,7 @@ from libs.a2a_adapter import A2AEnvelope
 async def test_general_assistance():
     """Test general assistance intent."""
     alfred = MasterAlfredAgent()
-    
+
     envelope = A2AEnvelope(
         intent="GENERAL_ASSISTANCE",
         content={
@@ -455,9 +455,9 @@ async def test_general_assistance():
             "user_id": "test_user"
         }
     )
-    
+
     response = await alfred.process_task(envelope)
-    
+
     assert response["status"] == "success"
     assert "weather" in response["response"].lower()
 EOF

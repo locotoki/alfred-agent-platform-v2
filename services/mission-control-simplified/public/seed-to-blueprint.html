@@ -22,7 +22,7 @@
     input, select, textarea {width:100%; padding:0.625rem; border:1px solid #d1d5db; border-radius:0.375rem; font-size:0.875rem; margin-bottom:1rem;}
     input:focus, select:focus, textarea:focus {outline:none; ring:2px; ring-color:#3b82f6; border-color:#3b82f6;}
     textarea {min-height:6rem; resize:vertical;}
-    
+
     /* Wizard Progress */
     .steps {display:flex; margin-bottom:2rem; position:relative;}
     .steps::before {content:""; position:absolute; top:14px; left:24px; right:24px; height:2px; background:#e2e8f0; z-index:0;}
@@ -30,7 +30,7 @@
     .step-circle {width:30px; height:30px; border-radius:50%; display:flex; align-items:center; justify-content:center; margin-bottom:0.5rem; background:#fff; border:2px solid #e2e8f0; color:#64748b; font-weight:600;}
     .step.active .step-circle, .step.completed .step-circle {background:#3b82f6; border-color:#3b82f6; color:#fff;}
     .step-text {font-size:0.875rem; color:#64748b; font-weight:500;}
-    
+
     .button-group {display:flex; justify-content:space-between; margin-top:1.5rem;}
     button {padding:0.625rem 1.25rem; border:none; border-radius:0.375rem; font-weight:500; cursor:pointer;}
     button.primary {background:#3b82f6; color:white;}
@@ -104,7 +104,7 @@
     <section id="wizard-section">
       <h2>Seed-to-Blueprint Workflow</h2>
       <p>Generate a comprehensive YouTube channel strategy and content roadmap based on a seed video or niche.</p>
-      
+
       <div class="card">
         <div class="steps">
           <div class="step active" id="step1">
@@ -169,7 +169,7 @@
         <!-- Step 2: Parameters -->
         <div id="step2-content" style="display:none;">
           <h3>Set Blueprint Parameters</h3>
-          
+
           <div class="grid-2">
             <div>
               <label for="audience">Target Audience</label>
@@ -214,7 +214,7 @@
         <!-- Step 3: Review -->
         <div id="step3-content" style="display:none;">
           <h3>Review Your Blueprint Request</h3>
-          
+
           <div class="blueprint-box">
             <div class="blueprint-section">
               <h3>Input</h3>
@@ -320,7 +320,7 @@
               <!-- Will be populated dynamically -->
             </ul>
           </div>
-          
+
           <div class="blueprint-section">
             <h3>Publishing Schedule</h3>
             <p>Based on audience analytics, we recommend this publishing schedule:</p>
@@ -437,10 +437,10 @@
     document.getElementById('niche-category').addEventListener('change', function() {
       const subcategorySelect = document.getElementById('niche-subcategory');
       const category = this.value;
-      
+
       // Clear current options
       subcategorySelect.innerHTML = '<option value="">Select a subcategory</option>';
-      
+
       // Add new options if category selected
       if (category && subcategories[category]) {
         subcategories[category].forEach(sub => {
@@ -468,10 +468,10 @@
 
       // Hide current step
       document.getElementById(`step${currentStep}-content`).style.display = 'none';
-      
+
       // Show next step
       document.getElementById(`step${currentStep+1}-content`).style.display = 'block';
-      
+
       // Update step indicators
       document.getElementById(`step${currentStep}`).classList.remove('active');
       document.getElementById(`step${currentStep}`).classList.add('completed');
@@ -486,10 +486,10 @@
     function prevStep(currentStep) {
       // Hide current step
       document.getElementById(`step${currentStep}-content`).style.display = 'none';
-      
+
       // Show previous step
       document.getElementById(`step${currentStep-1}-content`).style.display = 'block';
-      
+
       // Update step indicators
       document.getElementById(`step${currentStep}`).classList.remove('active');
       document.getElementById(`step${currentStep-1}`).classList.remove('completed');
@@ -499,7 +499,7 @@
     function populateReview() {
       const inputType = document.querySelector('input[name="input-type"]:checked').value;
       let inputValue = "";
-      
+
       if (inputType === 'video') {
         inputValue = document.getElementById('video-url').value;
         document.getElementById('review-input-type').textContent = 'Seed Video:';
@@ -511,13 +511,13 @@
         document.getElementById('review-input-type').textContent = 'Niche:';
         document.getElementById('review-input-value').textContent = inputValue;
       }
-      
+
       const audience = document.getElementById('audience');
       document.getElementById('review-audience').textContent = audience.options[audience.selectedIndex].text;
-      
+
       const contentDepth = document.getElementById('content-depth');
       document.getElementById('review-content-depth').textContent = contentDepth.options[contentDepth.selectedIndex].text;
-      
+
       // Handle multiple selected content formats
       const contentFormat = document.getElementById('content-format');
       const selectedFormats = Array.from(contentFormat.options)
@@ -525,7 +525,7 @@
         .map(option => option.text)
         .join(', ');
       document.getElementById('review-content-format').textContent = selectedFormats;
-      
+
       // Handle notes if present
       const notes = document.getElementById('custom-notes').value;
       if (notes.trim()) {
@@ -540,36 +540,36 @@
       // Hide wizard and show loading
       document.getElementById('wizard-section').style.display = 'none';
       document.getElementById('loading-section').style.display = 'block';
-      
+
       // Get input values
       const inputType = document.querySelector('input[name="input-type"]:checked').value;
       const params = {
         input_type: inputType
       };
-      
+
       if (inputType === 'video') {
         params.video_url = document.getElementById('video-url').value;
       } else {
         params.niche_category = document.getElementById('niche-category').value;
         params.niche_subcategory = document.getElementById('niche-subcategory').value;
       }
-      
+
       // Add other parameters
       params.audience = document.getElementById('audience').value;
       params.content_depth = document.getElementById('content-depth').value;
-      
+
       // Get selected content formats
       const contentFormatSelect = document.getElementById('content-format');
       params.content_formats = Array.from(contentFormatSelect.selectedOptions).map(option => option.value);
-      
+
       // Add custom notes if any
       const notes = document.getElementById('custom-notes').value;
       if (notes.trim()) {
         params.notes = notes;
       }
-      
+
       console.log('Sending parameters to API:', params);
-      
+
       // Call the API endpoint
       fetch('/api/workflows/seed-to-blueprint', {
         method: 'POST',
@@ -581,29 +581,29 @@
       .then(response => response.json())
       .then(data => {
         console.log('Received API data:', data);
-        
+
         // Check if this is mock data
         if (data._mock) {
           console.log('Received mock data from fallback mechanism');
         }
-        
+
         // Hide loading and show results
         document.getElementById('loading-section').style.display = 'none';
         document.getElementById('results-section').style.display = 'block';
-        
+
         // Populate results with the API response data
         populateResults(data);
       })
       .catch(error => {
         console.error('Error calling Seed-to-Blueprint API:', error);
-        
+
         // Show error but continue with mock data
         alert(`Error: ${error.message}. Falling back to mock data.`);
-        
+
         // Hide loading and show results
         document.getElementById('loading-section').style.display = 'none';
         document.getElementById('results-section').style.display = 'block';
-        
+
         // Populate with mock data
         populateResults();
       });
@@ -619,10 +619,10 @@
       document.querySelectorAll('.tab-content').forEach(tab => {
         tab.classList.remove('active');
       });
-      
+
       // Show selected tab
       document.getElementById(tabId).classList.add('active');
-      
+
       // Update tab indicators
       document.querySelectorAll('.tab').forEach(tab => {
         tab.classList.remove('active');
@@ -636,7 +636,7 @@
 
     function populateResults(apiData) {
       let data;
-      
+
       // If API data was provided and contains channel_blueprint, use it
       if (apiData && apiData.result && apiData.result.channel_blueprint) {
         console.log('Using API data for results');
@@ -646,7 +646,7 @@
         console.log('No API data available, using mock data');
         // Different mock data based on input type
         const inputType = document.querySelector('input[name="input-type"]:checked').value;
-        
+
         if (inputType === 'video') {
           const videoUrl = document.getElementById('video-url').value;
           // Mock data for video input
@@ -715,7 +715,7 @@
         const subcategory = document.getElementById('niche-subcategory');
         const nicheCategory = category.options[category.selectedIndex].text;
         const nicheSubcategory = subcategory.options[subcategory.selectedIndex].text;
-        
+
         data = {
           focus: `${nicheSubcategory} within the ${nicheCategory} space`,
           positioning: `Your channel should position itself as an authority on ${nicheSubcategory} content that appeals to both enthusiasts and newcomers. Focus on providing a mix of entertaining and informative content that showcases your unique perspective and expertise.`,
@@ -776,23 +776,23 @@
           }
         };
       }
-      
+
       // Populate blueprint header
       const currentInputType = document.querySelector('input[name="input-type"]:checked').value;
       const inputTypeText = currentInputType === 'video' ? 'Seed Video' : 'Niche';
-      const inputValueText = currentInputType === 'video' 
-        ? document.getElementById('video-url').value 
+      const inputValueText = currentInputType === 'video'
+        ? document.getElementById('video-url').value
         : `${document.getElementById('niche-category').options[document.getElementById('niche-category').selectedIndex].text} > ${document.getElementById('niche-subcategory').options[document.getElementById('niche-subcategory').selectedIndex].text}`;
-      
+
       document.getElementById('blueprint-header').innerHTML = `
         <p><strong>${inputTypeText}:</strong> ${inputValueText}</p>
         <p><strong>Generated:</strong> ${new Date().toLocaleString()}</p>
       `;
-      
+
       // Overview tab
       document.getElementById('overview-focus').textContent = data.focus;
       document.getElementById('overview-positioning').textContent = data.positioning;
-      
+
       const strategyList = document.getElementById('overview-strategy');
       strategyList.innerHTML = '';
       data.strategy.forEach(item => {
@@ -800,7 +800,7 @@
         li.textContent = item;
         strategyList.appendChild(li);
       });
-      
+
       // Content Strategy tab
       const contentPillarsList = document.getElementById('content-pillars');
       contentPillarsList.innerHTML = '';
@@ -809,7 +809,7 @@
         li.textContent = pillar;
         contentPillarsList.appendChild(li);
       });
-      
+
       const contentMixList = document.getElementById('content-mix');
       contentMixList.innerHTML = '';
       data.contentMix.forEach(mix => {
@@ -817,7 +817,7 @@
         li.textContent = mix;
         contentMixList.appendChild(li);
       });
-      
+
       const scheduleTable = document.getElementById('schedule-table');
       scheduleTable.innerHTML = '';
       data.schedule.forEach(item => {
@@ -830,7 +830,7 @@
         `;
         scheduleTable.appendChild(tr);
       });
-      
+
       // Video Ideas tab
       const videoIdeasTable = document.getElementById('video-ideas-table');
       videoIdeasTable.innerHTML = '';
@@ -844,7 +844,7 @@
         `;
         videoIdeasTable.appendChild(tr);
       });
-      
+
       // Recommendations tab
       const trendingTopicsList = document.getElementById('trending-topics');
       trendingTopicsList.innerHTML = '';
@@ -853,7 +853,7 @@
         li.textContent = topic;
         trendingTopicsList.appendChild(li);
       });
-      
+
       const channelExamplesTable = document.getElementById('channel-examples');
       channelExamplesTable.innerHTML = '';
       data.channelExamples.forEach(channel => {
@@ -866,7 +866,7 @@
         `;
         channelExamplesTable.appendChild(tr);
       });
-      
+
       document.getElementById('seo-keywords').textContent = data.seo.keywords;
       document.getElementById('seo-tags').textContent = data.seo.tags;
       document.getElementById('seo-title').textContent = data.seo.title;

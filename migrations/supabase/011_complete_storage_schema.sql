@@ -64,7 +64,7 @@ CREATE INDEX IF NOT EXISTS idx_objects_created_at ON storage.objects(created_at)
 ALTER TABLE storage.buckets ENABLE ROW LEVEL SECURITY;
 ALTER TABLE storage.objects ENABLE ROW LEVEL SECURITY;
 
--- Create default policies 
+-- Create default policies
 CREATE POLICY "Enable read access for all users" ON storage.objects
 FOR SELECT USING (true);
 

@@ -16,7 +16,7 @@ We have successfully implemented standardized health checks across 100% of the c
    - `/healthz`: Simple health probes for container orchestration
    - `/metrics`: Prometheus-compatible metrics for tracking
 
-3. **Unified Monitoring**: 
+3. **Unified Monitoring**:
    - All services expose metrics on port 9091 internally
    - Standard port mapping scheme (9091-9100) for host access
    - Prometheus labels for service discovery

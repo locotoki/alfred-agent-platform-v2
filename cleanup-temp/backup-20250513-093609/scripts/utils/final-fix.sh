@@ -84,22 +84,22 @@ docker exec alfred-agent-platform-v2-alfred-bot-1 /bin/sh -c "
   # Set environment variables
   export SUPABASE_URL=http://supabase-rest:3000
   export SUPABASE_SERVICE_ROLE_KEY=\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoic2VydmljZV9yb2xlIiwiaWF0IjoxNzQ2OTYwNzgyLCJleHAiOjQ5MDA1NjA3ODJ9.jp2EYNlfat_wVIXgw97Y7zkaEpGPsKgc6lR7R_xRmsA\"
-  
+
   # Test with direct table access - simple approach
   echo 'Testing direct table access without auth...'
   curl -s -X GET \"http://supabase-rest:3000/architect_in\" || echo 'Direct access failed'
-  
+
   # Try test_auth function - public access
   echo 'Testing public function...'
   curl -s -X GET \"http://supabase-rest:3000/rpc/test_auth\" || echo 'Public function test failed'
-  
+
   # Test with service role token
   echo 'Testing with service role token...'
   curl -s -X GET \
     -H \"apikey: \$SUPABASE_SERVICE_ROLE_KEY\" \
     -H \"Authorization: Bearer \$SUPABASE_SERVICE_ROLE_KEY\" \
     \"http://supabase-rest:3000/architect_in\" || echo 'Service role access failed'
-  
+
   # Test writing to architect_in
   echo 'Testing write to architect_in...'
   echo '{\"data\":{\"message\":\"test\"}}' > /tmp/test.json

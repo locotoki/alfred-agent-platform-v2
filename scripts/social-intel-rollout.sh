@@ -24,7 +24,7 @@ if command -v psql &> /dev/null; then
 else
   echo "PostgreSQL client not found, using Docker"
   cd /home/locotoki/projects/alfred-agent-platform-v2
-  
+
   # Verify if supabase-db container is running
   if docker ps | grep -q supabase-db; then
     echo "Applying database schema via Docker..."
@@ -68,7 +68,7 @@ else
   current_time=$(date +%s)
   last_update=$(date -d "$max_updated" +%s 2>/dev/null || echo 0)
   time_diff=$((current_time - last_update))
-  
+
   if [ $time_diff -gt 86400 ]; then
     echo "⚠️ Data has not been updated in more than 24 hours (last update: $max_updated)"
     echo "Running nightly scorer to update data..."

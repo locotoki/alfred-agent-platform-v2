@@ -4,9 +4,9 @@ This catalog provides a comprehensive overview of all workflows available in the
 
 ## Migration Progress Summary
 
-**Overall Migration Status**: 1% Complete  
-**Workflow Documentation Migration**: 1/86 files migrated (1.2%)  
-**Highest Priority Workflows**: Niche-Scout, Seed-to-Blueprint (Social Intelligence)  
+**Overall Migration Status**: 1% Complete
+**Workflow Documentation Migration**: 1/86 files migrated (1.2%)
+**Highest Priority Workflows**: Niche-Scout, Seed-to-Blueprint (Social Intelligence)
 **Most Fragmented Documentation**: Niche-Scout (9 files), Seed-to-Blueprint (7 files)
 
 ## How to Use This Catalog

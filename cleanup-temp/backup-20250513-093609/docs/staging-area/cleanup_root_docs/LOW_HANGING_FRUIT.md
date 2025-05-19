@@ -98,7 +98,7 @@ cp docker-compose.unified.yml docker-compose.unified.yml.bak
 for service in agent-financial agent-legal agent-social agent-rag agent-core agent-atlas; do
   # Extract the current port from the service configuration
   port=$(grep -A20 "^  $service:" docker-compose.unified.yml | grep -oP "ports.*?:\K\d+" | head -1)
-  
+
   if [ -n "$port" ]; then
     # Update the health check
     sed -i "/^  $service:/,/healthcheck:/c\\
@@ -271,7 +271,7 @@ def with_retry(
         async def wrapper(*args: Any, **kwargs: Any) -> T:
             attempt = 0
             current_backoff = initial_backoff
-            
+
             while True:
                 attempt += 1
                 try:
@@ -282,7 +282,7 @@ def with_retry(
                             f"Failed after {attempt} attempts: {str(e)}"
                         )
                         raise
-                    
+
                     logger.warning(
                         f"Attempt {attempt} failed, retrying in {current_backoff}s: {str(e)}"
                     )
@@ -290,7 +290,7 @@ def with_retry(
                     current_backoff = min(
                         current_backoff * backoff_multiplier, max_backoff
                     )
-        
+
         return wrapper
     return decorator
 ```
@@ -334,5 +334,5 @@ Follow this order for minimal risk:
 5. ✅ Container Resource Limits (OPT-001)
    - Add resource limits
    - Monitor containers for stability
-   
+
 Always make one change at a time and test thoroughly before proceeding to the next optimization.

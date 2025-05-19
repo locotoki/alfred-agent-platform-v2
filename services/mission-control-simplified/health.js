@@ -34,12 +34,12 @@ async function checkServiceAvailability(url) {
     const timeout = 2000; // 2 second timeout
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), timeout);
-    
+
     const response = await fetch(`${url}/health`, {
       signal: controller.signal,
       method: 'GET',
     });
-    
+
     clearTimeout(timeoutId);
     return response.ok;
   } catch (error) {
@@ -55,16 +55,16 @@ async function checkServiceAvailability(url) {
 async function checkDependencies() {
   const services = {};
   let hasError = false;
-  
+
   for (const [name, url] of Object.entries(dependencies)) {
     const isAvailable = await checkServiceAvailability(url);
     services[name] = isAvailable ? 'ok' : 'error';
     if (!isAvailable) hasError = true;
   }
-  
+
   // Update service health metric
   serviceHealth = hasError ? 0 : 1;
-  
+
   return {
     status: hasError ? 'degraded' : 'ok',
     services
@@ -74,11 +74,11 @@ async function checkDependencies() {
 // Health endpoint with detailed status
 router.get('/health', async (req, res) => {
   requestsTotal += 1;
-  
+
   try {
     // Check dependent services
     const healthStatus = await checkDependencies();
-    
+
     res.json({
       status: healthStatus.status,
       version: '1.0.0',
@@ -103,7 +103,7 @@ router.get('/healthz', (req, res) => {
 // Prometheus metrics endpoint
 router.get('/metrics', (req, res) => {
   requestsTotal += 1;
-  
+
   // Format metrics in Prometheus text format
   const metrics = `# HELP service_health Service health status
 # TYPE service_health gauge
@@ -117,7 +117,7 @@ service_requests_total ${requestsTotal}
 # TYPE service_info gauge
 service_info{name="ui_admin",version="1.0.0"} 1
 `;
-  
+
   res.set('Content-Type', 'text/plain');
   res.send(metrics);
 });
@@ -125,7 +125,7 @@ service_info{name="ui_admin",version="1.0.0"} 1
 // Create a separate metrics server
 function createMetricsServer(port = 9091) {
   const metricsApp = express();
-  
+
   // Use the same metrics endpoint
   metricsApp.get('/metrics', (req, res) => {
     const metrics = `# HELP service_health Service health status
@@ -140,26 +140,26 @@ service_requests_total ${requestsTotal}
 # TYPE service_info gauge
 service_info{name="ui_admin",version="1.0.0"} 1
 `;
-    
+
     res.set('Content-Type', 'text/plain');
     res.send(metrics);
   });
-  
+
   // Add health endpoints to metrics server as well
   metricsApp.get('/health', async (req, res) => {
     const healthStatus = await checkDependencies();
-    
+
     res.json({
       status: healthStatus.status,
       version: '1.0.0',
       services: healthStatus.services
     });
   });
-  
+
   metricsApp.get('/healthz', (req, res) => {
     res.json({ status: 'ok' });
   });
-  
+
   // Start the metrics server
   return metricsApp.listen(port, () => {
     console.log(`Metrics server listening on port ${port}`);

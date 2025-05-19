@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"os"
 	"time"
-	
+
 	"github.com/locotoki/alfred-agent-platform-v2/internal/prometheus"
 )
 
@@ -49,7 +49,7 @@ func main() {
 	// Perform health check
 	checker := prometheus.NewHealthChecker(client, prometheusURL, verbose)
 	status, err := checker.Check()
-	
+
 	if err != nil {
 		log.Printf("Health check failed: %v", err)
 		os.Exit(2)

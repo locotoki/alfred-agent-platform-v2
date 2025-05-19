@@ -21,7 +21,7 @@ check_port() {
   local host="localhost"
   local port=$1
   local service=$2
-  
+
   nc -z -w 5 $host $port
   if [ $? -eq 0 ]; then
     echo "✅ $service port $port is open"
@@ -37,7 +37,7 @@ failures=0
 
 for service in "${!SERVICE_PORTS[@]}"; do
   port=${SERVICE_PORTS[$service]}
-  
+
   echo "Checking $service on port $port..."
   if ! check_port $port $service; then
     failures=$((failures + 1))

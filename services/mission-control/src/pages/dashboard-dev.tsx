@@ -58,7 +58,7 @@ export default function DashboardDev() {
           <div className="flex justify-between h-12">
             <div className="flex">
               {navigation.map((item) => (
-                <Link 
+                <Link
                   key={item.name}
                   href={item.href}
                   className={

@@ -1,7 +1,7 @@
 # Documentation Migration Dashboard
 
-*Last Updated: 2025-05-10*  
-*Owner: Documentation Team*  
+*Last Updated: 2025-05-10*
+*Owner: Documentation Team*
 *Status: In Progress*
 
 ## Migration Progress Summary

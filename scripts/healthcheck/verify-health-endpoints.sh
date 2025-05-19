@@ -30,12 +30,12 @@ check_endpoint() {
   local name=$1
   local url=$2
   local type=$3
-  
+
   echo -n "Checking $name $type endpoint ($url): "
-  
+
   # Try to get the URL with a short timeout
   response=$(curl -s -m 2 "$url" 2>/dev/null || echo "ERROR")
-  
+
   if [[ "$response" == "ERROR" ]]; then
     echo -e "${RED}FAILED (connection error)${NC}"
     return 1
@@ -80,7 +80,7 @@ FAILURES=0
 # Check each service
 for service in "${SERVICES[@]}"; do
   IFS=';' read -r name health_url metrics_url <<< "$service"
-  
+
   echo -e "${YELLOW}Service: $name${NC}"
   check_endpoint "$name" "$health_url" "health" || ((FAILURES++))
   check_endpoint "$name" "$metrics_url" "metrics" || ((FAILURES++))

@@ -1,6 +1,6 @@
 # Docker Compose Documentation Archive
 
-This directory contains historical Docker Compose documentation that has been superseded 
+This directory contains historical Docker Compose documentation that has been superseded
 by newer documents:
 
 - **DOCKER-COMPOSE-GUIDE.md** (in project root)

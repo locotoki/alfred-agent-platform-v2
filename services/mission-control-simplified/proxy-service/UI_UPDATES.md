@@ -18,10 +18,10 @@ Add the following code to the niche-scout.html file before the closing `</body>`
     const data = event.detail;
     const proxyBadge = document.getElementById('proxy-badge');
     const proxyBadgeText = document.getElementById('proxy-badge-text');
-    
+
     if (data && data._routedThroughProxy) {
       proxyBadge.style.display = 'block';
-      
+
       // Show cache status if available
       if (data.meta && data.meta.cache_hit) {
         proxyBadgeText.textContent = 'Proxy Cache Hit';
@@ -46,25 +46,25 @@ Modify the fetch response handler in niche-scout.html to dispatch an event:
   // Show results
   wizardContainer.style.display = 'none';
   resultsContainer.style.display = 'block';
-  
+
   // Update result data
-  resultDate.textContent = new Date().toLocaleDateString('en-US', { 
-    year: 'numeric', 
-    month: 'long', 
-    day: 'numeric' 
+  resultDate.textContent = new Date().toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
   });
   resultQuery.textContent = query;
   resultCategory.textContent = category;
-  
+
   // Log the received data so we can see what we're getting
   console.log('Received API data:', data);
-  
+
   // Dispatch event for proxy badge
   const responseEvent = new CustomEvent('niche_scout_response', {
     detail: data
   });
   window.dispatchEvent(responseEvent);
-  
+
   // Rest of the handler...
 })
 ```

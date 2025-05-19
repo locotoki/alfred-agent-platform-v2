@@ -95,7 +95,7 @@ The workflow follows a client-server architecture:
 
 - **Primary Endpoint**: `/api/workflows/seed-to-blueprint`
 - **Method**: POST
-- **Required Parameters**: 
+- **Required Parameters**:
   - `input_type`: "video" or "niche"
   - For video: `video_url`
   - For niche: `niche_category` and `niche_subcategory`

@@ -12,7 +12,7 @@ This document outlines the immediate next steps to improve the LLM integration i
   - Utility scripts (`joke.py`, `direct-chat.py`, etc.)
   - Documentation files
   - Setup scripts
-- **Testing Required**: 
+- **Testing Required**:
   - Verify Ollama models work with different prompts
   - Confirm UI properly shows real responses
   - Ensure debug mode shows API details

@@ -40,7 +40,7 @@
    # Tag for production
    docker tag [digest] ghcr.io/locotoki/alfred-agent-platform-v2/slack_mcp_gateway:v0.1.0
    docker push ghcr.io/locotoki/alfred-agent-platform-v2/slack_mcp_gateway:v0.1.0
-   
+
    # Deploy to production
    helm upgrade -f charts/slack-mcp-gateway/values-prod.yaml ...
    ```

@@ -15,11 +15,11 @@
     4. Thumbnail/Title Micro A/B (Insight Run)
     5. Platform Algorithm Pulse
 2. **Production & Quality Pilots (Optional)**
-    
+
     6. Voice Consistency Smoke Test
-    
+
     7. One-Flow Prefect Dry-Run
-    
+
 3. **Master Database Blueprint (Notion)**
 4. **Appendices**
     - Cheat-Sheet Formulas
@@ -31,10 +31,10 @@
 ## 1 Research Pilots (Core)
 
 > Goal: Surface insights about topics, trends, audience behaviour, and platform shifts before investing in code.
-> 
-> 
+>
+>
 > **Suggested order:** Run #1 and #2 first—they feed ideas into everything else.
-> 
+>
 
 ### Pilot 1 Competitor & Topic Scanner – “Gap Finder”
 
@@ -54,25 +54,25 @@
 3. **Copy the 20 most-popular video titles** from each competitor (Videos → Sort by Popular). Paste into *Competitors* !A.
 4. **Paste your own 20 most-popular titles** into *Your Channel* !A.
 5. In *Competitors* !C2 type
-    
+
     ```
     php
     CopyEdit
     =ARRAYFORMULA(LOWER(REGEXREPLACE(A2:A,"[^A-Za-z0-9 ]","")))
-    
+
     ```
-    
+
     then in *Competitors* !D2 type
-    
+
     ```
     php
     CopyEdit
     =ARRAYFORMULA(SPLIT(C2:C," "))
-    
+
     ```
-    
+
     (Copy both formulas to *Your Channel*.)
-    
+
 6. **Insert a Pivot Table** in *Keyword Pivot* → Rows = Keyword, Values = COUNTA (do this twice: one per tab).
 7. **Conditional-format** cells where Competitor ≥5 **and** You = 0 (bright orange).
 8. **Interpret** orange cells → brainstorm 3–5 new video topics.
@@ -123,7 +123,7 @@ and upload `gaps.csv` to Notion automatically.
 Claude prompt:
 
 > “Every weekday at 09:00, use pytrends to fetch related_queries for ['3d printing','resin printer'], append JSON to google_trends.db, then summarise top 5 rising queries into Notion under Trend Log.”
-> 
+>
 
 Zapier handles the schedule; Claude writes the summary.
 
@@ -220,7 +220,7 @@ Steps:
 ## 3 Master Database Blueprint (Notion)
 
 > Create one Table – Full Page called Manual Research & QA Pilots and add these columns:
-> 
+>
 
 | Column (Type) | Description |
 | --- | --- |

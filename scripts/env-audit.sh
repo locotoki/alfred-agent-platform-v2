@@ -28,37 +28,37 @@ echo "" >> $OUTPUT_FILE
 extract_from_compose() {
     local file=$1
     echo -e "${YELLOW}Scanning $file...${NC}"
-    
+
     echo "## Variables from $file" >> $OUTPUT_FILE
     echo "" >> $OUTPUT_FILE
     echo "| Service | Variable | Default Value | Required | Purpose |" >> $OUTPUT_FILE
     echo "|---------|----------|---------------|----------|---------|" >> $OUTPUT_FILE
-    
+
     # Extract service and environment sections
     services=$(grep -A1 "services:" $file | tail -1 | sed 's/[[:space:]]*//g')
-    
+
     # If no services found directly, try to find all service sections
     if [ -z "$services" ]; then
         service_names=$(grep -A1 "^[[:space:]]*[a-zA-Z0-9_-]*:" $file | grep -v ":" | sed 's/[[:space:]]*//g' | sort | uniq)
-        
+
         for service in $service_names; do
             # Extract environment block
             env_block=$(sed -n "/^[[:space:]]*$service:/,/^[[:space:]]*[a-zA-Z0-9_-]*:/p" $file | grep -A100 "environment:" | grep -v "environment:" | grep -B100 -m1 "^[[:space:]]*[a-zA-Z0-9_-]*:" | grep -v "^[[:space:]]*[a-zA-Z0-9_-]*:")
-            
+
             # Process each environment variable
             echo "$env_block" | grep -v "^--$" | grep -v "^$" | while read -r line; do
                 # Clean up the line
                 clean_line=$(echo "$line" | sed 's/^[[:space:]]*-[[:space:]]*//g' | sed 's/^[[:space:]]*//g')
-                
+
                 # Extract variable name and default value
                 var_name=$(echo "$clean_line" | cut -d '=' -f1 | sed 's/^[[:space:]]*//g' | sed 's/[[:space:]]*$//g')
                 default_value=$(echo "$clean_line" | grep -q "=" && echo "$clean_line" | cut -d '=' -f2- | sed 's/^[[:space:]]*//g' | sed 's/[[:space:]]*$//g' || echo "")
-                
+
                 # Check if it uses variable substitution
                 if [[ $default_value == *'${''}'* ]]; then
                     var_in_default=$(echo "$default_value" | grep -o '\${[^}]*}' | sed 's/\${//g' | sed 's/}//g' | cut -d ':' -f1)
                     default_after_colon=$(echo "$default_value" | grep -o '\${[^}]*}' | grep -q ':' && echo "$default_value" | grep -o '\${[^}]*}' | sed 's/\${[^:]*://g' | sed 's/}//g' || echo "")
-                    
+
                     if [ -n "$default_after_colon" ]; then
                         required="No"
                         default_value="$default_after_colon (from \${$var_in_default})"
@@ -74,7 +74,7 @@ extract_from_compose() {
                         default_value="None"
                     fi
                 fi
-                
+
                 # Add to output file
                 echo "| $service | $var_name | $default_value | $required | |" >> $OUTPUT_FILE
             done
@@ -86,25 +86,25 @@ extract_from_compose() {
 extract_from_python() {
     local directory=$1
     echo -e "${YELLOW}Scanning Python files in $directory...${NC}"
-    
+
     echo "## Variables from Python code in $directory" >> $OUTPUT_FILE
     echo "" >> $OUTPUT_FILE
     echo "| File | Variable | Default Value | Required | Purpose |" >> $OUTPUT_FILE
     echo "|------|----------|---------------|----------|---------|" >> $OUTPUT_FILE
-    
+
     # Find all Python files and search for os.environ or os.getenv
     find "$directory" -name "*.py" -type f -exec grep -l "os\.environ\|os\.getenv" {} \; | while read -r file; do
         # Get relative path
         rel_file=${file#$directory/}
-        
+
         # Extract lines with os.environ or os.getenv
         grep -n "os\.environ\|os\.getenv" "$file" | while read -r line; do
             line_num=$(echo "$line" | cut -d':' -f1)
             content=$(echo "$line" | cut -d':' -f2-)
-            
+
             # Extract variable name
             var_name=$(echo "$content" | grep -o 'os\.environ\.\get\s*(\s*["'"'"']\([^"'"'"']*\)["'"'"']\|os\.getenv\s*(\s*["'"'"']\([^"'"'"']*\)["'"'"']\|os\.environ\[["'"'"']\([^"'"'"']*\)["'"'"']\]' | grep -o '["'"'"'][^"'"'"']*["'"'"']' | sed 's/^["'"'"']//g' | sed 's/["'"'"']$//g')
-            
+
             # Check if there's a default value (for os.getenv or os.environ.get)
             if echo "$content" | grep -q 'os\.environ\.get\|os\.getenv'; then
                 # Check if there's a second parameter (default value)
@@ -120,7 +120,7 @@ extract_from_python() {
                 default_value="None"
                 required="Yes"
             fi
-            
+
             # Add to output file
             echo "| $rel_file:$line_num | $var_name | $default_value | $required | |" >> $OUTPUT_FILE
         done
@@ -131,25 +131,25 @@ extract_from_python() {
 extract_from_js() {
     local directory=$1
     echo -e "${YELLOW}Scanning JS/TS files in $directory...${NC}"
-    
+
     echo "## Variables from JS/TS code in $directory" >> $OUTPUT_FILE
     echo "" >> $OUTPUT_FILE
     echo "| File | Variable | Default Value | Required | Purpose |" >> $OUTPUT_FILE
     echo "|------|----------|---------------|----------|---------|" >> $OUTPUT_FILE
-    
+
     # Find all JS/TS files and search for process.env
     find "$directory" -name "*.js" -o -name "*.ts" -type f -exec grep -l "process\.env" {} \; | while read -r file; do
         # Get relative path
         rel_file=${file#$directory/}
-        
+
         # Extract lines with process.env
         grep -n "process\.env" "$file" | while read -r line; do
             line_num=$(echo "$line" | cut -d':' -f1)
             content=$(echo "$line" | cut -d':' -f2-)
-            
+
             # Extract variable name
             var_name=$(echo "$content" | grep -o 'process\.env\.\([A-Za-z0-9_]*\)' | sed 's/process\.env\.\([A-Za-z0-9_]*\)/\1/g')
-            
+
             # Check if there's a default value using || or ??
             if echo "$content" | grep -q 'process\.env\.[A-Za-z0-9_]*\s*[|?][|?]\s*'; then
                 default_value=$(echo "$content" | sed 's/.*process\.env\.[A-Za-z0-9_]*\s*[|?][|?]\s*\([^;,)]*\).*/\1/g' | sed 's/^[[:space:]]*//g' | sed 's/[[:space:]]*$//g')
@@ -158,7 +158,7 @@ extract_from_js() {
                 default_value="None"
                 required="Yes"
             fi
-            
+
             # Add to output file
             echo "| $rel_file:$line_num | $var_name | $default_value | $required | |" >> $OUTPUT_FILE
         done

@@ -1,6 +1,6 @@
 # Documentation Migration Dashboard
 
-*Last Updated: 2025-05-10*  
+*Last Updated: 2025-05-10*
 *Status: In Progress*
 
 ## Current Progress

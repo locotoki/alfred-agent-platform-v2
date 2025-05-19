@@ -21,12 +21,12 @@ jobs:
     if: ${{ always() && (github.event_name != 'pull_request' || needs.detect-changes.outputs.code_changed == 'true' || contains(github.event.pull_request.labels.*.name, 'force-test')) && !contains(github.event.pull_request.labels.*.name, 'docs-only') && (github.ref != 'refs/heads/main' || github.event_name == 'pull_request') }}
     steps:
       - uses: actions/checkout@v3
-      
+
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.11'
-          
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
@@ -37,7 +37,7 @@ jobs:
           # Install minimal requirements for CI tests
           echo "Installing minimal requirements for CI..."
           pip install python-dotenv==1.0.0 pydantic==2.6.0 fastapi==0.108.0 prometheus-client==0.19.0
-          
+
       - name: Run minimal linting
         run: |
           # Check if this is a docs-only PR
@@ -46,7 +46,7 @@ jobs:
             echo "Documentation-only changes - no Python linting needed"
             exit 0
           fi
-          
+
           # Skip black checks for black formatting branches
           if [[ "$GITHUB_REF" == *"black"* ]]; then
             echo "SKIPPING black and isort checks for black formatting branch"
@@ -56,7 +56,7 @@ jobs:
             black --check --exclude "(youtube-test-env/|migrations/|node_modules/|\.git/|\.mypy_cache/|\.env/|\.venv/|env/|venv/|\.ipynb/)" .
             isort --check-only --profile black --skip youtube-test-env --skip migrations .
           fi
-          
+
           # Run mypy and pytest for full validation
           if [[ "$GITHUB_REF" != "refs/heads/main" && "$GITHUB_EVENT_NAME" != "workflow_dispatch" ]]; then
             echo "Running full validation with mypy and pytest"
@@ -76,14 +76,14 @@ jobs:
     continue-on-error: ${{ github.event.pull_request.number == 12 || github.event.pull_request.number == 29 }}
     steps:
       - uses: actions/checkout@v3
-      
+
       - name: Check for healthcheck version
         run: |
           echo "Checking Dockerfiles for healthcheck version..."
           # Verify services use the latest healthcheck binary version
           EXPECTED_VERSION="0.4.0"
           FOUND_OLD_VERSION=false
-          
+
           for dockerfile in $(find . -name "Dockerfile" -not -path "*/node_modules/*"); do
             if grep -q "healthcheck:" "$dockerfile"; then
               if grep -q "FROM.*healthcheck:" "$dockerfile" && ! grep -q "FROM.*healthcheck:$EXPECTED_VERSION" "$dockerfile"; then
@@ -92,11 +92,11 @@ jobs:
               fi
             fi
           done
-          
+
           if [ "$FOUND_OLD_VERSION" = true ]; then
             exit 1
           fi
-          
+
       - name: Check metrics port exposure
         run: |
           echo "Checking for metrics port exposure..."
@@ -108,7 +108,7 @@ jobs:
               fi
             fi
           done
-      
+
       - name: Check for service_health metric
         run: |
           echo "Checking for service_health metric..."
@@ -120,7 +120,7 @@ jobs:
               fi
             fi
           done
-      
+
       - name: Verify metrics format
         run: |
           echo "Checking metrics format..."
@@ -131,11 +131,11 @@ jobs:
               exit 1
             fi
           done
-          
+
       - name: Verify CHANGELOG is updated
         run: |
           echo "Checking CHANGELOG.md..."
-          
+
           if [ "$GITHUB_EVENT_NAME" = "pull_request" ]; then
             # For PRs, check if CHANGELOG.md was modified
             git fetch origin $GITHUB_BASE_REF --depth=1
@@ -144,18 +144,18 @@ jobs:
               # Don't fail the build, just warn
             fi
           fi
-      
+
       - name: Verify dashboard JSON files
         run: |
           echo "Checking dashboard JSON files..."
-          
+
           # Count dashboard files
           DASHBOARD_COUNT=$(find ./monitoring/grafana/dashboards -name "*.json" | wc -l)
           if [ "$DASHBOARD_COUNT" -lt 1 ]; then
             echo "ERROR: No dashboard JSON files found"
             exit 1
           fi
-          
+
           # Verify dashboard files are valid JSON
           for dashboard in $(find ./monitoring/grafana/dashboards -name "*.json"); do
             if ! jq empty "$dashboard" 2>/dev/null; then
@@ -196,7 +196,7 @@ jobs:
     continue-on-error: ${{ github.event_name == 'pull_request' || github.event.pull_request.number == 12 || github.event.pull_request.number == 29 }}
     steps:
       - uses: actions/checkout@v3
-      
+
       - name: Special handling for cleanup PR #29
         run: |
           if [[ "$GITHUB_HEAD_REF" == *"cleanup/remove-temporary-ci-files"* || "$GITHUB_REF" == *"cleanup/remove-temporary-ci-files"* ]]; then
@@ -205,7 +205,7 @@ jobs:
             ./scripts/skip-ci-for-cleanup.sh
             exit 0
           fi
-      
+
       - name: Install docker-compose plugin
         run: |
           # Docker Compose comes pre-installed on GitHub runners
@@ -214,25 +214,25 @@ jobs:
             sudo apt-get update -y
             sudo apt-get install -y docker-compose
           fi
-          
+
       - name: Set up Docker Compose
         run: |
           docker-compose --version || docker compose version
-      
+
       - name: Start services
         run: |
           docker compose -f docker-compose-clean.yml up -d
-      
+
       - name: Wait for services to be ready
         run: |
           echo "Waiting for services to be ready..."
           sleep 30
-      
+
       - name: Run integration tests
         run: |
           # Run integration test script
           ./scripts/test-service-health.sh
-      
+
       - name: Check metrics endpoints
         run: |
           # Test metrics endpoints
@@ -240,7 +240,7 @@ jobs:
             echo "Testing metrics on port $port..."
             curl -s http://localhost:$port/metrics || echo "No service on port $port"
           done
-      
+
       - name: Teardown services
         run: |
           docker compose -f docker-compose-clean.yml down

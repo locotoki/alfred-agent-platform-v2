@@ -5,7 +5,7 @@ services:
   # Development overrides for Redis
   redis:
     command: ["redis-server", "--appendonly", "yes", "--save", "60", "1"]
-  
+
   # Development overrides for PostgreSQL
   db-postgres:
     environment:

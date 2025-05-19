@@ -10,6 +10,6 @@
 
 ## Niche‑Scout Wizard
 
-1. **Define Niche** – title, Category ▸ Sub‑category, live score  
-2. **Research Params** – data‑source toggles, budget slider, advanced accordions  
+1. **Define Niche** – title, Category ▸ Sub‑category, live score
+2. **Research Params** – data‑source toggles, budget slider, advanced accordions
 3. **Review & Run** – diff summary, cost, ETA, run/draft/later

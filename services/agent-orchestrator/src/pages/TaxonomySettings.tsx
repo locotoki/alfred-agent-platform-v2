@@ -40,13 +40,13 @@ const TaxonomySettings: React.FC = () => {
   const updateCategory = (index: number, field: keyof Category, value: string) => {
     const updatedCategories = [...categories];
     const oldValue = updatedCategories[index].value;
-    
+
     // Update the category
-    updatedCategories[index] = { 
-      ...updatedCategories[index], 
-      [field]: value 
+    updatedCategories[index] = {
+      ...updatedCategories[index],
+      [field]: value
     };
-    
+
     // If value field is updated, we need to update subcategoryMap keys
     if (field === 'value' && oldValue !== value) {
       const subcategories = subcategoryMap[oldValue] || [];
@@ -54,12 +54,12 @@ const TaxonomySettings: React.FC = () => {
       delete newSubcategoryMap[oldValue];
       newSubcategoryMap[value] = subcategories;
       setSubcategoryMap(newSubcategoryMap);
-      
+
       if (activeCategory === oldValue) {
         setActiveCategory(value);
       }
     }
-    
+
     setCategories(updatedCategories);
   };
 
@@ -68,10 +68,10 @@ const TaxonomySettings: React.FC = () => {
     const updatedCategories = categories.filter((_, i) => i !== index);
     const updatedSubcategoryMap = { ...subcategoryMap };
     delete updatedSubcategoryMap[categoryToRemove.value];
-    
+
     setCategories(updatedCategories);
     setSubcategoryMap(updatedSubcategoryMap);
-    
+
     if (activeCategory === categoryToRemove.value) {
       setActiveCategory(updatedCategories[0]?.value || null);
     }
@@ -80,11 +80,11 @@ const TaxonomySettings: React.FC = () => {
   // Handle subcategory operations
   const addSubcategory = (categoryValue: string) => {
     if (!categoryValue) return;
-    
+
     const newValue = `${categoryValue}.sub-${Date.now()}`;
     const newSubcategory = { label: "New Subcategory", value: newValue };
     const updatedSubcategories = [...(subcategoryMap[categoryValue] || []), newSubcategory];
-    
+
     setSubcategoryMap({
       ...subcategoryMap,
       [categoryValue]: updatedSubcategories
@@ -93,13 +93,13 @@ const TaxonomySettings: React.FC = () => {
 
   const updateSubcategory = (categoryValue: string, index: number, field: keyof Category, value: string) => {
     if (!categoryValue) return;
-    
+
     const updatedSubcategories = [...(subcategoryMap[categoryValue] || [])];
-    updatedSubcategories[index] = { 
-      ...updatedSubcategories[index], 
-      [field]: value 
+    updatedSubcategories[index] = {
+      ...updatedSubcategories[index],
+      [field]: value
     };
-    
+
     setSubcategoryMap({
       ...subcategoryMap,
       [categoryValue]: updatedSubcategories
@@ -108,9 +108,9 @@ const TaxonomySettings: React.FC = () => {
 
   const removeSubcategory = (categoryValue: string, index: number) => {
     if (!categoryValue) return;
-    
+
     const updatedSubcategories = (subcategoryMap[categoryValue] || []).filter((_, i) => i !== index);
-    
+
     setSubcategoryMap({
       ...subcategoryMap,
       [categoryValue]: updatedSubcategories
@@ -151,13 +151,13 @@ const TaxonomySettings: React.FC = () => {
           Save Changes
         </Button>
       </div>
-      
+
       <Tabs defaultValue="categories" className="space-y-6">
         <TabsList>
           <TabsTrigger value="categories">Categories & Subcategories</TabsTrigger>
           <TabsTrigger value="costs">Cost Rules</TabsTrigger>
         </TabsList>
-        
+
         <TabsContent value="categories" className="space-y-6">
           <Card>
             <CardHeader>
@@ -180,7 +180,7 @@ const TaxonomySettings: React.FC = () => {
                       className="max-w-[200px]"
                     />
                     <Button
-                      variant="ghost" 
+                      variant="ghost"
                       size="icon"
                       onClick={() => removeCategory(index)}
                     >
@@ -188,7 +188,7 @@ const TaxonomySettings: React.FC = () => {
                     </Button>
                   </div>
                 ))}
-                
+
                 <Button variant="outline" onClick={addCategory}>
                   <Plus className="mr-2 h-4 w-4" />
                   Add Category
@@ -196,13 +196,13 @@ const TaxonomySettings: React.FC = () => {
               </div>
             </CardContent>
           </Card>
-          
+
           {activeCategory && (
             <Card>
               <CardHeader>
                 <CardTitle>Subcategories for {categories.find(c => c.value === activeCategory)?.label || activeCategory}</CardTitle>
                 <CardDescription>Manage subcategories for the selected category</CardDescription>
-                
+
                 <div className="mt-2">
                   <Label>Active Category</Label>
                   <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2 mt-2">
@@ -236,7 +236,7 @@ const TaxonomySettings: React.FC = () => {
                         className="max-w-[200px]"
                       />
                       <Button
-                        variant="ghost" 
+                        variant="ghost"
                         size="icon"
                         onClick={() => removeSubcategory(activeCategory, index)}
                       >
@@ -244,7 +244,7 @@ const TaxonomySettings: React.FC = () => {
                       </Button>
                     </div>
                   ))}
-                  
+
                   <Button variant="outline" onClick={() => addSubcategory(activeCategory)}>
                     <Plus className="mr-2 h-4 w-4" />
                     Add Subcategory
@@ -254,7 +254,7 @@ const TaxonomySettings: React.FC = () => {
             </Card>
           )}
         </TabsContent>
-        
+
         <TabsContent value="costs">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <Card>
@@ -280,7 +280,7 @@ const TaxonomySettings: React.FC = () => {
                 ))}
               </CardContent>
             </Card>
-            
+
             <Card>
               <CardHeader>
                 <CardTitle>Time & Budget Settings</CardTitle>
@@ -296,7 +296,7 @@ const TaxonomySettings: React.FC = () => {
                     onChange={(e) => setEtaBase(parseInt(e.target.value) || 0)}
                   />
                 </div>
-                
+
                 <div className="grid grid-cols-2 items-center gap-4">
                   <Label className="text-right">ETA per 1k items (seconds)</Label>
                   <Input
@@ -306,7 +306,7 @@ const TaxonomySettings: React.FC = () => {
                     onChange={(e) => setEtaPer1k(parseInt(e.target.value) || 0)}
                   />
                 </div>
-                
+
                 <div className="grid grid-cols-2 items-center gap-4">
                   <Label className="text-right">Minimum Budget ($)</Label>
                   <Input
@@ -316,7 +316,7 @@ const TaxonomySettings: React.FC = () => {
                     onChange={(e) => setBudgetMin(parseInt(e.target.value) || 0)}
                   />
                 </div>
-                
+
                 <div className="grid grid-cols-2 items-center gap-4">
                   <Label className="text-right">Maximum Budget ($)</Label>
                   <Input

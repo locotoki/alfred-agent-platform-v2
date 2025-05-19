@@ -1,6 +1,6 @@
 #!/bin/bash
 # Alfred Agent Platform - Platform Startup Script
-# 
+#
 # This script handles the startup, shutdown, and management
 # of all platform services in a controlled way.
 
@@ -110,10 +110,10 @@ case "$ACTION" in
     else
       echo -e "${YELLOW}Starting in detached mode.${NORM}"
     fi
-    
+
     # Create network if it doesn't exist
     docker network inspect alfred-network >/dev/null 2>&1 || docker network create alfred-network
-    
+
     # Start the services
     if [ -z "$SERVICES" ]; then
       docker-compose -f $COMPOSE_FILE up $DETACH
@@ -121,13 +121,13 @@ case "$ACTION" in
       docker-compose -f $COMPOSE_FILE up $DETACH $SERVICES
     fi
     ;;
-    
+
   down)
     echo -e "${BLUE}Stopping platform services...${NORM}"
     if [ -n "$CLEAN" ]; then
       echo -e "${YELLOW}Warning: Also removing volumes!${NORM}"
     fi
-    
+
     # Stop the services
     if [ -z "$SERVICES" ]; then
       docker-compose -f $COMPOSE_FILE down $CLEAN
@@ -135,10 +135,10 @@ case "$ACTION" in
       docker-compose -f $COMPOSE_FILE stop $SERVICES
     fi
     ;;
-    
+
   restart)
     echo -e "${BLUE}Restarting platform services...${NORM}"
-    
+
     # Restart the services
     if [ -z "$SERVICES" ]; then
       docker-compose -f $COMPOSE_FILE restart
@@ -146,10 +146,10 @@ case "$ACTION" in
       docker-compose -f $COMPOSE_FILE restart $SERVICES
     fi
     ;;
-    
+
   logs)
     echo -e "${BLUE}Showing logs for platform services...${NORM}"
-    
+
     # Show logs
     if [ -z "$SERVICES" ]; then
       docker-compose -f $COMPOSE_FILE logs -f
@@ -157,7 +157,7 @@ case "$ACTION" in
       docker-compose -f $COMPOSE_FILE logs -f $SERVICES
     fi
     ;;
-    
+
   *)
     echo -e "${RED}Error: Unknown action '$ACTION'${NORM}"
     show_help

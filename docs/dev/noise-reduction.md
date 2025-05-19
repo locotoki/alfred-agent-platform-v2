@@ -15,7 +15,7 @@ graph TD
     D -->|<= 0.7| F[Deliver Alert]
     E --> G[Noise Queue]
     F --> H[Alert Channel]
-    
+
     I[User Feedback] --> J[Training Pipeline]
     J --> K[Model Updates]
     K --> C
@@ -83,7 +83,7 @@ services:
         grouping_keys: ["service", "endpoint", "error_code"]
         similarity_threshold: 0.9
         time_window: 300
-        
+
       - name: "High Frequency Noise"
         priority: 50
         conditions:
@@ -138,7 +138,7 @@ if result['matching_rule']:
 // React component
 import { FeedbackPanel } from '@/components/FeedbackPanel';
 
-<FeedbackPanel 
+<FeedbackPanel
   alertId={alert.id}
   isNoise={alert.noise_score > 0.7}
   onFeedbackComplete={() => refreshAlerts()}
@@ -280,7 +280,7 @@ if random.random() < AB_TEST_PERCENTAGE:
     score = new_ranker.predict(alert)
 else:
     score = old_ranker.predict(alert)
-    
+
 # Track metrics by version
 metrics.increment('predictions', tags={'version': ranker_version})
 ```

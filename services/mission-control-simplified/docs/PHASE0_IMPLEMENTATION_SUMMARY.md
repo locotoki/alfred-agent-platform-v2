@@ -125,10 +125,10 @@ function stringSimilarity(str1, str2) {
   const levenshteinSimilarity = calculateLevenshtein(s1, s2);
   const jaccardSimilarity = calculateJaccardSimilarity(s1, s2);
   const jaroWinklerSimilarity = calculateJaroWinkler(s1, s2);
-  
+
   // Combine the scores with weights
-  return (levenshteinSimilarity * 0.5) + 
-         (jaccardSimilarity * 0.3) + 
+  return (levenshteinSimilarity * 0.5) +
+         (jaccardSimilarity * 0.3) +
          (jaroWinklerSimilarity * 0.2);
 }
 ```

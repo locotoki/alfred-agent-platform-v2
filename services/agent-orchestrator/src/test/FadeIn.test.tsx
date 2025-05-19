@@ -23,15 +23,15 @@ const FadeIn: React.FC<{
   'data-testid': testId,
 }) => {
   const [isVisible, setIsVisible] = React.useState(initialVisible);
-  
+
   React.useEffect(() => {
     const timer = setTimeout(() => {
       setIsVisible(true);
     }, delay);
-    
+
     return () => clearTimeout(timer);
   }, [delay]);
-  
+
   // Set initial transform based on direction
   const getInitialTransform = () => {
     switch (direction) {
@@ -47,14 +47,14 @@ const FadeIn: React.FC<{
         return 'none';
     }
   };
-  
+
   // Inline styles for the animation
   const styles = {
     opacity: isVisible ? 1 : 0,
     transform: isVisible ? 'none' : getInitialTransform(),
     transition: `opacity ${duration}ms ease, transform ${duration}ms ease`,
   };
-  
+
   return (
     <div className={className} style={styles} data-testid={testId}>
       {children}
@@ -95,15 +95,15 @@ describe('FadeIn Component', () => {
     });
 
     const container = screen.getByTestId('fade-container');
-    
+
     // Initially should be invisible
     expect(container.style.opacity).toBe('0');
-    
+
     // After delay, should be visible
     await act(async () => {
       vi.advanceTimersByTime(500);
     });
-    
+
     expect(container.style.opacity).toBe('1');
   });
 
@@ -119,7 +119,7 @@ describe('FadeIn Component', () => {
     const container = screen.getByTestId('fade-up');
     expect(container.style.transform).toBe('translateY(30px)');
   });
-  
+
   it('applies transform based on down direction', async () => {
     await act(async () => {
       render(
@@ -128,11 +128,11 @@ describe('FadeIn Component', () => {
         </FadeIn>
       );
     });
-    
+
     const container = screen.getByTestId('fade-down');
     expect(container.style.transform).toBe('translateY(-30px)');
   });
-  
+
   it('applies transform based on left direction', async () => {
     await act(async () => {
       render(
@@ -141,11 +141,11 @@ describe('FadeIn Component', () => {
         </FadeIn>
       );
     });
-    
+
     const container = screen.getByTestId('fade-left');
     expect(container.style.transform).toBe('translateX(30px)');
   });
-  
+
   it('applies transform based on right direction', async () => {
     await act(async () => {
       render(
@@ -154,7 +154,7 @@ describe('FadeIn Component', () => {
         </FadeIn>
       );
     });
-    
+
     const container = screen.getByTestId('fade-right');
     expect(container.style.transform).toBe('translateX(-30px)');
   });
@@ -169,7 +169,7 @@ describe('FadeIn Component', () => {
     });
 
     const container = screen.getByTestId('fade-container');
-    
+
     // Should be visible initially
     expect(container.style.opacity).toBe('1');
     expect(container.style.transform).toBe('none');
@@ -185,7 +185,7 @@ describe('FadeIn Component', () => {
     });
 
     const container = screen.getByTestId('fade-container');
-    
+
     // Check if transition property contains the custom duration
     expect(container.style.transition).toContain('500ms');
   });

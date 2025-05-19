@@ -25,7 +25,7 @@ NC='\033[0m' # No Color
 show_usage() {
     echo -e "${BLUE}Niche-Scout Rollout Toggle Script${NC}"
     echo "Controls the percentage of traffic sent through the new Niche-Scout proxy service"
-    echo 
+    echo
     echo "Usage: $0 [options]"
     echo
     echo "Options:"
@@ -50,26 +50,26 @@ show_usage() {
 # Function to get current configuration
 get_current_config() {
     echo -e "${BLUE}Fetching current configuration...${NC}"
-    
+
     response=$(curl -s -X GET "http://${SERVICE_HOST}:${SERVICE_PORT}${CONFIG_ENDPOINT}")
-    
+
     if [[ $? -ne 0 ]]; then
         echo -e "${RED}Error: Failed to connect to service at ${SERVICE_HOST}:${SERVICE_PORT}${NC}"
         exit 1
     fi
-    
+
     # Extract proxy enabled status and percentage
     proxy_enabled=$(echo $response | grep -o '"proxyEnabled":[^,}]*' | cut -d':' -f2 | tr -d ' ')
     traffic_percentage=$(echo $response | grep -o '"proxyTrafficPercentage":[^,}]*' | cut -d':' -f2 | tr -d ' ')
-    
+
     if [[ -z "$proxy_enabled" ]]; then
         echo -e "${RED}Error: Could not determine proxy status${NC}"
         echo "Raw response: $response"
         exit 1
     fi
-    
+
     CURRENT_PERCENTAGE=$traffic_percentage
-    
+
     # Display current status
     echo -e "${GREEN}Current configuration:${NC}"
     if [[ "$proxy_enabled" == "true" ]]; then
@@ -77,13 +77,13 @@ get_current_config() {
     else
         echo -e "  Proxy service: ${RED}DISABLED${NC}"
     fi
-    
+
     if [[ -z "$traffic_percentage" ]]; then
         echo -e "  Traffic percentage: ${YELLOW}UNKNOWN${NC}"
     else
         echo -e "  Traffic percentage: ${BLUE}${traffic_percentage}%${NC}"
     fi
-    
+
     echo
 }
 
@@ -91,37 +91,37 @@ get_current_config() {
 update_config() {
     local percentage=$1
     local enabled="true"
-    
+
     if [[ $percentage -eq 0 ]]; then
         enabled="false"
     fi
-    
+
     echo -e "${BLUE}Updating configuration...${NC}"
     echo -e "  Setting proxy traffic to: ${GREEN}${percentage}%${NC}"
-    
+
     # Build JSON payload
     payload="{\"featureFlags\":{\"proxyEnabled\":${enabled},\"proxyTrafficPercentage\":${percentage}}}"
-    
+
     # Send update request
     response=$(curl -s -X POST "http://${SERVICE_HOST}:${SERVICE_PORT}${CONFIG_ENDPOINT}" \
         -H "Content-Type: application/json" \
         -d "$payload")
-    
+
     if [[ $? -ne 0 ]]; then
         echo -e "${RED}Error: Failed to update configuration${NC}"
         exit 1
     fi
-    
+
     # Check response for success
     success=$(echo $response | grep -o '"success":[^,}]*' | cut -d':' -f2 | tr -d ' ')
-    
+
     if [[ "$success" == "true" ]]; then
         echo -e "${GREEN}Configuration updated successfully!${NC}"
-        
+
         # Verify the change actually took effect
         sleep 1
         get_current_config
-        
+
         if [[ "$CURRENT_PERCENTAGE" != "$percentage" ]]; then
             echo -e "${RED}Warning: Configuration update may not have taken effect${NC}"
             echo -e "${YELLOW}Expected: ${percentage}%, Actual: ${CURRENT_PERCENTAGE}%${NC}"
@@ -136,18 +136,18 @@ update_config() {
 # Function to perform canary rollout (10%)
 do_canary_rollout() {
     echo -e "${BLUE}Initiating 10% canary rollout...${NC}"
-    
+
     # First check current status
     get_current_config
-    
+
     if [[ "$CURRENT_PERCENTAGE" == "10" ]]; then
         echo -e "${YELLOW}Canary rollout already at 10%${NC}"
         return
     fi
-    
+
     echo -e "${BLUE}Setting traffic percentage to 10%...${NC}"
     update_config 10
-    
+
     echo -e "${GREEN}Canary rollout complete${NC}"
     echo -e "${YELLOW}Monitor metrics for 15-30 minutes before increasing traffic percentage${NC}"
 }
@@ -156,9 +156,9 @@ do_canary_rollout() {
 do_emergency_rollback() {
     echo -e "${RED}EMERGENCY ROLLBACK INITIATED${NC}"
     echo -e "${YELLOW}Setting traffic percentage to 0%...${NC}"
-    
+
     update_config 0
-    
+
     echo -e "${GREEN}Rollback complete - proxy service is now disabled${NC}"
     echo -e "${YELLOW}Please investigate the issue before re-enabling${NC}"
 }
@@ -166,7 +166,7 @@ do_emergency_rollback() {
 # Parse command line arguments
 while [[ $# -gt 0 ]]; do
     key="$1"
-    
+
     case $key in
         --set)
             ACTION="set"

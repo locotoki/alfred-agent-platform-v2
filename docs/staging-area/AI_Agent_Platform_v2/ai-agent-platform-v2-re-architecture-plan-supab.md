@@ -34,16 +34,16 @@ With Supabase handling the state storage and Postgres as the central database, a
 - **Postgres Database**: Supabase provides a SQL database with full **Postgres** support. Use **pgvector** for storing vector embeddings (replacing **Firestore** and external vector stores).
 - **State Store Migration**: You’ll need to rewrite the logic that interacts with Firestore and connect it to Supabase. This will require using **asyncpg** for database connections and writing SQL queries to handle state management.
     - Example: Replace Firestore-specific code with `asyncpg` in Python.
-        
+
         ```python
         python
         CopyEdit
         import asyncpg
         conn = await asyncpg.connect("postgres://supabase_user@supabase:5432/postgres")
         await conn.execute("INSERT INTO tasks ...")
-        
+
         ```
-        
+
 - **Real-time Features**: Supabase's **Realtime** feature will be useful for sending live updates (e.g., task status updates to the **Mission Control UI**).
 
 ### **3.2 Pub/Sub for Messaging**
@@ -75,7 +75,7 @@ With Supabase handling the state storage and Postgres as the central database, a
 1. **Supabase Setup**:
     - Set up a **Supabase project** and configure Postgres with the **pgvector** extension.
     - Update the Docker Compose file to include Supabase, replacing Firestore:
-        
+
         ```yaml
         yaml
         CopyEdit
@@ -87,22 +87,22 @@ With Supabase handling the state storage and Postgres as the central database, a
             image: supabase/postgrest
           supabase-realtime:
             image: supabase/realtime
-        
+
         ```
-        
+
 2. **Replace Firestore Logic**:
     - **State Store**: Replace Firestore interactions with SQL queries using **asyncpg**.
         - Example: In place of Firestore’s task storage:
-            
+
             ```python
             python
             CopyEdit
             import asyncpg
             conn = await asyncpg.connect("postgres://supabase_user@supabase:5432/postgres")
             await conn.execute("INSERT INTO tasks ...")
-            
+
             ```
-            
+
 3. **Pub/Sub Integration**:
     - Ensure that the **Pub/Sub** configuration remains intact, and the `a2a.tasks.create` and `a2a.tasks.completed` topics continue to operate smoothly.
     - The agents will publish and subscribe to **Pub/Sub** for communication, ensuring that messages are delivered and processed as per the A2A schema.

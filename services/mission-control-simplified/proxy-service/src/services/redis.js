@@ -1,6 +1,6 @@
 /**
  * Redis service for the proxy service
- * 
+ *
  * Manages Redis connection and provides utilities for working with Redis.
  */
 
@@ -63,17 +63,17 @@ async function initializeRedis() {
 
     // Test connection
     await redisClient.ping();
-    
+
     return redisClient;
   } catch (error) {
     logger.error('Failed to initialize Redis', { error: error.message });
-    
+
     // Create a mock Redis client for graceful fallback if Redis is unavailable
     if (!redisClient) {
       logger.warn('Using in-memory Redis mock for graceful fallback');
       redisClient = createRedisMock();
     }
-    
+
     return redisClient;
   }
 }
@@ -96,19 +96,19 @@ function getRedisClient() {
  */
 function createRedisMock() {
   logger.warn('Creating Redis mock - data will not persist across restarts');
-  
+
   const storage = new Map();
-  
+
   return {
     async get(key) {
       logger.debug(`MOCK: GET ${key}`);
       return storage.get(key) || null;
     },
-    
+
     async set(key, value, ...args) {
       logger.debug(`MOCK: SET ${key}`);
       storage.set(key, value);
-      
+
       // Handle expiry if EX option is provided
       if (args.includes('EX')) {
         const exIndex = args.indexOf('EX');
@@ -121,19 +121,19 @@ function createRedisMock() {
           }, seconds * 1000);
         }
       }
-      
+
       return 'OK';
     },
-    
+
     async del(key) {
       logger.debug(`MOCK: DEL ${key}`);
       return storage.delete(key) ? 1 : 0;
     },
-    
+
     async ping() {
       return 'PONG';
     },
-    
+
     // Add other methods as needed for basic functionality
     on() {}, // No-op for event handlers
   };
@@ -149,19 +149,19 @@ function createRedisMock() {
 async function cacheData(key, data, ttl = 3600) {
   try {
     const serialized = JSON.stringify(data);
-    
+
     // Also store in memory cache for fallback
     memoryCache.set(key, data);
     memoryCacheExpiry.set(key, Date.now() + (ttl * 1000));
-    
+
     try {
       // Try to store in Redis
       const redis = getRedisClient();
       return await redis.set(key, serialized, 'EX', ttl);
     } catch (redisError) {
-      logger.error('Redis error during cache write, using memory cache only', { 
-        key, 
-        error: redisError.message 
+      logger.error('Redis error during cache write, using memory cache only', {
+        key,
+        error: redisError.message
       });
       return 'OK (Memory Cache)';
     }
@@ -182,7 +182,7 @@ async function getCachedData(key) {
     // Try Redis first
     const redis = getRedisClient();
     const data = await redis.get(key);
-    
+
     if (data) {
       try {
         // Found in Redis, also update memory cache as backup
@@ -195,7 +195,7 @@ async function getCachedData(key) {
         // Fall back to memory cache
       }
     }
-    
+
     // Not found in Redis or parse error, try memory cache
     if (memoryCache.has(key)) {
       const expiry = memoryCacheExpiry.get(key);
@@ -208,13 +208,13 @@ async function getCachedData(key) {
         memoryCacheExpiry.delete(key);
       }
     }
-    
+
     // Not found anywhere
     return null;
   } catch (error) {
     // Redis error, try memory cache fallback
     logger.warn('Redis error during get, using memory cache fallback', { key, error: error.message });
-    
+
     // Check if we have it in memory cache and it's not expired
     if (memoryCache.has(key)) {
       const expiry = memoryCacheExpiry.get(key);
@@ -227,7 +227,7 @@ async function getCachedData(key) {
         memoryCacheExpiry.delete(key);
       }
     }
-    
+
     // Not in memory cache or expired
     return null;
   }
@@ -242,12 +242,12 @@ async function invalidateCache(key) {
   try {
     let redisCount = 0;
     let memoryCount = 0;
-    
+
     // Clear from memory cache first (always succeeds)
     if (key.includes('*')) {
       // Pattern matching for memory cache
       const pattern = new RegExp('^' + key.replace(/\*/g, '.*') + '$');
-      
+
       for (const cacheKey of memoryCache.keys()) {
         if (pattern.test(cacheKey)) {
           memoryCache.delete(cacheKey);
@@ -263,21 +263,21 @@ async function invalidateCache(key) {
         memoryCount = 1;
       }
     }
-    
+
     try {
       // Try Redis invalidation
       const redis = getRedisClient();
-      
+
       // If key contains wildcard, use scan to find matching keys
       if (key.includes('*')) {
         const stream = redis.scanStream({
           match: key,
           count: 100
         });
-        
+
         redisCount = await new Promise((resolve, reject) => {
           let count = 0;
-          
+
           stream.on('data', async (keys) => {
             if (keys.length) {
               const pipeline = redis.pipeline();
@@ -286,11 +286,11 @@ async function invalidateCache(key) {
               count += results.reduce((acc, [err, res]) => acc + (err ? 0 : res), 0);
             }
           });
-          
+
           stream.on('end', () => {
             resolve(count);
           });
-          
+
           stream.on('error', (err) => {
             reject(err);
           });
@@ -300,23 +300,23 @@ async function invalidateCache(key) {
         redisCount = await redis.del(key);
       }
     } catch (redisError) {
-      logger.error('Redis error during cache invalidation, memory cache cleared only', { 
-        key, 
+      logger.error('Redis error during cache invalidation, memory cache cleared only', {
+        key,
         error: redisError.message,
         memoryKeysRemoved: memoryCount
       });
       return memoryCount;
     }
-    
+
     // Return total keys removed
     const totalRemoved = redisCount + memoryCount;
-    logger.info('Cache invalidation complete', { 
-      key, 
+    logger.info('Cache invalidation complete', {
+      key,
       redisKeysRemoved: redisCount,
       memoryKeysRemoved: memoryCount,
       totalRemoved
     });
-    
+
     return totalRemoved;
   } catch (error) {
     logger.error('Error invalidating cache', { key, error: error.message });
@@ -332,7 +332,7 @@ function getMemoryCacheStats() {
   const now = Date.now();
   let activeItems = 0;
   let expiredItems = 0;
-  
+
   // Count active and expired items
   for (const [key, expiry] of memoryCacheExpiry.entries()) {
     if (expiry > now) {
@@ -344,7 +344,7 @@ function getMemoryCacheStats() {
       memoryCacheExpiry.delete(key);
     }
   }
-  
+
   return {
     size: memoryCache.size,
     activeItems,

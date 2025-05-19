@@ -9,22 +9,22 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      
+
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.11'
-          
+
       - name: Install minimal dependencies
         run: |
           python -m pip install --upgrade pip
-          
+
           # Only install linting and testing tools (no requirements.txt)
           pip install black==24.1.1 isort==5.13.2 mypy==1.8.0 pytest==7.4.4
-          
+
           # Install bare minimum packages for CI
           pip install python-dotenv==1.0.0 pydantic==2.6.0 fastapi==0.108.0 prometheus-client==0.19.0
-          
+
       - name: Run linting
         run: |
           black --check .
@@ -43,14 +43,14 @@ jobs:
     needs: validate
     steps:
       - uses: actions/checkout@v3
-      
+
       - name: Check for healthcheck version
         run: |
           echo "Checking Dockerfiles for healthcheck version..."
           # Verify services use the latest healthcheck binary version
           EXPECTED_VERSION="0.4.0"
           FOUND_OLD_VERSION=false
-          
+
           for dockerfile in $(find . -name "Dockerfile" -not -path "*/node_modules/*"); do
             if grep -q "healthcheck:" "$dockerfile"; then
               if grep -q "FROM.*healthcheck:" "$dockerfile" && ! grep -q "FROM.*healthcheck:$EXPECTED_VERSION" "$dockerfile"; then
@@ -59,11 +59,11 @@ jobs:
               fi
             fi
           done
-          
+
           if [ "$FOUND_OLD_VERSION" = true ]; then
             exit 1
           fi
-          
+
       - name: Check metrics port exposure
         run: |
           echo "Checking for metrics port exposure..."
@@ -75,7 +75,7 @@ jobs:
               fi
             fi
           done
-      
+
       - name: Check for service_health metric
         run: |
           echo "Checking for service_health metric..."
@@ -87,7 +87,7 @@ jobs:
               fi
             fi
           done
-      
+
       - name: Verify metrics format
         run: |
           echo "Checking metrics format..."
@@ -98,18 +98,18 @@ jobs:
               exit 1
             fi
           done
-          
+
       - name: Verify dashboard JSON files
         run: |
           echo "Checking dashboard JSON files..."
-          
+
           # Count dashboard files
           DASHBOARD_COUNT=$(find ./monitoring/grafana/dashboards -name "*.json" | wc -l)
           if [ "$DASHBOARD_COUNT" -lt 1 ]; then
             echo "ERROR: No dashboard JSON files found"
             exit 1
           fi
-          
+
           # Verify dashboard files are valid JSON
           for dashboard in $(find ./monitoring/grafana/dashboards -name "*.json"); do
             if ! jq empty "$dashboard" 2>/dev/null; then

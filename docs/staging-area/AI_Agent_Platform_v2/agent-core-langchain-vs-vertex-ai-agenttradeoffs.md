@@ -47,29 +47,29 @@ You already speak **Google A2A Task / Artifact JSON** on Pub/Sub.
 ## 3 Concrete Engineering To‑Dos when **not** using Vertex
 
 1. **A2A Adapter Library**
-    
+
     *Wrap / unwrap envelope, validate JSON Schema, add `correlation_id`, fallback‑lang ↔︎ EN/KR.*
-    
+
 2. **Exactly‑once Handler**
-    
+
     *Store `messageId` in Firestore `ProcessedMsgs` collection with TTL; skip duplicates.*
-    
+
 3. **Policy Middleware**
-    
+
     *Interceptor function: PII scrub, rate‑limit by `slack_user_id`, profanity filter.*
-    
+
 4. **Agent Card Hosting**
-    
+
     *Generate `agent.json` at build time; serve via Cloud Run route or static site.*
-    
+
 5. **Tracing & Evaluation Stack**
-    
+
     *Integrate `langsmith` (Python SDK) → export spans to Cloud Trace; add run‑rating.*
-    
+
 6. **Autoscale Guard**
-    
+
     *Set Cloud Run `maxInstances` and add PromQL alert when queue > X; maybe Cloud Tasks fan‑out.*
-    
+
 
 *All of these are < 1 sprint with 1 backend dev, based on your existing Terraform and Makefile.*
 
@@ -87,10 +87,10 @@ You already speak **Google A2A Task / Artifact JSON** on Pub/Sub.
 | Vendor lock‑in | ★ | ⚠︎ high | ✅ low |
 
 > Verdict: For your local‑first, solo‑preneur phase, LangChain + LangGraph wins.
-> 
-> 
+>
+>
 > Vertex AI remains a drop‑in upgrade once traffic & compliance justify the switch.
-> 
+>
 
 ---
 
@@ -106,22 +106,22 @@ You already speak **Google A2A Task / Artifact JSON** on Pub/Sub.
 ## 6 FAQ Snippets for Stakeholders
 
 > Q: “Will we lose compatibility with future Google agent ecosystem?”
-> 
-> 
+>
+>
 > **A:** No—A2A envelope is the contract. Alfred speaks it today; Vertex Engine merely automates around it.
-> 
+>
 
 > Q: “What about Gemini models?”
-> 
-> 
+>
+>
 > **A:** LangChain’s `VertexAI` wrapper calls Gemini with the same auth you’d use in Engine, so no lock‑out.
-> 
+>
 
 > Q: “Can we still get 24×7 support?”
-> 
-> 
+>
+>
 > **A:** Google won’t debug LangChain code, but Cloud Run, Pub/Sub, and Vertex model issues remain under GCP support SLAs.
-> 
+>
 
 ---
 

@@ -1,7 +1,7 @@
 # Niche Scout Workflow
 
-**Last Updated:** 2025-05-10  
-**Owner:** Social Intelligence Team  
+**Last Updated:** 2025-05-10
+**Owner:** Social Intelligence Team
 **Status:** Active
 
 ## Overview

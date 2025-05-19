@@ -39,7 +39,7 @@ Everything else can layer on without breaking contracts, because all agents comm
 4. **At scale**, specialised data, incident-management and fleet-lifecycle agents round out the crew.
 
 > Note: You can host multiple roles in one process early on and split into independent services as tokens & latency budgets grow.
-> 
+>
 
 ---
 

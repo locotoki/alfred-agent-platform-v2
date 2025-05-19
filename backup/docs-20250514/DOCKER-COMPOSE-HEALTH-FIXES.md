@@ -18,7 +18,7 @@ Many services were using a non-existent `healthcheck` binary in their Docker hea
    - `docker-compose.yml` - Main configuration file used by start-platform.sh
    - `docker-compose.override.ui-chat.yml` - UI Chat override file
    - `docker-compose-clean.yml` - Cleaned version of the main docker-compose file
-   
+
 3. **Files Examined (No Changes Needed)**:
    - `docker-compose.dev.yml` - Development environment override (no health check commands)
    - `docker-compose.override.social-intel.yml` - Social intelligence override (no health check commands)
@@ -47,7 +47,7 @@ Many services were using a non-existent `healthcheck` binary in their Docker hea
    - Mail Server
 
 5. **Example Changes**:
-   
+
    **HTTP Endpoint Change**:
    From:
    ```yaml
@@ -56,7 +56,7 @@ Many services were using a non-existent `healthcheck` binary in their Docker hea
      <<: *basic-health-check
      start_period: 20s
    ```
-   
+
    To:
    ```yaml
    healthcheck:
@@ -72,7 +72,7 @@ Many services were using a non-existent `healthcheck` binary in their Docker hea
      test: ["CMD", "healthcheck", "--tcp", "localhost:4000"]
      <<: *basic-health-check
    ```
-   
+
    To:
    ```yaml
    healthcheck:
@@ -87,7 +87,7 @@ Many services were using a non-existent `healthcheck` binary in their Docker hea
      test: ["CMD", "healthcheck", "--redis", "redis://localhost:6379"]
      <<: *basic-health-check
    ```
-   
+
    To:
    ```yaml
    healthcheck:

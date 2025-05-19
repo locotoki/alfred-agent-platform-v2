@@ -133,17 +133,17 @@ export async function runNicheScout(query?: string): Promise<NicheScoutResult> {
   try {
     // Log the request
     console.log(`Running Niche-Scout workflow with query: ${query || 'none'}`);
-    
+
     // Multiple endpoint paths to try - sometimes the service might use different endpoint structures
     const endpoints = [
-      `${SOCIAL_INTEL_URL}/niche-scout`, 
+      `${SOCIAL_INTEL_URL}/niche-scout`,
       `${SOCIAL_INTEL_URL}/youtube/niche-scout`,
       `${SOCIAL_INTEL_URL}/api/youtube/niche-scout`
     ];
-    
+
     let response = null;
     let lastError = null;
-    
+
     // Try each endpoint until one works
     for (const endpoint of endpoints) {
       try {
@@ -155,7 +155,7 @@ export async function runNicheScout(query?: string): Promise<NicheScoutResult> {
           // Add timeout to prevent hanging requests
           signal: AbortSignal.timeout(45000) // 45 second timeout - some complex queries might take longer
         });
-        
+
         // If successful, break out of the loop
         if (response.ok) {
           break;
@@ -167,34 +167,34 @@ export async function runNicheScout(query?: string): Promise<NicheScoutResult> {
         // Continue to next endpoint
       }
     }
-    
+
     // If we got a valid response
     if (response && response.ok) {
       const data = await response.json();
-      
+
       // Ensure the result has an ID field for result page navigation
       if (!data._id) {
         data._id = `niche-scout-${Date.now()}`;
       }
-      
+
       return data;
     }
-    
+
     // If response exists but is not OK
     if (response) {
       console.warn('All endpoints returned non-OK response, falling back to mock data');
       return {
-        ...mockNicheScoutResult, 
+        ...mockNicheScoutResult,
         _id: `niche-scout-${Date.now()}`,
         _mock: true, // Flag to indicate this is mock data
         _error: "API returned an error, showing mock data instead"
       };
     }
-    
+
     // If no response at all
     console.warn('Could not connect to any Social Intelligence Agent endpoints, falling back to mock data');
     return {
-      ...mockNicheScoutResult, 
+      ...mockNicheScoutResult,
       _id: `niche-scout-${Date.now()}`,
       _mock: true, // Flag to indicate this is mock data
       _error: "Could not connect to API, showing mock data instead"
@@ -203,7 +203,7 @@ export async function runNicheScout(query?: string): Promise<NicheScoutResult> {
     console.error('Error running Niche-Scout workflow:', error);
     console.warn('Returning mock data due to error');
     return {
-      ...mockNicheScoutResult, 
+      ...mockNicheScoutResult,
       _id: `niche-scout-${Date.now()}`,
       _mock: true, // Flag to indicate this is mock data
       _error: "Error connecting to API, showing mock data instead"
@@ -229,17 +229,17 @@ export async function runSeedToBlueprint(params: { video_url?: string; niche?: s
   try {
     // Log the request
     console.log(`Running Seed-to-Blueprint workflow with params:`, params);
-    
+
     // Multiple endpoint paths to try - sometimes the service might use different endpoint structures
     const endpoints = [
-      `${SOCIAL_INTEL_URL}/seed-to-blueprint`, 
+      `${SOCIAL_INTEL_URL}/seed-to-blueprint`,
       `${SOCIAL_INTEL_URL}/youtube/blueprint`,
       `${SOCIAL_INTEL_URL}/api/youtube/blueprint`
     ];
-    
+
     let response = null;
     let lastError = null;
-    
+
     // Try each endpoint until one works
     for (const endpoint of endpoints) {
       try {
@@ -251,7 +251,7 @@ export async function runSeedToBlueprint(params: { video_url?: string; niche?: s
           // Add timeout to prevent hanging requests
           signal: AbortSignal.timeout(90000) // 90 second timeout for this more complex workflow
         });
-        
+
         // If successful, break out of the loop
         if (response.ok) {
           break;
@@ -263,34 +263,34 @@ export async function runSeedToBlueprint(params: { video_url?: string; niche?: s
         // Continue to next endpoint
       }
     }
-    
+
     // If we got a valid response
     if (response && response.ok) {
       const data = await response.json();
-      
+
       // Ensure the result has an ID field for result page navigation
       if (!data._id) {
         data._id = `blueprint-${Date.now()}`;
       }
-      
+
       return data;
     }
-    
+
     // If response exists but is not OK
     if (response) {
       console.warn('All endpoints returned non-OK response, falling back to mock data');
       return {
-        ...mockBlueprintResult, 
+        ...mockBlueprintResult,
         _id: `blueprint-${Date.now()}`,
         _mock: true, // Flag to indicate this is mock data
         _error: "API returned an error, showing mock data instead"
       };
     }
-    
+
     // If no response at all
     console.warn('Could not connect to any Social Intelligence Agent endpoints, falling back to mock data');
     return {
-      ...mockBlueprintResult, 
+      ...mockBlueprintResult,
       _id: `blueprint-${Date.now()}`,
       _mock: true, // Flag to indicate this is mock data
       _error: "Could not connect to API, showing mock data instead"
@@ -299,7 +299,7 @@ export async function runSeedToBlueprint(params: { video_url?: string; niche?: s
     console.error('Error running Seed-to-Blueprint workflow:', error);
     console.warn('Returning mock data due to error');
     return {
-      ...mockBlueprintResult, 
+      ...mockBlueprintResult,
       _id: `blueprint-${Date.now()}`,
       _mock: true, // Flag to indicate this is mock data
       _error: "Error connecting to API, showing mock data instead"
@@ -313,17 +313,17 @@ export async function runSeedToBlueprint(params: { video_url?: string; niche?: s
 export async function getWorkflowHistory(): Promise<WorkflowHistory[]> {
   try {
     console.log('Fetching workflow history from:', `${SOCIAL_INTEL_URL}/workflow-history`);
-    
+
     // Try multiple endpoints for better resilience
     const endpoints = [
       `${SOCIAL_INTEL_URL}/workflow-history`,
       `${SOCIAL_INTEL_URL}/youtube/workflow-history`,
       `${SOCIAL_INTEL_URL}/api/youtube/workflow-history`,
     ];
-    
+
     let response = null;
     let lastError = null;
-    
+
     // Try each endpoint until one works
     for (const endpoint of endpoints) {
       try {
@@ -334,7 +334,7 @@ export async function getWorkflowHistory(): Promise<WorkflowHistory[]> {
           },
           signal: AbortSignal.timeout(30000) // 30 second timeout
         });
-        
+
         if (response.ok) {
           console.log(`Successfully called workflow history endpoint: ${endpoint}`);
           break;
@@ -344,12 +344,12 @@ export async function getWorkflowHistory(): Promise<WorkflowHistory[]> {
         lastError = err;
       }
     }
-    
+
     if (!response || !response.ok) {
       console.warn('All workflow history endpoints failed, returning empty array');
       return []; // Return empty array instead of throwing error
     }
-    
+
     const data = await response.json();
     return Array.isArray(data) ? data : [];
   } catch (error) {
@@ -364,17 +364,17 @@ export async function getWorkflowHistory(): Promise<WorkflowHistory[]> {
 export async function getScheduledWorkflows(): Promise<WorkflowSchedule[]> {
   try {
     console.log('Fetching scheduled workflows from:', `${SOCIAL_INTEL_URL}/scheduled-workflows`);
-    
+
     // Try multiple endpoints for better resilience
     const endpoints = [
       `${SOCIAL_INTEL_URL}/scheduled-workflows`,
       `${SOCIAL_INTEL_URL}/youtube/scheduled-workflows`,
       `${SOCIAL_INTEL_URL}/api/youtube/scheduled-workflows`,
     ];
-    
+
     let response = null;
     let lastError = null;
-    
+
     // Try each endpoint until one works
     for (const endpoint of endpoints) {
       try {
@@ -385,7 +385,7 @@ export async function getScheduledWorkflows(): Promise<WorkflowSchedule[]> {
           },
           signal: AbortSignal.timeout(30000) // 30 second timeout
         });
-        
+
         if (response.ok) {
           console.log(`Successfully called scheduled workflows endpoint: ${endpoint}`);
           break;
@@ -395,12 +395,12 @@ export async function getScheduledWorkflows(): Promise<WorkflowSchedule[]> {
         lastError = err;
       }
     }
-    
+
     if (!response || !response.ok) {
       console.warn('All scheduled workflows endpoints failed, returning empty array');
       return []; // Return empty array instead of throwing error
     }
-    
+
     const data = await response.json();
     return Array.isArray(data) ? data : [];
   } catch (error) {
@@ -420,17 +420,17 @@ export async function scheduleWorkflow(data: {
 }): Promise<WorkflowSchedule> {
   try {
     console.log('Scheduling workflow:', data);
-    
+
     // Multiple endpoint paths to try
     const endpoints = [
       `${SOCIAL_INTEL_URL}/schedule-workflow`,
       `${SOCIAL_INTEL_URL}/youtube/schedule-workflow`,
       `${SOCIAL_INTEL_URL}/api/youtube/schedule-workflow`
     ];
-    
+
     let response = null;
     let lastError = null;
-    
+
     // Try each endpoint until one works
     for (const endpoint of endpoints) {
       try {
@@ -442,7 +442,7 @@ export async function scheduleWorkflow(data: {
           body: JSON.stringify(data),
           signal: AbortSignal.timeout(30000) // 30 second timeout
         });
-        
+
         if (response.ok) {
           break;
         }
@@ -451,11 +451,11 @@ export async function scheduleWorkflow(data: {
         console.warn(`Failed to connect to endpoint ${endpoint}:`, err);
       }
     }
-    
+
     if (response && response.ok) {
       return await response.json();
     }
-    
+
     // Create a mock successful response
     console.warn('Failed to schedule workflow, returning mock success response');
     return {
@@ -471,7 +471,7 @@ export async function scheduleWorkflow(data: {
     };
   } catch (error) {
     console.error('Error scheduling workflow:', error);
-    
+
     // Return a mock successful response instead of throwing
     return {
       id: `scheduled-${Date.now()}`,
@@ -494,17 +494,17 @@ export async function getWorkflowResult(id: string, type: 'niche-scout' | 'seed-
   try {
     // Log the request
     console.log(`Getting ${type} workflow result with ID: ${id}`);
-    
+
     // Multiple endpoint paths to try
     const endpoints = [
       `${SOCIAL_INTEL_URL}/workflow-result/${id}`,
       `${SOCIAL_INTEL_URL}/youtube/workflow-result/${id}`,
       `${SOCIAL_INTEL_URL}/api/youtube/workflow-result/${id}`
     ];
-    
+
     let response = null;
     let lastError = null;
-    
+
     // Try each endpoint until one works
     for (const endpoint of endpoints) {
       try {
@@ -516,7 +516,7 @@ export async function getWorkflowResult(id: string, type: 'niche-scout' | 'seed-
           // Add timeout to prevent hanging requests
           signal: AbortSignal.timeout(30000)
         });
-        
+
         // If successful, break out of the loop
         if (response.ok) {
           break;
@@ -528,66 +528,66 @@ export async function getWorkflowResult(id: string, type: 'niche-scout' | 'seed-
         // Continue to next endpoint
       }
     }
-    
+
     // If we got a valid response
     if (response && response.ok) {
       const data = await response.json();
-      
+
       // If the result has no ID field, add it
       if (!data._id) {
         data._id = id;
       }
-      
+
       return data;
     }
-    
+
     // If response exists but is not OK
     if (response) {
       console.warn(`Failed to get ${type} workflow result, falling back to mock data`);
-      return type === 'niche-scout' 
+      return type === 'niche-scout'
         ? {
-            ...mockNicheScoutResult, 
+            ...mockNicheScoutResult,
             _id: id,
-            _mock: true, 
+            _mock: true,
             _error: "API returned an error, showing mock data instead"
-          } 
+          }
         : {
-            ...mockBlueprintResult, 
+            ...mockBlueprintResult,
             _id: id,
-            _mock: true, 
+            _mock: true,
             _error: "API returned an error, showing mock data instead"
           };
     }
-    
+
     // If no response at all
     console.warn('Could not connect to any Social Intelligence Agent endpoints, falling back to mock data');
-    return type === 'niche-scout' 
+    return type === 'niche-scout'
       ? {
-          ...mockNicheScoutResult, 
+          ...mockNicheScoutResult,
           _id: id,
-          _mock: true, 
+          _mock: true,
           _error: "Could not connect to API, showing mock data instead"
-        } 
+        }
       : {
-          ...mockBlueprintResult, 
+          ...mockBlueprintResult,
           _id: id,
-          _mock: true, 
+          _mock: true,
           _error: "Could not connect to API, showing mock data instead"
         };
   } catch (error) {
     console.error(`Error getting ${type} workflow result:`, error);
     console.warn('Returning mock data due to error');
-    return type === 'niche-scout' 
+    return type === 'niche-scout'
       ? {
-          ...mockNicheScoutResult, 
+          ...mockNicheScoutResult,
           _id: id,
-          _mock: true, 
+          _mock: true,
           _error: "Error connecting to API, showing mock data instead"
-        } 
+        }
       : {
-          ...mockBlueprintResult, 
+          ...mockBlueprintResult,
           _id: id,
-          _mock: true, 
+          _mock: true,
           _error: "Error connecting to API, showing mock data instead"
         };
   }

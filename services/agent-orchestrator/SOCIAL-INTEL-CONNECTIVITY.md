@@ -14,7 +14,7 @@ The agent-orchestrator UI is showing "Social Intelligence service is currently u
    ```bash
    docker inspect agent-orchestrator -f "{{.NetworkSettings.Networks}}"
    map[alfred-network:0xc000186a80]
-   
+
    docker inspect social-intel -f "{{.NetworkSettings.Networks}}"
    map[alfred-network:0xc00017eb60]
    ```

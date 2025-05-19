@@ -52,41 +52,41 @@
 </head>
 <body>
   <h1>YouTube Results Viewer</h1>
-  
+
   <div>
     <button id="loadBtn">Load Results</button>
     <button id="demoBtn">Add Demo Results</button>
     <button id="clearBtn">Clear Results</button>
     <button id="runApiBtn" style="background: #27ae60;">Run Real API Analysis</button>
   </div>
-  
+
   <div id="results"></div>
-  
+
   <script>
     // Load results from localStorage
     document.getElementById('loadBtn').addEventListener('click', () => {
       const results = localStorage.getItem('youtube-results');
       const resultsContainer = document.getElementById('results');
-      
+
       if (!results) {
         resultsContainer.innerHTML = '<p>No results found in localStorage</p>';
         return;
       }
-      
+
       try {
         const parsedResults = JSON.parse(results);
         if (!Array.isArray(parsedResults) || parsedResults.length === 0) {
           resultsContainer.innerHTML = '<p>No valid results found</p>';
           return;
         }
-        
+
         let html = '';
         parsedResults.forEach((result, index) => {
           html += `
             <div class="result-card">
               <h2>Result #${index + 1}</h2>
               <p><strong>Run Date:</strong> ${new Date(result.run_date).toLocaleString()}</p>
-              
+
               <div class="niches-list">
                 <div>
                   <h3>Top Niches</h3>
@@ -109,7 +109,7 @@
                     </tbody>
                   </table>
                 </div>
-                
+
                 <div>
                   <h3>Trending Niches</h3>
                   <table>
@@ -132,21 +132,21 @@
                   </table>
                 </div>
               </div>
-              
-              ${result.actual_processing_time ? 
+
+              ${result.actual_processing_time ?
                 `<p><strong>Processing Time:</strong> ${result.actual_processing_time.toFixed(2)}s</p>` : ''}
-              ${result.actual_cost ? 
+              ${result.actual_cost ?
                 `<p><strong>Cost:</strong> $${result.actual_cost.toFixed(2)}</p>` : ''}
             </div>
           `;
         });
-        
+
         resultsContainer.innerHTML = html;
       } catch (err) {
         resultsContainer.innerHTML = `<p>Error parsing results: ${err.message}</p>`;
       }
     });
-    
+
     // Add demo results
     document.getElementById('demoBtn').addEventListener('click', () => {
       const demoResult = {
@@ -208,44 +208,44 @@
         actual_cost: 95.50,
         actual_processing_time: 125.3
       };
-      
+
       try {
         const existingResults = localStorage.getItem('youtube-results');
         let resultsArray = [];
-        
+
         if (existingResults) {
           resultsArray = JSON.parse(existingResults);
         }
-        
+
         // Add new result to the beginning
         resultsArray.unshift(demoResult);
-        
+
         // Keep only the last 5 results
         if (resultsArray.length > 5) {
           resultsArray = resultsArray.slice(0, 5);
         }
-        
+
         localStorage.setItem('youtube-results', JSON.stringify(resultsArray));
         alert('Demo results added successfully!');
-        
+
         // Refresh the display
         document.getElementById('loadBtn').click();
       } catch (err) {
         alert(`Failed to add demo results: ${err.message}`);
       }
     });
-    
+
     // Clear results
     document.getElementById('clearBtn').addEventListener('click', () => {
       localStorage.removeItem('youtube-results');
       document.getElementById('results').innerHTML = '<p>Results cleared</p>';
     });
-    
+
     // Run API analysis directly
     document.getElementById('runApiBtn').addEventListener('click', async () => {
       const resultsContainer = document.getElementById('results');
       resultsContainer.innerHTML = '<p>Running analysis with real YouTube API... please wait</p>';
-      
+
       try {
         const response = await fetch('/api/run-analysis', {
           method: 'POST',
@@ -253,14 +253,14 @@
             'Content-Type': 'application/json',
           }
         });
-        
+
         if (!response.ok) {
           throw new Error(`HTTP error ${response.status}`);
         }
-        
+
         const result = await response.json();
         console.log('API analysis result:', result);
-        
+
         // Format as NicheScoutResult
         const formattedResult = {
           run_date: new Date().toISOString(),
@@ -289,25 +289,25 @@
           actual_cost: 95.50,
           actual_processing_time: 120.5
         };
-        
+
         // Store in localStorage
         const existingResults = localStorage.getItem('youtube-results');
         let resultsArray = [];
-        
+
         if (existingResults) {
           resultsArray = JSON.parse(existingResults);
         }
-        
+
         // Add new result to the beginning
         resultsArray.unshift(formattedResult);
-        
+
         // Keep only the last 5 results
         if (resultsArray.length > 5) {
           resultsArray = resultsArray.slice(0, 5);
         }
-        
+
         localStorage.setItem('youtube-results', JSON.stringify(resultsArray));
-        
+
         // Show success message
         resultsContainer.innerHTML = '<p>Analysis complete! Click "Load Results" to view.</p>';
       } catch (err) {
@@ -315,7 +315,7 @@
         console.error('API error:', err);
       }
     });
-    
+
     // Load results on page load
     document.getElementById('loadBtn').click();
   </script>

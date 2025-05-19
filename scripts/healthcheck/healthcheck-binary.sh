@@ -53,7 +53,7 @@ elif [[ "$MODE" == "redis" ]]; then
 elif [[ "$MODE" == "tcp" ]]; then
   HOST=$(echo "$HOST_PORT" | cut -d':' -f1)
   PORT=$(echo "$HOST_PORT" | cut -d':' -f2)
-  
+
   if command -v nc &> /dev/null; then
     nc -z "$HOST" "$PORT"
     exit $?

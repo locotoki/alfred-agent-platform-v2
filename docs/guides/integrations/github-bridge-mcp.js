@@ -1,12 +1,12 @@
 /**
  * GitHub Bridge MCP Server
- * 
+ *
  * This MCP server connects Claude Code to GitHub to enable
  * communication with ChatGPT or other AI systems.
- * 
- * Usage: 
+ *
+ * Usage:
  *   claude mcp add github-bridge -- node github-bridge-mcp.js
- * 
+ *
  * Environment variables:
  *   GITHUB_TOKEN - Personal access token with repo permissions
  *   REPO_OWNER - GitHub username or organization
@@ -48,7 +48,7 @@ const server = new Server({
             repo: REPO_NAME,
             path: CONVERSATION_FILE,
           });
-          
+
           const content = Buffer.from(response.data.content, 'base64').toString();
           return { content, sha: response.data.sha };
         } catch (error) {
@@ -68,14 +68,14 @@ const server = new Server({
       handler: async ({ message }) => {
         // First get the current content
         const { content, sha } = await server.tools.getConversation.handler({});
-        
+
         // Format the message
         const timestamp = new Date().toISOString();
         const formattedMessage = `\n\n## Claude (${timestamp})\n\n${message}`;
-        
+
         // Append the message
         const newContent = content + formattedMessage;
-        
+
         // Update the file
         const response = await octokit.repos.createOrUpdateFileContents({
           owner: REPO_OWNER,
@@ -85,7 +85,7 @@ const server = new Server({
           content: Buffer.from(newContent).toString('base64'),
           sha: sha,
         });
-        
+
         return { success: true, sha: response.data.content.sha };
       }
     },
@@ -99,7 +99,7 @@ const server = new Server({
       handler: async ({ description, initialMessage }) => {
         const timestamp = new Date().toISOString();
         const content = `# AI Conversation\n\nStarted: ${timestamp}\n\n## Claude (${timestamp})\n\n${initialMessage}`;
-        
+
         const response = await octokit.gists.create({
           description: description || 'AI Conversation',
           public: false,
@@ -109,7 +109,7 @@ const server = new Server({
             }
           }
         });
-        
+
         return {
           gistId: response.data.id,
           gistUrl: response.data.html_url
@@ -126,18 +126,18 @@ const server = new Server({
       handler: async ({ gistId, message }) => {
         // First get the current Gist
         const gist = await octokit.gists.get({ gist_id: gistId });
-        
+
         // Get the content of conversation.md
         const filename = 'conversation.md';
         const currentContent = gist.data.files[filename]?.content || '';
-        
+
         // Format the message
         const timestamp = new Date().toISOString();
         const formattedMessage = `\n\n## Claude (${timestamp})\n\n${message}`;
-        
+
         // Append the message
         const newContent = currentContent + formattedMessage;
-        
+
         // Update the Gist
         const response = await octokit.gists.update({
           gist_id: gistId,
@@ -147,7 +147,7 @@ const server = new Server({
             }
           }
         });
-        
+
         return {
           success: true,
           gistUrl: response.data.html_url

@@ -10,7 +10,7 @@ groups:
       summary: "Service {{ $labels.service }} is unhealthy"
       description: "Service has reported an unhealthy status for more than 1 minute"
       dashboard_url: "https://grafana.alfred-platform.local/d/services?var-service={{ $labels.service }}"
-  
+
   - alert: ServiceHealthDegraded
     expr: service_health == 0.5
     for: 2m
@@ -20,7 +20,7 @@ groups:
       summary: "Service {{ $labels.service }} is degraded"
       description: "Service has reported a degraded status for more than 2 minutes"
       dashboard_url: "https://grafana.alfred-platform.local/d/services?var-service={{ $labels.service }}"
-      
+
   - alert: ServiceMetricsUnavailable
     expr: up{job="services"} == 0
     for: 30s
@@ -29,7 +29,7 @@ groups:
     annotations:
       summary: "Service {{ $labels.instance }} metrics unavailable"
       description: "Service metrics endpoint cannot be scraped for more than 30 seconds"
-      
+
   - alert: DatabaseConnectionFailing
     expr: db_connection_success == 0
     for: 1m
@@ -38,7 +38,7 @@ groups:
     annotations:
       summary: "Database connection failing for {{ $labels.service }}"
       description: "Service {{ $labels.service }} cannot connect to database {{ $labels.database }} for more than 1 minute"
-      
+
   - alert: DatabaseLatencyHigh
     expr: histogram_quantile(0.95, sum by(le, service, database) (rate(db_query_duration_seconds_bucket[5m]))) > 1
     for: 5m
@@ -67,7 +67,7 @@ groups:
       summary: "SQLite database degraded for {{ $labels.service }}"
       description: "SQLite database used by {{ $labels.service }} is in degraded state for more than 2 minutes"
       dashboard_url: "https://grafana.alfred-platform.local/d/db-health?var-service={{ $labels.service }}&var-db_type=sqlite"
-      
+
   - alert: HealthCheckMissing
     expr: up{job="services"} == 1 unless service_health
     for: 5m

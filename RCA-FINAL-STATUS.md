@@ -23,9 +23,9 @@ def check_service_http():
     try:
         if DEBUG_MODE:
             print(f"Checking HTTP service: {SERVICE_URL}")
-            
+
         # [Enhanced error handling and special case logic]
-        
+
     except Exception as e:
         if DEBUG_MODE:
             print(f"Error checking HTTP service: {e}")
@@ -79,6 +79,6 @@ All preparations are complete for GA promotion. The fix has been thoroughly test
 - No pod restarts during soak test ✅
 
 ---
-**Branch**: hotfix/metrics-500-rca  
-**Created**: 2025-05-17T08:33:00Z  
+**Branch**: hotfix/metrics-500-rca
+**Created**: 2025-05-17T08:33:00Z
 **Status**: Awaiting Coordinator sign-off

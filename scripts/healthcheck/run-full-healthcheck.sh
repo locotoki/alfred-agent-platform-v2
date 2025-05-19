@@ -32,23 +32,23 @@ check_service_health() {
   local port="9091"  # Default metrics port
   local endpoint="/health"
   local url="http://${host}:${port}${endpoint}"
-  
+
   echo -e "\n${GREEN}Checking ${service}...${NC}"
-  
+
   # Get container ID for the service
   CONTAINER_ID=$(docker-compose ps -q ${service})
   if [ -z "$CONTAINER_ID" ]; then
     echo -e "${RED}Service ${service} is not running${NC}"
     return 1
   fi
-  
+
   # Get service IP address
   SERVICE_IP=$(docker inspect --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' ${CONTAINER_ID})
   if [ -z "$SERVICE_IP" ]; then
     echo -e "${YELLOW}Could not get IP for ${service}${NC}"
     return 1
   fi
-  
+
   # Try to get health status
   echo -e "Checking health at ${url}..."
   local health_output
@@ -62,16 +62,16 @@ check_service_health() {
     elif [[ "$service" == "financial-tax" ]]; then
       url="http://${host}:9003/health"
     elif [[ "$service" == "legal-compliance" ]]; then
-      url="http://${host}:9002/health" 
+      url="http://${host}:9002/health"
     fi
-    
+
     echo -e "Trying alternative endpoint: ${url}..."
     if ! health_output=$(curl -s -m 5 -f ${url} 2>/dev/null); then
       echo -e "${RED}Service ${service} is not exposing a health endpoint${NC}"
       return 1
     fi
   fi
-  
+
   # Parse status from response
   local status
   if [[ "$health_output" == *"status"* ]]; then
@@ -79,7 +79,7 @@ check_service_health() {
   else
     status="unknown"
   fi
-  
+
   # Report status with color
   if [[ "$status" == "healthy" ]]; then
     echo -e "${GREEN}Service ${service} is ${status}${NC}"
@@ -88,7 +88,7 @@ check_service_health() {
   else
     echo -e "${RED}Service ${service} is ${status}${NC}"
   fi
-  
+
   # Check for service dependencies
   if [[ "$health_output" == *"services"* ]]; then
     echo -e "\nDependencies:"
@@ -98,7 +98,7 @@ check_service_health() {
     for dep in "${DEP_ARRAY[@]}"; do
       local dep_name=$(echo "$dep" | cut -d'"' -f2)
       local dep_status=$(echo "$dep" | cut -d'"' -f4)
-      
+
       if [[ "$dep_status" == "healthy" ]]; then
         echo -e "  - ${GREEN}${dep_name}: ${dep_status}${NC}"
       elif [[ "$dep_status" == "degraded" ]]; then
@@ -108,7 +108,7 @@ check_service_health() {
       fi
     done
   fi
-  
+
   # Check metrics endpoint if health check passed
   local metrics_url="http://${host}:${port}/metrics"
   echo -e "\nChecking metrics endpoint at ${metrics_url}..."
@@ -119,7 +119,7 @@ check_service_health() {
     local metric_count=$(echo "$metrics_output" | grep -v "^#" | wc -l)
     echo -e "${GREEN}Service ${service} exposes ${metric_count} metrics${NC}"
   fi
-  
+
   return 0
 }
 
@@ -154,7 +154,7 @@ if [ -n "$PROMETHEUS_CONTAINER" ]; then
       # Count up/down targets for this job
       up_count=$(echo "$targets_output" | grep -o "\"job\":\"$job_name\".*\"health\":\"up\"" | wc -l)
       down_count=$(echo "$targets_output" | grep -o "\"job\":\"$job_name\".*\"health\":\"down\"" | wc -l)
-      
+
       if [ $down_count -eq 0 ]; then
         echo -e "  ${GREEN}${job_name}: ${up_count} up, ${down_count} down${NC}"
       else

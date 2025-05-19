@@ -50,14 +50,14 @@ export default function SocialIntelligenceAgent() {
     getAgentStatus,
     { refetchInterval: 5000 }
   );
-  
+
   // Recent Tasks Query
   const { data: recentTasks, isLoading: loadingTasks } = useQuery(
     'recentTasks',
     getRecentTasks,
     { refetchInterval: 10000 }
   );
-  
+
   // API Metrics Query
   const { data: apiMetrics, isLoading: loadingMetrics } = useQuery(
     'apiMetrics',
@@ -73,11 +73,11 @@ export default function SocialIntelligenceAgent() {
             Social Intelligence Agent
           </h1>
         </div>
-        
+
         {/* Agent Status Card */}
         <div className="card p-6">
           <h2 className="text-lg font-semibold mb-4">Agent Status</h2>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
             <div className="space-y-4">
               <div className="flex justify-between">
@@ -87,29 +87,29 @@ export default function SocialIntelligenceAgent() {
                   {loadingStatus ? 'Loading...' : agentStatus?.status.toUpperCase() || 'ONLINE'}
                 </span>
               </div>
-              
+
               <div className="flex justify-between">
                 <span className="text-gray-600 dark:text-gray-400">Health:</span>
                 <span>{loadingStatus ? 'Loading...' : `${agentStatus?.health || 100}%`}</span>
               </div>
             </div>
-            
+
             <div className="space-y-4">
               <div className="flex justify-between">
                 <span className="text-gray-600 dark:text-gray-400">Version:</span>
                 <span>{loadingStatus ? 'Loading...' : agentStatus?.version || '1.0.0'}</span>
               </div>
-              
+
               <div className="flex justify-between">
                 <span className="text-gray-600 dark:text-gray-400">Uptime:</span>
                 <span>{loadingStatus ? 'Loading...' : agentStatus?.uptime || '3h 42m'}</span>
               </div>
             </div>
           </div>
-          
+
           <div className="mb-6">
             <h3 className="text-md font-medium mb-3">System Resources:</h3>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <div className="flex justify-between mb-1">
@@ -123,7 +123,7 @@ export default function SocialIntelligenceAgent() {
                   ></div>
                 </div>
               </div>
-              
+
               <div>
                 <div className="flex justify-between mb-1">
                   <span className="text-sm text-gray-600 dark:text-gray-400">Memory:</span>
@@ -138,7 +138,7 @@ export default function SocialIntelligenceAgent() {
               </div>
             </div>
           </div>
-          
+
           <div>
             <h3 className="text-md font-medium mb-3">Supported Intents:</h3>
             <div className="flex flex-wrap gap-2">
@@ -154,36 +154,36 @@ export default function SocialIntelligenceAgent() {
             </div>
           </div>
         </div>
-        
+
         {/* Workflows Card */}
         <div className="card p-6">
           <h2 className="text-lg font-semibold mb-4">Workflows</h2>
-          
+
           <div className="flex flex-wrap gap-4">
-            <Link 
+            <Link
               href="/workflows/niche-scout"
               className="inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700"
             >
               Niche-Scout
             </Link>
-            
-            <Link 
+
+            <Link
               href="/workflows/seed-to-blueprint"
               className="inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700"
             >
               Seed-to-Blueprint
             </Link>
-            
+
             <button className="inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700">
               + New Workflow
             </button>
           </div>
         </div>
-        
+
         {/* Recent Tasks Card */}
         <div className="card p-6">
           <h2 className="text-lg font-semibold mb-4">Recent Tasks</h2>
-          
+
           <div className="table-container">
             <table className="table">
               <thead>
@@ -225,11 +225,11 @@ export default function SocialIntelligenceAgent() {
             </table>
           </div>
         </div>
-        
+
         {/* API Metrics Card */}
         <div className="card p-6">
           <h2 className="text-lg font-semibold mb-4">API Metrics</h2>
-          
+
           <div className="table-container">
             <table className="table">
               <thead>

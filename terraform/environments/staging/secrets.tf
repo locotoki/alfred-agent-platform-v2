@@ -2,13 +2,13 @@
 
 module "staging_secrets" {
   source = "../../modules/secrets"
-  
+
   environment = "staging"
-  
+
   secrets = {
     # Alert grouping feature flag
     ALERT_GROUPING_ENABLED = "true"
-    
+
     # Other existing secrets
     SLACK_BOT_TOKEN        = var.slack_bot_token
     SLACK_APP_TOKEN        = var.slack_app_token

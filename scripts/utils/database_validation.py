@@ -41,7 +41,7 @@ async def validate_database():
 
         # Check extensions
         extensions_query = """
-        SELECT extname FROM pg_extension 
+        SELECT extname FROM pg_extension
         WHERE extname IN ($1, $2, $3, $4, $5, $6)
         """
         installed_extensions = await conn.fetch(extensions_query, *REQUIRED_EXTENSIONS)
@@ -53,7 +53,7 @@ async def validate_database():
 
         # Check tables
         tables_query = """
-        SELECT table_name FROM information_schema.tables 
+        SELECT table_name FROM information_schema.tables
         WHERE table_schema = 'public' AND table_name = ANY($1)
         """
         existing_tables = await conn.fetch(tables_query, REQUIRED_TABLES)
@@ -66,7 +66,7 @@ async def validate_database():
 
         # Check indexes
         indexes_query = """
-        SELECT indexname FROM pg_indexes 
+        SELECT indexname FROM pg_indexes
         WHERE schemaname = 'public' AND indexname = ANY($1)
         """
         existing_indexes = await conn.fetch(indexes_query, REQUIRED_INDEXES)

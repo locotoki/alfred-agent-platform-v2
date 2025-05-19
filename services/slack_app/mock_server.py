@@ -214,11 +214,11 @@ def ui():
     <body>
         <h1>Alfred Slack App Simulator</h1>
         <p>Use this interface to simulate Slack commands without requiring real Slack authentication.</p>
-        
+
         <div class="terminal">
             <div class="output">⚡️ Bolt app is running! Connected to Slack.</div>
         </div>
-        
+
         <h2>Test Commands</h2>
         <div class="form-group">
             <label for="command">Slack Command:</label>
@@ -229,14 +229,14 @@ def ui():
             <input type="text" id="text" placeholder="help, status, health, etc.">
         </div>
         <button id="send-command">Send Command</button>
-        
+
         <div id="result" style="margin-top: 20px;"></div>
-        
+
         <script>
             document.getElementById('send-command').addEventListener('click', function() {
                 const command = document.getElementById('command').value;
                 const text = document.getElementById('text').value || 'help';
-                
+
                 fetch('/slack/commands', {
                     method: 'POST',
                     headers: {

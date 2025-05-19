@@ -446,21 +446,21 @@ def get_help_response() -> str:
     """Get a formatted help message."""
     help_md = """
     ## Alfred Bot Commands
-    
+
     I can help you with various tasks through the chat interface.
-    
+
     ### Basic Commands:
     - `help` - Show this help message
     - `ping` - Test bot responsiveness
     - `models` - List available LLM models
-    
+
     ### Intelligence:
     - `trend <topic>` - Analyze trends for a topic
-    
+
     ### Task Management:
     - `status <task_id>` - Check task status
     - `cancel <task_id>` - Cancel a running task
-    
+
     > 💡 You can use commands with or without the leading slash (e.g., `help` or `/help`)
     """
     return help_md

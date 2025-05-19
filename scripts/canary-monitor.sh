@@ -33,7 +33,7 @@ check_prometheus_latency() {
   # This would be a real API call in production
   # For demonstration, we'll simulate with random values
   LATENCY=$(awk -v min=50 -v max=250 'BEGIN{srand(); print int(min+rand()*(max-min+1))}')
-  
+
   if [ "$LATENCY" -le 200 ]; then
     echo "✅ Prometheus p95 scrape latency: ${LATENCY}ms (within threshold)" | tee -a "$LOG_FILE"
     return 0
@@ -98,35 +98,35 @@ failed_checks=0
 while [ "$(date +%s)" -lt "$END_TIME" ]; do
   echo "" | tee -a "$LOG_FILE"
   echo "Check #$((total_checks + 1)) - $(date)" | tee -a "$LOG_FILE"
-  
+
   failures=0
-  
+
   # Run all checks
   check_prometheus_latency || ((failures++))
   check_otel_errors || ((failures++))
   check_alerts || ((failures++))
   check_ci_status || ((failures++))
-  
+
   total_checks=$((total_checks + 1))
   current_failures=$failures
-  
+
   if [ "$failures" -gt 0 ]; then
     failed_checks=$((failed_checks + 1))
     echo "❗ $failures failures detected in this check" | tee -a "$LOG_FILE"
   else
     echo "✅ All checks passed" | tee -a "$LOG_FILE"
   fi
-  
+
   # Summary
   elapsed=$(($(date +%s) - START_TIME))
   elapsed_pct=$((elapsed * 100 / DURATION))
   remaining=$((DURATION - elapsed))
   remaining_min=$((remaining / 60))
-  
+
   echo "" | tee -a "$LOG_FILE"
   echo "Bake progress: $elapsed_pct% complete ($remaining_min minutes remaining)" | tee -a "$LOG_FILE"
   echo "Health status: $((total_checks - failed_checks))/$total_checks checks passed" | tee -a "$LOG_FILE"
-  
+
   # Check if we need to abort (persistent failures)
   if [ "$current_failures" -ge "$max_failures" ] && [ "$failed_checks" -ge 3 ]; then
     echo "" | tee -a "$LOG_FILE"
@@ -134,7 +134,7 @@ while [ "$(date +%s)" -lt "$END_TIME" ]; do
     echo "Consider rolling back v0.6.0-rc1 tag or investigating urgently." | tee -a "$LOG_FILE"
     # In a real scenario, we might want to trigger alerts here
   fi
-  
+
   # Don't sleep on the last iteration
   if [ "$(($(date +%s) + INTERVAL))" -lt "$END_TIME" ]; then
     echo "Next check in $((INTERVAL / 60)) minutes..." | tee -a "$LOG_FILE"

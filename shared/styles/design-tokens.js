@@ -1,6 +1,6 @@
 /**
  * Design Tokens System
- * 
+ *
  * This file defines the core design tokens for the Alfred Agent Platform UI.
  * These tokens should be used across both mission-control and agent-orchestrator
  * to ensure visual consistency during the migration process.
@@ -25,7 +25,7 @@ export const colors = {
     gradientHover: 'linear-gradient(to right, #60a5fa, #3b82f6)',
     gradientActive: 'linear-gradient(to right, #2563eb, #1d4ed8)',
   },
-  
+
   // Secondary color with gradients
   secondary: {
     50: '#f5f3ff',
@@ -44,7 +44,7 @@ export const colors = {
     gradientHover: 'linear-gradient(to right, #a78bfa, #8b5cf6)',
     gradientActive: 'linear-gradient(to right, #6d28d9, #5b21b6)',
   },
-  
+
   // Success colors
   success: {
     50: '#ecfdf5',
@@ -61,7 +61,7 @@ export const colors = {
     // Gradients
     gradient: 'linear-gradient(to right, #10b981, #059669)',
   },
-  
+
   // Warning colors
   warning: {
     50: '#fffbeb',
@@ -78,7 +78,7 @@ export const colors = {
     // Gradients
     gradient: 'linear-gradient(to right, #f59e0b, #d97706)',
   },
-  
+
   // Error colors
   error: {
     50: '#fef2f2',
@@ -95,7 +95,7 @@ export const colors = {
     // Gradients
     gradient: 'linear-gradient(to right, #ef4444, #dc2626)',
   },
-  
+
   // Neutral colors
   neutral: {
     50: '#f9fafb',
@@ -110,7 +110,7 @@ export const colors = {
     900: '#111827',
     950: '#030712',
   },
-  
+
   // Dark mode colors
   dark: {
     background: '#111827',
@@ -165,7 +165,7 @@ export const typography = {
     serif: 'ui-serif, Georgia, Cambria, "Times New Roman", Times, serif',
     mono: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
   },
-  
+
   // Font sizes
   fontSize: {
     'xs': '0.75rem',    // 12px
@@ -182,7 +182,7 @@ export const typography = {
     '8xl': '6rem',      // 96px
     '9xl': '8rem',      // 128px
   },
-  
+
   // Font weights
   fontWeight: {
     thin: '100',
@@ -195,7 +195,7 @@ export const typography = {
     extrabold: '800',
     black: '900',
   },
-  
+
   // Line heights
   lineHeight: {
     none: '1',
@@ -226,7 +226,7 @@ export const borders = {
     '3xl': '1rem',      // 16px
     'full': '9999px',
   },
-  
+
   borderWidth: {
     '0': '0',
     '1': '1px',
@@ -255,7 +255,7 @@ export const animations = {
     'shadow': 'box-shadow 0.3s ease',
     'transform': 'transform 0.3s ease',
   },
-  
+
   keyframes: {
     spin: {
       from: { transform: 'rotate(0deg)' },
@@ -270,17 +270,17 @@ export const animations = {
       '50%': { opacity: '.5' },
     },
     bounce: {
-      '0%, 100%': { 
+      '0%, 100%': {
         transform: 'translateY(0)',
         animationTimingFunction: 'cubic-bezier(0.8, 0, 1, 1)',
       },
-      '50%': { 
+      '50%': {
         transform: 'translateY(-25%)',
         animationTimingFunction: 'cubic-bezier(0, 0, 0.2, 1)',
       },
     },
   },
-  
+
   animation: {
     'none': 'none',
     'spin': 'spin 1s linear infinite',

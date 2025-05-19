@@ -99,13 +99,13 @@ The grouping algorithm uses Jaccard similarity to compare alert label sets:
 def calculate_similarity(alert1, alert2):
     labels1 = set(alert1.labels.items())
     labels2 = set(alert2.labels.items())
-    
+
     intersection = labels1.intersection(labels2)
     union = labels1.union(labels2)
-    
+
     if not union:
         return 0.0
-        
+
     return len(intersection) / len(union)
 ```
 
@@ -119,7 +119,7 @@ def calculate_similarity(alert1, alert2):
 The UI displays grouped alerts in an accordion with severity badges:
 
 ```typescript
-<AlertGroupAccordion 
+<AlertGroupAccordion
   groups={alertGroups}
   onGroupClick={handleGroupClick}
   showBadges={true}

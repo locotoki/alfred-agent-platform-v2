@@ -32,5 +32,3 @@ Last consolidated: 2025-05-14
 - Social_Intel/social-intel-agent-try-it-tomorrow-exercises.md
 - Social_Intel/social-intel-agent-for-youtube-content-creation.md
 - Social_Intel/social-intel-agent-researchand-insight-workflows.md
-
-

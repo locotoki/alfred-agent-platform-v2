@@ -26,11 +26,11 @@ func TestNewMSSQLDriver(t *testing.T) {
 	}
 
 	driver := newMSSQLDriver(cfg)
-	
+
 	// Verify driver was created with correct initial status
 	assert.NotNil(t, driver)
 	assert.Equal(t, StatusDown, driver.Status())
-	
+
 	// Verify metrics are initialized
 	metrics := driver.Metrics()
 	assert.NotNil(t, metrics)

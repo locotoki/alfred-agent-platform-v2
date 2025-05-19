@@ -1,7 +1,7 @@
 # Infrastructure Component: Disaster Recovery
 
-*Last Updated: 2025-05-13*  
-*Owner: Infrastructure Team*  
+*Last Updated: 2025-05-13*
+*Owner: Infrastructure Team*
 *Status: Active*
 
 ## Overview
@@ -22,7 +22,7 @@ graph TB
         primary_s3[Object Storage]
         primary_mon[Monitoring]
     end
-    
+
     subgraph "Secondary Region"
         secondary_eks[EKS Cluster]
         secondary_db[(PostgreSQL Database)]
@@ -31,33 +31,33 @@ graph TB
         secondary_s3[Object Storage]
         secondary_mon[Monitoring]
     end
-    
+
     subgraph "Backup Services"
         db_backups[(Database Backups)]
         s3_backups[(Object Storage Backups)]
         config_backups[(Config Backups)]
         image_registry[(Container Registry)]
     end
-    
+
     subgraph "Recovery Automation"
         terraform[Terraform Scripts]
         dr_scripts[DR Scripts]
         monitoring[DR Monitoring]
     end
-    
+
     primary_db --> |Replication| secondary_db
     primary_s3 --> |Cross-Region Replication| secondary_s3
-    
+
     primary_db --> |Backup| db_backups
     primary_s3 --> |Backup| s3_backups
     primary_eks --> |Config Backup| config_backups
-    
+
     terraform --> secondary_eks
     dr_scripts --> secondary_eks
     dr_scripts --> secondary_db
     dr_scripts --> secondary_redis
     dr_scripts --> secondary_vector
-    
+
     monitoring --> primary_mon
     monitoring --> secondary_mon
 ```
@@ -74,7 +74,7 @@ The platform's PostgreSQL databases are backed up using the following strategies
    ```bash
    # Daily full backup using pg_dump
    pg_dump -U postgres -d postgres -F c -f /backups/postgres_$(date +\%Y\%m\%d).dump
-   
+
    # Copy backup to secure storage
    aws s3 cp /backups/postgres_$(date +\%Y\%m\%d).dump s3://alfred-platform-backups/postgres/daily/
    ```
@@ -85,7 +85,7 @@ The platform's PostgreSQL databases are backed up using the following strategies
    archive_mode = on
    archive_command = 'test ! -f /archive/%f && cp %p /archive/%f'
    archive_timeout = 60
-   
+
    # Copy WAL files to secure storage
    aws s3 sync /archive/ s3://alfred-platform-backups/postgres/wal/
    ```
@@ -107,7 +107,7 @@ Redis data is persisted using:
    save 900 1       # Save after 900 seconds if at least 1 change
    save 300 10      # Save after 300 seconds if at least 10 changes
    save 60 10000    # Save after 60 seconds if at least 10000 changes
-   
+
    # Copy RDB files to secure storage
    aws s3 cp /var/lib/redis/dump.rdb s3://alfred-platform-backups/redis/
    ```
@@ -117,7 +117,7 @@ Redis data is persisted using:
    # Redis configuration for AOF
    appendonly yes
    appendfsync everysec
-   
+
    # Copy AOF files to secure storage
    aws s3 cp /var/lib/redis/appendonly.aof s3://alfred-platform-backups/redis/
    ```
@@ -204,7 +204,7 @@ aws s3 cp /backups/k8s_*.yaml s3://alfred-platform-backups/kubernetes/
    ```bash
    # Download the most recent backup
    aws s3 cp s3://alfred-platform-backups/postgres/daily/postgres_20250513.dump /tmp/
-   
+
    # Restore from backup
    pg_restore -U postgres -d postgres -c /tmp/postgres_20250513.dump
    ```
@@ -216,15 +216,15 @@ aws s3 cp /backups/k8s_*.yaml s3://alfred-platform-backups/kubernetes/
    restore_command = 'aws s3 cp s3://alfred-platform-backups/postgres/wal/%f %p'
    recovery_target_time = '2025-05-13 08:30:00'
    EOF
-   
+
    # PostgreSQL 12+ configuration
    cat > ${PGDATA}/postgresql.conf << EOF
    restore_command = 'aws s3 cp s3://alfred-platform-backups/postgres/wal/%f %p'
    recovery_target_time = '2025-05-13 08:30:00'
    EOF
-   
+
    touch ${PGDATA}/recovery.signal
-   
+
    # Start PostgreSQL
    pg_ctl -D ${PGDATA} start
    ```
@@ -233,7 +233,7 @@ aws s3 cp /backups/k8s_*.yaml s3://alfred-platform-backups/kubernetes/
    ```bash
    # Promote standby to primary
    pg_ctl promote -D ${PGDATA}
-   
+
    # Update connection strings in services
    kubectl set env deployment/agent-core DATABASE_URL=postgresql://postgres:password@new-primary-db:5432/postgres
    ```
@@ -244,14 +244,14 @@ aws s3 cp /backups/k8s_*.yaml s3://alfred-platform-backups/kubernetes/
    ```bash
    # Download the most recent RDB backup
    aws s3 cp s3://alfred-platform-backups/redis/dump.rdb /tmp/
-   
+
    # Stop Redis
    systemctl stop redis
-   
+
    # Replace the RDB file
    cp /tmp/dump.rdb /var/lib/redis/dump.rdb
    chown redis:redis /var/lib/redis/dump.rdb
-   
+
    # Start Redis
    systemctl start redis
    ```
@@ -260,14 +260,14 @@ aws s3 cp /backups/k8s_*.yaml s3://alfred-platform-backups/kubernetes/
    ```bash
    # Download the most recent AOF backup
    aws s3 cp s3://alfred-platform-backups/redis/appendonly.aof /tmp/
-   
+
    # Stop Redis
    systemctl stop redis
-   
+
    # Replace the AOF file
    cp /tmp/appendonly.aof /var/lib/redis/appendonly.aof
    chown redis:redis /var/lib/redis/appendonly.aof
-   
+
    # Start Redis
    systemctl start redis
    ```
@@ -452,7 +452,7 @@ Steps to recover from a database failure:
      ```bash
      # On standby server
      pg_ctl promote -D ${PGDATA}
-     
+
      # Update connection strings
      kubectl set env deployment -l app=alfred-platform DATABASE_URL=postgresql://postgres:password@db-postgres-standby:5432/postgres
      ```
@@ -548,7 +548,7 @@ Steps to recover from a ransomware attack or data corruption:
    ```bash
    # Pull known clean images
    docker pull ${REGISTRY}/alfred-platform/${service}:${CLEAN_TAG}
-   
+
    # Update deployments to use clean images
    kubectl set image deployment/${service} ${service}=${REGISTRY}/alfred-platform/${service}:${CLEAN_TAG}
    ```
@@ -669,7 +669,7 @@ spec:
    # Schedule test window in non-peak hours
    # Run database recovery test
    ./scripts/dr-test.sh --component=database --scenario=corruption
-   
+
    # Run object storage recovery test
    ./scripts/dr-test.sh --component=storage --scenario=deletion
    ```
@@ -679,10 +679,10 @@ spec:
    # Schedule test window with proper notification
    # Execute regional failover test
    ./scripts/dr-test.sh --type=regional-failover --notify=true
-   
+
    # Validate application functionality in secondary region
    ./scripts/validation-tests.sh --region=secondary
-   
+
    # Execute failback procedure
    ./scripts/dr-test.sh --type=regional-failback --notify=true
    ```
@@ -692,10 +692,10 @@ spec:
    # Schedule comprehensive DR simulation
    # Simulate major outage scenario
    ./scripts/dr-simulation.sh --scenario=major-outage
-   
+
    # Execute full recovery workflow
    ./scripts/dr-recovery.sh --scenario=major-outage
-   
+
    # Document findings and improvement areas
    ./scripts/dr-report.sh > dr-simulation-report-$(date +\%Y\%m\%d).md
    ```

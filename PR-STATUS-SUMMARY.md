@@ -6,7 +6,7 @@ PR #55 implements the Slack MCP Gateway and is currently failing CI checks.
 ## Current Issues
 
 ### 1. Linter Errors (Still Failing)
-- Various flake8 errors for unused variables, trailing whitespace 
+- Various flake8 errors for unused variables, trailing whitespace
 - Not directly related to Slack MCP Gateway implementation
 - Would require cleaning up many unrelated files
 
@@ -21,7 +21,7 @@ PR #55 implements the Slack MCP Gateway and is currently failing CI checks.
 
 ## What's Working
 - Security scan ✅
-- Detect changes ✅  
+- Detect changes ✅
 - Black formatting check ✅
 - Import ordering (isort) ✅
 

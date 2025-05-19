@@ -4,16 +4,16 @@ This document outlines best practices for keeping your local repository in sync 
 
 ## Key Tools
 
-1. **Enhanced `.gitignore`**:  
+1. **Enhanced `.gitignore`**:
    We've updated the `.gitignore` file to exclude temporary files, backups, and other non-essential files from git tracking.
 
-2. **Pre-commit Hook**:  
+2. **Pre-commit Hook**:
    A custom pre-commit hook has been installed in `.git/hooks/pre-commit` that prevents:
    - Accidental commits of large files (>5MB)
    - Temporary files and backup files
    - Non-essential files in the root directory
 
-3. **Safe Sync Script**:  
+3. **Safe Sync Script**:
    We've created a script at `scripts/safe-sync.sh` for safely synchronizing with GitHub. This script:
    - Checks for uncommitted changes
    - Handles the push/pull process safely
@@ -44,39 +44,39 @@ This document outlines best practices for keeping your local repository in sync 
 
 ## Preventing Unintended Files in Git
 
-1. **Check Status Before Committing**:  
+1. **Check Status Before Committing**:
    Always run `git status` before committing to see what files will be included.
 
-2. **Review Diffs**:  
+2. **Review Diffs**:
    Use `git diff --cached` to review changes before committing.
 
-3. **Use Explicit Adds**:  
+3. **Use Explicit Adds**:
    Avoid using `git add .` which adds everything. Instead, add files explicitly:
    ```bash
    git add specific-file.py specific-directory/
    ```
 
-4. **Clean Up After Merges**:  
+4. **Clean Up After Merges**:
    After resolving merge conflicts, check for any unexpected files that may have been pulled in.
 
-5. **Git Attributes**:  
+5. **Git Attributes**:
    Consider using `.gitattributes` to control how certain file types are handled.
 
 ## Recovering from Mistakes
 
 If unintended files appear in your repository:
 
-1. **Revert to Previous State**:  
+1. **Revert to Previous State**:
    ```bash
    git reset --hard HEAD~1  # Go back one commit
    ```
 
-2. **Remove Specific Files**:  
+2. **Remove Specific Files**:
    ```bash
    git rm --cached unwanted-file.txt
    ```
 
-3. **Clean Up Repository**:  
+3. **Clean Up Repository**:
    ```bash
    ./scripts/safe-sync.sh  # Use the safe sync script
    ```
@@ -85,10 +85,10 @@ If unintended files appear in your repository:
 
 For large files that need version tracking:
 
-1. **Consider Git LFS**:  
+1. **Consider Git LFS**:
    Set up Git Large File Storage for binary files, ML models, etc.
 
-2. **Documentation Strategies**:  
+2. **Documentation Strategies**:
    For very large files, consider documenting download links instead of storing them in Git.
 
 ---

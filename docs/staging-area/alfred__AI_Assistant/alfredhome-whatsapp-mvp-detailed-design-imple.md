@@ -69,7 +69,7 @@ Once every line above is marked **done**, jump to **Week 0** of the 6‑week ti
 ```
 
 > Note: This service is deployed to Fly.io as alfred‑home.  A sibling deployment alfred‑biz reuses the same Core API but connects to Slack rather than WhatsApp.
-> 
+>
 - **Adapter Service** – Terminates Meta webhooks, verifies signature, converts payload into internal `InboundMessage` model.
 - **Core API** – Houses `FamilyCoordinatorAgent`, grocery & chore services, and scheduler endpoints.
 - **Redis** – Stores hot keys: `family:{id}:grocery`, `chore:{id}:trash:status`, `user:{wa_id}:lang`.

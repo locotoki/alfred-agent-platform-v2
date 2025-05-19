@@ -182,7 +182,7 @@ atlas-worker:
 # Python code example for switching collections based on personality mode
 def get_rag_context(query, personality_mode="business"):
     collection = "alfred-business" if personality_mode == "business" else "alfred-personal"
-    
+
     response = requests.post(
         f"{os.environ.get('RAG_URL')}/query",
         headers={
@@ -194,7 +194,7 @@ def get_rag_context(query, personality_mode="business"):
             "collection": collection
         }
     )
-    
+
     return response.json()
 ```
 

@@ -22,18 +22,18 @@ if ! docker ps | grep -q social-intel; then
   echo "Social Intelligence Agent is not running."
   echo "Would you like to start it from the Alfred Agent Platform? (y/n)"
   read -r start_agent
-  
+
   if [[ "$start_agent" == "y" ]]; then
     # Check if the platform exists
     if [ -d "/home/locotoki/projects/alfred-agent-platform-v2" ]; then
       echo "Starting Social Intelligence Agent from Alfred Agent Platform..."
       cd /home/locotoki/projects/alfred-agent-platform-v2 || exit
       docker-compose up -d social-intel redis qdrant pubsub-emulator
-      
+
       # Wait for services to start
       echo "Waiting for services to start..."
       sleep 10
-      
+
       # Check if services are running
       if docker ps | grep -q social-intel; then
         echo "Social Intelligence Agent started successfully."
@@ -93,32 +93,32 @@ if command -v npm &> /dev/null; then
   echo "Starting orchestrator with npm..."
   echo "Installing dependencies..."
   npm install
-  
+
   echo "Starting development server..."
   export PORT=5174  # Use a different port for testing
   npm run dev -- --port 5174 &
   ORCHESTRATOR_PID=$!
-  
+
   # Wait for server to start
   echo "Waiting for server to start..."
   sleep 10
-  
+
   # Test server connectivity
   response=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:5174/ || echo "000")
-  
+
   if [ "$response" == "200" ]; then
     echo "Alfred Agent Orchestrator is running and accessible."
-    
+
     # Perform basic tests
     echo "Running basic URL tests..."
-    
+
     # Test homepage
     if curl -s http://localhost:5174/ | grep -q "Orchestrator"; then
       echo "✓ Homepage loads successfully"
     else
       echo "✗ Homepage test failed"
     fi
-    
+
     # Manual tests
     echo ""
     echo "Manual Test Instructions:"
@@ -129,10 +129,10 @@ if command -v npm &> /dev/null; then
     echo "4. Test running the Seed-to-Blueprint workflow"
     echo "5. View workflow history and results"
     echo ""
-    
+
     # Wait for user to finish testing
     read -rp "Press Enter when finished testing..."
-    
+
     # Stop the server
     kill $ORCHESTRATOR_PID
   else

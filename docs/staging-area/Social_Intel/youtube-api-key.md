@@ -24,7 +24,7 @@ const handleNicheScoutComplete = async (payload: FinalPayload) => {
   try {
     // Show loading state
     setIsLoading(true);
-    
+
     // Call the API with the payload from the wizard
     const result = await runNicheScout({
       category: payload.category.value,
@@ -32,16 +32,16 @@ const handleNicheScoutComplete = async (payload: FinalPayload) => {
       budget: payload.budget,
       dataSources: payload.dataSources
     });
-    
+
     // Handle success - store the result or update UI
     console.log("Niche scout completed:", result);
-    
+
     // Show success notification
     toast({
       title: "Niche Scout analysis complete",
       description: `Found ${result.trending_niches.length} trending niches in ${payload.subcategory.label}`,
     });
-    
+
   } catch (error) {
     // Handle error
     console.error("Niche scout failed:", error);
@@ -61,8 +61,8 @@ const handleNicheScoutComplete = async (payload: FinalPayload) => {
     <Button onClick={() => setWizardOpen(true)}>
       Configure Analysis
     </Button>
-    
-    <NicheScoutWizard 
+
+    <NicheScoutWizard
       trigger={<div />} // Empty trigger because we control open state
       onComplete={handleNicheScoutComplete}
       open={wizardOpen}

@@ -9,7 +9,7 @@
 # Common service label templates
 x-common-labels: &common-labels
   com.docker.compose.project: "alfred"
-  
+
 x-infra-service-labels: &infra-service-labels
   <<: *common-labels
   com.docker.compose.group: "infrastructure"
@@ -55,7 +55,7 @@ services:
   #############################################################################
   # CORE INFRASTRUCTURE SERVICES
   #############################################################################
-  
+
   # Redis - In-memory data store
   redis:
     build:

@@ -7,7 +7,7 @@ This document outlines the current state of each database service's health check
 The Alfred Agent Platform v2 uses several database services from the Supabase stack:
 
 1. **db-postgres**: PostgreSQL database (already properly configured)
-2. **db-auth**: GoTrue authentication service 
+2. **db-auth**: GoTrue authentication service
 3. **db-api**: PostgREST API
 4. **db-admin**: Supabase Studio UI
 5. **db-realtime**: Realtime updates service

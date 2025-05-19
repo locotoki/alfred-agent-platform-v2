@@ -1,6 +1,6 @@
 /**
  * Migration Hash Patcher
- * 
+ *
  * This script patches the storage-api's migration validation to always succeed,
  * allowing the service to run without hash validation errors.
  */

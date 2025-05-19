@@ -18,12 +18,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      
+
       - name: Validate Health Check Templates
         run: |
           chmod +x ./scripts/validate-health-templates.sh
           ./scripts/validate-health-templates.sh
-      
+
       - name: Fail on non-compliant services
         if: ${{ failure() }}
         run: |

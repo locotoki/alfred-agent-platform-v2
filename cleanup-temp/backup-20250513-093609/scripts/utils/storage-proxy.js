@@ -1,6 +1,6 @@
 /**
  * Simple Proxy for Supabase Storage API
- * 
+ *
  * This is a basic implementation that provides the minimal functionality
  * required for the Alfred Agent Platform to work without the actual
  * storage-api service being up and running.
@@ -19,7 +19,7 @@ app.get('/health', (req, res) => {
 });
 
 app.get('/', (req, res) => {
-  res.json({ 
+  res.json({
     name: 'storage-proxy',
     version: '1.0.0',
     status: 'running',
@@ -29,9 +29,9 @@ app.get('/', (req, res) => {
 
 // Minimal bucket endpoints
 app.get('/bucket', (req, res) => {
-  res.json([{ 
-    id: 'default', 
-    name: 'default', 
+  res.json([{
+    id: 'default',
+    name: 'default',
     public: false,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString()
@@ -39,7 +39,7 @@ app.get('/bucket', (req, res) => {
 });
 
 app.post('/bucket', (req, res) => {
-  res.status(201).json({ 
+  res.status(201).json({
     id: req.body.id || 'custom-bucket',
     name: req.body.name || 'Custom Bucket',
     public: req.body.public || false,
@@ -51,7 +51,7 @@ app.post('/bucket', (req, res) => {
 // Handle any other routes with a stub response
 app.all('*', (req, res) => {
   console.log(`Unhandled ${req.method} request to ${req.originalUrl}`);
-  res.json({ 
+  res.json({
     message: 'Storage proxy stub response',
     method: req.method,
     path: req.originalUrl,

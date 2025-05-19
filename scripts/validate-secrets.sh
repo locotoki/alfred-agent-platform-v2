@@ -9,7 +9,7 @@ set -e
 check_env_var() {
   local var_name=$1
   local environment=$2
-  
+
   # Hide the actual value for security
   if [ -n "${!var_name}" ]; then
     echo "✅ $var_name is set for $environment environment"

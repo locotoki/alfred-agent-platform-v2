@@ -26,7 +26,7 @@ The Streamlit Chat Interface provides a web-based UI for interacting with Alfred
 
 ### Access Details
 - **URL**: http://localhost:8502
-- **Alfred API**: http://localhost:8012 
+- **Alfred API**: http://localhost:8012
 - **Documentation**: See [Streamlit Chat README](/services/streamlit-chat/README.md)
 
 ### Features

@@ -1,12 +1,12 @@
 
 export type ReportStatus = "success" | "partial" | "failed";
 
-export type ReportType = 
-  | "all" 
-  | "workflow" 
-  | "performance" 
-  | "error" 
-  | "youtube" 
+export type ReportType =
+  | "all"
+  | "workflow"
+  | "performance"
+  | "error"
+  | "youtube"
   | "custom";
 
 export interface Report {

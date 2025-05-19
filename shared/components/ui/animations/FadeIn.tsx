@@ -22,9 +22,9 @@ export interface FadeInProps {
 
 /**
  * FadeIn Component
- * 
+ *
  * Animates children with a fade-in effect
- * 
+ *
  * @example
  * ```tsx
  * <FadeIn delay={200} direction="up">
@@ -42,15 +42,15 @@ export const FadeIn: React.FC<FadeInProps> = ({
   className = '',
 }) => {
   const [isVisible, setIsVisible] = useState(initialVisible);
-  
+
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsVisible(true);
     }, delay);
-    
+
     return () => clearTimeout(timer);
   }, [delay]);
-  
+
   // Set initial transform based on direction
   const getInitialTransform = () => {
     switch (direction) {
@@ -66,14 +66,14 @@ export const FadeIn: React.FC<FadeInProps> = ({
         return 'none';
     }
   };
-  
+
   // Inline styles for the animation
   const styles = {
     opacity: isVisible ? 1 : 0,
     transform: isVisible ? 'none' : getInitialTransform(),
     transition: `opacity ${duration}ms ease, transform ${duration}ms ease`,
   };
-  
+
   return (
     <div className={className} style={styles}>
       {children}

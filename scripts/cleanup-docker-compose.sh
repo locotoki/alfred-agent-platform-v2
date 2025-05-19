@@ -35,10 +35,10 @@ if [ -f "docker-compose-clean.yml" ] && [ -f "docker-compose.yml" ]; then
   echo -e "${YELLOW}Both docker-compose-clean.yml and docker-compose.yml exist.${NORM}"
   echo -e "${YELLOW}Moving current docker-compose.yml to ${BACKUP_DIR}/docker-compose.yml.original${NORM}"
   mv "docker-compose.yml" "${BACKUP_DIR}/docker-compose.yml.original"
-  
+
   echo -e "${BLUE}Renaming docker-compose-clean.yml to docker-compose.yml${NORM}"
   cp "docker-compose-clean.yml" "docker-compose.yml"
-  
+
   # We don't remove the original yet until testing is complete
   echo -e "${YELLOW}Kept original docker-compose-clean.yml for backup${NORM}"
 else
@@ -57,10 +57,10 @@ fi
 if [ -f "start-platform.sh" ]; then
   echo -e "${BLUE}Updating start-platform.sh to use docker-compose.yml...${NORM}"
   cp "start-platform.sh" "${BACKUP_DIR}/start-platform.sh.original"
-  
+
   # Replace the COMPOSE_FILE variable
   sed -i 's/COMPOSE_FILE="docker-compose-clean.yml"/COMPOSE_FILE="docker-compose.yml"/' "start-platform.sh"
-  
+
   echo -e "${GREEN}Updated start-platform.sh${NORM}"
 else
   echo -e "${RED}start-platform.sh not found!${NORM}"
@@ -72,10 +72,10 @@ fi
 if [ -f "start-platform-dryrun.sh" ]; then
   echo -e "${BLUE}Updating start-platform-dryrun.sh to use docker-compose.yml...${NORM}"
   cp "start-platform-dryrun.sh" "${BACKUP_DIR}/start-platform-dryrun.sh.original"
-  
+
   # Replace the COMPOSE_FILE variable
   sed -i 's/COMPOSE_FILE="docker-compose-clean.yml"/COMPOSE_FILE="docker-compose.yml"/' "start-platform-dryrun.sh"
-  
+
   echo -e "${GREEN}Updated start-platform-dryrun.sh${NORM}"
 fi
 
@@ -148,7 +148,7 @@ All original files have been backed up to this directory.
    \`\`\`
    ./start-platform.sh
    \`\`\`
-   
+
 2. If everything works correctly, remove \`docker-compose-clean.yml\`
 
 3. Continue implementing the full cleanup strategy as outlined in \`DOCKER-COMPOSE-CLEANUP.md\`

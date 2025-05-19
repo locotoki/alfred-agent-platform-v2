@@ -72,11 +72,11 @@ export default function NicheScout() {
             Niche-Scout Workflow
           </h1>
         </div>
-        
+
         {/* Progress Bar */}
         <div className="w-full bg-gray-200 rounded-full h-2.5 mb-6">
-          <div 
-            className="bg-blue-600 h-2.5 rounded-full transition-all duration-300" 
+          <div
+            className="bg-blue-600 h-2.5 rounded-full transition-all duration-300"
             style={{ width: `${pct}%` }}
           ></div>
         </div>
@@ -120,7 +120,7 @@ export default function NicheScout() {
                 className="space-y-4"
               >
                 <h2 className="text-xl font-bold mb-4">Define Your Niche</h2>
-                
+
                 <div className="mb-6">
                   <label htmlFor="niche-query" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                     What niche are you interested in exploring?
@@ -137,7 +137,7 @@ export default function NicheScout() {
                     Enter keywords that describe your content area of interest
                   </p>
                 </div>
-                
+
                 <div className="mb-6">
                   <label htmlFor="category" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                     Select a Primary Category
@@ -161,7 +161,7 @@ export default function NicheScout() {
                     <option value="Science & Technology">Science & Technology</option>
                   </select>
                 </div>
-                
+
                 {form.category && (
                   <div className="mb-6">
                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -169,12 +169,12 @@ export default function NicheScout() {
                     </label>
                     <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
                       {SUBCATEGORIES[form.category as keyof typeof SUBCATEGORIES]?.map((subcategory) => (
-                        <div 
+                        <div
                           key={subcategory}
                           onClick={() => update("subcategory", subcategory)}
                           className={`p-2 rounded border cursor-pointer ${
                             form.subcategory === subcategory
-                              ? 'bg-blue-50 border-blue-300 text-blue-700' 
+                              ? 'bg-blue-50 border-blue-300 text-blue-700'
                               : 'bg-gray-50 border-gray-200 text-gray-700'
                           }`}
                         >
@@ -184,7 +184,7 @@ export default function NicheScout() {
                     </div>
                   </div>
                 )}
-                
+
                 <div className="flex justify-end mt-6">
                   <button
                     onClick={next}
@@ -207,7 +207,7 @@ export default function NicheScout() {
                 className="space-y-4"
               >
                 <h2 className="text-xl font-bold mb-4">Set Research Parameters</h2>
-                
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                   <div>
                     <label htmlFor="time-range" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
@@ -228,7 +228,7 @@ export default function NicheScout() {
                       Select how far back to analyze trends
                     </p>
                   </div>
-                  
+
                   <div>
                     <label htmlFor="demographics" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                       Target Demographics
@@ -251,7 +251,7 @@ export default function NicheScout() {
                     </p>
                   </div>
                 </div>
-                
+
                 <div className="mb-6">
                   <button
                     onClick={() => setShowAdvanced(!showAdvanced)}
@@ -260,7 +260,7 @@ export default function NicheScout() {
                     {showAdvanced ? '- Hide Advanced Options' : '+ Advanced Options'}
                   </button>
                 </div>
-                
+
                 {showAdvanced && (
                   <div className="border border-gray-200 dark:border-gray-700 rounded-md p-4 mb-6">
                     <h3 className="text-lg font-semibold mb-2">Advanced Filters</h3>
@@ -300,7 +300,7 @@ export default function NicheScout() {
                     </div>
                   </div>
                 )}
-                
+
                 <div className="flex justify-between mt-6">
                   <button
                     onClick={back}
@@ -329,10 +329,10 @@ export default function NicheScout() {
                 className="space-y-4"
               >
                 <h2 className="text-xl font-bold mb-4">Review & Run Analysis</h2>
-                
+
                 <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4 mb-6">
                   <h3 className="text-lg font-semibold mb-2">Niche Scout Summary</h3>
-                  
+
                   <div className="space-y-3">
                     <div className="flex">
                       <span className="font-medium w-32">Niche Query:</span>
@@ -368,10 +368,10 @@ export default function NicheScout() {
                     )}
                   </div>
                 </div>
-                
+
                 <div className="bg-blue-50 dark:bg-blue-900 rounded-lg p-4 mb-6">
                   <h3 className="text-lg font-semibold mb-2 text-blue-800 dark:text-blue-200">What You'll Get</h3>
-                  
+
                   <ul className="list-disc list-inside space-y-2 text-blue-700 dark:text-blue-300">
                     <li>Top performing niches based on views and engagement</li>
                     <li>Growth rate analysis for trending content areas</li>
@@ -391,7 +391,7 @@ export default function NicheScout() {
                     </div>
                   </div>
                 </div>
-                
+
                 <div className="flex justify-between mt-6">
                   <button
                     onClick={back}
@@ -420,13 +420,13 @@ export default function NicheScout() {
           </AnimatePresence>
         </div>
       </div>
-      
+
       {/* Schedule Modal */}
       {showScheduleModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-md w-full">
             <h2 className="text-xl font-bold mb-4">Schedule Workflow</h2>
-            
+
             <div className="mb-4">
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Frequency
@@ -442,7 +442,7 @@ export default function NicheScout() {
                 <option value="once">Once</option>
               </select>
             </div>
-            
+
             {frequency === 'once' && (
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
@@ -456,7 +456,7 @@ export default function NicheScout() {
                 />
               </div>
             )}
-            
+
             <div className="flex justify-end space-x-2">
               <button
                 onClick={() => setShowScheduleModal(false)}

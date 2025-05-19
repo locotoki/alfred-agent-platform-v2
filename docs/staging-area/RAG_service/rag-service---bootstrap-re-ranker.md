@@ -6,7 +6,7 @@
 
 ################################################################################
 
-# 
+#
 
 # Creates canonical collections for personal & business namespaces and tunes
 
@@ -16,7 +16,7 @@
 
 # docker exec rag-bootstrap ./init_qdrant.sh
 
-# 
+#
 
 ---
 
@@ -59,7 +59,7 @@ echo "✅  Qdrant bootstrap complete."
 
 # docker compose -f docker-compose.yml -f docker-compose.override.rag.yml up -d
 
-# 
+#
 
 version: "3.9"
 services:

@@ -68,13 +68,13 @@ async def health_check() -> dict:
     """Detailed health check endpoint used by monitoring systems and dependencies."""
     service_deps = dependency_tracker.check_dependencies()
     # Map "healthy" to "ok", "unhealthy" to "error" to comply with standard
-    mapped_deps = {k: "ok" if v == "healthy" else "error" if v == "unhealthy" else v 
+    mapped_deps = {k: "ok" if v == "healthy" else "error" if v == "unhealthy" else v
                    for k, v in service_deps.items()}
     overall_status = "error" if "error" in mapped_deps.values() else "ok"
 
     return {
-        "status": overall_status, 
-        "version": version, 
+        "status": overall_status,
+        "version": version,
         "services": mapped_deps
     }
 ```
@@ -93,19 +93,19 @@ Update `services/social-intel/app/health_check.py`:
 async def detailed_health():
     """Detailed health check including component status."""
     global health_state
-    
+
     # Add current time
     health_state["last_check"] = time.time()
-    
+
     # Map to standard format
     status = "ok" if health_state["status"] == "healthy" else \
              "degraded" if health_state["status"] == "degraded" else "error"
-    
+
     # Map component status
     services = {}
     for name, info in health_state["components"].items():
         services[name] = "ok" if info["status"] == "healthy" else "error"
-    
+
     # Return in standard format
     return {
         "status": status,
@@ -118,8 +118,8 @@ async def simple_health():
     """Simple health check for container probes."""
     global health_state
     if health_state["status"] == "unhealthy":
-        return Response(content='{"status":"error"}', 
-                       media_type="application/json", 
+        return Response(content='{"status":"error"}',
+                       media_type="application/json",
                        status_code=503)
     return {"status": "ok"}
 ```
@@ -179,7 +179,7 @@ services:
       timeout: 20s
       retries: 5
       start_period: 45s
-  
+
   monitoring-db:
     # ... existing configuration ...
     healthcheck:

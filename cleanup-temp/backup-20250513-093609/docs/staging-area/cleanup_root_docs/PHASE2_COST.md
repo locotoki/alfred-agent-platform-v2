@@ -178,7 +178,7 @@ The projected additional cost of $3,500/month is justified by the following bene
 
 ## Responsible Team
 
-- **Engineering Lead**: 
-- **DevOps Engineer**: 
-- **ML Engineer**: 
+- **Engineering Lead**:
+- **DevOps Engineer**:
+- **ML Engineer**:
 - **Finance Liaison**:

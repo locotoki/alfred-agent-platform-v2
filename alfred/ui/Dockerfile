@@ -7,7 +7,7 @@ RUN chmod +x /usr/local/bin/healthcheck
 WORKDIR /app
 
 # Install dependencies
-RUN pip install --no-cache-dir streamlit requests 
+RUN pip install --no-cache-dir streamlit requests
 
 # Copy application code
 COPY streamlit_chat_ui.py .

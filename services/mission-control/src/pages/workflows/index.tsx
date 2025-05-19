@@ -6,7 +6,7 @@ import { format } from 'date-fns';
 
 export default function Workflows() {
   const router = useRouter();
-  
+
   // Mock data for development
   const scheduledWorkflows = [
     {
@@ -97,7 +97,7 @@ export default function Workflows() {
         <p>Last run: May 5, 2025</p>
         <p>Status: Available</p>
       </div>
-      <Link 
+      <Link
         href={href}
         className="btn-primary text-center"
       >

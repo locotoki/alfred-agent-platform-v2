@@ -33,9 +33,9 @@ export function setup() {
   // Warm up the cache with a few queries
   const categories = ['Gaming', 'Education', 'Entertainment', 'Howto & Style', 'Science & Technology'];
   const queries = ['mobile', 'tutorial', 'game', 'cooking', 'makeup', 'tech', 'review'];
-  
+
   console.log('Warming up cache...');
-  
+
   for (const category of categories) {
     for (let i = 0; i < 2; i++) {
       const query = queries[Math.floor(Math.random() * queries.length)];
@@ -52,10 +52,10 @@ export function setup() {
       });
     }
   }
-  
+
   // Wait for cache to populate
   sleep(2);
-  
+
   return {
     categories: categories,
     queries: queries
@@ -67,7 +67,7 @@ export default function(data) {
   // Select random category and query
   const category = data.categories[Math.floor(Math.random() * data.categories.length)];
   const query = data.queries[Math.floor(Math.random() * data.queries.length)];
-  
+
   // Randomly include subcategories
   let subcategories = [];
   if (Math.random() > 0.5) {
@@ -85,7 +85,7 @@ export default function(data) {
         // No subcategories
     }
   }
-  
+
   // Execute the request
   const payload = JSON.stringify({
     query: query,
@@ -94,11 +94,11 @@ export default function(data) {
     timeRange: 'Last 30 days',
     demographics: 'All'
   });
-  
+
   // Track metrics based on current stage
   const stage = (http.get('http://localhost:3020/metrics').status === 200) ? 'main' : 'warmup';
   const tags = { stage: stage };
-  
+
   const start = new Date().getTime();
   const res = http.post('http://localhost:3020/api/youtube/niche-scout', payload, {
     headers: {
@@ -107,9 +107,9 @@ export default function(data) {
     tags: tags
   });
   const duration = new Date().getTime() - start;
-  
+
   reqDuration.add(duration);
-  
+
   // Check if request was successful
   const success = check(res, {
     'status is 200': (r) => r.status === 200,
@@ -122,14 +122,14 @@ export default function(data) {
       }
     }
   });
-  
+
   errorRate.add(!success, tags);
-  
+
   // Check for cache hit
-  const isCacheHit = res.headers['X-Cache'] === 'HIT' || 
+  const isCacheHit = res.headers['X-Cache'] === 'HIT' ||
                    (JSON.parse(res.body).meta && JSON.parse(res.body).meta.cache_hit === true);
   cacheHits.add(isCacheHit, tags);
-  
+
   // Random pause between requests
   sleep(Math.random() * 1 + 0.5);
 }

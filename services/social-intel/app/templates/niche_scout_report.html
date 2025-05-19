@@ -147,7 +147,7 @@
         <p><strong>Fastest Growing Niche:</strong> {{ analysis_summary.fastest_growing }}</p>
         <p><strong>Most Shorts-Friendly:</strong> {{ analysis_summary.most_shorts_friendly }}</p>
         <p><strong>Lowest Competition:</strong> {{ analysis_summary.lowest_competition }}</p>
-        
+
         <h3>Recommendations</h3>
         {% for recommendation in recommendations %}
         <div class="recommendation">
@@ -157,33 +157,33 @@
     </div>
 
     <h2>Analyzed Niches</h2>
-    
+
     {% for niche in niches %}
     <div class="niche-card">
         <h3>
             {{ niche.name }}
             <span class="growth-rate">{{ niche.growth_rate }}% Growth</span>
         </h3>
-        
+
         <div class="niche-details">
             <div class="detail-column">
                 <div class="detail-item">
                     <h4>Competition Level</h4>
                     <span class="competition {{ niche.competition_level|lower }}">{{ niche.competition_level }}</span>
                 </div>
-                
+
                 <div class="detail-item">
                     <h4>Shorts-Friendly</h4>
                     <p>{{ "Yes" if niche.shorts_friendly else "No" }}</p>
                 </div>
-                
+
                 <div class="detail-item">
                     <h4>Audience Demographics</h4>
                     <p><strong>Age Groups:</strong> {{ niche.viewer_demographics.age_groups|join(", ") }}</p>
                     <p><strong>Gender Split:</strong> {{ niche.viewer_demographics.gender_split.male }}% Male, {{ niche.viewer_demographics.gender_split.female }}% Female</p>
                 </div>
             </div>
-            
+
             <div class="detail-column">
                 <div class="detail-item">
                     <h4>Trending Topics</h4>
@@ -194,7 +194,7 @@
                     </ul>
                 </div>
             </div>
-            
+
             <div class="detail-column">
                 <div class="detail-item">
                     <h4>Top Channels</h4>

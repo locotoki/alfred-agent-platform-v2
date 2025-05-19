@@ -55,7 +55,7 @@ groups:
           severity: warning
           team: platform
           service: alerts
-      
+
       - uid: response-time-slo
         title: "Alert Processing Time Exceeds SLO"
         condition: response_time_high
@@ -107,7 +107,7 @@ groups:
           severity: critical
           team: platform
           service: alerts
-      
+
       - uid: success-rate-slo
         title: "Alert Processing Success Rate Below SLO"
         condition: success_rate_low

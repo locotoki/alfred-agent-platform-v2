@@ -68,27 +68,27 @@ async function testSeedToBlueprint() {
 async function runTests() {
   console.log('🧪 STARTING INTEGRATION TESTS 🧪');
   console.log('===============================');
-  
+
   const results = {};
-  
+
   if (TESTS.health) results.health = await testHealth();
   if (TESTS.agentStatus) results.agentStatus = await testAgentStatus();
   if (TESTS.nicheScout) results.nicheScout = await testNicheScout();
   if (TESTS.seedToBlueprint) results.seedToBlueprint = await testSeedToBlueprint();
-  
+
   // Print summary
   console.log('\n📊 TEST RESULTS SUMMARY 📊');
   console.log('=========================');
   let passed = 0;
   let failed = 0;
-  
+
   Object.entries(results).forEach(([test, success]) => {
     console.log(`${success ? '✅' : '❌'} ${test}: ${success ? 'PASSED' : 'FAILED'}`);
     success ? passed++ : failed++;
   });
-  
+
   console.log(`\n${passed} tests passed, ${failed} tests failed`);
-  
+
   if (failed > 0) {
     console.log('\n⚠️ Some tests failed. Please check the logs above for details.');
     process.exit(1);

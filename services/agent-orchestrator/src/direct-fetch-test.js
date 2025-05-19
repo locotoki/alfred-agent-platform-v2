@@ -14,21 +14,21 @@ const endpoints = [
 // Test each endpoint
 async function testEndpoints() {
   console.log('Testing social-intel endpoints...');
-  
+
   for (const endpoint of endpoints) {
     try {
       console.log(`Testing endpoint: ${endpoint}`);
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 3000);
-      
+
       const response = await fetch(endpoint, {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' },
         signal: controller.signal
       });
-      
+
       clearTimeout(timeoutId);
-      
+
       if (response.ok) {
         const data = await response.json();
         console.log(`✅ Success for ${endpoint}:`, data);
@@ -39,7 +39,7 @@ async function testEndpoints() {
       console.log(`❌ Error for ${endpoint}:`, error.message);
     }
   }
-  
+
   console.log('Testing completed.');
 }
 

@@ -42,21 +42,21 @@ check_metrics_endpoint() {
   local container=$1
   local port=${2:-9091}
   local success=false
-  
+
   echo -e "  ${YELLOW}Checking $container on port $port...${NC}"
-  
+
   # Skip if container is not running
   if ! is_container_running "$container"; then
     echo -e "    ${YELLOW}⚠️ Container $container is not running, skipping.${NC}"
     return 0
   fi
-  
+
   # Check if port is open
   if ! is_port_open "$container" "$port"; then
     echo -e "    ${RED}❌ Port $port not accessible on $container${NC}"
     return 1
   fi
-  
+
   # Try to get metrics
   if ! docker exec "$container" curl -s "http://localhost:$port/metrics" | grep -q "service_health"; then
     echo -e "    ${RED}❌ Metrics endpoint on $container doesn't contain service_health metric${NC}"
@@ -71,21 +71,21 @@ check_metrics_endpoint() {
 check_compose_metrics_labels() {
   echo -e "${GREEN}=== Checking docker-compose.yml for Prometheus metrics labels ===${NC}"
   echo ""
-  
+
   if [ ! -f "$DOCKER_COMPOSE_FILE" ]; then
     echo -e "${RED}❌ Docker compose file not found at $DOCKER_COMPOSE_FILE${NC}"
     return 1
   fi
-  
+
   # Extract service names from docker-compose.yml
   local services=$(grep -A 1 "services:" "$DOCKER_COMPOSE_FILE" | grep -v "services:" | grep -v "\-\-" | awk '{print $1}' | sed 's/://g')
-  
+
   local label_failures=0
-  
+
   for service in $services; do
     # Skip empty service names or comments
     [[ "$service" == "#"* || -z "$service" ]] && continue
-    
+
     # Check if service has prometheus.metrics.port label
     if grep -q -A 20 "^  $service:" "$DOCKER_COMPOSE_FILE" | grep -q "prometheus.metrics.port"; then
       # Extract the port value
@@ -96,7 +96,7 @@ check_compose_metrics_labels() {
       label_failures=$((label_failures + 1))
     fi
   done
-  
+
   echo ""
   if [ $label_failures -eq 0 ]; then
     echo -e "${GREEN}✅ All services in docker-compose.yml have proper metrics labels${NC}"
@@ -111,18 +111,18 @@ check_compose_metrics_labels() {
 check_dockerfile_healthcheck() {
   echo -e "${GREEN}=== Checking Dockerfiles for healthcheck binary and port exposure ===${NC}"
   echo ""
-  
+
   local dockerfile_failures=0
-  
+
   # Find all Dockerfiles in the project
   local dockerfiles=$(find "${BASE_DIR}" -name "Dockerfile" | grep -v "node_modules")
-  
+
   for dockerfile in $dockerfiles; do
     local service_dir=$(dirname "$dockerfile")
     local service_name=$(basename "$service_dir")
-    
+
     echo -e "  ${YELLOW}Checking $service_name Dockerfile...${NC}"
-    
+
     # Check for healthcheck binary
     if grep -q "healthcheck:.*" "$dockerfile" || grep -q "COPY --from=healthcheck" "$dockerfile"; then
       echo -e "    ${GREEN}✅ Has healthcheck binary${NC}"
@@ -130,7 +130,7 @@ check_dockerfile_healthcheck() {
       echo -e "    ${RED}❌ Missing healthcheck binary${NC}"
       dockerfile_failures=$((dockerfile_failures + 1))
     fi
-    
+
     # Check for port 9091 exposure
     if grep -q "EXPOSE.*9091" "$dockerfile"; then
       echo -e "    ${GREEN}✅ Exposes port 9091 for metrics${NC}"
@@ -138,7 +138,7 @@ check_dockerfile_healthcheck() {
       echo -e "    ${RED}❌ Not exposing port 9091 for metrics${NC}"
       dockerfile_failures=$((dockerfile_failures + 1))
     fi
-    
+
     # Check for --export-prom in CMD or ENTRYPOINT
     if grep -q "export-prom" "$dockerfile"; then
       echo -e "    ${GREEN}✅ Has metrics export configured in CMD/ENTRYPOINT${NC}"
@@ -146,10 +146,10 @@ check_dockerfile_healthcheck() {
       echo -e "    ${YELLOW}⚠️ May be missing --export-prom in CMD/ENTRYPOINT${NC}"
       # This is just a warning, not a failure
     fi
-    
+
     echo ""
   done
-  
+
   if [ $dockerfile_failures -eq 0 ]; then
     echo -e "${GREEN}✅ All Dockerfiles properly configured for healthcheck${NC}"
     return 0
@@ -163,12 +163,12 @@ check_dockerfile_healthcheck() {
 check_prometheus_config() {
   echo -e "${GREEN}=== Checking Prometheus configuration for metrics scraping ===${NC}"
   echo ""
-  
+
   if [ ! -f "$PROMETHEUS_CONFIG" ]; then
     echo -e "${RED}❌ Prometheus config not found at $PROMETHEUS_CONFIG${NC}"
     return 1
   fi
-  
+
   # Check if prometheus.yml has metrics_path
   if grep -q "metrics_path: '/metrics'" "$PROMETHEUS_CONFIG"; then
     echo -e "  ${GREEN}✅ Prometheus is configured with correct metrics_path${NC}"
@@ -176,7 +176,7 @@ check_prometheus_config() {
     echo -e "  ${RED}❌ Prometheus missing metrics_path: '/metrics' configuration${NC}"
     return 1
   fi
-  
+
   # Check for port 9091
   if grep -q "port: '9091'" "$PROMETHEUS_CONFIG"; then
     echo -e "  ${GREEN}✅ Prometheus is configured to scrape port 9091${NC}"
@@ -184,7 +184,7 @@ check_prometheus_config() {
     echo -e "  ${RED}❌ Prometheus may not be configured to scrape port 9091${NC}"
     return 1
   fi
-  
+
   echo -e "  ${GREEN}✅ Prometheus configuration appears correct${NC}"
   return 0
 }

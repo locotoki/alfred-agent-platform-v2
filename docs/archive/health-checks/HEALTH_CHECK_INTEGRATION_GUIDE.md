@@ -109,14 +109,14 @@ async def health():
     # Check dependencies
     db_status = "ok" if check_database() else "error"
     cache_status = "ok" if check_cache() else "error"
-    
+
     # Determine overall status
     services = {
         "database": db_status,
         "cache": cache_status
     }
     status = "error" if "error" in services.values() else "ok"
-    
+
     return {
         "status": status,
         "version": "1.0.0",
@@ -178,20 +178,20 @@ app.get('/health', (req, res) => {
   // Check dependencies
   const dbStatus = checkDatabase() ? 'ok' : 'error';
   const cacheStatus = checkCache() ? 'ok' : 'error';
-  
+
   const services = {
     database: dbStatus,
     cache: cacheStatus
   };
-  
+
   const hasError = Object.values(services).includes('error');
-  
+
   if (hasError) {
     serviceHealth.set(0);
   } else {
     serviceHealth.set(1);
   }
-  
+
   res.json({
     status: hasError ? 'error' : 'ok',
     version: '1.0.0',
@@ -277,10 +277,10 @@ After implementing health checks, verify them with:
    ```bash
    # Check health endpoint
    curl -s http://localhost:<host-port>/health | jq
-   
+
    # Check metrics endpoint
    curl -s http://localhost:<metrics-host-port>/metrics | head
-   
+
    # Check Docker healthcheck
    docker inspect --format='{{.State.Health.Status}}' <container-name>
    ```

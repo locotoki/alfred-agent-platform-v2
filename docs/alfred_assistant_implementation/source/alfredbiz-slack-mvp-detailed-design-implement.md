@@ -67,7 +67,7 @@ When every checkbox is green, begin **Week 0** of the timeline below.
 ```
 
 > Deployment note: This service is deployed to Fly.io as alfred‑biz.  The codebase is identical to Alfred‑Home except for the adapter and the default INSTANCE=biz environment variable.
-> 
+>
 - **SlackAdapter** – Verifies request signature (v0 scheme), converts event payloads to `InboundMessage`, calls Slack Web API for responses.
 - **Core API** – Unchanged; contains `FamilyCoordinatorAgent`, services, scheduler endpoints.
 - **Redis** – Keys identical to Home instance but live in separate Redis project for isolation.

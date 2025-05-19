@@ -13,22 +13,22 @@ interface ThresholdSliderProps {
   apiUrl?: string;
 }
 
-export const ThresholdSlider: React.FC<ThresholdSliderProps> = ({ 
-  apiUrl = '/api/thresholds' 
+export const ThresholdSlider: React.FC<ThresholdSliderProps> = ({
+  apiUrl = '/api/thresholds'
 }) => {
   const [thresholds, setThresholds] = useState<ThresholdConfig | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isDirty, setIsDirty] = useState(false);
   const [saving, setSaving] = useState(false);
-  
+
   // Feature flag check
   const dynamicThresholdsEnabled = useFeatureFlag('dynamic-thresholds');
-  
+
   useEffect(() => {
     fetchThresholds();
   }, []);
-  
+
   const fetchThresholds = async () => {
     try {
       setLoading(true);
@@ -43,20 +43,20 @@ export const ThresholdSlider: React.FC<ThresholdSliderProps> = ({
       setLoading(false);
     }
   };
-  
+
   const handleThresholdChange = (key: keyof ThresholdConfig, value: number) => {
     if (!thresholds) return;
-    
+
     setThresholds({
       ...thresholds,
       [key]: value
     });
     setIsDirty(true);
   };
-  
+
   const saveThresholds = async () => {
     if (!thresholds || !isDirty) return;
-    
+
     try {
       setSaving(true);
       const response = await fetch(apiUrl, {
@@ -64,9 +64,9 @@ export const ThresholdSlider: React.FC<ThresholdSliderProps> = ({
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(thresholds)
       });
-      
+
       if (!response.ok) throw new Error('Failed to save thresholds');
-      
+
       const updated = await response.json();
       setThresholds(updated);
       setIsDirty(false);
@@ -77,11 +77,11 @@ export const ThresholdSlider: React.FC<ThresholdSliderProps> = ({
       setSaving(false);
     }
   };
-  
+
   if (!dynamicThresholdsEnabled) {
     return null; // Feature is disabled
   }
-  
+
   if (loading) {
     return (
       <Box display="flex" justifyContent="center" padding={3}>
@@ -89,7 +89,7 @@ export const ThresholdSlider: React.FC<ThresholdSliderProps> = ({
       </Box>
     );
   }
-  
+
   if (error) {
     return (
       <Alert severity="error" onClose={() => setError(null)}>
@@ -97,17 +97,17 @@ export const ThresholdSlider: React.FC<ThresholdSliderProps> = ({
       </Alert>
     );
   }
-  
+
   if (!thresholds) {
     return null;
   }
-  
+
   return (
     <Paper elevation={2} sx={{ padding: 3, marginTop: 2 }}>
       <Typography variant="h6" gutterBottom>
         Dynamic Threshold Configuration
       </Typography>
-      
+
       <Box marginY={3}>
         <Typography gutterBottom>
           Noise Threshold: {thresholds.noise_threshold.toFixed(2)}
@@ -122,7 +122,7 @@ export const ThresholdSlider: React.FC<ThresholdSliderProps> = ({
           valueLabelDisplay="auto"
         />
       </Box>
-      
+
       <Box marginY={3}>
         <Typography gutterBottom>
           Confidence Minimum: {thresholds.confidence_min.toFixed(2)}
@@ -137,7 +137,7 @@ export const ThresholdSlider: React.FC<ThresholdSliderProps> = ({
           valueLabelDisplay="auto"
         />
       </Box>
-      
+
       <Box marginY={3}>
         <Typography gutterBottom>
           Batch Size: {thresholds.batch_size}
@@ -156,7 +156,7 @@ export const ThresholdSlider: React.FC<ThresholdSliderProps> = ({
           valueLabelDisplay="auto"
         />
       </Box>
-      
+
       <Box marginY={3}>
         <Typography gutterBottom>
           Learning Rate: {thresholds.learning_rate.toFixed(4)}
@@ -177,7 +177,7 @@ export const ThresholdSlider: React.FC<ThresholdSliderProps> = ({
           valueLabelDisplay="auto"
         />
       </Box>
-      
+
       <Box display="flex" justifyContent="flex-end" gap={2}>
         <Button
           variant="outlined"

@@ -171,7 +171,7 @@
 <body>
     <div class="container">
         <h1>YouTube API Tester</h1>
-        
+
         <div class="api-key-section">
             <h2>YouTube API Key</h2>
             <p>Enter your YouTube API key below. This is required for all API calls.</p>
@@ -179,13 +179,13 @@
             <button id="save-api-key">Save API Key</button>
             <div id="api-key-status"></div>
         </div>
-        
+
         <div class="tabs">
             <div class="tab active" data-tab="search">Video Search</div>
             <div class="tab" data-tab="trending">Trending Videos</div>
             <div class="tab" data-tab="niche">Niche Analysis</div>
         </div>
-        
+
         <div class="tab-content active" id="search-tab">
             <div class="search-section">
                 <h2>Video Search</h2>
@@ -196,7 +196,7 @@
             </div>
             <div id="search-results" class="results"></div>
         </div>
-        
+
         <div class="tab-content" id="trending-tab">
             <div class="search-section">
                 <h2>Trending Videos</h2>
@@ -218,7 +218,7 @@
             </div>
             <div id="trending-results" class="results"></div>
         </div>
-        
+
         <div class="tab-content" id="niche-tab">
             <div class="search-section">
                 <h2>Niche Analysis</h2>
@@ -241,7 +241,7 @@
     <script>
         // Store API key in localStorage
         let apiKey = localStorage.getItem('youtube_api_key') || '';
-        
+
         // DOM elements
         const apiKeyInput = document.getElementById('api-key');
         const saveApiKeyButton = document.getElementById('save-api-key');
@@ -259,30 +259,30 @@
         const nicheResults = document.getElementById('niche-results');
         const tabs = document.querySelectorAll('.tab');
         const tabContents = document.querySelectorAll('.tab-content');
-        
+
         // Initialize API key input
         if (apiKey) {
             apiKeyInput.value = apiKey;
             apiKeyStatus.textContent = 'API key loaded from storage.';
             apiKeyStatus.style.color = 'green';
         }
-        
+
         // Tab functionality
         tabs.forEach(tab => {
             tab.addEventListener('click', () => {
                 // Remove active class from all tabs
                 tabs.forEach(t => t.classList.remove('active'));
                 tabContents.forEach(c => c.classList.remove('active'));
-                
+
                 // Add active class to clicked tab
                 tab.classList.add('active');
-                
+
                 // Show corresponding tab content
                 const tabId = tab.getAttribute('data-tab');
                 document.getElementById(`${tabId}-tab`).classList.add('active');
             });
         });
-        
+
         // Save API key
         saveApiKeyButton.addEventListener('click', () => {
             apiKey = apiKeyInput.value.trim();
@@ -295,46 +295,46 @@
                 apiKeyStatus.style.color = 'red';
             }
         });
-        
+
         // Format numbers for display
         const formatNumber = num => {
             return new Intl.NumberFormat().format(num);
         };
-        
+
         // Search functionality
         searchButton.addEventListener('click', async () => {
             if (!apiKey) {
                 searchResults.innerHTML = '<div class="error">Please enter an API key first.</div>';
                 return;
             }
-            
+
             const query = searchQuery.value.trim();
             if (!query) {
                 searchResults.innerHTML = '<div class="error">Please enter a search query.</div>';
                 return;
             }
-            
+
             // Show loading state
             searchResults.innerHTML = '<div class="loading"><div class="spinner"></div><p>Searching...</p></div>';
-            
+
             try {
                 const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(query)}&type=video&maxResults=10&key=${apiKey}`;
                 const response = await fetch(url);
                 const data = await response.json();
-                
+
                 if (data.error) {
                     searchResults.innerHTML = `<div class="error">${data.error.message}</div>`;
                     return;
                 }
-                
+
                 if (!data.items || data.items.length === 0) {
                     searchResults.innerHTML = '<p>No results found.</p>';
                     return;
                 }
-                
+
                 // Display results
                 let html = '<h3>Search Results</h3>';
-                
+
                 data.items.forEach(item => {
                     html += `
                         <div class="video-card">
@@ -350,44 +350,44 @@
                         </div>
                     `;
                 });
-                
+
                 searchResults.innerHTML = html;
-                
+
             } catch (error) {
                 searchResults.innerHTML = `<div class="error">Error: ${error.message}</div>`;
             }
         });
-        
+
         // Trending functionality
         trendingButton.addEventListener('click', async () => {
             if (!apiKey) {
                 trendingResults.innerHTML = '<div class="error">Please enter an API key first.</div>';
                 return;
             }
-            
+
             const region = regionCode.value;
-            
+
             // Show loading state
             trendingResults.innerHTML = '<div class="loading"><div class="spinner"></div><p>Loading trending videos...</p></div>';
-            
+
             try {
                 const url = `https://www.googleapis.com/youtube/v3/videos?part=snippet,statistics&chart=mostPopular&regionCode=${region}&maxResults=10&key=${apiKey}`;
                 const response = await fetch(url);
                 const data = await response.json();
-                
+
                 if (data.error) {
                     trendingResults.innerHTML = `<div class="error">${data.error.message}</div>`;
                     return;
                 }
-                
+
                 if (!data.items || data.items.length === 0) {
                     trendingResults.innerHTML = '<p>No trending videos found.</p>';
                     return;
                 }
-                
+
                 // Display results
                 let html = `<h3>Trending Videos in ${region}</h3>`;
-                
+
                 data.items.forEach(item => {
                     html += `
                         <div class="video-card">
@@ -398,8 +398,8 @@
                                 <div class="video-title">${item.snippet.title}</div>
                                 <div class="video-channel">${item.snippet.channelTitle}</div>
                                 <div class="video-stats">
-                                    Views: ${formatNumber(item.statistics.viewCount || 0)} | 
-                                    Likes: ${formatNumber(item.statistics.likeCount || 0)} | 
+                                    Views: ${formatNumber(item.statistics.viewCount || 0)} |
+                                    Likes: ${formatNumber(item.statistics.likeCount || 0)} |
                                     Comments: ${formatNumber(item.statistics.commentCount || 0)}
                                 </div>
                                 <a href="https://www.youtube.com/watch?v=${item.id}" target="_blank">Watch on YouTube</a>
@@ -407,70 +407,70 @@
                         </div>
                     `;
                 });
-                
+
                 trendingResults.innerHTML = html;
-                
+
             } catch (error) {
                 trendingResults.innerHTML = `<div class="error">Error: ${error.message}</div>`;
             }
         });
-        
+
         // Niche analysis functionality
         nicheButton.addEventListener('click', async () => {
             if (!apiKey) {
                 nicheResults.innerHTML = '<div class="error">Please enter an API key first.</div>';
                 return;
             }
-            
+
             const keyword1 = nicheKeyword1.value.trim();
             const keyword2 = nicheKeyword2.value.trim();
             const keyword3 = nicheKeyword3.value.trim();
-            
+
             if (!keyword1) {
                 nicheResults.innerHTML = '<div class="error">Please enter at least one keyword.</div>';
                 return;
             }
-            
+
             // Collect keywords to analyze
             const keywords = [keyword1];
             if (keyword2) keywords.push(keyword2);
             if (keyword3) keywords.push(keyword3);
-            
+
             // Show loading state
             nicheResults.innerHTML = '<div class="loading"><div class="spinner"></div><p>Analyzing niches...</p></div>';
-            
+
             // Store results for each keyword
             const results = [];
-            
+
             for (const keyword of keywords) {
                 try {
                     // Search for videos with this keyword
                     const searchUrl = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(keyword)}&type=video&maxResults=10&key=${apiKey}`;
                     const searchResponse = await fetch(searchUrl);
                     const searchData = await searchResponse.json();
-                    
+
                     if (searchData.error) {
                         throw new Error(searchData.error.message);
                     }
-                    
+
                     // Get video IDs
                     const videoIds = searchData.items.map(item => item.id.videoId).join(',');
-                    
+
                     // Get video statistics
                     const videoUrl = `https://www.googleapis.com/youtube/v3/videos?part=statistics&id=${videoIds}&key=${apiKey}`;
                     const videoResponse = await fetch(videoUrl);
                     const videoData = await videoResponse.json();
-                    
+
                     if (videoData.error) {
                         throw new Error(videoData.error.message);
                     }
-                    
+
                     // Calculate metrics
                     let totalViews = 0;
                     let totalLikes = 0;
                     let totalComments = 0;
                     let videoCount = 0;
-                    
+
                     videoData.items.forEach(video => {
                         const stats = video.statistics;
                         totalViews += parseInt(stats.viewCount || 0);
@@ -478,10 +478,10 @@
                         totalComments += parseInt(stats.commentCount || 0);
                         videoCount++;
                     });
-                    
+
                     // Get unique channel IDs
                     const channelIds = [...new Set(searchData.items.map(item => item.snippet.channelId))];
-                    
+
                     // Store result
                     results.push({
                         keyword,
@@ -495,7 +495,7 @@
                         avgComments: videoCount > 0 ? Math.round(totalComments / videoCount) : 0,
                         engagementRate: totalViews > 0 ? ((totalLikes + totalComments) / totalViews * 100).toFixed(2) : 0
                     });
-                    
+
                 } catch (error) {
                     results.push({
                         keyword,
@@ -503,10 +503,10 @@
                     });
                 }
             }
-            
+
             // Display results
             let html = '<h3>Niche Analysis Results</h3>';
-            
+
             results.forEach(result => {
                 if (result.error) {
                     html += `
@@ -545,11 +545,11 @@
                     `;
                 }
             });
-            
+
             // Add a summary/comparison
             if (results.length > 1 && !results.some(r => r.error)) {
                 const sorted = [...results].sort((a, b) => b.avgViews - a.avgViews);
-                
+
                 html += `
                     <div class="niche-result">
                         <h3>Niche Comparison</h3>
@@ -558,9 +558,9 @@
                     </div>
                 `;
             }
-            
+
             nicheResults.innerHTML = html;
-            
+
         });
     </script>
 </body>

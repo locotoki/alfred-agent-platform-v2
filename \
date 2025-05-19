@@ -21,7 +21,7 @@ This document outlines the simplified Docker Compose structure we've implemented
 
 - **Purpose**: Development-specific overrides
 - **Role**: Customizes services for local development
-- **Content**: 
+- **Content**:
   - Hot-reloading via volume mounts
   - Debug-level logging
   - Development-specific service configuration
@@ -74,7 +74,7 @@ services:
   redis:
     command: ["redis-server", "--appendonly", "yes", "--save", "60", "1"]
     profiles: ["dev"]
-    
+
   mock-storage:
     image: mock-storage-api:latest
     profiles: ["mocks"]

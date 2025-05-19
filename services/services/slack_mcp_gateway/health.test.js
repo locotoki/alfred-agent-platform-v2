@@ -17,7 +17,7 @@ app.get('/health', (req, res) => {
 describe('Health Check Endpoint', () => {
   test('GET /health returns healthy status', async () => {
     const response = await request(app).get('/health');
-    
+
     expect(response.status).toBe(200);
     expect(response.body.status).toBe('healthy');
     expect(response.body.services).toEqual({

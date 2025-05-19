@@ -16,7 +16,7 @@
 
 ### 1. PR #56 (CI Fix for GHCR Push)
 **Status**: Open and ready
-**Next Steps**: 
+**Next Steps**:
 - Coordinator to add GHCR_PAT to staging/prod environments
 - Then merge PR #56
 - After merge, push trivial commit to test image push

@@ -113,11 +113,11 @@ jobs:
         run: |
           echo "Starting ${{ matrix.service }} container..."
           docker run -d --name ${{ matrix.service }}-test -p ${{ matrix.port }}:${{ matrix.port }} -p 9091:9091 alfred-platform/${{ matrix.service }}:test
-          
+
           # Wait for container to start
           echo "Waiting for container to initialize..."
           sleep 20
-          
+
           # Wait for health check to pass
           max_retries=10
           retries=0
@@ -126,25 +126,25 @@ jobs:
             echo "Waiting for container health check to pass (attempt $retries/$max_retries)..."
             sleep 10
           done
-          
+
           if [ $retries -ge $max_retries ]; then
             echo "Health check did not pass within timeout"
             docker logs ${{ matrix.service }}-test
             exit 1
           fi
-          
+
           # Check container health
           echo "Checking container status..."
           docker ps -a
-          
+
           # Test service-specific health check
           echo "Testing service health command..."
           docker exec ${{ matrix.service }}-test sh -c '${{ matrix.test_cmd }}' || { echo "Service health check failed"; docker logs ${{ matrix.service }}-test; exit 1; }
-          
+
           # Test metrics endpoint
           echo "Testing metrics endpoint..."
           curl -s http://localhost:9091/metrics | grep -q "service_health" || { echo "Metrics endpoint check failed"; exit 1; }
-          
+
           echo "All checks passed for ${{ matrix.service }}"
 
       - name: Move cache
@@ -177,7 +177,7 @@ jobs:
           else
             echo "Creating test docker-compose configuration"
             cp docker-compose.yml docker-compose.monitoring-test.yml
-            
+
             # Update service configurations in test file
             for service in "mail-server" "monitoring-node" "monitoring-redis" "redis-exporter" "monitoring-dashboard" "monitoring-metrics"; do
               if [ -d "services/$service" ] && [ -f "services/$service/Dockerfile.new" ]; then
@@ -187,7 +187,7 @@ jobs:
               fi
             done
           fi
-          
+
           cat docker-compose.monitoring-test.yml
 
       - name: Start services with docker-compose
@@ -202,11 +202,11 @@ jobs:
               fi
             fi
           done
-          
+
           docker-compose -f docker-compose.monitoring-test.yml up -d mail-server monitoring-node monitoring-redis redis-exporter monitoring-dashboard monitoring-metrics
           # Wait for services to initialize
           sleep 30
-          
+
           # Wait for all services to be healthy
           echo "Waiting for services to be healthy..."
           for service in mail-server monitoring-node monitoring-redis redis-exporter monitoring-dashboard monitoring-metrics; do
@@ -218,14 +218,14 @@ jobs:
                 echo "Waiting for $service to be healthy (attempt $retries/$max_retries)..."
                 sleep 10
               done
-              
+
               if [ $retries -ge $max_retries ]; then
                 echo "$service did not become healthy within timeout"
                 docker-compose -f docker-compose.monitoring-test.yml logs $service
               fi
             fi
           done
-          
+
           docker-compose -f docker-compose.monitoring-test.yml ps
 
       - name: Test service health endpoints
@@ -235,32 +235,32 @@ jobs:
             echo "Testing mail-server health..."
             curl -s --fail http://localhost:8025/health || { echo "mail-server health check failed"; exit 1; }
           fi
-          
+
           if docker-compose -f docker-compose.monitoring-test.yml ps | grep -q monitoring-node; then
             echo "Testing monitoring-node health..."
             curl -s --fail http://localhost:9100/metrics || { echo "monitoring-node health check failed"; exit 1; }
           fi
-          
+
           if docker-compose -f docker-compose.monitoring-test.yml ps | grep -q monitoring-redis; then
             echo "Testing monitoring-redis health..."
             docker exec $(docker-compose -f docker-compose.monitoring-test.yml ps -q monitoring-redis) redis-cli ping | grep -q PONG || { echo "monitoring-redis health check failed"; exit 1; }
           fi
-          
+
           if docker-compose -f docker-compose.monitoring-test.yml ps | grep -q redis-exporter; then
             echo "Testing redis-exporter health..."
             curl -s --fail http://localhost:9121/metrics || { echo "redis-exporter health check failed"; exit 1; }
           fi
-          
+
           if docker-compose -f docker-compose.monitoring-test.yml ps | grep -q monitoring-dashboard; then
             echo "Testing monitoring-dashboard health..."
             curl -s --fail http://localhost:3000/api/health || { echo "monitoring-dashboard health check failed"; exit 1; }
           fi
-          
+
           if docker-compose -f docker-compose.monitoring-test.yml ps | grep -q monitoring-metrics; then
             echo "Testing monitoring-metrics health..."
             curl -s --fail http://localhost:9090/-/healthy || { echo "monitoring-metrics health check failed"; exit 1; }
           fi
-          
+
           echo "All service health checks passed!"
 
       - name: Test metrics endpoints where available
@@ -277,7 +277,7 @@ jobs:
               fi
             fi
           done
-          
+
           echo "All available metrics endpoints verified!"
 
       - name: Stop services
@@ -292,11 +292,11 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      
+
       - name: Check and create alert rules directory
         run: |
           mkdir -p monitoring/prometheus/alerts
-      
+
       - name: Check if service_health alert rules exist
         id: check-rules
         run: |
@@ -307,7 +307,7 @@ jobs:
             echo "Alert rules file doesn't exist, will create it"
             echo "exists=false" >> $GITHUB_OUTPUT
           fi
-      
+
       - name: Create service_health alert rules
         if: steps.check-rules.outputs.exists != 'true'
         id: create-rules
@@ -324,7 +324,7 @@ jobs:
               annotations:
                 summary: "Service {{ $labels.service }} is unhealthy"
                 description: "Service has reported an unhealthy status for more than 1 minute"
-            
+
             - alert: ServiceHealthDegraded
               expr: service_health == 0.5
               for: 2m
@@ -333,7 +333,7 @@ jobs:
               annotations:
                 summary: "Service {{ $labels.service }} is degraded"
                 description: "Service has reported a degraded status for more than 2 minutes"
-                
+
             - alert: ServiceMetricsUnavailable
               expr: up == 0
               for: 30s
@@ -345,7 +345,7 @@ jobs:
           EOF
           echo "Created service_health alert rules"
           echo "created=true" >> $GITHUB_OUTPUT
-      
+
       - name: Check if Prometheus configuration includes alert rules
         run: |
           if [ -f "monitoring/prometheus/prometheus.yml" ]; then
@@ -360,7 +360,7 @@ jobs:
           else
             echo "prometheus.yml not found, cannot update"
           fi
-          
+
       - name: Upload alert rules artifact
         if: steps.create-rules.outputs.created == 'true' || steps.check-rules.outputs.exists == 'true'
         uses: actions/upload-artifact@v3
@@ -385,9 +385,9 @@ jobs:
           echo "" >> MONITORING-STATUS-REPORT.md
           echo "## Implementation Progress" >> MONITORING-STATUS-REPORT.md
           echo "" >> MONITORING-STATUS-REPORT.md
-          
+
           echo "### Service Implementation Status" >> MONITORING-STATUS-REPORT.md
-          
+
           # Check services
           for service in "mail-server" "monitoring-node" "monitoring-redis" "redis-exporter" "monitoring-dashboard" "monitoring-metrics"; do
             if [ -d "services/$service" ]; then
@@ -400,7 +400,7 @@ jobs:
               echo "- ⚠️ $service: Service directory not found" >> MONITORING-STATUS-REPORT.md
             fi
           done
-          
+
           # Check Prometheus alert rules
           echo "" >> MONITORING-STATUS-REPORT.md
           echo "### Monitoring Configuration" >> MONITORING-STATUS-REPORT.md
@@ -409,41 +409,41 @@ jobs:
           else
             echo "- ❌ Prometheus alert rules not implemented" >> MONITORING-STATUS-REPORT.md
           fi
-          
+
           if [ -f "monitoring/prometheus/prometheus.yml" ] && grep -q "alerts/service_health.yml" monitoring/prometheus/prometheus.yml; then
             echo "- ✅ Prometheus configured to use alert rules" >> MONITORING-STATUS-REPORT.md
           else
             echo "- ❌ Prometheus not configured to use alert rules" >> MONITORING-STATUS-REPORT.md
           fi
-          
+
           # Create completion percentage
           echo "" >> MONITORING-STATUS-REPORT.md
           echo "## Overall Progress" >> MONITORING-STATUS-REPORT.md
-          
+
           # Calculate a rough progress percentage
           completed=0
           total=6  # Total number of services to check
-          
+
           for service in "mail-server" "monitoring-node" "monitoring-redis" "redis-exporter" "monitoring-dashboard" "monitoring-metrics"; do
             if [ -d "services/$service" ] && [ -f "services/$service/Dockerfile.new" ]; then
               completed=$((completed+1))
             fi
           done
-          
+
           # Add alert rules to calculation
           total=$((total+1))
           if [ -f "monitoring/prometheus/alerts/service_health.yml" ]; then
             completed=$((completed+1))
           fi
-          
+
           # Calculate percentage
           percentage=$((completed * 100 / total))
           echo "- Progress: $percentage% ($completed/$total)" >> MONITORING-STATUS-REPORT.md
-          
+
           echo "" >> MONITORING-STATUS-REPORT.md
           echo "This report was generated automatically by the monitoring health check CI pipeline." >> MONITORING-STATUS-REPORT.md
           echo "Run date: $(date)" >> MONITORING-STATUS-REPORT.md
-          
+
           # Output the report in the logs
           cat MONITORING-STATUS-REPORT.md
 

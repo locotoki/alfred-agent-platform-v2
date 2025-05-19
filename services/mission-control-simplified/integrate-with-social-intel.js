@@ -1,9 +1,9 @@
 /**
  * Integration script for connecting Simplified Mission Control with the Social Intelligence Agent
- * 
+ *
  * This script provides the connection layer between Mission Control and the Social Intelligence agent,
  * with robust error handling and configurable fallback to mock data.
- * 
+ *
  * Enhanced in Phase 0 of the Niche-Scout ↔ Social-Intel Integration project to improve relevance
  * with string similarity matching and comprehensive transformation metrics.
  */
@@ -42,13 +42,13 @@ console.log(`- Similarity Threshold: ${SIMILARITY_THRESHOLD}`);
 /**
  * Calculate string similarity between two strings using multiple algorithms
  * Returns a value between 0 (completely different) and 1 (identical)
- * 
+ *
  * This enhanced version combines:
  * 1. Levenshtein distance for character-level similarity
  * 2. Jaccard similarity for token/word-level similarity
  * 3. Jaro-Winkler for additional prefix matching boost
  * 4. Special handling for short strings, substrings, and edge cases
- * 
+ *
  * @param {string} str1 - First string to compare
  * @param {string} str2 - Second string to compare
  * @returns {number} - Similarity score between 0 and 1
@@ -57,14 +57,14 @@ function stringSimilarity(str1, str2) {
   // Handle edge cases
   if (!str1 && !str2) return 1.0; // Both empty strings are identical
   if (!str1 || !str2) return 0.0; // One empty string has no similarity
-  
+
   // Convert to lowercase for case-insensitive comparison
   const s1 = String(str1).toLowerCase();
   const s2 = String(str2).toLowerCase();
-  
+
   // Special case: identical after normalization
   if (s1 === s2) return 1.0;
-  
+
   // Special handling for very short strings as recommended in peer review
   if (Math.min(s1.length, s2.length) < 3) {
     // For very short strings, require exact match or high Jaro-Winkler
@@ -78,7 +78,7 @@ function stringSimilarity(str1, str2) {
     // For truly different short strings, return a low score
     return 0.1;
   }
-  
+
   // Check if one string is a substring of the other
   if (s1.includes(s2) || s2.includes(s1)) {
     // Calculate similarity based on length ratio for substrings
@@ -87,27 +87,27 @@ function stringSimilarity(str1, str2) {
     // 0.8 base score for substring + length ratio factor
     return 0.8 + (0.2 * shorterLen / longerLen);
   }
-  
+
   // Calculate multiple similarity metrics
   const levenshteinSimilarity = calculateLevenshtein(s1, s2);
-  
+
   // If the strings contain spaces, calculate Jaccard similarity for word tokens
   let jaccardSimilarity = 0;
   if (s1.includes(' ') || s2.includes(' ')) {
     jaccardSimilarity = calculateJaccardSimilarity(s1, s2);
   }
-  
+
   // Calculate Jaro-Winkler similarity for prefix emphasis
   const jaroWinklerSimilarity = calculateJaroWinkler(s1, s2);
-  
+
   // Combine the scores with weights
   // - Levenshtein handles character-level edits (50%)
   // - Jaccard handles token/word overlaps (30%)
   // - Jaro-Winkler emphasizes matching prefixes (20%)
-  let finalScore = (levenshteinSimilarity * 0.5) + 
-                  (jaccardSimilarity * 0.3) + 
+  let finalScore = (levenshteinSimilarity * 0.5) +
+                  (jaccardSimilarity * 0.3) +
                   (jaroWinklerSimilarity * 0.2);
-  
+
   // Ensure the result is between 0 and 1
   return Math.min(1.0, Math.max(0.0, finalScore));
 }
@@ -122,7 +122,7 @@ function calculateLevenshtein(s1, s2) {
   // Use the longer string as the denominator for normalization
   const longer = s1.length >= s2.length ? s1 : s2;
   const shorter = s1.length < s2.length ? s1 : s2;
-  
+
   // Optimization for very different strings
   // Quick check of character sets similarity
   if (longer.length > 5 && shorter.length > 5) {
@@ -137,7 +137,7 @@ function calculateLevenshtein(s1, s2) {
       return 0.2; // Return low similarity score
     }
   }
-  
+
   // For very small edit distances, use a higher base score
   if (Math.abs(s1.length - s2.length) <= 2) {
     // Check if they only differ by 1 or 2 characters
@@ -146,42 +146,42 @@ function calculateLevenshtein(s1, s2) {
       if (s1[i] !== s2[i]) diffCount++;
       if (diffCount > 2) break;
     }
-    
+
     if (diffCount <= 2 && Math.abs(s1.length - s2.length) + diffCount <= 2) {
       return 0.8; // Return high similarity for small edit distances
     }
   }
-  
+
   // Initialize the matrix with the row number of the edit distance matrix
   const costs = new Array(longer.length + 1);
   for (let i = 0; i <= longer.length; i++) {
     costs[i] = i;
   }
-  
+
   // Calculate Levenshtein distance
   for (let i = 1; i <= shorter.length; i++) {
     let lastValue = i;
     costs[0] = i;
-    
+
     for (let j = 1; j <= longer.length; j++) {
       const substitutionCost = shorter.charAt(i - 1) === longer.charAt(j - 1) ? 0 : 1;
-      
+
       // Cell to the left + 1 (deletion)
       // Cell above + 1 (insertion)
       // Cell to the upper left + cost (substitution)
       const insertCost = costs[j - 1] + 1;
       const deleteCost = costs[j] + 1;
       const replaceCost = lastValue + substitutionCost;
-      
+
       // Use the minimum of the three operations
       const cellValue = Math.min(insertCost, deleteCost, replaceCost);
-      
+
       // Save value
       lastValue = costs[j];
       costs[j] = cellValue;
     }
   }
-  
+
   // Normalize by the length of the longer string
   // This ensures a value between 0 and 1
   const distance = costs[longer.length];
@@ -191,7 +191,7 @@ function calculateLevenshtein(s1, s2) {
 /**
  * Calculate Jaccard similarity based on token/word overlap
  * Good for multi-token strings like "mobile gaming" vs "handheld games"
- * 
+ *
  * @param {string} s1 - First string
  * @param {string} s2 - Second string
  * @returns {number} - Similarity score between 0 and 1
@@ -200,23 +200,23 @@ function calculateJaccardSimilarity(s1, s2) {
   // Tokenize the strings (split by whitespace)
   const tokens1 = s1.split(/\s+/).filter(t => t.length > 0);
   const tokens2 = s2.split(/\s+/).filter(t => t.length > 0);
-  
+
   // If either string has no tokens, return 0
   if (tokens1.length === 0 || tokens2.length === 0) return 0;
-  
+
   // Count intersection and union
   const set1 = new Set(tokens1);
   const set2 = new Set(tokens2);
-  
+
   let intersection = 0;
   for (const token of set1) {
     if (set2.has(token)) {
       intersection++;
     }
   }
-  
+
   const union = set1.size + set2.size - intersection;
-  
+
   // Calculate Jaccard similarity (intersection / union)
   return intersection / union;
 }
@@ -224,7 +224,7 @@ function calculateJaccardSimilarity(s1, s2) {
 /**
  * Calculate Jaro-Winkler similarity
  * Emphasizes prefix matches, good for search queries
- * 
+ *
  * @param {string} s1 - First string
  * @param {string} s2 - Second string
  * @returns {number} - Similarity score between 0 and 1
@@ -232,22 +232,22 @@ function calculateJaccardSimilarity(s1, s2) {
 function calculateJaroWinkler(s1, s2) {
   // If strings are identical, return 1
   if (s1 === s2) return 1.0;
-  
+
   // If either string is empty, return 0
   if (s1.length === 0 || s2.length === 0) return 0.0;
-  
+
   // Calculate Jaro similarity first
   const matchDistance = Math.floor(Math.max(s1.length, s2.length) / 2) - 1;
-  
+
   // Find matching characters within match distance
   const s1Matches = new Array(s1.length).fill(false);
   const s2Matches = new Array(s2.length).fill(false);
-  
+
   let matchingCharacters = 0;
   for (let i = 0; i < s1.length; i++) {
     const start = Math.max(0, i - matchDistance);
     const end = Math.min(i + matchDistance + 1, s2.length);
-    
+
     for (let j = start; j < end; j++) {
       if (!s2Matches[j] && s1[i] === s2[j]) {
         s1Matches[i] = true;
@@ -257,10 +257,10 @@ function calculateJaroWinkler(s1, s2) {
       }
     }
   }
-  
+
   // If no matching characters, return 0
   if (matchingCharacters === 0) return 0.0;
-  
+
   // Count transpositions
   let transpositions = 0;
   let j = 0;
@@ -271,17 +271,17 @@ function calculateJaroWinkler(s1, s2) {
       j++;
     }
   }
-  
+
   // Calculate Jaro similarity
   const jaroSimilarity = (
     (matchingCharacters / s1.length) +
     (matchingCharacters / s2.length) +
     ((matchingCharacters - transpositions / 2) / matchingCharacters)
   ) / 3;
-  
+
   // Calculate prefix length (up to 4)
   const prefixLength = commonPrefixLength(s1, s2, 4);
-  
+
   // Calculate Jaro-Winkler similarity (with scaling factor 0.1)
   return jaroSimilarity + (prefixLength * 0.1 * (1 - jaroSimilarity));
 }
@@ -305,14 +305,14 @@ function commonPrefixLength(str1, str2, maxLength = Infinity) {
 /**
  * CHECKPOINT 4: Enhanced Integration
  * Call the Niche-Scout endpoint on the Social Intelligence agent with enhanced transformation
- * 
+ *
  * This enhanced version:
  * 1. Uses detailed performance tracking for each step
  * 2. Applies the improved similarity algorithm for better matches
  * 3. Generates context-aware channel names and topics
  * 4. Records comprehensive metrics for analysis
  * 5. Implements fault tolerance with smart fallbacks
- * 
+ *
  * @param {Object} params - Niche-Scout parameters
  * @returns {Promise<Object>} - Workflow result with enhanced relevance
  */
@@ -320,85 +320,85 @@ async function callNicheScout(params) {
   try {
     // Initialize step timings for performance tracking
     const stepTimings = {};
-    
+
     // Record API call start time
     const apiCallStartTime = typeof performance !== 'undefined' ? performance.now() : Date.now();
-    
+
     console.log('Calling Niche-Scout with params:', JSON.stringify(params));
-    
+
     // Use the actual endpoint structure we discovered
     const response = await apiClient.post('/api/youtube/niche-scout', params);
-    
+
     // Calculate API response time
     const apiCallEndTime = typeof performance !== 'undefined' ? performance.now() : Date.now();
     const apiResponseTime = apiCallEndTime - apiCallStartTime;
     stepTimings.apiCall = apiResponseTime;
-    
+
     console.log('Niche-Scout API call successful, response time:', `${apiResponseTime.toFixed(2)}ms`);
-    
+
     // Start measuring transformation time
     const transformStartTime = typeof performance !== 'undefined' ? performance.now() : Date.now();
-    
+
     // Get the original data
     const data = response.data;
-    
+
     // Check if the API respected our search parameters
     // We know the API returns data.query === null and data.category === null
     if (data.niches && (data.query === null || data.category === null)) {
       console.log('API did not respect search parameters, applying enhanced client-side transformation');
-      
+
       // Time how long it takes to analyze the original data
       const analyzeStartTime = typeof performance !== 'undefined' ? performance.now() : Date.now();
-      
+
       // Copy the original data
       const filteredData = { ...data };
-      
+
       // Store the original data for debugging
       filteredData._originalApiData = JSON.parse(JSON.stringify(data));
       filteredData._filtered = true;
-      
+
       // Add the search parameters to the response
       filteredData.query = params.query;
       filteredData.category = params.category;
       filteredData.subcategory = params.subcategories ? params.subcategories.join(', ') : null;
-      
+
       // Record analysis time
       const analyzeEndTime = typeof performance !== 'undefined' ? performance.now() : Date.now();
       stepTimings.dataAnalysis = analyzeEndTime - analyzeStartTime;
-      
+
       // Generate relevant niches using enhanced algorithm
       const nicheGenStartTime = typeof performance !== 'undefined' ? performance.now() : Date.now();
       const relevantNiches = getMockNichesForCategory(params.query, params.category);
       const nicheGenEndTime = typeof performance !== 'undefined' ? performance.now() : Date.now();
       stepTimings.nicheGeneration = nicheGenEndTime - nicheGenStartTime;
-      
+
       if (relevantNiches.length > 0) {
         console.log(`Found ${relevantNiches.length} relevant niches based on search parameters`);
-        
+
         // Time the niche transformation process
         const nicheTransformStartTime = typeof performance !== 'undefined' ? performance.now() : Date.now();
-        
+
         // Track similarity scores for analytics
         const similarityScores = [];
-        
+
         // Use the growth rates from the API but with relevant niche names
         filteredData.niches = relevantNiches.map((name, index) => {
           // Get the growth rate and other metrics from the real data if available
           const originalNiche = data.niches[index % data.niches.length] || {};
-          
+
           // Calculate similarity score against query for analytics
-          const relevanceScore = params.query ? 
-            stringSimilarity(name, params.query) : 
-            (params.category && params.category !== 'All' ? 
+          const relevanceScore = params.query ?
+            stringSimilarity(name, params.query) :
+            (params.category && params.category !== 'All' ?
               stringSimilarity(name, params.category) * 0.7 : 0.5);
-          
+
           similarityScores.push(relevanceScore);
-          
+
           // Calculate competition level based on growth rate
           // Lower growth = higher competition (inverse relationship)
           let competitionLevel;
           const growthRate = originalNiche.growth_rate || (Math.floor(Math.random() * 40) + 20);
-          
+
           // Distribute competition levels to ensure variety
           if (index % 3 === 0) {
             competitionLevel = "Low";
@@ -407,18 +407,18 @@ async function callNicheScout(params) {
           } else {
             competitionLevel = "High";
           }
-          
+
           // If original niche had a competition level, use that
           if (originalNiche.competition_level) {
             competitionLevel = originalNiche.competition_level;
           }
-          
+
           // Get relevant trending topics for this niche
           const trendingTopics = getTopicsForNiche(name);
-          
+
           // Generate contextual channel names that match the niche
           const channels = generateChannelNames(name, originalNiche, params.category);
-          
+
           // Return the complete niche object
           return {
             name: name,
@@ -435,23 +435,23 @@ async function callNicheScout(params) {
             _relevance_score: relevanceScore
           };
         });
-        
+
         // Record niche transformation time
         const nicheTransformEndTime = typeof performance !== 'undefined' ? performance.now() : Date.now();
         stepTimings.nicheTransformation = nicheTransformEndTime - nicheTransformStartTime;
-        
+
         // Sort niches by growth_rate for consistent experience
         filteredData.niches.sort((a, b) => b.growth_rate - a.growth_rate);
-        
+
         // Time the analysis summary generation
         const summaryStartTime = typeof performance !== 'undefined' ? performance.now() : Date.now();
-        
+
         // Find superlatives for analysis summary
-        const fastestGrowing = filteredData.niches.reduce((max, niche) => 
+        const fastestGrowing = filteredData.niches.reduce((max, niche) =>
           niche.growth_rate > (max ? max.growth_rate : 0) ? niche : max, null);
-          
+
         const mostShortsFriendly = filteredData.niches.filter(niche => niche.shorts_friendly)[0];
-        
+
         const lowestCompetition = filteredData.niches.reduce((min, niche) => {
           // Convert competition level to numeric score for comparison
           const getCompScore = (level) => {
@@ -462,29 +462,29 @@ async function callNicheScout(params) {
               default: return 2;
             }
           };
-          
-          return getCompScore(niche.competition_level) < getCompScore(min ? min.competition_level : 'High') 
+
+          return getCompScore(niche.competition_level) < getCompScore(min ? min.competition_level : 'High')
             ? niche : (min || niche);
         }, null);
-        
+
         // Update the analysis summary
         filteredData.analysis_summary = {
           fastest_growing: fastestGrowing ? fastestGrowing.name : filteredData.niches[0].name,
           most_shorts_friendly: mostShortsFriendly ? mostShortsFriendly.name : filteredData.niches[0].name,
           lowest_competition: lowestCompetition ? lowestCompetition.name : filteredData.niches[0].name
         };
-        
+
         // Generate more informative and contextual recommendations
         filteredData.recommendations = generateRecommendations(
-          filteredData.analysis_summary, 
+          filteredData.analysis_summary,
           params,
           filteredData.niches
         );
-        
+
         // Record summary generation time
         const summaryEndTime = typeof performance !== 'undefined' ? performance.now() : Date.now();
         stepTimings.summaryGeneration = summaryEndTime - summaryStartTime;
-        
+
         // Add transformation metadata for debugging and Phase 3 preparation
         filteredData._transformation = {
           timestamp: new Date().toISOString(),
@@ -493,82 +493,82 @@ async function callNicheScout(params) {
           originalCategoryPresent: data.category !== null,
           relevanceThreshold: SIMILARITY_THRESHOLD,
           matchedNicheCount: relevantNiches.length,
-          averageSimilarityScore: similarityScores.length > 0 ? 
+          averageSimilarityScore: similarityScores.length > 0 ?
             similarityScores.reduce((sum, score) => sum + score, 0) / similarityScores.length : 0,
           performanceMetrics: {
-            totalTransformTimeMs: typeof performance !== 'undefined' ? 
+            totalTransformTimeMs: typeof performance !== 'undefined' ?
               performance.now() - transformStartTime : Date.now() - transformStartTime,
             stepTimings
           }
         };
       }
-      
+
       // Log metrics about the transformation
       logTransformationMetrics(data, filteredData, params, transformStartTime, {
         apiResponseTimeMs: apiResponseTime,
         transformationVersion: "Phase0-enhanced-v1",
         stepTimings
       });
-      
+
       return filteredData;
     }
-    
+
     // If the API already respects our search parameters, return as-is but still log metrics
     logTransformationMetrics(data, data, params, transformStartTime, {
       apiResponseTimeMs: apiResponseTime,
       transformationApplied: false,
       transformationVersion: "none"
     });
-    
+
     return data;
   } catch (error) {
     console.error('Error calling Niche-Scout workflow:', error.message);
-    
+
     if (!ENABLE_MOCK_FALLBACK) {
       throw new Error(`Failed to call Niche-Scout API: ${error.message}`);
     }
-    
+
     console.log('Using mock data fallback for Niche-Scout workflow');
-    
+
     // Record fallback generation start time
     const fallbackStartTime = typeof performance !== 'undefined' ? performance.now() : Date.now();
-    
+
     // Use our enhanced niche generation function to create highly relevant mock data
     const relevantNiches = getMockNichesForCategory(params.query, params.category);
-    
+
     // Transform niches into the expected format with rich metadata
     const mockNiches = relevantNiches.map((name, index) => {
       // Generate random but realistic metrics
       const growth = Math.floor(Math.random() * 40) + 20;
-      
+
       // Give high-ranked niches better growth rates for consistency
       const adjustedGrowth = index < 2 ? growth + 15 : growth;
-      
+
       // Generate relevant score
       const score = calculateOpportunityScore(adjustedGrowth, index);
-      
+
       // Calculate relevance score for analytics
-      const relevanceScore = params.query ? 
-        stringSimilarity(name, params.query) : 
-        (params.category && params.category !== 'All' ? 
+      const relevanceScore = params.query ?
+        stringSimilarity(name, params.query) :
+        (params.category && params.category !== 'All' ?
           stringSimilarity(name, params.category) * 0.7 : 0.5);
-      
-      return { 
-        name, 
+
+      return {
+        name,
         growth: adjustedGrowth,
         views: (Math.floor(Math.random() * 30) + 10) * 100000,
         score,
         _relevance_score: relevanceScore
       };
     });
-    
+
     // Sort by growth
     mockNiches.sort((a, b) => b.growth - a.growth);
-    
+
     // Calculate fallback generation time
     const fallbackEndTime = typeof performance !== 'undefined' ? performance.now() : Date.now();
     const fallbackGenerationTime = fallbackEndTime - fallbackStartTime;
-    
+
     // Fall back to mock data if the API call fails
     return {
       id: `wf-mock-${Date.now()}`,
@@ -602,10 +602,10 @@ function generateChannelNames(nicheName, originalNiche, category) {
   const nicheWords = nicheName.split(/\s+/)
     .filter(word => word.length > 3)
     .sort((a, b) => b.length - a.length);
-  
+
   // First word is most important (typically the subject)
   const primaryWord = nicheWords[0] || '';
-  
+
   // Generate multiple channel name formats
   const channelNameOptions = [
     // Format variations based on niche name
@@ -620,11 +620,11 @@ function generateChannelNames(nicheName, originalNiche, category) {
     `${primaryWord}Official`,
     `${nicheName.replace(/\s+/g, '')}Guide`
   ];
-  
+
   // Category-specific formats
   if (category) {
     const categoryLower = category.toLowerCase();
-    
+
     // Add options based on category
     if (categoryLower.includes('gaming')) {
       channelNameOptions.push(
@@ -660,7 +660,7 @@ function generateChannelNames(nicheName, originalNiche, category) {
       );
     }
   }
-  
+
   // Add two-word combinations if we have multiple words
   if (nicheWords.length > 1) {
     const secondaryWord = nicheWords[1];
@@ -670,19 +670,19 @@ function generateChannelNames(nicheName, originalNiche, category) {
       `The${primaryWord}${secondaryWord}`
     );
   }
-  
+
   // Filter out invalid options (too short or empty)
   const validOptions = channelNameOptions
     .filter(name => name && name.length > 3)
     // Remove duplicates
     .filter((name, index, self) => self.indexOf(name) === index);
-  
+
   // Choose random channel names
   const channels = [];
   for (let i = 0; i < 2; i++) {
     // Get original channel data if available
     const originalChannel = originalNiche && originalNiche.top_channels && originalNiche.top_channels[i];
-    
+
     // Generate a subscriber count that's realistic
     // Top channels have more subscribers
     let subscriberCount;
@@ -695,14 +695,14 @@ function generateChannelNames(nicheName, originalNiche, category) {
       // Second channel (less popular)
       subscriberCount = Math.floor(Math.random() * 2000000) + 500000;
     }
-    
+
     // Add channel with random name from options
     channels.push({
       name: validOptions[Math.floor(Math.random() * validOptions.length)],
       subs: subscriberCount
     });
   }
-  
+
   // Ensure channels have different names
   if (channels.length > 1 && channels[0].name === channels[1].name && validOptions.length > 1) {
     // Find a different name for the second channel
@@ -710,10 +710,10 @@ function generateChannelNames(nicheName, originalNiche, category) {
     do {
       alternativeName = validOptions[Math.floor(Math.random() * validOptions.length)];
     } while (alternativeName === channels[0].name);
-    
+
     channels[1].name = alternativeName;
   }
-  
+
   return channels;
 }
 
@@ -726,34 +726,34 @@ function generateChannelNames(nicheName, originalNiche, category) {
  */
 function generateRecommendations(summary, params, niches) {
   const recommendations = [];
-  
+
   // Primary recommendation based on fastest growing niche
   if (summary.fastest_growing) {
     recommendations.push(`Focus on ${summary.fastest_growing} for highest growth potential`);
   }
-  
+
   // Content strategy recommendation based on category
   if (params.category && params.category !== 'All') {
     recommendations.push(`Create ${params.category} content with clear tutorials and tips`);
   } else {
     recommendations.push(`Create focused content with clear tutorials and explanations`);
   }
-  
+
   // Trending topic recommendation
   if (niches && niches.length > 0 && niches[0].trending_topics && niches[0].trending_topics.length > 0) {
     recommendations.push(`Target trending topics like ${niches[0].trending_topics[0]}`);
   }
-  
+
   // Competition-based recommendation
   if (summary.lowest_competition) {
     recommendations.push(`Explore ${summary.lowest_competition} for lower competition entry point`);
   }
-  
+
   // Shorts-friendly recommendation
   if (summary.most_shorts_friendly) {
     recommendations.push(`Consider short-form vertical content for ${summary.most_shorts_friendly}`);
   }
-  
+
   // Return only the top 3-4 recommendations
   return recommendations.slice(0, 4);
 }
@@ -767,16 +767,16 @@ function generateRecommendations(summary, params, niches) {
 function calculateOpportunityScore(growthRate, index) {
   // Base score affected by growth rate and position
   let score = 65; // Baseline
-  
+
   // Growth rate boosts score (each 10% of growth adds 5 points)
   score += (growthRate / 10) * 5;
-  
+
   // Position penalty (each position down loses 2 points)
   score -= index * 2;
-  
+
   // Random variation for realism
   score += (Math.random() * 10) - 5;
-  
+
   // Ensure score is between 0 and 100
   return Math.min(100, Math.max(0, Math.round(score)));
 }
@@ -788,7 +788,7 @@ try {
   const fs = require('fs');
   const path = require('path');
   const categoryListsPath = path.join(__dirname, 'category-lists.json');
-  
+
   if (fs.existsSync(categoryListsPath)) {
     categoryListsData = JSON.parse(fs.readFileSync(categoryListsPath, 'utf8'));
     console.log(`Loaded category lists (version ${categoryListsData.version || 'unknown'}) from ${categoryListsPath}`);
@@ -802,14 +802,14 @@ try {
 /**
  * CHECKPOINT 2: Enhanced Niche Generation
  * Get mock niches based on query and category using enhanced string similarity matching
- * 
+ *
  * This enhanced version:
- * 1. Uses Levenshtein-based similarity scoring for better relevance 
+ * 1. Uses Levenshtein-based similarity scoring for better relevance
  * 2. Generates query-specific niches with more context
  * 3. Applies semantic-focused weighting
  * 4. Handles multi-word queries better
  * 5. Contextualizes category + query combinations
- * 
+ *
  * @param {string} query - Search query
  * @param {string} category - Content category
  * @returns {Array<string>} - List of relevant niche names
@@ -817,10 +817,10 @@ try {
 function getMockNichesForCategory(query, category) {
   // Start performance tracking
   const startTime = typeof performance !== 'undefined' ? performance.now() : Date.now();
-  
+
   // Default niches if no match found
   let nicheCandidates = ['Content Creation', 'Video Tutorials', 'Educational Content'];
-  
+
   // For analytics
   let transformationStats = {
     startTime,
@@ -831,13 +831,13 @@ function getMockNichesForCategory(query, category) {
     similarityThreshold: SIMILARITY_THRESHOLD,
     processingTimeMs: 0
   };
-  
+
   // Use the category lists from the external file or fallback to default
   const categoryMap = categoryListsData.categories || {
     'Gaming': [
-      'Mobile Gaming', 
-      'Game Development', 
-      'Indie Games', 
+      'Mobile Gaming',
+      'Game Development',
+      'Indie Games',
       'Strategy Games',
       'Gaming Tutorials',
       'Game Reviews',
@@ -952,17 +952,17 @@ function getMockNichesForCategory(query, category) {
    */
   function generateQueryNiches(q, cat) {
     if (!q || q.trim().length === 0) return [];
-    
+
     // Normalize query and category
     const normalizedQuery = q.trim().toLowerCase();
     const normalizedCategory = cat.trim().toLowerCase();
-    
+
     // Common content formats across categories
     const contentFormats = [
       'Tutorials', 'Guides', 'Tips', 'Reviews', 'Communities',
       'Channels', 'Content', 'Videos', 'Livestreams', 'Shorts'
     ];
-    
+
     // Category-specific terms
     const categoryTerms = {
       'gaming': ['Games', 'Gameplay', 'Streaming', 'Esports', 'Walkthrough'],
@@ -971,7 +971,7 @@ function getMockNichesForCategory(query, category) {
       'howto & style': ['DIY', 'Style', 'Fashion', 'Beauty', 'Makeovers'],
       'science & technology': ['Tech', 'Science', 'Gadgets', 'Innovation', 'Devices']
     };
-    
+
     // Get category-specific terms
     let relevantTerms = [];
     Object.keys(categoryTerms).forEach(key => {
@@ -979,32 +979,32 @@ function getMockNichesForCategory(query, category) {
         relevantTerms = [...relevantTerms, ...categoryTerms[key]];
       }
     });
-    
+
     // If no category match, use general terms
     if (relevantTerms.length === 0) {
       relevantTerms = ['Content', 'Videos', 'Channels', 'Media', 'Creation'];
     }
-    
+
     // Create different formats of niches combining query and category
     let queryTerms = [];
-    
+
     // Format 1: Query + Category (e.g., "Mobile Gaming")
     if (cat !== 'All') {
       queryTerms.push(`${q} ${cat}`);
     }
-    
+
     // Format 2: Query + Content Formats (e.g., "Mobile Tutorials")
     contentFormats.forEach(format => {
       queryTerms.push(`${q} ${format}`);
     });
-    
+
     // Format 3: Category-specific terms + Query (e.g., "Gameplay Mobile")
     relevantTerms.forEach(term => {
       // Both orders for better coverage
       queryTerms.push(`${q} ${term}`);
       queryTerms.push(`${term} ${q}`);
     });
-    
+
     // Format 4: More specific combinations (e.g., "Mobile Gaming Tutorials")
     if (cat !== 'All') {
       contentFormats.forEach(format => {
@@ -1012,42 +1012,42 @@ function getMockNichesForCategory(query, category) {
         queryTerms.push(`${cat} ${q} ${format}`);
       });
     }
-    
+
     // Format 5: Audience and expertise level (e.g., "Mobile for Beginners")
     queryTerms.push(`${q} for Beginners`);
     queryTerms.push(`Advanced ${q}`);
     queryTerms.push(`Professional ${q}`);
     queryTerms.push(`${q} Masterclass`);
-    
+
     // Format 6: Trending and popularity (e.g., "Trending Mobile")
     queryTerms.push(`Trending ${q}`);
     queryTerms.push(`Popular ${q}`);
     queryTerms.push(`${q} Trends`);
     queryTerms.push(`Best ${q}`);
-    
+
     // Remove duplicates and normalize
     const uniqueTerms = [...new Set(queryTerms.map(term => term.trim()))];
-    
+
     // Sort by length (shorter is often better)
     uniqueTerms.sort((a, b) => a.length - b.length);
-    
+
     // For analytics
     transformationStats.generatedQueryTerms = uniqueTerms.length;
-    
+
     // Remove any that are just the category name or shorter than the query
     // Or remove anything too long (over 30 chars)
     return uniqueTerms
-      .filter(term => 
-        term.length > normalizedCategory.length && 
+      .filter(term =>
+        term.length > normalizedCategory.length &&
         term.length > normalizedQuery.length &&
         term.length <= 30
       );
   }
-  
+
   // Get category-specific niches
   if (category && categoryMap[category]) {
     nicheCandidates = [...categoryMap[category]];
-    
+
     // Add query-specific combinations if we have a meaningful query
     if (query && query.trim().length > 0) {
       const queryNiches = generateQueryNiches(query, category);
@@ -1060,7 +1060,7 @@ function getMockNichesForCategory(query, category) {
     Object.keys(categoryMap).forEach(cat => {
       nicheCandidates = [...nicheCandidates, ...categoryMap[cat].slice(0, 3)];
     });
-    
+
     // Add generic query niches
     const queryNiches = generateQueryNiches(query, 'Content');
     nicheCandidates = [...queryNiches, ...nicheCandidates];
@@ -1071,34 +1071,34 @@ function getMockNichesForCategory(query, category) {
       // Get first few from each category
       nicheCandidates = [...nicheCandidates, ...categoryMap[cat].slice(0, 2)];
     });
-    
+
     // Add some generic ones
     nicheCandidates = [...nicheCandidates, 'Content Creation', 'Video Tutorials', 'Educational Content'];
   }
-  
+
   // Remove duplicates
   nicheCandidates = [...new Set(nicheCandidates)];
   transformationStats.generatedCandidatesCount = nicheCandidates.length;
-  
+
   // Score each niche based on similarity to query
   const scoredNiches = nicheCandidates.map(niche => {
     let score = 0;
-    
+
     // Boost score if query is present in the niche name
     if (query && query.trim().length > 0) {
       // Calculate string similarity between niche and query
       score = stringSimilarity(niche, query);
-      
+
       // Exact substring matching gets a bonus
       if (niche.toLowerCase().includes(query.toLowerCase())) {
         score += 0.2; // Bonus for substring match
       }
-      
+
       // If the niche starts with the query, additional bonus
       if (niche.toLowerCase().startsWith(query.toLowerCase())) {
         score += 0.1; // Bonus for prefix match
       }
-      
+
       // Multi-word query handling - check each word separately
       const queryWords = query.toLowerCase().split(/\s+/);
       if (queryWords.length > 1) {
@@ -1108,20 +1108,20 @@ function getMockNichesForCategory(query, category) {
             wordMatches++;
           }
         });
-        
+
         // Add bonus for matching multiple words from query
         if (wordMatches > 0) {
           score += (wordMatches / queryWords.length) * 0.15;
         }
       }
     }
-    
+
     // Boost score if category is present in the niche name
     if (category && category !== 'All') {
       if (niche.toLowerCase().includes(category.toLowerCase())) {
         score += 0.15; // Bonus for category match
       }
-      
+
       // Multi-word category handling
       const categoryWords = category.toLowerCase().split(/\s+/);
       if (categoryWords.length > 1) {
@@ -1131,36 +1131,36 @@ function getMockNichesForCategory(query, category) {
             wordMatches++;
           }
         });
-        
+
         // Add bonus for matching multiple words from category
         if (wordMatches > 0) {
           score += (wordMatches / categoryWords.length) * 0.1;
         }
       }
     }
-    
+
     // Penalize overly long niches slightly
     if (niche.length > 25) {
       score -= 0.05;
     }
-    
+
     // Boost niches with appropriate length (not too short, not too long)
     if (niche.length >= 10 && niche.length <= 25) {
       score += 0.05;
     }
-    
+
     // Ensure score is in 0-1 range
     score = Math.min(1, Math.max(0, score));
-    
+
     // Record the score for analytics
     transformationStats.similarityScores.push(score);
-    
+
     return { name: niche, score };
   });
-  
+
   // Sort niches by score (descending)
   scoredNiches.sort((a, b) => b.score - a.score);
-  
+
   // Filter to get niches above threshold if query exists
   let relevantNiches = [];
   if (query && query.trim().length > 0) {
@@ -1168,28 +1168,28 @@ function getMockNichesForCategory(query, category) {
     relevantNiches = scoredNiches
       .filter(item => item.score >= SIMILARITY_THRESHOLD)
       .map(item => item.name);
-    
+
     transformationStats.filteredNichesCount = relevantNiches.length;
   }
-  
+
   // Ensure we have at least DEFAULT_NICHE_COUNT niches
   if (relevantNiches.length < DEFAULT_NICHE_COUNT) {
     // If we don't have enough relevant niches, add the highest scoring remaining ones
     const remainingNiches = scoredNiches
       .filter(item => !relevantNiches.includes(item.name))
       .map(item => item.name);
-    
+
     relevantNiches = [...relevantNiches, ...remainingNiches].slice(0, DEFAULT_NICHE_COUNT);
   }
-  
+
   // Calculate processing time
   const endTime = typeof performance !== 'undefined' ? performance.now() : Date.now();
   transformationStats.processingTimeMs = endTime - startTime;
   transformationStats.outputNicheCount = relevantNiches.length;
-  
+
   // Useful logging for monitoring performance
   console.log(`Generated ${relevantNiches.length} relevant niches in ${transformationStats.processingTimeMs.toFixed(2)}ms`);
-  
+
   // Return final list, limited to DEFAULT_NICHE_COUNT niches
   return relevantNiches.slice(0, DEFAULT_NICHE_COUNT);
 }
@@ -1202,7 +1202,7 @@ function getMockNichesForCategory(query, category) {
 function getTopicsForNiche(nicheName) {
   const nicheLower = nicheName.toLowerCase();
   const words = nicheLower.split(/\s+/);
-  
+
   // Create a mapping of keywords to topic lists
   const topicMap = {
     // Gaming-related topics
@@ -1278,7 +1278,7 @@ function getTopicsForNiche(nicheName) {
       'Multi-tasking methods',
       'Advanced tactics showcases'
     ],
-    
+
     // Tech-related topics
     'tech': [
       'Latest gadget reviews',
@@ -1316,7 +1316,7 @@ function getTopicsForNiche(nicheName) {
       'Open source contribution guides',
       'Database optimization'
     ],
-    
+
     // Education-related topics
     'education': [
       'Study techniques',
@@ -1354,7 +1354,7 @@ function getTopicsForNiche(nicheName) {
       'Certification pathways',
       'Learning management systems'
     ],
-    
+
     // Style and beauty topics
     'beauty': [
       'Seasonal makeup trends',
@@ -1405,17 +1405,17 @@ function getTopicsForNiche(nicheName) {
       'Styling challenges'
     ]
   };
-  
+
   // Find matching topics based on niche keywords
   let matchingTopics = [];
-  
+
   // Check each word in the niche name against our topic map
   for (const word of words) {
     if (topicMap[word]) {
       matchingTopics = [...matchingTopics, ...topicMap[word]];
     }
   }
-  
+
   // If no specific matches found, check broader categories
   if (matchingTopics.length === 0) {
     // Gaming-related
@@ -1450,10 +1450,10 @@ function getTopicsForNiche(nicheName) {
       ];
     }
   }
-  
+
   // Deduplicate topics
   matchingTopics = [...new Set(matchingTopics)];
-  
+
   // Add the niche name itself to some topics for more relevance
   const nicheSpecificTopics = [
     `${nicheName} for beginners`,
@@ -1462,16 +1462,16 @@ function getTopicsForNiche(nicheName) {
     `Trending ${nicheName} content`,
     `${nicheName} case studies`
   ];
-  
+
   // Combine and shuffle all topics
   const allTopics = [...nicheSpecificTopics, ...matchingTopics];
-  
+
   // Shuffle array using Fisher-Yates algorithm
   for (let i = allTopics.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [allTopics[i], allTopics[j]] = [allTopics[j], allTopics[i]];
   }
-  
+
   // Return random selection of 3 topics
   return allTopics.slice(0, 3);
 }
@@ -1479,14 +1479,14 @@ function getTopicsForNiche(nicheName) {
 /**
  * CHECKPOINT 3: Enhanced Metrics Collection
  * Log transformation metrics for analysis and optimization with detailed performance tracking
- * 
+ *
  * This enhanced version:
  * 1. Adds more granular performance metrics
  * 2. Tracks memory and CPU usage estimates
  * 3. Records quality metrics for each niche
  * 4. Uses structured logging for proxy compatibility
  * 5. Provides real-time debugging options
- * 
+ *
  * @param {Object} originalData - Original API response data
  * @param {Object} transformedData - Transformed data after processing
  * @param {Object} searchParams - User search parameters
@@ -1500,14 +1500,14 @@ function logTransformationMetrics(originalData, transformedData, searchParams, s
     console.log('Metrics collection skipped - non-browser environment');
     return null;
   }
-  
+
   // Calculate performance metrics
   const endTime = performance.now();
   const transformationTime = endTime - startTime;
-  
+
   // Calculate relevance metrics
   const relevanceMetrics = calculateRelevanceMetrics(transformedData, searchParams);
-  
+
   // Enhanced performance metrics
   const performanceMetrics = {
     transformationTimeMs: transformationTime,
@@ -1518,12 +1518,12 @@ function logTransformationMetrics(originalData, transformedData, searchParams, s
     // Transformation steps timing (if available)
     stepTimings: additionalMetrics.stepTimings || {},
     // Performance ratios
-    apiToTransformRatio: additionalMetrics.apiResponseTimeMs ? 
+    apiToTransformRatio: additionalMetrics.apiResponseTimeMs ?
       transformationTime / additionalMetrics.apiResponseTimeMs : null,
     // Target threshold: transformation should be < 100ms
     performanceThresholdMet: transformationTime < 100
   };
-  
+
   // Enhanced data quality metrics
   const dataQualityMetrics = {
     originalDataQuality: assessDataQuality(originalData),
@@ -1535,7 +1535,7 @@ function logTransformationMetrics(originalData, transformedData, searchParams, s
     // Detect any missing or null fields
     missingFieldCount: countMissingFields(transformedData)
   };
-  
+
   // Enhanced result metrics
   const resultMetrics = {
     nicheScores: extractNicheScores(transformedData),
@@ -1546,7 +1546,7 @@ function logTransformationMetrics(originalData, transformedData, searchParams, s
     // Track recommendation quality
     recommendationQuality: assessRecommendationQuality(transformedData, searchParams)
   };
-  
+
   // Build complete metrics object
   const metrics = {
     timestamp: new Date().toISOString(),
@@ -1576,29 +1576,29 @@ function logTransformationMetrics(originalData, transformedData, searchParams, s
     },
     ...additionalMetrics
   };
-  
+
   // Store metrics in localStorage for analysis
   try {
     const storedMetrics = JSON.parse(localStorage.getItem('transformationMetrics') || '[]');
     storedMetrics.push(metrics);
-    
+
     // Keep only the most recent entries
     if (storedMetrics.length > METRICS_MAX_ENTRIES) {
       storedMetrics.splice(0, storedMetrics.length - METRICS_MAX_ENTRIES);
     }
-    
+
     localStorage.setItem('transformationMetrics', JSON.stringify(storedMetrics));
-    
+
     // Log metrics in a structured format for analytics
     console.group('Transformation Metrics');
-    
+
     // Main summary metrics
     console.log('Search:', `"${searchParams.query}" in "${searchParams.category}"`);
-    console.log('Transformation time:', `${transformationTime.toFixed(2)}ms`, 
+    console.log('Transformation time:', `${transformationTime.toFixed(2)}ms`,
       performanceMetrics.performanceThresholdMet ? '✅' : '⚠️');
     console.log('Relevance score:', `${(relevanceMetrics.averageRelevanceScore * 100).toFixed(1)}%`);
     console.log('Relevant niches:', `${relevanceMetrics.relevantNicheCount}/${transformedData.niches ? transformedData.niches.length : 0}`);
-    
+
     // Print timing breakdown
     if (Object.keys(performanceMetrics.stepTimings).length > 0) {
       console.group('Timing Breakdown');
@@ -1607,7 +1607,7 @@ function logTransformationMetrics(originalData, transformedData, searchParams, s
       });
       console.groupEnd();
     }
-    
+
     // Show similarity distribution
     if (resultMetrics.similarityDistribution) {
       console.group('Similarity Distribution');
@@ -1617,7 +1617,7 @@ function logTransformationMetrics(originalData, transformedData, searchParams, s
       console.log(`Below threshold (<${SIMILARITY_THRESHOLD}): ${resultMetrics.similarityDistribution.belowThreshold}`);
       console.groupEnd();
     }
-    
+
     // Log metrics for proxy compatibility (in Prometheus format)
     const prometheusMetrics = [
       `niche_scout_transformation_time_ms{query="${encodeURIComponent(searchParams.query || '')}", category="${encodeURIComponent(searchParams.category || 'All')}"} ${transformationTime.toFixed(1)}`,
@@ -1625,14 +1625,14 @@ function logTransformationMetrics(originalData, transformedData, searchParams, s
       `niche_scout_relevant_niche_count{query="${encodeURIComponent(searchParams.query || '')}", category="${encodeURIComponent(searchParams.category || 'All')}"} ${relevanceMetrics.relevantNicheCount}`,
       `niche_scout_api_response_time_ms{query="${encodeURIComponent(searchParams.query || '')}", category="${encodeURIComponent(searchParams.category || 'All')}"} ${additionalMetrics.apiResponseTimeMs || 0}`
     ];
-    
+
     console.log('Prometheus metrics:', prometheusMetrics.join('\n'));
     console.groupEnd();
-    
+
     // Emit metrics as event for proxy compatibility
     // This will help with Phase 1 transition to Prometheus
     if (typeof window !== 'undefined' && window.dispatchEvent) {
-      const metricsEvent = new CustomEvent('niche_scout_metrics', { 
+      const metricsEvent = new CustomEvent('niche_scout_metrics', {
         detail: {
           metrics: metrics,
           version: 'phase0-enhanced-v1',
@@ -1640,18 +1640,18 @@ function logTransformationMetrics(originalData, transformedData, searchParams, s
         }
       });
       window.dispatchEvent(metricsEvent);
-      
+
       // Also log in Prometheus-friendly format for log scraping
       console.log(`METRICS|niche_scout|${JSON.stringify({
         timestamp: new Date().toISOString(),
         metrics: prometheusMetrics
       })}`);
     }
-    
+
   } catch (error) {
     console.error('Error logging transformation metrics:', error);
   }
-  
+
   return metrics;
 }
 
@@ -1664,15 +1664,15 @@ function generateSessionId() {
   if (typeof window !== 'undefined' && window._nicheScoutSessionId) {
     return window._nicheScoutSessionId;
   }
-  
+
   // Generate a new ID
   const sessionId = `session_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
-  
+
   // Store for reuse
   if (typeof window !== 'undefined') {
     window._nicheScoutSessionId = sessionId;
   }
-  
+
   return sessionId;
 }
 
@@ -1687,7 +1687,7 @@ function estimateComplexity(originalData, transformedData) {
   const originalSize = JSON.stringify(originalData).length;
   const transformedSize = JSON.stringify(transformedData).length;
   const sizeDiff = Math.abs(transformedSize - originalSize);
-  
+
   // Estimate based on size difference (proxy for transformation complexity)
   if (sizeDiff < 1000) return 'low';
   if (sizeDiff < 5000) return 'medium';
@@ -1703,21 +1703,21 @@ function assessDataQuality(data) {
   if (!data || typeof data !== 'object') {
     return { score: 0, issues: ['No data provided'] };
   }
-  
+
   const issues = [];
   let score = 1.0; // Start with perfect score and deduct
-  
+
   // Check for null query/category (indicates API not respecting params)
   if (data.query === null) {
     issues.push('Null query parameter');
     score -= 0.3;
   }
-  
+
   if (data.category === null) {
     issues.push('Null category parameter');
     score -= 0.2;
   }
-  
+
   // Check for niches array
   if (!data.niches || !Array.isArray(data.niches)) {
     issues.push('Missing niches array');
@@ -1728,7 +1728,7 @@ function assessDataQuality(data) {
       issues.push('Empty niches array');
       score -= 0.3;
     }
-    
+
     // Check for missing fields in niches
     const missingFieldsCount = data.niches.reduce((count, niche) => {
       if (!niche.name) count++;
@@ -1737,28 +1737,28 @@ function assessDataQuality(data) {
       if (!niche.trending_topics || !Array.isArray(niche.trending_topics)) count++;
       return count;
     }, 0);
-    
+
     if (missingFieldsCount > 0) {
       issues.push(`${missingFieldsCount} missing fields in niches`);
       score -= Math.min(0.3, missingFieldsCount / (data.niches.length * 4) * 0.3);
     }
   }
-  
+
   // Check for analysis summary
   if (!data.analysis_summary) {
     issues.push('Missing analysis summary');
     score -= 0.1;
   }
-  
+
   // Check for recommendations
   if (!data.recommendations || !Array.isArray(data.recommendations)) {
     issues.push('Missing recommendations');
     score -= 0.1;
   }
-  
+
   // Ensure score is between 0 and 1
   score = Math.max(0, Math.min(1, score));
-  
+
   return {
     score: score,
     issues: issues.length > 0 ? issues : ['No issues detected'],
@@ -1777,47 +1777,47 @@ function assessRelevanceImprovement(originalData, transformedData, searchParams)
   if (!originalData || !transformedData || !originalData.niches || !transformedData.niches) {
     return { improved: false, reason: 'Insufficient data' };
   }
-  
+
   const query = (searchParams.query || '').toLowerCase();
   const category = (searchParams.category || '').toLowerCase();
-  
+
   // Skip if no query or category
   if (!query && category === 'all') {
     return { improved: false, reason: 'No search parameters to assess' };
   }
-  
+
   // Count relevant niches in original data
   let originalRelevantCount = 0;
   if (originalData.niches) {
     originalRelevantCount = originalData.niches.reduce((count, niche) => {
       const nicheName = (niche.name || '').toLowerCase();
-      if ((query && nicheName.includes(query)) || 
+      if ((query && nicheName.includes(query)) ||
           (category !== 'all' && nicheName.includes(category))) {
         return count + 1;
       }
       return count;
     }, 0);
   }
-  
+
   // Count relevant niches in transformed data
   let transformedRelevantCount = 0;
   if (transformedData.niches) {
     transformedRelevantCount = transformedData.niches.reduce((count, niche) => {
       const nicheName = (niche.name || '').toLowerCase();
-      if ((query && nicheName.includes(query)) || 
+      if ((query && nicheName.includes(query)) ||
           (category !== 'all' && nicheName.includes(category))) {
         return count + 1;
       }
       return count;
     }, 0);
   }
-  
+
   return {
     improved: transformedRelevantCount > originalRelevantCount,
     originalRelevantCount,
     transformedRelevantCount,
-    improvementPercentage: originalRelevantCount > 0 ? 
-      ((transformedRelevantCount - originalRelevantCount) / originalRelevantCount) * 100 : 
+    improvementPercentage: originalRelevantCount > 0 ?
+      ((transformedRelevantCount - originalRelevantCount) / originalRelevantCount) * 100 :
       (transformedRelevantCount > 0 ? 100 : 0)
   };
 }
@@ -1831,24 +1831,24 @@ function checkDataStructureConsistency(data) {
   if (!data || !data.niches || !Array.isArray(data.niches)) {
     return { consistent: false, reason: 'Missing niches array' };
   }
-  
+
   const requiredFields = ['name', 'growth_rate', 'competition_level', 'trending_topics', 'top_channels'];
   const fieldPresence = {};
-  
+
   // Calculate field presence percentages
   requiredFields.forEach(field => {
     const presentCount = data.niches.reduce((count, niche) => {
       return count + (niche[field] !== undefined ? 1 : 0);
     }, 0);
-    
-    fieldPresence[field] = data.niches.length > 0 ? 
+
+    fieldPresence[field] = data.niches.length > 0 ?
       (presentCount / data.niches.length) * 100 : 0;
   });
-  
+
   // Overall consistency score
-  const overallConsistency = Object.values(fieldPresence).reduce((sum, value) => sum + value, 0) / 
+  const overallConsistency = Object.values(fieldPresence).reduce((sum, value) => sum + value, 0) /
     (Object.values(fieldPresence).length || 1);
-  
+
   return {
     consistent: overallConsistency > 90,
     overallScore: overallConsistency,
@@ -1865,9 +1865,9 @@ function countMissingFields(data) {
   if (!data || !data.niches || !Array.isArray(data.niches)) {
     return 0;
   }
-  
+
   const requiredFields = ['name', 'growth_rate', 'competition_level', 'trending_topics', 'top_channels'];
-  
+
   return data.niches.reduce((count, niche) => {
     requiredFields.forEach(field => {
       if (niche[field] === undefined || niche[field] === null) {
@@ -1887,7 +1887,7 @@ function extractNicheScores(data) {
   if (!data || !data.niches || !Array.isArray(data.niches)) {
     return [];
   }
-  
+
   return data.niches.map(niche => ({
     name: niche.name,
     relevanceScore: niche._relevance_score || 0,
@@ -1906,7 +1906,7 @@ function calculateSimilarityDistribution(data, relevanceMetrics) {
   if (!data || !data.niches || !Array.isArray(data.niches)) {
     return null;
   }
-  
+
   // Count niches in each similarity band
   const distribution = {
     high: 0,
@@ -1914,16 +1914,16 @@ function calculateSimilarityDistribution(data, relevanceMetrics) {
     low: 0,
     belowThreshold: 0
   };
-  
+
   data.niches.forEach(niche => {
     const score = niche._relevance_score || 0;
-    
+
     if (score >= 0.8) distribution.high++;
     else if (score >= 0.6) distribution.medium++;
     else if (score >= SIMILARITY_THRESHOLD) distribution.low++;
     else distribution.belowThreshold++;
   });
-  
+
   return distribution;
 }
 
@@ -1937,18 +1937,18 @@ function assessCategoryRelevance(data, searchParams) {
   if (!data || !data.niches || !Array.isArray(data.niches) || !searchParams.category) {
     return { score: 0 };
   }
-  
+
   if (searchParams.category === 'All') {
     return { score: 1, matches: data.niches.length };
   }
-  
+
   const categoryLower = searchParams.category.toLowerCase();
-  
+
   // Count niches that include the category
-  const matches = data.niches.filter(niche => 
+  const matches = data.niches.filter(niche =>
     (niche.name || '').toLowerCase().includes(categoryLower)
   ).length;
-  
+
   return {
     score: data.niches.length > 0 ? matches / data.niches.length : 0,
     matches
@@ -1965,23 +1965,23 @@ function assessRecommendationQuality(data, searchParams) {
   if (!data || !data.recommendations || !Array.isArray(data.recommendations)) {
     return { score: 0 };
   }
-  
+
   const query = (searchParams.query || '').toLowerCase();
   const category = (searchParams.category || '').toLowerCase();
-  
+
   if (!query && category === 'all') {
     return { score: 0.5, reason: 'No specific search parameters to assess' };
   }
-  
+
   // Check if recommendations mention the query or category
-  const relevantRecommendations = data.recommendations.filter(rec => 
-    (rec && typeof rec === 'string') && 
-    ((query && rec.toLowerCase().includes(query)) || 
+  const relevantRecommendations = data.recommendations.filter(rec =>
+    (rec && typeof rec === 'string') &&
+    ((query && rec.toLowerCase().includes(query)) ||
      (category !== 'all' && rec.toLowerCase().includes(category)))
   ).length;
-  
+
   return {
-    score: data.recommendations.length > 0 ? 
+    score: data.recommendations.length > 0 ?
       relevantRecommendations / data.recommendations.length : 0,
     relevantCount: relevantRecommendations,
     totalCount: data.recommendations.length
@@ -1990,7 +1990,7 @@ function assessRecommendationQuality(data, searchParams) {
 
 /**
  * Calculate relevance metrics for transformed data
- * 
+ *
  * @param {Object} transformedData - The transformed data to analyze
  * @param {Object} searchParams - The search parameters
  * @returns {Object} - Object containing relevance metrics
@@ -1998,7 +1998,7 @@ function assessRecommendationQuality(data, searchParams) {
 function calculateRelevanceMetrics(transformedData, searchParams) {
   const query = (searchParams.query || '').toLowerCase();
   const category = (searchParams.category || '').toLowerCase();
-  
+
   // Skip calculations if no niches or no search parameters
   if (!transformedData.niches || (!query && category === 'all')) {
     return {
@@ -2008,17 +2008,17 @@ function calculateRelevanceMetrics(transformedData, searchParams) {
       matchTypes: { exact: 0, partial: 0, category: 0, none: 0 }
     };
   }
-  
+
   const niches = transformedData.niches;
   const matchTypes = { exact: 0, partial: 0, category: 0, none: 0 };
   let totalRelevanceScore = 0;
-  
+
   // Analyze each niche for relevance
   niches.forEach(niche => {
     const nicheName = niche.name.toLowerCase();
     let matchType = 'none';
     let relevanceScore = 0;
-    
+
     // Check query relevance if query exists
     if (query) {
       if (nicheName === query) {
@@ -2035,7 +2035,7 @@ function calculateRelevanceMetrics(transformedData, searchParams) {
         }
       }
     }
-    
+
     // Check category relevance if category exists and not "All"
     if (category && category !== 'all') {
       if (nicheName.includes(category)) {
@@ -2045,17 +2045,17 @@ function calculateRelevanceMetrics(transformedData, searchParams) {
         relevanceScore = Math.max(relevanceScore, 0.6); // Minimum score for category match
       }
     }
-    
+
     // Increment match type counter
     matchTypes[matchType]++;
-    
+
     // Add to total relevance score
     totalRelevanceScore += relevanceScore;
   });
-  
+
   // Calculate metrics
   const relevantNicheCount = matchTypes.exact + matchTypes.partial + matchTypes.category;
-  
+
   return {
     relevantNicheCount,
     relevantNichePercentage: niches.length > 0 ? relevantNicheCount / niches.length : 0,
@@ -2078,11 +2078,11 @@ async function callSeedToBlueprint(params) {
     return response.data;
   } catch (error) {
     console.error('Error calling Seed-to-Blueprint workflow:', error.message);
-    
+
     if (!ENABLE_MOCK_FALLBACK) {
       throw new Error(`Failed to call Seed-to-Blueprint API: ${error.message}`);
     }
-    
+
     console.log('Using mock data fallback for Seed-to-Blueprint workflow');
     // Fall back to mock data if the API call fails
     return {
@@ -2090,7 +2090,7 @@ async function callSeedToBlueprint(params) {
       status: 'completed',
       result: {
         channel_blueprint: {
-          focus: params.input_type === 'niche' 
+          focus: params.input_type === 'niche'
             ? `${params.niche_subcategory} within the ${params.niche_category} space`
             : "programming tutorials and coding guides",
           audience_potential: 4200000,
@@ -2144,17 +2144,17 @@ async function getAgentStatuses() {
     { name: 'Legal Compliance', host: 'http://legal-compliance', port: 9002, path: '/api/health' },
     { name: 'Alfred Bot', host: 'http://alfred-bot', port: 8011, path: '/api/health' }
   ];
-  
+
   const agentStatuses = [];
-  
+
   await Promise.all(agents.map(async (agent) => {
     try {
       const url = `${agent.host}:${agent.port}${agent.path}`;
       console.log(`Checking agent status: ${agent.name} at ${url}`);
-      
+
       const response = await axios.get(url, { timeout: 2000 });
       const isHealthy = response.status === 200;
-      
+
       agentStatuses.push({
         name: agent.name,
         status: isHealthy ? 'online' : 'idle',
@@ -2162,7 +2162,7 @@ async function getAgentStatuses() {
         memory: isHealthy ? (Math.floor(Math.random() * 512) + 128) : 0, // Mock memory usage
         tasks: isHealthy ? (Math.floor(Math.random() * 5)) : 0 // Mock active tasks
       });
-      
+
       console.log(`${agent.name} status: ${isHealthy ? 'online' : 'offline'}`);
     } catch (error) {
       console.error(`Error checking ${agent.name} status:`, error.message);
@@ -2175,7 +2175,7 @@ async function getAgentStatuses() {
       });
     }
   }));
-  
+
   return { agents: agentStatuses };
 }
 

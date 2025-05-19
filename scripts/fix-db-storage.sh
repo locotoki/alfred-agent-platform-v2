@@ -9,12 +9,12 @@ echo "This script fixes migration and role issues for the Supabase storage servi
 # Wait for PostgreSQL to become ready
 wait_for_postgres() {
     echo "Waiting for PostgreSQL to become ready..."
-    
+
     while ! pg_isready -h db-postgres -p 5432 -U postgres; do
         echo "PostgreSQL is not ready yet. Waiting..."
         sleep 2
     done
-    
+
     echo "PostgreSQL is ready"
 }
 
@@ -29,10 +29,10 @@ fix_migrations_hash() {
     DO \$\$
     BEGIN
         IF NOT EXISTS (
-            SELECT 1 
-            FROM information_schema.columns 
-            WHERE table_schema = 'storage' 
-            AND table_name = 'migrations' 
+            SELECT 1
+            FROM information_schema.columns
+            WHERE table_schema = 'storage'
+            AND table_name = 'migrations'
             AND column_name = 'hash'
         ) THEN
             ALTER TABLE storage.migrations ADD COLUMN hash text;
@@ -40,8 +40,8 @@ fix_migrations_hash() {
     END \$\$;
 
     -- Set a known working hash value for the pathtoken-column migration
-    UPDATE storage.migrations 
-    SET hash = 'e2c8d16e824f5ed948b4760efd0d88d5' 
+    UPDATE storage.migrations
+    SET hash = 'e2c8d16e824f5ed948b4760efd0d88d5'
     WHERE name = 'pathtoken-column';
     "
     echo "Migration hash fix completed"
@@ -96,12 +96,12 @@ fix_schema_access() {
     GRANT USAGE ON SCHEMA public TO postgres;
     GRANT USAGE ON SCHEMA storage TO postgres;
     GRANT USAGE ON SCHEMA auth TO postgres;
-    
+
     -- Grant access to all tables
     GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO postgres;
     GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA storage TO postgres;
     GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA auth TO postgres;
-    
+
     -- Grant access to all sequences
     GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO postgres;
     GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA storage TO postgres;
@@ -137,13 +137,13 @@ create_skip_migrations() {
 main() {
     # Wait for PostgreSQL
     wait_for_postgres
-    
+
     # Execute all fixes
     fix_migrations_hash
     create_auth_roles
     fix_schema_access
     create_skip_migrations
-    
+
     echo "===== All fixes completed successfully! ====="
     echo "You can now restart the db-storage service with:"
     echo "docker-compose restart db-storage"

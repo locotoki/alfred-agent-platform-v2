@@ -161,7 +161,7 @@ func TestSQLiteDriver_CheckReadWrite(t *testing.T) {
 
 	// Setup read expectation with the captured timestamp
 	rows := sqlmock.NewRows([]string{"check_time", "check_value"})
-	
+
 	// We'll set this after capturing the timestamp during write
 	setRowsCallback := func() {
 		rows.AddRow(capturedTimestamp, "healthy")
@@ -171,10 +171,10 @@ func TestSQLiteDriver_CheckReadWrite(t *testing.T) {
 
 	// Call CheckReadWrite
 	err = driver.CheckReadWrite(context.Background())
-	
+
 	// Now add the rows after the write has happened and the timestamp is captured
 	setRowsCallback()
-	
+
 	if err != nil {
 		t.Errorf("CheckReadWrite() error = %v", err)
 	}

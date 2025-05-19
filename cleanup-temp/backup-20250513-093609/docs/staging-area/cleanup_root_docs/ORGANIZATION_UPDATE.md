@@ -23,7 +23,7 @@ alfred-agent-platform-v2/
 ├── scripts/                     # Organized script directories
 │   ├── db/                      # Database-related scripts and SQL files
 │   ├── setup/                   # Setup and initialization scripts
-│   ├── tests/                   # Test scripts 
+│   ├── tests/                   # Test scripts
 │   └── utils/                   # Utility scripts
 │       └── llm/                 # LLM-specific utilities
 ├── tests/                       # Test directory

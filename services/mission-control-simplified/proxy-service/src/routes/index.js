@@ -11,7 +11,7 @@ const { recordMetrics } = require('../services/metrics');
 const crypto = require('crypto');
 
 // Generate token on startup for cache-bust security
-const CACHE_BUST_TOKEN = process.env.CACHE_BUST_TOKEN || 
+const CACHE_BUST_TOKEN = process.env.CACHE_BUST_TOKEN ||
                         crypto.randomBytes(24).toString('hex');
 
 const router = express.Router();
@@ -20,7 +20,7 @@ const logger = createLogger('routes');
 // Health check endpoint
 router.get('/status', (req, res) => {
   const config = getConfig();
-  
+
   res.json({
     status: 'healthy',
     version: '1.0.0',
@@ -36,7 +36,7 @@ router.get('/status', (req, res) => {
 // Configuration endpoint
 router.get('/config', (req, res) => {
   const config = getConfig();
-  
+
   // Don't expose sensitive information
   const safeConfig = {
     transformation: config.transformation,
@@ -46,7 +46,7 @@ router.get('/config', (req, res) => {
     },
     featureFlags: config.featureFlags
   };
-  
+
   res.json(safeConfig);
 });
 
@@ -54,10 +54,10 @@ router.get('/config', (req, res) => {
 router.post('/config', async (req, res) => {
   try {
     logger.info('Configuration update requested', { newConfig: req.body });
-    
+
     // Update configuration
     const updatedConfig = await updateConfig(req.body);
-    
+
     // Return safe version of config
     const safeConfig = {
       transformation: updatedConfig.transformation,
@@ -67,7 +67,7 @@ router.post('/config', async (req, res) => {
       },
       featureFlags: updatedConfig.featureFlags
     };
-    
+
     res.json({
       success: true,
       message: 'Configuration updated successfully',
@@ -75,7 +75,7 @@ router.post('/config', async (req, res) => {
     });
   } catch (error) {
     logger.error('Error updating configuration', { error: error.message });
-    
+
     res.status(400).json({
       success: false,
       error: 'Configuration update failed',
@@ -94,27 +94,27 @@ router.delete('/cache/:key?', async (req, res) => {
         ip: req.ip,
         providedToken: token ? token.substring(0, 8) + '...' : 'none'
       });
-      
+
       return res.status(401).json({
         error: 'Unauthorized',
         message: 'Invalid or missing token'
       });
     }
-    
+
     // Get key pattern from URL parameter or use wildcard
     const keyPattern = req.params.key || '*';
-    
+
     logger.info(`Cache-bust requested for pattern: ${keyPattern}`);
-    
+
     // Invalidate cache with the provided pattern
     const removedKeys = await invalidateCache(keyPattern);
-    
+
     // Record metrics
     recordMetrics('redis_operation', {
       operation: 'invalidate',
       result: 'success'
     });
-    
+
     return res.json({
       success: true,
       message: `Cache invalidated for pattern: ${keyPattern}`,
@@ -122,13 +122,13 @@ router.delete('/cache/:key?', async (req, res) => {
     });
   } catch (error) {
     logger.error('Error invalidating cache', { error: error.message });
-    
+
     // Record error metrics
     recordMetrics('error', {
       endpoint: '/cache',
       error: error.message
     });
-    
+
     return res.status(500).json({
       error: 'Internal Server Error',
       message: 'Failed to invalidate cache',

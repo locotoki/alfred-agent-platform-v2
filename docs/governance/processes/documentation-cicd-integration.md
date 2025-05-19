@@ -1,7 +1,7 @@
 # Documentation Validation CI/CD Integration
 
-**Last Updated:** 2025-05-10  
-**Owner:** Documentation Team  
+**Last Updated:** 2025-05-10
+**Owner:** Documentation Team
 **Status:** Draft
 
 ## Overview
@@ -51,7 +51,7 @@ Our `doc_validator.py` tool will serve as the foundation for CI/CD validation wi
 
 ### Additional Validation Checks
 
-1. **Markdown Linting**: 
+1. **Markdown Linting**:
    - Use markdownlint for style consistency
    - Custom rules aligned with our documentation standards
 
@@ -314,7 +314,7 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: '3.10'
-          
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
@@ -324,27 +324,27 @@ jobs:
       - name: Run markdown linting
         run: |
           npx markdownlint-cli "**/*.md" --ignore node_modules
-          
+
       - name: Run documentation validator
         run: |
           mkdir -p docs/tools/outputs
           python docs/tools/doc_validator.py --report docs/tools/outputs/validation_report.md --check-links --verbose docs
-          
+
       - name: Generate compliance metrics
         run: |
           # Extract metrics from validation report
           python -c '''
           import re
           import json
-          
+
           with open("docs/tools/outputs/validation_report.md", "r") as f:
               content = f.read()
-              
+
           # Extract metrics
           total_files = re.search(r"Files Analyzed:\*\* (\d+)", content)
           compliant_files = re.search(r"Compliant Files:\*\* (\d+) \(([0-9.]+)%\)", content)
           issues = re.search(r"Issues Found:\*\* (\d+)", content)
-          
+
           metrics = {
               "timestamp": "$(date -u +"%Y-%m-%dT%H:%M:%SZ")",
               "total_files": int(total_files.group(1)) if total_files else 0,
@@ -352,11 +352,11 @@ jobs:
               "compliance_rate": float(compliant_files.group(2)) if compliant_files else 0,
               "issues": int(issues.group(1)) if issues else 0,
           }
-          
+
           with open("docs/tools/outputs/metrics.json", "w") as f:
               json.dump(metrics, f, indent=2)
           '''
-          
+
       - name: Upload validation artifacts
         uses: actions/upload-artifact@v3
         with:
@@ -416,7 +416,7 @@ This documentation validation CI/CD integration plan establishes a structured ap
 ## Next Steps
 
 1. Implement Phase 1 of the plan
-2. Collect feedback on validation accuracy and usefulness 
+2. Collect feedback on validation accuracy and usefulness
 3. Adjust validation rules based on team input
 4. Begin tracking documentation quality metrics
 5. Plan for Phase 2 implementation

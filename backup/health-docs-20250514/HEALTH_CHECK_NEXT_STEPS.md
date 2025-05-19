@@ -25,21 +25,21 @@ This document outlines the next steps required to complete the health check stan
    - Add Express.js health routes
    - Update docker-compose.yml with metrics port mapping
    - Test and verify implementation
-   
+
    **Estimated Effort**: 1-2 hours
 
 2. **Run Validation Tests**
    - Start all services with `docker-compose up -d`
    - Use `scripts/healthcheck/verify-health-endpoints.sh` to test all endpoints
    - Verify metrics appear in Prometheus (http://localhost:9090)
-   
+
    **Estimated Effort**: 1 hour
 
 3. **Create Grafana Dashboard**
    - Create a new dashboard in Grafana (http://localhost:3005)
    - Add panels for service health status
    - Add alerts for service degradation
-   
+
    **Estimated Effort**: 2-3 hours
 
 ## Additional Tasks
@@ -48,13 +48,13 @@ This document outlines the next steps required to complete the health check stan
    - Document any service-specific considerations
    - Add troubleshooting tips for common issues
    - Update implementation status in HEALTH_CHECK_IMPLEMENTATION.md
-   
+
    **Estimated Effort**: 1 hour
 
 5. **Create Runbook Entries**
    - Add health check troubleshooting to operations runbooks
    - Document common failure patterns and remediation steps
-   
+
    **Estimated Effort**: 1-2 hours
 
 ## Validation Checklist

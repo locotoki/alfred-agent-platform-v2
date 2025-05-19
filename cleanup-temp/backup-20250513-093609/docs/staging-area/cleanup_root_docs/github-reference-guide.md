@@ -148,7 +148,7 @@ info:
   version: 1.0.0
   description: |
     API documentation for the Alfred Agent Platform v2.
-    For detailed protocol documentation, see: 
+    For detailed protocol documentation, see:
     https://github.com/[your-username]/alfred-agent-platform-v2/blob/main/docs/api/a2a-protocol.md
 ```
 

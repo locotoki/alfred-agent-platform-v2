@@ -269,7 +269,7 @@ This guide provides solutions for common issues you might encounter when working
    // In youtube-workflows.ts
    const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || '/api/social-intel';
    const fallbackBaseUrl = '/api/youtube'; // Fallback to local endpoints
-   
+
    async function fetchWithFallback(url, options) {
      try {
        const response = await fetch(url, options);
@@ -324,7 +324,7 @@ This guide provides solutions for common issues you might encounter when working
    ```javascript
    const [isLoading, setIsLoading] = useState(true);
    const [error, setError] = useState(null);
-   
+
    // Show loading indicator while fetching
    if (isLoading) return <LoadingSpinner />;
    if (error) return <ErrorDisplay message={error.message} />;

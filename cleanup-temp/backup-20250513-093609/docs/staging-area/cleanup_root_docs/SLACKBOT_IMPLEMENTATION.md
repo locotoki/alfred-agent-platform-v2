@@ -36,17 +36,17 @@ async def handle_message_events(body, logger, client, context):
     # Filter out bot messages to prevent loops
     if body.get("event", {}).get("bot_id"):
         return
-    
+
     # Extract message details
     event = body["event"]
     user_id = event.get("user")
     channel_id = event.get("channel")
     text = event.get("text", "").strip()
     thread_ts = event.get("thread_ts")
-    
+
     # Check if this is a DM channel
     is_dm = channel_id.startswith("D")
-    
+
     # Process the message
     await process_message(client, channel_id, user_id, text, thread_ts, is_dm)
 
@@ -58,11 +58,11 @@ async def handle_mentions(body, logger, client, context):
     channel_id = event.get("channel")
     text = event.get("text", "").strip()
     thread_ts = event.get("thread_ts")
-    
+
     # Remove the bot mention from the text
     # Format is typically <@BOT_USER_ID> command args
     text = re.sub(r'<@[A-Z0-9]+>', '', text).strip()
-    
+
     # Process the message
     await process_message(client, channel_id, user_id, text, thread_ts, False)
 
@@ -75,7 +75,7 @@ async def process_message(client, channel_id, user_id, text, thread_ts=None, is_
             parts = text.split(maxsplit=1)
             command = parts[0].lower() if parts else ""
             args = parts[1] if len(parts) > 1 else ""
-            
+
             if command in ["help", "ping", "trend"]:
                 # Handle as command
                 if command == "help":
@@ -95,7 +95,7 @@ async def process_message(client, channel_id, user_id, text, thread_ts=None, is_
                 parts = stripped_text.split(maxsplit=1)
                 command = parts[0].lower() if parts else ""
                 args = parts[1] if len(parts) > 1 else ""
-                
+
                 # Handle commands
                 if command == "help":
                     await show_help(client, channel_id, thread_ts)
@@ -112,7 +112,7 @@ async def process_message(client, channel_id, user_id, text, thread_ts=None, is_
             else:
                 # In a channel but not addressing the bot with a command
                 pass
-                
+
     except Exception as e:
         logger.error("message_processing_failed", error=str(e))
         await client.chat_postMessage(
@@ -139,22 +139,22 @@ async def handle_chat_message(client, channel_id, user_id, text, thread_ts=None)
             "thread_ts": thread_ts
         }
     )
-    
+
     try:
         # Store and publish task
         await supabase_transport.store_task(envelope)
         await pubsub_transport.publish_task(envelope)
-        
+
         # Send immediate acknowledgment
         await client.chat_postMessage(
             channel=channel_id,
             thread_ts=thread_ts,
             text="I'll get back to you in a moment..."
         )
-        
+
         # In a real implementation, we would have a callback or webhook
         # that receives the response from the processing service
-        
+
     except Exception as e:
         logger.error("chat_processing_failed", error=str(e))
         await client.chat_postMessage(
@@ -174,11 +174,11 @@ Modify existing command handlers to support threads:
 async def handle_ping(client, channel_id, user_id, thread_ts=None):
     """Handle ping command."""
     # existing implementation with thread_ts added to client.chat_postMessage
-    
+
 async def handle_trend_analysis(client, channel_id, user_id, query, thread_ts=None):
     """Handle trend analysis command."""
     # existing implementation with thread_ts added to client.chat_postMessage
-    
+
 async def show_help(client, channel_id, thread_ts=None):
     """Show help message."""
     # existing implementation with thread_ts added to client.chat_postMessage
@@ -239,7 +239,7 @@ async def show_help(client, channel_id, thread_ts=None):
             ]
         }
     ]
-    
+
     await client.chat_postMessage(
         channel=channel_id,
         thread_ts=thread_ts,
@@ -257,19 +257,19 @@ Add a webhook for receiving asynchronous task responses:
 async def task_response(request: Request):
     """Handle task responses from other services."""
     data = await request.json()
-    
+
     task_id = data.get("task_id")
     channel_id = data.get("channel_id")
     thread_ts = data.get("thread_ts")
     response = data.get("response")
-    
+
     if not task_id or not channel_id or not response:
         return {"status": "error", "message": "Missing required fields"}
-    
+
     try:
         # Retrieve task from database to get additional context if needed
         task = await supabase_transport.get_task(task_id)
-        
+
         # Send the response to the user
         await slack_app.client.chat_postMessage(
             channel=channel_id,
@@ -277,7 +277,7 @@ async def task_response(request: Request):
             text=response.get("text", "Task completed"),
             blocks=response.get("blocks")
         )
-        
+
         return {"status": "success"}
     except Exception as e:
         logger.error("task_response_failed", error=str(e), task_id=task_id)

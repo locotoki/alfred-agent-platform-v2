@@ -1,7 +1,7 @@
 # Agent-to-Agent (A2A) Communication Protocol
 
-*Last Updated: 2025-05-10*  
-*Owner: API Team*  
+*Last Updated: 2025-05-10*
+*Owner: API Team*
 *Status: Active*
 
 ## Overview
@@ -317,7 +317,7 @@ class A2AProtocol:
         self.service_id = service_id
         self.auth_token = auth_token
         self.publisher = pubsub_v1.PublisherClient()
-        
+
     def create_envelope(self, destination_agent, destination_service=None):
         """Create a standard A2A envelope"""
         return {
@@ -345,7 +345,7 @@ class A2AProtocol:
                 "tenant_id": "default"
             }
         }
-    
+
     def create_task_request(self, destination_agent, intent, payload, destination_service=None):
         """Create a task request message"""
         envelope = self.create_envelope(destination_agent, destination_service)
@@ -355,7 +355,7 @@ class A2AProtocol:
             "payload": payload
         }
         return {"envelope": envelope, "message": message}
-    
+
     async def send_message(self, message, topic):
         """Send a message to the specified topic"""
         topic_path = self.publisher.topic_path("project-id", topic)
@@ -378,7 +378,7 @@ class A2AProtocol {
     this.authToken = authToken;
     this.pubsub = new PubSub();
   }
-  
+
   createEnvelope(destinationAgent, destinationService = null) {
     return {
       metadata: {
@@ -406,7 +406,7 @@ class A2AProtocol {
       }
     };
   }
-  
+
   createTaskRequest(destinationAgent, intent, payload, destinationService = null) {
     const envelope = this.createEnvelope(destinationAgent, destinationService);
     const message = {
@@ -416,7 +416,7 @@ class A2AProtocol {
     };
     return { envelope, message };
   }
-  
+
   async sendMessage(message, topic) {
     const messageJson = JSON.stringify(message);
     const messageBuffer = Buffer.from(messageJson);

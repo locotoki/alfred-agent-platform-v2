@@ -62,10 +62,10 @@ Example A2A envelope:
   "intent": "YOUTUBE_NICHE_SCOUT",
   "data": {
     "queries": [
-      "nursery rhymes", 
-      "diy woodworking", 
-      "urban gardening", 
-      "ai news", 
+      "nursery rhymes",
+      "diy woodworking",
+      "urban gardening",
+      "ai news",
       "budget travel"
     ]
   }
@@ -124,7 +124,7 @@ The YouTube functionality has been integrated into the Mission Control UI with t
 
 ### Workflow Detail Pages
 
-- **Niche Scout** (`/workflows/niche-scout/index.tsx`): 
+- **Niche Scout** (`/workflows/niche-scout/index.tsx`):
   - Form for entering search queries
   - Advanced options for category, time range, and demographics
 
@@ -156,7 +156,7 @@ The implementation includes proper error handling and fallback mock data for dev
 ## Data Storage
 
 - **Temporary Files**: Stored in `niche_scout/` and `builder/` directories
-- **Vector Embeddings**: 
+- **Vector Embeddings**:
   - Long-term storage in Qdrant collections: `youtube_channels`, `youtube_videos`, `youtube_niches`
   - Ephemeral embeddings in pgvector table: `yt_ephemeral_embeddings`
 

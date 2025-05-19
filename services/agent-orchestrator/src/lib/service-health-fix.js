@@ -7,7 +7,7 @@ class ServiceStatusFix {
     // Access the window object to get to the global variable
     if (typeof window !== 'undefined') {
       console.log('[Health Fix] Running service health fix...');
-      
+
       // Try to find the serviceStatus variable in various scopes
       try {
         // Create a correct status object
@@ -19,27 +19,27 @@ class ServiceStatusFix {
             error: undefined
           }
         };
-        
+
         // Define a global fix function that will be called when modules load
         window.__fixServiceHealth = function() {
           console.log('[Health Fix] Applying service health fix');
-          
+
           // Look for the serviceStatus variable in all loaded modules
           if (window.serviceStatus) {
             console.log('[Health Fix] Found window.serviceStatus, updating');
-            window.serviceStatus.socialIntel = { 
-              available: true, 
+            window.serviceStatus.socialIntel = {
+              available: true,
               lastChecked: new Date(),
-              error: undefined 
+              error: undefined
             };
           }
-          
+
           return true;
         };
-        
+
         // Try to execute the fix immediately
         window.__fixServiceHealth();
-        
+
         console.log('[Health Fix] Fix applied, service status should now show as available');
       } catch (error) {
         console.error('[Health Fix] Error fixing service health:', error);
@@ -56,13 +56,13 @@ if (typeof window !== 'undefined') {
   window.addEventListener('load', () => {
     console.log('[Health Fix] Page loaded, applying fix');
     ServiceStatusFix.fixServiceHealth();
-    
+
     // Also set up periodic reapplication of the fix
     setInterval(() => {
       ServiceStatusFix.fixServiceHealth();
     }, 5000); // Every 5 seconds
   });
-  
+
   // Also try to run immediately in case page is already loaded
   ServiceStatusFix.fixServiceHealth();
 }

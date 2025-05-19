@@ -123,7 +123,7 @@ Our solution follows a phased approach:
 function getMockNichesForCategory(query, category) {
   // Start with general categories
   let nicheCandidates = [];
-  
+
   // Add category-specific base niches
   if (category === 'Gaming') {
     nicheCandidates = [
@@ -137,16 +137,16 @@ function getMockNichesForCategory(query, category) {
       'Educational Content', 'How-to Videos', 'Academic Resources'
     ];
   } // Additional categories...
-  
+
   // Prioritize niches containing the query
   // Use string similarity with threshold
   const threshold = 0.55; // Configurable
-  
+
   // First: exact or close matches to query
-  const closeMatches = nicheCandidates.filter(niche => 
+  const closeMatches = nicheCandidates.filter(niche =>
     stringSimilarity(niche.toLowerCase(), query.toLowerCase()) >= threshold
   );
-  
+
   // Second: create query-specific niches if no close matches
   if (closeMatches.length === 0 && query.trim().length > 0) {
     closeMatches.push(
@@ -156,7 +156,7 @@ function getMockNichesForCategory(query, category) {
       // Additional combinations...
     );
   }
-  
+
   // Ensure we have enough niches (3-5)
   const finalNiches = [...closeMatches];
   if (finalNiches.length < 3) {
@@ -166,7 +166,7 @@ function getMockNichesForCategory(query, category) {
       .slice(0, 5 - finalNiches.length)
     );
   }
-  
+
   return finalNiches;
 }
 
@@ -177,28 +177,28 @@ function getMockNichesForCategory(query, category) {
 function stringSimilarity(str1, str2) {
   const longer = str1.length >= str2.length ? str1 : str2;
   const shorter = str1.length < str2.length ? str1 : str2;
-  
+
   if (longer.length === 0) {
     return 1.0;
   }
-  
+
   // Calculate Levenshtein distance
   const costs = [];
   for (let i = 0; i <= longer.length; i++) {
     costs[i] = i;
   }
-  
+
   for (let i = 1; i <= shorter.length; i++) {
     let nw = i - 1;
     costs[0] = i;
-    
+
     for (let j = 1; j <= longer.length; j++) {
       const cost = shorter.charAt(i - 1) === longer.charAt(j - 1) ? nw : nw + 1;
       nw = costs[j];
       costs[j] = Math.min(costs[j - 1] + 1, costs[j] + 1, cost);
     }
   }
-  
+
   // Normalize by length of longer string
   return (longer.length - costs[longer.length]) / longer.length;
 }
@@ -213,7 +213,7 @@ function logTransformationMetrics(originalData, transformedData, searchParams) {
   const relevanceScore = calculateRelevanceScore(transformedData, searchParams);
   const transformationTime = performance.now() - startTime;
   const relevantNicheCount = countRelevantNiches(transformedData, searchParams);
-  
+
   // Log to console for debugging
   console.log('Transformation metrics:', {
     relevanceScore,
@@ -221,7 +221,7 @@ function logTransformationMetrics(originalData, transformedData, searchParams) {
     relevantNicheCount,
     totalNiches: transformedData.niches.length
   });
-  
+
   // Store in localStorage for QA analysis
   const metrics = JSON.parse(localStorage.getItem('transformMetrics') || '[]');
   metrics.push({

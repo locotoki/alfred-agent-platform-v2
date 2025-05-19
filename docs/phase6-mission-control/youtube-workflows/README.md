@@ -21,7 +21,7 @@ See `PORT-STANDARD.md` in the project root for full port configuration details.
    # Start Social Intelligence Agent
    cd /home/locotoki/projects/alfred-agent-platform-v2
    docker-compose up -d social-intel
-   
+
    # Start Mission Control UI
    cd /home/locotoki/projects/alfred-agent-platform-v2/services/mission-control
    npm run dev

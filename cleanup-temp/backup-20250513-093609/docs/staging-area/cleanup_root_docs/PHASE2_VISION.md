@@ -37,7 +37,7 @@ Phase 2 will be measured by the following key performance indicators:
 
 ### Business Impact
 - Increase average revenue per channel by 30% within 90 days
-- Reduce content planning time by 60% 
+- Reduce content planning time by 60%
 - Achieve 40% higher growth rate for channels using advanced analytics
 
 ### Technical Performance

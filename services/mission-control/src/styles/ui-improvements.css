@@ -297,31 +297,31 @@
     background-color: #1f2937;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
   }
-  
+
   .workflow-card:hover {
     background-color: #111827;
   }
-  
+
   .form-input {
     background-color: #111827;
     border-color: #374151;
     color: #e5e7eb;
   }
-  
+
   .form-input:focus {
     border-color: #3b82f6;
     box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
   }
-  
+
   .result-card {
     background-color: #1f2937;
     border-color: #374151;
   }
-  
+
   .result-header {
     color: #e5e7eb;
   }
-  
+
   .result-value {
     color: #f3f4f6;
   }

@@ -12,11 +12,11 @@ The containerized environment couldn't properly resolve the symlinks or path ali
 
 ## Root Causes
 
-1. **Docker Container Symlink Issues**: 
+1. **Docker Container Symlink Issues**:
    - Docker containers do not always handle symlinks correctly
    - The symlink structure for shared components wasn't preserved during the containerization
 
-2. **Path Alias Resolution**: 
+2. **Path Alias Resolution**:
    - The vite.config.ts contained a path alias `@shared` that worked locally but not in the container
    - Path resolution in the Docker environment differed from the local development environment
 

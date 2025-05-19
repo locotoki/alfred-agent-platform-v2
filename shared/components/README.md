@@ -53,9 +53,9 @@ ln -s ../../../shared shared
 import { StatsCard } from '../../../shared/components/ui/cards/StatsCard';
 
 // Use the component
-<StatsCard 
-  title="Active Tasks" 
-  value={127} 
+<StatsCard
+  title="Active Tasks"
+  value={127}
   trend={{ value: 12, isPositive: true }}
 />
 ```
@@ -101,9 +101,9 @@ export interface GradientCardProps {
 
 /**
  * GradientCard Component
- * 
+ *
  * Displays content in a card with a gradient background
- * 
+ *
  * @example
  * ```tsx
  * <GradientCard title="Statistics" variant="primary">
@@ -119,9 +119,9 @@ export const GradientCard: React.FC<GradientCardProps> = ({
 }) => {
   // Get gradient based on variant
   const gradientBg = colors[variant]?.gradient || colors.primary.gradient;
-  
+
   return (
-    <div 
+    <div
       className={`rounded-${borders.borderRadius.lg} shadow-${shadows.md} overflow-hidden ${className}`}
       style={{ background: gradientBg }}
     >

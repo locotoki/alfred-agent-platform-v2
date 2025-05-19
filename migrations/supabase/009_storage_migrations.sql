@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS storage.migrations (
 ALTER TABLE storage.migrations OWNER TO supabase_storage_admin;
 
 -- Mark existing migrations as completed
-INSERT INTO storage.migrations (id, name) VALUES 
+INSERT INTO storage.migrations (id, name) VALUES
 (1, 'add-public-to-buckets'),
 (2, 'add-rls-to-buckets'),
 (3, 'pathtoken-column')

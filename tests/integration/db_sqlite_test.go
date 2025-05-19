@@ -13,7 +13,7 @@ import (
 func TestSQLiteDriverIntegration(t *testing.T) {
 	// Create a temporary database file
 	dbFile := "/tmp/alfred_test_sqlite.db"
-	
+
 	// Cleanup after the test
 	defer os.Remove(dbFile)
 
@@ -87,7 +87,7 @@ func TestSQLiteDriverIntegration(t *testing.T) {
 	if metrics["service_health"] != 1.0 {
 		t.Errorf("Expected service_health to be 1.0, got %v", metrics["service_health"])
 	}
-	
+
 	// Check driver type is 3 (SQLite)
 	if metrics["db_driver_type"] != 3 {
 		t.Errorf("Expected db_driver_type to be 3, got %v", metrics["db_driver_type"])

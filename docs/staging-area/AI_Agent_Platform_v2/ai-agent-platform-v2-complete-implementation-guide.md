@@ -2456,33 +2456,33 @@ A scalable, modular AI agent platform built with Docker, Supabase, and Pub/Sub m
 ```
 
 1. Initialize the environment:
-    
+
     ```bash
-    
+
     bash
     make init
-    
+
     ```
-    
+
 2. Configure your environment:
-    
+
     ```bash
-    
+
     bash
     cp .env.example .env
     # Edit .env with your settings
-    
+
     ```
-    
+
 3. Start the platform:
-    
+
     ```bash
-    
+
     bash
     make setup
-    
+
     ```
-    
+
 4. Access the services:
     - Supabase Studio: [http://localhost:3001](http://localhost:3001/)
     - Mission Control UI: [http://localhost:3003](http://localhost:3003/)
@@ -2522,14 +2522,14 @@ make lint
 ### **Adding a New Agent**
 
 1. Create agent directory:
-    
+
     ```bash
-    
+
     bash
     mkdir -p agents/new_agent
-    
+
     ```
-    
+
 2. Implement agent logic inheriting from `BaseAgent`
 3. Create Docker service in `services/new-agent`
 4. Add to `docker-compose.yml`

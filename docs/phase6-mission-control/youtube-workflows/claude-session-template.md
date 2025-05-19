@@ -18,7 +18,7 @@ When working on the YouTube workflows implementation in the Alfred Agent Platfor
 
 3. **Follow implementation steps** from the Implementation Plan document
 
-4. **Use the Troubleshooting Guide** if any issues are encountered 
+4. **Use the Troubleshooting Guide** if any issues are encountered
 
 5. **Update documentation** after completing any significant changes
 

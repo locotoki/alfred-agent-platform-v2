@@ -49,29 +49,29 @@ serviceHealth.set(1);
 // Health check endpoint
 router.get('/health', (req, res) => {
   requestsCounter.inc();
-  
+
   // Check dependencies
   const agentCoreStatus = checkAgentCoreConnection() ? 'ok' : 'error';
   const ragStatus = checkRagConnection() ? 'ok' : 'error';
   const socialIntelStatus = checkSocialIntelConnection() ? 'ok' : 'error';
-  
+
   const services = {
     'agent_core': agentCoreStatus,
     'rag_service': ragStatus,
     'social_intel': socialIntelStatus
   };
-  
+
   // Determine overall status
   const hasError = Object.values(services).includes('error');
   const status = hasError ? 'error' : 'ok';
-  
+
   // If status is error, set health gauge to 0
   if (status === 'error') {
     serviceHealth.set(0);
   } else {
     serviceHealth.set(1);
   }
-  
+
   res.json({
     status: status,
     version: '1.0.0',

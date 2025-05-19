@@ -29,7 +29,7 @@ const SummaryCard = ({
         <div>
           <p className="text-sm font-medium text-muted-foreground mb-1">{title}</p>
           <h3 className="text-2xl font-bold">{value}</h3>
-          
+
           {typeof change !== "undefined" && (
             <div className="flex items-center mt-2">
               <span
@@ -52,7 +52,7 @@ const SummaryCard = ({
             </div>
           )}
         </div>
-        
+
         <div className="bg-primary/10 p-2 rounded-lg">
           {icon}
         </div>

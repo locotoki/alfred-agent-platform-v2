@@ -1,7 +1,7 @@
 # Document Consolidation Guide
 
-**Last Updated:** 2025-05-10  
-**Owner:** Documentation Team  
+**Last Updated:** 2025-05-10
+**Owner:** Documentation Team
 **Status:** Active
 
 ## Overview
@@ -180,7 +180,7 @@ Use this decision tree to determine whether to consolidate or archive documentat
 ```
 START
 |
-+-- Is the content still relevant to current product? 
++-- Is the content still relevant to current product?
 |   |
 |   +-- NO --> Is it needed for historical reference?
 |   |           |
@@ -322,8 +322,8 @@ When conflicts cannot be fully resolved:
 When documenting a resolved conflict:
 
 ```markdown
-> **Note on [feature/behavior]**: Previous documentation stated [conflicting information]. 
-> This has been resolved by [method: code verification/testing/expert consultation] showing that 
+> **Note on [feature/behavior]**: Previous documentation stated [conflicting information].
+> This has been resolved by [method: code verification/testing/expert consultation] showing that
 > [correct behavior]. Reference: [link to code/test/discussion].
 ```
 

@@ -85,7 +85,7 @@ This document tracks the progress of implementing standardized health checks acr
 ### Phase 1: Initial Assessment ✅
 
 - [x] Document current health check status
-- [x] Build local healthcheck image 
+- [x] Build local healthcheck image
 - [x] Create fix script
 - [x] Document implementation plan
 
@@ -101,7 +101,7 @@ This document tracks the progress of implementing standardized health checks acr
 ### Phase 3: Agent Services ✅
 
 - [x] Fix agent-financial Dockerfile
-- [x] Fix agent-legal Dockerfile 
+- [x] Fix agent-legal Dockerfile
 - [x] Fix agent-social Dockerfile
 - [x] Fix llm-service Dockerfile
 - [x] Rebuild and verify agent services
@@ -145,6 +145,6 @@ This document tracks the progress of implementing standardized health checks acr
 - The model-router service is a good reference for the correct implementation
 - Most services have the required health endpoints but need Dockerfile fixes
 - The primary issues:
-  - Circular dependencies in multi-stage Dockerfiles 
+  - Circular dependencies in multi-stage Dockerfiles
   - Missing netcat/curl in containers for healthcheck script to function
   - Potential port conflicts between application metrics and healthcheck metrics
