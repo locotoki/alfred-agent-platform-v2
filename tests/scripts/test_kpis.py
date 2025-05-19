@@ -20,7 +20,7 @@ print(f"P95 latency: {p95_latency_ms}ms")
 kpi_check = {
     "noise_cut": noise_cut_rate >= 0.45,
     "fnr": fnr < 0.02,
-    "latency": p95_latency_ms <= 140
+    "latency": p95_latency_ms <= 140,
 }
 
 print("\nKPI Check:")

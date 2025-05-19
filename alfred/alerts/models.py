@@ -10,6 +10,7 @@ from typing import Optional
 @dataclass
 class AlertSnooze:
     """Alert snooze record."""
+
     id: str
     alert_id: str
     created_at: datetime
