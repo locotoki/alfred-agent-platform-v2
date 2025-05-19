@@ -54,7 +54,6 @@ def get_import_pattern(import_name):
 
 def remove_import_from_line(line, import_name):
     """Remove the import from the line."""
-    original_line = line
 
     # Special handling for different import patterns
     parts = import_name.split(".")
