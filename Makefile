@@ -97,3 +97,9 @@ up: compose-generate
 down:
 	@echo "Stopping Alfred Agent Platform..."
 	@docker compose -f docker-compose.generated.yml down
+
+# Run slack adapter
+run-slack-adapter:
+	@echo "Starting Slack Adapter service..."
+	@docker compose up -d slack-adapter
+	@echo "Slack Adapter running on http://localhost:3001"
