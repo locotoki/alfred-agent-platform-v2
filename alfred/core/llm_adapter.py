@@ -44,7 +44,7 @@ class LLMAdapter(ABC):
         stream: bool = False,
         temperature: float = 0.7,
         max_tokens: Optional[int] = None,
-        **kwargs,
+        **kwargs: Any,
     ) -> Union[str, AsyncIterator[str]]:
         """Generate a response from the LLM.
 
@@ -83,10 +83,10 @@ class OpenAIAdapter(LLMAdapter):
             raise ValueError("OpenAI API key not provided")
 
         # Lazy import to avoid dependency issues
-        self._client = None
+        self._client: Optional[Any] = None
 
     @property
-    def client(self):
+    def client(self) -> Any:
         """Lazy-load OpenAI client."""
         if self._client is None:
             try:
@@ -104,7 +104,7 @@ class OpenAIAdapter(LLMAdapter):
         stream: bool = False,
         temperature: float = 0.7,
         max_tokens: Optional[int] = None,
-        **kwargs,
+        **kwargs: Any,
     ) -> Union[str, AsyncIterator[str]]:
         """Generate response using OpenAI API."""
         try:
@@ -138,14 +138,14 @@ class OpenAIAdapter(LLMAdapter):
                         response.usage.total_tokens
                     )
 
-                return content
+                return content  # type: ignore[no-any-return]
 
         except Exception as e:
             llm_requests_total.labels(model=self.model, status="error").inc()
             logger.error("OpenAI API error", error=str(e), model=self.model)
             raise
 
-    async def _stream_response(self, response) -> AsyncIterator[str]:
+    async def _stream_response(self, response: Any) -> AsyncIterator[str]:
         """Stream response chunks from OpenAI."""
         total_tokens = 0
         async for chunk in response:
@@ -176,14 +176,14 @@ class ClaudeAdapter(LLMAdapter):
         if not self.api_key:
             raise ValueError("Anthropic API key not provided")
 
-        self._client = None
+        self._client: Optional[Any] = None
 
     @property
-    def client(self):
+    def client(self) -> Any:
         """Lazy-load Anthropic client."""
         if self._client is None:
             try:
-                from anthropic import AsyncAnthropic
+                from anthropic import AsyncAnthropic  # type: ignore[import-not-found]
 
                 self._client = AsyncAnthropic(api_key=self.api_key)
             except ImportError:
@@ -197,7 +197,7 @@ class ClaudeAdapter(LLMAdapter):
         stream: bool = False,
         temperature: float = 0.7,
         max_tokens: Optional[int] = None,
-        **kwargs,
+        **kwargs: Any,
     ) -> Union[str, AsyncIterator[str]]:
         """Generate response using Claude API."""
         try:
@@ -240,14 +240,14 @@ class ClaudeAdapter(LLMAdapter):
                         response.usage.total_tokens
                     )
 
-                return content
+                return content  # type: ignore[no-any-return]
 
         except Exception as e:
             llm_requests_total.labels(model=self.model, status="error").inc()
             logger.error("Claude API error", error=str(e), model=self.model)
             raise
 
-    async def _stream_response(self, response) -> AsyncIterator[str]:
+    async def _stream_response(self, response: Any) -> AsyncIterator[str]:
         """Stream response chunks from Claude."""
         total_tokens = 0
         async for chunk in response:
@@ -265,7 +265,7 @@ class ClaudeAdapter(LLMAdapter):
 
 
 # Factory function
-def create_llm_adapter(provider: str = "openai", **kwargs) -> LLMAdapter:
+def create_llm_adapter(provider: str = "openai", **kwargs: Any) -> LLMAdapter:
     """Create an LLM adapter instance.
 
     Args:

@@ -9,7 +9,7 @@ import hmac
 import json
 import os
 import time
-from typing import Dict, Optional, Union
+from typing import Any, Dict, Optional, Union
 
 import structlog
 from fastapi import FastAPI, HTTPException, Request, Response
@@ -50,7 +50,7 @@ class SlackEventWrapper(BaseModel):
     token: Optional[str] = None
     team_id: str
     api_app_id: str
-    event: Dict
+    event: Dict[str, Any]
     type: str
     event_id: str
     event_time: int
@@ -107,7 +107,7 @@ else:
 
 
 @app.post("/slack/events")
-async def handle_slack_events(request: Request):
+async def handle_slack_events(request: Request) -> Response:
     """Handle Slack events and slash commands."""
 
     # Get headers for verification
@@ -190,12 +190,12 @@ async def handle_slack_events(request: Request):
 
 
 @app.get("/health")
-async def health_check():
+async def health_check() -> Dict[str, str]:
     """Health check endpoint."""
     return {"status": "healthy", "service": "alfred-slack-adapter"}
 
 
 @app.get("/")
-async def root():
+async def root() -> Dict[str, str]:
     """Root endpoint."""
     return {"service": "Alfred Slack Adapter", "version": "1.0.0"}

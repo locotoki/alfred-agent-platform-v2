@@ -35,9 +35,9 @@ class Intent:
 class IntentRouter:
     """Routes messages to appropriate handlers based on intent."""
 
-    def __init__(self):
-        self._handlers: Dict[str, Callable] = {}
-        self._patterns: Dict[str, re.Pattern] = {}
+    def __init__(self) -> None:
+        self._handlers: Dict[str, Callable[..., Any]] = {}
+        self._patterns: Dict[str, re.Pattern[str]] = {}
 
         # Register default handlers
         self._register_default_handlers()
@@ -88,7 +88,7 @@ class IntentRouter:
             )
 
     def register_handler(
-        self, intent_type: str, handler: Callable, pattern: Optional[str] = None
+        self, intent_type: str, handler: Callable[..., Any], pattern: Optional[str] = None
     ) -> None:
         """Register a handler for an intent type.
 
@@ -104,7 +104,7 @@ class IntentRouter:
 
         logger.info("Handler registered", intent_type=intent_type, has_pattern=bool(pattern))
 
-    def get_handler(self, intent_type: str) -> Optional[Callable]:
+    def get_handler(self, intent_type: str) -> Optional[Callable[..., Any]]:
         """Get handler for an intent type.
 
         Args:
@@ -115,7 +115,7 @@ class IntentRouter:
         """
         return self._handlers.get(intent_type)
 
-    def _register_default_handlers(self):
+    def _register_default_handlers(self) -> None:
         """Register default intent handlers."""
         # Greeting intent
         self.register_handler(
