@@ -68,7 +68,7 @@ This document summarizes the Phase 5 workflow implementation and preparations co
 ## Timeline
 
 - Week 1 (May 15-22): Fix and test database services
-- Week 2 (May 22-29): Fix and test infrastructure services  
+- Week 2 (May 22-29): Fix and test infrastructure services
 - Week 3 (May 29-June 5): Fix and test monitoring services
 - Week 4 (June 5-12): Clean up legacy health checks and implement alert rules
 

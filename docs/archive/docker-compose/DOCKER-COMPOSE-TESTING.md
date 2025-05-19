@@ -46,13 +46,13 @@ This document records the testing results of the simplified Docker Compose confi
    ```bash
    # Start core infrastructure first
    ./start-platform.sh -d db-postgres redis vector-db pubsub-emulator
-   
+
    # Wait for core services to be ready, then start other services
    ./start-platform.sh -d model-registry model-router
-   
+
    # Start agent services
    ./start-platform.sh -d agent-core agent-rag
-   
+
    # Finally start UI services
    ./start-platform.sh -d ui-chat
    ```

@@ -1,5 +1,5 @@
 -- Mark all storage migrations as completed
-INSERT INTO storage.migrations (id, name, hash) VALUES 
+INSERT INTO storage.migrations (id, name, hash) VALUES
 (1, 'create-migrations-table', 'a1'),
 (2, 'initialiseBucket', 'a2'),
 (3, 'initialiseObjects', 'a3'),

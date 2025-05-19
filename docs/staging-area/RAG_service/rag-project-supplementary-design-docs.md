@@ -3,10 +3,10 @@
 # RAG Project – Supplementary Design Docs
 
 > Purpose : Capture every remaining topic discussed but not yet formalised into an artifact, so the solopreneur (you) and Claude Code have one last reference bundle.
-> 
-> 
+>
+>
 > **Revision** : 0.1 – 2025‑05‑09
-> 
+>
 
 ---
 

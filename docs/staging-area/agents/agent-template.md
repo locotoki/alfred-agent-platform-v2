@@ -1,9 +1,9 @@
 # [Agent Name]
 
 ## Overview
-**Category:** [Core/Personal/Business/SaaS/Domain]  
-**Status:** [Planned/In Development/Active]  
-**Tier:** [System/Personal/Solo-Biz/SaaS]  
+**Category:** [Core/Personal/Business/SaaS/Domain]
+**Status:** [Planned/In Development/Active]
+**Tier:** [System/Personal/Solo-Biz/SaaS]
 **Description:** Brief 1-2 sentence description of the agent's purpose.
 
 ## Core Functionality

@@ -80,14 +80,14 @@ if git diff --quiet -- '*.py'; then
   fi
 else
   echo "Files have been formatted. Please review the changes."
-  
+
   if [[ "$AUTO_COMMIT" == "true" ]]; then
     echo "Adding changes to git..."
     git add -u "*.py"
-    
+
     echo "Committing changes..."
     git commit -m "$COMMIT_MESSAGE"
-    
+
     if [[ "$AUTO_PUSH" == "true" ]]; then
       echo "Pushing changes..."
       git push origin "$(git branch --show-current)"

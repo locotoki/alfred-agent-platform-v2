@@ -9,10 +9,10 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
-    
+
     steps:
       - uses: actions/checkout@v3
-      
+
       - name: Set up service matrix
         id: set-matrix
         run: |
@@ -22,7 +22,7 @@ jobs:
     needs: prepare-matrix
     runs-on: ubuntu-latest
     environment: production  # This environment needs to be configured with required reviewers
-    
+
     steps:
       - name: Production deployment approval
         run: echo "Deployment to production has been approved"
@@ -34,14 +34,14 @@ jobs:
       fail-fast: false  # Continue deploying other services if one fails
       matrix: ${{ fromJson(needs.prepare-matrix.outputs.matrix) }}
     environment: production
-    
+
     steps:
       - uses: actions/checkout@v3
-      
+
       - name: Get latest commit SHA
         id: get-sha
         run: echo "sha=$(git rev-parse HEAD)" >> $GITHUB_OUTPUT
-      
+
       - name: Check if directory exists
         id: check_dir
         run: |
@@ -51,7 +51,7 @@ jobs:
             echo "exists=false" >> $GITHUB_OUTPUT
             echo "::warning::Directory ${{ matrix.service }} does not exist. Skipping deployment."
           fi
-      
+
       - name: Simulate deployment (POC MODE)
         if: steps.check_dir.outputs.exists == 'true'
         run: |
@@ -64,11 +64,11 @@ jobs:
           echo ""
           echo "Directory contents for ${{ matrix.service }}:"
           ls -la ${{ matrix.service }}
-          
+
           echo "=== Creating deployment marker file ==="
           mkdir -p .deployment
           touch .deployment/${{ matrix.service }}-deployed
-      
+
       - name: Display available secrets (safely)
         run: |
           echo "Checking which secrets are available for this deployment:"
@@ -76,17 +76,17 @@ jobs:
           echo "SUPABASE_URL_PROD: ${{ secrets.SUPABASE_URL_PROD != '' && 'Available' || 'Not available' }}"
           echo "SUPABASE_KEY_PROD: ${{ secrets.SUPABASE_KEY_PROD != '' && 'Available' || 'Not available' }}"
           echo "REDIS_URL_PROD: ${{ secrets.REDIS_URL_PROD != '' && 'Available' || 'Not available' }}"
-          
+
           if [[ "${{ matrix.service }}" == "slack-bot" ]]; then
             echo "SLACK_BOT_TOKEN_PROD: ${{ secrets.SLACK_BOT_TOKEN_PROD != '' && 'Available' || 'Not available' }}"
             echo "SLACK_SIGNING_SECRET_PROD: ${{ secrets.SLACK_SIGNING_SECRET_PROD != '' && 'Available' || 'Not available' }}"
           fi
-          
+
           if [[ "${{ matrix.service }}" == "whatsapp-adapter" ]]; then
             echo "WHATSAPP_API_TOKEN_PROD: ${{ secrets.WHATSAPP_API_TOKEN_PROD != '' && 'Available' || 'Not available' }}"
             echo "WHATSAPP_PHONE_NUMBER_ID_PROD: ${{ secrets.WHATSAPP_PHONE_NUMBER_ID_PROD != '' && 'Available' || 'Not available' }}"
           fi
-      
+
       - name: Record deployment status
         if: always()
         run: |
@@ -101,16 +101,16 @@ jobs:
     needs: deploy-to-production
     runs-on: ubuntu-latest
     environment: production
-    
+
     steps:
       - uses: actions/checkout@v3
-      
+
       - name: Simulated smoke test
         run: |
           echo "=== PROOF OF CONCEPT MODE ==="
           echo "This is a simulated smoke test"
           echo "In a real deployment, this would test all the services' health endpoints"
-          
+
           # Check for deployment marker files
           echo "Checking which services were deployed:"
           if [ -f .deployment/slack-bot-deployed ]; then
@@ -125,16 +125,16 @@ jobs:
           if [ -f .deployment/whatsapp-adapter-deployed ]; then
             echo "✅ whatsapp-adapter was deployed"
           fi
-          
+
           mkdir -p .deployment
           touch .deployment/smoke-tests-passed
           echo "All smoke tests passed!"
-  
+
   rollback-on-failure:
     needs: [deploy-to-production, smoke-test]
     if: failure()
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Simulated rollback
         run: |

@@ -33,14 +33,14 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      
+
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
           go-version: ${{ env.GO_VERSION }}
           cache: true
           cache-dependency-path: internal/db/go.sum
-      
+
       - name: Check if DB package exists
         id: check-package
         run: |
@@ -51,13 +51,13 @@ jobs:
             echo "DB package not found, skipping validation"
             echo "exists=false" >> $GITHUB_OUTPUT
           fi
-      
+
       - name: Verify DB package structure
         if: steps.check-package.outputs.exists == 'true'
         run: |
           # Verify expected files exist
           test -f internal/db/driver.go || { echo "driver.go missing"; exit 1; }
-          
+
           # Check for driver implementations
           echo "Checking for database driver implementations..."
           if [ ! -f internal/db/postgres.go ]; then
@@ -70,13 +70,13 @@ jobs:
             echo "⚠️ WARNING: sqlite.go not found, SQLite driver implementation may be missing"
           fi
           echo "✅ DB package structure validated"
-      
+
       - name: Run Go tests
         if: steps.check-package.outputs.exists == 'true'
         run: |
           cd internal/db
           go test -v -race ./...
-      
+
       - name: Run Go linter
         if: steps.check-package.outputs.exists == 'true'
         uses: golangci/golangci-lint-action@v3
@@ -169,11 +169,11 @@ jobs:
         run: |
           echo "Starting ${{ matrix.service }} container..."
           docker run -d --name ${{ matrix.service }}-test -p ${{ matrix.port }}:${{ matrix.port }} -p 9091:9091 alfred-platform/${{ matrix.service }}:test
-          
+
           # Wait for container to start (increased timeout for database services)
           echo "Waiting for container to initialize..."
           sleep 30
-          
+
           # Wait for health check to pass
           max_retries=10
           retries=0
@@ -182,25 +182,25 @@ jobs:
             echo "Waiting for container health check to pass (attempt $retries/$max_retries)..."
             sleep 10
           done
-          
+
           if [ $retries -ge $max_retries ]; then
             echo "Health check did not pass within timeout"
             docker logs ${{ matrix.service }}-test
             exit 1
           fi
-          
+
           # Check container health
           echo "Checking container status..."
           docker ps -a
-          
+
           # Test service-specific health check
           echo "Testing service health command..."
           docker exec ${{ matrix.service }}-test ${{ matrix.test_cmd }} || { echo "Service health check failed"; docker logs ${{ matrix.service }}-test; exit 1; }
-          
+
           # Test metrics endpoint
           echo "Testing metrics endpoint..."
           curl -s http://localhost:9091/metrics | grep -q "service_health" || { echo "Metrics endpoint check failed"; exit 1; }
-          
+
           echo "All checks passed for ${{ matrix.service }}"
 
       - name: Move cache
@@ -233,7 +233,7 @@ jobs:
           else
             echo "Creating test docker-compose configuration"
             cp docker-compose.yml docker-compose.test.yml
-            
+
             # Update service configurations in test file
             for service in "db-api" "db-admin" "db-realtime" "vector-db" "monitoring-db"; do
               if [ -d "services/$service" ] && [ -f "services/$service/Dockerfile.new" ]; then
@@ -243,7 +243,7 @@ jobs:
               fi
             done
           fi
-          
+
           cat docker-compose.test.yml
 
       - name: Start services with docker-compose
@@ -258,11 +258,11 @@ jobs:
               fi
             fi
           done
-          
+
           docker-compose -f docker-compose.test.yml up -d db-api db-admin db-realtime vector-db monitoring-db
           # Wait for services to initialize
           sleep 30
-          
+
           # Wait for all services to be healthy
           echo "Waiting for services to be healthy..."
           for service in db-api db-admin db-realtime vector-db monitoring-db; do
@@ -274,14 +274,14 @@ jobs:
                 echo "Waiting for $service to be healthy (attempt $retries/$max_retries)..."
                 sleep 10
               done
-              
+
               if [ $retries -ge $max_retries ]; then
                 echo "$service did not become healthy within timeout"
                 docker-compose -f docker-compose.test.yml logs $service
               fi
             fi
           done
-          
+
           docker-compose -f docker-compose.test.yml ps
 
       - name: Test service health endpoints
@@ -289,19 +289,19 @@ jobs:
           # Test health endpoints for all services
           echo "Testing db-api health..."
           docker exec $(docker-compose -f docker-compose.test.yml ps -q db-api) pg_isready -U postgres || { echo "db-api health check failed"; exit 1; }
-          
+
           echo "Testing db-admin health..."
           docker exec $(docker-compose -f docker-compose.test.yml ps -q db-admin) pg_isready -U postgres || { echo "db-admin health check failed"; exit 1; }
-          
+
           echo "Testing db-realtime health..."
           docker exec $(docker-compose -f docker-compose.test.yml ps -q db-realtime) pg_isready -U postgres || { echo "db-realtime health check failed"; exit 1; }
-          
+
           echo "Testing vector-db health..."
           curl -s http://localhost:6333/health || { echo "vector-db health check failed"; exit 1; }
-          
+
           echo "Testing monitoring-db health..."
           docker exec $(docker-compose -f docker-compose.test.yml ps -q monitoring-db) pg_isready -U postgres || { echo "monitoring-db health check failed"; exit 1; }
-          
+
           echo "All service health checks passed!"
 
       - name: Test metrics endpoints
@@ -312,23 +312,23 @@ jobs:
           DB_REALTIME_METRICS_PORT=$(docker-compose -f docker-compose.test.yml port db-realtime 9091 | cut -d: -f2)
           VECTOR_DB_METRICS_PORT=$(docker-compose -f docker-compose.test.yml port vector-db 9091 | cut -d: -f2)
           MONITORING_DB_METRICS_PORT=$(docker-compose -f docker-compose.test.yml port monitoring-db 9091 | cut -d: -f2)
-          
+
           # Test metrics endpoints
           echo "Testing db-api metrics..."
           curl -s http://localhost:$DB_API_METRICS_PORT/metrics | grep -q "service_health" || { echo "db-api metrics check failed"; exit 1; }
-          
+
           echo "Testing db-admin metrics..."
           curl -s http://localhost:$DB_ADMIN_METRICS_PORT/metrics | grep -q "service_health" || { echo "db-admin metrics check failed"; exit 1; }
-          
+
           echo "Testing db-realtime metrics..."
           curl -s http://localhost:$DB_REALTIME_METRICS_PORT/metrics | grep -q "service_health" || { echo "db-realtime metrics check failed"; exit 1; }
-          
+
           echo "Testing vector-db metrics..."
           curl -s http://localhost:$VECTOR_DB_METRICS_PORT/metrics | grep -q "service_health" || { echo "vector-db metrics check failed"; exit 1; }
-          
+
           echo "Testing monitoring-db metrics..."
           curl -s http://localhost:$MONITORING_DB_METRICS_PORT/metrics | grep -q "service_health" || { echo "monitoring-db metrics check failed"; exit 1; }
-          
+
           echo "All metrics endpoints verified!"
 
       - name: Stop services
@@ -349,10 +349,10 @@ jobs:
           # Check if prometheus.yml exists
           if [ -f "monitoring/prometheus/prometheus.yml" ]; then
             echo "Verifying Prometheus configuration..."
-            
+
             # Check for service_health metrics job
             grep -q "job_name: 'services'" monitoring/prometheus/prometheus.yml || { echo "services job not found in Prometheus config"; exit 1; }
-            
+
             # Check for relevant alert rules
             if [ -f "monitoring/prometheus/alerts/service_health.yml" ]; then
               grep -q "service_health == 0" monitoring/prometheus/alerts/service_health.yml || { echo "service_health alert rule not found"; exit 1; }
@@ -379,12 +379,12 @@ jobs:
           echo "" >> PHASE5-STATUS-REPORT.md
           echo "## Implementation Progress" >> PHASE5-STATUS-REPORT.md
           echo "" >> PHASE5-STATUS-REPORT.md
-          
+
           # Check internal/db package
           echo "### Database Driver Package" >> PHASE5-STATUS-REPORT.md
           if [ -d "internal/db" ]; then
             echo "- ✅ Base driver interface implemented" >> PHASE5-STATUS-REPORT.md
-            
+
             # Check for specific implementations
             [ -f "internal/db/postgres.go" ] && echo "- ✅ PostgreSQL driver implemented" >> PHASE5-STATUS-REPORT.md || echo "- ❌ PostgreSQL driver not implemented" >> PHASE5-STATUS-REPORT.md
             [ -f "internal/db/mysql.go" ] && echo "- ✅ MySQL driver implemented" >> PHASE5-STATUS-REPORT.md || echo "- ❌ MySQL driver not implemented" >> PHASE5-STATUS-REPORT.md
@@ -393,10 +393,10 @@ jobs:
           else
             echo "- ❌ Database driver package not implemented" >> PHASE5-STATUS-REPORT.md
           fi
-          
+
           echo "" >> PHASE5-STATUS-REPORT.md
           echo "### Service Implementation Status" >> PHASE5-STATUS-REPORT.md
-          
+
           # Check services
           for service in "db-api" "db-admin" "db-realtime" "vector-db" "monitoring-db" "mail-server" "monitoring-node" "monitoring-redis" "redis-exporter"; do
             if [ -d "services/$service" ]; then
@@ -409,7 +409,7 @@ jobs:
               echo "- ⚠️ $service: Service directory not found" >> PHASE5-STATUS-REPORT.md
             fi
           done
-          
+
           # Check Prometheus alert rules
           echo "" >> PHASE5-STATUS-REPORT.md
           echo "### Monitoring Configuration" >> PHASE5-STATUS-REPORT.md
@@ -418,14 +418,14 @@ jobs:
           else
             echo "- ❌ Prometheus alert rules not implemented" >> PHASE5-STATUS-REPORT.md
           fi
-          
+
           # Create completion percentage
           echo "" >> PHASE5-STATUS-REPORT.md
           echo "## Overall Progress" >> PHASE5-STATUS-REPORT.md
           echo "" >> PHASE5-STATUS-REPORT.md
           echo "This report was generated automatically by the database health check CI pipeline." >> PHASE5-STATUS-REPORT.md
           echo "Run date: $(date)" >> PHASE5-STATUS-REPORT.md
-          
+
           # Output the report in the logs
           cat PHASE5-STATUS-REPORT.md
 

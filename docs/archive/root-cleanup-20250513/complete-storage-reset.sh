@@ -7,9 +7,9 @@ docker rm supabase-storage 2>/dev/null
 echo "Connecting to database to clean up storage completely..."
 docker exec supabase-db psql -U postgres -d postgres << EOF
 -- Terminate any existing connections to the database
-SELECT pg_terminate_backend(pid) 
-FROM pg_stat_activity 
-WHERE datname = 'postgres' 
+SELECT pg_terminate_backend(pid)
+FROM pg_stat_activity
+WHERE datname = 'postgres'
 AND pid <> pg_backend_pid();
 
 -- Drop storage schema and all objects

@@ -5,12 +5,12 @@ This document outlines the next steps for improving health checks across all ser
 ## Current Status
 
 - Redis and PubSub services: Health checks implemented and working correctly
-- Prometheus configuration: Updated to collect metrics from all services 
+- Prometheus configuration: Updated to collect metrics from all services
 - Other services: Using inconsistent health check methods, many showing as unhealthy
 
 ## Key Issues Identified
 
-1. **Inconsistent health check commands**: 
+1. **Inconsistent health check commands**:
    - Some services use `healthcheck` binary which is not available
    - Some services use `curl` directly which is more reliable
 

@@ -2,7 +2,7 @@
 """
 Test script for validating the YouTube API key configuration.
 
-This script tests if the configured YouTube API key is valid and has access to the 
+This script tests if the configured YouTube API key is valid and has access to the
 required YouTube Data API v3 endpoints that our application uses.
 
 Usage:

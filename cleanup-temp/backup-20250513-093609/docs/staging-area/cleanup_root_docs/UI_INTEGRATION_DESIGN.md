@@ -16,31 +16,31 @@ The Streamlit Chat UI will be enhanced to allow model selection and display mode
 def sidebar_config():
     """Setup and handle sidebar configuration."""
     st.sidebar.title("Configuration")
-    
+
     # API URL configuration
     api_url = st.sidebar.text_input(
-        "Alfred API URL", 
+        "Alfred API URL",
         value=st.session_state.api_url
     )
     if api_url != st.session_state.api_url:
         st.session_state.api_url = api_url
-    
+
     # Model selection
     if "available_models" not in st.session_state:
         st.session_state.available_models = fetch_available_models()
-        
+
     models = st.session_state.available_models
     model_options = [m["name"] for m in models]
-    
+
     selected_model = st.sidebar.selectbox(
         "AI Model",
         options=model_options,
         index=model_options.index(st.session_state.get("selected_model", model_options[0]))
     )
-    
+
     if selected_model != st.session_state.get("selected_model"):
         st.session_state.selected_model = selected_model
-        
+
     # Show model information
     show_model_info = st.sidebar.checkbox("Show Model Info", value=False)
     if show_model_info:
@@ -50,28 +50,28 @@ def sidebar_config():
             st.sidebar.write(f"Provider: {model_info['provider']}")
             st.sidebar.write(f"Type: {model_info['model_type']}")
             st.sidebar.write(f"Description: {model_info['description']}")
-    
+
     # Advanced parameters
     show_advanced = st.sidebar.checkbox("Advanced Parameters", value=False)
     if show_advanced:
         temperature = st.sidebar.slider(
-            "Temperature", 
-            min_value=0.0, 
-            max_value=1.0, 
+            "Temperature",
+            min_value=0.0,
+            max_value=1.0,
             value=st.session_state.get("temperature", 0.7),
             step=0.05
         )
         st.session_state.temperature = temperature
-        
+
         top_p = st.sidebar.slider(
-            "Top P", 
-            min_value=0.0, 
-            max_value=1.0, 
+            "Top P",
+            min_value=0.0,
+            max_value=1.0,
             value=st.session_state.get("top_p", 0.95),
             step=0.05
         )
         st.session_state.top_p = top_p
-    
+
     # Clear chat button
     if st.sidebar.button("Clear Chat History"):
         st.session_state.messages = []
@@ -102,38 +102,38 @@ def send_message(message: str) -> str:
     try:
         # Call the Alfred API endpoint
         url = f"{st.session_state.api_url}/api/chat"
-        
+
         # Include selected model and parameters if set
         payload = {
             "message": message,
             "user_id": SESSION_USER_ID,
             "channel_id": SESSION_CHANNEL_ID
         }
-        
+
         # Add model selection if specified
         if "selected_model" in st.session_state:
             payload["model"] = st.session_state.selected_model
-            
+
         # Add advanced parameters if specified
         if "temperature" in st.session_state:
             if "parameters" not in payload:
                 payload["parameters"] = {}
             payload["parameters"]["temperature"] = st.session_state.temperature
-            
+
         if "top_p" in st.session_state:
             if "parameters" not in payload:
                 payload["parameters"] = {}
             payload["parameters"]["top_p"] = st.session_state.top_p
-        
+
         if st.session_state.debug_mode:
             st.sidebar.write("Request:", payload)
-            
+
         response = requests.post(
             url,
             json=payload,
             headers={"Content-Type": "application/json"}
         )
-        
+
         if response.status_code == 200:
             data = response.json()
             if st.session_state.debug_mode:
@@ -159,7 +159,7 @@ def display_response(response_data):
     """Display response with model information."""
     # Display the actual response content
     st.markdown(response_data.get("content", "No response content"))
-    
+
     # Show model info if present and debug mode is enabled
     if st.session_state.debug_mode and "model_info" in response_data:
         with st.expander("Response Information"):
@@ -185,11 +185,11 @@ const ModelsPage = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [editingModel, setEditingModel] = useState(null);
   const [form] = Form.useForm();
-  
+
   useEffect(() => {
     fetchModels();
   }, []);
-  
+
   const fetchModels = async () => {
     setLoading(true);
     try {
@@ -202,7 +202,7 @@ const ModelsPage = () => {
       setLoading(false);
     }
   };
-  
+
   const handleEdit = (model) => {
     setEditingModel(model);
     form.setFieldsValue({
@@ -214,11 +214,11 @@ const ModelsPage = () => {
     });
     setModalVisible(true);
   };
-  
+
   const handleSave = async () => {
     try {
       const values = await form.validateFields();
-      
+
       if (editingModel) {
         // Update existing model
         await axios.put(`/api/v1/model/${editingModel.id}`, values);
@@ -228,7 +228,7 @@ const ModelsPage = () => {
         await axios.post('/api/v1/model', values);
         message.success('Model created successfully');
       }
-      
+
       setModalVisible(false);
       setEditingModel(null);
       form.resetFields();
@@ -238,7 +238,7 @@ const ModelsPage = () => {
       console.error(error);
     }
   };
-  
+
   const columns = [
     {
       title: 'Name',
@@ -287,12 +287,12 @@ const ModelsPage = () => {
       )
     }
   ];
-  
+
   return (
     <div>
       <h1>Models Management</h1>
-      <Button 
-        type="primary" 
+      <Button
+        type="primary"
         style={{ marginBottom: 16 }}
         onClick={() => {
           setEditingModel(null);
@@ -302,14 +302,14 @@ const ModelsPage = () => {
       >
         Add Model
       </Button>
-      
-      <Table 
-        columns={columns} 
-        dataSource={models} 
+
+      <Table
+        columns={columns}
+        dataSource={models}
         loading={loading}
         rowKey="id"
       />
-      
+
       <Modal
         title={editingModel ? "Edit Model" : "Add Model"}
         visible={modalVisible}
@@ -328,7 +328,7 @@ const ModelsPage = () => {
           >
             <Input />
           </Form.Item>
-          
+
           <Form.Item
             name="provider"
             label="Provider"
@@ -341,7 +341,7 @@ const ModelsPage = () => {
               <Select.Option value="custom">Custom</Select.Option>
             </Select>
           </Form.Item>
-          
+
           <Form.Item
             name="model_type"
             label="Model Type"
@@ -354,14 +354,14 @@ const ModelsPage = () => {
               <Select.Option value="vision">Vision</Select.Option>
             </Select>
           </Form.Item>
-          
+
           <Form.Item
             name="description"
             label="Description"
           >
             <Input.TextArea rows={3} />
           </Form.Item>
-          
+
           {/* More form fields can be added here */}
         </Form>
       </Modal>
@@ -390,18 +390,18 @@ const ModelUsageDashboard = () => {
   const [statsData, setStatsData] = useState({});
   const [modelOptions, setModelOptions] = useState([]);
   const [loading, setLoading] = useState(true);
-  
+
   useEffect(() => {
     fetchModels();
   }, []);
-  
+
   useEffect(() => {
     if (selectedModel && dateRange) {
       fetchUsageData();
       fetchStats();
     }
   }, [selectedModel, dateRange]);
-  
+
   const fetchModels = async () => {
     try {
       const response = await axios.get('/api/v1/model/available');
@@ -414,13 +414,13 @@ const ModelUsageDashboard = () => {
       console.error('Failed to load models', error);
     }
   };
-  
+
   const fetchUsageData = async () => {
     setLoading(true);
     try {
       const startDate = dateRange[0].format('YYYY-MM-DD');
       const endDate = dateRange[1].format('YYYY-MM-DD');
-      
+
       const response = await axios.get('/api/v1/model/statistics', {
         params: {
           model_id: selectedModel !== 'all' ? selectedModel : undefined,
@@ -428,7 +428,7 @@ const ModelUsageDashboard = () => {
           end_date: endDate
         }
       });
-      
+
       setUsageData(response.data.usage_over_time);
     } catch (error) {
       console.error('Failed to load usage data', error);
@@ -436,12 +436,12 @@ const ModelUsageDashboard = () => {
       setLoading(false);
     }
   };
-  
+
   const fetchStats = async () => {
     try {
       const startDate = dateRange[0].format('YYYY-MM-DD');
       const endDate = dateRange[1].format('YYYY-MM-DD');
-      
+
       const response = await axios.get('/api/v1/model/statistics/summary', {
         params: {
           model_id: selectedModel !== 'all' ? selectedModel : undefined,
@@ -449,17 +449,17 @@ const ModelUsageDashboard = () => {
           end_date: endDate
         }
       });
-      
+
       setStatsData(response.data);
     } catch (error) {
       console.error('Failed to load statistics', error);
     }
   };
-  
+
   return (
     <div className="model-usage-dashboard">
       <h1>Model Usage Dashboard</h1>
-      
+
       <div className="dashboard-controls" style={{ marginBottom: 20 }}>
         <Row gutter={16}>
           <Col span={8}>
@@ -480,7 +480,7 @@ const ModelUsageDashboard = () => {
           </Col>
         </Row>
       </div>
-      
+
       <Spin spinning={loading}>
         <div className="dashboard-stats">
           <Row gutter={16}>
@@ -522,7 +522,7 @@ const ModelUsageDashboard = () => {
             </Col>
           </Row>
         </div>
-        
+
         <div className="usage-chart" style={{ marginTop: 20, height: 400 }}>
           <ResponsiveContainer width="100%" height="100%">
             <LineChart
@@ -539,9 +539,9 @@ const ModelUsageDashboard = () => {
             </LineChart>
           </ResponsiveContainer>
         </div>
-        
+
         {/* Additional tables and charts can be added here */}
-        
+
       </Spin>
     </div>
   );
@@ -561,7 +561,7 @@ async def chat_endpoint(request: ChatRequest):
     # Extract model selection if present
     model_id = request.model if hasattr(request, 'model') else None
     parameters = request.parameters if hasattr(request, 'parameters') else {}
-    
+
     # Call model router if available
     if model_id or settings.ENABLE_MODEL_ROUTING:
         try:
@@ -571,14 +571,14 @@ async def chat_endpoint(request: ChatRequest):
                 "content_type": "text",
                 "parameters": parameters
             }
-            
+
             # Add model_id if specified
             if model_id:
                 router_payload["model_id"] = model_id
-                
+
             # Call model router
             router_response = await model_router_client.generate(router_payload)
-            
+
             # Format response with model info
             response = {
                 "response": router_response["content"],
@@ -588,14 +588,14 @@ async def chat_endpoint(request: ChatRequest):
                     "time_ms": router_response["time_ms"]
                 }
             }
-            
+
             return response
         except Exception as e:
             # Fall back to legacy path on error
             logger.error(f"Model router error: {str(e)}")
             response = {"response": f"Error: {str(e)}"}
             return response
-    
+
     # Legacy path - direct model call
     # (Existing implementation)
 ```

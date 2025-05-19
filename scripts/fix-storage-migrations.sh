@@ -8,12 +8,12 @@ echo "Fixing storage migrations hash..."
 # Wait for PostgreSQL to become ready
 wait_for_postgres() {
     echo "Waiting for PostgreSQL to become ready..."
-    
+
     while ! pg_isready -h db-postgres -p 5432 -U postgres; do
         echo "PostgreSQL is not ready yet. Waiting..."
         sleep 2
     done
-    
+
     echo "PostgreSQL is ready"
 }
 
@@ -30,10 +30,10 @@ PGPASSWORD=postgres psql -h db-postgres -p 5432 -U postgres -d postgres -c "
 DO \$\$
 BEGIN
     IF NOT EXISTS (
-        SELECT 1 
-        FROM information_schema.columns 
-        WHERE table_schema = 'storage' 
-        AND table_name = 'migrations' 
+        SELECT 1
+        FROM information_schema.columns
+        WHERE table_schema = 'storage'
+        AND table_name = 'migrations'
         AND column_name = 'hash'
     ) THEN
         ALTER TABLE storage.migrations ADD COLUMN hash text;
@@ -41,8 +41,8 @@ BEGIN
 END \$\$;
 
 -- Set a known working hash value for the pathtoken-column migration
-UPDATE storage.migrations 
-SET hash = 'e2c8d16e824f5ed948b4760efd0d88d5' 
+UPDATE storage.migrations
+SET hash = 'e2c8d16e824f5ed948b4760efd0d88d5'
 WHERE name = 'pathtoken-column';
 "
 

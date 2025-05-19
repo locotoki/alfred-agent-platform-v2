@@ -89,23 +89,23 @@ echo -e "${BLUE}Starting migration process...${NC}"
 
 for old_vol in "${!VOLUME_MAPPING[@]}"; do
   new_vol="${VOLUME_MAPPING[$old_vol]}"
-  
+
   echo
   echo -e "${YELLOW}Migrating:${NC} $old_vol → $new_vol"
-  
+
   # Create new volume if it doesn't exist
   if ! docker volume inspect "$new_vol" &>/dev/null; then
     echo "  Creating new volume: $new_vol"
     docker volume create "$new_vol"
   fi
-  
+
   # Create temporary container to copy data
   echo "  Copying data..."
   docker run --rm \
     -v "$old_vol:/from" \
     -v "$new_vol:/to" \
     alpine ash -c "cd /from && tar -cf - . | tar -xf - -C /to"
-  
+
   echo -e "  ${GREEN}✓ Migration complete:${NC} $old_vol → $new_vol"
 done
 

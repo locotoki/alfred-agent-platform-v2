@@ -1,6 +1,6 @@
 #!/bin/bash
 # YouTube Workflows E2E Tests Runner
-# 
+#
 # This script will:
 # 1. Verify that Mission Control and Social Intelligence Agent are running
 # 2. Install Playwright if needed
@@ -34,21 +34,21 @@ if [ "$MC_RESPONSE" == "200" ] || [ "$MC_RESPONSE" == "404" ]; then
 else
   echo -e "${RED}Mission Control is not running or not responding on port 3005${NC}"
   echo -e "${YELLOW}Starting Mission Control...${NC}"
-  
+
   # Navigate to Mission Control directory
   cd "$MISSION_CONTROL"
-  
+
   # Check if the process is already running but not responding
   MC_PID=$(ps aux | grep "next dev\|next start" | grep -v grep | awk '{print $2}')
   if [ ! -z "$MC_PID" ]; then
     echo -e "${YELLOW}Killing existing Mission Control process (PID: $MC_PID)${NC}"
     kill -9 "$MC_PID"
   fi
-  
+
   # Start Mission Control in the background
   echo -e "${YELLOW}Starting Mission Control using npm run dev...${NC}"
   npm run dev > /dev/null 2>&1 &
-  
+
   # Wait for Mission Control to start
   echo -e "${YELLOW}Waiting for Mission Control to start...${NC}"
   for i in {1..30}; do
@@ -60,7 +60,7 @@ else
     sleep 1
     echo -n "."
   done
-  
+
   if [ "$MC_RESPONSE" != "200" ] && [ "$MC_RESPONSE" != "404" ]; then
     echo -e "${RED}Failed to start Mission Control. Please start it manually with 'npm run dev' in $MISSION_CONTROL${NC}"
     exit 1
@@ -76,11 +76,11 @@ if [ "$SOCIAL_INTEL_CONTAINER" -gt 0 ]; then
 else
   echo -e "${YELLOW}Social Intelligence Agent container is not running${NC}"
   echo -e "${YELLOW}Starting Social Intelligence Agent container...${NC}"
-  
+
   # Start the container
   cd "$PROJECT_ROOT"
   docker-compose up -d social-intel
-  
+
   # Wait for the container to start
   echo -e "${YELLOW}Waiting for Social Intelligence Agent to start...${NC}"
   for i in {1..30}; do
@@ -92,7 +92,7 @@ else
     sleep 1
     echo -n "."
   done
-  
+
   if [ "$SOCIAL_INTEL_CONTAINER" -eq 0 ]; then
     echo -e "${RED}Failed to start Social Intelligence Agent. Tests will run with mock data only.${NC}"
   fi

@@ -115,15 +115,15 @@ HEALTHCHECK_PID=\$!
 # Handle cleanup when container is stopped
 cleanup() {
     echo "Stopping $SERVICE_NAME service and healthcheck..."
-    
+
     # Kill any running service processes if needed
-    
+
     # Kill the healthcheck process
     if [ -n "\${HEALTHCHECK_PID}" ] && kill -0 \${HEALTHCHECK_PID} 2>/dev/null; then
         kill -TERM \${HEALTHCHECK_PID}
         wait \${HEALTHCHECK_PID}
     fi
-    
+
     exit 0
 }
 

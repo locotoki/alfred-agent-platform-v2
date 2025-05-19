@@ -116,7 +116,7 @@ After all services have been implemented, we will create alert rules for `servic
 ## Timeline
 
 1. Week 1 (May 15-22): Fix and test database services
-2. Week 2 (May 22-29): Fix and test infrastructure services  
+2. Week 2 (May 22-29): Fix and test infrastructure services
 3. Week 3 (May 29-June 5): Fix and test monitoring services
 4. Week 4 (June 5-12): Clean up legacy health checks and implement alert rules
 

@@ -1,9 +1,9 @@
 # Conductor
 
 ## Overview
-**Category:** Core  
-**Status:** Planned  
-**Tier:** System  
+**Category:** Core
+**Status:** Planned
+**Tier:** System
 **Description:** The orchestrator agent responsible for routing artifacts, maintaining state machines, and monitoring agent heartbeats across the platform.
 
 ## Core Functionality

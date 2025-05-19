@@ -7,7 +7,7 @@
 ## 1 Architecture & Scope – Three Deployment Tiers
 
 > All tiers share the core retrieval loop (Ingestion → Embedding → Qdrant → Hybrid Search → Rerank → LLM), but footprint and guard‑rails scale with surface area.
-> 
+>
 
 ### 1.1 Personal / Family (Local‑Only)
 
@@ -71,7 +71,7 @@
 ## 2 Agent Catalog – Three Deployment Tiers Agent Catalog – Three Deployment Tiers
 
 > Tier definitions
-> 
+>
 > 1. **Personal / Family** – one household, fully local, no outside clients.
 > 2. **Solo‑Biz (Internal‑Only)** – you run a freelancing or digital‑product operation; the stack processes *your* business data (invoices, marketing assets) but **no external log‑ins**.
 > 3. **External‑Facing SaaS** – multi‑tenant product where paying customers have accounts and their data lives in your system.
@@ -242,7 +242,7 @@ Controlled `realtime_fetch(url)` tool → allow‑list → validation → option
 | **Micro‑course / cohort** | Premium revenue | Curriculum – *BizDev‑Bot* → Slides – *Design‑Drafter* → Quiz – *GPT‑4o* → Upload – *Ops‑Pilot* | SCORM pkg, promo emails | Teachable, Stripe |
 
 > All deliverables emit doc.ingest.business.* events so future agents can retrieve & reuse.
-> 
+>
 
 ### 10.1 Kanban Flow
 

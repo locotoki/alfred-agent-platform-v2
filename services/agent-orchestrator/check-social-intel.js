@@ -3,11 +3,11 @@ import fetch from 'node-fetch';
 
 async function checkHealth() {
   const socialIntelUrl = 'http://localhost:9000/health/';
-  
+
   try {
     console.log(`Checking Social Intelligence health at ${socialIntelUrl}...`);
     const response = await fetch(socialIntelUrl);
-    
+
     if (response.ok) {
       const data = await response.json();
       console.log('Health check response:', data);

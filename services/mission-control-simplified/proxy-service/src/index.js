@@ -1,6 +1,6 @@
 /**
  * Niche-Scout Proxy Service
- * 
+ *
  * This service sits between the Mission Control frontend and the Social Intelligence API,
  * providing transformation, caching, and metrics collection for the Niche-Scout workflow.
  */
@@ -76,13 +76,13 @@ async function start() {
       ======================================================
        Niche-Scout Proxy Service running on port ${PORT}
       ======================================================
-      
+
       API Endpoints:
       - Health check: http://localhost:${PORT}/status
       - Niche-Scout: http://localhost:${PORT}/api/youtube/niche-scout (POST)
       - Metrics: http://localhost:${PORT}/metrics
       - Config: http://localhost:${PORT}/config (POST)
-      
+
       ======================================================
       `);
     });

@@ -1,7 +1,7 @@
 # Content Scout
 
-**Last Updated:** 2025-05-10  
-**Owner:** Content Strategy Team  
+**Last Updated:** 2025-05-10
+**Owner:** Content Strategy Team
 **Status:** Active
 
 ## Overview

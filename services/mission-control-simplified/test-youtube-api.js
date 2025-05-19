@@ -1,6 +1,6 @@
 /**
  * YouTube API and Workflow Validation Test
- * 
+ *
  * This script tests:
  * 1. Connection to the Social Intelligence Agent
  * 2. Niche-Scout API functionality
@@ -84,7 +84,7 @@ async function testDirectAPIs() {
       '/api/youtube/niche-scout',
       '/api/youtube/blueprint'
     ];
-    
+
     for (const endpoint of endpoints) {
       try {
         // Just checking if the endpoint exists with an OPTIONS request
@@ -98,7 +98,7 @@ async function testDirectAPIs() {
         }
       }
     }
-    
+
     return true;
   } catch (error) {
     console.error('❌ Error testing direct APIs:', error.message);
@@ -108,22 +108,22 @@ async function testDirectAPIs() {
 
 async function testNicheScoutWorkflow() {
   console.log('\n📡 Testing Niche-Scout workflow through Mission Control');
-  
+
   const results = [];
-  
+
   for (const testCase of NICHE_SCOUT_TEST_CASES) {
     console.log(`\nRunning test case: ${testCase.name}`);
     console.log('Parameters:', JSON.stringify(testCase.params, null, 2));
-    
+
     try {
       const response = await axios.post(`${MISSION_CONTROL_URL}/api/workflows/niche-scout`, testCase.params, {
         headers: {
           'Content-Type': 'application/json'
         }
       });
-      
+
       console.log('✅ API call successful');
-      
+
       // Check if the response has the expected structure
       let valid = false;
       if (response.data) {
@@ -135,7 +135,7 @@ async function testNicheScoutWorkflow() {
           console.log('✓ Response has expected API data structure');
         }
       }
-      
+
       results.push({
         name: testCase.name,
         success: true,
@@ -152,35 +152,35 @@ async function testNicheScoutWorkflow() {
       });
     }
   }
-  
+
   return results;
 }
 
 async function testSeedToBlueprintWorkflow() {
   console.log('\n📡 Testing Seed-to-Blueprint workflow through Mission Control');
-  
+
   const results = [];
-  
+
   for (const testCase of SEED_TO_BLUEPRINT_TEST_CASES) {
     console.log(`\nRunning test case: ${testCase.name}`);
     console.log('Parameters:', JSON.stringify(testCase.params, null, 2));
-    
+
     try {
       const response = await axios.post(`${MISSION_CONTROL_URL}/api/workflows/seed-to-blueprint`, testCase.params, {
         headers: {
           'Content-Type': 'application/json'
         }
       });
-      
+
       console.log('✅ API call successful');
-      
+
       // Check if the response has the expected structure
       let valid = false;
       if (response.data && response.data.result && response.data.result.channel_blueprint) {
         valid = true;
         console.log('✓ Response has expected structure');
       }
-      
+
       results.push({
         name: testCase.name,
         success: true,
@@ -197,7 +197,7 @@ async function testSeedToBlueprintWorkflow() {
       });
     }
   }
-  
+
   return results;
 }
 
@@ -205,28 +205,28 @@ async function testSeedToBlueprintWorkflow() {
 async function runTests() {
   console.log('🧪 STARTING YOUTUBE API AND WORKFLOW VALIDATION TESTS 🧪');
   console.log('======================================================');
-  
+
   // Test connection to Social Intelligence Agent
   const connectionOk = await testSocialIntelConnection();
-  
+
   // Test direct APIs if connection is successful
   let directApisOk = false;
   if (connectionOk) {
     directApisOk = await testDirectAPIs();
   }
-  
+
   // Test Niche-Scout workflow
   const nicheScoutResults = await testNicheScoutWorkflow();
-  
+
   // Test Seed-to-Blueprint workflow
   const seedToBlueprintResults = await testSeedToBlueprintWorkflow();
-  
+
   // Print summary
   console.log('\n📊 TEST RESULTS SUMMARY 📊');
   console.log('=========================');
   console.log(`Social Intelligence Connection: ${connectionOk ? '✅ OK' : '❌ Failed'}`);
   console.log(`Direct API Test: ${directApisOk ? '✅ OK' : '❌ Failed'}`);
-  
+
   console.log('\nNiche-Scout Tests:');
   nicheScoutResults.forEach(result => {
     console.log(`- ${result.name}: ${result.success ? '✅ Passed' : '❌ Failed'}`);
@@ -235,7 +235,7 @@ async function runTests() {
       console.log(`  - Using Mock Data: ${result.mockData ? '⚠️ Yes' : '✓ No'}`);
     }
   });
-  
+
   console.log('\nSeed-to-Blueprint Tests:');
   seedToBlueprintResults.forEach(result => {
     console.log(`- ${result.name}: ${result.success ? '✅ Passed' : '❌ Failed'}`);
@@ -244,16 +244,16 @@ async function runTests() {
       console.log(`  - Using Mock Data: ${result.mockData ? '⚠️ Yes' : '✓ No'}`);
     }
   });
-  
+
   // Analyze real vs mock data usage
   const nicheScoutMockCount = nicheScoutResults.filter(r => r.mockData).length;
   const seedToBlueprintMockCount = seedToBlueprintResults.filter(r => r.mockData).length;
-  
+
   console.log('\n🔍 DATA SOURCE ANALYSIS 🔍');
   console.log('========================');
   console.log(`Niche-Scout: ${nicheScoutMockCount}/${nicheScoutResults.length} tests used mock data`);
   console.log(`Seed-to-Blueprint: ${seedToBlueprintMockCount}/${seedToBlueprintResults.length} tests used mock data`);
-  
+
   if (nicheScoutMockCount === 0 && seedToBlueprintMockCount === 0) {
     console.log('\n🎉 All tests used real API data!');
   } else if (nicheScoutMockCount === 0) {
@@ -263,11 +263,11 @@ async function runTests() {
   } else {
     console.log('\n⚠️ Both workflows are using mock data.');
   }
-  
+
   // Provide recommendations based on test results
   console.log('\n📋 RECOMMENDATIONS 📋');
   console.log('===================');
-  
+
   if (!connectionOk) {
     console.log('1. Check if the Social Intelligence Agent is running');
     console.log('2. Verify the host and port in .env file');

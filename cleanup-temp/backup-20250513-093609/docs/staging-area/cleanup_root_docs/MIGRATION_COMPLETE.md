@@ -31,10 +31,10 @@ To fully deploy the new configuration in your production environment, you need t
    ```bash
    # Start with core services first
    ./alfred.sh start --components=core
-   
+
    # Once those are stable, add agents
    ./alfred.sh start --components=core,agents
-   
+
    # Finally, add UI and monitoring
    ./alfred.sh start --components=core,agents,ui,monitoring
    ```
@@ -43,7 +43,7 @@ To fully deploy the new configuration in your production environment, you need t
    ```bash
    # Check service status
    ./alfred.sh status
-   
+
    # View logs
    ./alfred.sh logs --service=service-name
    ```

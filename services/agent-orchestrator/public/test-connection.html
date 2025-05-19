@@ -46,33 +46,33 @@
 </head>
 <body>
   <h1>API Connection Test</h1>
-  
+
   <div class="buttons">
     <button id="testHealth">Test Health Endpoint</button>
     <button id="testNicheScout">Test Niche Scout Endpoint</button>
     <button id="resetStatus">Reset Status</button>
   </div>
-  
+
   <div id="healthResult" class="result">Health endpoint results will appear here...</div>
   <div id="nicheScoutResult" class="result">Niche Scout endpoint results will appear here...</div>
-  
+
   <script>
     const apiUrl = 'http://localhost:9000';
     const healthResult = document.getElementById('healthResult');
     const nicheScoutResult = document.getElementById('nicheScoutResult');
-    
+
     // Test health endpoint
     document.getElementById('testHealth').addEventListener('click', async () => {
       healthResult.textContent = 'Testing health endpoint...';
       healthResult.className = 'result';
-      
+
       try {
         // Test with and without trailing slash
         const urls = [
           `${apiUrl}/health`,
           `${apiUrl}/health/`
         ];
-        
+
         for (const url of urls) {
           try {
             const response = await fetch(url, {
@@ -81,12 +81,12 @@
                 'Content-Type': 'application/json',
               }
             });
-            
+
             const data = await response.json();
-            
+
             healthResult.textContent = `URL: ${url}\nStatus: ${response.status}\nData: ${JSON.stringify(data, null, 2)}`;
             healthResult.className = 'result success';
-            
+
             // If successful, no need to try other URLs
             break;
           } catch (error) {
@@ -100,12 +100,12 @@
         healthResult.className = 'result error';
       }
     });
-    
+
     // Test niche scout endpoint
     document.getElementById('testNicheScout').addEventListener('click', async () => {
       nicheScoutResult.textContent = 'Testing niche scout endpoint...';
       nicheScoutResult.className = 'result';
-      
+
       try {
         const response = await fetch(`${apiUrl}/api/youtube/niche-scout`, {
           method: 'POST',
@@ -124,13 +124,13 @@
             }
           })
         });
-        
+
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
-        
+
         const data = await response.json();
-        
+
         nicheScoutResult.textContent = `Status: ${response.status}\nData: ${JSON.stringify(data, null, 2)}`;
         nicheScoutResult.className = 'result success';
       } catch (error) {
@@ -138,7 +138,7 @@
         nicheScoutResult.className = 'result error';
       }
     });
-    
+
     // Reset service status
     document.getElementById('resetStatus').addEventListener('click', () => {
       localStorage.removeItem('serviceStatus');

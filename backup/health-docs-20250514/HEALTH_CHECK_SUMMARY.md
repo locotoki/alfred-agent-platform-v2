@@ -41,7 +41,7 @@ This document summarizes the implementation of health checks and metrics collect
 
 All services have been tested and verified:
 
-1. **Health Endpoints**: 
+1. **Health Endpoints**:
    - Confirmed that each service exposes a working health endpoint
    - Verified that health checks return appropriate status codes
 

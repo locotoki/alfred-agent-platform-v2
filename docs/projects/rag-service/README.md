@@ -63,5 +63,3 @@ Last consolidated: 2025-05-14
 - RAG_service/personal-family-rag-playbook.md
 - RAG_service/rag-project-supplementary-design-docs.md
 - RAG_service/rag-service-data-flow-diagram.md
-
-

@@ -2,11 +2,11 @@
 import { Link } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
-import { 
-  Activity, 
-  BarChart2, 
-  Settings, 
-  Users, 
+import {
+  Activity,
+  BarChart2,
+  Settings,
+  Users,
   MessageSquare,
   Home,
   FileText,
@@ -46,45 +46,45 @@ const Sidebar = ({ logoUrl = "/lovable-uploads/4f5a01e8-7502-47aa-9bb4-567065f7d
   };
 
   const navItems = [
-    { 
-      path: "/", 
-      label: "Dashboard", 
-      icon: Home 
+    {
+      path: "/",
+      label: "Dashboard",
+      icon: Home
     },
-    { 
-      path: "/agents", 
-      label: "Agents", 
-      icon: Users 
+    {
+      path: "/agents",
+      label: "Agents",
+      icon: Users
     },
-    { 
-      path: "/messages", 
-      label: "Messages & Queues", 
-      icon: MessageSquare 
+    {
+      path: "/messages",
+      label: "Messages & Queues",
+      icon: MessageSquare
     },
-    { 
-      path: "/analytics", 
-      label: "Analytics", 
-      icon: BarChart2 
+    {
+      path: "/analytics",
+      label: "Analytics",
+      icon: BarChart2
     },
-    { 
-      path: "/reports", 
-      label: "Reports", 
-      icon: FileText 
+    {
+      path: "/reports",
+      label: "Reports",
+      icon: FileText
     },
-    { 
-      path: "/taxonomy-settings", 
-      label: "Taxonomy & Costs", 
-      icon: Layers 
+    {
+      path: "/taxonomy-settings",
+      label: "Taxonomy & Costs",
+      icon: Layers
     },
-    { 
-      path: "/youtube-test", 
-      label: "YouTube API Test", 
-      icon: YoutubeIcon 
+    {
+      path: "/youtube-test",
+      label: "YouTube API Test",
+      icon: YoutubeIcon
     },
-    { 
-      path: "/settings", 
-      label: "Settings", 
-      icon: Settings 
+    {
+      path: "/settings",
+      label: "Settings",
+      icon: Settings
     },
   ];
 
@@ -100,10 +100,10 @@ const Sidebar = ({ logoUrl = "/lovable-uploads/4f5a01e8-7502-47aa-9bb4-567065f7d
               </Avatar>
             </Link>
           </SidebarMenuItem>
-          
+
           {navItems.map((item) => (
             <SidebarMenuItem key={item.path}>
-              <SidebarMenuButton 
+              <SidebarMenuButton
                 asChild
                 isActive={isActive(item.path)}
                 tooltip={item.label}

@@ -1,7 +1,7 @@
 # Phase 2 Execution Guide
 
-*Last Updated: 2025-05-10*  
-*Owner: Documentation Team*  
+*Last Updated: 2025-05-10*
+*Owner: Documentation Team*
 *Status: Active*
 
 This guide provides detailed instructions for executing Phase 2 of the documentation migration project, focusing on Core Documentation Migration. It covers the step-by-step process, tools to use, and best practices to ensure consistent high-quality results.

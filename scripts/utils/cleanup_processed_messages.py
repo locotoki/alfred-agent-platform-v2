@@ -28,7 +28,7 @@ async def cleanup_expired_messages():
 
         # Get count of expired messages
         count_query = """
-        SELECT COUNT(*) FROM processed_messages 
+        SELECT COUNT(*) FROM processed_messages
         WHERE expires_at < NOW()
         """
         expired_count = await conn.fetchval(count_query)
@@ -38,7 +38,7 @@ async def cleanup_expired_messages():
         if expired_count > 0:
             # Delete expired messages
             delete_query = """
-            DELETE FROM processed_messages 
+            DELETE FROM processed_messages
             WHERE expires_at < NOW()
             RETURNING message_id
             """

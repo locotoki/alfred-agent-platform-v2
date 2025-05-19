@@ -1,7 +1,7 @@
 # Agent Core Framework
 
-*Last Updated: 2025-05-10*  
-*Owner: Architecture Team*  
+*Last Updated: 2025-05-10*
+*Owner: Architecture Team*
 *Status: Active*
 
 ## Overview
@@ -76,7 +76,7 @@ Manages the agent's lifecycle phases including:
 - **Initialization**: Configuration loading and component setup
 - **Registration**: Self-registration with the agent registry
 - **Operation**: Normal operation with task processing
-- **Maintenance**: Periodic maintenance operations 
+- **Maintenance**: Periodic maintenance operations
 - **Shutdown**: Graceful shutdown and resource cleanup
 
 ### Configuration Management
@@ -159,7 +159,7 @@ The primary class that encapsulates agent functionality:
 ```python
 class Agent:
     """Base class for all agents in the platform."""
-    
+
     def __init__(self, config: AgentConfig):
         """Initialize agent with configuration."""
         self.config = config
@@ -169,19 +169,19 @@ class Agent:
         self.monitor = MonitoringFactory.create(config.monitoring)
         self.security = SecurityFactory.create(config.security)
         self._register_default_intents()
-    
+
     def register_intent(self, intent: str, handler: Callable):
         """Register a handler for a specific intent."""
         self.intent_registry.register(intent, handler)
-    
+
     async def handle_task(self, task: Task) -> TaskResult:
         """Process an incoming task based on its intent."""
         intent = task.message.intent
         handler = self.intent_registry.get_handler(intent)
-        
+
         if not handler:
             raise IntentNotSupportedError(f"Intent {intent} not supported")
-        
+
         with self.monitor.measure_execution_time(intent):
             try:
                 result = await handler(task)
@@ -189,14 +189,14 @@ class Agent:
             except Exception as e:
                 self.monitor.record_error(intent, e)
                 raise
-    
+
     async def start(self):
         """Start the agent and begin processing tasks."""
         await self._register_with_registry()
         await self.messaging.start_listening(self._message_handler)
         await self.monitor.start_reporting()
         self.monitor.record_agent_started()
-    
+
     async def stop(self):
         """Stop the agent gracefully."""
         await self.messaging.stop_listening()
@@ -211,18 +211,18 @@ Manages the registration and retrieval of intent handlers:
 ```python
 class IntentRegistry:
     """Registry for intent handlers."""
-    
+
     def __init__(self):
         self._handlers = {}
-    
+
     def register(self, intent: str, handler: Callable):
         """Register a handler for an intent."""
         self._handlers[intent] = handler
-    
+
     def get_handler(self, intent: str) -> Optional[Callable]:
         """Get the handler for an intent."""
         return self._handlers.get(intent)
-    
+
     def list_intents(self) -> List[str]:
         """List all registered intents."""
         return list(self._handlers.keys())
@@ -235,22 +235,22 @@ Abstract interface for state management:
 ```python
 class StateManager(ABC):
     """Abstract interface for agent state management."""
-    
+
     @abstractmethod
     async def get(self, key: str) -> Any:
         """Get a state value by key."""
         pass
-    
+
     @abstractmethod
     async def set(self, key: str, value: Any) -> None:
         """Set a state value by key."""
         pass
-    
+
     @abstractmethod
     async def delete(self, key: str) -> None:
         """Delete a state value by key."""
         pass
-    
+
     @abstractmethod
     async def transaction(self, operations: List[StateOperation]) -> None:
         """Execute multiple operations in a transaction."""
@@ -264,17 +264,17 @@ Abstract interface for messaging:
 ```python
 class Messaging(ABC):
     """Abstract interface for agent messaging."""
-    
+
     @abstractmethod
     async def send(self, message: Message, topic: str) -> str:
         """Send a message to a topic."""
         pass
-    
+
     @abstractmethod
     async def start_listening(self, handler: Callable[[Message], Awaitable[None]]) -> None:
         """Start listening for messages."""
         pass
-    
+
     @abstractmethod
     async def stop_listening(self) -> None:
         """Stop listening for messages."""
@@ -291,7 +291,7 @@ agent:
   name: "Example Agent"
   version: "1.0.0"
   description: "An example agent implementation"
-  
+
 intents:
   - name: "EXAMPLE_TASK"
     description: "Handles example tasks"
@@ -302,11 +302,11 @@ intents:
       - name: "param2"
         type: "integer"
         required: false
-  
+
 state:
   provider: "supabase"
   table: "agent_state"
-  
+
 messaging:
   primary:
     provider: "pubsub"
@@ -314,13 +314,13 @@ messaging:
   fallback:
     provider: "supabase_realtime"
     channel_prefix: "a2a"
-    
+
 security:
   authentication:
     provider: "jwt"
   authorization:
     provider: "rbac"
-    
+
 monitoring:
   metrics:
     provider: "prometheus"
@@ -342,27 +342,27 @@ from agent_core import Agent, AgentConfig, Task, TaskResult
 
 class MyCustomAgent(Agent):
     """Custom agent implementation."""
-    
+
     def __init__(self, config: AgentConfig):
         super().__init__(config)
         # Register intent handlers
         self.register_intent("CUSTOM_INTENT", self.handle_custom_intent)
-    
+
     async def handle_custom_intent(self, task: Task) -> TaskResult:
         """Handler for CUSTOM_INTENT."""
         # Extract parameters from task
         param1 = task.message.payload.get("param1")
-        
+
         # Custom business logic
         result_data = await self._process_custom_logic(param1)
-        
+
         # Return structured result
         return TaskResult(
             status="SUCCESS",
             data=result_data,
             metadata={"processing_time": "1.5s"}
         )
-    
+
     async def _process_custom_logic(self, param1: str) -> dict:
         """Internal method for custom business logic."""
         # Custom implementation...
@@ -385,17 +385,17 @@ async def main():
     config_path = os.environ.get("CONFIG_PATH", "config.yaml")
     with open(config_path) as f:
         config_data = yaml.safe_load(f)
-    
+
     # Create agent configuration
     config = AgentConfig.from_dict(config_data)
-    
+
     # Create and start agent
     agent = MyCustomAgent(config)
-    
+
     try:
         # Start the agent
         await agent.start()
-        
+
         # Keep running until interrupted
         while True:
             await asyncio.sleep(1)
@@ -414,24 +414,24 @@ Pattern for managing agent state:
 ```python
 class UserProfileAgent(Agent):
     """Agent for managing user profiles."""
-    
+
     async def handle_update_profile(self, task: Task) -> TaskResult:
         """Handle profile update."""
         user_id = task.message.payload.get("user_id")
         profile_data = task.message.payload.get("profile_data")
-        
+
         # Get current profile
         current_profile = await self.state_manager.get(f"profile:{user_id}")
-        
+
         if not current_profile:
             current_profile = {"user_id": user_id, "created_at": datetime.now().isoformat()}
-        
+
         # Update profile with new data
         updated_profile = {**current_profile, **profile_data, "updated_at": datetime.now().isoformat()}
-        
+
         # Save updated profile
         await self.state_manager.set(f"profile:{user_id}", updated_profile)
-        
+
         return TaskResult(
             status="SUCCESS",
             data={"profile_id": user_id}
@@ -448,23 +448,23 @@ from agent_core.adapters import LLMAdapter
 
 class ContentGenerationAgent(Agent):
     """Agent for generating content using LLMs."""
-    
+
     def __init__(self, config):
         super().__init__(config)
         self.llm_adapter = LLMAdapter.create(config.llm)
-    
+
     async def handle_generate_content(self, task: Task) -> TaskResult:
         """Handle content generation."""
         content_type = task.message.payload.get("content_type")
         prompt = task.message.payload.get("prompt")
-        
+
         # Generate content using LLM
         generated_content = await self.llm_adapter.generate(
             prompt=prompt,
             max_tokens=1500,
             temperature=0.7
         )
-        
+
         # Save to state if needed
         content_id = str(uuid.uuid4())
         await self.state_manager.set(f"content:{content_id}", {
@@ -474,7 +474,7 @@ class ContentGenerationAgent(Agent):
             "content": generated_content,
             "created_at": datetime.now().isoformat()
         })
-        
+
         return TaskResult(
             status="SUCCESS",
             data={
@@ -540,7 +540,7 @@ from agent_core.adapters import LLMAdapter, LLMResponse
 
 class CustomLLMAdapter(LLMAdapter):
     """Custom LLM adapter implementation."""
-    
+
     def __init__(self, config):
         super().__init__(config)
         # Custom initialization
@@ -548,7 +548,7 @@ class CustomLLMAdapter(LLMAdapter):
         self.base_url = config.get("base_url")
         # Initialize client
         self.client = CustomLLMClient(self.api_key, self.base_url)
-    
+
     async def generate(self, prompt: str, **params) -> LLMResponse:
         """Generate text using the custom LLM."""
         # Call the custom LLM service
@@ -557,7 +557,7 @@ class CustomLLMAdapter(LLMAdapter):
             max_tokens=params.get("max_tokens", 1000),
             temperature=params.get("temperature", 0.7)
         )
-        
+
         # Convert to standard response format
         return LLMResponse(
             text=response.text,
@@ -695,13 +695,13 @@ development:
     provider: "local"
   messaging:
     provider: "pubsub_emulator"
-  
+
 testing:
   state:
     provider: "in_memory"
   messaging:
     provider: "in_memory"
-  
+
 production:
   state:
     provider: "supabase"

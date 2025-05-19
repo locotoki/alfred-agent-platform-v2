@@ -1,7 +1,7 @@
 # Infrastructure Overview
 
-**Last Updated:** 2025-05-10  
-**Owner:** Platform Team  
+**Last Updated:** 2025-05-10
+**Owner:** Platform Team
 **Status:** Active
 
 ## Overview
@@ -48,7 +48,7 @@ All platform services are containerized using Docker and orchestrated with Docke
 | Legal Compliance | legal-compliance | python:3.11-slim | 9002 | 9002 | ✅ Completed |
 | Alfred Bot | alfred-bot | python:3.11-slim | 8011 | 8011 | ✅ Completed |
 
-### Infrastructure Crew 
+### Infrastructure Crew
 
 The platform implements an AI-Agent Crew for infrastructure automation:
 
@@ -247,13 +247,13 @@ The platform provides streamlined startup procedures:
    ```bash
    # Mission Control UI
    bash services/mission-control/start-container.sh
-   
+
    # Social Intelligence Agent
    docker-compose up -d social-intel
-   
+
    # Financial-Tax Agent
    docker-compose up -d financial-tax
-   
+
    # Legal Compliance Agent
    docker-compose up -d legal-compliance
    ```

@@ -1,7 +1,7 @@
 /**
  * YouTube Workflows Port Fix Verification Script
- * 
- * This script demonstrates how to properly implement the port fix for the 
+ *
+ * This script demonstrates how to properly implement the port fix for the
  * YouTube workflows integration in the Alfred Agent Platform v2.
  */
 
@@ -28,20 +28,20 @@ const fixedImplementation = () => {
 const fixedComponentImplementation = (query) => {
   // In UI component:
   const apiUrl = `${window.location.origin}/api/social-intel/niche-scout?query=${encodeURIComponent(query)}`;
-  
+
   // Then make fetch request:
-  /* 
+  /*
   fetch(apiUrl, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' }
   })
   */
-  
+
   return apiUrl;
 };
 
 // Implementations to update:
-// 1. services/mission-control/src/services/youtube-workflows.ts 
+// 1. services/mission-control/src/services/youtube-workflows.ts
 // 2. services/mission-control/src/pages/workflows/niche-scout/index.tsx
 // 3. services/mission-control/src/pages/workflows/seed-to-blueprint/index.tsx
 
@@ -63,7 +63,7 @@ const generateMockNicheScoutData = () => {
   };
 };
 
-// Summary: 
+// Summary:
 // The port mismatch issue is caused by incorrect URL construction
 // The fix ensures that all API calls use port 3005 correctly
 // After applying these changes, both workflows will work properly

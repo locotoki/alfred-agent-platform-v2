@@ -19,28 +19,28 @@ declare -A SERVICE_PORTS=(
 lint_service_metrics() {
   local service=$1
   local port=${SERVICE_PORTS[$service]}
-  
+
   echo "Checking metrics format for $service on port $port..."
-  
+
   # Check if service is responding
   if ! curl -s "http://localhost:$port/metrics" > /dev/null; then
     echo "❌ $service is not responding on port $port"
     return 1
   fi
-  
+
   # Check for leading whitespace in metrics (common formatting issue)
   if curl -s "http://localhost:$port/metrics" | grep -E '^\s+' > /dev/null; then
     echo "❌ $service has leading whitespace in metrics, which Prometheus cannot parse"
     curl -s "http://localhost:$port/metrics" | grep -E '^\s+' | head -5
     return 1
   fi
-  
+
   # Check for proper metric format
   if ! curl -s "http://localhost:$port/metrics" | grep -E '^service_health' > /dev/null; then
     echo "❌ $service does not have service_health metric"
     return 1
   fi
-  
+
   # Success
   echo "✅ $service metrics format is valid"
   return 0

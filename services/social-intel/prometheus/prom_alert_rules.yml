@@ -19,7 +19,7 @@ groups:
         annotations:
           summary: "High API latency detected"
           description: "P95 latency for Social Intelligence API is above 400ms threshold"
-          
+
       # Error rate alert
       - alert: HighErrorRate
         expr: sum(rate(si_requests_total{status=~"(error|api_error|db_error)"}[5m])) / sum(rate(si_requests_total[5m])) > 0.05
@@ -29,7 +29,7 @@ groups:
         annotations:
           summary: "High error rate in Social Intelligence service"
           description: "Error rate is above 5% over the last minute"
-          
+
       # Low niche results alert
       - alert: LowNicheResultsCount
         expr: si_niche_scout_results < 5
@@ -39,7 +39,7 @@ groups:
         annotations:
           summary: "Low niche results count"
           description: "Niche Scout is returning fewer than 5 results"
-          
+
       # Service health alert
       - alert: SocialIntelServiceDown
         expr: up{job="social-intel"} == 0

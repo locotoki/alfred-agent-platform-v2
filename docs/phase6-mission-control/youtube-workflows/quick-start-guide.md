@@ -53,7 +53,7 @@ The Alfred Agent Platform v2 includes a Social Intelligence Agent with YouTube w
    ```bash
    cat /services/mission-control/package.json
    # Verify "dev": "next dev -p 3007" and "start": "next start -p 3007"
-   
+
    cat /services/mission-control/.env.local
    # Verify SOCIAL_INTEL_URL=http://localhost:9000
    # Verify NEXT_PUBLIC_SERVER_URL=http://localhost:3007
@@ -63,7 +63,7 @@ The Alfred Agent Platform v2 includes a Social Intelligence Agent with YouTube w
    ```bash
    # Navigate to the project root
    cd /home/locotoki/projects/alfred-agent-platform-v2
-   
+
    # Run the environment check script
    bash ./docs/phase6-mission-control/youtube-workflows/environment-check-script.sh
    ```
@@ -72,7 +72,7 @@ The Alfred Agent Platform v2 includes a Social Intelligence Agent with YouTube w
    ```bash
    # Start the Social Intelligence Agent container if not running
    docker-compose up -d social-intel
-   
+
    # Start the Mission Control UI
    cd services/mission-control
    npm run dev
@@ -80,7 +80,7 @@ The Alfred Agent Platform v2 includes a Social Intelligence Agent with YouTube w
 
 4. **Test Workflows**
    - Navigate to http://localhost:3007/workflows
-   - Try the Niche-Scout workflow with a sample query 
+   - Try the Niche-Scout workflow with a sample query
    - Check the Blueprint workflow with a sample YouTube URL
 
 ## Working with Ports

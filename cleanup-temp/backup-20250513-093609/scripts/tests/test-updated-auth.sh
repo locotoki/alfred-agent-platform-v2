@@ -52,7 +52,7 @@ docker exec alfred-agent-platform-v2-alfred-bot-1 /bin/sh -c "
     -H \"apikey: $TOKEN\" \
     -H \"Authorization: Bearer $TOKEN\" \
     \"http://supabase-rest:3000/rest/v1/rpc/test_auth\" || echo 'Auth test failed'
-  
+
   # Test creating a record
   echo 'Testing writing to database...'
   echo '{\"data\":\"test data\"}' > /tmp/test_data.json

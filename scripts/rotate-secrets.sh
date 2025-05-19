@@ -13,14 +13,14 @@ if [ -s potential_secrets.txt ]; then
   echo "Number of matches: $(wc -l < potential_secrets.txt)"
   echo "Sample entries (first 5):"
   head -5 potential_secrets.txt
-  
+
   # Generate a list of environment variables to rotate
   echo "Creating list of environment variables to rotate..."
   grep -o -E '([A-Z_]+_API_KEY|[A-Z_]+_SECRET|[A-Z_]+_TOKEN|[A-Z_]+_PASSWORD)=[^ ]+' potential_secrets.txt | cut -d= -f1 | sort | uniq > secrets_to_rotate.txt
-  
+
   echo "Variables that should be rotated:"
   cat secrets_to_rotate.txt
-  
+
   # Clean up
   rm potential_secrets.txt
 else

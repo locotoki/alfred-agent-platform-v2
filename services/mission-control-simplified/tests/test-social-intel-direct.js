@@ -35,15 +35,15 @@ async function testAvailableEndpoints() {
 async function runTests() {
   console.log('🧪 TESTING DIRECT CONNECTION TO SOCIAL INTELLIGENCE AGENT 🧪');
   console.log('==========================================================');
-  
+
   const healthStatus = await testSocialIntelHealth();
   const docsStatus = await testAvailableEndpoints();
-  
+
   console.log('\n📊 RESULTS 📊');
   console.log('============');
   console.log(`Health endpoint: ${healthStatus ? '✅ Available' : '❌ Not available'}`);
   console.log(`Docs endpoint: ${docsStatus ? '✅ Available' : '❌ Not available'}`);
-  
+
   if (!healthStatus) {
     console.log('\n⚠️ Cannot reach Social Intelligence agent. Please check:');
     console.log('  1. Is the Social Intelligence agent running?');

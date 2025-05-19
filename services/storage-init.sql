@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS storage.migrations (
 );
 
 -- Insert migrations data
-INSERT INTO storage.migrations (id, name, hash, executed_at) VALUES 
+INSERT INTO storage.migrations (id, name, hash, executed_at) VALUES
   (1, 'pathtoken-column', 'e7862023a1ae7afe7b69f991e0530b15c4ef7d39', NOW()),
   (2, 'add-public-to-buckets', '83455c984ffbe3feca3411b5591f68b8a4260ba9', NOW()),
   (3, 'add-migration-versions', '99b7ef8119e1f495163c0a1e13559878d4eb1156', NOW());

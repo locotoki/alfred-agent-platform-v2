@@ -7,7 +7,7 @@
 2. Model Router
 3. Agent Core
 4. Financial Tax Agent
-5. Legal Compliance Agent 
+5. Legal Compliance Agent
 6. RAG Service
 7. UI Chat
 8. UI Admin

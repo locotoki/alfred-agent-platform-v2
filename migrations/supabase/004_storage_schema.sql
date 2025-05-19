@@ -29,12 +29,12 @@ CREATE TABLE IF NOT EXISTS storage.buckets (
 );
 
 -- Create default bucket
-INSERT INTO storage.buckets (id, name, public) 
+INSERT INTO storage.buckets (id, name, public)
 VALUES ('supabase-storage', 'supabase-storage', false)
 ON CONFLICT (id) DO NOTHING;
 
 -- Add indexes
-CREATE INDEX IF NOT EXISTS idx_objects_bucket_id_name 
+CREATE INDEX IF NOT EXISTS idx_objects_bucket_id_name
 ON storage.objects(bucket_id, name);
 
 CREATE INDEX IF NOT EXISTS idx_objects_created_at

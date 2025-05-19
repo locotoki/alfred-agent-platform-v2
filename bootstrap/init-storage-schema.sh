@@ -33,7 +33,7 @@ SCHEMA_EXISTS=$(PGPASSWORD="$PG_PASSWORD" psql -h "$PG_HOST" -p "$PG_PORT" -U "$
 
 if [[ $SCHEMA_EXISTS =~ t ]]; then
   echo "Storage schema already exists"
-  
+
   # Ensure migrations table is empty to bypass validation
   echo "Ensuring storage.migrations table is empty..."
   PGPASSWORD="$PG_PASSWORD" psql -h "$PG_HOST" -p "$PG_PORT" -U "$PG_USER" -d "$PG_DATABASE" -c "TRUNCATE storage.migrations;"

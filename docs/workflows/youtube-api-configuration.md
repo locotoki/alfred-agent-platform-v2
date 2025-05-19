@@ -7,7 +7,7 @@ The YouTube workflows (Niche-Scout and Seed-to-Blueprint) require a valid YouTub
 ## Requirements
 
 1. A Google account
-2. A Google Cloud project 
+2. A Google Cloud project
 3. YouTube Data API v3 enabled
 4. API key with appropriate permissions
 
@@ -25,7 +25,7 @@ For these operations, a **simple API key is sufficient** - no OAuth 2.0 authoriz
 > - Access private user data
 > - Perform write operations (upload videos, update metadata, etc.)
 > - Manage YouTube account settings
-> 
+>
 > Our current implementation does not require these capabilities.
 
 ## Getting a YouTube API Key

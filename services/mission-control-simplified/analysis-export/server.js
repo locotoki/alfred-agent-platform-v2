@@ -1,6 +1,6 @@
 /**
  * Simplified Mission Control Server
- * 
+ *
  * Express server that provides API endpoints and serves the Mission Control UI.
  * Integrates with the Social Intelligence Agent for workflow execution.
  */
@@ -8,11 +8,11 @@
 const express = require('express');
 const path = require('path');
 const cors = require('cors');
-const { 
-  callNicheScout, 
-  callSeedToBlueprint, 
-  checkSocialIntelStatus, 
-  getAgentStatuses 
+const {
+  callNicheScout,
+  callSeedToBlueprint,
+  checkSocialIntelStatus,
+  getAgentStatuses
 } = require('./integrate-with-social-intel');
 
 // Load environment variables
@@ -36,8 +36,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.get('/api/health', async (req, res) => {
   console.log('Health check requested');
   const socialIntelOnline = await checkSocialIntelStatus();
-  res.json({ 
-    status: 'healthy', 
+  res.json({
+    status: 'healthy',
     uptime: process.uptime(),
     services: {
       'social-intelligence': socialIntelOnline ? 'online' : 'offline'
@@ -53,7 +53,7 @@ app.get('/api/agents/status', async (req, res) => {
     res.json(statuses);
   } catch (error) {
     console.error('Error getting agent statuses:', error.message);
-    res.status(500).json({ 
+    res.status(500).json({
       error: 'Failed to get agent statuses',
       message: error.message
     });
@@ -67,7 +67,7 @@ app.post('/api/workflows/niche-scout', async (req, res) => {
     res.json(result);
   } catch (error) {
     console.error('Error in Niche-Scout workflow:', error.message);
-    res.status(500).json({ 
+    res.status(500).json({
       error: 'Failed to execute Niche-Scout workflow',
       message: error.message
     });
@@ -81,7 +81,7 @@ app.post('/api/workflows/seed-to-blueprint', async (req, res) => {
     res.json(result);
   } catch (error) {
     console.error('Error in Seed-to-Blueprint workflow:', error.message);
-    res.status(500).json({ 
+    res.status(500).json({
       error: 'Failed to execute Seed-to-Blueprint workflow',
       message: error.message
     });
@@ -112,18 +112,18 @@ const server = app.listen(PORT, () => {
   ======================================================
    Mission Control server running on port ${PORT}
   ======================================================
-  
+
   API Endpoints:
   - Health check: http://localhost:${PORT}/api/health
   - Agent status: http://localhost:${PORT}/api/agents/status
   - Niche-Scout: http://localhost:${PORT}/api/workflows/niche-scout (POST)
   - Seed-to-Blueprint: http://localhost:${PORT}/api/workflows/seed-to-blueprint (POST)
-  
+
   UI Pages:
   - Dashboard: http://localhost:${PORT}/
   - Niche-Scout workflow: http://localhost:${PORT}/workflows/niche-scout
   - Seed-to-Blueprint workflow: http://localhost:${PORT}/workflows/seed-to-blueprint
-  
+
   Integration with Social Intelligence Agent is ${process.env.ENABLE_MOCK_FALLBACK !== 'false' ? 'enabled with fallback' : 'enabled (strict mode)'}
   ======================================================
   `);
@@ -131,7 +131,7 @@ const server = app.listen(PORT, () => {
   if (err.code === 'EADDRINUSE' && PORT === PREFERRED_PORT) {
     console.log(`Port ${PREFERRED_PORT} is already in use, trying fallback port ${FALLBACK_PORT}`);
     PORT = FALLBACK_PORT;
-    
+
     // Try the fallback port
     server.close();
     app.listen(PORT, () => {
@@ -139,20 +139,20 @@ const server = app.listen(PORT, () => {
       ======================================================
        Mission Control server running on fallback port ${PORT}
       ======================================================
-      
+
       API Endpoints:
       - Health check: http://localhost:${PORT}/api/health
       - Agent status: http://localhost:${PORT}/api/agents/status
       - Niche-Scout: http://localhost:${PORT}/api/workflows/niche-scout (POST)
       - Seed-to-Blueprint: http://localhost:${PORT}/api/workflows/seed-to-blueprint (POST)
-      
+
       UI Pages:
       - Dashboard: http://localhost:${PORT}/
       - Niche-Scout workflow: http://localhost:${PORT}/workflows/niche-scout
       - Seed-to-Blueprint workflow: http://localhost:${PORT}/workflows/seed-to-blueprint
-      
+
       Integration with Social Intelligence Agent is ${process.env.ENABLE_MOCK_FALLBACK !== 'false' ? 'enabled with fallback' : 'enabled (strict mode)'}
-      
+
       NOTE: Using fallback port because primary port ${PREFERRED_PORT} is in use
       ======================================================
       `);

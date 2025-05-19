@@ -1,7 +1,7 @@
 # Agent Implementation Guide
 
-**Last Updated:** 2025-05-10  
-**Owner:** Platform Team  
+**Last Updated:** 2025-05-10
+**Owner:** Platform Team
 **Status:** Active
 
 ## Overview
@@ -177,11 +177,11 @@ from .models import FinancialRequestModel, FinancialResponseModel
 
 class FinancialAnalysisChain:
     """Chain for processing financial analysis"""
-    
+
     def __init__(self, llm: ChatOpenAI = None):
         self.llm = llm or ChatOpenAI(temperature=0, model="gpt-4")
         self.output_parser = PydanticOutputParser(pydantic_object=FinancialResponseModel)
-        
+
         self.prompt = PromptTemplate(
             template="""You are an expert financial analyst. Analyze the following financial information:
 
@@ -202,9 +202,9 @@ Provide a detailed financial analysis including:
             input_variables=["entity_id", "time_period", "analysis_type", "categories", "metadata"],
             partial_variables={"format_instructions": self.output_parser.get_format_instructions()}
         )
-        
+
         self.chain = LLMChain(llm=self.llm, prompt=self.prompt)
-    
+
     async def process(self, request: FinancialRequestModel) -> FinancialResponseModel:
         """Process request"""
         result = await self.chain.arun(
@@ -214,7 +214,7 @@ Provide a detailed financial analysis including:
             categories=request.categories,
             metadata=request.metadata
         )
-        
+
         return self.output_parser.parse(result)
 ```
 
@@ -239,7 +239,7 @@ logger = structlog.get_logger(__name__)
 
 class FinancialAgent(BaseAgent):
     """Agent for financial analysis and tax processing"""
-    
+
     def __init__(self, *args, **kwargs):
         super().__init__(
             name="financial-agent",
@@ -254,28 +254,28 @@ class FinancialAgent(BaseAgent):
         )
         self.setup_chains()
         self.setup_graph()
-    
+
     def setup_chains(self):
         """Initialize LangChain configurations for each intent"""
         llm = ChatOpenAI(temperature=0, model="gpt-4")
-        
+
         self.financial_analysis_chain = FinancialAnalysisChain(llm)
         # Initialize other chains
-    
+
     def setup_graph(self):
         """Setup LangGraph for workflow orchestration"""
         self.workflow_graph = Graph()
-        
+
         # Add nodes for different processing steps
         self.workflow_graph.add_node("parse_request", self._parse_request)
         self.workflow_graph.add_node("validate_data", self._validate_data)
         self.workflow_graph.add_node("process_financial_analysis", self._process_financial_analysis)
         self.workflow_graph.add_node("process_tax_calculation", self._process_tax_calculation)
         self.workflow_graph.add_node("format_response", self._format_response)
-        
+
         # Add edges for workflow
         self.workflow_graph.add_edge("parse_request", "validate_data")
-        
+
         # Add conditional edges based on intent
         self.workflow_graph.add_conditional_edges(
             "validate_data",
@@ -285,20 +285,20 @@ class FinancialAgent(BaseAgent):
                 "tax_calculation": "process_tax_calculation",
             }
         )
-        
+
         # All processing nodes lead to format_response
         self.workflow_graph.add_edge("process_financial_analysis", "format_response")
         self.workflow_graph.add_edge("process_tax_calculation", "format_response")
-        
+
         # format_response leads to END
         self.workflow_graph.add_edge("format_response", END)
-        
+
         # Set entry point
         self.workflow_graph.set_entry_point("parse_request")
-        
+
         # Compile the graph
         self.workflow = self.workflow_graph.compile()
-    
+
     async def process_task(self, envelope: A2AEnvelope) -> Dict[str, Any]:
         """Process a task"""
         logger.info(
@@ -306,7 +306,7 @@ class FinancialAgent(BaseAgent):
             task_id=envelope.task_id,
             intent=envelope.intent
         )
-        
+
         try:
             # Execute the workflow
             result = await self.workflow.ainvoke({
@@ -314,9 +314,9 @@ class FinancialAgent(BaseAgent):
                 "intent": envelope.intent,
                 "content": envelope.content
             })
-            
+
             return result.get("response", {})
-            
+
         except Exception as e:
             logger.error(
                 "task_processing_failed",
@@ -325,19 +325,19 @@ class FinancialAgent(BaseAgent):
                 intent=envelope.intent
             )
             raise
-    
+
     # Workflow node implementations
     async def _parse_request(self, state: Dict[str, Any]) -> Dict[str, Any]:
         """Parse the incoming request"""
         state["parsed_content"] = state["content"]
         return state
-    
+
     async def _validate_data(self, state: Dict[str, Any]) -> Dict[str, Any]:
         """Validate the request data"""
         # Add validation logic here
         state["is_valid"] = True
         return state
-    
+
     def _route_by_intent(self, state: Dict[str, Any]) -> str:
         """Route to appropriate processor based on intent"""
         intent = state["intent"]
@@ -347,20 +347,20 @@ class FinancialAgent(BaseAgent):
             return "tax_calculation"
         else:
             raise ValueError(f"Unsupported intent: {intent}")
-    
+
     async def _process_financial_analysis(self, state: Dict[str, Any]) -> Dict[str, Any]:
         """Process financial analysis request"""
         request = FinancialRequestModel(**state["parsed_content"])
         result = await self.financial_analysis_chain.process(request)
         state["result"] = result.dict()
         return state
-    
+
     async def _process_tax_calculation(self, state: Dict[str, Any]) -> Dict[str, Any]:
         """Process tax calculation request"""
         # Implement tax calculation logic
         # ...
         return state
-    
+
     async def _format_response(self, state: Dict[str, Any]) -> Dict[str, Any]:
         """Format the response for output"""
         state["response"] = {
@@ -467,7 +467,7 @@ async def _register_agent(self):
         "capabilities": self.supported_intents,
         "last_heartbeat": datetime.utcnow().isoformat() + "Z"
     }
-    
+
     await self.supabase.execute(
         """
         INSERT INTO agent_registry (name, version, type, status, capabilities, last_heartbeat)
@@ -497,12 +497,12 @@ async def store_task(self, envelope):
         "priority": envelope.priority,
         "created_at": envelope.timestamp
     }
-    
+
     await self.execute(
         """
-        INSERT INTO tasks (task_id, intent, status, content, trace_id, 
+        INSERT INTO tasks (task_id, intent, status, content, trace_id,
                           correlation_id, priority, created_at)
-        VALUES (:task_id, :intent, :status, :content, :trace_id, 
+        VALUES (:task_id, :intent, :status, :content, :trace_id,
                 :correlation_id, :priority, :created_at)
         """,
         task_data
@@ -519,7 +519,7 @@ async def store_embedding(self, task_id, embedding, metadata):
         "embedding": embedding,
         "metadata": json.dumps(metadata)
     }
-    
+
     await self.execute(
         """
         INSERT INTO embeddings (task_id, embedding, metadata)
@@ -532,7 +532,7 @@ async def search_similar(self, query_embedding, limit=5):
     """Search similar embeddings."""
     results = await self.execute(
         """
-        SELECT task_id, metadata, 
+        SELECT task_id, metadata,
                (embedding <-> :query_embedding) as distance
         FROM embeddings
         ORDER BY distance ASC
@@ -543,7 +543,7 @@ async def search_similar(self, query_embedding, limit=5):
             "limit": limit
         }
     )
-    
+
     return results
 ```
 
@@ -588,7 +588,7 @@ async def _handle_message_with_dlq(self, envelope):
             error=str(e),
             task_id=envelope.task_id
         )
-        
+
         # Send to DLQ
         await self.pubsub.publish_task(
             envelope,
@@ -606,7 +606,7 @@ async def get_data(self, query):
         return await self.database.query(query)
     except DatabaseError:
         logger.warning("database_unavailable_using_cache")
-        
+
         # Fall back to cache
         return await self.cache.get(query)
 ```
@@ -648,7 +648,7 @@ async def test_process_task(agent):
             "option": "option_a"
         }
     )
-    
+
     # Mock chain response
     with patch.object(agent.custom_chain_1, 'process') as mock_process:
         mock_process.return_value = YourResponseModel1(
@@ -658,10 +658,10 @@ async def test_process_task(agent):
             details=[{"key": "value"}],
             timestamp="2025-05-01T12:00:00Z"
         )
-        
+
         # Process task
         result = await agent.process_task(envelope)
-        
+
         # Assert result
         assert result["status"] == "success"
         assert result["intent"] == "YOUR_INTENT_1"
@@ -677,16 +677,16 @@ async def test_agent_workflow():
     # Initialize real transports (using emulators)
     pubsub = PubSubTransport(project_id="test-project")
     supabase = SupabaseTransport(database_url="postgresql://user:pass@localhost:5432/postgres")
-    
+
     # Create agent
     agent = YourAgentName(
         pubsub_transport=pubsub,
         supabase_transport=supabase
     )
-    
+
     # Start agent
     await agent.start()
-    
+
     # Create test envelope
     envelope = A2AEnvelope(
         intent="YOUR_INTENT_1",
@@ -696,17 +696,17 @@ async def test_agent_workflow():
             "option": "option_a"
         }
     )
-    
+
     # Publish task
     await pubsub.publish_task(envelope)
-    
+
     # Wait for processing
     await asyncio.sleep(2)
-    
+
     # Check result in Supabase
     task_status = await supabase.get_task_status(envelope.task_id)
     assert task_status["status"] == "completed"
-    
+
     # Cleanup
     await agent.stop()
 ```
@@ -741,7 +741,7 @@ ACTIVE_TASKS = Gauge(
 async def process_task(self, envelope):
     ACTIVE_TASKS.inc()
     start_time = time.time()
-    
+
     try:
         result = await self._process_task_internal(envelope)
         REQUESTS_TOTAL.labels(envelope.intent, "success").inc()
@@ -775,7 +775,7 @@ async def readiness_check():
         return health
     else:
         raise HTTPException(status_code=503, detail="Agent not ready")
-        
+
 @app.get("/health/metrics")
 async def metrics():
     """Get detailed metrics."""

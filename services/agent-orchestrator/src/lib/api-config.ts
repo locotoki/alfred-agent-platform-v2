@@ -1,6 +1,6 @@
 /**
  * API Configuration
- * 
+ *
  * This file contains configuration settings for API endpoints.
  * It uses environment variables for different environments.
  */
@@ -13,7 +13,7 @@ export const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:90
 export const FEATURES = {
   // Enable this to use mock data instead of real API
   USE_MOCK_DATA: import.meta.env.VITE_USE_MOCK_DATA === 'true',
-  
+
   // Enable this to show developer tools
   SHOW_DEV_TOOLS: import.meta.env.NODE_ENV === 'development'
 };
@@ -30,12 +30,12 @@ export const ENDPOINTS = {
   WORKFLOW_RESULT: `${API_BASE_URL}/api/youtube/workflow-result`,
   SCHEDULED_WORKFLOWS: `${API_BASE_URL}/api/youtube/scheduled-workflows`,
   SCHEDULE_WORKFLOW: `${API_BASE_URL}/api/youtube/schedule-workflow`,
-  
+
   // Agent operations
   AGENTS_LIST: `${API_BASE_URL}/api/agents`,
   AGENT_STATUS: `${API_BASE_URL}/api/agents/status`,
   AGENT_CONTROL: `${API_BASE_URL}/api/agents/control`,
-  
+
   // Health check
   HEALTH: `${API_BASE_URL}/health`
 };
@@ -47,6 +47,6 @@ export function createApiUrl(endpoint: string, params: string = ''): string {
   if (params) {
     return `${endpoint}?${params}`;
   }
-  
+
   return endpoint;
 }

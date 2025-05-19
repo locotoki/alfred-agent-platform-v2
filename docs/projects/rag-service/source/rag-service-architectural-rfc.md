@@ -68,7 +68,7 @@ Our multi‑agent platform already embeds LangChain/LangGraph tooling and mainta
 ## 4.1 Deployment Mode – Local / On‑Prem (Solo‑Builder)
 
 > Baseline : Qdrant, Supabase‑Auth, Supabase‑DB, Prometheus, and Grafana are already running on the host. One RTX 3080 Ti (12 GB VRAM) is available; Ollama serves localhost REST endpoints for quantised LLMs. OpenAI APIs remain reachable for higher‑quality tasks when latency or cost allows.
-> 
+>
 
 | Area | Local Component | Configuration Notes |
 | --- | --- | --- |
@@ -218,7 +218,7 @@ volumes:
 4. `curl -X POST localhost:8080/v1/query -d '{"query":"hello","top_k":3}' -H 'Authorization: Bearer <jwt>'` – smoke test.
 
 > Tip : inside ollama container run ollama pull nomic-embed:text and ollama pull llama3:8b-q4_K_M before step 2 to avoid cold‑start downloads.
-> 
+>
 
 The Gateway inspects request headers:
 

@@ -32,7 +32,7 @@ export default function SeedToBlueprint() {
         niche: niche,
         analysisDepth: analysisDepth
       });
-      
+
       // Navigate to results page with the result ID
       if (result._id) {
         router.push(`/workflows/seed-to-blueprint/results/${result._id}`);
@@ -56,17 +56,17 @@ export default function SeedToBlueprint() {
             Seed-to-Blueprint Workflow
           </h1>
         </div>
-        
+
         {/* Configuration Section */}
         <div className="card p-6">
           <h2 className="text-xl font-bold mb-4">Configuration</h2>
-          
+
           <div className="mb-6">
             <p className="text-gray-600 dark:text-gray-400 mb-4">
               Use an existing YouTube video as a seed to generate a channel blueprint, or enter a niche to create a strategy from scratch.
             </p>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
             <div className="card bg-gray-50 dark:bg-gray-800 p-4">
               <h3 className="font-semibold mb-3">Option 1: Use Video as Seed</h3>
@@ -85,7 +85,7 @@ export default function SeedToBlueprint() {
                 Enter the URL of a successful video in your target niche
               </p>
             </div>
-            
+
             <div className="card bg-gray-50 dark:bg-gray-800 p-4">
               <h3 className="font-semibold mb-3">Option 2: Create from Niche</h3>
               <label htmlFor="niche" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
@@ -104,7 +104,7 @@ export default function SeedToBlueprint() {
               </p>
             </div>
           </div>
-          
+
           <div className="mb-4">
             <label htmlFor="analysis-depth" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               Analysis Depth
@@ -120,7 +120,7 @@ export default function SeedToBlueprint() {
               <option value="deep">Deep - Maximum detail, slower processing</option>
             </select>
           </div>
-          
+
           <div className="mb-4">
             <button
               onClick={() => setShowAdvanced(!showAdvanced)}
@@ -129,7 +129,7 @@ export default function SeedToBlueprint() {
               {showAdvanced ? '- Hide Advanced Options' : '+ Advanced Options'}
             </button>
           </div>
-          
+
           {showAdvanced && (
             <div className="border border-gray-200 dark:border-gray-700 rounded-md p-4 mb-4">
               <h3 className="text-lg font-semibold mb-2">Advanced Options</h3>
@@ -164,7 +164,7 @@ export default function SeedToBlueprint() {
               </div>
             </div>
           )}
-          
+
           <div className="flex flex-wrap gap-3">
             <button
               onClick={handleRunWorkflow}
@@ -187,13 +187,13 @@ export default function SeedToBlueprint() {
           </div>
         </div>
       </div>
-      
+
       {/* Schedule Modal */}
       {showScheduleModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-md w-full">
             <h2 className="text-xl font-bold mb-4">Schedule Workflow</h2>
-            
+
             <div className="mb-4">
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Frequency
@@ -209,7 +209,7 @@ export default function SeedToBlueprint() {
                 <option value="once">Once</option>
               </select>
             </div>
-            
+
             {frequency === 'once' && (
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
@@ -223,7 +223,7 @@ export default function SeedToBlueprint() {
                 />
               </div>
             )}
-            
+
             <div className="flex justify-end space-x-2">
               <button
                 onClick={() => setShowScheduleModal(false)}

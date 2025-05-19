@@ -10,7 +10,7 @@ Refer to `PORT-STANDARD.md` for the complete port allocation.
 
 ### 1. "Address already in use" Error
 
-**Symptoms**: 
+**Symptoms**:
 - Error message: `Error: listen EADDRINUSE: address already in use :::3007`
 - Mission Control won't start
 

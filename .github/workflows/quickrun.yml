@@ -9,24 +9,24 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      
+
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.11'
-          
+
       - name: Install minimal dependencies
         run: |
           python -m pip install --upgrade pip
           pip install black==24.1.1 isort==5.13.2
-          
+
       - name: Skip linting checks
         run: |
           # Skip all linting checks for quick green run
           echo "SKIPPING linting checks for quick green run..."
           echo "This is a temporary measure to get a green run for branch protection rules."
           # No actual checks run here - always succeeds
-          
+
       - name: Skip heavy tests
         run: |
           echo "SKIPPING all heavy tests for quick run"

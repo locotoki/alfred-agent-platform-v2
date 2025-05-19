@@ -31,15 +31,15 @@ export interface GradientProgressBarProps {
 
 /**
  * GradientProgressBar Component
- * 
+ *
  * A progress bar with gradient styling
- * 
+ *
  * @example
  * ```tsx
- * <GradientProgressBar 
- *   value={75} 
- *   variant="primary" 
- *   showValue={true} 
+ * <GradientProgressBar
+ *   value={75}
+ *   variant="primary"
+ *   showValue={true}
  *   animated={true}
  *   label="CPU Usage"
  * />
@@ -61,7 +61,7 @@ export const GradientProgressBar: React.FC<GradientProgressBarProps> = ({
   // Ensure value is between 0 and max
   const normalizedValue = Math.min(Math.max(0, value), max);
   const percentage = (normalizedValue / max) * 100;
-  
+
   // Get gradient based on variant
   const getGradient = () => {
     switch (variant) {
@@ -79,13 +79,13 @@ export const GradientProgressBar: React.FC<GradientProgressBarProps> = ({
         return 'from-blue-500 to-blue-600';
     }
   };
-  
+
   // Format the displayed value
   const getFormattedValue = () => {
     if (valueFormatter) {
       return valueFormatter(normalizedValue, max);
     }
-    
+
     switch (valueFormat) {
       case 'percentage':
         return `${Math.round(percentage)}%`;
@@ -95,7 +95,7 @@ export const GradientProgressBar: React.FC<GradientProgressBarProps> = ({
         return `${Math.round(percentage)}%`;
     }
   };
-  
+
   return (
     <div className={`w-full ${className}`}>
       {label && (
@@ -110,8 +110,8 @@ export const GradientProgressBar: React.FC<GradientProgressBarProps> = ({
           )}
         </div>
       )}
-      
-      <div 
+
+      <div
         className="w-full bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden"
         style={{ height }}
       >
@@ -122,14 +122,14 @@ export const GradientProgressBar: React.FC<GradientProgressBarProps> = ({
             ${animated ? 'animate-progress' : ''}
             rounded-full
           `}
-          style={{ 
+          style={{
             width: `${percentage}%`,
             height: '100%',
             transition: 'width 0.5s ease-in-out'
           }}
         />
       </div>
-      
+
       {showValue && !label && (
         <div className="mt-1 text-sm text-gray-500 dark:text-gray-400 text-right">
           {getFormattedValue()}
@@ -146,7 +146,7 @@ styleSheet.textContent = `
     0% { background-position: 1rem 0; }
     100% { background-position: 0 0; }
   }
-  
+
   .bg-stripes {
     background-image: linear-gradient(
       45deg,
@@ -160,7 +160,7 @@ styleSheet.textContent = `
     );
     background-size: 1rem 1rem;
   }
-  
+
   .animate-progress {
     animation: progress-stripes 1s linear infinite;
   }

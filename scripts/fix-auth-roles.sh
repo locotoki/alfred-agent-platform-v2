@@ -8,12 +8,12 @@ echo "Creating authentication roles..."
 # Wait for PostgreSQL to become ready
 wait_for_postgres() {
     echo "Waiting for PostgreSQL to become ready..."
-    
+
     while ! pg_isready -h db-postgres -p 5432 -U postgres; do
         echo "PostgreSQL is not ready yet. Waiting..."
         sleep 2
     done
-    
+
     echo "PostgreSQL is ready"
 }
 

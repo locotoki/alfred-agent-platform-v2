@@ -36,7 +36,7 @@ This guide provides step-by-step instructions for setting up the Alfred Slack Bo
    - `im:history` - View messages in direct messages
    - `im:read` - View basic information about direct messages
    - `im:write` - Send messages in direct messages
-   
+
 3. Scroll back to the top and click "Install to Workspace."
 4. Review the permissions and click "Allow."
 5. After installation, make note of the "Bot User OAuth Token" (starts with `xoxb-`) - you'll need it later.

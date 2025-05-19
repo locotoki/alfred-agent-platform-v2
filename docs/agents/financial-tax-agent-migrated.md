@@ -1,7 +1,7 @@
 # Financial-Tax Agent
 
-*Last Updated: 2025-05-10*  
-*Owner: Financial Intelligence Team*  
+*Last Updated: 2025-05-10*
+*Owner: Financial Intelligence Team*
 *Status: Active*
 
 ## Overview

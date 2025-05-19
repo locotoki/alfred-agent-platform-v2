@@ -14,11 +14,11 @@ These files contain identical category and subcategory mappings to ensure consis
 ## UI Implementation
 The shared taxonomy is implemented in multiple UI components:
 
-1. **Mission Control**: 
+1. **Mission Control**:
    - `src/pages/workflows/niche-scout/improved-index.tsx` - Uses the shared taxonomy for Niche-Scout workflow
    - `src/components/workflows/NicheTaxonomySelector.tsx` - Component for category selection
 
-2. **Agent Orchestrator**: 
+2. **Agent Orchestrator**:
    - `src/components/wizards/niche-scout/StepOne.tsx` - Uses the shared taxonomy for Agent UI
    - `src/pages/TaxonomySettings.tsx` - Settings page for taxonomy management
 

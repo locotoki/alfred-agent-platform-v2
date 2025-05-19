@@ -8,7 +8,7 @@ import { format } from 'date-fns';
 
 export default function Workflows() {
   const router = useRouter();
-  
+
   // Use defaulted data with fallback mock data
   const mockScheduledWorkflows = [
     {
@@ -110,7 +110,7 @@ export default function Workflows() {
               <p>Last run: May 5, 2025</p>
               <p>Status: Available</p>
             </div>
-            <Link 
+            <Link
               href="/workflows/niche-scout"
               className="btn-primary text-center"
             >
@@ -128,7 +128,7 @@ export default function Workflows() {
               <p>Last run: May 5, 2025</p>
               <p>Status: Available</p>
             </div>
-            <Link 
+            <Link
               href="/workflows/seed-to-blueprint"
               className="btn-primary text-center"
             >

@@ -25,7 +25,7 @@ export const FeatureFlagProvider: React.FC<FeatureFlagProviderProps> = ({
   flagsEndpoint = '/api/feature-flags'
 }) => {
   const [flags, setFlags] = useState<FeatureFlags>(defaultFlags);
-  
+
   useEffect(() => {
     // Fetch feature flags from backend if endpoint provided
     if (flagsEndpoint) {
@@ -38,14 +38,14 @@ export const FeatureFlagProvider: React.FC<FeatureFlagProviderProps> = ({
         });
     }
   }, [flagsEndpoint]);
-  
+
   const updateFlag = (flagName: string, value: boolean) => {
     setFlags(prev => ({
       ...prev,
       [flagName]: value
     }));
   };
-  
+
   return (
     <FeatureFlagContext.Provider value={{ flags, updateFlag }}>
       {children}

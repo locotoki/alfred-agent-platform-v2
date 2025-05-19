@@ -58,7 +58,7 @@ function show_usage() {
   echo "                     'all' - All services (default)"
   echo "                     'core' - Core infrastructure only"
   echo "                     'agents' - Core + Agent services"
-  echo "                     'ui' - UI services only" 
+  echo "                     'ui' - UI services only"
   echo "                     'llm' - LLM services only"
   echo "  -e, --env ENV      Specify environment:"
   echo "                     'dev' - Development environment (default)"

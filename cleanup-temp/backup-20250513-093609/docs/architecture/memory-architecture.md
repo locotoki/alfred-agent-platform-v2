@@ -1,7 +1,7 @@
 # Memory Architecture
 
-*Last Updated: May 13, 2025*  
-*Status: Planning Phase*  
+*Last Updated: May 13, 2025*
+*Status: Planning Phase*
 *Owner: Memory Architecture Team*
 
 ## Overview

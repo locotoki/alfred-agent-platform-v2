@@ -226,7 +226,7 @@
             {% for competitor in competitor_analysis %}
             <div class="competitor-card">
                 <h3>{{ competitor.channel }}</h3>
-                
+
                 <div class="metrics">
                     <div class="metric">
                         <h4>Subscribers</h4>
@@ -245,7 +245,7 @@
                         <p>{{ competitor.posting_frequency }}</p>
                     </div>
                 </div>
-                
+
                 <div class="content-analysis">
                     <div class="analysis-column">
                         <div class="list-heading">Top Video Topics</div>
@@ -255,7 +255,7 @@
                             {% endfor %}
                         </ul>
                     </div>
-                    
+
                     <div class="analysis-column">
                         <div class="list-heading">Strengths</div>
                         <ul class="divided-list">
@@ -264,7 +264,7 @@
                             {% endfor %}
                         </ul>
                     </div>
-                    
+
                     <div class="analysis-column">
                         <div class="list-heading">Weaknesses</div>
                         <ul class="divided-list">
@@ -283,7 +283,7 @@
         <h2>Content Gap Analysis</h2>
         <div class="section-content">
             <p>Based on our analysis, we've identified the following opportunities in the {{ analyzed_niche }} niche that are currently underserved:</p>
-            
+
             {% for gap in content_gaps %}
             <div class="content-gap">
                 {{ gap }}
@@ -303,7 +303,7 @@
                     {% endfor %}
                 </div>
             </div>
-            
+
             <div class="strategy-section">
                 <h3>Content Pillars</h3>
                 {% for pillar in channel_strategy.content_pillars %}
@@ -315,14 +315,14 @@
                 </div>
                 {% endfor %}
             </div>
-            
+
             <div class="strategy-section">
                 <h3>Posting Schedule</h3>
                 <p><strong>Cadence:</strong> {{ channel_strategy.posting_schedule.cadence }}</p>
                 <p><strong>Optimal Days:</strong> {{ channel_strategy.posting_schedule.optimal_days|join(", ") }}</p>
                 <p><strong>Optimal Times:</strong> {{ channel_strategy.posting_schedule.optimal_times|join(", ") }}</p>
             </div>
-            
+
             <div class="strategy-section">
                 <h3>Growth Tactics</h3>
                 {% for tactic in channel_strategy.growth_tactics %}
@@ -346,7 +346,7 @@
                         {% endfor %}
                     </ul>
                 </div>
-                
+
                 <div class="timeline-item">
                     <h4>90-Day Plan</h4>
                     <ul>
@@ -356,7 +356,7 @@
                     </ul>
                 </div>
             </div>
-            
+
             <h3>Success Metrics</h3>
             {% for metric in execution_plan.success_metrics %}
             <div class="success-metric">

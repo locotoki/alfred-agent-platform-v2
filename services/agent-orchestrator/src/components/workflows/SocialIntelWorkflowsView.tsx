@@ -23,7 +23,7 @@ const SocialIntelWorkflowsView = ({ agentId }: SocialIntelWorkflowsViewProps) =>
   const [serviceError, setServiceError] = useState<string | undefined>(undefined);
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
-  
+
   // Check service health on component mount and periodically
   useEffect(() => {
     const checkHealth = async () => {
@@ -68,18 +68,18 @@ const SocialIntelWorkflowsView = ({ agentId }: SocialIntelWorkflowsViewProps) =>
     // Clean up on unmount
     return () => clearInterval(intervalId);
   }, []);
-  
+
   const handleRunWorkflow = async (workflowId: string) => {
     const workflow = workflows.find(w => w.id === workflowId);
     if (workflow) {
       console.log(`Running workflow: ${workflow.name}`);
-      
+
       setIsLoading(true);
-      
+
       try {
         // Determine if we need to force offline mode
         const forceOfflineMode = !serviceAvailable;
-        
+
         if (forceOfflineMode) {
           toast({
             title: "Service unavailable",
@@ -87,45 +87,45 @@ const SocialIntelWorkflowsView = ({ agentId }: SocialIntelWorkflowsViewProps) =>
             variant: "warning",
           });
         }
-        
+
         if (workflow.name === "Seed-to-Blueprint") {
           // For Seed-to-Blueprint, use real service call
           const result = await runSeedToBlueprint({
             video_url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ", // Default example video
             forceOfflineMode
           });
-          
+
           // Check if running in offline mode based on the result status
           const isOfflineMode = result.status?.includes('offline');
-          
+
           // Store results in localStorage for the results dialog
           try {
             const storedResults = localStorage.getItem('youtube-blueprint-results');
             let resultsArray = [];
-            
+
             if (storedResults) {
               resultsArray = JSON.parse(storedResults);
             }
-            
+
             // Add new result to the beginning
             resultsArray.unshift(result);
-            
+
             // Keep only the last 5 results
             if (resultsArray.length > 5) {
               resultsArray = resultsArray.slice(0, 5);
             }
-            
+
             localStorage.setItem('youtube-blueprint-results', JSON.stringify(resultsArray));
           } catch (err) {
             console.error('Failed to store blueprint results:', err);
           }
-          
+
           toast({
             title: isOfflineMode ? "Blueprint created (offline mode)" : "Blueprint created",
             description: "Channel blueprint has been generated. Click View Results to see details.",
             variant: "default",
           });
-          
+
           // Update service status if needed
           if (!isOfflineMode && !serviceAvailable) {
             setServiceAvailable(true);
@@ -141,19 +141,19 @@ const SocialIntelWorkflowsView = ({ agentId }: SocialIntelWorkflowsViewProps) =>
         }
       } catch (error) {
         console.error(`Error running workflow ${workflow.name}:`, error);
-        
+
         // Update service status
         const status = getServiceStatus('socialIntel');
         setServiceAvailable(status.available);
         setServiceError(status.error);
-        
+
         // Handle error with specific messages
         const errorMessage = error instanceof Error ? error.message : "Unknown error";
-        
+
         toast({
           title: `${workflow.name} failed`,
-          description: errorMessage.includes("Failed to run") 
-            ? errorMessage 
+          description: errorMessage.includes("Failed to run")
+            ? errorMessage
             : "Could not complete workflow. Please try again.",
           variant: "destructive",
         });
@@ -171,12 +171,12 @@ const SocialIntelWorkflowsView = ({ agentId }: SocialIntelWorkflowsViewProps) =>
       variant: "default",
     });
   };
-  
+
   // This is only for the NicheScoutWizard triggered from the view, not the WorkflowCard
   const handleNicheScoutComplete = async (payload: FinalPayload) => {
     try {
       setIsLoading(true);
-      
+
       // Notify that analysis has started
       console.log("Niche-Scout analysis started with payload:", payload);
       toast({
@@ -184,10 +184,10 @@ const SocialIntelWorkflowsView = ({ agentId }: SocialIntelWorkflowsViewProps) =>
         description: `Analysis for ${payload.category.label} > ${payload.subcategory.label} has been initiated.`,
         variant: "default",
       });
-      
+
       // Determine if we need to force offline mode
       const forceOfflineMode = !serviceAvailable;
-      
+
       if (forceOfflineMode) {
         toast({
           title: "Service unavailable",
@@ -195,7 +195,7 @@ const SocialIntelWorkflowsView = ({ agentId }: SocialIntelWorkflowsViewProps) =>
           variant: "warning",
         });
       }
-      
+
       // Call the actual API
       const result = await runNicheScout({
         category: payload.category.value,
@@ -204,37 +204,37 @@ const SocialIntelWorkflowsView = ({ agentId }: SocialIntelWorkflowsViewProps) =>
         dataSources: payload.dataSources,
         forceOfflineMode
       });
-      
+
       // Store results in localStorage
       try {
         const storedResults = localStorage.getItem('youtube-results');
         let resultsArray = [];
-        
+
         if (storedResults) {
           resultsArray = JSON.parse(storedResults);
         }
-        
+
         resultsArray.unshift(result);
-        
+
         if (resultsArray.length > 5) {
           resultsArray = resultsArray.slice(0, 5);
         }
-        
+
         localStorage.setItem('youtube-results', JSON.stringify(resultsArray));
       } catch (err) {
         console.error('Failed to store results:', err);
       }
-      
+
       // Check if running in offline mode
       const isOfflineMode = result.status?.includes('offline');
-      
+
       // Show completion notification
       toast({
         title: isOfflineMode ? "Niche Scout completed (offline mode)" : "Niche Scout completed",
         description: `Found ${result.trending_niches.length} trending niches in ${payload.subcategory.label}. Click "View Niche Scout Results" to see details.`,
         variant: "default",
       });
-      
+
       // Update service status if needed
       if (!isOfflineMode && !serviceAvailable) {
         setServiceAvailable(true);
@@ -242,19 +242,19 @@ const SocialIntelWorkflowsView = ({ agentId }: SocialIntelWorkflowsViewProps) =>
       }
     } catch (error) {
       console.error("Niche scout failed:", error);
-      
+
       // Update service status
       const status = getServiceStatus('socialIntel');
       setServiceAvailable(status.available);
       setServiceError(status.error);
-      
+
       // Handle error with specific messages
       const errorMessage = error instanceof Error ? error.message : "Unknown error";
-      
+
       toast({
         title: "Niche Scout failed",
-        description: errorMessage.includes("Failed to run") 
-          ? errorMessage 
+        description: errorMessage.includes("Failed to run")
+          ? errorMessage
           : "Could not complete analysis. Please try again.",
         variant: "destructive",
       });
@@ -262,14 +262,14 @@ const SocialIntelWorkflowsView = ({ agentId }: SocialIntelWorkflowsViewProps) =>
       setIsLoading(false);
     }
   };
-  
+
   return (
     <div>
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2 text-muted-foreground">
           <LayoutList className="h-4 w-4" />
           <span className="text-sm font-medium">Workflows ({workflows.length})</span>
-          
+
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
@@ -283,14 +283,14 @@ const SocialIntelWorkflowsView = ({ agentId }: SocialIntelWorkflowsViewProps) =>
               </TooltipTrigger>
               <TooltipContent>
                 <p>
-                  {serviceAvailable 
-                    ? "Social Intelligence API: Connected" 
+                  {serviceAvailable
+                    ? "Social Intelligence API: Connected"
                     : `Social Intelligence API: Unavailable (${serviceError || "Connection error"})`}
                 </p>
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
-          
+
           {!serviceAvailable && (
             <span className="text-xs text-amber-500 flex items-center">
               <AlertCircle className="h-3.5 w-3.5 mr-1" />
@@ -306,7 +306,7 @@ const SocialIntelWorkflowsView = ({ agentId }: SocialIntelWorkflowsViewProps) =>
           />
         </div>
       </div>
-      
+
       {!serviceAvailable && (
         <div className="bg-amber-50 border border-amber-200 rounded-md p-2 mb-4 text-amber-700 text-sm">
           <div className="flex items-center gap-2">
@@ -315,23 +315,23 @@ const SocialIntelWorkflowsView = ({ agentId }: SocialIntelWorkflowsViewProps) =>
           </div>
         </div>
       )}
-      
+
       <div className="space-y-3">
         {workflows.map((workflow) => (
           workflow.name === "Niche-Scout" ? (
             <NicheScoutWizard
               key={workflow.id}
               trigger={
-                <WorkflowCard 
-                  workflow={workflow} 
+                <WorkflowCard
+                  workflow={workflow}
                   onRunWorkflow={() => {}} // We're using the card as a trigger, so this is empty
                 />
               }
               onComplete={handleNicheScoutComplete}
             />
           ) : (
-            <WorkflowCard 
-              key={workflow.id} 
+            <WorkflowCard
+              key={workflow.id}
               workflow={workflow}
               onRunWorkflow={handleRunWorkflow}
             />

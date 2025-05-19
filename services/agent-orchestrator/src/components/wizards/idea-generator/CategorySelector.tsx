@@ -28,34 +28,34 @@ export function CategorySelector({
     <>
       <div className="flex justify-between items-center">
         <div className="text-sm font-medium">Category</div>
-        <Button 
-          variant="ghost" 
-          size="sm" 
-          className="h-8 w-8 p-0" 
+        <Button
+          variant="ghost"
+          size="sm"
+          className="h-8 w-8 p-0"
           onClick={onOpenConfig}
         >
           <Settings className="h-4 w-4" />
           <span className="sr-only">Configure categories</span>
         </Button>
         {dropdownOpen === "category" && (
-          <Button 
-            variant="ghost" 
-            size="sm" 
-            className="h-6 w-6 p-0" 
+          <Button
+            variant="ghost"
+            size="sm"
+            className="h-6 w-6 p-0"
             onClick={() => toggleDropdown("category")}
           >
             <X className="h-4 w-4" />
           </Button>
         )}
       </div>
-      
+
       <FormField
         control={control}
         name="category"
         render={({ field }) => (
           <FormItem className="relative">
             <div className="relative">
-              <Select 
+              <Select
                 onValueChange={(value) => {
                   field.onChange(value);
                   toggleDropdown(null);
@@ -83,8 +83,8 @@ export function CategorySelector({
               <div className="absolute z-50 w-full mt-1 bg-popover border rounded-md shadow-md">
                 <div className="p-1">
                   {categories.map((category) => (
-                    <div 
-                      key={category} 
+                    <div
+                      key={category}
                       className={`flex items-center px-2 py-1.5 text-sm rounded-sm cursor-pointer ${
                         category === field.value ? "bg-accent text-accent-foreground" : "hover:bg-accent/50"
                       }`}
@@ -114,8 +114,8 @@ export function CategorySelector({
         name="subcategory"
         render={({ field }) => (
           <FormItem>
-            <Select 
-              onValueChange={field.onChange} 
+            <Select
+              onValueChange={field.onChange}
               defaultValue={field.value}
               disabled={currentSubcategories.length === 0}
             >

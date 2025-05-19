@@ -19,26 +19,26 @@ export const WizardStepIndicator: React.FC<WizardStepIndicatorProps> = ({
       <div className="flex items-center justify-center relative mb-2">
         {/* Progress bar background */}
         <div className="absolute h-1 bg-gray-200 dark:bg-gray-700 left-0 right-0 top-1/2 -translate-y-1/2 rounded-full z-0" />
-        
+
         {/* Active progress bar */}
-        <div 
+        <div
           className="absolute h-1 bg-gradient-primary left-0 top-1/2 -translate-y-1/2 rounded-full z-0 transition-all duration-300"
           style={{ width: `${((currentStep - 1) / (steps.length - 1)) * 100}%` }}
         />
-        
+
         {/* Step circles */}
         <div className="flex items-center justify-between w-full relative z-10">
           {steps.map((step) => (
-            <div 
+            <div
               key={step.number}
               className="flex flex-col items-center"
             >
-              <div 
+              <div
                 className={cn(
                   "h-10 w-10 rounded-full flex items-center justify-center text-sm font-medium transition-all duration-300 transform",
                   currentStep === step.number && "scale-110 shadow-lg",
-                  currentStep > step.number 
-                    ? "bg-gradient-primary text-white" 
+                  currentStep > step.number
+                    ? "bg-gradient-primary text-white"
                     : currentStep === step.number
                       ? "bg-gradient-primary text-white animate-pulse"
                       : "bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400 border-2 border-gray-200 dark:border-gray-700"
@@ -52,11 +52,11 @@ export const WizardStepIndicator: React.FC<WizardStepIndicatorProps> = ({
                   step.number
                 )}
               </div>
-              <span 
+              <span
                 className={cn(
                   "mt-2 text-xs font-medium",
-                  currentStep >= step.number 
-                    ? "text-primary dark:text-primary-foreground" 
+                  currentStep >= step.number
+                    ? "text-primary dark:text-primary-foreground"
                     : "text-gray-500 dark:text-gray-400"
                 )}
               >

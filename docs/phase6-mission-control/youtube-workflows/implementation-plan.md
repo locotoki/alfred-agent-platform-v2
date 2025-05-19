@@ -68,14 +68,14 @@ try {
   // API call logic
 } catch (error) {
   console.error('Detailed error:', error);
-  
+
   // Provide useful feedback to the user
   setErrorState({
     message: 'Connection to Social Intelligence Agent failed',
     technical: error instanceof Error ? error.message : 'Unknown error',
     timestamp: new Date().toISOString()
   });
-  
+
   // Fallback to mock data mode
   return mockData;
 }
@@ -91,7 +91,7 @@ const checkServiceHealth = async () => {
       method: 'GET',
       signal: AbortSignal.timeout(3000)  // 3-second timeout
     });
-    
+
     return response.ok;
   } catch (error) {
     console.warn('Health check failed:', error);
@@ -106,7 +106,7 @@ const checkServiceHealth = async () => {
    ```bash
    # Verify package.json
    grep -E '"dev": |"start": ' services/mission-control/package.json
-   
+
    # Verify .env.local
    grep -E 'SOCIAL_INTEL_URL|NEXT_PUBLIC_SERVER_URL' services/mission-control/.env.local
    ```
@@ -115,7 +115,7 @@ const checkServiceHealth = async () => {
    ```bash
    # Check if Mission Control is running
    curl -I http://localhost:3007
-   
+
    # Check if Social Intelligence Agent is running
    curl -I http://localhost:9000/api/health
    ```
@@ -164,7 +164,7 @@ const checkServiceHealth = async () => {
 // Add retry mechanism for failed API calls
 const callWithRetry = async (endpoint, payload, maxRetries = 3) => {
   let lastError;
-  
+
   for (let attempt = 0; attempt < maxRetries; attempt++) {
     try {
       const response = await fetch(endpoint, {
@@ -173,19 +173,19 @@ const callWithRetry = async (endpoint, payload, maxRetries = 3) => {
         body: JSON.stringify(payload),
         signal: AbortSignal.timeout(30000 * (attempt + 1)) // Increase timeout with each retry
       });
-      
+
       if (response.ok) {
         return await response.json();
       }
     } catch (error) {
       console.warn(`Attempt ${attempt + 1} failed:`, error);
       lastError = error;
-      
+
       // Wait before retry (exponential backoff)
       await new Promise(r => setTimeout(r, 1000 * Math.pow(2, attempt)));
     }
   }
-  
+
   // If all retries failed
   throw lastError || new Error('All retry attempts failed');
 };

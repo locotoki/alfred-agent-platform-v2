@@ -10,12 +10,12 @@ BEGIN
     IF NOT EXISTS (SELECT 1 FROM pg_namespace WHERE nspname = 'pgjwt') THEN
         -- Create pgjwt schema if it doesn't exist
         CREATE SCHEMA pgjwt;
-        
+
         -- Create basic JWT functions in pgjwt schema
         CREATE OR REPLACE FUNCTION pgjwt.sign(payload json, secret text) RETURNS text AS $$
         WITH
           header AS (
-            SELECT 
+            SELECT
               encode(
                 convert_to(
                   '{"alg":"HS256","typ":"JWT"}',
@@ -25,7 +25,7 @@ BEGIN
               ) AS data
           ),
           payload AS (
-            SELECT 
+            SELECT
               encode(
                 convert_to(
                   payload::text,
@@ -35,7 +35,7 @@ BEGIN
               ) AS data
           ),
           signables AS (
-            SELECT 
+            SELECT
               header.data || '.' || payload.data AS data
             FROM header, payload
           )
@@ -67,11 +67,11 @@ BEGIN
     'iat', extract(epoch from now())::integer,
     'exp', extract(epoch from now() + interval '1 year')::integer
   );
-  
+
   -- Sign the token using HMAC SHA-256
   WITH
     header AS (
-      SELECT 
+      SELECT
         encode(
           convert_to(
             '{"alg":"HS256","typ":"JWT"}',
@@ -81,7 +81,7 @@ BEGIN
         ) AS data
     ),
     payload_encoded AS (
-      SELECT 
+      SELECT
         encode(
           convert_to(
             payload::text,
@@ -91,7 +91,7 @@ BEGIN
         ) AS data
     ),
     signables AS (
-      SELECT 
+      SELECT
         header.data || '.' || payload_encoded.data AS data
       FROM header, payload_encoded
     )
@@ -106,7 +106,7 @@ BEGIN
       'base64'
     ) INTO token
   FROM signables;
-  
+
   RETURN token;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;

@@ -37,7 +37,7 @@ async def test_db():
     await conn.execute(
         """
     INSERT INTO features (phrase, demand_score, monetise_score, supply_score)
-    VALUES 
+    VALUES
       ('TEST_Gaming', 0.8000, 0.7500, 0.5000),
       ('TEST_Cooking', 0.7000, 0.8000, 0.6000)
     """

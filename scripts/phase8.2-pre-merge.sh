@@ -93,7 +93,7 @@ Local CI Report Summary:
 - Integration tests: ✓
 
 @gpt-o3 @alfred-platform/coordinators Please review for final approval."
-    
+
     echo -e "${GREEN}PR comment posted successfully${NC}" | tee -a "$REPORT_FILE"
 else
     echo "Warning: gh CLI not found. Please manually comment on PR #80" | tee -a "$REPORT_FILE"

@@ -11,7 +11,7 @@ providers:
     options:
       path: /var/lib/grafana/dashboards/platform
       foldersFromFilesStructure: true
-      
+
   - name: 'Platform Health'
     orgId: 1
     folder: 'Platform Health'

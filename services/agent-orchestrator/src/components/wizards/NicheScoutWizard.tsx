@@ -34,11 +34,11 @@ export const NicheScoutWizard: React.FC<NicheScoutWizardProps> = ({
   const [uncontrolledOpen, setUncontrolledOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  
+
   // Use controlled or uncontrolled open state
   const isControlled = controlledOpen !== undefined;
   const open = isControlled ? controlledOpen : uncontrolledOpen;
-  
+
   const setOpen = (newOpen: boolean) => {
     if (isControlled) {
       onOpenChange?.(newOpen);
@@ -46,7 +46,7 @@ export const NicheScoutWizard: React.FC<NicheScoutWizardProps> = ({
       setUncontrolledOpen(newOpen);
     }
   };
-  
+
   const {
     step,
     setStep,
@@ -71,7 +71,7 @@ export const NicheScoutWizard: React.FC<NicheScoutWizardProps> = ({
     }
   };
 
-  const subcategories = selectedCategory 
+  const subcategories = selectedCategory
     ? subcategoryMap[selectedCategory.value] || []
     : [];
 
@@ -79,7 +79,7 @@ export const NicheScoutWizard: React.FC<NicheScoutWizardProps> = ({
     if (selectedCategory && selectedSubcategory) {
       setIsSubmitting(true);
       setError(null);
-      
+
       const payload: FinalPayload = {
         category: selectedCategory,
         subcategory: selectedSubcategory,
@@ -88,7 +88,7 @@ export const NicheScoutWizard: React.FC<NicheScoutWizardProps> = ({
         estimatedTime: calculateEstimates.estimatedTime,
         estimatedCost: calculateEstimates.estimatedCost
       };
-      
+
       try {
         // Call the real API endpoint
         const result = await runNicheScout({
@@ -97,17 +97,17 @@ export const NicheScoutWizard: React.FC<NicheScoutWizardProps> = ({
           budget,
           dataSources
         });
-        
+
         // Get actual values from the response or use estimates if not available
         const actual = {
           ...payload,
           actualCost: result.actual_cost || calculateEstimates.estimatedCost,
           actualEta: result.actual_processing_time || calculateEstimates.estimatedTime,
         };
-        
+
         // Close the dialog
         setOpen(false);
-        
+
         // Callback with result
         onComplete(actual);
       } catch (err) {
@@ -131,15 +131,15 @@ export const NicheScoutWizard: React.FC<NicheScoutWizardProps> = ({
             Discover trending YouTube niches with high opportunity scores
           </p>
         </div>
-        
+
         <div className="p-6">
           <TooltipProvider>
             <WizardStepIndicator currentStep={step} />
-            
+
             <div className="min-h-[320px]">
               {step === 1 && (
                 <FadeIn direction="right">
-                  <StepOne 
+                  <StepOne
                     categories={categories}
                     selectedCategory={selectedCategory}
                     onCategoryChange={handleCategoryChange}
@@ -149,10 +149,10 @@ export const NicheScoutWizard: React.FC<NicheScoutWizardProps> = ({
                   />
                 </FadeIn>
               )}
-              
+
               {step === 2 && (
                 <FadeIn direction="right">
-                  <StepTwo 
+                  <StepTwo
                     budget={budget}
                     onBudgetChange={setBudget}
                     dataSources={dataSources}
@@ -162,10 +162,10 @@ export const NicheScoutWizard: React.FC<NicheScoutWizardProps> = ({
                   />
                 </FadeIn>
               )}
-              
+
               {step === 3 && (
                 <FadeIn direction="right">
-                  <StepThree 
+                  <StepThree
                     category={selectedCategory}
                     subcategory={selectedSubcategory}
                     estimates={calculateEstimates}
@@ -174,7 +174,7 @@ export const NicheScoutWizard: React.FC<NicheScoutWizardProps> = ({
                 </FadeIn>
               )}
             </div>
-            
+
             {error && (
               <FadeIn direction="up">
                 <Alert variant="destructive" className="mt-4">
@@ -184,7 +184,7 @@ export const NicheScoutWizard: React.FC<NicheScoutWizardProps> = ({
             )}
 
             <DialogFooter className="px-0 pt-0">
-              <WizardFooter 
+              <WizardFooter
                 step={step}
                 isNextDisabled={
                   (step === 1 && (!selectedCategory || !selectedSubcategory)) ||

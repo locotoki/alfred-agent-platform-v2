@@ -1,6 +1,6 @@
 # Alfred Agent Orchestrator
 
-Welcome to the Alfred Agent Orchestrator mono‑repo.  
+Welcome to the Alfred Agent Orchestrator mono‑repo.
 This README gives you a 1‑minute orientation and quick‑start.
 
 ## Why this repo exists

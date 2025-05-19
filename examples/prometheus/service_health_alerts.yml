@@ -12,7 +12,7 @@ groups:
           description: "Service {{ $labels.service }} has reported an unhealthy status for more than 1 minute."
           runbook_url: "https://internal-docs.alfred.ai/runbooks/service-health.html"
           dashboard_url: "https://grafana.alfred.ai/d/services-overview"
-          
+
       - alert: MultipleServicesUnhealthy
         expr: sum(service_health == 0) > 2
         for: 2m
@@ -25,7 +25,7 @@ groups:
           description: "{{ $value }} services are reporting unhealthy status for more than 2 minutes."
           runbook_url: "https://internal-docs.alfred.ai/runbooks/multiple-service-outage.html"
           dashboard_url: "https://grafana.alfred.ai/d/services-overview"
-          
+
       - alert: ServiceHealthDegraded
         expr: service_health == 0.5
         for: 5m

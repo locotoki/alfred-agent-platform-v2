@@ -1,13 +1,13 @@
 import { useState, useEffect } from "react";
-import { 
-  LineChart, 
-  Line, 
-  BarChart, 
-  Bar, 
-  XAxis, 
-  YAxis, 
-  CartesianGrid, 
-  Tooltip, 
+import {
+  LineChart,
+  Line,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
   ResponsiveContainer,
   AreaChart,
   Area,
@@ -35,9 +35,9 @@ const ChartGrid = () => {
   const [memoryUsage, setMemoryUsage] = useState(42);
   const [storageUsage, setStorageUsage] = useState(27);
   const [networkUsage, setNetworkUsage] = useState(33);
-  
+
   const COLORS = ["#3b82f6", "#8b5cf6", "#10b981", "#f59e0b", "#ef4444"];
-  
+
   const lineData = generateRandomData(24);
   const barData = generateRandomData(12);
   const pieData = [
@@ -47,7 +47,7 @@ const ChartGrid = () => {
     { name: "Workflow D", value: 100 },
     { name: "Workflow E", value: 50 }
   ];
-  
+
   useEffect(() => {
     // Simulate changing metrics every 5 seconds
     const interval = setInterval(() => {
@@ -56,50 +56,50 @@ const ChartGrid = () => {
       setStorageUsage(Math.round(Math.random() * 20) + 20);
       setNetworkUsage(Math.round(Math.random() * 50) + 10);
     }, 5000);
-    
+
     return () => clearInterval(interval);
   }, []);
-  
+
   return (
     <div className="space-y-6">
       <h2 className="text-xl font-semibold mb-4">System Metrics</h2>
-      
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
         <div className="space-y-4 card-shadow p-4">
           <h3 className="text-lg font-medium">Resource Usage</h3>
           <div className="space-y-6 mt-4">
-            <GradientProgressBar 
-              value={cpuUsage} 
-              variant="primary" 
-              showValue={true} 
+            <GradientProgressBar
+              value={cpuUsage}
+              variant="primary"
+              showValue={true}
               animated={true}
               label="CPU Usage"
             />
-            
-            <GradientProgressBar 
-              value={memoryUsage} 
-              variant="secondary" 
+
+            <GradientProgressBar
+              value={memoryUsage}
+              variant="secondary"
               showValue={true}
               label="Memory Usage"
             />
-            
-            <GradientProgressBar 
-              value={storageUsage} 
-              variant="success" 
+
+            <GradientProgressBar
+              value={storageUsage}
+              variant="success"
               showValue={true}
               label="Storage Usage"
             />
-            
-            <GradientProgressBar 
-              value={networkUsage} 
-              variant="warning" 
+
+            <GradientProgressBar
+              value={networkUsage}
+              variant="warning"
               showValue={true}
               striped={true}
               label="Network Bandwidth"
             />
           </div>
         </div>
-        
+
         <div className="card-shadow p-4">
           <h3 className="text-lg font-medium mb-4">Workflow Distribution</h3>
           <div className="h-72">
@@ -118,7 +118,7 @@ const ChartGrid = () => {
                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                   ))}
                 </Pie>
-                <Tooltip 
+                <Tooltip
                   formatter={(value) => [`${value} Tasks`, 'Count']}
                   labelFormatter={(name) => `${name}`}
                 />
@@ -127,7 +127,7 @@ const ChartGrid = () => {
           </div>
         </div>
       </div>
-      
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="chart-container">
           <h3 className="text-lg font-medium mb-4">System Performance</h3>
@@ -137,7 +137,7 @@ const ChartGrid = () => {
                 <CartesianGrid strokeDasharray="3 3" opacity={0.2} />
                 <XAxis dataKey="name" />
                 <YAxis />
-                <Tooltip 
+                <Tooltip
                   formatter={(value) => [`${value}%`, 'Usage']}
                   labelFormatter={(name) => `Time ${name}`}
                 />
@@ -151,19 +151,19 @@ const ChartGrid = () => {
                     <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0.1} />
                   </linearGradient>
                 </defs>
-                <Line 
-                  type="monotone" 
-                  dataKey="cpu" 
-                  name="CPU" 
-                  stroke="#3b82f6" 
+                <Line
+                  type="monotone"
+                  dataKey="cpu"
+                  name="CPU"
+                  stroke="#3b82f6"
                   strokeWidth={2}
                   dot={false}
                   activeDot={{ r: 8 }}
                 />
-                <Line 
-                  type="monotone" 
-                  dataKey="memory" 
-                  name="Memory" 
+                <Line
+                  type="monotone"
+                  dataKey="memory"
+                  name="Memory"
                   stroke="#8b5cf6"
                   strokeWidth={2}
                   dot={false}
@@ -173,7 +173,7 @@ const ChartGrid = () => {
             </ResponsiveContainer>
           </div>
         </div>
-        
+
         <div className="chart-container">
           <h3 className="text-lg font-medium mb-4">Error Rate</h3>
           <div className="h-72">
@@ -182,7 +182,7 @@ const ChartGrid = () => {
                 <CartesianGrid strokeDasharray="3 3" opacity={0.2} />
                 <XAxis dataKey="name" />
                 <YAxis />
-                <Tooltip 
+                <Tooltip
                   formatter={(value) => [`${value}`, 'Count']}
                   labelFormatter={(name) => `Time ${name}`}
                 />
@@ -192,10 +192,10 @@ const ChartGrid = () => {
                     <stop offset="95%" stopColor="#ef4444" stopOpacity={0.1} />
                   </linearGradient>
                 </defs>
-                <Area 
-                  type="monotone" 
-                  dataKey="errors" 
-                  name="Errors" 
+                <Area
+                  type="monotone"
+                  dataKey="errors"
+                  name="Errors"
                   stroke="#ef4444"
                   strokeWidth={2}
                   fillOpacity={1}

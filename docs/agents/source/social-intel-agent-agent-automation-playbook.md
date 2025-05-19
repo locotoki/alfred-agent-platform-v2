@@ -3,14 +3,14 @@
 # Social‑Intelligence Agent · **Automated YouTube Opportunity Suite**
 
 > Purpose – Run two fully‑automated test paths that:
-> 
-> 
+>
+>
 > 1. **Niche‑Scout** finds the fastest‑growing, biggest, and most Shorts‑friendly YouTube niches each day.
-> 
+>
 > 2. **Seed‑to‑Blueprint** turns any seed video (or an auto‑selected hot niche) into a ranked‑channel sheet, a gap report, and a ready‑to‑execute channel strategy.
-> 
+>
 > Designed for Claude (Anthropic) with shell & Python sandbox enabled. Each indented block is a **single prompt** you paste into Claude. Replace **ALL‑CAPS** placeholders before running.
-> 
+>
 
 ---
 

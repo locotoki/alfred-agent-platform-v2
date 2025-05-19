@@ -19,8 +19,8 @@ export function IdeaList({
   onSearchChange,
   onSelectIdea
 }: IdeaListProps) {
-  const filteredIdeas = ideas.filter(idea => 
-    !searchQuery || 
+  const filteredIdeas = ideas.filter(idea =>
+    !searchQuery ||
     idea.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
     idea.description.toLowerCase().includes(searchQuery.toLowerCase())
   );

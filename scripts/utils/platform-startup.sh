@@ -37,7 +37,7 @@ verify_critical_services() {
 
   # Check if critical services are running
   critical_services=("alfred-postgres" "redis" "vector-db" "pubsub-emulator" "agent-core" "agent-rag" "mail-server")
-  
+
   for service in "${critical_services[@]}"; do
     if ! docker ps --format "{{.Names}}" | grep -q "$service"; then
       echo -e "${RED}Critical service $service is not running${NC}"
@@ -94,51 +94,51 @@ check_service_connectivity() {
 # Controlled startup
 controlled_startup() {
   show_progress "Starting controlled startup..."
-  
+
   # Step 1: Start core infrastructure first
   show_progress "Starting core infrastructure..."
   docker start redis vector-db pubsub-emulator alfred-postgres || true
   show_progress "Waiting for core infrastructure to initialize..."
   sleep 20
-  
+
   # Step 2: Start database services
   show_progress "Starting database services..."
   docker start db-auth db-api db-realtime db-storage db-admin || true
   show_progress "Waiting for database services to initialize..."
   sleep 15
-  
+
   # Step 3: Start mail service
   show_progress "Starting mail service..."
   docker start mail-server || true
-  
+
   # Step 4: Start model services
   show_progress "Starting model services..."
   docker start alfred-ollama alfred-model-registry alfred-model-router || true
   show_progress "Waiting for model services to initialize..."
   sleep 10
-  
+
   # Step 5: Start core services
   show_progress "Starting core services..."
   docker start agent-rag agent-core || true
   show_progress "Waiting for core services to initialize..."
   sleep 10
-  
+
   # Step 6: Start agent services
   show_progress "Starting agent services..."
   docker start agent-atlas agent-social agent-financial agent-legal || true
   show_progress "Waiting for agent services to initialize..."
   sleep 10
-  
+
   # Step 7: Start UI services
   show_progress "Starting UI services..."
   docker start ui-admin ui-chat auth-ui || true
-  
+
   # Step 8: Start monitoring services
   show_progress "Starting monitoring services..."
   docker start monitoring-metrics monitoring-dashboard monitoring-node || true
   # Try to start monitoring-db if it exists
   docker start monitoring-db 2>/dev/null || echo -e "${YELLOW}monitoring-db not found, skipping...${NC}"
-  
+
   show_progress "All services started"
 }
 
@@ -146,15 +146,15 @@ controlled_startup() {
 apply_fixes_if_needed() {
   # Check if any containers are unhealthy
   unhealthy_containers=$(docker ps --filter health=unhealthy --format "{{.Names}}")
-  
+
   if [ -z "$unhealthy_containers" ]; then
     echo -e "${GREEN}No unhealthy containers detected. No fixes needed.${NC}"
     return 0
   fi
-  
+
   echo -e "${YELLOW}Detected unhealthy containers: $unhealthy_containers${NC}"
   echo -e "${YELLOW}Applying fixes...${NC}"
-  
+
   # Apply fixes
   if [ -f "./fix-all-directly.sh" ]; then
     ./fix-all-directly.sh
@@ -211,7 +211,7 @@ if ! check_container_health; then
   # Apply fixes if needed
   echo -e "${YELLOW}Attempting to fix unhealthy containers...${NC}"
   apply_fixes_if_needed
-  
+
   # Check again after fixes
   echo -e "${BLUE}Checking container health after applying fixes...${NC}"
   if ! check_container_health; then

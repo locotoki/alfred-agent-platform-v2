@@ -117,11 +117,11 @@ case "$ACTION" in
     else
       echo -e "${YELLOW}[DRY RUN] Would start in detached mode.${NORM}"
     fi
-    
+
     # Simulate creating network if it doesn't exist
     echo -e "${BLUE}[DRY RUN] Checking if network exists:${NORM}"
     docker network ls | grep alfred-network || echo -e "${YELLOW}[DRY RUN] Would create network: docker network create alfred-network${NORM}"
-    
+
     # Simulate starting the services
     if [ -z "$SERVICES" ]; then
       simulate_command "docker-compose -f $COMPOSE_FILE up $DETACH"
@@ -131,13 +131,13 @@ case "$ACTION" in
       echo -e "${GREEN}[DRY RUN] This would start the following services: $SERVICES${NORM}"
     fi
     ;;
-    
+
   down)
     echo -e "${BLUE}[DRY RUN] Stopping platform services...${NORM}"
     if [ -n "$CLEAN" ]; then
       echo -e "${YELLOW}[DRY RUN] Warning: This would also remove volumes!${NORM}"
     fi
-    
+
     # Simulate stopping the services
     if [ -z "$SERVICES" ]; then
       simulate_command "docker-compose -f $COMPOSE_FILE down $CLEAN"
@@ -147,10 +147,10 @@ case "$ACTION" in
       echo -e "${GREEN}[DRY RUN] This would stop the following services: $SERVICES${NORM}"
     fi
     ;;
-    
+
   restart)
     echo -e "${BLUE}[DRY RUN] Restarting platform services...${NORM}"
-    
+
     # Simulate restarting the services
     if [ -z "$SERVICES" ]; then
       simulate_command "docker-compose -f $COMPOSE_FILE restart"
@@ -160,10 +160,10 @@ case "$ACTION" in
       echo -e "${GREEN}[DRY RUN] This would restart the following services: $SERVICES${NORM}"
     fi
     ;;
-    
+
   logs)
     echo -e "${BLUE}[DRY RUN] Would show logs for platform services...${NORM}"
-    
+
     # Simulate showing logs
     if [ -z "$SERVICES" ]; then
       simulate_command "docker-compose -f $COMPOSE_FILE logs -f"
@@ -173,7 +173,7 @@ case "$ACTION" in
       echo -e "${GREEN}[DRY RUN] This would show logs for the following services: $SERVICES${NORM}"
     fi
     ;;
-    
+
   *)
     echo -e "${RED}[DRY RUN] Error: Unknown action '$ACTION'${NORM}"
     show_help

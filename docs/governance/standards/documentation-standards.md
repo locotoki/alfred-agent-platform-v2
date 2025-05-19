@@ -125,8 +125,8 @@ Example:
 ```markdown
 # Social Intelligence Agent
 
-**Last Updated:** 2023-04-15  
-**Owner:** AI Research Team  
+**Last Updated:** 2023-04-15
+**Owner:** AI Research Team
 **Status:** Active
 ```
 

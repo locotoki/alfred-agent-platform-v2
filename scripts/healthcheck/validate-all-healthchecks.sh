@@ -58,7 +58,7 @@ print_service_status() {
   local service=$1
   local status=$2
   local details=$3
-  
+
   if [ "$status" == "pass" ]; then
     echo -e "${GREEN}✓ $service: PASS${NC} $details"
   else
@@ -74,7 +74,7 @@ check_docker() {
     echo "Please start Docker and try again."
     exit 1
   fi
-  
+
   # Check if docker-compose is available
   if ! command -v docker-compose &>/dev/null; then
     echo -e "${RED}Error: docker-compose is not installed.${NC}"
@@ -94,11 +94,11 @@ check_network() {
 # Start essential services
 start_services() {
   print_section "Starting essential services..."
-  
+
   # Start database first
   echo "Starting database services..."
   docker-compose up -d db-postgres
-  
+
   # Wait for database to be ready
   echo "Waiting for database to be healthy..."
   for i in {1..30}; do
@@ -113,36 +113,36 @@ start_services() {
       exit 1
     fi
   done
-  
+
   # Start infrastructure services
   echo "Starting infrastructure services..."
   docker-compose up -d redis vector-db pubsub-emulator llm-service
-  
+
   # Start model-registry and wait
   echo "Starting model-registry..."
   docker-compose up -d model-registry
   sleep 5
-  
+
   # Start model-router and wait
   echo "Starting model-router..."
   docker-compose up -d model-router
   sleep 5
-  
+
   # Start agent-core
   echo "Starting agent-core..."
   docker-compose up -d agent-core
   sleep 5
-  
+
   # Start remaining services
   echo "Starting remaining services..."
   docker-compose up -d agent-rag agent-financial agent-legal ui-chat
-  
+
   # Start Prometheus
   echo "Starting monitoring services..."
   docker-compose up -d monitoring-metrics
-  
+
   echo -e "${GREEN}All services started.${NC}"
-  
+
   # Give services time to initialize
   echo "Waiting for services to initialize (15 seconds)..."
   sleep 15
@@ -151,15 +151,15 @@ start_services() {
 # Validate health endpoints
 validate_health() {
   print_section "Validating health endpoints..."
-  
+
   for service in "${!SERVICES[@]}"; do
     IFS=';' read -r health_url metrics_url <<< "${SERVICES[$service]}"
-    
+
     echo -n "Checking $service health endpoint ($health_url)... "
-    
+
     # Try to access health endpoint
     response=$(curl -s -m 5 "$health_url" 2>/dev/null || echo "CONNECTION_ERROR")
-    
+
     if [[ "$response" == "CONNECTION_ERROR" ]]; then
       print_service_status "$service" "fail" "Could not connect to health endpoint"
     elif echo "$response" | grep -q '"status":"ok"'; then
@@ -175,15 +175,15 @@ validate_health() {
 # Validate metrics endpoints
 validate_metrics() {
   print_section "Validating metrics endpoints..."
-  
+
   for service in "${!SERVICES[@]}"; do
     IFS=';' read -r health_url metrics_url <<< "${SERVICES[$service]}"
-    
+
     echo -n "Checking $service metrics endpoint ($metrics_url)... "
-    
+
     # Try to access metrics endpoint
     response=$(curl -s -m 5 "$metrics_url" 2>/dev/null || echo "CONNECTION_ERROR")
-    
+
     if [[ "$response" == "CONNECTION_ERROR" ]]; then
       print_service_status "$service" "fail" "Could not connect to metrics endpoint"
     elif echo "$response" | grep -q "service_health"; then
@@ -199,13 +199,13 @@ validate_metrics() {
 # Check Docker health status
 validate_docker_health() {
   print_section "Validating Docker health status..."
-  
+
   for service in "${!SERVICES[@]}"; do
     echo -n "Checking $service Docker health status... "
-    
+
     # Get Docker container health status
     health_status=$(docker inspect --format='{{if .State.Health}}{{.State.Health.Status}}{{else}}no-health-check{{end}}' "$service" 2>/dev/null || echo "not-running")
-    
+
     if [[ "$health_status" == "not-running" ]]; then
       print_service_status "$service" "fail" "Container not running"
     elif [[ "$health_status" == "no-health-check" ]]; then
@@ -222,30 +222,30 @@ validate_docker_health() {
 # Validate Prometheus configuration
 validate_prometheus() {
   print_section "Validating Prometheus configuration..."
-  
+
   # Check if Prometheus is running
   if ! docker ps | grep -q monitoring-metrics; then
     echo -e "${RED}Error: Prometheus (monitoring-metrics) is not running.${NC}"
     return
   fi
-  
+
   # Get the prometheus.yml file
   prometheus_config="$ROOT_DIR/monitoring/prometheus/prometheus.yml"
-  
+
   # Check if service_health job exists
   if grep -q "job_name: 'service_health'" "$prometheus_config"; then
     echo -e "${GREEN}✓ Prometheus has service_health job${NC}"
   else
     echo -e "${RED}✗ Prometheus does not have service_health job${NC}"
   fi
-  
+
   # Check if alfred_health_dashboard job exists
   if grep -q "job_name: 'alfred_health_dashboard'" "$prometheus_config"; then
     echo -e "${GREEN}✓ Prometheus has alfred_health_dashboard job${NC}"
   else
     echo -e "${RED}✗ Prometheus does not have alfred_health_dashboard job${NC}"
   fi
-  
+
   # Verify targets in service_health job
   for service in "${!SERVICES[@]}"; do
     if grep -q "'$service:" "$prometheus_config"; then
@@ -259,12 +259,12 @@ validate_prometheus() {
 # Generate summary report
 generate_report() {
   print_header "Health Check Validation Summary"
-  
+
   echo -e "Services validated: ${TOTAL_SERVICES}"
   echo -e "Health endpoints passed: ${PASSED_HEALTH}/${TOTAL_SERVICES} ($(( PASSED_HEALTH * 100 / TOTAL_SERVICES ))%)"
   echo -e "Metrics endpoints passed: ${PASSED_METRICS}/${TOTAL_SERVICES} ($(( PASSED_METRICS * 100 / TOTAL_SERVICES ))%)"
   echo -e "Docker health checks passed: ${PASSED_DOCKER}/${TOTAL_SERVICES} ($(( PASSED_DOCKER * 100 / TOTAL_SERVICES ))%)"
-  
+
   if [ ${#FAILED_SERVICES[@]} -eq 0 ]; then
     echo -e "\n${GREEN}${BOLD}All health checks passed!${NC}"
   else
@@ -272,7 +272,7 @@ generate_report() {
     for failed in "${FAILED_SERVICES[@]}"; do
       echo -e "  ${RED}- $failed${NC}"
     done
-    
+
     echo -e "\n${YELLOW}Recommendations for failed services:${NC}"
     echo -e "1. Check the service container logs: ${BLUE}docker logs <service-name>${NC}"
     echo -e "2. Verify health endpoint implementation in service code"
@@ -280,20 +280,20 @@ generate_report() {
     echo -e "4. Ensure metrics server is running on port 9091 in the container"
     echo -e "5. Verify port mapping for metrics endpoint in docker-compose.yml"
   fi
-  
+
   echo -e "\n${YELLOW}Next Steps:${NC}"
   echo -e "1. Complete UI Admin service implementation"
   echo -e "2. Create Grafana dashboard for service health"
   echo -e "3. Set up alerts for service degradation"
   echo -e "4. Update operational documentation"
-  
+
   echo -e "\n${BOLD}Report generated at: $(date)${NC}"
 }
 
 # Clean up function to stop services
 cleanup() {
   print_section "Cleaning up..."
-  
+
   read -p "Do you want to stop all services? (y/n) " -n 1 -r
   echo
   if [[ $REPLY =~ ^[Yy]$ ]]; then
@@ -308,11 +308,11 @@ cleanup() {
 # Main function
 main() {
   print_header "Alfred Agent Platform v2 - Health Check Validation"
-  
+
   # Check prerequisites
   check_docker
   check_network
-  
+
   # Ask if user wants to start services
   read -p "Do you want to start all services for testing? (y/n) " -n 1 -r
   echo
@@ -321,16 +321,16 @@ main() {
   else
     echo "Skipping service startup. Using existing running services."
   fi
-  
+
   # Validate health checks
   validate_health
   validate_metrics
   validate_docker_health
   validate_prometheus
-  
+
   # Generate report
   generate_report
-  
+
   # Clean up
   cleanup
 }

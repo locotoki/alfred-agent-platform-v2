@@ -47,17 +47,17 @@ async def get_workflow_result(
             if result_id.startswith("niche-scout-"):
                 # Strip the prefix
                 timestamp = result_id.replace("niche-scout-", "")
-                
+
                 # In a production system, we would query a database here
                 # For now, generate simulated results
                 niche_scout = NicheScout()
                 results = niche_scout._generate_simulated_results()
-                
+
                 # Add the requested ID
                 results["_id"] = result_id
-                
+
                 return results
-                
+
         elif type == "seed-to-blueprint":
             # Check if there's a matching blueprint
             if result_id.startswith("blueprint-") or result_id.startswith("mock-blueprint-"):
@@ -65,16 +65,16 @@ async def get_workflow_result(
                 # For now, generate simulated results
                 blueprint = SeedToBlueprint()
                 results = blueprint._generate_simulated_results(None, "requested-niche")
-                
+
                 # Add the requested ID
                 results["_id"] = result_id
-                
+
                 return results
-                
+
         # If we get here, the result wasn't found
         logger.warning("workflow_result_not_found", result_id=result_id, type=type)
         raise HTTPException(status_code=404, detail="Workflow result not found")
-        
+
     except Exception as e:
         logger.error("error_retrieving_workflow_result", error=str(e), result_id=result_id, type=type)
         raise HTTPException(status_code=500, detail=str(e))
@@ -178,7 +178,7 @@ async def schedule_workflow(
     try:
         # In production this would store to a database
         schedule_id = f"sched-{int(datetime.now().timestamp())}"
-        
+
         # Return the created schedule
         return {
             "id": schedule_id,

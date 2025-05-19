@@ -2,7 +2,7 @@
 
 ## Issue Identified
 
-The Mission Control UI was showing Swagger documentation when accessed at `http://localhost:3000` instead of the expected dashboard. 
+The Mission Control UI was showing Swagger documentation when accessed at `http://localhost:3000` instead of the expected dashboard.
 
 After investigation, the cause was identified:
 

@@ -11,10 +11,10 @@ slackMcpGateway:
     tag: "0.1.0-rc3"
     digest: "sha256:3cf61e62e5e26849e4aa4ed3da53c8a5e03141739a0fd5a9cd2473aca772c057"
     pullPolicy: Always
-  
+
   # Environment configuration
   envFromSecret: slack-mcp-gateway-secrets
-  
+
   # Resource allocation for staging
   resources:
     requests:
@@ -23,16 +23,16 @@ slackMcpGateway:
     limits:
       memory: "256Mi"
       cpu: "200m"
-  
+
   # Replica count for staging
   replicaCount: 1
-  
+
   # Service configuration
   service:
     type: ClusterIP
     port: 80
     targetPort: 3000
-  
+
   # Health check configuration
   livenessProbe:
     httpGet:
@@ -40,7 +40,7 @@ slackMcpGateway:
       port: 3000
     initialDelaySeconds: 10
     periodSeconds: 30
-  
+
   readinessProbe:
     httpGet:
       path: /health

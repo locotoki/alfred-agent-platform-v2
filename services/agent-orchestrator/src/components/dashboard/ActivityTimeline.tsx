@@ -14,7 +14,7 @@ interface Activity {
 const generateActivity = (): Activity => {
   const types = ["task", "error", "agent", "system"];
   const type = types[Math.floor(Math.random() * types.length)] as Activity["type"];
-  
+
   const messages = {
     task: [
       "Niche-Scout workflow ran successfully",
@@ -45,14 +45,14 @@ const generateActivity = (): Activity => {
       "New configuration deployed"
     ]
   };
-  
+
   const message = messages[type][Math.floor(Math.random() * messages[type].length)];
-  
+
   const statuses = ["completed", "failed", "pending"];
-  const status = type === "error" 
+  const status = type === "error"
     ? "failed"
     : statuses[Math.floor(Math.random() * (type === "task" ? 3 : 2))]; // errors are always failed
-  
+
   return {
     id: Math.random().toString(36).substring(2, 9),
     type,
@@ -65,40 +65,40 @@ const generateActivity = (): Activity => {
 const ActivityTimeline = () => {
   const [activities, setActivities] = useState<Activity[]>([]);
   const [animateIndex, setAnimateIndex] = useState<number | null>(null);
-  
+
   useEffect(() => {
     // Initial activities
-    setActivities(Array(8).fill(null).map(() => generateActivity()).sort((a, b) => 
+    setActivities(Array(8).fill(null).map(() => generateActivity()).sort((a, b) =>
       b.timestamp.getTime() - a.timestamp.getTime()
     ));
-    
+
     // Add new activity every 8-12 seconds
     const interval = setInterval(() => {
       const newActivity = generateActivity();
       newActivity.timestamp = new Date();
-      
+
       setActivities(prev => {
         const updated = [newActivity, ...prev.slice(0, 9)]; // Keep last 10 items
         return updated.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
       });
-      
+
       setAnimateIndex(0);
       setTimeout(() => setAnimateIndex(null), 1000);
     }, Math.random() * 4000 + 8000);
-    
+
     return () => clearInterval(interval);
   }, []);
-  
+
   const formatTime = (date: Date) => {
     const now = new Date();
     const diff = (now.getTime() - date.getTime()) / 1000;
-    
+
     if (diff < 60) return "Just now";
     if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
     if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
     return `${Math.floor(diff / 86400)}d ago`;
   };
-  
+
   const getActivityIcon = (type: Activity["type"]) => {
     switch (type) {
       case "task":
@@ -113,10 +113,10 @@ const ActivityTimeline = () => {
         return <Clock className="h-5 w-5" />;
     }
   };
-  
+
   const getStatusIcon = (status?: Activity["status"]) => {
     if (!status) return null;
-    
+
     switch (status) {
       case "completed":
         return <Check className="h-4 w-4 text-green-500" />;
@@ -128,23 +128,23 @@ const ActivityTimeline = () => {
         return null;
     }
   };
-  
+
   return (
     <div className="card-shadow p-6">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-xl font-semibold">Recent Activity</h2>
-        <GradientButton 
-          variant="primary" 
+        <GradientButton
+          variant="primary"
           size="sm"
           iconBefore={<Clock className="h-4 w-4" />}
         >
           View All
         </GradientButton>
       </div>
-      
+
       <div className="space-y-4">
         {activities.map((activity, index) => (
-          <div 
+          <div
             key={activity.id}
             className={cn(
               "flex items-start space-x-3 p-3 rounded-lg transition-all border-l-4",
@@ -164,7 +164,7 @@ const ActivityTimeline = () => {
             )}>
               {getActivityIcon(activity.type)}
             </div>
-            
+
             <div className="flex-1 min-w-0">
               <div className="flex items-center justify-between">
                 <p className={cn(

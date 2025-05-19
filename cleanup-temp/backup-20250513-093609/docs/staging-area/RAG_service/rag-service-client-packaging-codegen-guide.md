@@ -5,7 +5,7 @@
 ## 1. Publishing `@acme/rag-client` to npm
 
 > Toolchain: pnpm + tsup (fast ESM/CJS bundles) with optional bun for local dev speed.
-> 
+>
 
 ### 1.1 Project layout
 
@@ -169,7 +169,7 @@ jobs:
 ```
 
 > Tip: For private registry publish, add npm_token secret and a second publish job gated on tags.
-> 
+>
 
 ---
 

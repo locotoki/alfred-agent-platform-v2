@@ -25,7 +25,7 @@ This document provides step-by-step instructions for implementing the UI migrati
    // Example implementation in agent-orchestrator
    import { GradientButton } from '../shared-components/components/ui/buttons/GradientButton';
    import { StatsCard } from '../shared-components/components/ui/cards/StatsCard';
-   
+
    // Then use these components in your UI
    <GradientButton variant="primary">Action</GradientButton>
    ```
@@ -36,7 +36,7 @@ This document provides step-by-step instructions for implementing the UI migrati
    // In your main CSS file or component
    import '../shared-components/styles/mixins/gradients.css';
    ```
-   
+
 3. **Migrate dashboard enhancements**:
    - Update the `DashboardView.tsx` in agent-orchestrator to use gradient styles
    - Add animations to dashboard elements with the `FadeIn` component
@@ -102,22 +102,22 @@ import { FileText, Users, Server } from 'lucide-react';
 const DashboardStats = () => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-      <StatsCard 
-        title="Total Users" 
+      <StatsCard
+        title="Total Users"
         value="1,234"
         icon={<Users className="h-6 w-6" />}
         trend={{ value: "12%", isPositive: true }}
       />
-      
-      <StatsCard 
-        title="Active Tasks" 
+
+      <StatsCard
+        title="Active Tasks"
         value="42"
         icon={<FileText className="h-6 w-6" />}
         trend={{ value: "5", isPositive: true }}
       />
-      
-      <StatsCard 
-        title="Server Load" 
+
+      <StatsCard
+        title="Server Load"
         value="28%"
         icon={<Server className="h-6 w-6" />}
         trend={{ value: "3%", isPositive: false }}
@@ -136,10 +136,10 @@ const AnimatedList = ({ items }) => {
   return (
     <div className="space-y-4">
       {items.map((item, index) => (
-        <FadeIn 
-          key={item.id} 
-          delay={index * 100} 
-          direction="up" 
+        <FadeIn
+          key={item.id}
+          delay={index * 100}
+          direction="up"
           distance={10}
         >
           <div className="p-4 bg-white rounded shadow">
@@ -160,31 +160,31 @@ import { GradientProgressBar } from '../shared-components/components/ui/visualiz
 const SystemMetrics = () => {
   return (
     <div className="space-y-6">
-      <GradientProgressBar 
-        value={75} 
-        variant="primary" 
-        showValue={true} 
+      <GradientProgressBar
+        value={75}
+        variant="primary"
+        showValue={true}
         animated={true}
         label="CPU Usage"
       />
-      
-      <GradientProgressBar 
-        value={45} 
-        variant="secondary" 
+
+      <GradientProgressBar
+        value={45}
+        variant="secondary"
         showValue={true}
         label="Memory Usage"
       />
-      
-      <GradientProgressBar 
-        value={92} 
-        variant="success" 
+
+      <GradientProgressBar
+        value={92}
+        variant="success"
         showValue={true}
         label="Disk Space"
       />
-      
-      <GradientProgressBar 
-        value={30} 
-        variant="warning" 
+
+      <GradientProgressBar
+        value={30}
+        variant="warning"
         showValue={true}
         striped={true}
         label="Network Bandwidth"
@@ -201,11 +201,11 @@ If you encounter issues with the shared components:
 1. **Path resolution problems**:
    - Ensure symlinks are correctly set up in both projects
    - Check import paths in your components
-   
+
 2. **CSS conflicts**:
    - Use more specific selectors if necessary
    - Consider using CSS modules or styles scoping
-   
+
 3. **Type errors**:
    - Ensure TypeScript can resolve the shared types
    - Add proper type declarations where needed

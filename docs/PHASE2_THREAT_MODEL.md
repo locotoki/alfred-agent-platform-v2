@@ -139,24 +139,24 @@ flowchart TD
     USER[User] -->|Interaction| CON{Consent Manager}
     CON -->|Granted| ETL[Data Collection]
     CON -->|Denied| REJ[Limited Experience]
-    
+
     ETL -->|Processed Data| PS[(Primary Storage)]
     ETL -->|Sensitive Data| ENC{Encryption}
     ENC -->|Encrypted| PS
-    
+
     PS -->|Retention Period| RT{Retention Check}
     RT -->|Expired| DEL[Data Deletion]
     RT -->|Active| KEEP[Data Retained]
-    
+
     PS -->|Analytics Processing| ANON{Anonymization}
     ANON -->|Anonymized Data| ML[ML Processing]
     ML -->|Insights| AGG[Aggregation]
     AGG -->|Aggregated Insights| VS[(Vector Store)]
-    
+
     USER -->|Data Request| REQ{Request Handler}
     REQ -->|Export| EXP[Data Export]
     REQ -->|Deletion| ERA[Data Erasure]
-    
+
     ERA -->|Deletion Request| DEL
     DEL --> CONF[Deletion Confirmation]
     CONF --> USER

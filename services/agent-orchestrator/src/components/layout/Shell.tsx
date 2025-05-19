@@ -10,10 +10,10 @@ interface ShellProps {
   logoFallback?: string;
 }
 
-const Shell = ({ 
+const Shell = ({
   children,
-  logoUrl = "/lovable-uploads/4f5a01e8-7502-47aa-9bb4-567065f7d751.png", 
-  logoFallback = "AP" 
+  logoUrl = "/lovable-uploads/4f5a01e8-7502-47aa-9bb4-567065f7d751.png",
+  logoFallback = "AP"
 }: ShellProps) => {
   return (
     <SidebarProvider>

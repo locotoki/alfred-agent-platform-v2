@@ -36,11 +36,11 @@ app.get('/api/config', (req, res) => {
 // Socket.IO connection handler
 io.on('connection', (socket) => {
   console.log('Client connected');
-  
+
   socket.on('disconnect', () => {
     console.log('Client disconnected');
   });
-  
+
   // Example event handlers
   socket.on('agent:query', (data) => {
     console.log('Agent query received:', data);
@@ -105,14 +105,14 @@ app.get('*', (req, res) => {
       <div class="container">
         <h1>Alfred Agent Platform</h1>
         <h2>Mission Control Dashboard</h2>
-        
+
         <div class="status">
           <div class="status-indicator"></div>
           <div>
             <strong>Status:</strong> System operational
           </div>
         </div>
-        
+
         <p>This is a simplified version of the Mission Control UI.</p>
         <p>Environment: ${process.env.NODE_ENV || 'development'}</p>
         <p>Connected APIs:</p>
@@ -122,7 +122,7 @@ app.get('*', (req, res) => {
           <li>Social Intelligence: ${process.env.NEXT_PUBLIC_SOCIAL_INTEL_URL || 'http://localhost:9000'}</li>
         </ul>
       </div>
-      
+
       <script>
         // Simple client-side code
         console.log('Mission Control Dashboard loaded');

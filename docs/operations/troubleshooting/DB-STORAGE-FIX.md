@@ -79,8 +79,8 @@ The fix script `scripts/fix-db-storage.sh` contains several key components:
 1. **Migration Hash Fix**:
    ```sql
    -- Set a known working hash value for the pathtoken-column migration
-   UPDATE storage.migrations 
-   SET hash = 'e2c8d16e824f5ed948b4760efd0d88d5' 
+   UPDATE storage.migrations
+   SET hash = 'e2c8d16e824f5ed948b4760efd0d88d5'
    WHERE name = 'pathtoken-column';
    ```
 

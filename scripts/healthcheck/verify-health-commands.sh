@@ -19,7 +19,7 @@ NC='\033[0m' # No Color
 echo -e "${BLUE}=======================================================${NC}"
 echo -e "${BLUE}      Docker Compose Health Check Verification         ${NC}"
 echo -e "${BLUE}=======================================================${NC}"
-echo 
+echo
 
 # Check for any remaining 'healthcheck' binary references
 echo -e "${BLUE}Checking for remaining 'healthcheck' binary references...${NC}"
@@ -29,7 +29,7 @@ if [ "$HEALTHCHECK_REFS" -gt 0 ]; then
     echo -e "${RED}Found $HEALTHCHECK_REFS references to the 'healthcheck' binary in docker-compose files.${NC}"
     echo -e "${YELLOW}Problematic services:${NC}"
     grep -r "\"CMD\", \"healthcheck\"" "${PROJECT_ROOT}" --include="docker-compose*.yml" -A 1 -B 1
-    echo 
+    echo
     echo -e "${YELLOW}Please update these services to use curl or other available commands.${NC}"
 else
     echo -e "${GREEN}No references to 'healthcheck' binary found. All services have been updated!${NC}"
@@ -54,7 +54,7 @@ PG_CHECKS=$(grep -r "pg_isready" "${PROJECT_ROOT}" --include="docker-compose*.ym
 echo -e "${GREEN}Found $PG_CHECKS PostgreSQL health checks using pg_isready${NC}"
 
 # Summary
-echo 
+echo
 echo -e "${BLUE}=======================================================${NC}"
 echo -e "${BLUE}                       Summary                         ${NC}"
 echo -e "${BLUE}=======================================================${NC}"

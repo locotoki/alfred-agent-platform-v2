@@ -40,19 +40,19 @@ for dockerfile in $DOCKERFILES; do
   fi
 
   echo -e "${YELLOW}⚠️ Processing: $dockerfile${NC}"
-  
+
   # Create backup
   cp "$dockerfile" "${dockerfile}.bak-${TIMESTAMP}"
-  
+
   # Check if this is a multi-stage build
   FINAL_STAGE=""
   if grep -q "^FROM .* AS " "$dockerfile"; then
     # Multi-stage build - find the final stage
     STAGES=$(grep "^FROM .* AS " "$dockerfile" | sed -E 's/FROM .* AS ([^ ]+).*/\1/')
-    
+
     # Get the last stage referenced in a COPY --from statement
     COPY_FROMS=$(grep "COPY --from=" "$dockerfile" | sed -E 's/COPY --from=([^ ]+).*/\1/')
-    
+
     # Stages that are not referenced in COPY --from are final stages
     for stage in $STAGES; do
       if ! echo "$COPY_FROMS" | grep -q "$stage"; then
@@ -60,18 +60,18 @@ for dockerfile in $DOCKERFILES; do
         break
       fi
     done
-    
+
     if [ -z "$FINAL_STAGE" ]; then
       # If we couldn't determine the final stage, just use the last stage mentioned
       FINAL_STAGE=$(echo "$STAGES" | tail -1)
     fi
-    
+
     echo -e "${BLUE}   Multi-stage build - Final stage: $FINAL_STAGE${NC}"
   fi
-  
+
   # Inject healthcheck stage at the beginning
   sed -i "1s/^/FROM ghcr.io\/alfred\/healthcheck:${HEALTHCHECK_VERSION} AS healthcheck\n/" "$dockerfile"
-  
+
   # Determine where to add the COPY --from=healthcheck command
   if [ -n "$FINAL_STAGE" ]; then
     # Add after the final stage FROM line
@@ -96,7 +96,7 @@ for dockerfile in $DOCKERFILES; do
       continue
     fi
   fi
-  
+
   # Add EXPOSE 9091 for metrics
   if ! grep -q "EXPOSE.*9091" "$dockerfile"; then
     if grep -q "EXPOSE" "$dockerfile"; then
@@ -118,20 +118,20 @@ for dockerfile in $DOCKERFILES; do
   else
     echo -e "${BLUE}   EXPOSE 9091 already present${NC}"
   fi
-  
+
   # Check if ENTRYPOINT is defined
   if grep -q "^ENTRYPOINT\|^CMD" "$dockerfile"; then
     echo -e "${BLUE}   Dockerfile already has ENTRYPOINT/CMD${NC}"
-    
+
     # Add note about healthcheck metrics
     echo -e "\n# To expose metrics, update your ENTRYPOINT/CMD to include: /usr/local/bin/healthcheck --export-prom :9091 &" >> "$dockerfile"
   else
     echo -e "${YELLOW}   No ENTRYPOINT/CMD found - adding note${NC}"
-    
+
     # Add template for ENTRYPOINT and CMD
     echo -e "\n# To expose metrics, add something like:\n# ENTRYPOINT [\"/usr/local/bin/healthcheck\", \"--export-prom\", \":9091\", \"&\", \"your-app-binary\"]" >> "$dockerfile"
   fi
-  
+
   echo -e "${GREEN}✅ Updated: $dockerfile${NC}"
 done
 

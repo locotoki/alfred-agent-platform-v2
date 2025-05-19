@@ -7,7 +7,7 @@ import { NicheScoutResult } from '../../../../types/youtube-workflows';
 export default function NicheScoutResults() {
   const router = useRouter();
   const { id } = router.query;
-  
+
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [results, setResults] = useState<NicheScoutResult | null>(null);
@@ -16,20 +16,20 @@ export default function NicheScoutResults() {
   useEffect(() => {
     async function fetchResults() {
       if (!id) return;
-      
+
       try {
         setIsLoading(true);
         console.log(`Fetching Niche-Scout results for ID: ${id}`);
-        
+
         // Introduce a small delay for UX so loading state is visible
         await new Promise(resolve => setTimeout(resolve, 1000));
-        
+
         const data = await getWorkflowResult(id as string, 'niche-scout');
-        
+
         if (!data) {
           throw new Error('No data returned from the server');
         }
-        
+
         console.log(`Successfully fetched Niche-Scout results for ID: ${id}`);
         setResults(data as NicheScoutResult);
       } catch (err) {
@@ -54,7 +54,7 @@ export default function NicheScoutResults() {
             <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
               NICHE-SCOUT RESULTS
             </h1>
-            <button 
+            <button
               onClick={() => router.push('/workflows/niche-scout')}
               className="btn-secondary"
             >
@@ -74,7 +74,7 @@ export default function NicheScoutResults() {
           <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-800 dark:text-red-200 p-4 rounded-md">
             <h3 className="font-bold">Error</h3>
             <p>{error}</p>
-            <button 
+            <button
               onClick={() => router.push('/workflows/niche-scout')}
               className="mt-2 text-red-600 dark:text-red-400 underline"
             >
@@ -215,9 +215,9 @@ export default function NicheScoutResults() {
                   <h2 className="text-xl font-bold mb-4">Niche Visualization</h2>
                   <div className="bg-gray-100 dark:bg-gray-800 rounded-lg p-4 flex items-center justify-center h-80">
                     {results.visualization_url ? (
-                      <img 
-                        src={results.visualization_url} 
-                        alt="Niche visualization" 
+                      <img
+                        src={results.visualization_url}
+                        alt="Niche visualization"
                         className="max-h-full max-w-full object-contain"
                       />
                     ) : (

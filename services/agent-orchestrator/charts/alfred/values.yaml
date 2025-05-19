@@ -4,7 +4,7 @@
 # Global settings
 global:
   environment: development
-  
+
 # Metrics settings
 metrics:
   enabled: false  # Set to true in staging/prod
@@ -39,7 +39,7 @@ prometheus:
       tag: v2.48.1
       pullPolicy: IfNotPresent
 
-# Grafana configuration  
+# Grafana configuration
 grafana:
   enabled: true
   image:

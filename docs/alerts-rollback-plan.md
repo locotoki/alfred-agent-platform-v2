@@ -31,7 +31,7 @@ helm upgrade alfred ./charts/alfred -n staging \
 # Get current revision
 CURRENT_REV=$(helm list -n staging | grep alfred | awk '{print $3}')
 
-# Get previous revision  
+# Get previous revision
 PREV_REV=$((CURRENT_REV - 1))
 
 # Rollback to previous revision

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Updates the Prometheus configuration to include all services with 
+# Updates the Prometheus configuration to include all services with
 # metrics endpoints exposed on port 9091
 
 set -euo pipefail
@@ -89,7 +89,7 @@ else
   # Add a new job
   echo "Adding new service_health job..."
   cat << EOF >> "$NEW_CONFIG"
-  
+
   # New job for service health metrics from v0.4.0 healthcheck binary
   - job_name: 'service_health'
     static_configs:
@@ -109,7 +109,7 @@ else
   # Add a new job
   echo "Adding new alfred_health_dashboard job..."
   cat << EOF >> "$NEW_CONFIG"
-  
+
   # Unified Health Dashboard Job (for Grafana)
   - job_name: 'alfred_health_dashboard'
     honor_labels: true

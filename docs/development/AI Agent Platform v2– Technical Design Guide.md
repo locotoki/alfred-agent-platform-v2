@@ -146,7 +146,7 @@ PE ..> GCPPS : same topics (switch env)
 ### **4.1 Setup Supabase**
 
 1. **Install Supabase** with Docker Compose:
-    
+
     ```yaml
     yaml
     CopyEdit
@@ -157,32 +157,32 @@ PE ..> GCPPS : same topics (switch env)
         image: supabase/postgrest
       supabase-realtime:
         image: supabase/realtime
-    
+
     ```
-    
+
 2. **Configure pgvector**: Install `pgvector` to support vector storage:
-    
+
     ```sql
     sql
     CopyEdit
     CREATE EXTENSION IF NOT EXISTS pgvector;
-    
+
     ```
-    
+
 
 ### **4.2 Code Changes**
 
 1. **State Store Migration**: Replace Firestore client with Postgres using `asyncpg`:
-    
+
     ```python
     python
     CopyEdit
     import asyncpg
     conn = await asyncpg.connect("postgres://supabase_user@supabase:5432/postgres")
     await conn.execute("INSERT INTO tasks ...")
-    
+
     ```
-    
+
 2. **Integrate LangChain**: Orchestrate agent workflows with **LangChain**.
     - Use **LangChain’s AgentExecutor** to define and execute task chains.
 3. **Real-Time Updates**: For live updates, integrate **Supabase Realtime** via **WebSockets** in the UI.

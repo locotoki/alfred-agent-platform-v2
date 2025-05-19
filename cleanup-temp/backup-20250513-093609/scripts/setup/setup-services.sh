@@ -28,31 +28,31 @@ echo -e "${NC}"
 # Create service directory structure
 function create_directories() {
   echo -e "${YELLOW}Creating service directory structure...${NC}"
-  
+
   # Create services directory if it doesn't exist
   mkdir -p "$BASE_DIR/services/alfred-core"
   mkdir -p "$BASE_DIR/services/rag-service"
   mkdir -p "$BASE_DIR/services/atlas-service"
-  
+
   # Create UI directory if it doesn't exist
   mkdir -p "$BASE_DIR/ui/chat"
   mkdir -p "$BASE_DIR/ui/admin"
-  
+
   # Create monitoring directory if it doesn't exist
   mkdir -p "$BASE_DIR/monitoring/prometheus"
   mkdir -p "$BASE_DIR/monitoring/grafana/dashboards"
   mkdir -p "$BASE_DIR/monitoring/grafana/provisioning"
-  
+
   # Create migrations directory if it doesn't exist
   mkdir -p "$BASE_DIR/migrations/supabase"
-  
+
   echo -e "${GREEN}Directory structure created!${NC}"
 }
 
 # Create sample Dockerfiles
 function create_sample_dockerfiles() {
   echo -e "${YELLOW}Creating sample Dockerfiles...${NC}"
-  
+
   # Create alfred-core Dockerfile.dev
   cat > "$BASE_DIR/services/alfred-core/Dockerfile.dev" << EOF
 FROM python:3.11-slim
@@ -66,7 +66,7 @@ COPY . .
 
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8011", "--reload"]
 EOF
-  
+
   # Create rag-service Dockerfile.dev
   cat > "$BASE_DIR/services/rag-service/Dockerfile.dev" << EOF
 FROM python:3.11-slim
@@ -80,7 +80,7 @@ COPY . .
 
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8501", "--reload"]
 EOF
-  
+
   # Create ui-chat Dockerfile.dev
   cat > "$BASE_DIR/ui/chat/Dockerfile.dev" << EOF
 FROM python:3.11-slim
@@ -94,14 +94,14 @@ COPY . .
 
 CMD ["streamlit", "run", "streamlit_app.py", "--server.port=8501", "--server.address=0.0.0.0"]
 EOF
-  
+
   echo -e "${GREEN}Sample Dockerfiles created!${NC}"
 }
 
 # Create sample requirements.txt files
 function create_sample_requirements() {
   echo -e "${YELLOW}Creating sample requirements.txt files...${NC}"
-  
+
   # Create alfred-core requirements.txt
   cat > "$BASE_DIR/services/alfred-core/requirements.txt" << EOF
 fastapi==0.100.0
@@ -110,7 +110,7 @@ pydantic==2.0.2
 httpx==0.24.1
 python-dotenv==1.0.0
 EOF
-  
+
   # Create rag-service requirements.txt
   cat > "$BASE_DIR/services/rag-service/requirements.txt" << EOF
 fastapi==0.100.0
@@ -120,21 +120,21 @@ httpx==0.24.1
 python-dotenv==1.0.0
 langchain==0.0.235
 EOF
-  
+
   # Create ui-chat requirements.txt
   cat > "$BASE_DIR/ui/chat/requirements.txt" << EOF
 streamlit==1.24.0
 httpx==0.24.1
 python-dotenv==1.0.0
 EOF
-  
+
   echo -e "${GREEN}Sample requirements.txt files created!${NC}"
 }
 
 # Create sample app files
 function create_sample_apps() {
   echo -e "${YELLOW}Creating sample app files...${NC}"
-  
+
   # Create alfred-core main.py
   mkdir -p "$BASE_DIR/services/alfred-core/app"
   cat > "$BASE_DIR/services/alfred-core/app/main.py" << EOF
@@ -151,7 +151,7 @@ async def root():
 async def health():
     return {"status": "healthy"}
 EOF
-  
+
   # Create rag-service main.py
   mkdir -p "$BASE_DIR/services/rag-service/app"
   cat > "$BASE_DIR/services/rag-service/app/main.py" << EOF
@@ -168,7 +168,7 @@ async def root():
 async def health():
     return {"status": "healthy"}
 EOF
-  
+
   # Create ui-chat streamlit_app.py
   cat > "$BASE_DIR/ui/chat/streamlit_app.py" << EOF
 import streamlit as st
@@ -182,14 +182,14 @@ if st.button("Send"):
     st.write(f"You sent: {message}")
     st.write("Response: I'm a placeholder response")
 EOF
-  
+
   echo -e "${GREEN}Sample app files created!${NC}"
 }
 
 # Create sample prometheus.yml
 function create_sample_prometheus() {
   echo -e "${YELLOW}Creating sample Prometheus configuration...${NC}"
-  
+
   cat > "$BASE_DIR/monitoring/prometheus/prometheus.yml" << EOF
 global:
   scrape_interval: 15s
@@ -208,14 +208,14 @@ scrape_configs:
     static_configs:
       - targets: ['monitoring-db:9187']
 EOF
-  
+
   echo -e "${GREEN}Sample Prometheus configuration created!${NC}"
 }
 
 # Function to set up empty migration files
 function create_sample_migrations() {
   echo -e "${YELLOW}Creating sample migration files...${NC}"
-  
+
   cat > "$BASE_DIR/migrations/supabase/01_init.sql" << EOF
 -- Initial database setup
 CREATE SCHEMA IF NOT EXISTS public;
@@ -231,7 +231,7 @@ CREATE TABLE IF NOT EXISTS public.users (
 -- Basic permissions
 ALTER TABLE public.users ENABLE ROW LEVEL SECURITY;
 EOF
-  
+
   echo -e "${GREEN}Sample migrations created!${NC}"
 }
 
@@ -247,7 +247,7 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
   create_sample_apps
   create_sample_prometheus
   create_sample_migrations
-  
+
   echo -e "\n${GREEN}Service setup complete!${NC}"
   echo -e "${YELLOW}Next steps:${NC}"
   echo -e "1. Review the sample files and replace with your actual service implementations"

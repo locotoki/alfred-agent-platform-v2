@@ -11,28 +11,28 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      
+
       - name: Setup k6
         uses: grafana/k6-action@v0.2.0
-        
+
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '18'
-          
+
       - name: Start stack with Docker Compose
         run: |
           docker-compose up -d
           # Wait for services to be ready
           sleep 30
-          
+
       - name: Run k6 load test
         run: |
           k6 run scripts/proxy_load.js --summary-export=result.json
-          
+
       - name: Validate thresholds
         run: node scripts/assert_k6_thresholds.js
-        
+
       - name: Post results as comment
         if: github.event_name == 'pull_request'
         uses: actions/github-script@v6
@@ -42,7 +42,7 @@ jobs:
             const result = JSON.parse(fs.readFileSync('result.json'));
             const p99 = result.metrics.http_req_duration.values['p(99)'];
             const errorRate = (1 - result.metrics.checks.rate) * 100;
-            
+
             github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,

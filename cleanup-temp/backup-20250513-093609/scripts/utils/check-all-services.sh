@@ -9,7 +9,7 @@ BLUE="\033[34m"
 RESET="\033[0m"
 
 echo -e "${BOLD}${BLUE}=== Alfred Agent Platform v2 Service Health Check ===${RESET}"
-echo 
+echo
 
 # Check services grouped by category
 echo -e "${BOLD}Core Infrastructure:${RESET}"
@@ -134,7 +134,7 @@ endpoints=(
 
 for endpoint in "${endpoints[@]}"; do
     IFS="|" read -r url name <<< "$endpoint"
-    
+
     # Try curl with timeout to see if endpoint is accessible
     if timeout 2 curl -s "$url" > /dev/null; then
         echo -e "  ${GREEN}✓ $name ($url)${RESET}"

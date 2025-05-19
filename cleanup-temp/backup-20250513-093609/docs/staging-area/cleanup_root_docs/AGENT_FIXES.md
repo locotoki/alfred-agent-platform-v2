@@ -71,7 +71,7 @@ class TaxCalculationRequest(BaseModel):
     income: float
     deductions: Optional[List[Dict[str, Any]]] = None
     dependents: Optional[int] = None
-    
+
     def dict(self):
         return {
             "jurisdiction": self.jurisdiction,
@@ -89,11 +89,11 @@ class FinancialTaxAgent:
         self.policy_middleware = policy_middleware
         self.is_running = False
         self.supported_intents = ["TAX_CALCULATION", "FINANCIAL_ANALYSIS", "TAX_COMPLIANCE_CHECK", "RATE_SHEET_LOOKUP"]
-        
+
     async def start(self):
         self.is_running = True
         print("Starting FinancialTaxAgent...")
-        
+
     async def stop(self):
         self.is_running = False
         print("Stopping FinancialTaxAgent...")

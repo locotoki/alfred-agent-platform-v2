@@ -17,7 +17,7 @@ check_service() {
     local name=$1
     local port=$2
     local endpoint=$3
-    
+
     echo -n "Checking $name..."
     if curl -s "http://localhost:$port$endpoint" > /dev/null; then
         echo -e "${GREEN} ✓ Healthy${NC}"

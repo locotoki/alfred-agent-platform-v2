@@ -56,10 +56,10 @@ A scalable, modular AI agent platform built with Docker, Supabase, and Pub/Sub m
    ```bash
    # Production-like environment
    docker compose up -d
-   
+
    # Development environment with hot-reloading and debugging
    docker compose -f docker-compose.yml -f docker-compose.dev.yml --profile dev up -d
-   
+
    # Include mock services for development
    docker compose -f docker-compose.yml -f docker-compose.dev.yml --profile dev --profile mocks up -d
    ```

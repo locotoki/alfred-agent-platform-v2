@@ -4,9 +4,9 @@
 All preparations complete. Waiting for Coordinator sign-off after 24-hour soak test completion.
 
 ## Soak Test Results
-- **Start Time**: 2025-05-16T15:50:09Z  
-- **End Time**: 2025-05-17T15:50:09Z  
-- **Duration**: 24 hours  
+- **Start Time**: 2025-05-16T15:50:09Z
+- **End Time**: 2025-05-17T15:50:09Z
+- **Duration**: 24 hours
 - **Result**: ✅ PASSED
 
 ### Key Metrics
@@ -43,6 +43,6 @@ The automated soak-report workflow will trigger at 15:50 UTC.
 Slack reminder set for 15:55 UTC for Coordinator review.
 
 ---
-Generated: 2025-05-17T15:45:00Z  
-Branch: hotfix/metrics-health-fix  
+Generated: 2025-05-17T15:45:00Z
+Branch: hotfix/metrics-health-fix
 Status: Ready for GA promotion

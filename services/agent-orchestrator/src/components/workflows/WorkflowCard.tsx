@@ -29,14 +29,14 @@ const WorkflowCard = ({ workflow, onRunWorkflow, asDialogTrigger = false }: Work
   const [serviceAvailable, setServiceAvailable] = useState(true);
   const [serviceError, setServiceError] = useState<string | undefined>(undefined);
   const { toast } = useToast();
-  
+
   // Check service health on component mount and periodically
   useEffect(() => {
     const checkHealth = async () => {
       const status = getServiceStatus('socialIntel');
       setServiceAvailable(status.available);
       setServiceError(status.error);
-      
+
       // Initial health check if needed
       if (!status.lastChecked || new Date().getTime() - status.lastChecked.getTime() > 60000) {
         const available = await checkServiceHealth('socialIntel');
@@ -47,17 +47,17 @@ const WorkflowCard = ({ workflow, onRunWorkflow, asDialogTrigger = false }: Work
         }
       }
     };
-    
+
     // Check immediately on mount
     checkHealth();
-    
+
     // Set up periodic checks every 60 seconds
     const intervalId = setInterval(checkHealth, 60000);
-    
+
     // Clean up on unmount
     return () => clearInterval(intervalId);
   }, []);
-  
+
   const formatDate = (date?: Date) => {
     if (!date) return "Not scheduled";
     return date.toLocaleDateString("en-US", {
@@ -67,26 +67,26 @@ const WorkflowCard = ({ workflow, onRunWorkflow, asDialogTrigger = false }: Work
       minute: "2-digit"
     });
   };
-  
+
   const handleRunWorkflow = () => {
     if (asDialogTrigger) {
       // If used as a dialog trigger, we don't execute the workflow directly
       return;
     }
-    
+
     onRunWorkflow(workflow.id);
     toast({
       title: `${workflow.name} started`,
       description: "The workflow has been queued for execution.",
     });
   };
-  
+
   const handleSave = () => {
     toast({
       title: "Workflow updated",
       description: `${workflow.name} schedule has been updated.`,
     });
-    
+
     setIsConfigOpen(false);
   };
 
@@ -97,16 +97,16 @@ const WorkflowCard = ({ workflow, onRunWorkflow, asDialogTrigger = false }: Work
       setFrequency(value);
     }
   };
-  
+
   // Handle completion of Niche Scout wizard
   const handleNicheScoutComplete = async (payload: FinalPayload) => {
     try {
       // Show loading state
       setIsLoading(true);
-      
+
       // If service is not available, force offline mode
       const forceOfflineMode = !serviceAvailable;
-      
+
       if (forceOfflineMode) {
         // Show offline mode notification
         toast({
@@ -115,7 +115,7 @@ const WorkflowCard = ({ workflow, onRunWorkflow, asDialogTrigger = false }: Work
           variant: "warning",
         });
       }
-      
+
       // Call the API with the payload from the wizard
       const result = await runNicheScout({
         category: payload.category.value,
@@ -124,63 +124,63 @@ const WorkflowCard = ({ workflow, onRunWorkflow, asDialogTrigger = false }: Work
         dataSources: payload.dataSources,
         forceOfflineMode
       });
-      
+
       // Handle success - store the result or update UI
       console.log("Niche scout completed:", result);
-      
+
       // Store results in localStorage for the results dialog
       try {
         const storedResults = localStorage.getItem('youtube-results');
         let resultsArray = [];
-        
+
         if (storedResults) {
           resultsArray = JSON.parse(storedResults);
         }
-        
+
         // Add new result to the beginning
         resultsArray.unshift(result);
-        
+
         // Keep only the last 5 results
         if (resultsArray.length > 5) {
           resultsArray = resultsArray.slice(0, 5);
         }
-        
+
         localStorage.setItem('youtube-results', JSON.stringify(resultsArray));
       } catch (err) {
         console.error('Failed to store results:', err);
       }
-      
+
       // Check if running in offline mode based on the result status
       const isOfflineMode = result.status?.includes('offline');
-      
+
       // Show success notification
       toast({
         title: isOfflineMode ? "Niche Scout completed (offline mode)" : "Niche Scout analysis complete",
         description: `Found ${result.trending_niches.length} trending niches in ${payload.subcategory.label}. Click "View Niche Scout Results" to see details.`,
         variant: isOfflineMode ? "default" : "default",
       });
-      
+
       // Update service status based on API response
       if (!isOfflineMode && !serviceAvailable) {
         setServiceAvailable(true);
         setServiceError(undefined);
       }
-      
+
     } catch (error) {
       console.error("Niche scout failed:", error);
-      
+
       // Update service status if needed
       const status = getServiceStatus('socialIntel');
       setServiceAvailable(status.available);
       setServiceError(status.error);
-      
+
       // Handle error with more specific messages
       const errorMessage = error instanceof Error ? error.message : "Unknown error";
-      
+
       toast({
         title: "Niche Scout failed",
-        description: errorMessage.includes("Failed to run") 
-          ? errorMessage 
+        description: errorMessage.includes("Failed to run")
+          ? errorMessage
           : "Could not complete analysis. Please try again.",
         variant: "destructive",
       });
@@ -191,7 +191,7 @@ const WorkflowCard = ({ workflow, onRunWorkflow, asDialogTrigger = false }: Work
   };
 
   return (
-    <div 
+    <div
       className={cn(
         "border rounded-lg p-4 transition-all duration-200 hover:bg-accent/20",
         workflow.status === "error" && "border-error/40",
@@ -204,7 +204,7 @@ const WorkflowCard = ({ workflow, onRunWorkflow, asDialogTrigger = false }: Work
             <h3 className="font-medium">{workflow.name}</h3>
             <ChevronRight className="h-4 w-4 text-muted-foreground" />
           </div>
-          
+
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <label className="text-xs font-medium">Frequency</label>
@@ -221,7 +221,7 @@ const WorkflowCard = ({ workflow, onRunWorkflow, asDialogTrigger = false }: Work
                 </SelectContent>
               </Select>
             </div>
-            
+
             <div className="space-y-2">
               <label className="text-xs font-medium">Time</label>
               <Input
@@ -231,10 +231,10 @@ const WorkflowCard = ({ workflow, onRunWorkflow, asDialogTrigger = false }: Work
               />
             </div>
           </div>
-          
-          <Button 
-            variant="outline" 
-            size="sm" 
+
+          <Button
+            variant="outline"
+            size="sm"
             onClick={handleSave}
             className="w-full sm:w-auto"
           >
@@ -261,8 +261,8 @@ const WorkflowCard = ({ workflow, onRunWorkflow, asDialogTrigger = false }: Work
                     </TooltipTrigger>
                     <TooltipContent>
                       <p>
-                        {serviceAvailable 
-                          ? "Service available: Connected to Social Intelligence API" 
+                        {serviceAvailable
+                          ? "Service available: Connected to Social Intelligence API"
                           : `Service unavailable: ${serviceError || "Connection error"}. Running in offline mode.`}
                       </p>
                     </TooltipContent>
@@ -272,7 +272,7 @@ const WorkflowCard = ({ workflow, onRunWorkflow, asDialogTrigger = false }: Work
               <ChevronRight className="h-4 w-4 text-muted-foreground" />
             </div>
             <p className="text-sm text-muted-foreground mb-2">{workflow.description}</p>
-            
+
             <div className="flex items-center text-xs text-muted-foreground">
               <Clock className="h-3.5 w-3.5 mr-1.5" />
               <span>Last run: {formatDate(workflow.lastRun)}</span>
@@ -289,13 +289,13 @@ const WorkflowCard = ({ workflow, onRunWorkflow, asDialogTrigger = false }: Work
               )}
             </div>
           </div>
-          
+
           <div className="flex gap-2 ml-4">
             {workflow.name === "Niche-Scout" ? (
               <>
-                <Button 
-                  variant="default" 
-                  size="sm" 
+                <Button
+                  variant="default"
+                  size="sm"
                   onClick={() => setWizardOpen(true)}
                   className={cn(
                     "whitespace-nowrap",
@@ -310,8 +310,8 @@ const WorkflowCard = ({ workflow, onRunWorkflow, asDialogTrigger = false }: Work
                     </span>
                   )}
                 </Button>
-                
-                <NicheScoutWizard 
+
+                <NicheScoutWizard
                   trigger={<div />}
                   onComplete={handleNicheScoutComplete}
                   open={wizardOpen}
@@ -320,9 +320,9 @@ const WorkflowCard = ({ workflow, onRunWorkflow, asDialogTrigger = false }: Work
               </>
             ) : (
               <>
-                <Button 
-                  variant="default" 
-                  size="sm" 
+                <Button
+                  variant="default"
+                  size="sm"
                   onClick={handleRunWorkflow}
                   className={cn(
                     "whitespace-nowrap",
@@ -334,9 +334,9 @@ const WorkflowCard = ({ workflow, onRunWorkflow, asDialogTrigger = false }: Work
                     {serviceAvailable ? "Run Now" : "Run in Offline Mode"}
                   </span>
                 </Button>
-                
-                <Button 
-                  variant="outline" 
+
+                <Button
+                  variant="outline"
                   size="sm"
                   onClick={() => setIsConfigOpen(true)}
                   className="whitespace-nowrap"

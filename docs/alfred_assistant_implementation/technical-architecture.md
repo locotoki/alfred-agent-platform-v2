@@ -88,7 +88,7 @@ class MasterAlfredAgent(BaseAgent):
     Master Alfred Orchestrator - The central controller for all Alfred operations.
     Manages personality, context, family profiles, and agent coordination.
     """
-    
+
     def __init__(self):
         super().__init__(
             name="master-alfred",
@@ -100,38 +100,38 @@ class MasterAlfredAgent(BaseAgent):
                 "BUSINESS_SUPPORT",
                 "EMERGENCY_RESPONSE",
                 "PROACTIVE_SUGGESTION",
-                
+
                 # Interface-specific intents
                 "VOICE_COMMAND",
                 "MOBILE_REQUEST",
                 "WHATSAPP_MESSAGE",
                 "WEB_INTERACTION",
-                
+
                 # Orchestration intents
                 "DELEGATE_TO_AGENT",
                 "AGGREGATE_RESPONSES",
                 "PRIORITY_OVERRIDE"
             ]
         )
-        
+
         self.personality_engine = AlfredPersonality()
         self.context_manager = ContextManager()
         self.family_profiles = FamilyProfileManager()
         self.proactive_monitor = ProactiveMonitor()
         self.agent_coordinator = AgentCoordinator()
-        
+
     async def process_task(self, envelope: A2AEnvelope) -> Dict[str, Any]:
         """Process incoming requests with Alfred's personality and context awareness."""
         try:
             # Extract user context
             user_id = envelope.content.get("user_id")
             interface = envelope.content.get("interface", "unknown")
-            
+
             # Get family profile
             family_member = await self.family_profiles.get_member(user_id)
             if not family_member:
                 family_member = await self.family_profiles.create_guest_profile(user_id)
-            
+
             # Get context
             context = await self.context_manager.get_context(
                 user_id=user_id,
@@ -139,47 +139,47 @@ class MasterAlfredAgent(BaseAgent):
                 interface=interface,
                 intent=envelope.intent
             )
-            
+
             # Apply personality to request processing
             enhanced_envelope = await self.personality_engine.process_envelope(
                 envelope=envelope,
                 context=context
             )
-            
+
             # Route to appropriate handler
             response = await self._route_request(enhanced_envelope, context)
-            
+
             # Apply personality to response
             final_response = await self.personality_engine.format_response(
                 response=response,
                 context=context,
                 family_member=family_member
             )
-            
+
             # Update context for future interactions
             await self.context_manager.update_context(user_id, envelope, final_response)
-            
+
             return final_response
-            
+
         except Exception as e:
             logger.error("master_alfred_error", error=str(e), task_id=envelope.task_id)
             return self._create_error_response(e, envelope)
-    
+
     async def _route_request(self, envelope: A2AEnvelope, context: Dict[str, Any]) -> Dict[str, Any]:
         """Route requests to appropriate handlers or delegate to other agents."""
-        
+
         # Check for emergency situations
         if self._is_emergency(envelope, context):
             return await self._handle_emergency(envelope, context)
-        
+
         # Handle directly if within Master Alfred's capabilities
         if envelope.intent in self._get_direct_handlers():
             handler = self._get_direct_handlers()[envelope.intent]
             return await handler(envelope, context)
-        
+
         # Delegate to specialized agents
         return await self.agent_coordinator.delegate(envelope, context)
-    
+
     def _get_direct_handlers(self) -> Dict[str, callable]:
         """Get handlers for intents processed directly by Master Alfred."""
         return {
@@ -188,18 +188,18 @@ class MasterAlfredAgent(BaseAgent):
             "EMERGENCY_RESPONSE": self._handle_emergency,
             "PROACTIVE_SUGGESTION": self._handle_proactive_suggestion,
         }
-    
+
     async def _handle_general_assistance(self, envelope: A2AEnvelope, context: Dict[str, Any]) -> Dict[str, Any]:
         """Handle general assistance requests with Alfred's personality."""
         query = envelope.content.get("query", "")
-        
+
         # Use LangChain for intelligent response generation
         response = await self.conversation_chain.arun(
             query=query,
             context=context,
             personality=self.personality_engine.get_traits()
         )
-        
+
         return {
             "status": "success",
             "response": response,
@@ -223,7 +223,7 @@ class AlfredPersonality:
     Alfred's personality engine - defines behavioral traits and response patterns
     based on Batman's Alfred characteristics.
     """
-    
+
     def __init__(self):
         self.traits = {
             "discretion": 0.95,      # High privacy and confidentiality
@@ -234,16 +234,16 @@ class AlfredPersonality:
             "crisis_competence": 0.95,  # Excellent under pressure
             "loyalty": 1.0           # Absolute dedication to family
         }
-        
+
         self.response_templates = self._load_response_templates()
         self.crisis_protocols = self._load_crisis_protocols()
-    
+
     async def process_envelope(self, envelope: A2AEnvelope, context: Dict[str, Any]) -> A2AEnvelope:
         """Apply personality traits to incoming request processing."""
         # Analyze request tone and urgency
         urgency = self._assess_urgency(envelope, context)
         formality_needed = self._determine_formality(context)
-        
+
         # Enhance envelope with personality metadata
         envelope.metadata.update({
             "personality_traits": self.traits,
@@ -251,31 +251,31 @@ class AlfredPersonality:
             "formality_level": formality_needed,
             "interaction_style": self._get_interaction_style(context)
         })
-        
+
         return envelope
-    
+
     async def format_response(self, response: Dict[str, Any], context: Dict[str, Any], family_member: Dict[str, Any]) -> Dict[str, Any]:
         """Format response according to Alfred's personality and family member preferences."""
         # Get appropriate communication style
         style = self._get_communication_style(family_member, context)
-        
+
         # Apply personality traits to response
         formatted_response = self._apply_personality_to_response(response, style)
-        
+
         # Add Alfred's signature touches
         formatted_response = self._add_alfred_touches(formatted_response, context)
-        
+
         return formatted_response
-    
+
     def _get_communication_style(self, family_member: Dict[str, Any], context: Dict[str, Any]) -> str:
         """Determine appropriate communication style based on family member and context."""
         role = family_member.get("role", "guest")
         age_group = family_member.get("age_group", "adult")
         situation = context.get("situation", "normal")
-        
+
         if situation == "emergency":
             return "crisis_mode"
-        
+
         if role == "child":
             return "gentle_educational"
         elif role == "parent" and situation == "business":
@@ -284,44 +284,44 @@ class AlfredPersonality:
             return "warm_supportive"
         else:
             return "polite_professional"
-    
+
     def _add_alfred_touches(self, response: Dict[str, Any], context: Dict[str, Any]) -> Dict[str, Any]:
         """Add Alfred's characteristic touches to responses."""
         # Add subtle wit if appropriate
         if context.get("mood") == "light" and self.traits["wit"] > random.random():
             response["subtle_humor"] = self._get_witty_remark(context)
-        
+
         # Add anticipatory suggestions
         if self.traits["anticipatory"] > random.random():
             response["proactive_suggestions"] = self._get_anticipatory_suggestions(context)
-        
+
         # Add discreet reminders if needed
         if context.get("pending_tasks"):
             response["gentle_reminders"] = self._format_reminders(context["pending_tasks"])
-        
+
         return response
-    
+
     def _assess_urgency(self, envelope: A2AEnvelope, context: Dict[str, Any]) -> float:
         """Assess the urgency level of a request."""
         # Check for emergency keywords
         emergency_keywords = ["urgent", "emergency", "help", "immediately", "crisis"]
         content_text = str(envelope.content).lower()
-        
+
         urgency_score = 0.0
-        
+
         # Check for emergency keywords
         for keyword in emergency_keywords:
             if keyword in content_text:
                 urgency_score += 0.3
-        
+
         # Check context flags
         if context.get("is_emergency", False):
             urgency_score = 1.0
-        
+
         # Check time sensitivity
         if envelope.timeout_seconds < 60:
             urgency_score += 0.2
-        
+
         return min(urgency_score, 1.0)
 ```
 
@@ -349,19 +349,19 @@ class FamilyProfile:
     """
     Comprehensive family member profile with preferences, permissions, and routines.
     """
-    
+
     def __init__(self, member_id: str, role: FamilyRole, name: str):
         self.member_id = member_id
         self.role = role
         self.name = name
         self.created_at = datetime.utcnow()
-        
+
         # Personal information
         self.age_group = self._determine_age_group()
         self.preferred_name = name
         self.voice_profile = None
         self.biometric_data = {}
-        
+
         # Preferences
         self.preferences = {
             "communication_style": self._default_communication_style(),
@@ -370,10 +370,10 @@ class FamilyProfile:
             "language": "en",
             "timezone": "UTC"
         }
-        
+
         # Permissions
         self.permissions = self._default_permissions()
-        
+
         # Daily routines and patterns
         self.routines = {
             "wake_time": None,
@@ -383,14 +383,14 @@ class FamilyProfile:
             "medication_schedule": [],
             "exercise_routine": []
         }
-        
+
         # Relationships
         self.relationships = {}
-        
+
         # Activity tracking
         self.activity_log = []
         self.interaction_history = []
-    
+
     def _determine_age_group(self) -> str:
         """Determine age group based on role."""
         if self.role == FamilyRole.CHILD:
@@ -399,7 +399,7 @@ class FamilyProfile:
             return "teen"
         else:
             return "adult"
-    
+
     def _default_communication_style(self) -> Dict[str, Any]:
         """Get default communication style based on role."""
         styles = {
@@ -430,7 +430,7 @@ class FamilyProfile:
             }
         }
         return styles.get(self.role, styles[FamilyRole.GUEST])
-    
+
     def _default_permissions(self) -> Dict[str, bool]:
         """Get default permissions based on role."""
         permissions = {
@@ -460,17 +460,17 @@ class FamilyProfile:
             }
         }
         return permissions.get(self.role, permissions[FamilyRole.GUEST])
-    
+
     def update_routine(self, routine_type: str, data: Dict[str, Any]):
         """Update a specific routine for the family member."""
         if routine_type in self.routines:
             self.routines[routine_type] = data
             logger.info("routine_updated", member_id=self.member_id, routine=routine_type)
-    
+
     def check_permission(self, action: str) -> bool:
         """Check if member has permission for specific action."""
         return self.permissions.get(action, False)
-    
+
     def get_current_context(self) -> Dict[str, Any]:
         """Get current context based on time and routines."""
         current_time = datetime.now().time()
@@ -500,73 +500,73 @@ class ProactiveMonitor:
     """
     Continuously monitors family patterns and generates proactive suggestions.
     """
-    
+
     def __init__(self):
         self.pattern_analyzer = PatternAnalyzer()
         self.suggestion_engine = SuggestionEngine()
         self.monitoring_interval = 300  # 5 minutes
         self.active_monitors = {}
-    
+
     async def start_monitoring(self):
         """Start the proactive monitoring loop."""
         logger.info("proactive_monitoring_started")
-        
+
         while True:
             try:
                 await self._monitoring_cycle()
             except Exception as e:
                 logger.error("monitoring_cycle_error", error=str(e))
-            
+
             await asyncio.sleep(self.monitoring_interval)
-    
+
     async def _monitoring_cycle(self):
         """Execute one monitoring cycle."""
         # Get all active family members
         family_members = await self._get_active_family_members()
-        
+
         for member in family_members:
             try:
                 # Analyze patterns for each member
                 patterns = await self.pattern_analyzer.analyze_member_patterns(member)
-                
+
                 # Generate suggestions based on patterns
                 suggestions = await self.suggestion_engine.generate_suggestions(
                     member=member,
                     patterns=patterns
                 )
-                
+
                 # Process and deliver suggestions
                 await self._process_suggestions(member, suggestions)
-                
+
             except Exception as e:
-                logger.error("member_monitoring_error", 
-                           member_id=member.member_id, 
+                logger.error("member_monitoring_error",
+                           member_id=member.member_id,
                            error=str(e))
-    
+
     async def _process_suggestions(self, member: FamilyProfile, suggestions: List[Dict[str, Any]]):
         """Process and deliver suggestions to family members."""
         for suggestion in suggestions:
             # Check if suggestion is appropriate for current context
             if await self._should_deliver_suggestion(member, suggestion):
                 await self._deliver_suggestion(member, suggestion)
-    
+
     async def _should_deliver_suggestion(self, member: FamilyProfile, suggestion: Dict[str, Any]) -> bool:
         """Determine if a suggestion should be delivered based on context and preferences."""
         # Check member preferences
         if not member.preferences.get("proactive_suggestions", True):
             return False
-        
+
         # Check timing appropriateness
         current_time = datetime.now().time()
         if not self._is_appropriate_time(member, current_time):
             return False
-        
+
         # Check suggestion priority and member's current activity
         if suggestion.get("priority", 0) < 3 and member.get_current_context().get("busy", False):
             return False
-        
+
         return True
-    
+
     async def _deliver_suggestion(self, member: FamilyProfile, suggestion: Dict[str, Any]):
         """Deliver a suggestion through appropriate channel."""
         # Create A2A envelope for the suggestion
@@ -579,10 +579,10 @@ class ProactiveMonitor:
             },
             priority=suggestion.get("priority", 2)
         )
-        
+
         # Publish through appropriate transport
         await self.pubsub_transport.publish_task(envelope)
-        
+
         # Log delivery
         logger.info("suggestion_delivered",
                    member_id=member.member_id,
@@ -611,7 +611,7 @@ class VoiceProcessor:
     def __init__(self):
         self.recognizer = sr.Recognizer()
         self.pubsub_transport = PubSubTransport()
-    
+
     async def process_audio(self, audio_data: bytes) -> str:
         """Convert audio to text using speech recognition."""
         try:
@@ -621,7 +621,7 @@ class VoiceProcessor:
         except Exception as e:
             logger.error("speech_recognition_error", error=str(e))
             raise
-    
+
     async def synthesize_speech(self, text: str) -> bytes:
         """Convert text to speech using gTTS."""
         try:
@@ -640,17 +640,17 @@ voice_processor = VoiceProcessor()
 async def voice_websocket(websocket: WebSocket):
     """WebSocket endpoint for real-time voice processing."""
     await websocket.accept()
-    
+
     try:
         while True:
             # Receive audio data from client
             data = await websocket.receive_json()
-            
+
             if data.get("type") == "audio":
                 # Process voice command
                 audio_bytes = base64.b64decode(data["audio"])
                 text = await voice_processor.process_audio(audio_bytes)
-                
+
                 # Create envelope for Master Alfred
                 envelope = A2AEnvelope(
                     intent="VOICE_COMMAND",
@@ -660,20 +660,20 @@ async def voice_websocket(websocket: WebSocket):
                         "voice_profile": data.get("voice_profile")
                     }
                 )
-                
+
                 # Send to Master Alfred
                 response = await voice_processor.pubsub_transport.publish_task_and_wait(envelope)
-                
+
                 # Synthesize response
                 response_audio = await voice_processor.synthesize_speech(response["content"]["message"])
-                
+
                 # Send back to client
                 await websocket.send_json({
                     "type": "response",
                     "text": response["content"]["message"],
                     "audio": base64.b64encode(response_audio).decode()
                 })
-    
+
     except WebSocketDisconnect:
         logger.info("voice_websocket_disconnected")
     except Exception as e:
@@ -729,7 +729,7 @@ async def process_mobile_command(
             "location": request.location
         }
     )
-    
+
     response = await pubsub_transport.publish_task_and_wait(envelope)
     return response
 
@@ -746,7 +746,7 @@ async def update_notification_preferences(
             "preferences": preferences.dict()
         }
     )
-    
+
     response = await pubsub_transport.publish_task_and_wait(envelope)
     return response
 
@@ -754,21 +754,21 @@ async def update_notification_preferences(
 async def notification_websocket(websocket: WebSocket):
     """WebSocket for real-time notifications to mobile app."""
     await websocket.accept()
-    
+
     try:
         # Authenticate websocket connection
         token = await websocket.receive_text()
         user_data = verify_token(HTTPAuthorizationCredentials(credentials=token))
-        
+
         # Subscribe to user's notification channel
         subscription = await pubsub_transport.subscribe_to_user_notifications(
             user_data["user_id"]
         )
-        
+
         # Forward notifications to mobile app
         async for notification in subscription:
             await websocket.send_json(notification)
-    
+
     except WebSocketDisconnect:
         logger.info("notification_websocket_disconnected")
     except Exception as e:
@@ -864,7 +864,7 @@ version: '3.8'
 
 services:
   master-alfred:
-    build: 
+    build:
       context: ./services/master-alfred
       dockerfile: Dockerfile
     ports:
@@ -886,7 +886,7 @@ services:
       retries: 3
 
   voice-processor:
-    build: 
+    build:
       context: ./services/voice-processor
       dockerfile: Dockerfile
     ports:
@@ -905,7 +905,7 @@ services:
               capabilities: [gpu]
 
   mobile-api:
-    build: 
+    build:
       context: ./services/mobile-api
       dockerfile: Dockerfile
     ports:
@@ -956,10 +956,10 @@ volumes:
 async def handle_enhanced_alfred_command(ack, body, client):
     """Enhanced Alfred command handler with Master Alfred integration."""
     await ack()
-    
+
     user_id = body["user_id"]
     command_text = body.get("text", "").strip()
-    
+
     # Create envelope for Master Alfred
     envelope = A2AEnvelope(
         intent="SLACK_COMMAND",
@@ -970,10 +970,10 @@ async def handle_enhanced_alfred_command(ack, body, client):
             "interface": "slack"
         }
     )
-    
+
     # Send to Master Alfred instead of direct processing
     response = await pubsub_transport.publish_task_and_wait(envelope)
-    
+
     # Format response for Slack
     await client.chat_postMessage(
         channel=body["channel_id"],
@@ -997,10 +997,10 @@ logger = structlog.get_logger(__name__)
 async def whatsapp_webhook(request: Request):
     """Handle incoming WhatsApp messages."""
     data = await request.form()
-    
+
     from_number = data.get("From")
     message_body = data.get("Body")
-    
+
     # Create envelope for Master Alfred
     envelope = A2AEnvelope(
         intent="WHATSAPP_MESSAGE",
@@ -1010,10 +1010,10 @@ async def whatsapp_webhook(request: Request):
             "interface": "whatsapp"
         }
     )
-    
+
     # Process through Master Alfred
     response = await pubsub_transport.publish_task_and_wait(envelope)
-    
+
     # Send response back via Twilio
     twilio_client = Client(account_sid, auth_token)
     twilio_client.messages.create(
@@ -1021,7 +1021,7 @@ async def whatsapp_webhook(request: Request):
         from_=whatsapp_number,
         to=from_number
     )
-    
+
     return {"status": "ok"}
 ```
 
@@ -1086,11 +1086,11 @@ import os
 
 class SecureDataManager:
     """Manages encryption for sensitive family data."""
-    
+
     def __init__(self):
         self.master_key = os.environ.get("ALFRED_MASTER_KEY")
         self.fernet = self._initialize_encryption()
-    
+
     def _initialize_encryption(self):
         """Initialize Fernet encryption with master key."""
         kdf = PBKDF2HMAC(
@@ -1101,11 +1101,11 @@ class SecureDataManager:
         )
         key = base64.urlsafe_b64encode(kdf.derive(self.master_key.encode()))
         return Fernet(key)
-    
+
     def encrypt_sensitive_data(self, data: str) -> str:
         """Encrypt sensitive data."""
         return self.fernet.encrypt(data.encode()).decode()
-    
+
     def decrypt_sensitive_data(self, encrypted_data: str) -> str:
         """Decrypt sensitive data."""
         return self.fernet.decrypt(encrypted_data.encode()).decode()

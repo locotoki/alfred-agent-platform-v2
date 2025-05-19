@@ -55,7 +55,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         console.warn('Social Intel API not available, returning mock data');
         return res.status(200).json(getMockScheduledWorkflow(workflow_type, parameters, frequency, next_run));
       }
-      
+
       const errorData = await response.json();
       console.error('Social Intel API error:', errorData);
       return res.status(response.status).json({
@@ -76,9 +76,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
 // Mock data for development and testing
 function getMockScheduledWorkflow(
-  workflow_type: string, 
-  parameters: Record<string, any>, 
-  frequency: string, 
+  workflow_type: string,
+  parameters: Record<string, any>,
+  frequency: string,
   next_run: string
 ): WorkflowSchedule {
   return {

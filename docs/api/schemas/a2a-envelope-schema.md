@@ -1,7 +1,7 @@
 # API Schema: A2A Message Envelope
 
-*Last Updated: 2025-05-13*  
-*Owner: API Team*  
+*Last Updated: 2025-05-13*
+*Owner: API Team*
 *Status: Active*
 
 ## Overview

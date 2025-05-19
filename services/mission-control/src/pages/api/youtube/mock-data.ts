@@ -1,4 +1,4 @@
-import { 
+import {
   NicheScoutResult,
   BlueprintResult,
   WorkflowHistory,

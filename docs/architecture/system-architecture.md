@@ -1,7 +1,7 @@
 # System Architecture
 
-*Last Updated: 2025-05-10*  
-*Owner: Architecture Team*  
+*Last Updated: 2025-05-10*
+*Owner: Architecture Team*
 *Status: Active*
 
 ## Overview
@@ -236,7 +236,7 @@ sequenceDiagram
     participant Bus as Event Bus
     participant Agent as Domain Agent
     participant Storage as State Storage
-    
+
     User->>Interface: Request task
     Interface->>Registry: Discover capable agent
     Registry->>Interface: Return agent info
@@ -260,13 +260,13 @@ sequenceDiagram
     participant Monitor as Health Monitor
     participant Storage as State Storage
     participant Alert as Alert Manager
-    
+
     loop Every 30 seconds
         Agent->>Bus: Publish heartbeat
         Bus->>Monitor: Deliver heartbeat
         Monitor->>Storage: Update service status
     end
-    
+
     Monitor->>Monitor: Detect missing heartbeat
     Monitor->>Storage: Update service status
     Monitor->>Alert: Trigger alert

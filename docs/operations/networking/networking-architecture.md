@@ -1,7 +1,7 @@
 # Networking Architecture
 
-*Last Updated: 2025-05-13*  
-*Owner: Infrastructure Team*  
+*Last Updated: 2025-05-13*
+*Owner: Infrastructure Team*
 *Status: Active*
 
 ## Overview
@@ -581,13 +581,13 @@ DNS is managed through:
    ```bash
    # Check pod connectivity
    kubectl exec -it <pod-name> -- curl -v <service-name>:<port>/health
-   
+
    # Test DNS resolution
    kubectl exec -it <pod-name> -- nslookup <service-name>
-   
+
    # Analyze network policies
    kubectl describe networkpolicy -n alfred-platform
-   
+
    # Trace network path
    kubectl exec -it <pod-name> -- traceroute <service-name>
    ```

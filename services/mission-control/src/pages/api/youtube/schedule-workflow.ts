@@ -12,7 +12,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(200).json(mockScheduledWorkflows[0]);
   } catch (error) {
     console.error('Error in schedule-workflow API:', error);
-    return res.status(500).json({ 
+    return res.status(500).json({
       error: 'Failed to schedule workflow',
       detail: error instanceof Error ? error.message : 'Unknown error'
     });

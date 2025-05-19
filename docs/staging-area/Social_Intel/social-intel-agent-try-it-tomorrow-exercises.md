@@ -18,7 +18,7 @@ Below are “try-it-tomorrow” exercises that map to the major capabilities in 
 - **Ship a Slack reminder** (Zapier or n8n) that pings you each morning with the top new terms.
 
 > Outcome: You’ll see whether the 24 h cadence in the plan is fast enough and which sources add real signal.
-> 
+>
 
 ---
 

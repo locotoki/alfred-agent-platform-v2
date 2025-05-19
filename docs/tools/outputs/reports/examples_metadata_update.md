@@ -12,4 +12,3 @@
 - /home/locotoki/projects/alfred-agent-platform-v2/docs/examples/agent-example.md
 - /home/locotoki/projects/alfred-agent-platform-v2/docs/examples/workflow-example.md
 - /home/locotoki/projects/alfred-agent-platform-v2/docs/examples/project-example.md
-

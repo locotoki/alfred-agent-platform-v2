@@ -421,13 +421,13 @@ async def custom_swagger_ui_html():
                 overflow: -moz-scrollbars-vertical;
                 overflow-y: scroll;
             }}
-            
+
             *,
             *:before,
             *:after {{
                 box-sizing: inherit;
             }}
-            
+
             body {{
                 margin: 0;
                 background: #fafafa;

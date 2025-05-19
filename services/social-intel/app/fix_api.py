@@ -73,16 +73,16 @@ def fix_json_handling(content):
         try:
             # Parse JSON
             json_data = await request.json()
-            
+
             # Process the A2A envelope
             if json_data.get("intent") == "YOUTUBE_NICHE_SCOUT":
                 data = json_data.get("data", {})
-                
+
                 # Get queries
                 queries = data.get("queries", [])
                 if queries and isinstance(queries, list):
                     query = queries[0]  # Use the first query
-                
+
                 # Get category
                 json_category = data.get("category")
                 if json_category:
@@ -90,17 +90,17 @@ def fix_json_handling(content):
                         category = json_category
                     else:
                         category = None  # "All" means no category filtering
-                        
+
                 # Get subcategory if present
                 if data.get("subcategory"):
                     subcategory = data.get("subcategory")
-                    
+
         except Exception as e:
             # Just log the error and continue with query parameters
             logger.error("Failed to parse JSON body", error=str(e))
-            
+
         # Always log the actual parameters used
-        logger.info("niche_scout_request", 
+        logger.info("niche_scout_request",
                   query=query,
                   category=category,
                   subcategory=subcategory,

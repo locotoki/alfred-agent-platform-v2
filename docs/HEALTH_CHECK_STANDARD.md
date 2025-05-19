@@ -80,14 +80,14 @@ async def health_check():
     # Check dependencies
     db_status = "ok" if check_database_connection() else "error"
     cache_status = "ok" if check_cache_connection() else "error"
-    
+
     # Determine overall status
     services = {
         "database": db_status,
         "cache": cache_status
     }
     overall = "error" if "error" in services.values() else "ok"
-    
+
     return HealthResponse(
         status=overall,
         services=services
@@ -120,14 +120,14 @@ const app = express();
 app.get('/health', (req, res) => {
   const dbStatus = checkDatabaseConnection() ? 'ok' : 'error';
   const cacheStatus = checkCacheConnection() ? 'ok' : 'error';
-  
+
   const services = {
     database: dbStatus,
     cache: cacheStatus
   };
-  
+
   const hasError = Object.values(services).includes('error');
-  
+
   res.json({
     status: hasError ? 'error' : 'ok',
     version: '1.0.0',

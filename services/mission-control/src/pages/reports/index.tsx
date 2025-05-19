@@ -70,7 +70,7 @@ export default function Reports() {
 
   // Filter reports based on search query and category filter
   const filteredReports = reports.filter(report => {
-    const matchesSearch = report.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+    const matchesSearch = report.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
                           report.description.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesFilter = filterCategory === 'all' || report.category === filterCategory;
     return matchesSearch && matchesFilter;

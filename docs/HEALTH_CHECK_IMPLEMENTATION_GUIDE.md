@@ -304,8 +304,8 @@ app.get('/health', (req, res) => {
   res.json({
     status: 'ok',
     version: '1.0.0',
-    services: { 
-      database: 'ok' 
+    services: {
+      database: 'ok'
     }
   });
 });

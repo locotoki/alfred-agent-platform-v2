@@ -8,23 +8,23 @@ export default function Settings() {
   const [adminEmail, setAdminEmail] = useState('admin@example.com');
   const [loggingLevel, setLoggingLevel] = useState('info');
   const [maxAgents, setMaxAgents] = useState(10);
-  
+
   // System settings state
   const [maxCpuUsage, setMaxCpuUsage] = useState(80);
   const [maxMemoryUsage, setMaxMemoryUsage] = useState(70);
   const [autoRestart, setAutoRestart] = useState(true);
   const [taskTimeout, setTaskTimeout] = useState(60);
-  
+
   // Security settings state
   const [twoFactorAuth, setTwoFactorAuth] = useState(false);
   const [sessionTimeout, setSessionTimeout] = useState(30);
   const [apiRateLimit, setApiRateLimit] = useState(100);
-  
+
   // Notification settings state
   const [emailNotifications, setEmailNotifications] = useState(true);
   const [taskAlerts, setTaskAlerts] = useState(true);
   const [systemAlerts, setSystemAlerts] = useState(true);
-  
+
   // Form submission handler
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -47,7 +47,7 @@ export default function Settings() {
                 <FiServer className="h-5 w-5 text-primary-600 dark:text-primary-400 mr-2" />
                 <h2 className="text-xl font-medium text-gray-900 dark:text-white">General Settings</h2>
               </div>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label htmlFor="site-name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
@@ -61,7 +61,7 @@ export default function Settings() {
                     onChange={(e) => setSiteName(e.target.value)}
                   />
                 </div>
-                
+
                 <div>
                   <label htmlFor="admin-email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                     Admin Email
@@ -74,7 +74,7 @@ export default function Settings() {
                     onChange={(e) => setAdminEmail(e.target.value)}
                   />
                 </div>
-                
+
                 <div>
                   <label htmlFor="logging-level" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                     Logging Level
@@ -91,7 +91,7 @@ export default function Settings() {
                     <option value="error">Error</option>
                   </select>
                 </div>
-                
+
                 <div>
                   <label htmlFor="max-agents" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                     Maximum Agents
@@ -108,14 +108,14 @@ export default function Settings() {
                 </div>
               </div>
             </div>
-            
+
             {/* System Resources */}
             <div className="card p-6">
               <div className="flex items-center mb-4">
                 <FiCpu className="h-5 w-5 text-primary-600 dark:text-primary-400 mr-2" />
                 <h2 className="text-xl font-medium text-gray-900 dark:text-white">System Resources</h2>
               </div>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label htmlFor="max-cpu" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
@@ -131,7 +131,7 @@ export default function Settings() {
                     onChange={(e) => setMaxCpuUsage(parseInt(e.target.value, 10))}
                   />
                 </div>
-                
+
                 <div>
                   <label htmlFor="max-memory" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                     Max Memory Usage (%)
@@ -146,7 +146,7 @@ export default function Settings() {
                     onChange={(e) => setMaxMemoryUsage(parseInt(e.target.value, 10))}
                   />
                 </div>
-                
+
                 <div>
                   <label className="flex items-center">
                     <input
@@ -160,7 +160,7 @@ export default function Settings() {
                     </span>
                   </label>
                 </div>
-                
+
                 <div>
                   <label htmlFor="task-timeout" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                     Task Timeout (minutes)
@@ -177,14 +177,14 @@ export default function Settings() {
                 </div>
               </div>
             </div>
-            
+
             {/* Security */}
             <div className="card p-6">
               <div className="flex items-center mb-4">
                 <FiLock className="h-5 w-5 text-primary-600 dark:text-primary-400 mr-2" />
                 <h2 className="text-xl font-medium text-gray-900 dark:text-white">Security</h2>
               </div>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label className="flex items-center">
@@ -199,7 +199,7 @@ export default function Settings() {
                     </span>
                   </label>
                 </div>
-                
+
                 <div>
                   <label htmlFor="session-timeout" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                     Session Timeout (minutes)
@@ -214,7 +214,7 @@ export default function Settings() {
                     onChange={(e) => setSessionTimeout(parseInt(e.target.value, 10))}
                   />
                 </div>
-                
+
                 <div>
                   <label htmlFor="api-rate-limit" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                     API Rate Limit (requests/minute)
@@ -231,14 +231,14 @@ export default function Settings() {
                 </div>
               </div>
             </div>
-            
+
             {/* Notifications */}
             <div className="card p-6">
               <div className="flex items-center mb-4">
                 <FiMail className="h-5 w-5 text-primary-600 dark:text-primary-400 mr-2" />
                 <h2 className="text-xl font-medium text-gray-900 dark:text-white">Notifications</h2>
               </div>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label className="flex items-center">
@@ -253,7 +253,7 @@ export default function Settings() {
                     </span>
                   </label>
                 </div>
-                
+
                 <div>
                   <label className="flex items-center">
                     <input
@@ -267,7 +267,7 @@ export default function Settings() {
                     </span>
                   </label>
                 </div>
-                
+
                 <div>
                   <label className="flex items-center">
                     <input
@@ -283,7 +283,7 @@ export default function Settings() {
                 </div>
               </div>
             </div>
-            
+
             <div className="flex justify-end">
               <button
                 type="submit"

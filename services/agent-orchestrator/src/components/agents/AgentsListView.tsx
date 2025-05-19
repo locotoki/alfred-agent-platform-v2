@@ -3,7 +3,7 @@ import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import StatusPill from "../ui/StatusPill";
 import { agents } from "@/lib/data";
-import { 
+import {
   Table,
   TableBody,
   TableCell,
@@ -17,28 +17,28 @@ import { Plus } from "lucide-react";
 const AgentsListView = () => {
   const [sortBy, setSortBy] = useState<keyof typeof agents[0]>("name");
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
-  
+
   const sortedAgents = useMemo(() => {
     return [...agents].sort((a, b) => {
       if (sortBy === "name" || sortBy === "version" || sortBy === "status" || sortBy === "type") {
-        return sortDirection === "asc" 
-          ? a[sortBy].localeCompare(b[sortBy]) 
+        return sortDirection === "asc"
+          ? a[sortBy].localeCompare(b[sortBy])
           : b[sortBy].localeCompare(a[sortBy]);
       }
-      
+
       if (sortBy === "lastTask") {
         const aValue = a[sortBy]?.getTime() || 0;
         const bValue = b[sortBy]?.getTime() || 0;
         return sortDirection === "asc" ? aValue - bValue : bValue - aValue;
       }
-      
+
       // For queueLag or other number fields
-      return sortDirection === "asc" 
-        ? (a[sortBy] as number) - (b[sortBy] as number) 
+      return sortDirection === "asc"
+        ? (a[sortBy] as number) - (b[sortBy] as number)
         : (b[sortBy] as number) - (a[sortBy] as number);
     });
   }, [agents, sortBy, sortDirection]);
-  
+
   const handleSort = (column: keyof typeof agents[0]) => {
     if (sortBy === column) {
       setSortDirection(sortDirection === "asc" ? "desc" : "asc");
@@ -47,20 +47,20 @@ const AgentsListView = () => {
       setSortDirection("asc");
     }
   };
-  
+
   const formatDate = (date: Date | null) => {
     if (!date) return "Never";
-    
+
     const now = new Date();
     const diff = (now.getTime() - date.getTime()) / 1000; // in seconds
-    
+
     if (diff < 60) return "Just now";
     if (diff < 3600) return `${Math.floor(diff / 60)} min ago`;
     if (diff < 86400) return `${Math.floor(diff / 3600)} hours ago`;
-    
+
     return date.toLocaleDateString();
   };
-  
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -68,13 +68,13 @@ const AgentsListView = () => {
           <h1 className="text-2xl font-bold mb-1">Agents</h1>
           <p className="text-muted-foreground">Manage and monitor your AI agents</p>
         </div>
-        
+
         <Button>
           <Plus className="mr-2 h-4 w-4" />
           New Agent
         </Button>
       </div>
-      
+
       <div className="card-shadow rounded-2xl overflow-hidden">
         <Table>
           <TableHeader>

@@ -58,16 +58,16 @@ ALTER TABLE public.architect_out ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.service_role_test ENABLE ROW LEVEL SECURITY;
 
 -- Create RLS policies for service_role
-CREATE POLICY IF NOT EXISTS service_role_all_architect_in 
+CREATE POLICY IF NOT EXISTS service_role_all_architect_in
   ON public.architect_in FOR ALL TO service_role USING (true);
 
-CREATE POLICY IF NOT EXISTS service_role_all_architect_out 
+CREATE POLICY IF NOT EXISTS service_role_all_architect_out
   ON public.architect_out FOR ALL TO service_role USING (true);
 
-CREATE POLICY IF NOT EXISTS anon_read_architect_out 
+CREATE POLICY IF NOT EXISTS anon_read_architect_out
   ON public.architect_out FOR SELECT USING (true);
 
-CREATE POLICY IF NOT EXISTS service_role_all_test 
+CREATE POLICY IF NOT EXISTS service_role_all_test
   ON public.service_role_test FOR ALL TO service_role USING (true);
 
 -- Grant permissions

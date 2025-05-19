@@ -15,21 +15,21 @@ CopyEdit
 - The *Logic-Orchestrator* and *Domain tools* appear in both the Family MVP and the Multi-Tenant draft; they just need to agree on tenancy boundaries.
 - Postgres **schema-per-tenant** plus RLS keeps queries simple and lets you share one HA cluster without cross-leak risk.
 1. **Data-isolation strategy is coherent**
-    
+
     RLS + `SET app.tenant` + pgvector indexes per schema is the right call for GDPR and for cheap multi-tenant hosting. It avoids the OR-mismatch you’d hit with a single shared table + `tenant_id` predicate. (Decision #1 in the draft) Alfred WhatsApp Family …Alfred Multi‑Tenant Age…
-    
+
 2. **Coordination Broker is the only new service**
-    
+
     Everything else (adapters, orchestrator, policy engine) already exists in some form. A thin gRPC Broker—fronted by a Pub/Sub fallback for long-running ops—keeps cross-tenant calls explicit, audited, and rate-limited.
-    
+
 3. **Single message-envelope schema**
-    
+
     Standardise on a small protobuf/JSON envelope: `{tenant_id, user_id, channel, kind, payload}`. All adapters publish to «alfred-ingest»; workers respond via «alfred-outbox». This removes ad-hoc POSTs in the minimum sample and lines up with the Integration guide’s outbound worker.
-    
+
 4. **Ops footprint**
-    
+
     *Channel adapters* & *Broker* live on Cloud Run (burst to zero). *LLM orchestrator* on GKE (GPU pool). Shared Postgres, Redis, Pub/Sub already listed in both docs—simply tag resources with `tenant` for show-back billing.
-    
+
 
 ---
 

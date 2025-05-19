@@ -1,8 +1,8 @@
 /**
  * Shared Taxonomy Configuration
- * 
+ *
  * This file centralizes taxonomy settings used across both Mission Control UI (port 3007)
- * and Social Intelligence Agent (port 8080). 
+ * and Social Intelligence Agent (port 8080).
  */
 
 export interface Category {
@@ -76,14 +76,14 @@ export function getSubcategories(categoryValue: string): Category[] {
  */
 export function formatTaxonomyPath(category: string, subcategory?: string): string {
   if (category === "all") return "All";
-  
+
   const categoryObj = categories.find(c => c.value === category);
   if (!categoryObj) return '';
-  
+
   if (!subcategory) return categoryObj.label;
-  
+
   const subcategoryObj = getSubcategories(category).find(s => s.value === subcategory);
   if (!subcategoryObj) return categoryObj.label;
-  
+
   return `${categoryObj.label} > ${subcategoryObj.label}`;
 }

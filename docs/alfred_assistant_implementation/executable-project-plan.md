@@ -61,7 +61,7 @@ class AlfredPersonality:
     def __init__(self):
         self.traits = self._load_alfred_traits()
         self.response_templates = self._load_templates()
-    
+
     async def process_envelope(self, envelope, context):
         # Implementation
         pass
@@ -75,7 +75,7 @@ class ContextManager:
     def __init__(self):
         self.redis_client = redis.from_url(os.getenv("REDIS_URL"))
         self.context_ttl = 3600  # 1 hour
-    
+
     async def get_context(self, user_id, family_member, interface, intent):
         # Implementation
         pass
@@ -200,7 +200,7 @@ touch tests/test_authentication.py
 class WhatsAppInterface:
     def __init__(self):
         self.twilio_client = Client(account_sid, auth_token)
-    
+
     async def handle_message(self, from_number, message):
         # Implementation
         pass
@@ -230,7 +230,7 @@ class ProactiveMonitor:
     def __init__(self):
         self.pattern_analyzer = PatternAnalyzer()
         self.suggestion_engine = SuggestionEngine()
-    
+
     async def start_monitoring(self):
         # Implementation
         pass
@@ -299,7 +299,7 @@ touch app/activity_planner.py
 class SecureDataManager:
     def __init__(self):
         self.master_key = os.environ.get("ALFRED_MASTER_KEY")
-    
+
     def encrypt_sensitive_data(self, data):
         # Implementation
         pass

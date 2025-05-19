@@ -13,7 +13,7 @@ const DashboardView = () => {
           <p className="text-muted-foreground">Monitor and manage your AI agents</p>
         </div>
       </FadeIn>
-      
+
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         <FadeIn delay={100} direction="up">
           <SummaryCard
@@ -25,7 +25,7 @@ const DashboardView = () => {
             className="dashboard-card"
           />
         </FadeIn>
-        
+
         <FadeIn delay={200} direction="up">
           <SummaryCard
             title="Agents"
@@ -36,7 +36,7 @@ const DashboardView = () => {
             className="dashboard-card"
           />
         </FadeIn>
-        
+
         <FadeIn delay={300} direction="up">
           <SummaryCard
             title="Errors (24h)"
@@ -47,7 +47,7 @@ const DashboardView = () => {
             className="dashboard-card card-gradient-error"
           />
         </FadeIn>
-        
+
         <FadeIn delay={400} direction="up">
           <SummaryCard
             title="Queue Size"
@@ -59,11 +59,11 @@ const DashboardView = () => {
           />
         </FadeIn>
       </div>
-      
+
       <FadeIn delay={500} direction="up">
         <ChartGrid />
       </FadeIn>
-      
+
       <FadeIn delay={600} direction="up">
         <ActivityTimeline />
       </FadeIn>

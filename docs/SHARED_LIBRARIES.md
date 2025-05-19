@@ -84,9 +84,9 @@ class PubSubTransport:
     def __init__(self, project_id: str):
         self.project_id = project_id
         self.completed_topic_path = "completed-tasks"
-        
+
     async def publish_task(self, envelope: Any, topic: str = None) -> str:
-        logger.info("STUB: Publishing task envelope", 
+        logger.info("STUB: Publishing task envelope",
                    intent=getattr(envelope, "intent", "unknown"),
                    topic=topic or "default-topic")
         return "message-id-stub-task"
@@ -142,7 +142,7 @@ async def _register_agent(self):
 
 The shared libraries have minimal dependencies to ensure wide compatibility:
 
-- **a2a_adapter**: 
+- **a2a_adapter**:
   - pydantic
   - asyncio
   - structlog

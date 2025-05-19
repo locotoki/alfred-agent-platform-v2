@@ -120,7 +120,7 @@ case $CHOICE in
       echo -e "${YELLOW}Aborted.${NC}"
       exit 0
     fi
-    
+
     echo -e "${YELLOW}Cleaning up ALL ${TOTAL_ORPHANED} orphaned volumes...${NC}"
     for vol in $ORPHANED_VOLUMES; do
       echo -n "Removing $vol... "

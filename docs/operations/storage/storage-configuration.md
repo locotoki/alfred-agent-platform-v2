@@ -1,7 +1,7 @@
 # Infrastructure Component: Storage Configuration
 
-*Last Updated: 2025-05-13*  
-*Owner: Infrastructure Team*  
+*Last Updated: 2025-05-13*
+*Owner: Infrastructure Team*
 *Status: Active*
 
 ## Overview
@@ -15,34 +15,34 @@ The storage architecture of the Alfred Agent Platform v2 consists of several spe
 ```mermaid
 graph TB
     client[Client Applications] --> api[API Layer]
-    
+
     subgraph "Storage Solutions"
         storage_service[Storage Service]
         file_storage[Filesystem Storage]
         object_storage[Object Storage]
         persistent_volumes[Container Persistent Volumes]
     end
-    
+
     api --> storage_service
     storage_service --> file_storage
     storage_service --> object_storage
-    
+
     subgraph "Database Storage"
         postgres[(PostgreSQL)]
         redis[(Redis)]
         vector[(Qdrant Vector DB)]
     end
-    
+
     subgraph "Container Storage"
         docker_volumes[Docker Volumes]
         k8s_volumes[Kubernetes Volumes]
     end
-    
+
     persistent_volumes --> docker_volumes
     persistent_volumes --> k8s_volumes
-    
+
     postgres --- storage_service
-    
+
     agent_core[Agent Core] --> persistent_volumes
     agent_rag[RAG Service] --> persistent_volumes
     agent_financial[Financial Agent] --> persistent_volumes
@@ -281,7 +281,7 @@ services:
    export STORAGE_BACKEND=file  # or "s3" for production
    export FILE_STORAGE_BACKEND_PATH=/var/lib/storage
    export FILE_SIZE_LIMIT=52428800  # 50MB
-   
+
    # For S3 backend
    export GLOBAL_S3_BUCKET=alfred-platform
    export REGION=us-west-2
@@ -293,7 +293,7 @@ services:
    ```bash
    # Using Docker Compose
    docker-compose -f docker-compose.yml -f docker-compose.override.storage.yml up -d db-storage
-   
+
    # Or using Kubernetes
    kubectl apply -f k8s/storage/storage-service.yaml
    ```
@@ -305,7 +305,7 @@ services:
      -H "Content-Type: application/json" \
      -H "Authorization: Bearer ${SERVICE_ROLE_KEY}" \
      -d '{"id":"agent-documents","name":"Agent Documents","public":false}'
-   
+
    curl -X POST "http://localhost:5000/bucket" \
      -H "Content-Type: application/json" \
      -H "Authorization: Bearer ${SERVICE_ROLE_KEY}" \
@@ -316,7 +316,7 @@ services:
    ```bash
    # Check storage service health
    curl -X GET "http://localhost:5000/status"
-   
+
    # List buckets
    curl -X GET "http://localhost:5000/bucket" \
      -H "Authorization: Bearer ${SERVICE_ROLE_KEY}"

@@ -56,14 +56,14 @@ The CI/CD pipeline consists of several key stages, which can be broken down into
 - **Action**:
     - **Docker Build**: Build the **Docker images** for services (e.g., Alfred Slack Bot, LangChain Agents, etc.).
     - Ensure that the Docker containers are built from the latest version of the code.
-    
+
     ```bash
     bash
     CopyEdit
     docker build -t alfred-agent-platform .
-    
+
     ```
-    
+
 - **Artifacts**:
     - Generate and push the built Docker images to a registry like **Docker Hub** or **GitHub Container Registry**.
 
@@ -71,26 +71,26 @@ The CI/CD pipeline consists of several key stages, which can be broken down into
 
 - **Unit Tests**:
     - Run unit tests on each service (e.g., agent logic, database interactions).
-    
+
     ```bash
     bash
     CopyEdit
     pytest tests/
-    
+
     ```
-    
+
 - **Integration Tests**:
     - Test integration between system components (e.g., interactions between **Alfred Slack Bot** and **Pub/Sub**).
 - **API Tests**:
     - Use **Postman** or **Newman** to test API endpoints for task management and Pub/Sub communication.
-    
+
     ```bash
     bash
     CopyEdit
     newman run api_tests_collection.json
-    
+
     ```
-    
+
 - **End-to-End (E2E) Tests**:
     - Test the complete flow from **task initiation** to **task completion**, ensuring that agents perform as expected when deployed in the real environment.
 
@@ -98,39 +98,39 @@ The CI/CD pipeline consists of several key stages, which can be broken down into
 
 - **Action**:
     - Use **Flake8** or **Black** for Python code quality checks.
-    
+
     ```bash
     bash
     CopyEdit
     flake8 .
     black --check .
-    
+
     ```
-    
+
 - **Linting** for JavaScript or TypeScript (if applicable):
-    
+
     ```bash
     bash
     CopyEdit
     eslint .
-    
+
     ```
-    
+
 - Ensure that all code adheres to the defined coding standards.
 
 ### **5. Build Docker Images and Push to Registry**
 
 - **Action**:
     - If tests pass, the pipeline will build the **Docker images** and push them to the container registry.
-    
+
     ```bash
     bash
     CopyEdit
     docker build -t username/alfred-agent-platform:$GITHUB_SHA .
     docker push username/alfred-agent-platform:$GITHUB_SHA
-    
+
     ```
-    
+
 
 ### **6. Deployment Stage**
 

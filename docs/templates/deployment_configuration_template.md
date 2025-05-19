@@ -1,7 +1,7 @@
 # Deployment Configuration: {Deployment Name}
 
-*Last Updated: YYYY-MM-DD*  
-*Owner: {Owner}*  
+*Last Updated: YYYY-MM-DD*
+*Owner: {Owner}*
 *Status: {Draft|Active|Deprecated|Replaced}*
 *Environment: {Development|Staging|Production}*
 

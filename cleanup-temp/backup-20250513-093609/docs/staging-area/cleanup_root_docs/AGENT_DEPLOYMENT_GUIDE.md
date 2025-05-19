@@ -220,7 +220,7 @@ echo "Message sent to AGENT_in topic"
 ### Database Connectivity
 
 **Issue**: 404 Not Found when connecting to Supabase
-**Solution**: 
+**Solution**:
 - Verify tables exist - run `./scripts/setup_AGENT_tables.sh`
 - Check service role key has appropriate permissions
 

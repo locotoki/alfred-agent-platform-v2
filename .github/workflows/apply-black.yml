@@ -25,27 +25,27 @@ jobs:
         with:
           ref: ${{ github.event.inputs.branch || 'main' }}
           fetch-depth: 0
-      
+
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: ${{ env.PYTHON_VERSION }}
-      
+
       - name: Install Black
         run: |
           python -m pip install --upgrade pip
           pip install black==${{ env.BLACK_VERSION }}
-      
+
       - name: Run Black formatter
         run: |
           echo "Running Black formatter version ${{ env.BLACK_VERSION }}..."
           black --exclude "(youtube-test-env/|migrations/|node_modules/|\.git/|\.mypy_cache/|\.env/|\.venv/|env/|venv/|\.ipynb/)" .
-      
+
       - name: Check if there are changes
         id: check_changes
         run: |
           git diff --quiet || echo "changes=true" >> $GITHUB_OUTPUT
-      
+
       - name: Create Pull Request
         if: steps.check_changes.outputs.changes == 'true'
         uses: peter-evans/create-pull-request@v5
@@ -55,11 +55,11 @@ jobs:
           title: "style: Apply Black formatting to Python files"
           body: |
             This PR applies Black formatting to Python files.
-            
+
             - Applied Black version ${{ env.BLACK_VERSION }}
             - Line length: 100 (from pyproject.toml)
             - Python target version: 3.11
-            
+
             This is an automated PR created by the 'Apply Black Formatting' GitHub Action.
           branch: style/apply-black-format-${{ github.run_id }}
           base: ${{ github.event.inputs.branch || 'main' }}

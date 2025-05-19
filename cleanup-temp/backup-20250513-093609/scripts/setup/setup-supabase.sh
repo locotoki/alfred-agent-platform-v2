@@ -77,16 +77,16 @@ ALTER TABLE public.architect_out ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.service_role_test ENABLE ROW LEVEL SECURITY;
 
 -- Create RLS policies for service_role
-CREATE POLICY IF NOT EXISTS service_role_all_architect_in 
+CREATE POLICY IF NOT EXISTS service_role_all_architect_in
   ON public.architect_in FOR ALL TO service_role USING (true);
 
-CREATE POLICY IF NOT EXISTS service_role_all_architect_out 
+CREATE POLICY IF NOT EXISTS service_role_all_architect_out
   ON public.architect_out FOR ALL TO service_role USING (true);
 
-CREATE POLICY IF NOT EXISTS anon_read_architect_out 
+CREATE POLICY IF NOT EXISTS anon_read_architect_out
   ON public.architect_out FOR SELECT USING (true);
 
-CREATE POLICY IF NOT EXISTS service_role_all_test 
+CREATE POLICY IF NOT EXISTS service_role_all_test
   ON public.service_role_test FOR ALL TO service_role USING (true);
 
 -- Grant permissions
@@ -149,14 +149,14 @@ echo -e "${YELLOW}Testing Supabase authentication...${NC}"
 # Install curl and jq in the Alfred bot container
 docker exec alfred-agent-platform-v2-alfred-bot-1 /bin/sh -c "
   apk add --no-cache curl jq >/dev/null 2>&1 || true
-  
+
   # Test authentication
   echo 'Testing authentication function...'
   curl -s -X GET \
     -H \"apikey: $SERVICE_ROLE_KEY\" \
     -H \"Authorization: Bearer $SERVICE_ROLE_KEY\" \
     \"http://supabase-rest:3000/rest/v1/rpc/test_auth\" || echo 'Authentication test failed'
-  
+
   # Test writing to architect_in table
   echo 'Testing write to architect_in table...'
   echo '{\"data\":{\"message\":\"Test from setup script\"}}' > /tmp/test.json
@@ -166,7 +166,7 @@ docker exec alfred-agent-platform-v2-alfred-bot-1 /bin/sh -c "
     -H \"Content-Type: application/json\" \
     -d @/tmp/test.json \
     \"http://supabase-rest:3000/rest/v1/architect_in\" || echo 'Write test failed'
-  
+
   # Test reading from architect_in table
   echo 'Testing read from architect_in table...'
   curl -s -X GET \

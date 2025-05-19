@@ -14,10 +14,10 @@ type Status string
 const (
 	// StatusUp indicates the database is fully operational
 	StatusUp Status = "up"
-	
+
 	// StatusDown indicates the database is not available
 	StatusDown Status = "down"
-	
+
 	// StatusDegraded indicates the database is available but experiencing issues
 	StatusDegraded Status = "degraded"
 )
@@ -26,19 +26,19 @@ const (
 type Driver interface {
 	// Connect establishes a connection to the database
 	Connect(ctx context.Context) error
-	
+
 	// Ping verifies the database connection is still alive
 	Ping(ctx context.Context) error
-	
+
 	// CheckReadWrite performs a read/write test on the health check table
 	CheckReadWrite(ctx context.Context) error
-	
+
 	// Close closes the database connection
 	Close() error
-	
+
 	// Status returns the current database status
 	Status() Status
-	
+
 	// Metrics returns the database metrics
 	Metrics() map[string]float64
 }
@@ -47,23 +47,23 @@ type Driver interface {
 type Config struct {
 	// DSN is the data source name for the database connection
 	DSN string
-	
+
 	// CreateTable indicates whether to create the health check table
 	CreateTable bool
-	
+
 	// Connection pool configuration
 	MaxOpenConns    int
 	MaxIdleConns    int
 	ConnMaxLifetime time.Duration
 	ConnMaxIdleTime time.Duration
-	
+
 	// Operation timeouts
 	ConnectionTimeout    time.Duration
 	PingTimeout          time.Duration
 	ReadTimeout          time.Duration
 	WriteTimeout         time.Duration
 	TableCreationTimeout time.Duration
-	
+
 	// Retry configuration
 	MaxRetries     int
 	RetryDelay     time.Duration
@@ -94,13 +94,13 @@ func NewDriver(cfg Config) (Driver, error) {
 	if cfg.DSN == "" {
 		return nil, fmt.Errorf("DSN cannot be empty")
 	}
-	
+
 	// Parse DSN to determine the driver type
 	scheme, err := extractSchemeFromDSN(cfg.DSN)
 	if err != nil {
 		return nil, fmt.Errorf("failed to extract scheme from DSN: %w", err)
 	}
-	
+
 	switch scheme {
 	case "postgres", "postgresql":
 		return NewPostgresDriver(cfg), nil
@@ -128,26 +128,26 @@ func extractSchemeFromDSN(dsn string) (string, error) {
 		}
 		return parsedURL.Scheme, nil
 	}
-	
+
 	// Handle other DSN formats
 	lowerDSN := strings.ToLower(dsn)
-	
+
 	if strings.HasPrefix(lowerDSN, "postgres") || strings.HasPrefix(lowerDSN, "postgresql") {
 		return "postgres", nil
 	}
-	
+
 	if strings.HasPrefix(lowerDSN, "mysql") {
 		return "mysql", nil
 	}
-	
-	if strings.HasPrefix(lowerDSN, "file:") || strings.HasSuffix(lowerDSN, ".db") || 
+
+	if strings.HasPrefix(lowerDSN, "file:") || strings.HasSuffix(lowerDSN, ".db") ||
 		strings.HasSuffix(lowerDSN, ".sqlite") || strings.HasSuffix(lowerDSN, ".sqlite3") {
 		return "sqlite", nil
 	}
-	
+
 	if strings.HasPrefix(lowerDSN, "server=") || strings.HasPrefix(lowerDSN, "data source=") {
 		return "sqlserver", nil
 	}
-	
+
 	return "", fmt.Errorf("unable to determine database type from DSN")
 }

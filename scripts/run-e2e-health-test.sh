@@ -28,7 +28,7 @@ services:
     container_name: healthcheck-provider
     volumes:
       - healthcheck-binary:/healthcheck-binary
-    entrypoint: 
+    entrypoint:
       - sh
       - -c
       - |
@@ -60,23 +60,23 @@ services:
       - -c
       - |
         echo "Checking health of all services..."
-        
+
         # Wait for services to be ready
         sleep 30
-        
+
         # Check core services
         echo "Checking db-postgres health..."
         healthcheck --postgres "postgres://postgres:postgres@db-postgres:5432/postgres" || exit 1
-        
+
         echo "Checking redis health..."
         healthcheck --redis "redis://redis:6379" || exit 1
-        
+
         echo "Checking model-registry health..."
         healthcheck --http "http://model-registry:8079/health" || exit 1
-        
+
         echo "Checking model-router health..."
         healthcheck --http "http://model-router:8080/health" || exit 1
-        
+
         echo "All core services are healthy!"
         exit 0
 
@@ -158,7 +158,7 @@ RESULT=$?
 echo "------------------------------------------------------"
 if [ $RESULT -eq 0 ]; then
   echo "✅ E2E health check smoke test PASSED"
-  
+
   # Capture Grafana dashboard screenshot if Grafana is available
   echo "Checking if Grafana is running..."
   if curl -s http://localhost:3000 > /dev/null; then
