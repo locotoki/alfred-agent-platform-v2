@@ -18,7 +18,9 @@ class AlertGroupingService:
     """Service for grouping and correlating alerts."""
 
     def __init__(
-        self, time_window: timedelta = timedelta(minutes=5), similarity_threshold: float = 0.8
+        self,
+        time_window: timedelta = timedelta(minutes=5),
+        similarity_threshold: float = 0.8,
     ):
         """Initialize alert grouping service.
 

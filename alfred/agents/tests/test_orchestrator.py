@@ -1,7 +1,6 @@
 """Tests for Agent Orchestrator."""
 
 import pytest
-from prometheus_client import REGISTRY
 
 from alfred.agents.orchestrator import AgentOrchestrator, orchestrator_route_total
 

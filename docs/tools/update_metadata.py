@@ -24,9 +24,7 @@ import datetime
 import logging
 import os
 import re
-import sys
-from pathlib import Path
-from typing import Dict, List, Optional, Set, Tuple
+from typing import Dict, List, Optional, Tuple
 
 # Set up logging
 logging.basicConfig(
@@ -212,7 +210,11 @@ class MetadataUpdater:
 
     def _generate_metadata(self, existing_metadata: Dict[str, str]) -> str:
         """Generate metadata text"""
-        metadata = {"Last Updated": self.today, "Owner": self.owner, "Status": self.status}
+        metadata = {
+            "Last Updated": self.today,
+            "Owner": self.owner,
+            "Status": self.status,
+        }
 
         # Keep existing values if not forced to change
         if not self.force:
@@ -243,7 +245,15 @@ def main():
     parser.add_argument(
         "--status",
         default="Draft",
-        choices=["Draft", "In Progress", "Review", "Approved", "Active", "Archived", "Deprecated"],
+        choices=[
+            "Draft",
+            "In Progress",
+            "Review",
+            "Approved",
+            "Active",
+            "Archived",
+            "Deprecated",
+        ],
         help="Document status",
     )
     parser.add_argument("--force", action="store_true", help="Overwrite existing metadata")

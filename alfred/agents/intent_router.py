@@ -84,11 +84,17 @@ class IntentRouter:
 
             # Return error intent
             return Intent(
-                type="error_intent", confidence=0.0, entities={"error": str(e)}, raw_message=message
+                type="error_intent",
+                confidence=0.0,
+                entities={"error": str(e)},
+                raw_message=message,
             )
 
     def register_handler(
-        self, intent_type: str, handler: Callable[..., Any], pattern: Optional[str] = None
+        self,
+        intent_type: str,
+        handler: Callable[..., Any],
+        pattern: Optional[str] = None,
     ) -> None:
         """Register a handler for an intent type.
 
@@ -126,12 +132,16 @@ class IntentRouter:
 
         # Help intent
         self.register_handler(
-            "help", self._handle_help, pattern=r"(help|assist|how to|what can you|guide|tutorial)"
+            "help",
+            self._handle_help,
+            pattern=r"(help|assist|how to|what can you|guide|tutorial)",
         )
 
         # Status check intent
         self.register_handler(
-            "status_check", self._handle_status, pattern=r"\b(status|health|ping|alive|working)\b"
+            "status_check",
+            self._handle_status,
+            pattern=r"\b(status|health|ping|alive|working)\b",
         )
 
         # Unknown intent

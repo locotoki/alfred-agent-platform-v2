@@ -1,12 +1,10 @@
 """Benchmark tests for ML training pipeline."""
 
 import time
-from datetime import datetime
 
 import pytest
 
 from backend.alfred.ml.alert_dataset import load_alert_dataset
-from backend.alfred.ml.retrain_pipeline import schedule
 
 
 def test_training_speed(benchmark):
@@ -39,7 +37,7 @@ def test_training_speed(benchmark):
 
 def test_dataset_loading_performance(benchmark):
     """Benchmark dataset loading speed."""
-    result = benchmark(load_alert_dataset, days=30)
+    benchmark(load_alert_dataset, days=30)
 
     # For 100k alerts, should load in < 10 seconds
     assert benchmark.stats["mean"] < 10.0
@@ -54,7 +52,7 @@ def test_memory_usage():
     initial_memory = process.memory_info().rss / 1e6  # MB
 
     # Load dataset
-    dataset = load_alert_dataset(days=30)
+    load_alert_dataset(days=30)
 
     final_memory = process.memory_info().rss / 1e6  # MB
     memory_increase = final_memory - initial_memory
@@ -74,7 +72,7 @@ def test_model_save_speed(benchmark, tmp_path):
         model.save(str(model_path))
         return model_path
 
-    result = benchmark(save_model)
+    benchmark(save_model)
 
     # Model save should be fast (< 5 seconds)
     assert benchmark.stats["mean"] < 5.0

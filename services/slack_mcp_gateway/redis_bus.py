@@ -77,7 +77,7 @@ def ensure_consumer_group() -> None:
 
     try:
         # Check if the stream exists already
-        stream_info = client.xinfo_stream(RESPONSE_STREAM)
+        client.xinfo_stream(RESPONSE_STREAM)
 
         # Check if the consumer group exists, and create if it doesn't
         try:
@@ -87,7 +87,7 @@ def ensure_consumer_group() -> None:
             logger.info(f"Created consumer group {CONSUMER_GROUP} for {RESPONSE_STREAM}")
     except redis.exceptions.ResponseError:
         # Stream doesn't exist, create it with a dummy message that we'll discard
-        message_id = client.xadd(RESPONSE_STREAM, {"init": "true"})
+        client.xadd(RESPONSE_STREAM, {"init": "true"})
         client.xgroup_create(RESPONSE_STREAM, CONSUMER_GROUP, id="0")
         logger.info(f"Created stream {RESPONSE_STREAM} and consumer group {CONSUMER_GROUP}")
 

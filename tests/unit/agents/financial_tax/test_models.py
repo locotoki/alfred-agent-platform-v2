@@ -1,7 +1,5 @@
 """Tests for Financial Tax Agent models"""
 
-from datetime import datetime
-
 import pytest
 from langchain.pydantic_v1 import ValidationError
 
@@ -53,7 +51,10 @@ class TestTaxCalculationModels:
             credits_applied=4000.0,
             net_tax_due=14000.0,
             breakdown={"income": 150000.0, "deductions": 27700.0},
-            calculation_details=["Standard deduction applied", "Child tax credit applied"],
+            calculation_details=[
+                "Standard deduction applied",
+                "Child tax credit applied",
+            ],
         )
 
         assert response.gross_income == 150000.0

@@ -6,7 +6,7 @@ Reduces alert volume by 45% with minimal false negatives.
 """
 
 from dataclasses import dataclass
-from datetime import datetime, timedelta
+from datetime import datetime
 from typing import Dict, List, Optional, Tuple
 
 import joblib
@@ -178,7 +178,10 @@ class AlertNoiseRanker:
             self.metrics.gauge(
                 "alert_noise_score",
                 noise_score,
-                {"service": alert.labels.get("service", "unknown"), "severity": alert.severity},
+                {
+                    "service": alert.labels.get("service", "unknown"),
+                    "severity": alert.severity,
+                },
             )
 
         return noise_score

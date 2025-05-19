@@ -4,14 +4,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-from alfred.core.llm_adapter import (
-    ClaudeAdapter,
-    Message,
-    OpenAIAdapter,
-    create_llm_adapter,
-    llm_requests_total,
-    llm_tokens_total,
-)
+from alfred.core.llm_adapter import ClaudeAdapter, Message, OpenAIAdapter, create_llm_adapter
 
 
 class TestMessage:
@@ -133,7 +126,10 @@ class TestClaudeAdapter:
 
         # Patch the client property
         with patch.object(adapter, "_client", mock_client):
-            messages = [Message("system", "You are a helpful assistant"), Message("user", "Hello")]
+            messages = [
+                Message("system", "You are a helpful assistant"),
+                Message("user", "Hello"),
+            ]
             result = await adapter.generate(messages)
 
             assert result == "Claude response"

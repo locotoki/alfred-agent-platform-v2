@@ -6,8 +6,6 @@ This patch adds:
 2. Enhances the /health endpoint with detailed status
 """
 
-import logging
-
 from fastapi import FastAPI, Response
 from pydantic import BaseModel
 

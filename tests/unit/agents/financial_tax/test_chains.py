@@ -1,9 +1,8 @@
 """Tests for Financial Tax Agent chains"""
 
-from unittest.mock import AsyncMock, MagicMock, patch
+from unittest.mock import AsyncMock, MagicMock
 
 import pytest
-from langchain_openai import ChatOpenAI
 
 from agents.financial_tax.chains import (
     ComplianceCheckChain,

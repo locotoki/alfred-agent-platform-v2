@@ -1,8 +1,7 @@
 import asyncio
-import json
 from abc import ABC, abstractmethod
 from datetime import datetime
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List
 
 import structlog
 
@@ -34,12 +33,14 @@ class BaseAgent(ABC):
     @abstractmethod
     async def process_task(self, envelope: A2AEnvelope) -> Dict[str, Any]:
         """Process a task and return results."""
-        pass
 
     async def start(self):
         """Start the agent."""
         logger.info(
-            "agent_starting", name=self.name, version=self.version, intents=self.supported_intents
+            "agent_starting",
+            name=self.name,
+            version=self.version,
+            intents=self.supported_intents,
         )
 
         self.is_running = True
@@ -114,7 +115,10 @@ class BaseAgent(ABC):
 
         except Exception as e:
             logger.error(
-                "task_processing_failed", error=str(e), task_id=envelope.task_id, agent=self.name
+                "task_processing_failed",
+                error=str(e),
+                task_id=envelope.task_id,
+                agent=self.name,
             )
 
             # Update task status to failed
@@ -142,7 +146,9 @@ class BaseAgent(ABC):
             try:
                 # Simplified stub implementation
                 logger.info(
-                    "agent_heartbeat", name=self.name, timestamp=datetime.utcnow().isoformat()
+                    "agent_heartbeat",
+                    name=self.name,
+                    timestamp=datetime.utcnow().isoformat(),
                 )
 
                 await asyncio.sleep(30)  # Heartbeat every 30 seconds

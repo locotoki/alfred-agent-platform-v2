@@ -47,7 +47,9 @@ class FinancialTaxAgent(BaseAgent):
     def setup_chains(self):
         """Initialize LangChain configurations for each intent"""
         llm = ChatOpenAI(
-            temperature=0, model="gpt-4", openai_api_key="sk-mock-key-for-development-only"
+            temperature=0,
+            model="gpt-4",
+            openai_api_key="sk-mock-key-for-development-only",
         )
 
         self.tax_calc_chain = TaxCalculationChain(llm)
@@ -101,13 +103,19 @@ class FinancialTaxAgent(BaseAgent):
     async def process_task(self, envelope: A2AEnvelope) -> Dict[str, Any]:
         """Process a financial/tax task"""
         logger.info(
-            "processing_financial_tax_task", task_id=envelope.task_id, intent=envelope.intent
+            "processing_financial_tax_task",
+            task_id=envelope.task_id,
+            intent=envelope.intent,
         )
 
         try:
             # Execute the workflow
             result = await self.workflow.ainvoke(
-                {"envelope": envelope, "intent": envelope.intent, "content": envelope.content}
+                {
+                    "envelope": envelope,
+                    "intent": envelope.intent,
+                    "content": envelope.content,
+                }
             )
 
             return result.get("response", {})

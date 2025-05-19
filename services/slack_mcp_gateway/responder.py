@@ -5,10 +5,8 @@ This module runs a background task to consume responses from Redis and
 update the corresponding Slack thread using the chat.update API.
 """
 
-import json
 import logging
 import threading
-import time
 from typing import Any, Dict, Optional
 
 import requests

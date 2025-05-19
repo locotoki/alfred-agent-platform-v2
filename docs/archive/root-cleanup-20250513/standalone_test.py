@@ -1,9 +1,7 @@
 #!/usr/bin/env python3
 """Standalone test script for YouTube workflows."""
 
-import json
 import os
-import sys
 from datetime import datetime
 
 
@@ -91,7 +89,13 @@ class MockSocialIntelAgent:
         # Get queries
         queries = content.get(
             "queries",
-            ["nursery rhymes", "diy woodworking", "urban gardening", "ai news", "budget travel"],
+            [
+                "nursery rhymes",
+                "diy woodworking",
+                "urban gardening",
+                "ai news",
+                "budget travel",
+            ],
         )
 
         print(f"Queries: {queries}")

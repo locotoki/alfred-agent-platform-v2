@@ -32,7 +32,9 @@ TASK_DURATION = Histogram(
 )
 
 API_REQUESTS = Counter(
-    "legal_compliance_api_requests_total", "Total API requests", ["endpoint", "method", "status"]
+    "legal_compliance_api_requests_total",
+    "Total API requests",
+    ["endpoint", "method", "status"],
 )
 
 ACTIVE_TASKS = Gauge("legal_compliance_active_tasks", "Currently processing tasks")
@@ -96,7 +98,8 @@ app.mount("/health", health_app)
 # API Routes
 @app.post("/api/v1/legal-compliance/audit-compliance")
 async def audit_compliance(
-    request: ComplianceAuditRequest, credentials: HTTPAuthorizationCredentials = Security(security)
+    request: ComplianceAuditRequest,
+    credentials: HTTPAuthorizationCredentials = Security(security),
 ):
     """Perform compliance audit on submitted documents and processes."""
     API_REQUESTS.labels(endpoint="audit-compliance", method="POST", status="processing").inc()
@@ -106,7 +109,7 @@ async def audit_compliance(
         envelope = A2AEnvelope(intent="COMPLIANCE_AUDIT", content=request.dict())
 
         # Store task
-        task_id = await supabase_transport.store_task(envelope)
+        await supabase_transport.store_task(envelope)
 
         # Publish task
         message_id = await pubsub_transport.publish_task(envelope)
@@ -127,7 +130,8 @@ async def audit_compliance(
 
 @app.post("/api/v1/legal-compliance/analyze-document")
 async def analyze_document(
-    request: DocumentAnalysisRequest, credentials: HTTPAuthorizationCredentials = Security(security)
+    request: DocumentAnalysisRequest,
+    credentials: HTTPAuthorizationCredentials = Security(security),
 ):
     """Analyze legal document for compliance issues."""
     API_REQUESTS.labels(endpoint="analyze-document", method="POST", status="processing").inc()
@@ -135,7 +139,7 @@ async def analyze_document(
     try:
         envelope = A2AEnvelope(intent="DOCUMENT_ANALYSIS", content=request.dict())
 
-        task_id = await supabase_transport.store_task(envelope)
+        await supabase_transport.store_task(envelope)
         message_id = await pubsub_transport.publish_task(envelope)
 
         API_REQUESTS.labels(endpoint="analyze-document", method="POST", status="success").inc()
@@ -154,7 +158,8 @@ async def analyze_document(
 
 @app.post("/api/v1/legal-compliance/check-regulations")
 async def check_regulations(
-    request: RegulationCheckRequest, credentials: HTTPAuthorizationCredentials = Security(security)
+    request: RegulationCheckRequest,
+    credentials: HTTPAuthorizationCredentials = Security(security),
 ):
     """Check compliance against specific regulations."""
     API_REQUESTS.labels(endpoint="check-regulations", method="POST", status="processing").inc()
@@ -162,7 +167,7 @@ async def check_regulations(
     try:
         envelope = A2AEnvelope(intent="REGULATION_CHECK", content=request.dict())
 
-        task_id = await supabase_transport.store_task(envelope)
+        await supabase_transport.store_task(envelope)
         message_id = await pubsub_transport.publish_task(envelope)
 
         API_REQUESTS.labels(endpoint="check-regulations", method="POST", status="success").inc()
@@ -181,7 +186,8 @@ async def check_regulations(
 
 @app.post("/api/v1/legal-compliance/review-contract")
 async def review_contract(
-    request: ContractReviewRequest, credentials: HTTPAuthorizationCredentials = Security(security)
+    request: ContractReviewRequest,
+    credentials: HTTPAuthorizationCredentials = Security(security),
 ):
     """Review contract for legal compliance and potential issues."""
     API_REQUESTS.labels(endpoint="review-contract", method="POST", status="processing").inc()
@@ -189,7 +195,7 @@ async def review_contract(
     try:
         envelope = A2AEnvelope(intent="CONTRACT_REVIEW", content=request.dict())
 
-        task_id = await supabase_transport.store_task(envelope)
+        await supabase_transport.store_task(envelope)
         message_id = await pubsub_transport.publish_task(envelope)
 
         API_REQUESTS.labels(endpoint="review-contract", method="POST", status="success").inc()

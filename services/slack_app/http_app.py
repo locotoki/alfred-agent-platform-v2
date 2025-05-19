@@ -21,7 +21,8 @@ logger = logging.getLogger(__name__)
 
 # Initialize the Slack Bolt app
 app = App(
-    token=os.environ.get("SLACK_BOT_TOKEN"), signing_secret=os.environ.get("SLACK_SIGNING_SECRET")
+    token=os.environ.get("SLACK_BOT_TOKEN"),
+    signing_secret=os.environ.get("SLACK_SIGNING_SECRET"),
 )
 
 # Command prefix for slash commands
@@ -47,12 +48,12 @@ def handle_alfred_command(ack, command, say):
     # Split into subcommand and arguments
     parts = command_text.split(" ", 1)
     subcommand = parts[0].lower()
-    args = parts[1] if len(parts) > 1 else ""
+    parts[1] if len(parts) > 1 else ""
 
     # Check if the subcommand is allowed
     if subcommand not in ALLOWED_COMMANDS_SET:
         say(
-            f"Sorry, the command `{subcommand}` is not recognized. Try `/alfred help` for a list of available commands."
+            f"Sorry, the command `{subcommand}` is not recognized. Try `/alfred help` for a list of available commands."  # noqa: E501
         )
         return
 

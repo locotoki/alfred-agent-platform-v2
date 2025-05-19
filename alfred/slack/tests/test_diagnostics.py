@@ -1,6 +1,5 @@
 """Tests for Slack diagnostics bot."""
 
-import json
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import httpx  # type: ignore[import-not-found]

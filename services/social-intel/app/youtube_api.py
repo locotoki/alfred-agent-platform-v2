@@ -5,8 +5,6 @@ This module provides functions to interact with the YouTube Data API v3 for fetc
 trends, statistics, and channel data.
 """
 
-import asyncio
-import json
 import os
 from datetime import datetime
 from typing import Any, Dict, List, Optional
@@ -22,8 +20,6 @@ YOUTUBE_API_BASE_URL = "https://www.googleapis.com/youtube/v3"
 
 class YouTubeAPIError(Exception):
     """Exception raised for YouTube API errors."""
-
-    pass
 
 
 async def search_videos(
@@ -72,14 +68,18 @@ async def search_videos(
                 if response.status != 200:
                     error_text = await response.text()
                     logger.error(
-                        "youtube_api_search_error", status=response.status, error=error_text
+                        "youtube_api_search_error",
+                        status=response.status,
+                        error=error_text,
                     )
                     raise YouTubeAPIError(f"YouTube API error: {error_text}")
 
                 data = await response.json()
 
         logger.info(
-            "youtube_api_search_success", items_count=len(data.get("items", [])), query=query
+            "youtube_api_search_success",
+            items_count=len(data.get("items", [])),
+            query=query,
         )
 
         return data.get("items", [])
@@ -126,7 +126,9 @@ async def get_video_details(video_ids: List[str]) -> List[Dict[str, Any]]:
                 if response.status != 200:
                     error_text = await response.text()
                     logger.error(
-                        "youtube_api_video_details_error", status=response.status, error=error_text
+                        "youtube_api_video_details_error",
+                        status=response.status,
+                        error=error_text,
                     )
                     raise YouTubeAPIError(f"YouTube API error: {error_text}")
 
@@ -186,7 +188,10 @@ async def get_channel_details(channel_ids: List[str]) -> List[Dict[str, Any]]:
 
                 data = await response.json()
 
-        logger.info("youtube_api_channel_details_success", items_count=len(data.get("items", [])))
+        logger.info(
+            "youtube_api_channel_details_success",
+            items_count=len(data.get("items", [])),
+        )
 
         return data.get("items", [])
 
@@ -227,8 +232,18 @@ async def get_trends_by_category(
         "business": ["business tips", "entrepreneurship", "investing", "finance"],
         "arts": ["art tutorials", "digital art", "creative process", "drawing"],
         "travel": ["travel guides", "travel vlog", "destinations", "tourism"],
-        "sports": ["sports highlights", "fitness routine", "workout tips", "extreme sports"],
-        "kids": ["kids videos", "children's content", "family friendly", "educational for kids"],
+        "sports": [
+            "sports highlights",
+            "fitness routine",
+            "workout tips",
+            "extreme sports",
+        ],
+        "kids": [
+            "kids videos",
+            "children's content",
+            "family friendly",
+            "educational for kids",
+        ],
     }
 
     # Map subcategories to more specific search queries
@@ -242,8 +257,18 @@ async def get_trends_by_category(
             "counting songs",
             "lullaby for babies",
         ],
-        "tech.gaming": ["gaming tips", "gameplay walkthrough", "game review", "gaming setup"],
-        "lifestyle.food": ["cooking tutorial", "easy recipes", "food review", "cooking tips"],
+        "tech.gaming": [
+            "gaming tips",
+            "gameplay walkthrough",
+            "game review",
+            "gaming setup",
+        ],
+        "lifestyle.food": [
+            "cooking tutorial",
+            "easy recipes",
+            "food review",
+            "cooking tips",
+        ],
         "education.courses": [
             "online course",
             "skill tutorial",
@@ -386,7 +411,10 @@ async def get_trends_by_category(
                             "score": avg_views * avg_engagement * 100,  # Custom score metric
                             "videos": [v["video_id"] for v in related_videos[:3]],
                             "top_channels": [
-                                {"name": v["channel_name"], "subs": v["subscriber_count"]}
+                                {
+                                    "name": v["channel_name"],
+                                    "subs": v["subscriber_count"],
+                                }
                                 for v in related_videos[:2]
                             ],
                         }

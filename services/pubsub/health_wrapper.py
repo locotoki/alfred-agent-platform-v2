@@ -75,7 +75,10 @@ def check_pubsub_health() -> Dict[str, str]:
                 return {"status": "ok"}
             else:
                 pubsub_up.set(0)
-                return {"status": "error", "error": f"PubSub returned status {response.status}"}
+                return {
+                    "status": "error",
+                    "error": f"PubSub returned status {response.status}",
+                }
     except Exception as e:
         pubsub_up.set(0)
         return {"status": "error", "error": str(e)}

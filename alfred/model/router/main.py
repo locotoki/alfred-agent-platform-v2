@@ -3,12 +3,11 @@
 import os
 import threading
 from datetime import datetime
-from typing import Any, Dict, List, Optional
 
 import httpx
 import prometheus_client
 import uvicorn
-from fastapi import Depends, FastAPI, HTTPException, Request
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 
 # Initialize FastAPI app
@@ -101,7 +100,8 @@ async def get_models():
     except httpx.RequestError as exc:
         if DEBUG:
             raise HTTPException(
-                status_code=503, detail=f"Error connecting to model registry: {str(exc)}"
+                status_code=503,
+                detail=f"Error connecting to model registry: {str(exc)}",
             )
         else:
             # Return mock data in debug mode if model registry is not available

@@ -1,7 +1,5 @@
 """Benchmark tests for ML inference performance."""
 
-import time
-
 import numpy as np
 import pytest
 from sentence_transformers import SentenceTransformer
@@ -17,7 +15,7 @@ def test_single_inference_latency(benchmark, model):
     """Benchmark single alert inference latency."""
     test_alert = "API timeout error in service X"
 
-    result = benchmark(model.encode, test_alert)
+    benchmark(model.encode, test_alert)
 
     # P99 latency must be < 15ms
     assert benchmark.stats["max"] < 0.015  # 15ms
@@ -33,7 +31,7 @@ def test_batch_inference_throughput(benchmark, model):
         embeddings = model.encode(test_alerts)
         return embeddings
 
-    result = benchmark(process_batch)
+    benchmark(process_batch)
 
     # Should process 32 alerts in < 200ms
     assert benchmark.stats["mean"] < 0.2
@@ -56,7 +54,7 @@ def test_large_batch_performance(benchmark, model):
 
         return np.vstack(all_embeddings)
 
-    result = benchmark(process_large_batch)
+    benchmark(process_large_batch)
 
     # Should process 1000 alerts in < 5 seconds
     assert benchmark.stats["mean"] < 5.0
@@ -76,7 +74,7 @@ def test_memory_efficiency():
     # Process many alerts
     for _ in range(10):
         alerts = [f"Alert {i}" for i in range(100)]
-        embeddings = model.encode(alerts)
+        model.encode(alerts)
 
     # Measure memory after
     final_memory = process.memory_info().rss / 1e6  # MB

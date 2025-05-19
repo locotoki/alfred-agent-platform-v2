@@ -7,9 +7,8 @@ grouping rules with dynamic evaluation.
 
 import operator
 import re
-from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any, Dict, List, Optional
 
 import redis
 import yaml
@@ -69,7 +68,7 @@ class RuleCondition:
 
         try:
             return op(value, self.value)
-        except:
+        except Exception:
             return False
 
 
@@ -164,7 +163,9 @@ class RulesEngine:
                 for cond in rule_config.get("conditions", []):
                     conditions.append(
                         RuleCondition(
-                            field=cond["field"], operator=cond["operator"], value=cond["value"]
+                            field=cond["field"],
+                            operator=cond["operator"],
+                            value=cond["value"],
                         )
                     )
 

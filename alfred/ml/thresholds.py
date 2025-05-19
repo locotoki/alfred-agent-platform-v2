@@ -91,7 +91,12 @@ class ThresholdService(Service):
             Updated threshold configuration
         """
         # Validate updates
-        valid_keys = {"noise_threshold", "confidence_min", "batch_size", "learning_rate"}
+        valid_keys = {
+            "noise_threshold",
+            "confidence_min",
+            "batch_size",
+            "learning_rate",
+        }
         invalid_keys = set(updates.keys()) - valid_keys
         if invalid_keys:
             raise ValueError(f"Invalid threshold keys: {invalid_keys}")

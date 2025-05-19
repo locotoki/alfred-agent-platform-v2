@@ -32,7 +32,10 @@ def query():
     response = f"This is a response to: {query_text}"
 
     return jsonify(
-        {"result": response, "metadata": {"source": "rag-gateway", "model": "mock-model"}}
+        {
+            "result": response,
+            "metadata": {"source": "rag-gateway", "model": "mock-model"},
+        }
     )
 
 

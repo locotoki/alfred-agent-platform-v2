@@ -1,7 +1,5 @@
 """Tests for YouTube workflows in SocialIntelligence Agent."""
 
-import asyncio
-import json
 import os
 from datetime import datetime
 from unittest.mock import AsyncMock, MagicMock, patch
@@ -10,7 +8,6 @@ import pytest
 
 from agents.social_intel.agent import SocialIntelAgent
 from agents.social_intel.models.youtube_models import BlueprintResult, NicheScoutResult
-from agents.social_intel.models.youtube_vectors import YouTubeVectorStorage
 from libs.a2a_adapter import A2AEnvelope
 
 
@@ -22,14 +19,24 @@ def mock_youtube_api():
         instance = mock.return_value
         instance.search_videos = AsyncMock(
             return_value=[
-                {"id": "test_video_id", "title": "Test Video", "viewCount": {"text": "1,000"}}
+                {
+                    "id": "test_video_id",
+                    "title": "Test Video",
+                    "viewCount": {"text": "1,000"},
+                }
             ]
         )
         instance.get_trend_data = AsyncMock(
             return_value={"query": "test_query", "current_value": 75.0, "values": {}}
         )
         instance.search_channels = AsyncMock(
-            return_value=[{"id": "test_channel_id", "title": "Test Channel", "subscribers": "100K"}]
+            return_value=[
+                {
+                    "id": "test_channel_id",
+                    "title": "Test Channel",
+                    "subscribers": "100K",
+                }
+            ]
         )
         instance.get_video_metadata = AsyncMock(
             return_value={
@@ -64,7 +71,10 @@ def mock_youtube_niche_scout_flow():
     with patch("agents.social_intel.flows.youtube_flows.youtube_niche_scout_flow") as mock:
         # Setup mock return value
         mock.return_value = NicheScoutResult(
-            run_date=datetime.now(), trending_niches=[], top_niches=[], visualization_url=None
+            run_date=datetime.now(),
+            trending_niches=[],
+            top_niches=[],
+            visualization_url=None,
         )
         yield mock
 
@@ -143,7 +153,8 @@ async def test_youtube_niche_scout(mock_agent, mock_youtube_niche_scout_flow):
 
     # Verify flow was called with correct arguments
     mock_youtube_niche_scout_flow.assert_called_once_with(
-        queries=["test query 1", "test query 2"], vector_storage=mock_agent.youtube_vectors
+        queries=["test query 1", "test query 2"],
+        vector_storage=mock_agent.youtube_vectors,
     )
 
 

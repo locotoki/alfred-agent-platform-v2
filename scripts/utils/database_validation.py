@@ -12,7 +12,13 @@ from dotenv import load_dotenv
 
 logger = structlog.get_logger(__name__)
 
-REQUIRED_TABLES = ["tasks", "task_results", "processed_messages", "agent_registry", "embeddings"]
+REQUIRED_TABLES = [
+    "tasks",
+    "task_results",
+    "processed_messages",
+    "agent_registry",
+    "embeddings",
+]
 
 REQUIRED_INDEXES = [
     "idx_tasks_status",
@@ -24,7 +30,14 @@ REQUIRED_INDEXES = [
     "idx_embeddings_embedding",
 ]
 
-REQUIRED_EXTENSIONS = ["uuid-ossp", "pgcrypto", "pgjwt", "pg_stat_statements", "pg_cron", "vector"]
+REQUIRED_EXTENSIONS = [
+    "uuid-ossp",
+    "pgcrypto",
+    "pgjwt",
+    "pg_stat_statements",
+    "pg_cron",
+    "vector",
+]
 
 
 async def validate_database():

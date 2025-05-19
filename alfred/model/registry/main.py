@@ -8,7 +8,7 @@ import prometheus_client
 import uvicorn
 from fastapi import Depends, FastAPI, HTTPException
 from pydantic import BaseModel, Field
-from sqlalchemy import JSON, Column, DateTime, Integer, String, Text, func, select
+from sqlalchemy import JSON, Column, DateTime, Integer, String, Text, select
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker

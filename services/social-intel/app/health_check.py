@@ -5,7 +5,6 @@ Enhanced health check implementation for the Social Intelligence service.
 import asyncio
 import os
 import time
-from typing import Any, Dict
 
 import aiohttp
 import structlog
@@ -26,7 +25,10 @@ youtube_circuit = CircuitBreaker(name="youtube_api", failure_threshold=3, reset_
 # Global health state
 health_state = {
     "status": "initializing",
-    "components": {"database": {"status": "unknown"}, "youtube_api": {"status": "unknown"}},
+    "components": {
+        "database": {"status": "unknown"},
+        "youtube_api": {"status": "unknown"},
+    },
     "last_check": time.time(),
     "is_offline_mode": False,
 }
@@ -117,7 +119,10 @@ async def check_database() -> bool:
         await db_circuit.execute(async_check_db_connection)
 
         # Update health state
-        health_state["components"]["database"] = {"status": "healthy", "last_check": time.time()}
+        health_state["components"]["database"] = {
+            "status": "healthy",
+            "last_check": time.time(),
+        }
 
         logger.info("database_health_check_success")
         return True
@@ -164,7 +169,10 @@ async def check_youtube_api() -> bool:
         await youtube_circuit.execute(async_check_youtube_api, api_key)
 
         # Update health state
-        health_state["components"]["youtube_api"] = {"status": "healthy", "last_check": time.time()}
+        health_state["components"]["youtube_api"] = {
+            "status": "healthy",
+            "last_check": time.time(),
+        }
 
         logger.info("youtube_api_health_check_success")
         return True
@@ -183,7 +191,12 @@ async def check_youtube_api() -> bool:
 async def async_check_youtube_api(api_key: str):
     """Make a simple API call to check YouTube API connectivity."""
     url = "https://www.googleapis.com/youtube/v3/videos"
-    params = {"part": "snippet", "chart": "mostPopular", "maxResults": 1, "key": api_key}
+    params = {
+        "part": "snippet",
+        "chart": "mostPopular",
+        "maxResults": 1,
+        "key": api_key,
+    }
 
     async with aiohttp.ClientSession() as session:
         async with session.get(url, params=params) as response:

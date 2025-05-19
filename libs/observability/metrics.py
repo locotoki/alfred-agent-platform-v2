@@ -1,9 +1,9 @@
 import time
 from functools import wraps
-from typing import Any, Callable
+from typing import Callable
 
 import structlog
-from prometheus_client import Counter, Gauge, Histogram, Summary
+from prometheus_client import Counter, Gauge, Histogram
 
 logger = structlog.get_logger(__name__)
 
@@ -28,7 +28,9 @@ class MetricsCollector:
 
         # API metrics
         self.api_requests = Counter(
-            "api_requests_total", "Total API requests", ["service", "endpoint", "method", "status"]
+            "api_requests_total",
+            "Total API requests",
+            ["service", "endpoint", "method", "status"],
         )
 
         self.api_latency = Histogram(
@@ -45,7 +47,9 @@ class MetricsCollector:
 
         # PubSub metrics
         self.pubsub_messages = Counter(
-            "pubsub_messages_total", "Total Pub/Sub messages", ["service", "topic", "operation"]
+            "pubsub_messages_total",
+            "Total Pub/Sub messages",
+            ["service", "topic", "operation"],
         )
 
         self.pubsub_latency = Histogram(
@@ -109,14 +113,19 @@ class MetricsCollector:
                 except Exception as e:
                     status = "error"
                     self.error_counter.labels(
-                        service=self.service_name, type=type(e).__name__, operation="api_request"
+                        service=self.service_name,
+                        type=type(e).__name__,
+                        operation="api_request",
                     ).inc()
                     raise
 
                 finally:
                     duration = time.time() - start_time
                     self.api_requests.labels(
-                        service=self.service_name, endpoint=endpoint, method=method, status=status
+                        service=self.service_name,
+                        endpoint=endpoint,
+                        method=method,
+                        status=status,
                     ).inc()
                     self.api_latency.labels(
                         service=self.service_name, endpoint=endpoint, method=method

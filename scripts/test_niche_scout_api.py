@@ -16,11 +16,10 @@ Options:
 
 import argparse
 import json
-import os
 import sys
 import time
 from datetime import datetime
-from typing import Any, Dict, Optional
+from typing import Any, Dict
 
 import requests
 
@@ -132,7 +131,10 @@ def run_test(base_url: str, test_case: Dict[str, Any], use_mock: bool = False) -
                 print(f"Error: {data['_error']}")
 
             # Save response to file for inspection
-            filename = f"niche_scout_test_{test_case['name'].replace(' ', '_').lower()}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+            # Create filename for test results
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            test_name = test_case["name"].replace(" ", "_").lower()
+            filename = f"niche_scout_test_{test_name}_{timestamp}.json"
             with open(filename, "w") as f:
                 json.dump(data, f, indent=2)
             print(f"Response saved to: {filename}")

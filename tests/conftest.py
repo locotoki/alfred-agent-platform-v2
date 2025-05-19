@@ -1,7 +1,7 @@
 import asyncio
 import os
 from typing import Generator
-from unittest.mock import AsyncMock, MagicMock
+from unittest.mock import MagicMock
 
 # Handle asyncpg import for environment where it might not be available
 try:

@@ -62,7 +62,10 @@ class LegalComplianceAgent(BaseAgent):
 
         except Exception as e:
             logger.error(
-                "task_processing_failed", error=str(e), intent=intent, task_id=envelope.task_id
+                "task_processing_failed",
+                error=str(e),
+                intent=intent,
+                task_id=envelope.task_id,
             )
             raise
 
@@ -88,7 +91,11 @@ class LegalComplianceAgent(BaseAgent):
 
         except Exception as e:
             logger.error("compliance_audit_failed", error=str(e))
-            return {"status": "error", "error": str(e), "error_type": "compliance_audit_error"}
+            return {
+                "status": "error",
+                "error": str(e),
+                "error_type": "compliance_audit_error",
+            }
 
     async def _process_document_analysis(self, content: Dict[str, Any]) -> Dict[str, Any]:
         """Process document analysis request."""
@@ -112,7 +119,11 @@ class LegalComplianceAgent(BaseAgent):
 
         except Exception as e:
             logger.error("document_analysis_failed", error=str(e))
-            return {"status": "error", "error": str(e), "error_type": "document_analysis_error"}
+            return {
+                "status": "error",
+                "error": str(e),
+                "error_type": "document_analysis_error",
+            }
 
     async def _process_regulation_check(self, content: Dict[str, Any]) -> Dict[str, Any]:
         """Process regulation check request."""
@@ -135,7 +146,11 @@ class LegalComplianceAgent(BaseAgent):
 
         except Exception as e:
             logger.error("regulation_check_failed", error=str(e))
-            return {"status": "error", "error": str(e), "error_type": "regulation_check_error"}
+            return {
+                "status": "error",
+                "error": str(e),
+                "error_type": "regulation_check_error",
+            }
 
     async def _process_contract_review(self, content: Dict[str, Any]) -> Dict[str, Any]:
         """Process contract review request."""
@@ -160,4 +175,8 @@ class LegalComplianceAgent(BaseAgent):
 
         except Exception as e:
             logger.error("contract_review_failed", error=str(e))
-            return {"status": "error", "error": str(e), "error_type": "contract_review_error"}
+            return {
+                "status": "error",
+                "error": str(e),
+                "error_type": "contract_review_error",
+            }

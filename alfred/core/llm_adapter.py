@@ -14,7 +14,9 @@ from prometheus_client import Counter
 
 # Prometheus metrics
 llm_tokens_total = Counter(
-    "alfred_llm_tokens_total", "Total tokens used across all LLM calls", ["model", "operation"]
+    "alfred_llm_tokens_total",
+    "Total tokens used across all LLM calls",
+    ["model", "operation"],
 )
 
 llm_requests_total = Counter("alfred_llm_requests_total", "Total LLM requests", ["model", "status"])

@@ -4,7 +4,6 @@
 import re
 import sys
 from pathlib import Path
-from typing import Dict, List
 
 import yaml
 
@@ -60,9 +59,7 @@ def update_alert_labels(file_path: Path) -> None:
             # Add runbook label
             if "runbook" not in rule["labels"]:
                 alert_name_snake = re.sub(r"([A-Z])", r"_\1", rule["alert"]).lower().strip("_")
-                runbook_url = (
-                    f"https://github.com/alfred-agent-platform-v2/runbooks/{alert_name_snake}.md"
-                )
+                runbook_url = f"https://github.com/alfred-agent-platform-v2/runbooks/{alert_name_snake}.md"  # noqa: E501
                 rule["labels"]["runbook"] = runbook_url
                 modified = True
 

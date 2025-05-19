@@ -3,9 +3,6 @@ Mock server for the Slack app.
 This server simulates the complete functionality without requiring real Slack authentication.
 """
 
-import json
-import os
-
 from flask import Flask, Response, jsonify, request
 
 app = Flask(__name__)
@@ -146,7 +143,7 @@ def slack_commands():
         response = {
             "text": f"Question: *{question}*\n\n"
             f"I'm analyzing your question and consulting with the appropriate agents...\n\n"
-            f"Answer: Based on my analysis, the answer to your question is related to Alfred's capabilities in this area.\n"
+            f"Answer: Based on my analysis, the answer to your question is related to Alfred's capabilities in this area.\n"  # noqa: E501
         }
     elif text == "agents":
         response = {
@@ -200,20 +197,20 @@ def ui():
     <head>
         <title>Alfred Slack App Simulator</title>
         <style>
-            body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
-            .terminal { background: #1e1e1e; color: #ddd; padding: 15px; border-radius: 5px; font-family: monospace; }
+            body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }  # noqa: E501
+            .terminal { background: #1e1e1e; color: #ddd; padding: 15px; border-radius: 5px; font-family: monospace; }  # noqa: E501
             .output { white-space: pre-wrap; }
             h1, h2 { color: #333; }
             .form-group { margin-bottom: 15px; }
             label { display: block; margin-bottom: 5px; }
             input[type="text"] { width: 100%; padding: 8px; box-sizing: border-box; }
-            button { background: #4CAF50; color: white; border: none; padding: 10px 15px; cursor: pointer; border-radius: 3px; }
-            .success { background: #dff0d8; color: #3c763d; padding: 10px; border-radius: 5px; margin: 10px 0; }
+            button { background: #4CAF50; color: white; border: none; padding: 10px 15px; cursor: pointer; border-radius: 3px; }  # noqa: E501
+            .success { background: #dff0d8; color: #3c763d; padding: 10px; border-radius: 5px; margin: 10px 0; }  # noqa: E501
         </style>
     </head>
     <body>
         <h1>Alfred Slack App Simulator</h1>
-        <p>Use this interface to simulate Slack commands without requiring real Slack authentication.</p>
+        <p>Use this interface to simulate Slack commands without requiring real Slack authentication.</p>  # noqa: E501
 
         <div class="terminal">
             <div class="output">⚡️ Bolt app is running! Connected to Slack.</div>
@@ -247,7 +244,7 @@ def ui():
                 .then(response => response.json())
                 .then(data => {
                     const resultDiv = document.getElementById('result');
-                    resultDiv.innerHTML = `<div class="success">Command executed!</div><div class="terminal"><div class="output">${data.text.replace(/\n/g, '<br>').replace(/\*/g, '<strong>').replace(/`/g, '<code>').replace(/```/g, '')}</div></div>`;
+                    resultDiv.innerHTML = `<div class="success">Command executed!</div><div class="terminal"><div class="output">${data.text.replace(/\\n/g, '<br>').replace(/\\*/g, '<strong>').replace(/\\`/g, '<code>').replace(/\\`\\`\\`/g, '')}</div></div>`;  # noqa: E501
                 })
                 .catch(error => {
                     console.error('Error:', error);

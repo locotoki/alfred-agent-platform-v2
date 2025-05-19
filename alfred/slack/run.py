@@ -5,8 +5,10 @@ This is the script you run to start the app.
 """
 import os
 import sys
+import traceback
 from threading import Thread
 
+from app import app, flask_app
 from dotenv import load_dotenv
 from slack_bolt.adapter.socket_mode import SocketModeHandler
 
@@ -23,9 +25,6 @@ if missing_vars:
     print("You can copy .env.template to .env and fill in the values.")
     sys.exit(1)
 
-# Import the app
-from app import app, flask_app
-
 if __name__ == "__main__":
     # Start Flask app for health checks in a separate thread
     flask_thread = Thread(target=lambda: flask_app.run(host="0.0.0.0", port=3000))
@@ -39,7 +38,8 @@ if __name__ == "__main__":
             app_token = os.environ.get("SLACK_APP_TOKEN", "")
             if not app_token.startswith("xapp-"):
                 print(
-                    f"Warning: SLACK_APP_TOKEN doesn't start with 'xapp-'. Token: {app_token[:5]}..."
+                    f"Warning: SLACK_APP_TOKEN doesn't start with 'xapp-'. "
+                    f"Token: {app_token[:5]}..."
                 )
 
             # Initialize and start the socket mode handler
@@ -54,7 +54,5 @@ if __name__ == "__main__":
             print("⚡️ Bolt app is running! Listening to HTTP events.")
     except Exception as e:
         print(f"Error starting Slack app: {str(e)}")
-        import traceback
-
         traceback.print_exc()
         sys.exit(1)

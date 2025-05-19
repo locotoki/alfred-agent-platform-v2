@@ -2,17 +2,10 @@
 
 import asyncio
 import os
-from datetime import datetime
 
 import pytest
 
 from agents.financial_tax.agent import FinancialTaxAgent
-from agents.financial_tax.models import (
-    ComplianceCheckRequest,
-    FinancialAnalysisRequest,
-    TaxCalculationRequest,
-    TaxRateRequest,
-)
 from libs.a2a_adapter import A2AEnvelope, PolicyMiddleware, PubSubTransport, SupabaseTransport
 
 pytestmark = pytest.mark.integration

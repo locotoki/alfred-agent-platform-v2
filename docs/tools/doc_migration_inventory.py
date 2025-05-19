@@ -413,7 +413,10 @@ def main():
         help="Threshold for determining title similarity (0.0-1.0)",
     )
     parser.add_argument(
-        "--ignore-dirs", type=str, nargs="+", help="List of directory paths to ignore during scan"
+        "--ignore-dirs",
+        type=str,
+        nargs="+",
+        help="List of directory paths to ignore during scan",
     )
 
     args = parser.parse_args()

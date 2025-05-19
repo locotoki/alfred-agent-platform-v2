@@ -5,7 +5,7 @@ subsystem for user interface components and interactions.
 """
 
 from abc import abstractmethod
-from typing import Any, Callable, Dict, List, Optional, Protocol
+from typing import Any, Dict, List, Optional, Protocol
 
 
 class ChatInterface(Protocol):
