@@ -1,8 +1,11 @@
-"""Alfred UI module."""
+"""User-interface layer (Mission-Control, Streamlit chat, Auth UI).
 
-from typing import List
+Legacy import shims — **TO BE REMOVED 2025-07-01**.
+"""
+import importlib
+import sys
 
-# Will be imported when streamlit_chat is properly typed
-# from .streamlit_chat import create_streamlit_app
-
-__all__: List[str] = []  # ["create_streamlit_app"]
+for _old, _new in {
+    "services.ui.streamlit_chat": "alfred.ui.streamlit_chat",
+}.items():
+    sys.modules[_old] = importlib.import_module(_new)

@@ -1006,7 +1006,7 @@ services:
   # Admin Dashboard
   ui-admin:
     build:
-      context: ./services/mission-control-simplified
+      context: ./alfred/ui/mission_control_simplified
       dockerfile: Dockerfile
     image: mission-control-simplified:latest
     container_name: ui-admin
