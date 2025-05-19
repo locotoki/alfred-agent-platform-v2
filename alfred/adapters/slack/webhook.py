@@ -195,6 +195,12 @@ async def health_check() -> Dict[str, str]:
     return {"status": "healthy", "service": "alfred-slack-adapter"}
 
 
+@app.get("/healthz")
+async def healthz() -> Dict[str, str]:
+    """Health check endpoint for Kubernetes."""
+    return {"status": "ok", "service": "alfred-slack-adapter", "version": "1.0.0"}
+
+
 @app.get("/")
 async def root() -> Dict[str, str]:
     """Root endpoint."""
