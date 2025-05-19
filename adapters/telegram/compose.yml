@@ -1,0 +1,10 @@
+services:
+  telegram-adapter:
+    image: ${ALFRED_REGISTRY}/alfred-platform/telegram-adapter:${ALFRED_VERSION}
+    environment:
+      - ALFRED_ENVIRONMENT=${ALFRED_ENVIRONMENT}
+      - ALFRED_LOG_LEVEL=${ALFRED_LOG_LEVEL}
+      - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}
+    restart: unless-stopped
+    networks:
+      - alfred-network
