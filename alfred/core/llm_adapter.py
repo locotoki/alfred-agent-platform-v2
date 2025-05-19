@@ -14,16 +14,10 @@ from prometheus_client import Counter
 
 # Prometheus metrics
 llm_tokens_total = Counter(
-    'alfred_llm_tokens_total',
-    'Total tokens used across all LLM calls',
-    ['model', 'operation']
+    "alfred_llm_tokens_total", "Total tokens used across all LLM calls", ["model", "operation"]
 )
 
-llm_requests_total = Counter(
-    'alfred_llm_requests_total',
-    'Total LLM requests',
-    ['model', 'status']
-)
+llm_requests_total = Counter("alfred_llm_requests_total", "Total LLM requests", ["model", "status"])
 
 logger = structlog.get_logger(__name__)
 
@@ -50,7 +44,7 @@ class LLMAdapter(ABC):
         stream: bool = False,
         temperature: float = 0.7,
         max_tokens: Optional[int] = None,
-        **kwargs
+        **kwargs,
     ) -> Union[str, AsyncIterator[str]]:
         """Generate a response from the LLM.
 
@@ -97,6 +91,7 @@ class OpenAIAdapter(LLMAdapter):
         if self._client is None:
             try:
                 from openai import AsyncOpenAI
+
                 self._client = AsyncOpenAI(api_key=self.api_key)
             except ImportError:
                 raise ImportError("openai package not installed. Run: pip install openai")
@@ -109,7 +104,7 @@ class OpenAIAdapter(LLMAdapter):
         stream: bool = False,
         temperature: float = 0.7,
         max_tokens: Optional[int] = None,
-        **kwargs
+        **kwargs,
     ) -> Union[str, AsyncIterator[str]]:
         """Generate response using OpenAI API."""
         try:
@@ -138,11 +133,10 @@ class OpenAIAdapter(LLMAdapter):
                 content = response.choices[0].message.content
 
                 # Track token usage
-                if hasattr(response, 'usage'):
-                    llm_tokens_total.labels(
-                        model=self.model,
-                        operation="completion"
-                    ).inc(response.usage.total_tokens)
+                if hasattr(response, "usage"):
+                    llm_tokens_total.labels(model=self.model, operation="completion").inc(
+                        response.usage.total_tokens
+                    )
 
                 return content
 
@@ -161,10 +155,7 @@ class OpenAIAdapter(LLMAdapter):
                 yield content
 
         # Track token usage for streamed responses
-        llm_tokens_total.labels(
-            model=self.model,
-            operation="stream_completion"
-        ).inc(total_tokens)
+        llm_tokens_total.labels(model=self.model, operation="stream_completion").inc(total_tokens)
 
     def estimate_tokens(self, text: str) -> int:
         """Estimate tokens using simple heuristic.
@@ -193,6 +184,7 @@ class ClaudeAdapter(LLMAdapter):
         if self._client is None:
             try:
                 from anthropic import AsyncAnthropic
+
                 self._client = AsyncAnthropic(api_key=self.api_key)
             except ImportError:
                 raise ImportError("anthropic package not installed. Run: pip install anthropic")
@@ -205,7 +197,7 @@ class ClaudeAdapter(LLMAdapter):
         stream: bool = False,
         temperature: float = 0.7,
         max_tokens: Optional[int] = None,
-        **kwargs
+        **kwargs,
     ) -> Union[str, AsyncIterator[str]]:
         """Generate response using Claude API."""
         try:
@@ -237,19 +229,16 @@ class ClaudeAdapter(LLMAdapter):
 
             if stream:
                 # Claude streaming requires different handling
-                stream_response = await self.client.messages.create(
-                    **params, stream=True
-                )
+                stream_response = await self.client.messages.create(**params, stream=True)
                 return self._stream_response(stream_response)
             else:
                 content = response.content[0].text
 
                 # Track token usage
-                if hasattr(response, 'usage'):
-                    llm_tokens_total.labels(
-                        model=self.model,
-                        operation="completion"
-                    ).inc(response.usage.total_tokens)
+                if hasattr(response, "usage"):
+                    llm_tokens_total.labels(model=self.model, operation="completion").inc(
+                        response.usage.total_tokens
+                    )
 
                 return content
 
@@ -267,10 +256,7 @@ class ClaudeAdapter(LLMAdapter):
                 total_tokens += self.estimate_tokens(content)
                 yield content
 
-        llm_tokens_total.labels(
-            model=self.model,
-            operation="stream_completion"
-        ).inc(total_tokens)
+        llm_tokens_total.labels(model=self.model, operation="stream_completion").inc(total_tokens)
 
     def estimate_tokens(self, text: str) -> int:
         """Estimate tokens for Claude."""

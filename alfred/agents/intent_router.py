@@ -13,9 +13,7 @@ from prometheus_client import Counter
 
 # Prometheus metrics
 intents_total = Counter(
-    'alfred_intents_total',
-    'Total intents processed',
-    ['intent_type', 'status']
+    "alfred_intents_total", "Total intents processed", ["intent_type", "status"]
 )
 
 logger = structlog.get_logger(__name__)
@@ -64,57 +62,33 @@ class IntentRouter:
                         type=intent_type,
                         confidence=0.9,  # High confidence for pattern match
                         entities={},
-                        raw_message=message
+                        raw_message=message,
                     )
 
-                    intents_total.labels(
-                        intent_type=intent_type,
-                        status="success"
-                    ).inc()
+                    intents_total.labels(intent_type=intent_type, status="success").inc()
 
-                    logger.info(
-                        "Intent classified",
-                        intent=intent_type,
-                        confidence=0.9
-                    )
+                    logger.info("Intent classified", intent=intent_type, confidence=0.9)
 
                     return intent
 
             # If no pattern matches, return unknown intent
-            intent = Intent(
-                type="unknown_intent",
-                confidence=0.0,
-                entities={},
-                raw_message=message
-            )
+            intent = Intent(type="unknown_intent", confidence=0.0, entities={}, raw_message=message)
 
-            intents_total.labels(
-                intent_type="unknown_intent",
-                status="success"
-            ).inc()
+            intents_total.labels(intent_type="unknown_intent", status="success").inc()
 
             return intent
 
         except Exception as e:
             logger.error("Error routing intent", error=str(e))
-            intents_total.labels(
-                intent_type="error",
-                status="error"
-            ).inc()
+            intents_total.labels(intent_type="error", status="error").inc()
 
             # Return error intent
             return Intent(
-                type="error_intent",
-                confidence=0.0,
-                entities={"error": str(e)},
-                raw_message=message
+                type="error_intent", confidence=0.0, entities={"error": str(e)}, raw_message=message
             )
 
     def register_handler(
-        self,
-        intent_type: str,
-        handler: Callable,
-        pattern: Optional[str] = None
+        self, intent_type: str, handler: Callable, pattern: Optional[str] = None
     ) -> None:
         """Register a handler for an intent type.
 
@@ -128,11 +102,7 @@ class IntentRouter:
         if pattern:
             self._patterns[intent_type] = re.compile(pattern, re.IGNORECASE)
 
-        logger.info(
-            "Handler registered",
-            intent_type=intent_type,
-            has_pattern=bool(pattern)
-        )
+        logger.info("Handler registered", intent_type=intent_type, has_pattern=bool(pattern))
 
     def get_handler(self, intent_type: str) -> Optional[Callable]:
         """Get handler for an intent type.
@@ -151,28 +121,21 @@ class IntentRouter:
         self.register_handler(
             "greeting",
             self._handle_greeting,
-            pattern=r"\b(hello|hi|hey|greetings|good morning|good afternoon|good evening)\b"
+            pattern=r"\b(hello|hi|hey|greetings|good morning|good afternoon|good evening)\b",
         )
 
         # Help intent
         self.register_handler(
-            "help",
-            self._handle_help,
-            pattern=r"(help|assist|how to|what can you|guide|tutorial)"
+            "help", self._handle_help, pattern=r"(help|assist|how to|what can you|guide|tutorial)"
         )
 
         # Status check intent
         self.register_handler(
-            "status_check",
-            self._handle_status,
-            pattern=r"\b(status|health|ping|alive|working)\b"
+            "status_check", self._handle_status, pattern=r"\b(status|health|ping|alive|working)\b"
         )
 
         # Unknown intent
-        self.register_handler(
-            "unknown_intent",
-            self._handle_unknown
-        )
+        self.register_handler("unknown_intent", self._handle_unknown)
 
     def _handle_greeting(self, intent: Intent) -> str:
         """Handle greeting intent."""

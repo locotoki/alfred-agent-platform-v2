@@ -19,9 +19,7 @@ from pydantic import BaseModel
 
 # Prometheus metrics
 slack_events_total = Counter(
-    'alfred_slack_events_total',
-    'Total Slack events received',
-    ['result', 'event_type']
+    "alfred_slack_events_total", "Total Slack events received", ["result", "event_type"]
 )
 
 logger = structlog.get_logger(__name__)
@@ -65,12 +63,7 @@ class SlackVerifier:
     def __init__(self, signing_secret: str):
         self.signing_secret = signing_secret
 
-    def verify_signature(
-        self,
-        timestamp: str,
-        body: bytes,
-        signature: str
-    ) -> bool:
+    def verify_signature(self, timestamp: str, body: bytes, signature: str) -> bool:
         """Verify Slack request signature.
 
         Args:
@@ -95,11 +88,10 @@ class SlackVerifier:
         sig_basestring = f"v0:{timestamp}:".encode() + body
 
         # Calculate expected signature
-        expected_sig = "v0=" + hmac.new(
-            self.signing_secret.encode(),
-            sig_basestring,
-            hashlib.sha256
-        ).hexdigest()
+        expected_sig = (
+            "v0="
+            + hmac.new(self.signing_secret.encode(), sig_basestring, hashlib.sha256).hexdigest()
+        )
 
         # Compare signatures
         return hmac.compare_digest(expected_sig, signature)
@@ -182,21 +174,14 @@ async def handle_slack_events(request: Request):
             # Handle specific commands
             if command == "/alfred":
                 if text.strip().lower() == "ping":
-                    return JSONResponse({
-                        "response_type": "in_channel",
-                        "text": "pong"
-                    })
+                    return JSONResponse({"response_type": "in_channel", "text": "pong"})
                 else:
-                    return JSONResponse({
-                        "response_type": "ephemeral",
-                        "text": f"Received command: {text}"
-                    })
+                    return JSONResponse(
+                        {"response_type": "ephemeral", "text": f"Received command: {text}"}
+                    )
 
             # Unknown command
-            return JSONResponse({
-                "response_type": "ephemeral",
-                "text": "Unknown command"
-            })
+            return JSONResponse({"response_type": "ephemeral", "text": "Unknown command"})
 
         except Exception as e:
             slack_events_total.labels(result="error", event_type="parse_error").inc()

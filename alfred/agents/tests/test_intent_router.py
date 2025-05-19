@@ -10,10 +10,7 @@ class TestIntent:
 
     def test_intent_creation(self):
         intent = Intent(
-            type="greeting",
-            confidence=0.95,
-            entities={"name": "John"},
-            raw_message="Hello John"
+            type="greeting", confidence=0.95, entities={"name": "John"}, raw_message="Hello John"
         )
 
         assert intent.type == "greeting"
@@ -22,12 +19,7 @@ class TestIntent:
         assert intent.raw_message == "Hello John"
 
     def test_intent_string_representation(self):
-        intent = Intent(
-            type="help",
-            confidence=0.87,
-            entities={},
-            raw_message="I need help"
-        )
+        intent = Intent(type="help", confidence=0.87, entities={}, raw_message="I need help")
 
         assert str(intent) == "Intent(type=help, confidence=0.87)"
 
@@ -41,13 +33,7 @@ class TestIntentRouter:
 
     def test_route_greeting_intent(self, router):
         """Test routing of greeting messages."""
-        test_messages = [
-            "Hello",
-            "Hi there",
-            "Hey!",
-            "Good morning",
-            "Greetings"
-        ]
+        test_messages = ["Hello", "Hi there", "Hey!", "Good morning", "Greetings"]
 
         for message in test_messages:
             intent = router.route(message)
@@ -62,7 +48,7 @@ class TestIntentRouter:
             "I need assistance",
             "How to use this?",
             "What can you do?",
-            "Guide me"
+            "Guide me",
         ]
 
         for message in test_messages:
@@ -72,13 +58,7 @@ class TestIntentRouter:
 
     def test_route_status_intent(self, router):
         """Test routing of status check messages."""
-        test_messages = [
-            "Status",
-            "Health check",
-            "Ping",
-            "Are you alive?",
-            "Is it working?"
-        ]
+        test_messages = ["Status", "Health check", "Ping", "Are you alive?", "Is it working?"]
 
         for message in test_messages:
             intent = router.route(message)
@@ -92,7 +72,7 @@ class TestIntentRouter:
             "Something completely different",
             "Unrelated query",
             "12345",
-            "!@#$%"
+            "!@#$%",
         ]
 
         for message in test_messages:
@@ -110,14 +90,11 @@ class TestIntentRouter:
 
     def test_register_custom_handler(self, router):
         """Test registering a custom handler."""
+
         def custom_handler(intent):
             return "Custom response"
 
-        router.register_handler(
-            "custom_intent",
-            custom_handler,
-            pattern=r"custom|special"
-        )
+        router.register_handler("custom_intent", custom_handler, pattern=r"custom|special")
 
         # Test custom intent routing
         intent = router.route("This is custom")
@@ -186,7 +163,7 @@ class TestIntentRouter:
         test_cases = [
             ("Hello", "greeting"),
             ("Help me", "help"),
-            ("Unknown stuff", "unknown_intent")
+            ("Unknown stuff", "unknown_intent"),
         ]
 
         for message, expected_intent in test_cases:
@@ -199,7 +176,7 @@ class TestIntentRouter:
         test_cases = [
             ("Hello Alfred", "greeting"),
             ("I need help with something", "help"),
-            ("What's the system status?", "status_check")
+            ("What's the system status?", "status_check"),
         ]
 
         for message, expected_intent in test_cases:

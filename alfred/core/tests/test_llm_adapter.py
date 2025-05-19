@@ -33,7 +33,7 @@ class TestOpenAIAdapter:
     @pytest.fixture
     def adapter(self):
         # Mock environment variable
-        with patch.dict('os.environ', {'OPENAI_API_KEY': 'test-key'}):
+        with patch.dict("os.environ", {"OPENAI_API_KEY": "test-key"}):
             return OpenAIAdapter(api_key="test-key")
 
     @pytest.mark.asyncio
@@ -50,7 +50,7 @@ class TestOpenAIAdapter:
         mock_client.chat.completions.create.return_value = mock_response
 
         # Patch the client property
-        with patch.object(adapter, '_client', mock_client):
+        with patch.object(adapter, "_client", mock_client):
             messages = [Message("user", "Hello")]
             result = await adapter.generate(messages)
 
@@ -81,7 +81,7 @@ class TestOpenAIAdapter:
         mock_client.chat.completions.create.return_value = mock_stream()
 
         # Patch the client property
-        with patch.object(adapter, '_client', mock_client):
+        with patch.object(adapter, "_client", mock_client):
             messages = [Message("user", "Hi")]
             result = await adapter.generate(messages, stream=True)
 
@@ -100,15 +100,15 @@ class TestOpenAIAdapter:
 
     def test_missing_api_key(self):
         # Temporarily clear the env var
-        with patch.dict('os.environ', {}, clear=True):
+        with patch.dict("os.environ", {}, clear=True):
             with pytest.raises(ValueError, match="OpenAI API key not provided"):
                 OpenAIAdapter(api_key=None)
 
     def test_missing_api_key_with_env(self):
         # Test with env var set
-        with patch.dict('os.environ', {'OPENAI_API_KEY': 'env-key'}):
+        with patch.dict("os.environ", {"OPENAI_API_KEY": "env-key"}):
             adapter = OpenAIAdapter()
-            assert adapter.api_key == 'env-key'
+            assert adapter.api_key == "env-key"
 
 
 class TestClaudeAdapter:
@@ -116,7 +116,7 @@ class TestClaudeAdapter:
 
     @pytest.fixture
     def adapter(self):
-        with patch.dict('os.environ', {'ANTHROPIC_API_KEY': 'test-key'}):
+        with patch.dict("os.environ", {"ANTHROPIC_API_KEY": "test-key"}):
             return ClaudeAdapter(api_key="test-key")
 
     @pytest.mark.asyncio
@@ -132,11 +132,8 @@ class TestClaudeAdapter:
         mock_client.messages.create.return_value = mock_response
 
         # Patch the client property
-        with patch.object(adapter, '_client', mock_client):
-            messages = [
-                Message("system", "You are a helpful assistant"),
-                Message("user", "Hello")
-            ]
+        with patch.object(adapter, "_client", mock_client):
+            messages = [Message("system", "You are a helpful assistant"), Message("user", "Hello")]
             result = await adapter.generate(messages)
 
             assert result == "Claude response"
@@ -158,12 +155,12 @@ class TestFactory:
     """Test factory function."""
 
     def test_create_openai_adapter(self):
-        with patch.dict('os.environ', {'OPENAI_API_KEY': 'test'}):
+        with patch.dict("os.environ", {"OPENAI_API_KEY": "test"}):
             adapter = create_llm_adapter("openai")
             assert isinstance(adapter, OpenAIAdapter)
 
     def test_create_claude_adapter(self):
-        with patch.dict('os.environ', {'ANTHROPIC_API_KEY': 'test'}):
+        with patch.dict("os.environ", {"ANTHROPIC_API_KEY": "test"}):
             adapter = create_llm_adapter("claude")
             assert isinstance(adapter, ClaudeAdapter)
 
@@ -190,4 +187,6 @@ class TestTokenBudgetGuard:
         for _ in range(5):
             test_tokens += 50  # Simulate token usage
 
-        assert test_tokens <= MAX_TEST_TOKENS, f"Test suite used {test_tokens} tokens, exceeding budget of {MAX_TEST_TOKENS}"
+        assert (
+            test_tokens <= MAX_TEST_TOKENS
+        ), f"Test suite used {test_tokens} tokens, exceeding budget of {MAX_TEST_TOKENS}"
