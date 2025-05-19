@@ -68,7 +68,7 @@ def create_app() -> App:
             redis_bus.publish(task_request)
 
             logger.info(
-                f"Processed alfred command '{task_request.get('text', '')}' from user {command['user_id']}"
+                f"Processed alfred command '{task_request.get('text', '')}' from user {command['user_id']}"  # noqa: E501
             )
         except Exception as e:
             logger.error(f"Error processing alfred command: {e}")

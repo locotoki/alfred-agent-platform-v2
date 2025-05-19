@@ -12,8 +12,8 @@ with open(HEALTH_FILE, "r") as file:
 
 # Fix the metrics endpoint
 fixed_content = re.sub(
-    r'@health_app\.get\("/metrics"\).*?def metrics\(\):.*?""".*?""".*?return prometheus_client\.generate_latest\(\)',
-    '@health_app.get("/metrics")\n    async def metrics():\n        """Prometheus metrics endpoint."""\n        from fastapi.responses import Response\n        return Response(content=prometheus_client.generate_latest(), media_type="text/plain")',
+    r'@health_app\.get\("/metrics"\).*?def metrics\(\):.*?""".*?""".*?return prometheus_client\.generate_latest\(\)',  # noqa: E501
+    '@health_app.get("/metrics")\n    async def metrics():\n        """Prometheus metrics endpoint."""\n        from fastapi.responses import Response\n        return Response(content=prometheus_client.generate_latest(), media_type="text/plain")',  # noqa: E501
     content,
     flags=re.DOTALL,
 )

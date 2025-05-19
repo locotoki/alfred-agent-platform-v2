@@ -47,17 +47,29 @@ def test_db():
                     "critical",
                     base_date - timedelta(days=2),
                 ),
-                ("Debug log entry 555-123-4567", "debug", base_date - timedelta(days=5)),
+                (
+                    "Debug log entry 555-123-4567",
+                    "debug",
+                    base_date - timedelta(days=5),
+                ),
                 ("Info: Deployment successful", "info", base_date - timedelta(days=10)),
-                ("Old alert", "warning", base_date - timedelta(days=40)),  # Outside range
+                (
+                    "Old alert",
+                    "warning",
+                    base_date - timedelta(days=40),
+                ),  # Outside range
             ]
 
             for message, severity, created_at in test_data:
                 conn.execute(
                     text(
-                        "INSERT INTO alerts (message, severity, created_at) VALUES (:message, :severity, :created_at)"
+                        "INSERT INTO alerts (message, severity, created_at) VALUES (:message, :severity, :created_at)"  # noqa: E501
                     ),
-                    {"message": message, "severity": severity, "created_at": created_at},
+                    {
+                        "message": message,
+                        "severity": severity,
+                        "created_at": created_at,
+                    },
                 )
             conn.commit()
 

@@ -24,7 +24,8 @@ COMMANDS = Counter("slack_app_commands_total", "Slash commands received", ["comm
 
 # Create Slack app with Socket Mode
 slack_app = App(
-    token=os.environ.get("SLACK_BOT_TOKEN"), signing_secret=os.environ.get("SLACK_SIGNING_SECRET")
+    token=os.environ.get("SLACK_BOT_TOKEN"),
+    signing_secret=os.environ.get("SLACK_SIGNING_SECRET"),
 )
 
 
@@ -44,26 +45,29 @@ def handle_alfred_command(ack, command, client):
     if subcommand == "help":
         client.chat_postMessage(
             channel=command["channel_id"],
-            text="Available commands:\n• `/alfred help` - Show this help message\n• `/alfred health [service]` - Check service health\n• `/alfred remediate <service>` - Attempt to remediate service issues",
+            text="Available commands:\n• `/alfred help` - Show this help message\n• `/alfred health [service]` - Check service health\n• `/alfred remediate <service>` - Attempt to remediate service issues",  # noqa: E501
         )
     elif subcommand == "health":
         service = args[1] if len(args) > 1 else "all"
         # Call health check endpoint and post result
         client.chat_postMessage(
-            channel=command["channel_id"], text=f"Checking health for {service}... Please wait."
+            channel=command["channel_id"],
+            text=f"Checking health for {service}... Please wait.",
         )
         # TODO: Call /internal/health endpoint and update message
     elif subcommand == "remediate":
         if len(args) < 2:
             client.chat_postMessage(
-                channel=command["channel_id"], text="Error: Please specify a service to remediate."
+                channel=command["channel_id"],
+                text="Error: Please specify a service to remediate.",
             )
             return
 
         service = args[1]
         # Call remediation endpoint
         client.chat_postMessage(
-            channel=command["channel_id"], text=f"Initiating remediation for {service}..."
+            channel=command["channel_id"],
+            text=f"Initiating remediation for {service}...",
         )
         # TODO: Call /internal/remediation/trigger endpoint
     else:

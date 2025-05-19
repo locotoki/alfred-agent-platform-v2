@@ -323,7 +323,10 @@ async def get_channel_details(channel_ids, youtube=None):
     for batch in batches:
         channels_response = (
             youtube.channels()
-            .list(part="snippet,statistics,contentDetails,brandingSettings", id=",".join(batch))
+            .list(
+                part="snippet,statistics,contentDetails,brandingSettings",
+                id=",".join(batch),
+            )
             .execute()
         )
 
@@ -471,16 +474,16 @@ def generate_visualization_guide(niches, category, subcategory):
         guide = {
             "chart_file": chart_file,
             "interpretation": [
-                "The bubble chart visualizes the relationship between engagement rate and average views.",
+                "The bubble chart visualizes the relationship between engagement rate and average views.",  # noqa: E501
                 "Each bubble represents a potential niche or keyword cluster.",
                 "Bubble size indicates the overall opportunity score (larger = better).",
-                "The best opportunities are typically in the upper-right quadrant (high views, high engagement).",
+                "The best opportunities are typically in the upper-right quadrant (high views, high engagement).",  # noqa: E501
                 "Consider focusing on niches with moderate competition but high engagement.",
             ],
             "top_recommendations": [
                 {
                     "niche": niches[0]["query"],
-                    "why": f"Highest opportunity score ({niches[0]['score']}) with good balance of views and engagement",
+                    "why": f"Highest opportunity score ({niches[0]['score']}) with good balance of views and engagement",  # noqa: E501
                 },
                 {
                     "niche": max(niches[:5], key=lambda x: x["avg_views"])["query"],
@@ -492,8 +495,8 @@ def generate_visualization_guide(niches, category, subcategory):
                 },
             ],
             "content_strategy": [
-                f"Optimal video length: {identify_video_pattern([v for n in niches[:3] for v in n.get('sample_videos', [])])['avg_duration']} seconds",
-                f"Best upload day: {identify_video_pattern([v for n in niches[:3] for v in n.get('sample_videos', [])])['best_upload_day']}",
+                f"Optimal video length: {identify_video_pattern([v for n in niches[:3] for v in n.get('sample_videos', [])])['avg_duration']} seconds",  # noqa: E501
+                f"Best upload day: {identify_video_pattern([v for n in niches[:3] for v in n.get('sample_videos', [])])['best_upload_day']}",  # noqa: E501
                 "Include these keywords in titles: "
                 + ", ".join(
                     [
@@ -811,7 +814,9 @@ async def analyze_niche(category, subcategory):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Manual Niche Scout Workflow")
     parser.add_argument(
-        "--category", default="kids", help="Content category (e.g., kids, tech, finance, health)"
+        "--category",
+        default="kids",
+        help="Content category (e.g., kids, tech, finance, health)",
     )
     parser.add_argument(
         "--subcategory",
@@ -819,7 +824,8 @@ if __name__ == "__main__":
         help="Content subcategory (e.g., kids.nursery, tech.programming)",
     )
     parser.add_argument(
-        "--api-key", help="YouTube API Key (optional, will use env variable if not provided)"
+        "--api-key",
+        help="YouTube API Key (optional, will use env variable if not provided)",
     )
 
     args = parser.parse_args()

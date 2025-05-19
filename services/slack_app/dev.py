@@ -47,7 +47,19 @@ def home():
 def mock_health_command():
     """Mock the /alfred health command response"""
     health_response = {
-        "text": "*Alfred Health Status*\n\n```\nService            | Status  | Latency (ms) | Last Check\n-------------------|---------|--------------|-------------\ndb-api-metrics     | UP      | 12           | Just now\ndb-auth-metrics    | UP      | 15           | Just now\ndb-admin-metrics   | UP      | 11           | Just now\ndb-realtime-metrics| UP      | 14           | Just now\ndb-storage-metrics | UP      | 13           | Just now\nmodel-registry     | UP      | 32           | Just now\nmodel-router       | UP      | 28           | Just now\n```\n"
+        "text": (
+            "*Alfred Health Status*\n\n```\n"
+            "Service            | Status  | Latency (ms) | Last Check\n"
+            "-------------------|---------|--------------|-------------\n"
+            "db-api-metrics     | UP      | 12           | Just now\n"
+            "db-auth-metrics    | UP      | 15           | Just now\n"
+            "db-admin-metrics   | UP      | 11           | Just now\n"
+            "db-realtime-metrics| UP      | 14           | Just now\n"
+            "db-storage-metrics | UP      | 13           | Just now\n"
+            "model-registry     | UP      | 32           | Just now\n"
+            "model-router       | UP      | 28           | Just now\n"
+            "```\n"
+        )
     }
     return jsonify(health_response)
 

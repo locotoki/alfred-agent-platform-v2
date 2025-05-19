@@ -85,7 +85,7 @@ def main():
     print(f"\nSummary:")
     print(f"Total services: {len(compose_data['services'])}")
     print(
-        f"Profiles: {set(svc.get('profiles', [])[0] for svc in compose_data['services'].values() if svc.get('profiles'))}"
+        f"Profiles: {set(svc.get('profiles', [])[0] for svc in compose_data['services'].values() if svc.get('profiles'))}"  # noqa: E501
     )
 
 
