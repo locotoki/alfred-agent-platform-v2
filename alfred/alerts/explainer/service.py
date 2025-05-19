@@ -1,6 +1,5 @@
 """Service module for the Alert Explainer Agent."""
 
-import logging
 from contextlib import asynccontextmanager
 from typing import Any, AsyncIterator, Dict
 

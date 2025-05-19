@@ -1,10 +1,8 @@
 """Alert dispatcher module for enriching and forwarding Prometheus alerts to Slack."""
 
-import json
 import os
-import urllib.parse
 from datetime import datetime
-from typing import Any, Dict, Optional
+from typing import Any, Dict
 
 import requests
 import structlog

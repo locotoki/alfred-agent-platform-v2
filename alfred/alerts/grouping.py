@@ -5,9 +5,8 @@ to reduce notification noise and improve incident response.
 """
 
 import logging
-from datetime import datetime, timedelta
-from typing import Any, Dict, List, Optional
-from uuid import UUID
+from datetime import timedelta
+from typing import List
 
 from alfred.alerts.models.alert_group import AlertGroup
 from alfred.core.protocols import AlertProtocol

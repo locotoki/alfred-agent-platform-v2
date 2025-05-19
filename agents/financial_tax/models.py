@@ -1,6 +1,5 @@
 """Data models for Financial Tax Agent"""
 
-from datetime import date
 from enum import Enum
 from typing import Any, Dict, List, Optional
 

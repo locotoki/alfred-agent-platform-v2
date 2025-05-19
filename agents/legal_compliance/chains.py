@@ -1,8 +1,5 @@
 """Legal Compliance Chain Components"""
 
-import os
-from typing import Any, Dict
-
 from langchain.chains import LLMChain
 from langchain.output_parsers import PydanticOutputParser
 from langchain.prompts import PromptTemplate
@@ -25,7 +22,8 @@ audit_parser = PydanticOutputParser(pydantic_object=ComplianceAuditResult)
 
 audit_prompt = PromptTemplate(
     template="""
-You are an expert compliance auditor. Perform a comprehensive compliance audit based on the following information:
+You are an expert compliance auditor. Perform a comprehensive compliance audit
+based on the following information:
 
 Organization: {organization_name}
 Audit Scope: {audit_scope}
@@ -57,8 +55,8 @@ Document Content: {document_content}
 Compliance Frameworks: {compliance_frameworks}
 Check for PII: {check_for_pii}
 
-Thoroughly analyze the document for compliance issues, identify any personally identifiable information (PII),
-and assess the risk level of any findings.
+Thoroughly analyze the document for compliance issues, identify any personally
+identifiable information (PII), and assess the risk level of any findings.
 
 {format_instructions}
 

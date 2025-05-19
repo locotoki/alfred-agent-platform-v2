@@ -10,7 +10,6 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 import duckdb
-import numpy as np
 import pandas as pd
 import sklearn.cluster as skc
 import structlog

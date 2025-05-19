@@ -1,8 +1,7 @@
 """Legal Compliance Agent Implementation"""
 
-import os
 from datetime import datetime
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict
 from uuid import uuid4
 
 import structlog
