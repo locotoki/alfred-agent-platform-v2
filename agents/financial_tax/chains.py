@@ -1,7 +1,6 @@
 """LangChain implementations for Financial Tax Agent"""
 
 from langchain.chains import LLMChain
-from langchain.output_parsers import PydanticOutputParser
 from langchain.prompts import PromptTemplate
 from langchain_openai import ChatOpenAI
 
@@ -15,6 +14,7 @@ from .models import (
     TaxRateRequest,
     TaxRateResponse,
 )
+from .parsers import PydanticOutputParser
 
 
 class TaxCalculationChain:
@@ -63,17 +63,19 @@ Provide a detailed tax calculation including:
 
     async def calculate(self, request: TaxCalculationRequest) -> TaxCalculationResponse:
         """Process tax calculation request"""
-        result = await self.chain.arun(
-            income=request.income,
-            deductions=request.deductions,
-            credits=request.credits,
-            jurisdiction=request.jurisdiction.value,
-            tax_year=request.tax_year,
-            entity_type=request.entity_type.value,
-            additional_info=request.additional_info,
+        result = await self.chain.ainvoke(
+            {
+                "income": request.income,
+                "deductions": request.deductions,
+                "credits": request.credits,
+                "jurisdiction": request.jurisdiction.value,
+                "tax_year": request.tax_year,
+                "entity_type": request.entity_type.value,
+                "additional_info": request.additional_info,
+            }
         )
 
-        return self.output_parser.parse(result)
+        return self.output_parser.parse(result.get("text", ""))
 
 
 class FinancialAnalysisChain:
@@ -116,15 +118,17 @@ Provide a comprehensive financial analysis including:
 
     async def analyze(self, request: FinancialAnalysisRequest) -> FinancialAnalysisResponse:
         """Process financial analysis request"""
-        result = await self.chain.arun(
-            financial_statements=request.financial_statements,
-            analysis_type=request.analysis_type,
-            period=request.period,
-            industry=request.industry,
-            custom_metrics=request.custom_metrics,
+        result = await self.chain.ainvoke(
+            {
+                "financial_statements": request.financial_statements,
+                "analysis_type": request.analysis_type,
+                "period": request.period,
+                "industry": request.industry,
+                "custom_metrics": request.custom_metrics,
+            }
         )
 
-        return self.output_parser.parse(result)
+        return self.output_parser.parse(result.get("text", ""))
 
 
 class ComplianceCheckChain:
@@ -167,15 +171,17 @@ Perform a comprehensive compliance check and provide:
 
     async def check_compliance(self, request: ComplianceCheckRequest) -> ComplianceCheckResponse:
         """Process compliance check request"""
-        result = await self.chain.arun(
-            entity_type=request.entity_type.value,
-            transactions=request.transactions,
-            jurisdiction=request.jurisdiction.value,
-            tax_year=request.tax_year,
-            compliance_areas=request.compliance_areas,
+        result = await self.chain.ainvoke(
+            {
+                "entity_type": request.entity_type.value,
+                "transactions": request.transactions,
+                "jurisdiction": request.jurisdiction.value,
+                "tax_year": request.tax_year,
+                "compliance_areas": request.compliance_areas,
+            }
         )
 
-        return self.output_parser.parse(result)
+        return self.output_parser.parse(result.get("text", ""))
 
 
 class RateLookupChain:
@@ -217,12 +223,14 @@ Return comprehensive tax rate information including:
 
     async def lookup_rates(self, request: TaxRateRequest) -> TaxRateResponse:
         """Process tax rate lookup request"""
-        result = await self.chain.arun(
-            jurisdiction=request.jurisdiction.value,
-            tax_year=request.tax_year,
-            entity_type=request.entity_type.value,
-            income_level=request.income_level,
-            special_categories=request.special_categories,
+        result = await self.chain.ainvoke(
+            {
+                "jurisdiction": request.jurisdiction.value,
+                "tax_year": request.tax_year,
+                "entity_type": request.entity_type.value,
+                "income_level": request.income_level,
+                "special_categories": request.special_categories,
+            }
         )
 
-        return self.output_parser.parse(result)
+        return self.output_parser.parse(result.get("text", ""))
