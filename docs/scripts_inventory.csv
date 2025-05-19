@@ -1,0 +1,453 @@
+path,size,modified,shebang
+agents/financial_tax/__init__.py,812,2025-05-19,
+agents/financial_tax/agent.py,9292,2025-05-19,
+agents/financial_tax/chains.py,7331,2025-05-19,
+agents/financial_tax/models.py,4133,2025-05-19,
+agents/financial_tax/test_models.py,5135,2025-05-19,
+agents/financial_tax/tests/__init__.py,36,2025-05-19,
+agents/financial_tax/tests/conftest.py,246,2025-05-19,
+agents/financial_tax/tests/test_agent.py,10796,2025-05-19,
+agents/financial_tax/tests/test_chains.py,9911,2025-05-19,
+agents/financial_tax/tests/test_models.py,7980,2025-05-19,
+agents/legal_compliance/__init__.py,563,2025-05-19,
+agents/legal_compliance/agent.py,5977,2025-05-19,
+agents/legal_compliance/chains.py,4182,2025-05-19,
+agents/legal_compliance/models.py,3413,2025-05-19,
+agents/social_intel/__init__.py,103,2025-05-19,
+agents/social_intel/adapters/__init__.py,236,2025-05-19,
+agents/social_intel/adapters/a2a_adapter.py,2650,2025-05-19,
+agents/social_intel/agent.py,1506,2025-05-19,
+agents/social_intel/flows/__init__.py,186,2025-05-19,
+agents/social_intel/flows/youtube_flows.py,22787,2025-05-19,
+agents/social_intel/models/__init__.py,519,2025-05-19,
+agents/social_intel/models/youtube_api.py,7783,2025-05-19,
+agents/social_intel/models/youtube_models.py,4582,2025-05-19,
+agents/social_intel/models/youtube_vectors.py,10662,2025-05-19,
+alfred/adapters/rag_gateway/src/app.py,1113,2025-05-19,
+alfred/adapters/whatsapp/src/app.py,1318,2025-05-19,
+alfred/agents/agent_orchestrator/__init__.py,34,2025-05-19,
+alfred/agents/agent_orchestrator/scripts/setup-db-metrics.sh,4089,2025-05-18,#!/bin/bash
+alfred/agents/agent_orchestrator/services/db-metrics/app.py,6918,2025-05-19,#!/usr/bin/env python3
+alfred/agents/agent_orchestrator/start-dev.sh,2002,2025-05-18,#!/bin/bash
+alfred/agents/agent_orchestrator/start-prod.sh,1651,2025-05-18,#!/bin/bash
+alfred/agents/agent_orchestrator/test-integration.sh,4660,2025-05-18,#!/bin/bash
+alfred/agents/agent_rag/__init__.py,25,2025-05-19,
+alfred/agents/financial_tax/__init__.py,27,2025-05-19,
+alfred/agents/legal_compliance/__init__.py,30,2025-05-19,
+alfred/alerts/__init__.py,103,2025-05-19,
+alfred/alerts/dispatcher.py,5598,2025-05-19,
+alfred/alerts/explainer/__init__.py,126,2025-05-19,
+alfred/alerts/explainer/agent.py,3318,2025-05-19,
+alfred/alerts/explainer/service.py,2512,2025-05-19,
+alfred/alerts/feature_flags.py,818,2025-05-19,
+alfred/alerts/grouping.py,1764,2025-05-19,
+alfred/alerts/models/alert_group.py,1445,2025-05-19,
+alfred/alerts/models.py,369,2025-05-19,
+alfred/alerts/protocols.py,784,2025-05-19,
+alfred/alerts/tests/__init__.py,41,2025-05-19,
+alfred/alerts/tests/test_dispatcher.py,8511,2025-05-19,
+alfred/core/__init__.py,91,2025-05-19,
+alfred/core/alfred_bot/__init__.py,26,2025-05-19,
+alfred/core/alfred_bot/app/__init__.py,0,2025-05-19,
+alfred/core/alfred_bot/app/main.py,5059,2025-05-19,
+alfred/core/alfred_core/__init__.py,27,2025-05-19,
+alfred/core/alfred_core/entrypoint.sh,1219,2025-05-18,#!/usr/bin/env bash
+alfred/core/alfred_core/healthcheck.sh,387,2025-05-18,#!/bin/bash
+alfred/core/app/__init__.py,676,2025-05-19,
+alfred/core/protocols.py,1832,2025-05-19,
+alfred/infrastructure/__init__.py,155,2025-05-19,
+alfred/infrastructure/protocols.py,5681,2025-05-19,
+alfred/llm/__init__.py,124,2025-05-19,
+alfred/llm/protocols.py,5048,2025-05-19,
+alfred/metrics/db_metrics.py,6800,2025-05-19,#!/usr/bin/env python3
+alfred/metrics/metrics_collector.py,6800,2025-05-19,#!/usr/bin/env python3
+alfred/metrics/protocols.py,2884,2025-05-19,
+alfred/metrics/pubsub_metrics.py,3462,2025-05-19,#!/usr/bin/env python3
+alfred/ml/__init__.py,297,2025-05-19,
+alfred/ml/hf_embedder.py,5052,2025-05-19,
+alfred/ml/noise_ranker.py,4992,2025-05-19,
+alfred/ml/thresholds.py,4707,2025-05-19,
+alfred/model/__init__.py,221,2025-05-19,
+alfred/model/protocols.py,4029,2025-05-19,
+alfred/model/registry/__init__.py,25,2025-05-19,
+alfred/model/registry/health.py,890,2025-05-19,
+alfred/model/registry/main.py,5673,2025-05-19,
+alfred/model/registry/models/models.py,7860,2025-05-19,
+alfred/model/router/__init__.py,122,2025-05-19,
+alfred/model/router/main.py,5455,2025-05-19,
+alfred/model/router/models/__init__.py,0,2025-05-19,
+alfred/model/router/models/models.py,4667,2025-05-19,
+alfred/rag/__init__.py,112,2025-05-19,
+alfred/rag/protocols.py,4328,2025-05-19,
+alfred/slack/app/__init__.py,28,2025-05-19,
+alfred/slack/app/dev.py,2426,2025-05-19,
+alfred/slack/app/http_app.py,6075,2025-05-19,
+alfred/slack/app/mock_server.py,9669,2025-05-19,
+alfred/slack/app/simple_test.py,2275,2025-05-19,
+alfred/slack/app/test_app.py,1931,2025-05-19,
+alfred/slack/app/test_auth.py,2228,2025-05-19,
+alfred/slack/app/test_tokens.py,1449,2025-05-19,
+alfred/slack/app/verify.py,3357,2025-05-19,
+alfred/slack/app.py,5275,2025-05-19,
+alfred/slack/diagnostics/__init__.py,103,2025-05-19,
+alfred/slack/diagnostics/__main__.py,1872,2025-05-19,
+alfred/slack/diagnostics/bot.py,7896,2025-05-19,
+alfred/slack/diagnostics/explain_command.py,1311,2025-05-19,
+alfred/slack/mcp_gateway/__init__.py,226,2025-05-19,
+alfred/slack/mcp_gateway/bolt_socket.py,3100,2025-05-19,
+alfred/slack/mcp_gateway/echo_agent.py,7533,2025-05-19,
+alfred/slack/mcp_gateway/redis_bus.py,4503,2025-05-19,
+alfred/slack/mcp_gateway/responder.py,4874,2025-05-19,
+alfred/slack/mcp_gateway/run-echo-agent.sh,824,2025-05-18,#!/bin/bash
+alfred/slack/mcp_gateway/tests/__init__.py,0,2025-05-19,
+alfred/slack/mcp_gateway/tests/test_translator.py,4915,2025-05-19,
+alfred/slack/mcp_gateway/translator.py,1809,2025-05-19,
+alfred/slack/protocols.py,3661,2025-05-19,
+alfred/slack/run.py,2233,2025-05-19,#!/usr/bin/env python
+alfred/slack/tests/test_diagnostics.py,6115,2025-05-19,
+alfred/storage/db_metrics/__init__.py,32,2025-05-19,
+alfred/storage/db_storage/__init__.py,32,2025-05-19,
+alfred/storage/db_storage/entrypoint.sh,1614,2025-05-18,#!/usr/bin/env bash
+alfred/storage/db_storage/fix-migrations-entrypoint.sh,2052,2025-05-18,#!/bin/bash
+alfred/storage/db_storage/patched-entrypoint.sh,402,2025-05-18,#!/bin/bash
+alfred/storage/redis/__init__.py,21,2025-05-19,
+alfred/storage/redis/entrypoint.sh,1953,2025-05-18,#!/usr/bin/env bash
+alfred/storage/redis/health_wrapper.py,3359,2025-05-19,#!/usr/bin/env python3
+alfred/storage/vector_db/__init__.py,31,2025-05-19,
+alfred/ui/__init__.py,303,2025-05-19,
+alfred/ui/mission_control/deploy-improved-ui.sh,2500,2025-05-12,#!/bin/bash
+alfred/ui/mission_control/restart-dev.sh,979,2025-05-12,#!/bin/bash
+alfred/ui/mission_control/restart-server.sh,828,2025-05-18,#!/bin/bash
+alfred/ui/mission_control/run-dev.sh,458,2025-05-18,#!/bin/bash
+alfred/ui/mission_control/start-container.sh,1611,2025-05-18,#!/bin/bash
+alfred/ui/mission_control/start-dev-server.sh,461,2025-05-18,#!/bin/bash
+alfred/ui/mission_control/start-server.sh,133,2025-05-18,#!/bin/bash
+alfred/ui/mission_control_simplified/mission-control-simplified/proxy-service/scripts/test-alerts.sh,5164,2025-05-18,#!/bin/bash
+alfred/ui/mission_control_simplified/mission-control-simplified/scripts/rollout-toggle.sh,7000,2025-05-18,#!/bin/bash
+alfred/ui/mission_control_simplified/mission-control-simplified/start.sh,1306,2025-05-18,#!/bin/bash
+alfred/ui/protocols.py,5320,2025-05-19,
+alfred/ui/streamlit_chat/streamlit-chat/streamlit_chat_ui.py,333,2025-05-19,
+alfred/ui/streamlit_chat.py,320,2025-05-19,
+alfred/workflow/pubsub/entrypoint.sh,859,2025-05-18,#!/usr/bin/env bash
+alfred/workflow/pubsub/health_wrapper.py,4110,2025-05-19,#!/usr/bin/env python3
+api/routes/__init__.py,207,2025-05-19,
+api/routes/alert_snooze.py,5086,2025-05-19,
+api/routes/thresholds.py,2993,2025-05-19,
+apply-black.sh,384,2025-05-18,#!/bin/bash
+archive-old-files.sh,2484,2025-05-18,#!/bin/bash
+backend/alfred/alerts/ranker.py,13752,2025-05-19,
+backend/alfred/alerts/rules.py,10246,2025-05-19,
+backend/alfred/alerts/snooze.py,12058,2025-05-19,
+backend/alfred/config/__init__.py,95,2025-05-19,
+backend/alfred/config/settings.py,965,2025-05-19,
+backend/alfred/search/__init__.py,56,2025-05-19,
+backend/alfred/search/faiss_tuner.py,12664,2025-05-19,
+benchmarks/faiss/visualization.py,4115,2025-05-19,#!/usr/bin/env python3
+bootstrap/init-storage-schema.sh,1634,2025-05-18,#!/bin/bash
+check-db-ready.sh,1435,2025-05-18,#!/bin/bash
+clean-storage-schema.sh,642,2025-05-13,#!/bin/bash
+cleanup-old-changes.sh,1191,2025-05-18,#!/bin/bash
+complete-storage-reset.sh,1805,2025-05-18,#!/bin/bash
+comprehensive_inventory.py,2200,2025-05-19,
+create-faiss-pr.sh,921,2025-05-18,#!/bin/bash
+create_inventory.py,904,2025-05-19,
+deploy_msg.txt,897,2025-05-18,
+diagnostics/rca/app.py,5799,2025-05-19,#!/usr/bin/env python3
+diagnostics/rca/fix_app.py,6800,2025-05-19,#!/usr/bin/env python3
+docs/phase6-mission-control/youtube-workflows/environment-check-script.sh,12339,2025-05-18,#!/bin/bash
+docs/sprint5/manual_pr_commands.sh,1363,2025-05-18,#!/bin/bash
+docs/tools/consolidate_docs.py,10993,2025-05-19,#!/usr/bin/env python3
+docs/tools/doc_migration_inventory.py,18697,2025-05-19,#!/usr/bin/env python3
+docs/tools/doc_validator.py,37643,2025-05-19,#!/usr/bin/env python3
+docs/tools/migrate_document.py,25395,2025-05-19,#!/usr/bin/env python3
+docs/tools/normalize_filenames.py,10399,2025-05-19,#!/usr/bin/env python3
+docs/tools/normalize_staging_files.sh,2905,2025-05-18,#!/bin/bash
+docs/tools/update_metadata.py,10610,2025-05-19,#!/usr/bin/env python3
+examples/test_dispatcher.py,1359,2025-05-19,#!/usr/bin/env python3
+examples/test_webhook.py,1828,2025-05-19,#!/usr/bin/env python3
+find_stale_scripts.py,2054,2025-05-19,
+format-with-black.sh,682,2025-05-18,#!/bin/bash
+get_helm.sh,11913,2025-05-17,#!/usr/bin/env bash
+grafana_dashboard_check.sh,1259,2025-05-18,#!/bin/bash
+healthcheck/healthcheck.sh,1317,2025-05-17,
+healthcheck.sh,674,2025-05-18,#!/bin/bash
+integration_test.py,9035,2025-05-19,#!/usr/bin/env python3
+libs/a2a_adapter/__init__.py,271,2025-05-19,
+libs/a2a_adapter/envelope.py,1617,2025-05-19,
+libs/a2a_adapter/middleware.py,1218,2025-05-19,
+libs/a2a_adapter/transport.py,4313,2025-05-19,
+libs/agent_core/__init__.py,168,2025-05-19,
+libs/agent_core/base_agent.py,5341,2025-05-19,
+libs/agent_core/health/__init__.py,198,2025-05-19,
+libs/agent_core/health/app_factory.py,2790,2025-05-19,
+libs/agent_core/health/dependency_tracker.py,1915,2025-05-19,
+libs/agent_core/health.py,264,2025-05-19,
+libs/observability/__init__.py,126,2025-05-19,
+libs/observability/logging.py,1290,2025-05-19,
+libs/observability/metrics.py,5474,2025-05-19,
+libs/observability/tracing.py,3033,2025-05-19,
+manual-niche-scout.py,31757,2025-05-19,#!/usr/bin/env python3
+metrics_fix.py,857,2025-05-19,#!/usr/bin/env python3
+migrations/versions/20250520_add_alert_group_table.py,1614,2025-05-19,
+mission-control/src/streamlit_app.py,5734,2025-05-19,
+monitoring/scripts/docker_stats.py,0,2025-05-19,
+mypy_fix/run-mypy-fixed.sh,859,2025-05-18,#!/bin/bash
+preserve-project-files.sh,2640,2025-05-18,#!/bin/bash
+preserve-sprint5.sh,1024,2025-05-18,#!/bin/bash
+remediation/__init__.py,229,2025-05-19,
+reset-unrelated.sh,1114,2025-05-18,#!/bin/bash
+run-black-format.py,879,2025-05-19,#!/usr/bin/env python3
+run-simplified-mc.sh,2005,2025-05-18,#!/bin/bash
+script_inventory.py,1513,2025-05-19,
+script_inventory_fast.py,2315,2025-05-19,
+scripts/apply-black-formatting.sh,3035,2025-05-18,#!/bin/bash
+scripts/apply-healthcheck-fix.sh,1534,2025-05-18,#!/bin/bash
+scripts/apply-template-standard.sh,5772,2025-05-18,#!/bin/bash
+scripts/audit-health-binary.sh,265,2025-05-18,#!/usr/bin/env bash
+scripts/backup-dashboards.sh,1196,2025-05-18,#!/bin/bash
+scripts/benchmark_ranker.py,18063,2025-05-19,#!/usr/bin/env python3
+scripts/build_and_push_images.sh,900,2025-05-18,#!/bin/bash
+scripts/bulk-update-health-binary.sh,2087,2025-05-18,#!/usr/bin/env bash
+scripts/bump-healthcheck.sh,3093,2025-05-18,#!/bin/bash
+scripts/bump-helm-chart.sh,312,2025-05-18,#!/bin/bash
+scripts/bump-image.sh,600,2025-05-18,#!/bin/bash
+scripts/bump_version.sh,369,2025-05-18,#!/bin/bash
+scripts/canary-monitor.sh,6322,2025-05-18,#!/usr/bin/env bash
+scripts/check-branch-protection.sh,2098,2025-05-18,#!/bin/bash
+scripts/check-ci-pr.sh,524,2025-05-18,#!/bin/bash
+scripts/cleanup-ci-files.sh,1046,2025-05-18,#!/usr/bin/env bash
+scripts/cleanup-docker-compose.sh,5968,2025-05-18,#!/bin/bash
+scripts/cleanup-inactive-compose-files.sh,3487,2025-05-18,#!/bin/bash
+scripts/close-phase1-issue.sh,1020,2025-05-18,#!/bin/bash
+scripts/collect_soak_metrics.sh,1800,2025-05-18,#!/bin/bash
+scripts/complete-phase-tasks.sh,2972,2025-05-04,#!/bin/bash
+scripts/compose-health-check.sh,1255,2025-05-18,#!/usr/bin/env bash
+scripts/consolidate-docker-compose.sh,4070,2025-05-18,#!/bin/bash
+scripts/create-guardrail-pr.sh,2838,2025-05-18,#!/bin/bash
+scripts/create-metrics-exporter-pr.sh,3031,2025-05-18,#!/bin/bash
+scripts/cross-compile.sh,907,2025-05-18,#!/bin/bash
+scripts/deploy-diagnostics-staging.sh,1354,2025-05-18,#!/bin/bash
+scripts/deploy-slack-mcp-staging.sh,2279,2025-05-18,#!/usr/bin/env bash
+scripts/deployment-checklist.sh,3513,2025-05-04,#!/bin/bash
+scripts/detect-deprecated-health-scripts.sh,1489,2025-05-18,#!/bin/bash
+scripts/enable-diagnostics-staging.sh,279,2025-05-18,#!/bin/bash
+scripts/ensure-metrics-exported.sh,2186,2025-05-18,#!/usr/bin/env bash
+scripts/env-audit.sh,9471,2025-05-18,#!/bin/bash
+scripts/fix-agent-rag-only.sh,1300,2025-05-18,#!/bin/bash
+scripts/fix-agent-rag-service.sh,1910,2025-05-18,#!/bin/bash
+scripts/fix-auth-roles.sh,1993,2025-05-18,#!/bin/bash
+scripts/fix-clean-healthchecks.sh,1875,2025-05-18,#!/bin/bash
+scripts/fix-db-storage.sh,5164,2025-05-18,#!/bin/bash
+scripts/fix-dockerfile-healthcheck.sh,3053,2025-05-18,#!/bin/bash
+scripts/fix-healthcheck-binary.sh,7136,2025-05-18,#!/bin/bash
+scripts/fix-storage-migration.sh,1579,2025-05-04,#!/bin/bash
+scripts/fix-storage-migrations.sh,1288,2025-05-18,#!/bin/bash
+scripts/fix_python_imports.py,3161,2025-05-19,#!/usr/bin/env python3
+scripts/format-codebase.sh,782,2025-05-18,#!/bin/bash
+scripts/format.sh,1375,2025-05-18,#!/bin/bash
+scripts/generate-storage-schema.sh,6850,2025-05-18,#!/bin/bash
+scripts/generate_compose.py,3124,2025-05-19,#!/usr/bin/env python3
+scripts/github/REFRESH_TOKEN.sh,811,2025-05-18,#!/bin/bash
+scripts/github/create_pr_now.sh,824,2025-05-18,#!/bin/bash
+scripts/healthcheck/audit-health-binary.sh,265,2025-05-18,#!/usr/bin/env bash
+scripts/healthcheck/bulk-update-health-binary.sh,5711,2025-05-18,#!/bin/bash
+scripts/healthcheck/ensure-metrics-exported.sh,9107,2025-05-18,#!/usr/bin/env bash
+scripts/healthcheck/fix-health-endpoints.sh,7702,2025-05-18,#!/bin/bash
+scripts/healthcheck/healthcheck-binary.sh,1420,2025-05-18,#!/bin/bash
+scripts/healthcheck/rebuild-services.sh,2470,2025-05-18,#!/usr/bin/env bash
+scripts/healthcheck/revert-to-healthcheck-binary.sh,4920,2025-05-18,#!/bin/bash
+scripts/healthcheck/run-full-healthcheck.sh,6613,2025-05-18,#!/usr/bin/env bash
+scripts/healthcheck/update-prometheus-config.sh,5431,2025-05-18,#!/usr/bin/env bash
+scripts/healthcheck/validate-all-healthchecks.sh,10420,2025-05-18,#!/bin/bash
+scripts/healthcheck/verify-health-commands.sh,3806,2025-05-18,#!/bin/bash
+scripts/healthcheck/verify-health-endpoints.sh,2862,2025-05-18,#!/bin/bash
+scripts/healthcheck.sh,1817,2025-05-18,#!/bin/sh
+scripts/helm-diff.sh,795,2025-05-18,#!/bin/bash
+scripts/infrastructure-validation.sh,2143,2025-05-04,#!/bin/bash
+scripts/install-hooks.sh,2989,2025-05-18,#!/bin/bash
+scripts/install-taxonomy-integration.sh,16193,2025-05-18,#!/bin/bash
+scripts/lint-metrics-format.sh,2008,2025-05-18,#!/bin/bash
+scripts/monitor-social-intel.sh,1215,2025-05-18,#!/bin/bash
+scripts/monitoring/rollout_manager.sh,4090,2025-05-18,#!/bin/bash
+scripts/monitoring/telemetry_watch.sh,2735,2025-05-18,#!/bin/bash
+scripts/observe_after_deploy.sh,403,2025-05-17,
+scripts/phase8.2-final-checks.sh,1632,2025-05-18,#!/bin/bash
+scripts/phase8.2-pre-merge.sh,3815,2025-05-18,#!/bin/bash
+scripts/platform-init-hooks/db-storage-fix.sh,896,2025-05-18,#!/bin/bash
+scripts/post-ga-housekeeping.sh,1101,2025-05-18,#!/bin/bash
+scripts/post-merge-checklist.sh,1759,2025-05-18,#!/bin/bash
+scripts/post-pr71-merge.sh,2438,2025-05-18,#!/bin/bash
+scripts/promote-social-intel.sh,1450,2025-05-18,#!/bin/bash
+scripts/promote-to-ga-from-branch.sh,1747,2025-05-18,#!/bin/bash
+scripts/promote-to-ga-simple.sh,638,2025-05-18,#!/bin/bash
+scripts/promote-to-ga.sh,1320,2025-05-18,#!/bin/bash
+scripts/rollback-canary.sh,1044,2025-05-18,#!/bin/bash
+scripts/rotate-secrets.sh,2128,2025-05-18,#!/bin/bash
+scripts/run-e2e-health-test.sh,5410,2025-05-18,#!/bin/bash
+scripts/run-mypy.sh,2054,2025-05-18,#!/bin/bash
+scripts/run-validations.sh,2625,2025-05-18,#!/bin/bash
+scripts/run_python_tests.py,1230,2025-05-19,#!/usr/bin/env python3
+scripts/run_quick_health_check.sh,765,2025-05-18,#!/bin/bash
+scripts/run_synthetic_load.sh,890,2025-05-18,#!/bin/bash
+scripts/safe-sync.sh,5190,2025-05-18,#!/bin/bash
+scripts/scaffold_compose_snippets.py,3043,2025-05-19,#!/usr/bin/env python3
+scripts/setup-db-metrics.sh,4089,2025-05-18,#!/bin/bash
+scripts/setup-deployment-tools.sh,1870,2025-05-18,#!/usr/bin/env bash
+scripts/skip-ci-for-cleanup.sh,478,2025-05-18,#!/bin/bash
+scripts/slack/announce-deploy.sh,1017,2025-05-18,#!/bin/bash
+scripts/social-intel-rollout.sh,6972,2025-05-18,#!/bin/bash
+scripts/sprint4-automation.sh,2549,2025-05-18,#!/bin/bash
+scripts/standardize-service-health.sh,4456,2025-05-18,#!/bin/bash
+scripts/start-all-dev.sh,2809,2025-05-18,#!/bin/bash
+scripts/tag-healthcheck-release.sh,951,2025-05-18,#!/bin/bash
+scripts/tag-release.sh,552,2025-05-18,#!/bin/bash
+scripts/test-deployment-readiness.sh,1581,2025-05-18,#!/usr/bin/env bash
+scripts/test-diagnostics-docker.sh,878,2025-05-18,#!/bin/bash
+scripts/test-diagnostics-local.py,1906,2025-05-19,#!/usr/bin/env python3
+scripts/test-metrics-ports.sh,1097,2025-05-18,#!/bin/bash
+scripts/test-staging-webhook.sh,373,2025-05-18,#!/bin/bash
+scripts/test_api_workflow.py,5181,2025-05-19,#!/usr/bin/env python
+scripts/test_financial_agent.sh,1345,2025-05-18,#!/bin/bash
+scripts/test_health.sh,1024,2025-05-18,#!/bin/bash
+scripts/test_niche_scout_api.py,5464,2025-05-19,#!/usr/bin/env python3
+scripts/test_youtube_agent.py,3632,2025-05-19,#!/usr/bin/env python
+scripts/test_youtube_api_key.py,7325,2025-05-19,#!/usr/bin/env python3
+scripts/update-alert-labels.py,3165,2025-05-19,#!/usr/bin/env python3
+scripts/update-ci-command.sh,912,2025-05-18,#!/bin/bash
+scripts/update-healthcheck-binary.sh,1919,2025-05-18,#!/bin/bash
+scripts/update-healthcheck-cmds.sh,4025,2025-05-18,#!/bin/bash
+scripts/update-phase5-progress.sh,1604,2025-05-18,#!/bin/bash
+scripts/utils/alfred-start.sh,15416,2025-05-18,#!/bin/bash
+scripts/utils/cleanup_processed_messages.py,2414,2025-05-19,#!/usr/bin/env python3
+scripts/utils/controlled-restart.sh,10925,2025-05-18,#!/bin/bash
+scripts/utils/database_validation.py,3663,2025-05-19,#!/usr/bin/env python3
+scripts/utils/platform-startup.sh,8029,2025-05-18,#!/bin/bash
+scripts/utils/service_health_check.py,3746,2025-05-19,#!/usr/bin/env python3
+scripts/utils/setup_cron_jobs.sh,778,2025-05-04,#!/bin/bash
+scripts/validate-env.sh,26987,2025-05-18,#!/bin/bash
+scripts/validate-health-templates.sh,3214,2025-05-18,#!/bin/bash
+scripts/validate-secrets.sh,1159,2025-05-18,#!/bin/bash
+scripts_dir_inventory.py,1869,2025-05-19,
+services/_template/app/main.py,2991,2025-05-19,
+services/atlas-worker/atlas/__init__.py,23,2025-05-19,
+services/atlas-worker/atlas/main.py,830,2025-05-19,
+services/financial-tax/app/__init__.py,36,2025-05-19,
+services/financial-tax/app/main.py,8663,2025-05-19,
+services/health/cpu.py,781,2025-05-19,#!/usr/bin/env python3
+services/legal-compliance/app/__init__.py,31,2025-05-19,
+services/legal-compliance/app/main.py,8521,2025-05-19,
+services/mission-control.old/deploy-improved-ui.sh,2500,2025-05-06,#!/bin/bash
+services/mission-control.old/restart-dev.sh,979,2025-05-06,#!/bin/bash
+services/mission-control.old/restart-server.sh,827,2025-05-06,#!/bin/bash
+services/mission-control.old/run-dev.sh,457,2025-05-06,#!/bin/bash
+services/mission-control.old/start-container.sh,1610,2025-05-09,#!/bin/bash
+services/mission-control.old/start-dev-server.sh,460,2025-05-06,#!/bin/bash
+services/mission-control.old/start-server.sh,132,2025-05-06,#!/bin/bash
+services/model-registry/entrypoint.sh,1382,2025-05-18,#!/usr/bin/env bash
+services/model-router/entrypoint.sh,1222,2025-05-18,#!/usr/bin/env bash
+services/slack-app/__init__.py,187,2025-05-19,
+services/slack-app/server.py,3697,2025-05-19,
+services/social-intel/app/__init__.py,35,2025-05-19,
+services/social-intel/app/add_request_fix.py,3201,2025-05-19,#!/usr/bin/env python3
+services/social-intel/app/blueprint.py,14756,2025-05-19,
+services/social-intel/app/database/__init__.py,2581,2025-05-19,
+services/social-intel/app/database/niche_repository.py,0,2025-05-19,
+services/social-intel/app/database/niche_repository_fix.py,0,2025-05-19,
+services/social-intel/app/fix_api.py,4873,2025-05-19,#!/usr/bin/env python3
+services/social-intel/app/fixed_route.py,4150,2025-05-19,
+services/social-intel/app/health_check.py,6424,2025-05-19,
+services/social-intel/app/main.py,16690,2025-05-19,
+services/social-intel/app/metrics.py,4252,2025-05-19,
+services/social-intel/app/metrics_enhanced.py,4252,2025-05-19,
+services/social-intel/app/niche_scout.py,28038,2025-05-19,
+services/social-intel/app/reports.py,2083,2025-05-19,
+services/social-intel/app/simple_reports.py,1831,2025-05-19,
+services/social-intel/app/utils/__init__.py,210,2025-05-19,
+services/social-intel/app/utils/circuit_breaker.py,0,2025-05-19,
+services/social-intel/app/workflow_endpoints.py,8863,2025-05-19,
+services/social-intel/app/youtube_api.py,16100,2025-05-19,
+services/social-intel/apply_fixes.sh,16534,2025-05-18,#!/bin/bash
+services/social-intel/docker-fix.sh,2345,2025-05-18,#!/bin/bash
+services/social-intel/entrypoint.sh,1222,2025-05-18,#!/usr/bin/env bash
+services/social-intel/fix-database.sh,0,2025-05-09,
+services/social-intel/fix.sh,705,2025-05-18,#!/bin/bash
+services/social-intel/fix_db.py,0,2025-05-19,
+services/social-intel/fix_niche_repository.py,0,2025-05-19,
+services/social-intel/fix_workflow_endpoints.py,8863,2025-05-19,
+services/social-intel/rebuild_service.sh,347,2025-05-09,#!/bin/bash
+services/social-intel/scripts/validate_openapi.sh,280,2025-05-18,#!/bin/bash
+services/social-intel/test_youtube.sh,6752,2025-05-18,#!/bin/bash
+services/social-intel/tests/check_metrics.sh,554,2025-05-18,#!/bin/bash
+services/social-intel/tests/unit/test_features.py,4116,2025-05-19,
+services/social-intel/tests/unit/test_metrics.py,1750,2025-05-19,
+services/telegram_adapter/__init__.py,40,2025-05-19,
+services/telegram_adapter/http_app.py,1282,2025-05-19,
+services/telegram_adapter/test_http_app.py,1371,2025-05-19,
+setup-faiss-pr.sh,2235,2025-05-18,#!/bin/bash
+slack-bot/src/app.py,1087,2025-05-19,
+sprint5-pr-automation.sh,1515,2025-05-18,#!/bin/bash
+standalone_test.py,9304,2025-05-19,#!/usr/bin/env python3
+start-platform-dryrun.sh,5795,2025-05-18,#!/bin/bash
+start-platform.sh,3962,2025-05-18,#!/bin/bash
+tests/__init__.py,42,2025-05-19,
+tests/alfred/__init__.py,33,2025-05-19,
+tests/alfred/ml/__init__.py,36,2025-05-19,
+tests/alfred/ml/test_hf_embedder.py,9589,2025-05-19,
+tests/alfred/ml/test_thresholds.py,9077,2025-05-19,
+tests/alfred/slack/__init__.py,37,2025-05-19,
+tests/backend/ml/__init__.py,16,2025-05-19,
+tests/backend/ml/test_alert_dataset.py,819,2025-05-19,
+tests/backend/ml/test_dataset_db.py,4412,2025-05-19,
+tests/backend/ml/test_faiss_index.py,14824,2025-05-19,
+tests/backend/ml/test_faiss_tuning.py,976,2025-05-19,
+tests/backend/ml/test_inference_benchmark.py,2456,2025-05-19,
+tests/backend/ml/test_model_registry.py,8273,2025-05-19,
+tests/backend/ml/test_retrain_pipeline.py,1430,2025-05-19,
+tests/backend/ml/test_scheduler.py,5813,2025-05-19,
+tests/backend/ml/test_trainer_benchmark.py,2387,2025-05-19,
+tests/backend/search/__init__.py,0,2025-05-19,
+tests/backend/search/test_faiss_tuner.py,10759,2025-05-19,
+tests/conftest.py,2368,2025-05-19,
+tests/e2e/__init__.py,48,2025-05-19,
+tests/e2e/run-tests.sh,4889,2025-05-18,#!/bin/bash
+tests/integration/__init__.py,49,2025-05-19,
+tests/integration/agents/__init__.py,50,2025-05-19,
+tests/integration/agents/financial_tax/__init__.py,48,2025-05-19,
+tests/integration/agents/financial_tax/test_agent_integration.py,8661,2025-05-19,
+tests/integration/financial_tax/__init__.py,42,2025-05-19,
+tests/integration/financial_tax/test_integration.py,8687,2025-05-19,
+tests/integration/test_exactly_once_processing.py,4901,2025-05-19,
+tests/integration/test_explainer_smoke.py,1888,2025-05-19,
+tests/remediation/__init__.py,43,2025-05-19,
+tests/remediation/test_graphs.py,10535,2025-05-19,
+tests/scripts/test_kpis.py,941,2025-05-19,#!/usr/bin/env python3
+tests/slack/test_basic.py,1710,2025-05-19,
+tests/slack_app/__init__.py,26,2025-05-19,
+tests/slack_app/test_command_handler.py,4708,2025-05-19,
+tests/slack_app/test_startup.py,3741,2025-05-19,
+tests/smoke/test_adapters_smoke.py,210,2025-05-19,
+tests/smoke/test_agents_health.py,199,2025-05-19,
+tests/smoke/test_core_storage.py,894,2025-05-19,
+tests/smoke/test_metrics_smoke.py,150,2025-05-19,
+tests/smoke/test_slack_smoke.py,194,2025-05-19,
+tests/smoke/test_smoke.py,42,2025-05-19,
+tests/smoke/test_ui_smoke.py,140,2025-05-19,
+tests/smoke/test_workflow_smoke.py,142,2025-05-19,
+tests/test_cpu.py,1174,2025-05-19,
+tests/test_youtube_workflows.py,6128,2025-05-19,
+tests/unit/__init__.py,42,2025-05-19,
+tests/unit/agents/__init__.py,43,2025-05-19,
+tests/unit/agents/financial_tax/__init__.py,41,2025-05-19,
+tests/unit/agents/financial_tax/conftest.py,251,2025-05-19,
+tests/unit/agents/financial_tax/test_agent.py,11851,2025-05-19,
+tests/unit/agents/financial_tax/test_chains.py,8369,2025-05-19,
+tests/unit/agents/financial_tax/test_models.py,8059,2025-05-19,
+tests/unit/agents/financial_tax/test_xfail_markers.py,263,2025-05-19,
+tests/unit/alfred/alerts/explainer/__init__.py,43,2025-05-19,
+tests/unit/alfred/alerts/explainer/test_agent.py,3762,2025-05-19,
+tests/unit/alfred/slack/diagnostics/__init__.py,44,2025-05-19,
+tests/unit/alfred/slack/diagnostics/test_explain_command.py,1227,2025-05-19,
+tests/unit/test_health_module.py,3496,2025-05-19,
+update-health-endpoints.sh,1419,2025-05-18,#!/bin/bash
+validate-orchestration.sh,2200,2025-05-15,
+verify-port-config.sh,8011,2025-05-18,#!/bin/bash
