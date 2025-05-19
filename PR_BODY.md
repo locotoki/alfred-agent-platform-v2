@@ -27,7 +27,7 @@ No issues found. 👍
 - [x] All F401 and E501 violations fixed codebase-wide
 - [x] Linting checks pass with the stricter configuration
 - [x] Documentation updated in CLAUDE.md
-- [x] CI passes with the new stricter checks
+- [ ] *Note: Unrelated test failures in CI due to LangChain API changes (using deprecated "arun" method) - this is being tracked separately*
 
 📍Next Required Action
 - Ready for @alfred-architect-o3 review
