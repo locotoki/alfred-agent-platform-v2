@@ -1,7 +1,5 @@
 """LangChain implementations for Financial Tax Agent"""
 
-from typing import Any, Dict, List
-
 from langchain.chains import LLMChain
 from langchain.output_parsers import PydanticOutputParser
 from langchain.prompts import PromptTemplate
@@ -27,7 +25,8 @@ class TaxCalculationChain:
         self.output_parser = PydanticOutputParser(pydantic_object=TaxCalculationResponse)
 
         self.prompt = PromptTemplate(
-            template="""You are a tax calculation expert. Calculate the tax liability based on the following information:
+            template="""You are a tax calculation expert. Calculate the tax liability
+based on the following information:
 
 Income: {income}
 Deductions: {deductions}
@@ -136,7 +135,8 @@ class ComplianceCheckChain:
         self.output_parser = PydanticOutputParser(pydantic_object=ComplianceCheckResponse)
 
         self.prompt = PromptTemplate(
-            template="""You are a tax compliance expert. Review the following information for compliance:
+            template="""You are a tax compliance expert. Review the following
+information for compliance:
 
 Entity Type: {entity_type}
 Transactions: {transactions}

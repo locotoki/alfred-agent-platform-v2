@@ -9,7 +9,7 @@ import hmac
 import json
 import os
 import time
-from typing import Any, Dict, Optional, Union
+from typing import Any, Dict, Optional
 
 import structlog
 from fastapi import FastAPI, HTTPException, Request, Response

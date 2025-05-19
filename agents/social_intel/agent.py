@@ -1,7 +1,6 @@
 """Stub implementation of Social Intelligence Agent."""
 
-import asyncio
-from typing import Any, Dict, List
+from typing import Any, Dict
 
 import structlog
 
