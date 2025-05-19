@@ -4,11 +4,10 @@ FAISS vector index for fast similarity search.
 Provides sub-15ms query performance for alert embeddings.
 """
 
-import os
 import pickle
 import time
 from dataclasses import dataclass
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Optional
 
 import faiss
 import numpy as np

@@ -2,8 +2,7 @@
 """Test the diagnostics bot locally without Kubernetes."""
 
 import asyncio
-import json
-from unittest.mock import AsyncMock, MagicMock
+from unittest.mock import AsyncMock
 
 from alfred.slack.diagnostics import DiagnosticsBot
 

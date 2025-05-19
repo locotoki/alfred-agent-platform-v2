@@ -5,8 +5,7 @@ subsystem for automated service recovery and remediation workflows.
 """
 
 from abc import abstractmethod
-from enum import Enum
-from typing import Any, Callable, Dict, List, Optional, Protocol
+from typing import Any, Dict, List, Optional, Protocol
 
 
 class RemediationState(Protocol):

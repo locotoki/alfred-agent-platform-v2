@@ -1,8 +1,6 @@
 """Stub transport implementation for A2A Adapter."""
 
-import asyncio
-import json
-from typing import Any, Awaitable, Callable, Dict, List, Optional
+from typing import Any, Callable, Dict, List, Optional
 
 import structlog
 

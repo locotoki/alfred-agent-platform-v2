@@ -2,7 +2,6 @@
 """
 Generate docker-compose.yml from individual service compose snippets
 """
-import os
 from pathlib import Path
 
 import yaml

@@ -1,12 +1,9 @@
 """Slack diagnostics bot for Alfred platform."""
 
-import json
-import re
-from typing import Any, Dict, List, Optional, cast
+from typing import Optional, cast
 
 import httpx
 import structlog
-from prometheus_client.parser import text_string_to_metric_families
 from slack_sdk.web.async_client import AsyncWebClient
 from slack_sdk.web.slack_response import SlackResponse
 
@@ -131,7 +128,9 @@ class DiagnosticsBot:
                 queries = {
                     "Request Rate": "sum(rate(http_requests_total[5m]))",
                     "Error Rate": 'sum(rate(http_requests_total{status=~"5.."}[5m]))',
-                    "P95 Latency": "histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m]))",
+                    "P95 Latency": (
+                        "histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m]))"
+                    ),
                     "Active Agents": 'up{job=~".*agent.*"}',
                 }
 

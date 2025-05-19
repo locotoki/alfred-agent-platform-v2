@@ -26,7 +26,6 @@ from ..models.youtube_models import (
     YouTubeChannel,
     YouTubeGap,
     YouTubeNiche,
-    YouTubeVideo,
 )
 from ..models.youtube_vectors import YouTubeVectorStorage
 

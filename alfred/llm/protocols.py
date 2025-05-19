@@ -5,7 +5,7 @@ subsystem for language model interactions and management.
 """
 
 from abc import abstractmethod
-from typing import Any, AsyncIterator, Dict, List, Optional, Protocol, Union
+from typing import Any, AsyncIterator, Dict, List, Optional, Protocol
 
 
 class LLMProvider(Protocol):

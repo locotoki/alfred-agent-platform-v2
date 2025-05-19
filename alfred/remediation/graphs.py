@@ -7,7 +7,7 @@ including restart, health verification, and escalation paths.
 
 import logging
 import time
-from typing import Any, Dict, Optional, Tuple
+from typing import Any, Dict, Tuple
 
 import requests
 from langgraph.graph import END, StateGraph
@@ -134,7 +134,8 @@ def escalate_issue(state: RemediationState) -> RemediationState:
     max_retries = state.get("max_retries", settings.MAX_RETRIES)
 
     logger.info(
-        f"Escalating remediation for {service_name} after {state.get('retry_count', 0)}/{max_retries} failed attempts"
+        f"Escalating remediation for {service_name} "
+        f"after {state.get('retry_count', 0)}/{max_retries} failed attempts"
     )
 
     # Build error details from probe_error if available
@@ -146,7 +147,8 @@ def escalate_issue(state: RemediationState) -> RemediationState:
         # Would update Slack thread in real implementation
         state["thread_updated"] = True
         state["escalation_message"] = (
-            f"❌ Failed to remediate {service_name} after {state.get('retry_count', 0)}/{max_retries} attempts. "
+            f"❌ Failed to remediate {service_name} after "
+            f"{state.get('retry_count', 0)}/{max_retries} attempts. "
             f"This issue has been escalated to the on-call team.{error_details}"
         )
 
@@ -174,7 +176,8 @@ def restart_then_verify(
         max_retries: Maximum number of restart attempts
 
     Returns:
-        Tuple of (StateGraph, initial_state): The configured remediation workflow and its initial state
+        Tuple of (StateGraph, initial_state): The configured remediation workflow
+        and its initial state
     """
     # Create initial state
     initial_state = {

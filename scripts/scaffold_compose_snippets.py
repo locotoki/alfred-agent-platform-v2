@@ -2,7 +2,6 @@
 """
 Scaffold compose.yml snippets for each service based on services.yaml
 """
-import os
 from pathlib import Path
 
 import yaml

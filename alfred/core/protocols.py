@@ -5,7 +5,7 @@ subsystem to ensure strict typing and enable proper dependency inversion.
 """
 
 from abc import abstractmethod
-from typing import Any, Dict, Optional, Protocol
+from typing import Any, Dict, Protocol
 
 
 class HealthCheckable(Protocol):

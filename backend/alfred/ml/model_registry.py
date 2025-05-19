@@ -9,7 +9,6 @@ from datetime import datetime
 from typing import Dict, List, Optional
 
 import mlflow
-from mlflow.models import ModelSignature
 from mlflow.tracking import MlflowClient
 
 from alfred.core.protocols import Service

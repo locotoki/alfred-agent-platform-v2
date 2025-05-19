@@ -7,7 +7,7 @@ subsystem for metrics collection, monitoring, and observability.
 from abc import abstractmethod
 from typing import Any, Dict, List, Optional, Protocol
 
-from prometheus_client import CollectorRegistry, Metric
+from prometheus_client import CollectorRegistry
 
 
 class MetricsCollector(Protocol):

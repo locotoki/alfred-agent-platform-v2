@@ -10,11 +10,8 @@ import json
 import logging
 import os
 import socket
-import threading
-import time
 from typing import Any, Dict, Optional, Set
 
-import requests
 from slack_sdk import WebClient
 from slack_sdk.errors import SlackApiError
 

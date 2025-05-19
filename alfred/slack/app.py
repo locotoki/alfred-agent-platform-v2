@@ -62,7 +62,8 @@ def handle_alfred_command(ack, command, say):
         # Check if the subcommand is allowed
         if subcommand not in ALLOWED_COMMANDS_SET:
             say(
-                f"Sorry, the command `{subcommand}` is not recognized. Try `/alfred help` for a list of available commands."
+                f"Sorry, the command `{subcommand}` is not recognized. "
+                f"Try `/alfred help` for a list of available commands."
             )
             return
 

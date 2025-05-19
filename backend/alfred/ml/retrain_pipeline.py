@@ -5,25 +5,20 @@ Automates training, validation, and model registry updates.
 """
 
 import json
-import os
 import time
 from datetime import datetime
-from typing import Dict, Optional, Tuple
+from typing import Dict, Tuple
 
 import mlflow
 import mlflow.sklearn
-import numpy as np
 import ray
 from mlflow.tracking import MlflowClient
-from ray import train
-from sentence_transformers import SentenceTransformer
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import f1_score, precision_score, recall_score, roc_auc_score
 from sklearn.model_selection import train_test_split
 
 from alfred.core.protocols import Service
 from alfred.ml.alert_dataset import AlertDataset
-from alfred.ml.model_registry import ModelRegistry
 
 
 class RetrainPipeline(Service):

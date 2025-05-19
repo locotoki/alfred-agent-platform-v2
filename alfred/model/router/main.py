@@ -3,12 +3,11 @@
 import os
 import threading
 from datetime import datetime
-from typing import Any, Dict, List, Optional
 
 import httpx
 import prometheus_client
 import uvicorn
-from fastapi import Depends, FastAPI, HTTPException, Request
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 
 # Initialize FastAPI app

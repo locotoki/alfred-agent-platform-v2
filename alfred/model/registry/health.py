@@ -3,8 +3,6 @@ Health check endpoints for the Model Registry service.
 This implements the standard health checks required by the platform.
 """
 
-import json
-
 from fastapi import APIRouter, Response
 
 router = APIRouter()

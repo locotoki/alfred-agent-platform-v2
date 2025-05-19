@@ -77,7 +77,6 @@ App.command = lambda self, command=None: lambda func: None
     slack_bolt.App = temp_app.App
 
     # Now try to import our app
-    import app as slack_app
 
     print("\nCommand Handler Verification:")
     print("✓ Command handlers initialized successfully")

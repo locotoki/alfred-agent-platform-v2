@@ -39,7 +39,8 @@ if __name__ == "__main__":
             app_token = os.environ.get("SLACK_APP_TOKEN", "")
             if not app_token.startswith("xapp-"):
                 print(
-                    f"Warning: SLACK_APP_TOKEN doesn't start with 'xapp-'. Token: {app_token[:5]}..."
+                    f"Warning: SLACK_APP_TOKEN doesn't start with 'xapp-'. "
+                    f"Token: {app_token[:5]}..."
                 )
 
             # Initialize and start the socket mode handler

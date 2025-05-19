@@ -3,8 +3,6 @@ Development server for the Slack app.
 Runs the Flask server only for testing health endpoints.
 """
 
-import os
-
 from dotenv import load_dotenv
 from flask import Flask, jsonify
 

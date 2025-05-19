@@ -15,17 +15,13 @@ from datetime import datetime, timedelta
 
 # Check if we have the required libraries
 try:
-    import aiohttp
     import googleapiclient.discovery
     import matplotlib.pyplot as plt
-    import numpy as np
 except ImportError:
     print("Installing required dependencies...")
     os.system("pip install aiohttp google-api-python-client matplotlib numpy")
-    import aiohttp
     import googleapiclient.discovery
     import matplotlib.pyplot as plt
-    import numpy as np
 
 # API Key from environment or direct input
 API_KEY = os.environ.get("YOUTUBE_API_KEY", "AIzaSyDG7o4pRFOjRQzGcsNrc-fmF-O77EbfZDM")
@@ -196,7 +192,6 @@ def build_youtube_client():
 
 def parse_duration(duration_str):
     """Parse ISO 8601 duration string to seconds."""
-    import datetime
     import re
 
     # Parse the duration string

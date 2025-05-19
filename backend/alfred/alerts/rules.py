@@ -7,9 +7,8 @@ grouping rules with dynamic evaluation.
 
 import operator
 import re
-from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any, Dict, List, Optional
 
 import redis
 import yaml

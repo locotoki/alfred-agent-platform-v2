@@ -18,7 +18,6 @@ from typing import Dict, List, Tuple
 
 import matplotlib.pyplot as plt
 import numpy as np
-import pandas as pd
 import psutil
 from matplotlib.backends.backend_pdf import PdfPages
 
