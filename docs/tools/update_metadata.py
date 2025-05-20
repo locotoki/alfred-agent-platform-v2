@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""
-Documentation Metadata Updater
+"""Documentation Metadata Updater.
 
 This tool automates the addition and standardization of metadata in Markdown documentation files.
 It can process individual files or entire directories, adding missing metadata or standardizing
@@ -36,7 +35,7 @@ logger = logging.getLogger(__name__)
 
 
 class MetadataUpdater:
-    """Class to update metadata in markdown files"""
+    """Class to update metadata in markdown files."""
 
     # Metadata fields and their regex patterns
     METADATA_FIELDS = {
@@ -63,7 +62,7 @@ class MetadataUpdater:
         force: bool = False,
         dry_run: bool = False,
     ):
-        """Initialize the metadata updater"""
+        """Initialize the metadata updater."""
         self.owner = owner
         self.status = status if status in self.VALID_STATUSES else "Draft"
         self.force = force
@@ -74,7 +73,7 @@ class MetadataUpdater:
         self.skipped_files: List[str] = []
 
     def update_file(self, file_path: str) -> bool:
-        """Update metadata in a single file"""
+        """Update metadata in a single file."""
         try:
             if not os.path.exists(file_path):
                 logger.error(f"File does not exist: {file_path}")
@@ -149,7 +148,9 @@ class MetadataUpdater:
             return False
 
     def update_directory(self, directory_path: str) -> Dict:
-        """Update metadata in all markdown files in a directory and its subdirectories"""
+        """Update metadata in all markdown files in a directory and its
+        subdirectories.
+        """
         md_files = self._find_markdown_files(directory_path)
         total = len(md_files)
         updated = 0
@@ -168,7 +169,7 @@ class MetadataUpdater:
         }
 
     def generate_report(self, report_path: Optional[str] = None) -> str:
-        """Generate a report of all updates"""
+        """Generate a report of all updates."""
         report = "# Metadata Update Report\n\n"
         report += f"**Date:** {self.today}\n\n"
         report += f"**Total Processed:** {len(self.updated_files) + len(self.error_files) + len(self.skipped_files)}\n"
@@ -204,7 +205,7 @@ class MetadataUpdater:
         return report
 
     def _extract_existing_metadata(self, content: str) -> Dict[str, str]:
-        """Extract existing metadata from content"""
+        """Extract existing metadata from content."""
         metadata = {}
         for field, pattern in self.METADATA_FIELDS.items():
             match = re.search(pattern, content, re.MULTILINE)
@@ -212,8 +213,8 @@ class MetadataUpdater:
                 metadata[field] = match.group(1).strip()
         return metadata
 
-    def _generate_metadata(self, existing_metadata: Dict[str, str]) -> str:
-        """Generate metadata text"""
+    def _generate_metadata(self, existing_metadata: Dict[str, str]) -> str:.
+        """Generate metadata text."""
         metadata = {
             "Last Updated": self.today,
             "Owner": self.owner,
@@ -233,7 +234,7 @@ class MetadataUpdater:
         )
 
     def _find_markdown_files(self, directory_path: str) -> List[str]:
-        """Find all markdown files in a directory and its subdirectories"""
+        """Find all markdown files in a directory and its subdirectories."""
         md_files = []
         for root, _, files in os.walk(directory_path):
             for file in files:

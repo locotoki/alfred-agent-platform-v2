@@ -1,6 +1,4 @@
-"""
-Fixed workflow endpoints module to address datetime parsing issues.
-"""
+"""Fixed workflow endpoints module to address datetime parsing issues."""
 
 import glob
 import json
@@ -13,9 +11,8 @@ import structlog
 logger = structlog.get_logger(__name__)
 
 
-def validate_datetime(dt_str: str) -> datetime:
-    """
-    Validate and parse a datetime string safely.
+def validate_datetime(dt_str: str) -> datetime:.
+    """Validate and parse a datetime string safely.
 
     Args:
         dt_str: Datetime string in ISO format
@@ -51,11 +48,10 @@ def validate_datetime(dt_str: str) -> datetime:
 
 
 async def get_workflow_history() -> List[Dict[str, Any]]:
-    """
-    Retrieve workflow execution history.
+    """Retrieve workflow execution history.
 
     Returns:
-        List of workflow execution records
+        List of workflow execution records.
     """
     try:
         # Base directory for workflow results
@@ -131,15 +127,14 @@ async def get_workflow_history() -> List[Dict[str, Any]]:
 
 
 async def get_workflow_result(result_id: str, type: str) -> Dict[str, Any]:
-    """
-    Retrieve a specific workflow result by ID.
+    """Retrieve a specific workflow result by ID.
 
     Args:
         result_id: ID of the workflow result
         type: Type of workflow (niche-scout or seed-to-blueprint)
 
     Returns:
-        Workflow result data or error message
+        Workflow result data or error message.
     """
     try:
         # Determine base directory
@@ -180,11 +175,10 @@ async def get_workflow_result(result_id: str, type: str) -> Dict[str, Any]:
 
 
 async def get_scheduled_workflows() -> List[Dict[str, Any]]:
-    """
-    Retrieve list of scheduled workflows.
+    """Retrieve list of scheduled workflows.
 
     Returns:
-        List of scheduled workflow configurations
+        List of scheduled workflow configurations.
     """
     try:
         # For now, return a placeholder implementation
@@ -217,8 +211,7 @@ async def get_scheduled_workflows() -> List[Dict[str, Any]]:
 async def schedule_workflow(
     workflow_type: str, parameters: Dict[str, Any], frequency: str, next_run: str
 ) -> Dict[str, Any]:
-    """
-    Schedule a new workflow execution.
+    """Schedule a new workflow execution.
 
     Args:
         workflow_type: Type of workflow (niche-scout or seed-to-blueprint)
@@ -227,7 +220,7 @@ async def schedule_workflow(
         next_run: Next scheduled run time (ISO datetime string)
 
     Returns:
-        Created schedule object
+        Created schedule object.
     """
     try:
         # Validate workflow type

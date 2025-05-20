@@ -1,6 +1,4 @@
-"""
-Simple test script that just prints some information.
-"""
+"""Simple test script that just prints some information."""
 
 import os
 

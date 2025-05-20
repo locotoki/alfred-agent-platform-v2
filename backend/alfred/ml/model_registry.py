@@ -1,5 +1,4 @@
-"""
-Model registry management for ML models.
+"""Model registry management for ML models.
 
 Handles model versioning, promotion, and deployment.
 """
@@ -14,7 +13,7 @@ from mlflow.tracking import MlflowClient
 from alfred.core.protocols import Service
 
 
-class ModelRegistry(Service):
+class ModelRegistry(Service):.
     """Manages ML model registry and lifecycle."""
 
     def __init__(
@@ -26,7 +25,8 @@ class ModelRegistry(Service):
 
         Args:
             mlflow_uri: MLflow tracking server URI
-            model_name: Default model name
+            model_name: Default model name.
+
         """
         self.mlflow_uri = mlflow_uri
         self.model_name = model_name
@@ -48,7 +48,8 @@ class ModelRegistry(Service):
             model_name: Model name (uses default if None)
 
         Returns:
-            Registered model version
+            Registered model version.
+
         """
         model_name = model_name or self.model_name
         model_uri = f"runs:/{run_id}/{artifact_path}"
@@ -76,7 +77,8 @@ class ModelRegistry(Service):
             model_name: Model name (uses default if None)
 
         Returns:
-            Success status
+            Success status.
+
         """
         model_name = model_name or self.model_name
 
@@ -122,7 +124,8 @@ class ModelRegistry(Service):
             model_name: Model name (uses default if None)
 
         Returns:
-            Model version info or None
+            Model version info or None.
+
         """
         model_name = model_name or self.model_name
 
@@ -158,7 +161,8 @@ class ModelRegistry(Service):
             model_name: Model name (uses default if None)
 
         Returns:
-            Comparison results
+            Comparison results.
+
         """
         model_name = model_name or self.model_name
 
@@ -209,7 +213,8 @@ class ModelRegistry(Service):
             model_name: Model name (uses default if None)
 
         Returns:
-            Success status
+            Success status.
+
         """
         model_name = model_name or self.model_name
 
@@ -273,7 +278,8 @@ class ModelRegistry(Service):
             limit: Number of versions to return
 
         Returns:
-            List of version info
+            List of version info.
+
         """
         model_name = model_name or self.model_name
 
@@ -312,7 +318,8 @@ class ModelRegistry(Service):
             model_name: Model name (uses default if None)
 
         Returns:
-            Model metadata dictionary
+            Model metadata dictionary.
+
         """
         model_name = model_name or self.model_name
 

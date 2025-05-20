@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-"""
-Improved script to automatically remove unused imports based on flake8 F401 violations.
+"""Improved script to automatically remove unused imports based on flake8 F401
+violations.
 """
 import os
 import re
@@ -8,7 +8,7 @@ import sys
 from collections import defaultdict
 
 
-def parse_violation(line):
+def parse_violation(line):.
     """Parse a flake8 F401 violation line."""
     match = re.match(r"(.+):(\d+):(\d+): F401 \'(.+)\' imported but unused", line)
     if match:
@@ -54,7 +54,6 @@ def get_import_pattern(import_name):
 
 def remove_import_from_line(line, import_name):
     """Remove the import from the line."""
-
     # Special handling for different import patterns
     parts = import_name.split(".")
 

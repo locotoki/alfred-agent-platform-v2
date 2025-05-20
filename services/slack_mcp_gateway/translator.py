@@ -1,8 +1,7 @@
-"""
-Translator module for converting between Slack payloads and MCP task requests.
+"""Translator module for converting between Slack payloads and MCP task requests.
 
-This module handles the transformation of Slack command payloads into
-standardized task requests that can be processed by the Mission Control Platform.
+This module handles the transformation of Slack command payloads into standardized task
+requests that can be processed by the Mission Control Platform.
 """
 
 import uuid
@@ -10,9 +9,8 @@ from datetime import datetime
 from typing import Any, Dict
 
 
-def build_task_request(payload: Dict[str, Any]) -> Dict[str, Any]:
-    """
-    Convert a Slack command payload to an MCP task request.
+def build_task_request(payload: Dict[str, Any]) -> Dict[str, Any]:.
+    """Convert a Slack command payload to an MCP task request.
 
     Args:
         payload: The Slack command payload

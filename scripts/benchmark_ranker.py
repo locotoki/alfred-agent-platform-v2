@@ -1,12 +1,11 @@
 #!/usr/bin/env python3
-"""
-Benchmark script for comparing noise ranker versions.
+"""Benchmark script for comparing noise ranker versions.
 
 Generates performance report with metrics on:
 - Alert volume reduction
 - False negative rate
 - Processing latency
-- Memory usage
+- Memory usage.
 """
 
 import argparse
@@ -34,7 +33,7 @@ class BenchmarkAlert(AlertProtocol):
             setattr(self, k, v)
 
 
-class RankerBenchmark:
+class RankerBenchmark:.
     """Benchmark harness for noise rankers."""
 
     def __init__(
@@ -48,7 +47,7 @@ class RankerBenchmark:
         self.num_alerts = num_alerts
         self.results = {}
 
-    def generate_test_alerts(self) -> List[Tuple[BenchmarkAlert, Dict]]:
+    def generate_test_alerts(self) -> List[Tuple[BenchmarkAlert, Dict]]:.
         """Generate synthetic test alerts with labels."""
         alerts = []
 
@@ -258,7 +257,7 @@ Key Findings:
 ✓ New ML ranker reduces alert volume by {results['new_ranker']['suppression_rate']*100:.1f}%
 ✓ False negative rate: {results['new_ranker']['false_negative_rate']*100:.2f}% (below 2% target)
 ✓ P95 latency: {results['new_ranker']['p95_latency_ms']:.1f}ms per alert
-✓ Processes {results['new_ranker']['alerts_per_second']:.0f} alerts/second
+✓ Processes {results['new_ranker']['alerts_per_second']:.0f} alerts/second.
 """
             ax.text(
                 0.1,

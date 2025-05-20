@@ -62,7 +62,7 @@ st.markdown(
         padding: 10px;
         margin-bottom: 10px;
     }
-</style>
+</style>.
 """,
     unsafe_allow_html=True,
 )
@@ -71,7 +71,7 @@ st.markdown(
 class ModelRegistryClient:
     """Client for interacting with the Model Registry service."""
 
-    def __init__(self, base_url=None):
+    def __init__(self, base_url=None):.
         """Initialize the Model Registry client."""
         self.base_url = base_url or os.environ.get(
             "MODEL_REGISTRY_URL", "http://localhost:8079"
@@ -84,12 +84,12 @@ class ModelRegistryClient:
         """Refresh the models cache if it's expired."""
         pass  # We'll use hardcoded models for now
 
-    def get_all_models(self) -> list:
-        """
-        Get all available models from the Model Registry.
+    def get_all_models(self) -> list:.
+        """Get all available models from the Model Registry.
 
         Returns:
             List of model configurations
+
         """
         try:
             response = requests.get(f"{self.base_url}/api/v1/models", timeout=2)
@@ -158,14 +158,14 @@ class ModelRegistryClient:
             ]
 
     def get_model_by_name(self, name: str) -> dict:
-        """
-        Get a specific model by name.
+        """Get a specific model by name.
 
         Args:
             name: The name of the model to retrieve
 
         Returns:
-            Model configuration if found, None otherwise
+            Model configuration if found, None otherwise.
+
         """
         # Special handling for 'auto'
         if name == "auto":
@@ -452,7 +452,7 @@ def process_command(message: str) -> str:
 
 def get_help_response() -> str:
     """Get a formatted help message."""
-    help_md = """
+    help_md =. """
     ## Alfred Bot Commands
 
     I can help you with various tasks through the chat interface.
@@ -474,7 +474,7 @@ def get_help_response() -> str:
     return help_md
 
 
-def get_models_response() -> str:
+def get_models_response() -> str:.
     """Get a formatted list of available models."""
     try:
         models = st.session_state.model_registry_client.get_all_models()
@@ -805,7 +805,7 @@ def sidebar_config():
 
 
 # Function to send messages to Alfred
-def send_message_sync(message):
+def send_message_sync(message):.
     """Synchronous function to send messages to Alfred."""
     try:
         # Get model information for the response

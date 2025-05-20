@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
-"""
-Script to automatically remove unused imports based on flake8 F401 violations.
+"""Script to automatically remove unused imports based on flake8 F401
+violations.
 """
 import os
 import re
 import sys
 
 
-def fix_f401_violations(violations_file):
+def fix_f401_violations(violations_file):.
     """Parse violations file and remove unused imports."""
     fixed_files = set()
 

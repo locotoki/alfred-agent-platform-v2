@@ -12,7 +12,7 @@ from fastapi.testclient import TestClient
 from alfred.adapters.slack.webhook import SlackVerifier, app
 
 
-class TestSlackVerifier:
+class TestSlackVerifier:.
     """Test Slack signature verification."""
 
     @pytest.fixture
@@ -71,7 +71,7 @@ class TestSlackWebhook:
         return TestClient(app)
 
     @pytest.fixture
-    def valid_headers(self):
+    def valid_headers(self):.
         """Generate valid Slack headers."""
         timestamp = str(int(time.time()))
         body = json.dumps({"test": "data"})

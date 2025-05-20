@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""
-Document Consolidation Tool
+"""Document Consolidation Tool.
 
-This script consolidates documents from the staging area into the main documentation
-structure following the guidelines in the Document Consolidation Guide.
+This script consolidates documents from the staging area into the main
+documentation structure following the guidelines in the Document
+Consolidation Guide.
 """
 
 import argparse
@@ -26,7 +26,7 @@ logger = logging.getLogger("consolidate_docs")
 
 
 class DocumentConsolidator:
-    """Class to handle document consolidation process"""
+    """Class to handle document consolidation process."""
 
     def __init__(
         self,
@@ -35,9 +35,8 @@ class DocumentConsolidator:
         inventory_file=None,
         group=None,
         dry_run=True,
-    ):
-        """
-        Initialize the document consolidator
+    ):.
+        """Initialize the document consolidator.
 
         Args:
             staging_dir (str): Path to the staging area directory
@@ -45,6 +44,7 @@ class DocumentConsolidator:
             inventory_file (str): Path to the inventory JSON file
             group (str): Group to consolidate (e.g., "rag", "infra", "all")
             dry_run (bool): If True, only show what would be done without actually consolidating
+
         """
         self.staging_dir = Path(staging_dir or "")
         self.target_dir = Path(target_dir or "")
@@ -93,11 +93,11 @@ class DocumentConsolidator:
         }
 
     def consolidate_documents(self):
-        """
-        Consolidate documents from staging area to target directories
+        """Consolidate documents from staging area to target directories.
 
         Returns:
-            dict: Statistics of consolidated files
+            dict: Statistics of consolidated files.
+
         """
         if not self.staging_dir.exists():
             logger.error(f"Staging directory does not exist: {self.staging_dir}")
@@ -128,14 +128,14 @@ class DocumentConsolidator:
         return stats
 
     def _consolidate_group(self, group_name):
-        """
-        Consolidate a specific group of documents
+        """Consolidate a specific group of documents.
 
         Args:
             group_name (str): Name of the consolidation group
 
         Returns:
-            dict: Statistics for this group
+            dict: Statistics for this group.
+
         """
         group_info = self.consolidation_groups[group_name]
         source_pattern = re.compile(group_info["source_pattern"])
@@ -205,7 +205,7 @@ class DocumentConsolidator:
             # Add a notice about consolidation
             consolidation_notice = f"""
 **Note:** This document is a consolidation of multiple source documents from the staging area.
-Last consolidated: {datetime.now().strftime('%Y-%m-%d')}
+Last consolidated: {datetime.now().strftime('%Y-%m-%d')}.
 """
 
             # Create a list of source documents
@@ -240,7 +240,7 @@ Last consolidated: {datetime.now().strftime('%Y-%m-%d')}
             return {"consolidated": 0, "skipped": 0, "errors": 1}
 
     def print_summary(self, stats):
-        """Print a summary of the operations performed"""
+        """Print a summary of the operations performed."""
         logger.info("=== Consolidation Summary ===")
         logger.info(f"Files consolidated: {stats['consolidated']}")
         logger.info(f"Files skipped: {stats['skipped']}")
@@ -256,7 +256,7 @@ Last consolidated: {datetime.now().strftime('%Y-%m-%d')}
 
 
 def main():
-    """Main function to run the script"""
+    """Main function to run the script."""
     parser = argparse.ArgumentParser(description="Document Consolidation Tool")
     parser.add_argument(
         "--staging-dir",

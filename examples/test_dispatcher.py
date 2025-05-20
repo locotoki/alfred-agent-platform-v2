@@ -12,7 +12,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 from alfred.alerts.dispatcher import handle_alert  # noqa: E402
 
 
-def test_dispatcher():
+def test_dispatcher():.
     """Test the dispatcher with local alert files."""
     # Set test environment variables
     os.environ["SLACK_ALERT_WEBHOOK"] = (

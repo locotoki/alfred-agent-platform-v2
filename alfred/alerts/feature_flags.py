@@ -4,7 +4,7 @@ import os
 from typing import Dict
 
 
-class AlertFeatureFlags:
+class AlertFeatureFlags:.
     """Manage feature flags for alert system."""
 
     ALERT_GROUPING_ENABLED = "ALERT_GROUPING_ENABLED"
@@ -17,7 +17,7 @@ class AlertFeatureFlags:
             flag_name: Name of the feature flag
 
         Returns:
-            True if enabled, False otherwise
+            True if enabled, False otherwise.
         """
         return os.getenv(flag_name, "false").lower() == "true"
 
@@ -26,6 +26,6 @@ class AlertFeatureFlags:
         """Get all feature flag configurations.
 
         Returns:
-            Dictionary of feature flags and their states
+            Dictionary of feature flags and their states.
         """
         return {cls.ALERT_GROUPING_ENABLED: cls.is_enabled(cls.ALERT_GROUPING_ENABLED)}

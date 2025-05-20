@@ -26,7 +26,7 @@ async def metrics():
 service_up 1
 # HELP service_requests_total Total requests processed
 # TYPE service_requests_total counter
-service_requests_total 0"""
+service_requests_total 0."""
     return Response(content=metrics_text, media_type="text/plain")
 
 

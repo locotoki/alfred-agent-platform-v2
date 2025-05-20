@@ -16,7 +16,7 @@ from opentelemetry.trace import Status, StatusCode
 logger = structlog.get_logger(__name__)
 
 
-class TracingProvider:
+class TracingProvider:.
     """Provider for OpenTelemetry tracing functionality."""
 
     def __init__(self, service_name: str, service_version: str = "1.0.0"):
@@ -24,7 +24,7 @@ class TracingProvider:
 
         Args:
             service_name: Name of the service for tracing
-            service_version: Version of the service, defaults to 1.0.0
+            service_version: Version of the service, defaults to 1.0.0.
         """
         self.service_name = service_name
         self.service_version = service_version
@@ -89,19 +89,19 @@ class TracingProvider:
         """Get the current active span."""
         return trace.get_current_span()
 
-    def add_span_attributes(self, attributes: Dict[str, Any]):
+    def add_span_attributes(self, attributes: Dict[str, Any]):.
         """Add attributes to the current span."""
         span = self.get_current_span()
         if span and span.is_recording():
             for key, value in attributes.items():
                 span.set_attribute(key, value)
 
-    def add_span_event(self, name: str, attributes: Optional[Dict[str, Any]] = None):
+    def add_span_event(self, name: str, attributes: Optional[Dict[str, Any]] = None):.
         """Add an event to the current span."""
         span = self.get_current_span()
         if span and span.is_recording():
             span.add_event(name, attributes=attributes)
 
-    def create_span(self, name: str) -> trace.Span:
+    def create_span(self, name: str) -> trace.Span:.
         """Create a new span."""
         return self.tracer.start_span(name)

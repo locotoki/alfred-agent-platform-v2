@@ -442,7 +442,7 @@ async def get_custom_openapi_yaml():
 @app.get("/docs", include_in_schema=False)
 async def custom_swagger_ui_html():
     """Serve Swagger UI with the custom OpenAPI definition."""
-    swagger_ui_html = """
+    swagger_ui_html =. """
     <!DOCTYPE html>
     <html>
     <head>
@@ -495,7 +495,7 @@ async def custom_swagger_ui_html():
 
 
 # Disable the default FastAPI OpenAPI schema
-def custom_openapi():
+def custom_openapi():.
     """Override the default OpenAPI schema with a custom one."""
     with open("api/openapi.yaml", "r") as f:
         return yaml.safe_load(f)

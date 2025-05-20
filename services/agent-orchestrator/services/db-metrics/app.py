@@ -34,7 +34,7 @@ PORT = int(os.getenv("PORT", "9091"))
 
 
 def check_service_http():
-    """Check HTTP service availability"""
+    """Check HTTP service availability."""
     try:
         if not SERVICE_URL:
             service_availability.labels(service=SERVICE_NAME).set(0)
@@ -79,7 +79,7 @@ def check_service_http():
 
 
 def check_service_tcp():
-    """Check TCP service availability"""
+    """Check TCP service availability."""
     try:
         if not SERVICE_URL:
             service_availability.labels(service=SERVICE_NAME).set(0)
@@ -109,7 +109,7 @@ def check_service_tcp():
 
 
 def check_db_connections():
-    """Check PostgreSQL connections if URL is provided"""
+    """Check PostgreSQL connections if URL is provided."""
     if not DB_POSTGRES_URL:
         return
 
@@ -123,7 +123,7 @@ def check_db_connections():
 
 
 def collect_metrics():
-    """Collect all metrics"""
+    """Collect all metrics."""
     if CHECK_TYPE.lower() == "http":
         check_service_http()
     else:
@@ -134,7 +134,7 @@ def collect_metrics():
 
 @app.route("/metrics")
 def metrics():
-    """Prometheus metrics endpoint"""
+    """Prometheus metrics endpoint."""
     service_requests_total.labels(service=SERVICE_NAME).inc()
     collect_metrics()
     return Response(generate_latest(REGISTRY), mimetype="text/plain")
@@ -142,7 +142,7 @@ def metrics():
 
 @app.route("/health")
 def health():
-    """Health check endpoint"""
+    """Health check endpoint."""
     service_requests_total.labels(service=SERVICE_NAME).inc()
 
     is_healthy = False
@@ -162,21 +162,20 @@ def health():
 
 @app.route("/healthz")
 def healthz():
-    """Simple health probe endpoint"""
+    """Simple health probe endpoint."""
     return jsonify({"status": "ok"})
 
 
 # Start background metrics collection
 def background_collector():
-    """Collect metrics periodically in the background"""
+    """Collect metrics periodically in the background."""
     while True:
         collect_metrics()
         time.sleep(COLLECTION_INTERVAL)
 
 
-def run_smoke_test():
-    """
-    Run a basic smoke test to check if the app will start properly.
+def run_smoke_test():.
+    """Run a basic smoke test to check if the app will start properly.
 
     Returns:
         bool: True if test passes, False otherwise

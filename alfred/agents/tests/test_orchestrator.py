@@ -6,17 +6,17 @@ from alfred.agents.orchestrator import (AgentOrchestrator,
                                         orchestrator_route_total)
 
 
-class TestAgentOrchestrator:
+class TestAgentOrchestrator:.
     """Test the AgentOrchestrator class."""
 
-    def setup_method(self):
+    def setup_method(self):.
         """Set up test fixtures."""
         self.orchestrator = AgentOrchestrator()
         # Clear metrics before each test
         orchestrator_route_total._metrics.clear()
 
     @pytest.mark.asyncio
-    async def test_unknown_intent_returns_help(self):
+    async def test_unknown_intent_returns_help(self):.
         """Test that unknown intent returns help without LLM."""
         # Test with a message that won't match any pattern
         response = await self.orchestrator.process_message("xyzzy123456")

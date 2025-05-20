@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
-"""
-Simple script to test OpenAI API access using the key from .env.llm
-"""
+"""Simple script to test OpenAI API access using the key from .env.llm."""
 
 import os
 import re
@@ -9,7 +7,7 @@ import re
 import requests
 
 
-def load_env():
+def load_env():.
     """Load environment variables from .env.llm file."""
     # Read from .env.llm
     try:

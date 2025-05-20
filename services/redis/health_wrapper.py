@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""
-Redis Health Check Wrapper for the Alfred Agent Platform.
+"""Redis Health Check Wrapper for the Alfred Agent Platform.
 
 This script provides standardized health check endpoints for Redis:
 1. /health - Detailed health status
@@ -51,7 +50,7 @@ def check_redis_health() -> Dict[str, str]:
     """Check Redis connection and status.
 
     Returns:
-        Dictionary with Redis health status
+        Dictionary with Redis health status.
     """
     try:
         # Try to ping Redis

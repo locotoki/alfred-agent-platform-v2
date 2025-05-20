@@ -1,4 +1,4 @@
-"""Legal Compliance Agent Implementation"""
+"""Legal Compliance Agent Implementation."""
 
 from datetime import datetime
 from typing import Any, Dict

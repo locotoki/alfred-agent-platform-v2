@@ -35,7 +35,7 @@ class BaseAgent(ABC):
     async def process_task(self, envelope: A2AEnvelope) -> Dict[str, Any]:
         """Process a task and return results."""
 
-    async def start(self):
+    async def start(self):.
         """Start the agent."""
         logger.info(
             "agent_starting",

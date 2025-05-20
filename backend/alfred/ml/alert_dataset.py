@@ -1,5 +1,4 @@
-"""
-Alert dataset loader with PII stripping.
+"""Alert dataset loader with PII stripping.
 
 Loads alert data from database and prepares for ML training.
 """
@@ -15,7 +14,7 @@ from sqlalchemy import create_engine, text
 from alfred.core.protocols import Service
 
 
-class AlertDataset(Service):
+class AlertDataset(Service):.
     """Loads and preprocesses alert data for ML training."""
 
     PII_PATTERNS = [
@@ -36,7 +35,8 @@ class AlertDataset(Service):
         """Initialize dataset loader.
 
         Args:
-            source: Database URI or file path
+            source: Database URI or file path.
+
         """
         self.source = source
         self.is_database = source.startswith(("postgresql://", "mysql://", "sqlite://"))
@@ -48,7 +48,8 @@ class AlertDataset(Service):
         """Load data from source.
 
         Returns:
-            DataFrame with alert data
+            DataFrame with alert data.
+
         """
         if self.is_database:
             engine = create_engine(self.source)
@@ -65,7 +66,7 @@ class AlertDataset(Service):
                     false_positive
                 FROM alerts
                 WHERE created_at > NOW() - INTERVAL '30 days'
-                LIMIT 100000
+                LIMIT 100000.
             """
             )
             df = pd.read_sql(query, engine)
@@ -86,7 +87,8 @@ class AlertDataset(Service):
             text: Input text
 
         Returns:
-            Text with PII removed
+            Text with PII removed.
+
         """
         for pattern, pii_type in self.PII_PATTERNS:
             text = re.sub(pattern, f"[{pii_type}]", text)
@@ -96,7 +98,8 @@ class AlertDataset(Service):
         """Extract feature vectors from alerts.
 
         Returns:
-            Feature matrix
+            Feature matrix.
+
         """
         if self.data is None:
             self.load()
@@ -151,7 +154,8 @@ class AlertDataset(Service):
         """Extract labels for training.
 
         Returns:
-            Label array (1 for noise, 0 for signal)
+            Label array (1 for noise, 0 for signal).
+
         """
         if self.data is None:
             self.load()
@@ -200,7 +204,8 @@ class AlertDataset(Service):
         """Prepare data for training.
 
         Returns:
-            Features and labels
+            Features and labels.
+
         """
         X = self.extract_features()
         y = self.extract_labels()
@@ -216,7 +221,8 @@ class AlertDataset(Service):
         """Get dataset information.
 
         Returns:
-            Dataset metadata
+            Dataset metadata.
+
         """
         if self.data is None:
             self.load()
@@ -256,7 +262,8 @@ class AlertDataset(Service):
             test_days: Number of recent days for test set
 
         Returns:
-            Train and test datasets
+            Train and test datasets.
+
         """
         if self.data is None:
             self.load()

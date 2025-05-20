@@ -10,7 +10,7 @@ from slack_sdk.web.slack_response import SlackResponse
 logger = structlog.get_logger()
 
 
-class DiagnosticsBot:
+class DiagnosticsBot:.
     """Slack bot for system diagnostics and health checks."""
 
     def __init__(
@@ -24,7 +24,7 @@ class DiagnosticsBot:
         Args:
             slack_client: Slack Web API client
             prometheus_url: URL for Prometheus API
-            enabled: Whether bot is enabled
+            enabled: Whether bot is enabled.
         """
         self.slack_client = slack_client
         self.prometheus_url = prometheus_url

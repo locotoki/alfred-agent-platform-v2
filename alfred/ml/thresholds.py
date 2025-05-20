@@ -9,7 +9,7 @@ from alfred.metrics.protocols import MetricsCollector
 
 
 @dataclass
-class ThresholdConfig:
+class ThresholdConfig:.
     """Configuration for dynamic thresholds."""
 
     noise_threshold: float = 0.7
@@ -17,7 +17,7 @@ class ThresholdConfig:
     batch_size: int = 100
     learning_rate: float = 0.01
 
-    def to_dict(self) -> Dict[str, float]:
+    def to_dict(self) -> Dict[str, float]:.
         """Convert to dictionary representation."""
         return {
             "noise_threshold": self.noise_threshold,
@@ -32,11 +32,11 @@ class ThresholdConfig:
         return cls(**data)
 
 
-class ThresholdService(Service):
+class ThresholdService(Service):.
     """Service for managing dynamic ML thresholds.
 
-    This service allows runtime adjustment of ML model thresholds
-    based on performance metrics and operator feedback.
+    This service allows runtime adjustment of ML model thresholds based on performance
+    metrics and operator feedback.
     """
 
     def __init__(
@@ -48,7 +48,7 @@ class ThresholdService(Service):
 
         Args:
             metrics: Optional metrics collector
-            config_path: Path to persistent config file
+            config_path: Path to persistent config file.
         """
         self.metrics = metrics
         self.config_path = config_path
@@ -77,7 +77,7 @@ class ThresholdService(Service):
         """Get current threshold configuration.
 
         Returns:
-            Dictionary of threshold values
+            Dictionary of threshold values.
         """
         return self._config.to_dict()
 
@@ -88,7 +88,7 @@ class ThresholdService(Service):
             updates: Dictionary of threshold updates
 
         Returns:
-            Updated threshold configuration
+            Updated threshold configuration.
         """
         # Validate updates
         valid_keys = {
@@ -124,7 +124,7 @@ class ThresholdService(Service):
             performance_metrics: Recent performance data
 
         Returns:
-            Optimized threshold configuration
+            Optimized threshold configuration.
         """
         # Simple optimization: adjust noise threshold based on false positive rate
         if "false_positive_rate" in performance_metrics:

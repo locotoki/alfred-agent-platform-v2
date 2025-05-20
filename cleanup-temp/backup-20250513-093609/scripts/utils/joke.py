@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
-"""
-Simple script to request a joke from Ollama.
-"""
+"""Simple script to request a joke from Ollama."""
 
 import sys
 

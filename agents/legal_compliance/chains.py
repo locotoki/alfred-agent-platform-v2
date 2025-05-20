@@ -1,4 +1,4 @@
-"""Legal Compliance Chain Components"""
+"""Legal Compliance Chain Components."""
 
 from langchain.chains import LLMChain
 from langchain.output_parsers import PydanticOutputParser
@@ -33,7 +33,7 @@ Identify any compliance issues, assess risk levels, and provide detailed recomme
 
 {format_instructions}
 
-Provide a thorough compliance audit result:
+Provide a thorough compliance audit result:.
 """,
     input_variables=[
         "organization_name",
@@ -63,7 +63,7 @@ identifiable information (PII), and assess the risk level of any findings.
 
 {format_instructions}
 
-Provide a comprehensive document analysis:
+Provide a comprehensive document analysis:.
 """,
     input_variables=[
         "document_type",
@@ -96,7 +96,7 @@ Identify all applicable regulations, compliance requirements, and potential risk
 
 {format_instructions}
 
-Provide a comprehensive regulation check result:
+Provide a comprehensive regulation check result:.
 """,
     input_variables=[
         "business_activity",
@@ -131,7 +131,7 @@ and provide recommendations for improvement.
 
 {format_instructions}
 
-Provide a comprehensive contract review:
+Provide a comprehensive contract review:.
 """,
     input_variables=[
         "contract_type",

@@ -1,6 +1,4 @@
-"""
-Simple test script to check if Slack API tokens work correctly.
-"""
+"""Simple test script to check if Slack API tokens work correctly."""
 
 import os
 import sys

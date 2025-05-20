@@ -1,6 +1,4 @@
-"""
-API routes for alert snooze functionality.
-"""
+"""API routes for alert snooze functionality."""
 
 from datetime import datetime
 from typing import List, Optional
@@ -41,14 +39,14 @@ class SnoozeResponse(BaseModel):
     is_active: bool
 
 
-class SnoozeHistoryResponse(BaseModel):
+class SnoozeHistoryResponse(BaseModel):.
     """Response for snooze history."""
 
     history: List[dict]
     total_count: int
 
 
-def get_snooze_service() -> AlertSnoozeService:
+def get_snooze_service() -> AlertSnoozeService:.
     """Dependency to get snooze service."""
     redis_client = get_redis_client()
     config = SnoozeConfig()

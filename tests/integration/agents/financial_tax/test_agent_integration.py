@@ -1,4 +1,4 @@
-"""Integration tests for Financial Tax Agent"""
+"""Integration tests for Financial Tax Agent."""
 
 import asyncio
 import os
@@ -14,15 +14,15 @@ pytestmark = pytest.mark.integration
 
 @pytest.fixture(scope="module")
 def event_loop():
-    """Create event loop for async tests"""
+    """Create event loop for async tests."""
     loop = asyncio.get_event_loop_policy().new_event_loop()
     yield loop
     loop.close()
 
 
 @pytest.fixture
-async def pubsub_transport():
-    """Create real PubSubTransport instance"""
+async def pubsub_transport():.
+    """Create real PubSubTransport instance."""
     transport = PubSubTransport(
         project_id=os.getenv("GCP_PROJECT_ID", "alfred-agent-platform")
     )
@@ -31,7 +31,7 @@ async def pubsub_transport():
 
 @pytest.fixture
 async def supabase_transport():
-    """Create real SupabaseTransport instance"""
+    """Create real SupabaseTransport instance."""
     transport = SupabaseTransport(database_url=os.getenv("DATABASE_URL"))
     await transport.connect()
     yield transport
@@ -40,7 +40,7 @@ async def supabase_transport():
 
 @pytest.fixture
 def policy_middleware():
-    """Create real PolicyMiddleware instance"""
+    """Create real PolicyMiddleware instance."""
     import redis
 
     redis_client = redis.from_url(os.getenv("REDIS_URL", "redis://localhost:6379"))
@@ -49,7 +49,7 @@ def policy_middleware():
 
 @pytest.fixture
 async def financial_tax_agent(pubsub_transport, supabase_transport, policy_middleware):
-    """Create Financial Tax Agent with real dependencies"""
+    """Create Financial Tax Agent with real dependencies."""
     agent = FinancialTaxAgent(
         pubsub_transport=pubsub_transport,
         supabase_transport=supabase_transport,
@@ -58,12 +58,12 @@ async def financial_tax_agent(pubsub_transport, supabase_transport, policy_middl
     return agent
 
 
-class TestFinancialTaxAgentIntegration:
-    """Integration tests for Financial Tax Agent"""
+class TestFinancialTaxAgentIntegration:.
+    """Integration tests for Financial Tax Agent."""
 
     @pytest.mark.asyncio
-    async def test_agent_lifecycle(self, financial_tax_agent):
-        """Test agent startup and shutdown"""
+    async def test_agent_lifecycle(self, financial_tax_agent):.
+        """Test agent startup and shutdown."""
         # Start agent
         await financial_tax_agent.start()
         assert financial_tax_agent.is_running
@@ -78,8 +78,8 @@ class TestFinancialTaxAgentIntegration:
     @pytest.mark.asyncio
     async def test_tax_calculation_flow(
         self, financial_tax_agent, pubsub_transport, supabase_transport
-    ):
-        """Test end-to-end tax calculation flow"""
+    ):.
+        """Test end-to-end tax calculation flow."""
         # Create test envelope
         envelope = A2AEnvelope(
             intent="TAX_CALCULATION",
@@ -107,7 +107,7 @@ class TestFinancialTaxAgentIntegration:
     async def test_financial_analysis_flow(
         self, financial_tax_agent, supabase_transport
     ):
-        """Test end-to-end financial analysis flow"""
+        """Test end-to-end financial analysis flow."""
         envelope = A2AEnvelope(
             intent="FINANCIAL_ANALYSIS",
             content={
@@ -136,7 +136,7 @@ class TestFinancialTaxAgentIntegration:
 
     @pytest.mark.asyncio
     async def test_compliance_check_flow(self, financial_tax_agent, supabase_transport):
-        """Test end-to-end compliance check flow"""
+        """Test end-to-end compliance check flow."""
         envelope = A2AEnvelope(
             intent="TAX_COMPLIANCE_CHECK",
             content={
@@ -160,7 +160,7 @@ class TestFinancialTaxAgentIntegration:
 
     @pytest.mark.asyncio
     async def test_rate_lookup_flow(self, financial_tax_agent, supabase_transport):
-        """Test end-to-end rate lookup flow"""
+        """Test end-to-end rate lookup flow."""
         envelope = A2AEnvelope(
             intent="RATE_SHEET_LOOKUP",
             content={
@@ -186,7 +186,7 @@ class TestFinancialTaxAgentIntegration:
     async def test_error_handling_integration(
         self, financial_tax_agent, supabase_transport
     ):
-        """Test error handling in integration context"""
+        """Test error handling in integration context."""
         # Create envelope with invalid data
         envelope = A2AEnvelope(
             intent="TAX_CALCULATION",
@@ -208,7 +208,7 @@ class TestFinancialTaxAgentIntegration:
     async def test_concurrent_task_processing(
         self, financial_tax_agent, supabase_transport
     ):
-        """Test processing multiple tasks concurrently"""
+        """Test processing multiple tasks concurrently."""
         # Create multiple envelopes
         envelopes = [
             A2AEnvelope(
@@ -240,7 +240,7 @@ class TestFinancialTaxAgentIntegration:
 
     @pytest.mark.asyncio
     async def test_task_status_updates(self, financial_tax_agent, supabase_transport):
-        """Test task status updates through the workflow"""
+        """Test task status updates through the workflow."""
         envelope = A2AEnvelope(
             intent="TAX_CALCULATION",
             content={

@@ -25,15 +25,14 @@ SEVERITY_COLOR = {
 
 
 def handle_alert(alert_json: Dict[str, Any]) -> None:
-    """
-    Process incoming Prometheus alert and forward to Slack with enrichment.
+    """Process incoming Prometheus alert and forward to Slack with enrichment.
 
     Args:
         alert_json: Alert payload from Alertmanager
 
     Raises:
         ValueError: If required environment variables are missing
-        requests.RequestException: If Slack webhook call fails
+        requests.RequestException: If Slack webhook call fails.
     """
     # Validate required environment variables
     slack_webhook = os.getenv("SLACK_ALERT_WEBHOOK")
@@ -85,8 +84,7 @@ def format_alert_for_slack(
     pod_uid: str,
     chart_version: str,
 ) -> Dict[str, Any]:
-    """
-    Format Prometheus alert for Slack message.
+    """Format Prometheus alert for Slack message.
 
     Args:
         alert: Individual alert from Alertmanager
@@ -95,7 +93,7 @@ def format_alert_for_slack(
         chart_version: Helm chart version
 
     Returns:
-        Formatted Slack message payload
+        Formatted Slack message payload.
     """
     labels = alert.get("labels", {})
     annotations = alert.get("annotations", {})
@@ -183,15 +181,14 @@ def format_alert_for_slack(
 
 
 def send_to_slack(webhook_url: str, message: Dict[str, Any]) -> None:
-    """
-    Send formatted message to Slack webhook.
+    """Send formatted message to Slack webhook.
 
     Args:
         webhook_url: Slack webhook URL
         message: Formatted message payload
 
     Raises:
-        requests.RequestException: If webhook call fails
+        requests.RequestException: If webhook call fails.
     """
     response = requests.post(
         webhook_url,

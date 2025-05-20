@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
-"""
-Script to help fix E501 (line too long) violations.
-"""
+"""Script to help fix E501 (line too long) violations."""
 import os
 import re
 

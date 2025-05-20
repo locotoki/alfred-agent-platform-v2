@@ -4,11 +4,11 @@ from datetime import datetime
 from typing import Any, Dict
 
 
-class YouTubeNicheScoutAdapter:
+class YouTubeNicheScoutAdapter:.
     """Adapter for YouTube Niche Scout A2A integration."""
 
     @staticmethod
-    def envelope_to_payload(envelope: Dict[str, Any]) -> Dict[str, Any]:
+    def envelope_to_payload(envelope: Dict[str, Any]) -> Dict[str, Any]:.
         """Convert A2A envelope to Niche Scout payload."""
         content = envelope.get("data", {}) or envelope.get("content", {})
 
@@ -43,7 +43,7 @@ class YouTubeBlueprintAdapter:
     """Adapter for YouTube Blueprint A2A integration."""
 
     @staticmethod
-    def envelope_to_payload(envelope: Dict[str, Any]) -> Dict[str, Any]:
+    def envelope_to_payload(envelope: Dict[str, Any]) -> Dict[str, Any]:.
         """Convert A2A envelope to Blueprint payload."""
         content = envelope.get("data", {}) or envelope.get("content", {})
 

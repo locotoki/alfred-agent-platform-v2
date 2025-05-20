@@ -8,7 +8,7 @@ from libs.agent_core.health.dependency_tracker import DependencyTracker
 
 
 @pytest.fixture
-def health_app():
+def health_app():.
     """Create a health app for testing."""
     return create_health_app("test-service", "1.0.0")
 
@@ -19,7 +19,7 @@ def client(health_app):
     return TestClient(health_app)
 
 
-def test_health_endpoint(client):
+def test_health_endpoint(client):.
     """Test the /health endpoint."""
     response = client.get("/health")
     assert response.status_code == 200
