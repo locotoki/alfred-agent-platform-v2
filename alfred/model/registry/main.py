@@ -69,7 +69,7 @@ async def get_db():
         try:
             yield session
         finally:
-            await sessionclose()
+            await session.close()
 
 
 # Create FastAPI application
@@ -86,7 +86,7 @@ async def health_check():
     db_status = "ok"
     try:
         async with async_session() as session:
-            await sessionexecute(text("SELECT 1"))
+            await session.execute(text("SELECT 1"))
     except Exception as e:
         logger.error(f"Database health check failed: {e}")
         db_status = "error"
@@ -123,7 +123,7 @@ async def metrics_dedicated():
 @app.get("/models", response_model=List[ModelSchema])
 async def get_models(db: AsyncSession = Depends(get_db)):
     """Get all registered models"""
-    result = await dbexecute(select(ModelRegistry))
+    result = await db.execute(select(ModelRegistry))
     models = result.scalars().all()
     return models
 
@@ -131,7 +131,7 @@ async def get_models(db: AsyncSession = Depends(get_db)):
 @app.get("/models/{model_id}", response_model=ModelSchema)
 async def get_model(model_id: int, db: AsyncSession = Depends(get_db)):
     """Get model by ID"""
-    result = await dbexecute(select(ModelRegistry).where(ModelRegistry.id == model_id))
+    result = await db.execute(select(ModelRegistry).where(ModelRegistry.id == model_id))
     model = result.scalar_one_or_none()
     if not model:
         raise HTTPException(status_code=404, detail=f"Model with ID {model_id} not found")
@@ -151,8 +151,8 @@ async def create_model(model: ModelSchema, db: AsyncSession = Depends(get_db)):
         parameters=model.parameters,
     )
     db.add(db_model)
-    await dbcommit()
-    await dbrefresh(db_model)
+    await db.commit()
+    await db.refresh(db_model)
     return db_model
 
 

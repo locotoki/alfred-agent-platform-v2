@@ -34,7 +34,7 @@ async def health_check():
     registry_status = "ok"
     try:
         async with httpx.AsyncClient() as client:
-            await clientget(f"{MODEL_REGISTRY_URL}/health", timeout=2.0)
+            await client.get(f"{MODEL_REGISTRY_URL}/health", timeout=2.0)
     except Exception:
         registry_status = "error"
 
@@ -94,7 +94,7 @@ async def get_models():
     """Get all available models from the registry"""
     try:
         async with httpx.AsyncClient() as client:
-            response = await clientget(f"{MODEL_REGISTRY_URL}/models")
+            response = await client.get(f"{MODEL_REGISTRY_URL}/models")
             response.raise_for_status()
             return response.json()
     except httpx.RequestError as exc:
@@ -128,7 +128,7 @@ async def get_models():
 @app.post("/completions")
 async def get_completion(request: Request):
     """Route completion requests to the appropriate model provider"""
-    data = await requestjson()
+    data = await request.json()
     # In production, this would validate the request and route to the correct model
     return {
         "id": "mock-completion-" + datetime.utcnow().isoformat(),
@@ -148,7 +148,7 @@ async def get_completion(request: Request):
 @app.post("/chat/completions")
 async def get_chat_completion(request: Request):
     """Route chat completion requests to the appropriate model provider"""
-    data = await requestjson()
+    data = await request.json()
     # In production, this would validate the request and route to the correct model
     return {
         "id": "mock-chat-" + datetime.utcnow().isoformat(),

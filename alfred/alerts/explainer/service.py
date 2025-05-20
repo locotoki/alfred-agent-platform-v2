@@ -92,7 +92,7 @@ async def explain_alert(request: AlertExplanationRequest) -> JSONResponse:
     alert_data = request.dict()
 
     # Call the agent to explain the alert
-    result = await agentexplain_alert(alert_data)
+    result = await agent.explain_alert(alert_data)
 
     if not result.get("success", False):
         logger.error(
@@ -128,7 +128,7 @@ async def prometheus_webhook(request: Request) -> Dict[str, Any]:
         A status response
     """
     try:
-        payload = await requestjson()
+        payload = await request.json()
         logger.info(
             "prometheus_webhook_received",
             alerts_count=len(payload.get("alerts", [])),
@@ -170,7 +170,7 @@ async def process_prometheus_alerts(payload: Dict[str, Any]) -> None:
             )
 
             # Generate explanation
-            result = await agentexplain_alert(alert_request.dict())
+            result = await agent.explain_alert(alert_request.dict())
 
             logger.info(
                 "alert_processed",
