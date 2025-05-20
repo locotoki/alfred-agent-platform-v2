@@ -16,11 +16,12 @@ fi
 
 # Install black
 echo "Installing black formatter..."
-pip install black==24.1.1
+pip install black==24.4.2
 
 # Format codebase
 echo "Formatting codebase with black..."
-black . --exclude "(youtube-test-env/|migrations/|node_modules/|\.git/|\.mypy_cache/|\.env/|\.venv/|env/|venv/|\.ipynb/)"
+# Use configuration from pyproject.toml
+black .
 
 echo "Done! Now you can commit and push the changes with:"
 echo "git add -u"

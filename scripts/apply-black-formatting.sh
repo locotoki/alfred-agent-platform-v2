@@ -7,7 +7,7 @@ set -e
 # Ensure we're in the repo root
 cd "$(git rev-parse --show-toplevel)" || exit 1
 
-BLACK_VERSION="24.1.1"
+BLACK_VERSION="24.4.2"
 BRANCH_NAME="style/apply-black-format"
 COMMIT_MESSAGE="style: Apply Black formatting to Python files"
 
@@ -66,7 +66,8 @@ fi
 
 # Apply Black formatting
 echo "Running Black formatter on Python files..."
-black --exclude "(youtube-test-env/|migrations/|node_modules/|\.git/|\.mypy_cache/|\.env/|\.venv/|env/|venv/|\.ipynb/)" .
+# Use configuration from pyproject.toml
+black .
 
 echo "Black formatting complete!"
 echo "Formatted with Black version $BLACK_VERSION"
