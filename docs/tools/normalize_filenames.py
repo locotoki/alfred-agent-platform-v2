@@ -119,9 +119,7 @@ class FilenameNormalizer:
 
                 try:
                     # Skip files that don't need renaming or should be removed
-                    if self.remove_zone_identifier and filename.endswith(
-                        ".Zone.Identifier"
-                    ):
+                    if self.remove_zone_identifier and filename.endswith(".Zone.Identifier"):
                         if not self.dry_run:
                             os.remove(file_path)
                         self.removed_files.append(str(file_path))
@@ -223,9 +221,7 @@ class FilenameNormalizer:
                 logger.info(f"  ... and {len(self.removed_files) - 5} more")
 
         if self.skipped_files:
-            logger.info(
-                f"Skipped files (already normalized): {len(self.skipped_files)}"
-            )
+            logger.info(f"Skipped files (already normalized): {len(self.skipped_files)}")
 
         if self.errors:
             logger.info(f"Errors: {len(self.errors)}")

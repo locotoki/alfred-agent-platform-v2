@@ -145,9 +145,7 @@ async def prometheus_webhook(request: Request) -> Dict[str, Any]:
             error=str(e),
             error_type=type(e).__name__,
         )
-        raise HTTPException(
-            status_code=400, detail="Invalid Prometheus Alertmanager payload"
-        )
+        raise HTTPException(status_code=400, detail="Invalid Prometheus Alertmanager payload")
 
 
 async def process_prometheus_alerts(payload: Dict[str, Any]) -> None:

@@ -19,9 +19,7 @@ health_router = APIRouter(tags=["health"])
 
 # Initialize circuit breakers for external dependencies
 db_circuit = CircuitBreaker(name="database", failure_threshold=3, reset_timeout=30.0)
-youtube_circuit = CircuitBreaker(
-    name="youtube_api", failure_threshold=3, reset_timeout=120.0
-)
+youtube_circuit = CircuitBreaker(name="youtube_api", failure_threshold=3, reset_timeout=120.0)
 
 # Global health state
 health_state = {
@@ -201,9 +199,7 @@ async def async_check_youtube_api(api_key: str):
         async with session.get(url, params=params) as response:
             if response.status != 200:
                 text = await responsetext()
-                raise Exception(
-                    f"YouTube API returned status {response.status}: {text}"
-                )
+                raise Exception(f"YouTube API returned status {response.status}: {text}")
 
             # Parse response to verify it's valid
             data = await responsejson()

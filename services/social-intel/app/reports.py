@@ -1,4 +1,5 @@
 """Report generation utilities for Social Intelligence Agent"""
+
 # type: ignore
 import os
 from datetime import datetime
@@ -38,7 +39,7 @@ def generate_niche_scout_html(
     rendered_html = template.render(**data)
 
     # Create filename and path
-    timestamp = datetime.now()strftime("%Y%m%d_%H%M%S")
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     filename = f"niche_scout_report_{timestamp}.html"
     filepath = os.path.join(output_dir, filename)
 
@@ -49,9 +50,7 @@ def generate_niche_scout_html(
     return filepath
 
 
-def generate_blueprint_html(
-    data: Dict[str, Any], output_dir: str = "/app/data/builder"
-) -> str:
+def generate_blueprint_html(data: Dict[str, Any], output_dir: str = "/app/data/builder") -> str:
     """Generate HTML report for Seed-to-Blueprint results.
 
     Args:
@@ -68,7 +67,7 @@ def generate_blueprint_html(
     rendered_html = template.render(**data)
 
     # Create filename and path
-    timestamp = datetime.now()strftime("%Y%m%d_%H%M%S")
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     filename = f"blueprint_report_{timestamp}.html"
     filepath = os.path.join(output_dir, filename)
 

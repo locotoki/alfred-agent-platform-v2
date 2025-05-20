@@ -58,9 +58,7 @@ def test_memory_usage():
     memory_increase = final_memory - initial_memory
 
     # Should use less than 500MB for dataset
-    assert (
-        memory_increase < 500
-    ), f"Memory increase {memory_increase}MB exceeds 500MB limit"
+    assert memory_increase < 500, f"Memory increase {memory_increase}MB exceeds 500MB limit"
 
 
 @pytest.mark.benchmark(group="training", warmup=False)

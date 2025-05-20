@@ -91,9 +91,7 @@ def test_build_task_request_field_values(slack_command_payload):
     assert task_request["command"]["name"] == "ping"  # Removed leading slash
     assert task_request["command"]["text"] == slack_command_payload["text"]
     assert task_request["command"]["channel_id"] == slack_command_payload["channel_id"]
-    assert (
-        task_request["command"]["response_url"] == slack_command_payload["response_url"]
-    )
+    assert task_request["command"]["response_url"] == slack_command_payload["response_url"]
 
     # Task section - should use infra.echo agent as the default
     assert task_request["task"]["agent"] == "infra.echo"

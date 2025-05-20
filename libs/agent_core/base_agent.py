@@ -5,8 +5,7 @@ from typing import Any, Dict, List
 
 import structlog
 
-from libs.a2a_adapter import (A2AEnvelope, PolicyMiddleware, PubSubTransport,
-                              SupabaseTransport)
+from libs.a2a_adapter import A2AEnvelope, PolicyMiddleware, PubSubTransport, SupabaseTransport
 
 logger = structlog.get_logger(__name__)
 
@@ -54,9 +53,7 @@ class BaseAgent(ABC):
 
         # Start subscription
         subscription_name = f"{self.name}-subscription"
-        await selfpubsub.subscribe(
-            subscription_name, self._handle_message, self._handle_error
-        )
+        await selfpubsub.subscribe(subscription_name, self._handle_message, self._handle_error)
 
     async def stop(self):
         """Stop the agent"""
@@ -83,9 +80,7 @@ class BaseAgent(ABC):
         try:
             # Check if intent is supported
             if envelope.intent not in self.supported_intents:
-                logger.warning(
-                    "unsupported_intent", intent=envelope.intent, agent=self.name
-                )
+                logger.warning("unsupported_intent", intent=envelope.intent, agent=self.name)
                 return
 
             # Check for duplicate

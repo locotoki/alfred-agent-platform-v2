@@ -1,4 +1,5 @@
 """FastAPI server for Slack App integration with Socket Mode"""
+
 # type: ignore
 import logging
 import os
@@ -14,9 +15,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # FastAPI app
-app = FastAPI(
-    title="Alfred Slack App", description="Slack integration for Alfred Agent Platform"
-)
+app = FastAPI(title="Alfred Slack App", description="Slack integration for Alfred Agent Platform")
 
 # Metrics
 REQUESTS = Counter("slack_app_requests_total", "Total requests", ["endpoint"])
@@ -40,7 +39,7 @@ def handle_alfred_command(ack, command, client):
     subcommand = args[0] if args else "help"
 
     # Track command metrics
-    COMMANDS.labels(command=f"/alfred {subcommand}")inc()
+    COMMANDS.labels(command=f"/alfred {subcommand}").inc()
 
     if subcommand == "help":
         client.chat_postMessage(
@@ -81,14 +80,14 @@ def handle_alfred_command(ack, command, client):
 @app.get("/health")
 def health_check():
     """Health check endpoint for the Slack app"""
-    REQUESTS.labels(endpoint="/health")inc()
+    REQUESTS.labels(endpoint="/health").inc()
     return {"status": "healthy"}
 
 
 @app.get("/metrics")
 def metrics():
     """Prometheus metrics endpoint"""
-    REQUESTS.labels(endpoint="/metrics")inc()
+    REQUESTS.labels(endpoint="/metrics").inc()
     return Response(generate_latest(), media_type=CONTENT_TYPE_LATEST)
 
 

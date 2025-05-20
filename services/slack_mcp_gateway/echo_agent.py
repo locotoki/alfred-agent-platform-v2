@@ -112,7 +112,7 @@ def process_ping_command(request_data: Dict[str, Any]) -> Dict[str, Any]:
 
         # Command format: /alfred ping [message]
         # Split by spaces, first part is "ping", rest is the message
-        parts = command_text.strip()split(maxsplit=1)
+        parts = command_text.strip().split(maxsplit=1)
         command = parts[0] if parts else ""
 
         if command.lower() != "ping":
@@ -191,7 +191,7 @@ def run_echo_agent() -> None:
                                 "command" in request_data
                                 and request_data["command"] == "/alfred"
                             ):
-                                command_text = request_data.get("text", "")strip()
+                                command_text = request_data.get("text", "").strip()
                                 if command_text.startswith("ping"):
                                     logger.info(
                                         f"Processing ping command: {command_text}"

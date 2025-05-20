@@ -62,13 +62,11 @@ def test_search_endpoint(api_key: str) -> Dict[str, Any]:
                 "quota_used": 100,  # Search request costs 100 units
             }
         else:
-            error_data = (
-                response.json() if response.text else {"error": "Unknown error"}
-            )
+            error_data = response.json() if response.text else {"error": "Unknown error"}
             return {
                 "success": False,
                 "status_code": status_code,
-                "error": error_data.get("error", {})get("message", "Unknown error"),
+                "error": error_data.get("error", {}).get("message", "Unknown error"),
                 "quota_used": 0,
             }
     except Exception as e:
@@ -108,13 +106,11 @@ def test_videos_endpoint(api_key: str) -> Dict[str, Any]:
                 "quota_used": 1,  # Videos request costs 1 unit per video part
             }
         else:
-            error_data = (
-                response.json() if response.text else {"error": "Unknown error"}
-            )
+            error_data = response.json() if response.text else {"error": "Unknown error"}
             return {
                 "success": False,
                 "status_code": status_code,
-                "error": error_data.get("error", {})get("message", "Unknown error"),
+                "error": error_data.get("error", {}).get("message", "Unknown error"),
                 "quota_used": 0,
             }
     except Exception as e:
@@ -148,13 +144,11 @@ def test_channels_endpoint(api_key: str) -> Dict[str, Any]:
                 "quota_used": 1,  # Channels request costs 1 unit per channel part
             }
         else:
-            error_data = (
-                response.json() if response.text else {"error": "Unknown error"}
-            )
+            error_data = response.json() if response.text else {"error": "Unknown error"}
             return {
                 "success": False,
                 "status_code": status_code,
-                "error": error_data.get("error", {})get("message", "Unknown error"),
+                "error": error_data.get("error", {}).get("message", "Unknown error"),
                 "quota_used": 0,
             }
     except Exception as e:

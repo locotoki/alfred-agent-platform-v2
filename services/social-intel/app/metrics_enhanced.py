@@ -1,4 +1,5 @@
 """Enhanced Prometheus metrics for the Social Intelligence service"""
+
 # type: ignore
 import time
 
@@ -36,9 +37,7 @@ DB_ERROR_COUNTER = Counter(
 )
 
 # Social Intel specific metrics
-NICHE_SCOUT_RESULTS_COUNT = Gauge(
-    "si_niche_scout_results", "Number of niche results returned"
-)
+NICHE_SCOUT_RESULTS_COUNT = Gauge("si_niche_scout_results", "Number of niche results returned")
 
 NICHE_OPPORTUNITY_SCORE = Histogram(
     "si_niche_opportunity_score",
@@ -93,11 +92,11 @@ class LatencyTimer:
     def __exit__(self, exc_type, exc_val, exc_tb):
         duration = time.time() - self.start_time
         if isinstance(self.metric, Histogram):
-            self.metric.labels(**self.labels)observe(duration)
+            self.metric.labels(**self.labels).observe(duration)
         elif isinstance(self.metric, Gauge):
-            self.metric.labels(**self.labels)set(duration)
+            self.metric.labels(**self.labels).set(duration)
         elif isinstance(self.metric, Summary):
-            self.metric.labels(**self.labels)observe(duration)
+            self.metric.labels(**self.labels).observe(duration)
         return False  # Don't suppress exceptions
 
 
@@ -110,7 +109,7 @@ class YouTubeApiTimer(LatencyTimer):
         self.status = status
 
     def __enter__(self):
-        YOUTUBE_API_CALLS.labels(endpoint=self.endpoint, status="pending")inc()
+        YOUTUBE_API_CALLS.labels(endpoint=self.endpoint, status="pending").inc()
         return super().__enter__()
 
     def __exit__(self, exc_type, exc_val, exc_tb):
@@ -122,7 +121,7 @@ class YouTubeApiTimer(LatencyTimer):
             status = "error"
 
         # Increment counter with final status
-        YOUTUBE_API_CALLS.labels(endpoint=self.endpoint, status=status)inc()
+        YOUTUBE_API_CALLS.labels(endpoint=self.endpoint, status=status).inc()
 
         return result
 
@@ -140,6 +139,6 @@ class DatabaseTimer(LatencyTimer):
         # Record error if exception occurred
         if exc_type is not None:
             error_type = exc_type.__name__
-            DB_ERROR_COUNTER.labels(type=error_type, operation=self.operation)inc()
+            DB_ERROR_COUNTER.labels(type=error_type, operation=self.operation).inc()
 
         return result

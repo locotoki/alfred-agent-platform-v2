@@ -137,9 +137,7 @@ class ModelMonitor(Protocol):
     """Protocol for model monitoring and observability"""
 
     @abstractmethod
-    def record_prediction(
-        self, model_id: str, duration_ms: float, success: bool
-    ) -> None:
+    def record_prediction(self, model_id: str, duration_ms: float, success: bool) -> None:
         """Record a prediction event.
 
         Args:

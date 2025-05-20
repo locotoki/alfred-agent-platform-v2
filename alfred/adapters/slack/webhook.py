@@ -90,9 +90,7 @@ class SlackVerifier:
         # Calculate expected signature
         expected_sig = (
             "v0="
-            + hmac.new(
-                self.signing_secret.encode(), sig_basestring, hashlib.sha256
-            ).hexdigest()
+            + hmac.new(self.signing_secret.encode(), sig_basestring, hashlib.sha256).hexdigest()
         )
 
         # Compare signatures
@@ -140,9 +138,7 @@ async def handle_slack_events(request: Request) -> Response:
 
             # Handle URL verification challenge
             if data.get("type") == "url_verification":
-                slack_events_total.labels(
-                    result="ok", event_type="url_verification"
-                ).inc()
+                slack_events_total.labels(result="ok", event_type="url_verification").inc()
                 return JSONResponse({"challenge": data.get("challenge")})
 
             # Handle regular events
@@ -172,9 +168,7 @@ async def handle_slack_events(request: Request) -> Response:
             command = form_data.get("command", "")
             text = form_data.get("text", "")
 
-            slack_events_total.labels(
-                result="ok", event_type=f"command_{command}"
-            ).inc()
+            slack_events_total.labels(result="ok", event_type=f"command_{command}").inc()
 
             # Handle specific commands
             if command == "/alfred":
@@ -189,9 +183,7 @@ async def handle_slack_events(request: Request) -> Response:
                     )
 
             # Unknown command
-            return JSONResponse(
-                {"response_type": "ephemeral", "text": "Unknown command"}
-            )
+            return JSONResponse({"response_type": "ephemeral", "text": "Unknown command"})
 
         except Exception as e:
             slack_events_total.labels(result="error", event_type="parse_error").inc()

@@ -3,6 +3,7 @@
 This module provides functionality to transform a seed video into a comprehensive
 channel strategy with competitor analysis and content gaps.
 """
+
 # type: ignore
 import asyncio
 import json
@@ -12,6 +13,7 @@ from datetime import datetime
 from typing import Any, Dict, Optional, Tuple
 
 import structlog
+
 # Use simple reports instead of HTML templates
 from app.simple_reports import generate_blueprint_report
 
@@ -50,9 +52,7 @@ class SeedToBlueprint:
         if not video_url and not niche:
             raise ValueError("Either video_url or niche must be provided")
 
-        self.logger.info(
-            "Starting SeedToBlueprint workflow", video_url=video_url, niche=niche
-        )
+        self.logger.info("Starting SeedToBlueprint workflow", video_url=video_url, niche=niche)
 
         # Simulate processing time
         await asynciosleep(3)
@@ -92,7 +92,7 @@ class SeedToBlueprint:
         Returns:
             Dictionary with simulated blueprint results.
         """
-        now = datetime.now()strftime("%Y-%m-%d")
+        now = datetime.now().strftime("%Y-%m-%d")
 
         # Use either the video or niche to customize results
         if video_url:

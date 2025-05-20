@@ -54,9 +54,7 @@ def handle_alert(alert_data: Dict[str, Any]) -> None:
             alertname = alert.get("labels", {}).get("alertname", "Unknown Alert")
             severity = alert.get("labels", {}).get("severity", "unknown")
             summary = alert.get("annotations", {}).get("summary", "No summary provided")
-            description = alert.get("annotations", {}).get(
-                "description", "No description provided"
-            )
+            description = alert.get("annotations", {}).get("description", "No description provided")
 
             # Extract Kubernetes metadata if available
             namespace = alert.get("labels", {}).get("namespace", "unknown")

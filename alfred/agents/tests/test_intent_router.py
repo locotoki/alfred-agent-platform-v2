@@ -22,9 +22,7 @@ class TestIntent:
         assert intent.raw_message == "Hello John"
 
     def test_intent_string_representation(self):
-        intent = Intent(
-            type="help", confidence=0.87, entities={}, raw_message="I need help"
-        )
+        intent = Intent(type="help", confidence=0.87, entities={}, raw_message="I need help")
 
         assert str(intent) == "Intent(type=help, confidence=0.87)"
 
@@ -105,9 +103,7 @@ class TestIntentRouter:
         def custom_handler(intent):
             return "Custom response"
 
-        router.register_handler(
-            "custom_intent", custom_handler, pattern=r"custom|special"
-        )
+        router.register_handler("custom_intent", custom_handler, pattern=r"custom|special")
 
         # Test custom intent routing
         intent = router.route("This is custom")

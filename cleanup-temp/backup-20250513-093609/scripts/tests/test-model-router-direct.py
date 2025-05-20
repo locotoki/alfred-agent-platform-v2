@@ -85,9 +85,7 @@ def main():
     if model_id:
         test_model_router(model_id, message)
     else:
-        print(
-            f"Model '{model_name}' not found. Please choose from the available models."
-        )
+        print(f"Model '{model_name}' not found. Please choose from the available models.")
 
 
 if __name__ == "__main__":

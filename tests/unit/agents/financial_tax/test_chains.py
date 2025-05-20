@@ -4,17 +4,24 @@ from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
-from agents.financial_tax.chains import (ComplianceCheckChain,
-                                         FinancialAnalysisChain,
-                                         RateLookupChain, TaxCalculationChain)
-from agents.financial_tax.models import (ComplianceCheckRequest,
-                                         ComplianceCheckResponse, EntityType,
-                                         FinancialAnalysisRequest,
-                                         FinancialAnalysisResponse,
-                                         TaxCalculationRequest,
-                                         TaxCalculationResponse,
-                                         TaxJurisdiction, TaxRateRequest,
-                                         TaxRateResponse)
+from agents.financial_tax.chains import (
+    ComplianceCheckChain,
+    FinancialAnalysisChain,
+    RateLookupChain,
+    TaxCalculationChain,
+)
+from agents.financial_tax.models import (
+    ComplianceCheckRequest,
+    ComplianceCheckResponse,
+    EntityType,
+    FinancialAnalysisRequest,
+    FinancialAnalysisResponse,
+    TaxCalculationRequest,
+    TaxCalculationResponse,
+    TaxJurisdiction,
+    TaxRateRequest,
+    TaxRateResponse,
+)
 
 
 @pytest.fixture
@@ -25,9 +32,7 @@ def mock_llm():
     from langchain.schema.runnable import Runnable
 
     class MockLLM(Runnable):
-        def invoke(
-            self, input: Any, config: Optional[Any] = None, **kwargs: Any
-        ) -> Any:
+        def invoke(self, input: Any, config: Optional[Any] = None, **kwargs: Any) -> Any:
             return "test response"
 
         def _call(self, *args, **kwargs):
@@ -61,7 +66,7 @@ class TestTaxCalculationChain:
         chain = TaxCalculationChain(llm=mock_llm)
 
         # Mock the chain run method
-        mock_response =. """
+        mock_response = """
         {
             "gross_income": 150000.0,
             "total_deductions": 27700.0,
@@ -134,7 +139,7 @@ class TestFinancialAnalysisChain:
         """Test financial analysis with valid request."""
         chain = FinancialAnalysisChain(llm=mock_llm)
 
-        mock_response =. """
+        mock_response = """
         {
             "summary": {"overall_health": "good"},
             "key_metrics": {"profit_margin": 25.0, "current_ratio": 2.5},
@@ -172,7 +177,7 @@ class TestComplianceCheckChain:
         """Test compliance check with valid request."""
         chain = ComplianceCheckChain(llm=mock_llm)
 
-        mock_response =. """
+        mock_response = """
         {
             "compliance_status": "partially_compliant",
             "issues_found": [{"area": "sales_tax", "issue": "Missing nexus registration"}],
@@ -206,7 +211,7 @@ class TestRateLookupChain:
         """Test tax rate lookup with valid request."""
         chain = RateLookupChain(llm=mock_llm)
 
-        mock_response =. """
+        mock_response = """
         {
             "jurisdiction": "US-CA",
             "tax_year": 2024,

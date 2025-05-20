@@ -11,7 +11,9 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 # Import agent
 from agents.social_intel.flows.youtube_flows import (  # noqa: E402
-    youtube_blueprint_flow, youtube_niche_scout_flow)
+    youtube_blueprint_flow,
+    youtube_niche_scout_flow,
+)
 
 
 async def test_niche_scout(queries=None):
@@ -97,9 +99,7 @@ def parse_args():
 
     parser.add_argument("--seed-url", help="Seed URL for Blueprint")
 
-    parser.add_argument(
-        "--auto-niche", action="store_true", help="Auto-select niche for Blueprint"
-    )
+    parser.add_argument("--auto-niche", action="store_true", help="Auto-select niche for Blueprint")
 
     return parser.parse_args()
 

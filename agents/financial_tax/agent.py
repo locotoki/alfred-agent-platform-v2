@@ -9,10 +9,18 @@ from langgraph.graph import END, Graph
 from libs.a2a_adapter import A2AEnvelope
 from libs.agent_core import BaseAgent
 
-from .chains import (ComplianceCheckChain, FinancialAnalysisChain,
-                     RateLookupChain, TaxCalculationChain)
-from .models import (ComplianceCheckRequest, FinancialAnalysisRequest,
-                     TaxCalculationRequest, TaxRateRequest)
+from .chains import (
+    ComplianceCheckChain,
+    FinancialAnalysisChain,
+    RateLookupChain,
+    TaxCalculationChain,
+)
+from .models import (
+    ComplianceCheckRequest,
+    FinancialAnalysisRequest,
+    TaxCalculationRequest,
+    TaxRateRequest,
+)
 
 logger = structlog.get_logger(__name__)
 
@@ -56,15 +64,9 @@ class FinancialTaxAgent(BaseAgent):
         # Add nodes for different processing steps
         self.workflow_graph.add_node("parse_request", self._parse_request)
         self.workflow_graph.add_node("validate_data", self._validate_data)
-        self.workflow_graph.add_node(
-            "process_tax_calculation", self._process_tax_calculation
-        )
-        self.workflow_graph.add_node(
-            "process_financial_analysis", self._process_financial_analysis
-        )
-        self.workflow_graph.add_node(
-            "process_compliance_check", self._process_compliance_check
-        )
+        self.workflow_graph.add_node("process_tax_calculation", self._process_tax_calculation)
+        self.workflow_graph.add_node("process_financial_analysis", self._process_financial_analysis)
+        self.workflow_graph.add_node("process_compliance_check", self._process_compliance_check)
         self.workflow_graph.add_node("process_rate_lookup", self._process_rate_lookup)
         self.workflow_graph.add_node("format_response", self._format_response)
 
@@ -160,9 +162,7 @@ class FinancialTaxAgent(BaseAgent):
         state["result"] = result.dict()
         return state
 
-    async def _process_financial_analysis(
-        self, state: Dict[str, Any]
-    ) -> Dict[str, Any]:
+    async def _process_financial_analysis(self, state: Dict[str, Any]) -> Dict[str, Any]:
         """Process financial analysis request"""
         request = FinancialAnalysisRequest(**state["parsed_content"])
         result = await selfanalysis_chain.analyze(request)
@@ -233,9 +233,7 @@ class FinancialTaxAgent(BaseAgent):
             "overall_status": result.compliance_status,
             "risk_level": result.risk_level,
             "critical_issues": [
-                issue
-                for issue in result.issues_found
-                if issue.get("severity") == "critical"
+                issue for issue in result.issues_found if issue.get("severity") == "critical"
             ],
         }
 

@@ -18,15 +18,11 @@ from .intent_router import Intent, IntentRouter
 router = IntentRouter()
 
 # Register common patterns
-router.register_pattern(
-    "help", r"(?:can you )?(?:help|assist) (?:me )?(?:with )?(?P<topic>.+)"
-)
+router.register_pattern("help", r"(?:can you )?(?:help|assist) (?:me )?(?:with )?(?P<topic>.+)")
 router.register_pattern("summarize", r"(?:can you )?summarize (?P<text>.+)")
 
 # Prometheus metrics
-route_total = Counter(
-    "alfred_orchestrator_route_total", "Total routes processed", ["intent_type"]
-)
+route_total = Counter("alfred_orchestrator_route_total", "Total routes processed", ["intent_type"])
 
 logger = structlog.get_logger(__name__)
 
@@ -65,9 +61,7 @@ class AgentOrchestrator:
         route_total.labels(intent_type=intent.type).inc()
 
         # Log the detected intent
-        log.info(
-            "intent_detected", intent_type=intent.type, confidence=intent.confidence
-        )
+        log.info("intent_detected", intent_type=intent.type, confidence=intent.confidence)
 
         # Process based on intent
         response = await self._process_intent(intent, context)
@@ -79,9 +73,7 @@ class AgentOrchestrator:
 
         return response
 
-    async def _process_intent(
-        self, intent: Intent, context: Dict[str, Any]
-    ) -> Dict[str, Any]:
+    async def _process_intent(self, intent: Intent, context: Dict[str, Any]) -> Dict[str, Any]:
         """Process an intent through the appropriate agent.
 
         Args:

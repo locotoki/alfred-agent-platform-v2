@@ -94,9 +94,7 @@ class TaxCalculationResult(BaseModel):
 class FinancialAnalysisRequest(BaseModel):
     """Request model for financial analysis"""
 
-    analysis_type: str = Field(
-        ..., pattern="^(business_health|tax_planning|investment_analysis)$"
-    )
+    analysis_type: str = Field(..., pattern="^(business_health|tax_planning|investment_analysis)$")
     data: Dict[str, Any]
     time_period: str
     goals: List[str] = Field(default_factory=list)
@@ -130,9 +128,7 @@ class ComplianceIssue(BaseModel):
 class ComplianceCheckRequest(BaseModel):
     """Request model for compliance check"""
 
-    entity_type: str = Field(
-        ..., pattern="^(individual|corporation|partnership|LLC|trust)$"
-    )
+    entity_type: str = Field(..., pattern="^(individual|corporation|partnership|LLC|trust)$")
     jurisdiction: str
     tax_year: int = Field(..., ge=1900, le=2050)
     compliance_areas: List[str] = Field(..., min_items=1)
@@ -143,9 +139,7 @@ class ComplianceCheckRequest(BaseModel):
 class ComplianceCheckResult(BaseModel):
     """Result model for compliance check"""
 
-    compliance_status: str = Field(
-        ..., pattern="^(compliant|partially_compliant|non_compliant)$"
-    )
+    compliance_status: str = Field(..., pattern="^(compliant|partially_compliant|non_compliant)$")
     issues_found: List[Dict[str, Any]] = Field(default_factory=list)
     passing_areas: List[str] = Field(default_factory=list)
     recommendations: List[str] = Field(default_factory=list)
@@ -167,9 +161,7 @@ class TaxRateRequest(BaseModel):
 
     jurisdiction: str
     tax_year: int = Field(..., ge=1900, le=2050)
-    entity_type: str = Field(
-        ..., pattern="^(individual|corporation|partnership|LLC|trust)$"
-    )
+    entity_type: str = Field(..., pattern="^(individual|corporation|partnership|LLC|trust)$")
     rate_types: List[str] = Field(default_factory=list)
     filing_status: Optional[str] = None
 

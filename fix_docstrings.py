@@ -28,9 +28,7 @@ def fix_docstrings_in_file(filepath):
 
 def main():
     """Process Python files to fix docstrings."""
-    parser = argparse.ArgumentParser(
-        description="Fix docstrings missing periods in Python files"
-    )
+    parser = argparse.ArgumentParser(description="Fix docstrings missing periods in Python files")
     parser.add_argument("--path", default=".", help="Path to search for Python files")
     args = parser.parse_args()
 
@@ -43,8 +41,7 @@ def main():
     for filepath in python_files:
         # Skip files in virtual environments, node_modules, etc.
         if any(
-            part.startswith(".")
-            or part in ("venv", "node_modules", "migrations", "__pycache__")
+            part.startswith(".") or part in ("venv", "node_modules", "migrations", "__pycache__")
             for part in filepath.parts
         ):
             continue

@@ -35,16 +35,10 @@ app = FastAPI(
 
 # Prometheus metrics
 pubsub_up = Gauge("pubsub_up", "PubSub emulator availability")
-pubsub_requests_total = Counter(
-    "pubsub_requests_total", "Total PubSub requests processed"
-)
+pubsub_requests_total = Counter("pubsub_requests_total", "Total PubSub requests processed")
 pubsub_topics = Gauge("pubsub_topics", "Number of topics in PubSub")
-pubsub_subscriptions = Gauge(
-    "pubsub_subscriptions", "Number of subscriptions in PubSub"
-)
-pubsub_last_check_time = Gauge(
-    "pubsub_last_check_time", "Timestamp of last PubSub health check"
-)
+pubsub_subscriptions = Gauge("pubsub_subscriptions", "Number of subscriptions in PubSub")
+pubsub_last_check_time = Gauge("pubsub_last_check_time", "Timestamp of last PubSub health check")
 
 
 def check_pubsub_health() -> Dict[str, str]:
@@ -58,7 +52,7 @@ def check_pubsub_health() -> Dict[str, str]:
         url = f"http://{PUBSUB_HOST}/v1/projects/{PROJECT_ID}/topics"
         with urllib.request.urlopen(url, timeout=5) as response:
             if response.status == 200:
-                topics = json.loads(response.read()decode("utf-8"))
+                topics = json.loads(response.read().decode("utf-8"))
 
                 # Set metrics
                 pubsub_up.set(1)
@@ -71,13 +65,9 @@ def check_pubsub_health() -> Dict[str, str]:
                 try:
                     with urllib.request.urlopen(sub_url, timeout=2) as sub_response:
                         if sub_response.status == 200:
-                            subscriptions = json.loads(
-                                sub_response.read()decode("utf-8")
-                            )
+                            subscriptions = json.loads(sub_response.read().decode("utf-8"))
                             if "subscriptions" in subscriptions:
-                                pubsub_subscriptions.set(
-                                    len(subscriptions["subscriptions"])
-                                )
+                                pubsub_subscriptions.set(len(subscriptions["subscriptions"]))
                 except Exception:
                     pass  # Ignore subscription check failures
 
@@ -130,9 +120,7 @@ async def simple_health():
 @app.get("/metrics")
 async def metrics():
     """Prometheus metrics endpoint"""
-    return Response(
-        content=prometheus_client.generate_latest(), media_type="text/plain"
-    )
+    return Response(content=prometheus_client.generate_latest(), media_type="text/plain")
 
 
 if __name__ == "__main__":

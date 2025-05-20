@@ -26,9 +26,7 @@ class TestSlackVerifier:
 
         # Create valid signature
         sig_basestring = f"v0:{timestamp}:".encode() + body
-        expected_sig = (
-            "v0=" + hmac.new(b"test-secret", sig_basestring, hashlib.sha256).hexdigest()
-        )
+        expected_sig = "v0=" + hmac.new(b"test-secret", sig_basestring, hashlib.sha256).hexdigest()
 
         assert verifier.verify_signature(timestamp, body, expected_sig) is True
 
@@ -48,9 +46,7 @@ class TestSlackVerifier:
 
         # Even with valid signature, should fail due to old timestamp
         sig_basestring = f"v0:{old_timestamp}:".encode() + body
-        valid_sig = (
-            "v0=" + hmac.new(b"test-secret", sig_basestring, hashlib.sha256).hexdigest()
-        )
+        valid_sig = "v0=" + hmac.new(b"test-secret", sig_basestring, hashlib.sha256).hexdigest()
 
         assert verifier.verify_signature(old_timestamp, body, valid_sig) is False
 
@@ -78,9 +74,7 @@ class TestSlackWebhook:
 
         # Create valid signature with test secret
         sig_basestring = f"v0:{timestamp}:".encode() + body.encode()
-        signature = (
-            "v0=" + hmac.new(b"test-secret", sig_basestring, hashlib.sha256).hexdigest()
-        )
+        signature = "v0=" + hmac.new(b"test-secret", sig_basestring, hashlib.sha256).hexdigest()
 
         return {
             "X-Slack-Request-Timestamp": timestamp,

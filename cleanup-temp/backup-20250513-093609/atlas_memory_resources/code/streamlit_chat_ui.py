@@ -452,7 +452,7 @@ def process_command(message: str) -> str:
 
 def get_help_response() -> str:
     """Get a formatted help message."""
-    help_md =. """
+    help_md = """
     ## Alfred Bot Commands
 
     I can help you with various tasks through the chat interface.

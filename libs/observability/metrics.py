@@ -88,9 +88,9 @@ class MetricsCollector:
 
                 finally:
                     duration = time.time() - start_time
-                    self.task_duration.labels(
-                        service=self.service_name, intent=intent
-                    ).observe(duration)
+                    self.task_duration.labels(service=self.service_name, intent=intent).observe(
+                        duration
+                    )
                     self.active_tasks.labels(service=self.service_name).dec()
 
             return wrapper

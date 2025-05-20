@@ -94,9 +94,7 @@ def patch_file():
         content = f.read()
 
     # Find the process_command function
-    pattern = (
-        r"def process_command\(message: str\) -> str:.*?return send_message\(command\)"
-    )
+    pattern = r"def process_command\(message: str\) -> str:.*?return send_message\(command\)"
 
     # Replace it with our new function
     new_content = re.sub(pattern, NEW_FUNCTION.strip(), content, flags=re.DOTALL)

@@ -80,9 +80,7 @@ class IntentRouter:
             elif any(word in message_lower for word in ["search", "find", "get"]):
                 intent.type = "search"
                 intent.confidence = 0.8
-            elif any(
-                word in message_lower for word in ["thank", "thanks", "appreciate"]
-            ):
+            elif any(word in message_lower for word in ["thank", "thanks", "appreciate"]):
                 intent.type = "gratitude"
                 intent.confidence = 0.9
 

@@ -35,12 +35,8 @@ app = FastAPI(
 redis_up = Gauge("redis_up", "Redis availability")
 redis_commands_total = Counter("redis_commands_total", "Total Redis commands processed")
 redis_connections = Gauge("redis_connections", "Current Redis connections")
-redis_memory_used_bytes = Gauge(
-    "redis_memory_used_bytes", "Redis memory usage in bytes"
-)
-redis_last_check_time = Gauge(
-    "redis_last_check_time", "Timestamp of last Redis health check"
-)
+redis_memory_used_bytes = Gauge("redis_memory_used_bytes", "Redis memory usage in bytes")
+redis_last_check_time = Gauge("redis_last_check_time", "Timestamp of last Redis health check")
 
 # Redis client
 redis_client = redis.from_url(REDIS_URL)
@@ -113,9 +109,7 @@ async def simple_health():
 @app.get("/metrics")
 async def metrics():
     """Prometheus metrics endpoint"""
-    return Response(
-        content=prometheus_client.generate_latest(), media_type="text/plain"
-    )
+    return Response(content=prometheus_client.generate_latest(), media_type="text/plain")
 
 
 if __name__ == "__main__":

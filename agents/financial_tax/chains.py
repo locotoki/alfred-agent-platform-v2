@@ -5,10 +5,16 @@ from langchain.output_parsers import PydanticOutputParser
 from langchain.prompts import PromptTemplate
 from langchain_openai import ChatOpenAI
 
-from .models import (ComplianceCheckRequest, ComplianceCheckResponse,
-                     FinancialAnalysisRequest, FinancialAnalysisResponse,
-                     TaxCalculationRequest, TaxCalculationResponse,
-                     TaxRateRequest, TaxRateResponse)
+from .models import (
+    ComplianceCheckRequest,
+    ComplianceCheckResponse,
+    FinancialAnalysisRequest,
+    FinancialAnalysisResponse,
+    TaxCalculationRequest,
+    TaxCalculationResponse,
+    TaxRateRequest,
+    TaxRateResponse,
+)
 
 
 class TaxCalculationChain:
@@ -17,9 +23,7 @@ class TaxCalculationChain:
     def __init__(self, llm: ChatOpenAI = None):
         """Initialize the tax calculation chain with an optional LLM"""
         self.llm = llm or ChatOpenAI(temperature=0, model="gpt-4")
-        self.output_parser = PydanticOutputParser(
-            pydantic_object=TaxCalculationResponse
-        )
+        self.output_parser = PydanticOutputParser(pydantic_object=TaxCalculationResponse)
 
         self.prompt = PromptTemplate(
             template="""You are a tax calculation expert. Calculate the tax liability
@@ -53,9 +57,7 @@ Provide a detailed tax calculation including:
                 "entity_type",
                 "additional_info",
             ],
-            partial_variables={
-                "format_instructions": self.output_parser.get_format_instructions()
-            },
+            partial_variables={"format_instructions": self.output_parser.get_format_instructions()},
         )
 
         self.chain = LLMChain(llm=self.llm, prompt=self.prompt)
@@ -83,9 +85,7 @@ class FinancialAnalysisChain:
     def __init__(self, llm: ChatOpenAI = None):
         """Initialize the financial analysis chain with an optional LLM"""
         self.llm = llm or ChatOpenAI(temperature=0, model="gpt-4")
-        self.output_parser = PydanticOutputParser(
-            pydantic_object=FinancialAnalysisResponse
-        )
+        self.output_parser = PydanticOutputParser(pydantic_object=FinancialAnalysisResponse)
 
         self.prompt = PromptTemplate(
             template="""You are a financial analyst. Analyze the following financial data:
@@ -113,16 +113,12 @@ Provide a comprehensive financial analysis including:
                 "industry",
                 "custom_metrics",
             ],
-            partial_variables={
-                "format_instructions": self.output_parser.get_format_instructions()
-            },
+            partial_variables={"format_instructions": self.output_parser.get_format_instructions()},
         )
 
         self.chain = LLMChain(llm=self.llm, prompt=self.prompt)
 
-    async def analyze(
-        self, request: FinancialAnalysisRequest
-    ) -> FinancialAnalysisResponse:
+    async def analyze(self, request: FinancialAnalysisRequest) -> FinancialAnalysisResponse:
         """Process financial analysis request"""
         result = await selfchain.ainvoke(
             {
@@ -143,9 +139,7 @@ class ComplianceCheckChain:
     def __init__(self, llm: ChatOpenAI = None):
         """Initialize the compliance check chain with an optional LLM"""
         self.llm = llm or ChatOpenAI(temperature=0, model="gpt-4")
-        self.output_parser = PydanticOutputParser(
-            pydantic_object=ComplianceCheckResponse
-        )
+        self.output_parser = PydanticOutputParser(pydantic_object=ComplianceCheckResponse)
 
         self.prompt = PromptTemplate(
             template="""You are a tax compliance expert. Review the following
@@ -173,16 +167,12 @@ Perform a comprehensive compliance check and provide:
                 "tax_year",
                 "compliance_areas",
             ],
-            partial_variables={
-                "format_instructions": self.output_parser.get_format_instructions()
-            },
+            partial_variables={"format_instructions": self.output_parser.get_format_instructions()},
         )
 
         self.chain = LLMChain(llm=self.llm, prompt=self.prompt)
 
-    async def check_compliance(
-        self, request: ComplianceCheckRequest
-    ) -> ComplianceCheckResponse:
+    async def check_compliance(self, request: ComplianceCheckRequest) -> ComplianceCheckResponse:
         """Process compliance check request"""
         result = await selfchain.ainvoke(
             {
@@ -230,9 +220,7 @@ Return comprehensive tax rate information including:
                 "income_level",
                 "special_categories",
             ],
-            partial_variables={
-                "format_instructions": self.output_parser.get_format_instructions()
-            },
+            partial_variables={"format_instructions": self.output_parser.get_format_instructions()},
         )
 
         self.chain = LLMChain(llm=self.llm, prompt=self.prompt)

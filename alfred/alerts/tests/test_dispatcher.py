@@ -6,8 +6,7 @@ from unittest.mock import Mock, patch
 import pytest
 import requests
 
-from alfred.alerts.dispatcher import (format_alert_for_slack, handle_alert,
-                                      send_to_slack)
+from alfred.alerts.dispatcher import format_alert_for_slack, handle_alert, send_to_slack
 
 # Mark all tests in this module with the alerts marker
 pytestmark = pytest.mark.alerts
@@ -82,9 +81,7 @@ class TestHandleAlert:
             handle_alert({"alerts": []})
             mock_send.assert_not_called()
 
-    @patch(
-        "alfred.alerts.dispatcher.send_to_slack", side_effect=Exception("Slack error")
-    )
+    @patch("alfred.alerts.dispatcher.send_to_slack", side_effect=Exception("Slack error"))
     @patch("alfred.alerts.dispatcher.format_alert_for_slack")
     def test_handle_alert_send_failure(self, mock_format, mock_send):
         """Test error handling when Slack send fails"""

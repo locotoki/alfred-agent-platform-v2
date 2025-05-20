@@ -24,7 +24,7 @@ def test_niche_scout(host="localhost", port=9000):
                 "budget travel",
             ]
         },
-        "trace_id": f"trace_{datetime.now()isoformat()}",
+        "trace_id": f"trace_{datetime.now().isoformat()}",
     }
 
     # Post task
@@ -35,7 +35,7 @@ def test_niche_scout(host="localhost", port=9000):
         print(response.text)
         return None
 
-    task_id = response.json()get("task_id")
+    task_id = response.json().get("task_id")
     print(f"Task created: {task_id}")
 
     # Poll for results
@@ -78,7 +78,7 @@ def test_blueprint(seed_url=None, auto_niche=False, host="localhost", port=9000)
     payload = {
         "intent": "YOUTUBE_BLUEPRINT",
         "data": {"auto_niche": auto_niche},
-        "trace_id": f"trace_{datetime.now()isoformat()}",
+        "trace_id": f"trace_{datetime.now().isoformat()}",
     }
 
     if seed_url:
@@ -92,7 +92,7 @@ def test_blueprint(seed_url=None, auto_niche=False, host="localhost", port=9000)
         print(response.text)
         return None
 
-    task_id = response.json()get("task_id")
+    task_id = response.json().get("task_id")
     print(f"Task created: {task_id}")
 
     # Poll for results
@@ -141,9 +141,7 @@ def parse_args():
 
     parser.add_argument("--seed-url", help="Seed URL for Blueprint")
 
-    parser.add_argument(
-        "--auto-niche", action="store_true", help="Auto-select niche for Blueprint"
-    )
+    parser.add_argument("--auto-niche", action="store_true", help="Auto-select niche for Blueprint")
 
     parser.add_argument("--host", default="localhost", help="API host")
 
@@ -162,24 +160,20 @@ def main():
 
         if niche_result:
             print("\nNiche Scout Result:")
-            top_niches = niche_result.get("data", {})get("top_niches", [])
+            top_niches = niche_result.get("data", {}).get("top_niches", [])
             for i, niche in enumerate(top_niches[:3], 1):
                 print(f"{i}. {niche.get('query')} - Score: {niche.get('score')}")
 
     if args.workflow in ["blueprint", "both"]:
         print("\n=== Testing Blueprint Workflow ===\n")
-        blueprint_result = test_blueprint(
-            args.seed_url, args.auto_niche, args.host, args.port
-        )
+        blueprint_result = test_blueprint(args.seed_url, args.auto_niche, args.host, args.port)
 
         if blueprint_result:
             print("\nBlueprint Result:")
-            blueprint = blueprint_result.get("data", {})get("blueprint", {})
+            blueprint = blueprint_result.get("data", {}).get("blueprint", {})
             print(f"Positioning: {blueprint.get('positioning', '')[:100]}...")
             print(f"Content Pillars: {', '.join(blueprint.get('content_pillars', []))}")
-            print(
-                f"Blueprint URL: {blueprint_result.get('data', {})get('blueprint_url', '')}"
-            )
+            print(f"Blueprint URL: {blueprint_result.get('data', {}).get('blueprint_url', '')}")
 
 
 if __name__ == "__main__":

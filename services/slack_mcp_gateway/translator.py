@@ -29,10 +29,10 @@ def build_task_request(payload: Dict[str, Any]) -> Dict[str, Any]:.
     request_id = str(uuid.uuid4())
 
     # Get the current UTC time
-    timestamp = datetime.utcnow()isoformat() + "Z"
+    timestamp = datetime.utcnow().isoformat() + "Z"
 
     # Extract command text
-    command_text = payload.get("text", "")strip()
+    command_text = payload.get("text", "").strip()
 
     # For now, all commands route to infra.echo
     # TODO: Implement proper command parsing
@@ -47,7 +47,7 @@ def build_task_request(payload: Dict[str, Any]) -> Dict[str, Any]:.
         "user": payload.get("user_id"),
         "timestamp": timestamp,
         "command": {
-            "name": payload.get("command", "")lstrip("/"),
+            "name": payload.get("command", "").lstrip("/"),
             "text": command_text,
             "channel_id": payload.get("channel_id"),
             "response_url": payload.get("response_url"),

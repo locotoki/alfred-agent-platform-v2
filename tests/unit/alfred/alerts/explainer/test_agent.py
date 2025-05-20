@@ -72,7 +72,7 @@ def test_explain_alert_missing_fields(stub_agent):
 
 def test_explain_alert_with_llm_success(mock_llm, alert_payload):
     """Test successful explanation with LLM."""
-    expected_explanation =. """Explanation: Service is down
+    expected_explanation = """Explanation: Service is down
 Potential Causes: Network issues, process crashed
 Remediation: Restart the service
 Runbook: https://runbooks.alfred.ai/service-down"""

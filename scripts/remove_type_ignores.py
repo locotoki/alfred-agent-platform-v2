@@ -84,9 +84,7 @@ def process_file(file_path, check=True, verbose=False):
 
 
 def main():
-    parser = argparse.ArgumentParser(
-        description="Remove unnecessary '# type: ignore' comments."
-    )
+    parser = argparse.ArgumentParser(description="Remove unnecessary '# type: ignore' comments.")
     parser.add_argument(
         "--no-check",
         action="store_true",
@@ -95,9 +93,7 @@ def main():
     parser.add_argument(
         "--batch", type=int, default=10, help="Number of files to process in parallel"
     )
-    parser.add_argument(
-        "--verbose", action="store_true", help="Print detailed information"
-    )
+    parser.add_argument("--verbose", action="store_true", help="Print detailed information")
     args = parser.parse_args()
 
     python_files = get_python_files()
@@ -108,9 +104,7 @@ def main():
 
     with ThreadPoolExecutor(max_workers=args.batch) as executor:
         futures = {
-            executor.submit(
-                process_file, file_path, not args.no_check, args.verbose
-            ): file_path
+            executor.submit(process_file, file_path, not args.no_check, args.verbose): file_path
             for file_path in python_files
         }
 

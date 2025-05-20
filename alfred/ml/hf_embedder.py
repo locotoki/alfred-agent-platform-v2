@@ -82,9 +82,7 @@ class HFEmbedder(Service):
             return embeddings[0]
         return embeddings
 
-    def cosine_similarity(
-        self, embeddings1: np.ndarray, embeddings2: np.ndarray
-    ) -> float:
+    def cosine_similarity(self, embeddings1: np.ndarray, embeddings2: np.ndarray) -> float:
         """Calculate cosine similarity between embeddings.
 
         Args:

@@ -6,14 +6,16 @@ from uuid import uuid4
 
 import structlog
 
-from libs.a2a_adapter import (A2AEnvelope, PolicyMiddleware, PubSubTransport,
-                              SupabaseTransport)
+from libs.a2a_adapter import A2AEnvelope, PolicyMiddleware, PubSubTransport, SupabaseTransport
 from libs.agent_core.base_agent import BaseAgent
 
-from .chains import (audit_chain, contract_chain, document_chain,
-                     regulation_chain)
-from .models import (ComplianceAuditRequest, ContractReviewRequest,
-                     DocumentAnalysisRequest, RegulationCheckRequest)
+from .chains import audit_chain, contract_chain, document_chain, regulation_chain
+from .models import (
+    ComplianceAuditRequest,
+    ContractReviewRequest,
+    DocumentAnalysisRequest,
+    RegulationCheckRequest,
+)
 
 logger = structlog.get_logger(__name__)
 
@@ -67,9 +69,7 @@ class LegalComplianceAgent(BaseAgent):
             )
             raise
 
-    async def _process_compliance_audit(
-        self, content: Dict[str, Any]
-    ) -> Dict[str, Any]:
+    async def _process_compliance_audit(self, content: Dict[str, Any]) -> Dict[str, Any]:
         """Process compliance audit request"""
         try:
             # Validate request
@@ -79,9 +79,7 @@ class LegalComplianceAgent(BaseAgent):
             result = await audit_chainarun(
                 organization_name=request.organization_name,
                 audit_scope=request.audit_scope,
-                compliance_categories=[
-                    cat.value for cat in request.compliance_categories
-                ],
+                compliance_categories=[cat.value for cat in request.compliance_categories],
                 documents=request.documents or [],
             )
 
@@ -99,9 +97,7 @@ class LegalComplianceAgent(BaseAgent):
                 "error_type": "compliance_audit_error",
             }
 
-    async def _process_document_analysis(
-        self, content: Dict[str, Any]
-    ) -> Dict[str, Any]:
+    async def _process_document_analysis(self, content: Dict[str, Any]) -> Dict[str, Any]:
         """Process document analysis request"""
         try:
             # Validate request
@@ -111,9 +107,7 @@ class LegalComplianceAgent(BaseAgent):
             result = await document_chainarun(
                 document_type=request.document_type.value,
                 document_content=request.document_content,
-                compliance_frameworks=[
-                    fw.value for fw in request.compliance_frameworks
-                ],
+                compliance_frameworks=[fw.value for fw in request.compliance_frameworks],
                 check_for_pii=request.check_for_pii,
             )
 
@@ -131,9 +125,7 @@ class LegalComplianceAgent(BaseAgent):
                 "error_type": "document_analysis_error",
             }
 
-    async def _process_regulation_check(
-        self, content: Dict[str, Any]
-    ) -> Dict[str, Any]:
+    async def _process_regulation_check(self, content: Dict[str, Any]) -> Dict[str, Any]:
         """Process regulation check request"""
         try:
             # Validate request

@@ -75,9 +75,7 @@ def probe_health(state: RemediationState) -> RemediationState:
         state["health_ok"] = response.status_code == 200
         state["probe_timestamp"] = time.time()
 
-        logger.info(
-            f"Health probe result for {service_name}: status={response.status_code}"
-        )
+        logger.info(f"Health probe result for {service_name}: status={response.status_code}")
     except Exception as e:
         logger.error(f"Failed to probe service health: {e}")
         state["probe_status_code"] = 500
@@ -117,9 +115,7 @@ def complete_remediation(state: RemediationState) -> RemediationState:
     if thread_ts and channel:
         # Would update Slack thread in real implementation
         state["thread_updated"] = True
-        state["completion_message"] = (
-            f"Service {service_name} has been successfully remediated."
-        )
+        state["completion_message"] = f"Service {service_name} has been successfully remediated."
 
     state["remediation_status"] = "success"
     state["remediation_completed"] = True

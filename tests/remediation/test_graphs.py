@@ -10,11 +10,15 @@ from unittest.mock import MagicMock, patch
 import pytest
 
 from alfred.remediation import settings
-from alfred.remediation.graphs import (complete_remediation, escalate_issue,
-                                       probe_health, restart_service,
-                                       restart_then_verify,
-                                       should_retry_or_complete,
-                                       wait_for_stabilization)
+from alfred.remediation.graphs import (
+    complete_remediation,
+    escalate_issue,
+    probe_health,
+    restart_service,
+    restart_then_verify,
+    should_retry_or_complete,
+    wait_for_stabilization,
+)
 
 
 @pytest.fixture
@@ -255,9 +259,7 @@ def test_restart_then_verify_graph_success(mock_get_webhook, mock_sleep, mock_re
 
 @patch("remediation.graphs.time.sleep")
 @patch("remediation.settings.get_webhook_url")
-def test_restart_then_verify_graph_retry_then_success(
-    mock_get_webhook, mock_sleep, mock_requests
-):
+def test_restart_then_verify_graph_retry_then_success(mock_get_webhook, mock_sleep, mock_requests):
     """Test graph with one failed attempt then success."""
     webhook_url = "http://n8n:5678/webhook/restart-service"
     mock_get_webhook.return_value = webhook_url
@@ -283,9 +285,7 @@ def test_restart_then_verify_graph_retry_then_success(
 
 @patch("remediation.graphs.time.sleep")
 @patch("remediation.settings.get_webhook_url")
-def test_restart_then_verify_graph_escalation(
-    mock_get_webhook, mock_sleep, mock_requests
-):
+def test_restart_then_verify_graph_escalation(mock_get_webhook, mock_sleep, mock_requests):
     """Test graph escalation after max retries."""
     webhook_url = "http://n8n:5678/webhook/restart-service"
     mock_get_webhook.return_value = webhook_url
@@ -294,9 +294,7 @@ def test_restart_then_verify_graph_escalation(
     mock_requests.get.return_value.status_code = 500
 
     # Create graph with fewer retries for faster testing
-    graph, initial_state = restart_then_verify(
-        "test-service", wait_seconds=1, max_retries=2
-    )
+    graph, initial_state = restart_then_verify("test-service", wait_seconds=1, max_retries=2)
 
     # Run the graph
     result = graph.invoke(initial_state)
@@ -312,9 +310,7 @@ def test_restart_then_verify_graph_escalation(
 @patch("remediation.settings.DEFAULT_WAIT_SECONDS", 10)
 @patch("remediation.graphs.time.sleep")
 @patch("remediation.settings.get_webhook_url")
-def test_restart_then_verify_with_default_settings(
-    mock_get_webhook, mock_sleep, mock_requests
-):
+def test_restart_then_verify_with_default_settings(mock_get_webhook, mock_sleep, mock_requests):
     """Test graph using environment settings."""
     webhook_url = "http://n8n:5678/webhook/restart-service"
     mock_get_webhook.return_value = webhook_url

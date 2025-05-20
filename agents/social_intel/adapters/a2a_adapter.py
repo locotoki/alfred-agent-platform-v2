@@ -23,9 +23,7 @@ class YouTubeNicheScoutAdapter:
                     "budget travel",
                 ],
             ),
-            "run_id": content.get(
-                "run_id", f"niche_scout_{datetime.utcnow().isoformat()}"
-            ),
+            "run_id": content.get("run_id", f"niche_scout_{datetime.utcnow().isoformat()}"),
         }
 
     @staticmethod
@@ -50,9 +48,7 @@ class YouTubeBlueprintAdapter:
         return {
             "seed_url": content.get("seed_url"),
             "auto_niche": content.get("auto_niche", False),
-            "run_id": content.get(
-                "run_id", f"blueprint_{datetime.utcnow().isoformat()}"
-            ),
+            "run_id": content.get("run_id", f"blueprint_{datetime.utcnow().isoformat()}"),
         }
 
     @staticmethod

@@ -66,9 +66,7 @@ def post_message():
 
     # Store the message for history
     if text and "health" in text.lower():
-        state.health_reports.append(
-            {"channel": channel, "text": text, "timestamp": "now"}
-        )
+        state.health_reports.append({"channel": channel, "text": text, "timestamp": "now"})
 
     return jsonify(
         {
@@ -233,7 +231,7 @@ def ui():
         <div id="result" style="margin-top: 20px;"></div>
 
         <script>
-            document.getElementById('send-command')addEventListener('click', function() {
+            document.getElementById('send-command').addEventListener('click', function() {
                 const command = document.getElementById('command')value;
                 const text = document.getElementById('text')value || 'help';
 
@@ -247,7 +245,7 @@ def ui():
                 .then(response => response.json())
                 .then(data => {
                     const resultDiv = document.getElementById('result');
-                    resultDiv.innerHTML = `<div class="success">Command executed!</div><div class="terminal"><div class="output">${data.text.replace(/\\n/g, '<br>')replace(/\\*/g, '<strong>').replace(/\\`/g, '<code>')replace(/\\`\\`\\`/g, '')}</div></div>`;  # noqa: E501
+                    resultDiv.innerHTML = `<div class="success">Command executed!</div><div class="terminal"><div class="output">${data.text.replace(/\\n/g, '<br>').replace(/\\*/g, '<strong>').replace(/\\`/g, '<code>').replace(/\\`\\`\\`/g, '')}</div></div>`;  # noqa: E501
                 })
                 .catch(error => {
                     console.error('Error:', error);

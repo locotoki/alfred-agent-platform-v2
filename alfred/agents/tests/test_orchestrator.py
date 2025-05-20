@@ -2,8 +2,7 @@
 
 import pytest
 
-from alfred.agents.orchestrator import (AgentOrchestrator,
-                                        orchestrator_route_total)
+from alfred.agents.orchestrator import AgentOrchestrator, orchestrator_route_total
 
 
 class TestAgentOrchestrator:
@@ -37,9 +36,7 @@ class TestAgentOrchestrator:
         await self.orchestrator.process_message("gibberish123")
 
         # Check that metric was incremented
-        metric_value = orchestrator_route_total.labels(
-            intent_type="unknown_intent"
-        ).get_value()
+        metric_value = orchestrator_route_total.labels(intent_type="unknown_intent").get_value()
         assert metric_value == 1.0
 
     @pytest.mark.asyncio

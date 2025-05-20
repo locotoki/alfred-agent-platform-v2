@@ -16,8 +16,7 @@ import pytest
 import redis
 from google.cloud import pubsub_v1
 
-from libs.a2a_adapter import (PolicyMiddleware, PubSubTransport,
-                              SupabaseTransport)
+from libs.a2a_adapter import PolicyMiddleware, PubSubTransport, SupabaseTransport
 
 
 @pytest.fixture(scope="session")

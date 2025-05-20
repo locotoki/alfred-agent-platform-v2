@@ -110,9 +110,7 @@ def run_test(base_url: str, test_case: Dict[str, Any], use_mock: bool = False) -
             has_data = False
 
         # Print results
-        print(
-            f"Status: {response.status_code} (Expected: {test_case['expected_status']})"
-        )
+        print(f"Status: {response.status_code} (Expected: {test_case['expected_status']})")
         print(f"Response time: {duration:.2f} seconds")
         print(f"Response has valid JSON: {has_data}")
 
@@ -134,8 +132,8 @@ def run_test(base_url: str, test_case: Dict[str, Any], use_mock: bool = False) -
 
             # Save response to file for inspection
             # Create filename for test results
-            timestamp = datetime.now()strftime("%Y%m%d_%H%M%S")
-            test_name = test_case["name"].replace(" ", "_")lower()
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            test_name = test_case["name"].replace(" ", "_").lower()
             filename = f"niche_scout_test_{test_name}_{timestamp}.json"
             with open(filename, "w") as f:
                 json.dump(data, f, indent=2)

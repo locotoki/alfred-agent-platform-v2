@@ -228,7 +228,7 @@ class RankerBenchmark:
             "old_ranker": old_results,
             "new_ranker": new_results,
             "improvements": improvements,
-            "timestamp": datetime.utcnow()isoformat(),
+            "timestamp": datetime.utcnow().isoformat(),
         }
 
     def generate_report(

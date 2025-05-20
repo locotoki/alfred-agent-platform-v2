@@ -61,9 +61,7 @@ Be concise but informative.
         self._chain = LLMChain(llm=self.llm, prompt=prompt)
         logger.info("explainer_chain_initialized")
 
-    async def explain_alert(
-        self, alert_data: Dict[str, Any]
-    ) -> Dict[str, Union[str, bool]]:
+    async def explain_alert(self, alert_data: Dict[str, Any]) -> Dict[str, Union[str, bool]]:
         """Generate an explanation for an alert.
 
         Args:
@@ -97,9 +95,7 @@ Be concise but informative.
                 explanations_total.labels(result="success").inc()
             else:
                 # Fallback static explanation when no LLM is configured
-                explanation = self._generate_fallback_explanation(
-                    alert_name, alert_details
-                )
+                explanation = self._generate_fallback_explanation(alert_name, alert_details)
                 explanations_total.labels(result="fallback").inc()
 
             logger.info("explanation_generated", length=len(explanation))
@@ -126,9 +122,7 @@ Be concise but informative.
                 "success": False,
             }
 
-    def _generate_fallback_explanation(
-        self, alert_name: str, alert_details: str
-    ) -> str:
+    def _generate_fallback_explanation(self, alert_name: str, alert_details: str) -> str:
         """Generate a basic fallback explanation when LLM is unavailable.
 
         Args:

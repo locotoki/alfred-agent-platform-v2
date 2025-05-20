@@ -1,4 +1,5 @@
 """Financial Tax Service FastAPI Application"""
+
 # type: ignore
 import os
 from contextlib import asynccontextmanager
@@ -10,19 +11,20 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from prometheus_client import Counter, Gauge, Histogram
 
-from agents.financial_tax import (ComplianceCheckRequest,
-                                  FinancialAnalysisRequest, FinancialTaxAgent,
-                                  TaxCalculationRequest, TaxRateRequest)
-from libs.a2a_adapter import (A2AEnvelope, PolicyMiddleware, PubSubTransport,
-                              SupabaseTransport)
+from agents.financial_tax import (
+    ComplianceCheckRequest,
+    FinancialAnalysisRequest,
+    FinancialTaxAgent,
+    TaxCalculationRequest,
+    TaxRateRequest,
+)
+from libs.a2a_adapter import A2AEnvelope, PolicyMiddleware, PubSubTransport, SupabaseTransport
 from libs.agent_core.health import create_health_app
 
 logger = structlog.get_logger(__name__)
 
 # Initialize Prometheus metrics
-TASK_COUNTER = Counter(
-    "financial_tax_tasks_total", "Total tasks processed", ["intent", "status"]
-)
+TASK_COUNTER = Counter("financial_tax_tasks_total", "Total tasks processed", ["intent", "status"])
 
 TASK_DURATION = Histogram(
     "financial_tax_task_duration_seconds", "Task processing duration", ["intent"]
@@ -37,9 +39,7 @@ API_REQUESTS = Counter(
 ACTIVE_TASKS = Gauge("financial_tax_active_tasks", "Currently processing tasks")
 
 # Initialize services
-pubsub_transport = PubSubTransport(
-    project_id=os.getenv("GCP_PROJECT_ID", "alfred-agent-platform")
-)
+pubsub_transport = PubSubTransport(project_id=os.getenv("GCP_PROJECT_ID", "alfred-agent-platform"))
 
 supabase_transport = SupabaseTransport(database_url=os.getenv("DATABASE_URL"))
 
@@ -101,9 +101,7 @@ async def calculate_tax(
     credentials: HTTPAuthorizationCredentials = Security(security),
 ):
     """Calculate tax liability based on input data"""
-    API_REQUESTS.labels(
-        endpoint="calculate-tax", method="POST", status="processing"
-    )inc()
+    API_REQUESTS.labels(endpoint="calculate-tax", method="POST", status="processing").inc()
 
     try:
         # Create envelope for the task
@@ -115,9 +113,7 @@ async def calculate_tax(
         # Publish task
         message_id = await pubsub_transportpublish_task(envelope)
 
-        API_REQUESTS.labels(
-            endpoint="calculate-tax", method="POST", status="success"
-        )inc()
+        API_REQUESTS.labels(endpoint="calculate-tax", method="POST", status="success").inc()
 
         return {
             "status": "accepted",
@@ -126,9 +122,7 @@ async def calculate_tax(
             "tracking": {"task_id": envelope.task_id, "message_id": message_id},
         }
     except Exception as e:
-        API_REQUESTS.labels(
-            endpoint="calculate-tax", method="POST", status="error"
-        )inc()
+        API_REQUESTS.labels(endpoint="calculate-tax", method="POST", status="error").inc()
         logger.error("tax_calculation_api_error", error=str(e))
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -139,9 +133,7 @@ async def analyze_financials(
     credentials: HTTPAuthorizationCredentials = Security(security),
 ):
     """Perform financial analysis on submitted data"""
-    API_REQUESTS.labels(
-        endpoint="analyze-financials", method="POST", status="processing"
-    )inc()
+    API_REQUESTS.labels(endpoint="analyze-financials", method="POST", status="processing").inc()
 
     try:
         envelope = A2AEnvelope(intent="FINANCIAL_ANALYSIS", content=request.dict())
@@ -149,9 +141,7 @@ async def analyze_financials(
         await supabase_transportstore_task(envelope)
         message_id = await pubsub_transportpublish_task(envelope)
 
-        API_REQUESTS.labels(
-            endpoint="analyze-financials", method="POST", status="success"
-        )inc()
+        API_REQUESTS.labels(endpoint="analyze-financials", method="POST", status="success").inc()
 
         return {
             "status": "accepted",
@@ -160,9 +150,7 @@ async def analyze_financials(
             "tracking": {"task_id": envelope.task_id, "message_id": message_id},
         }
     except Exception as e:
-        API_REQUESTS.labels(
-            endpoint="analyze-financials", method="POST", status="error"
-        )inc()
+        API_REQUESTS.labels(endpoint="analyze-financials", method="POST", status="error").inc()
         logger.error("financial_analysis_api_error", error=str(e))
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -173,9 +161,7 @@ async def check_compliance(
     credentials: HTTPAuthorizationCredentials = Security(security),
 ):
     """Check tax compliance for given transactions"""
-    API_REQUESTS.labels(
-        endpoint="check-compliance", method="POST", status="processing"
-    )inc()
+    API_REQUESTS.labels(endpoint="check-compliance", method="POST", status="processing").inc()
 
     try:
         envelope = A2AEnvelope(intent="TAX_COMPLIANCE_CHECK", content=request.dict())
@@ -183,9 +169,7 @@ async def check_compliance(
         await supabase_transportstore_task(envelope)
         message_id = await pubsub_transportpublish_task(envelope)
 
-        API_REQUESTS.labels(
-            endpoint="check-compliance", method="POST", status="success"
-        )inc()
+        API_REQUESTS.labels(endpoint="check-compliance", method="POST", status="success").inc()
 
         return {
             "status": "accepted",
@@ -194,9 +178,7 @@ async def check_compliance(
             "tracking": {"task_id": envelope.task_id, "message_id": message_id},
         }
     except Exception as e:
-        API_REQUESTS.labels(
-            endpoint="check-compliance", method="POST", status="error"
-        )inc()
+        API_REQUESTS.labels(endpoint="check-compliance", method="POST", status="error").inc()
         logger.error("compliance_check_api_error", error=str(e))
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -209,7 +191,7 @@ async def get_tax_rates(
     credentials: HTTPAuthorizationCredentials = Security(security),
 ):
     """Retrieve tax rates for specified jurisdiction"""
-    API_REQUESTS.labels(endpoint="tax-rates", method="GET", status="processing")inc()
+    API_REQUESTS.labels(endpoint="tax-rates", method="GET", status="processing").inc()
 
     try:
         # Create request object
@@ -224,7 +206,7 @@ async def get_tax_rates(
         await supabase_transportstore_task(envelope)
         message_id = await pubsub_transportpublish_task(envelope)
 
-        API_REQUESTS.labels(endpoint="tax-rates", method="GET", status="success")inc()
+        API_REQUESTS.labels(endpoint="tax-rates", method="GET", status="success").inc()
 
         return {
             "status": "accepted",
@@ -233,7 +215,7 @@ async def get_tax_rates(
             "tracking": {"task_id": envelope.task_id, "message_id": message_id},
         }
     except Exception as e:
-        API_REQUESTS.labels(endpoint="tax-rates", method="GET", status="error")inc()
+        API_REQUESTS.labels(endpoint="tax-rates", method="GET", status="error").inc()
         logger.error("tax_rate_lookup_api_error", error=str(e))
         raise HTTPException(status_code=500, detail=str(e))
 

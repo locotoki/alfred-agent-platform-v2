@@ -109,9 +109,7 @@ async def metrics():
     """Prometheus metrics endpoint on the main service port"""
     from fastapi.responses import Response
 
-    return Response(
-        content=prometheus_client.generate_latest(), media_type="text/plain"
-    )
+    return Response(content=prometheus_client.generate_latest(), media_type="text/plain")
 
 
 @metrics_app.get("/metrics")
@@ -119,9 +117,7 @@ async def metrics_dedicated():
     """Prometheus metrics endpoint for the dedicated metrics port"""
     from fastapi.responses import Response
 
-    return Response(
-        content=prometheus_client.generate_latest(), media_type="text/plain"
-    )
+    return Response(content=prometheus_client.generate_latest(), media_type="text/plain")
 
 
 @app.get("/models", response_model=List[ModelSchema])
@@ -138,9 +134,7 @@ async def get_model(model_id: int, db: AsyncSession = Depends(get_db)):
     result = await db.execute(select(ModelRegistry).where(ModelRegistry.id == model_id))
     model = result.scalar_one_or_none()
     if not model:
-        raise HTTPException(
-            status_code=404, detail=f"Model with ID {model_id} not found"
-        )
+        raise HTTPException(status_code=404, detail=f"Model with ID {model_id} not found")
     return model
 
 
