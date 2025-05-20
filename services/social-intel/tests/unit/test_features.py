@@ -101,7 +101,9 @@ async def test_insert_feature(test_db):
     assert abs(float(feature["opportunity"]) - expected_opportunity) < 0.0001
 
     # Verify it exists in the database
-    row = await test_db.fetchrow("SELECT * FROM features WHERE phrase = $1", test_phrase)
+    row = await test_db.fetchrow(
+        "SELECT * FROM features WHERE phrase = $1", test_phrase
+    )
     assert row is not None
     assert row["phrase"] == test_phrase
 
@@ -110,7 +112,9 @@ async def test_insert_feature(test_db):
 async def test_update_feature_scores(test_db):
     """Test updating feature scores and opportunity calculation."""
     # First, get the niche ID for TEST_Gaming
-    row = await test_db.fetchrow("SELECT niche_id FROM features WHERE phrase = 'TEST_Gaming'")
+    row = await test_db.fetchrow(
+        "SELECT niche_id FROM features WHERE phrase = 'TEST_Gaming'"
+    )
     niche_id = row["niche_id"]
 
     # Update scores
@@ -135,4 +139,6 @@ async def test_update_feature_scores(test_db):
     assert abs(float(row["opportunity"]) - expected_opportunity) < 0.0001
 
     # Verify updated_at was changed
-    assert row["updated_at"] > datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
+    assert row["updated_at"] > datetime.now().replace(
+        hour=0, minute=0, second=0, microsecond=0
+    )

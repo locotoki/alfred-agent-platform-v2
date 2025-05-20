@@ -10,7 +10,9 @@ from prometheus_client import REGISTRY, Counter, Gauge, generate_latest
 app = Flask(__name__)
 
 # Create metrics
-pubsub_availability = Gauge("pubsub_availability", "Availability of the PubSub emulator")
+pubsub_availability = Gauge(
+    "pubsub_availability", "Availability of the PubSub emulator"
+)
 pubsub_topics_total = Gauge("pubsub_topics_total", "Total number of PubSub topics")
 pubsub_subscriptions_total = Gauge(
     "pubsub_subscriptions_total", "Total number of PubSub subscriptions"
@@ -40,7 +42,9 @@ def collect_metrics():
 
             # Get subscriptions
             try:
-                subs_response = requests.get(f"{PUBSUB_URL}/v1/projects/{PROJECT_ID}/subscriptions")
+                subs_response = requests.get(
+                    f"{PUBSUB_URL}/v1/projects/{PROJECT_ID}/subscriptions"
+                )
                 if subs_response.status_code == 200:
                     subs_data = subs_response.json()
                     if "subscriptions" in subs_data:
@@ -75,7 +79,9 @@ def health():
     try:
         collect_metrics()
         status = "ok" if pubsub_availability._value.get() == 1 else "error"
-        return jsonify({"status": status, "version": "1.0.0", "services": {"pubsub": status}})
+        return jsonify(
+            {"status": status, "version": "1.0.0", "services": {"pubsub": status}}
+        )
     except Exception as e:
         return jsonify({"status": "error", "version": "1.0.0", "error": str(e)}), 500
 

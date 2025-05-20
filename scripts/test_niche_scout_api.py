@@ -110,7 +110,9 @@ def run_test(base_url: str, test_case: Dict[str, Any], use_mock: bool = False) -
             has_data = False
 
         # Print results
-        print(f"Status: {response.status_code} (Expected: {test_case['expected_status']})")
+        print(
+            f"Status: {response.status_code} (Expected: {test_case['expected_status']})"
+        )
         print(f"Response time: {duration:.2f} seconds")
         print(f"Response has valid JSON: {has_data}")
 

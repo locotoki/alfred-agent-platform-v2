@@ -17,7 +17,9 @@ def fix_f401_violations(violations_file):
                 continue
 
             # Parse the violation line
-            match = re.match(r"(.+):(\d+):(\d+): F401 \'(.+)\' imported but unused", line)
+            match = re.match(
+                r"(.+):(\d+):(\d+): F401 \'(.+)\' imported but unused", line
+            )
             if not match:
                 continue
 

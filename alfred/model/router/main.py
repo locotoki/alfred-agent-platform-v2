@@ -59,7 +59,9 @@ async def metrics():
     """Prometheus metrics endpoint on the main service port"""
     from fastapi.responses import Response
 
-    return Response(content=prometheus_client.generate_latest(), media_type="text/plain")
+    return Response(
+        content=prometheus_client.generate_latest(), media_type="text/plain"
+    )
 
 
 # Create a separate app to serve metrics on port 9091
@@ -72,7 +74,9 @@ async def metrics_export():
     """Prometheus metrics endpoint for port 9091"""
     from fastapi.responses import Response
 
-    return Response(content=prometheus_client.generate_latest(), media_type="text/plain")
+    return Response(
+        content=prometheus_client.generate_latest(), media_type="text/plain"
+    )
 
 
 # Start metrics server in separate thread when the main app starts

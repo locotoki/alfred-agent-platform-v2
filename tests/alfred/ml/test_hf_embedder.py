@@ -36,7 +36,9 @@ class TestHFEmbedder:
 
     def test_custom_model_initialization(self):
         """Test initialization with custom model."""
-        embedder = HFEmbedder(model_name="bert-base-uncased", device="cuda", batch_size=16)
+        embedder = HFEmbedder(
+            model_name="bert-base-uncased", device="cuda", batch_size=16
+        )
         assert embedder.model_name == "bert-base-uncased"
         assert embedder.device == "cuda"
         assert embedder.batch_size == 16
@@ -76,7 +78,9 @@ class TestHFEmbedder:
         """Test embedding multiple texts."""
         texts = ["First alert", "Second alert", "Third alert"]
         mock_model = mock_sentence_transformer.return_value
-        expected_embeddings = np.array([[0.1, 0.2, 0.3], [0.4, 0.5, 0.6], [0.7, 0.8, 0.9]])
+        expected_embeddings = np.array(
+            [[0.1, 0.2, 0.3], [0.4, 0.5, 0.6], [0.7, 0.8, 0.9]]
+        )
         mock_model.encode.return_value = expected_embeddings
 
         embeddings = embedder.embed(texts)
@@ -92,7 +96,8 @@ class TestHFEmbedder:
 
         # Test newline and tab removal
         assert (
-            embedder._clean_text("text\nwith\nnewlines\tand\ttabs") == "text with newlines and tabs"
+            embedder._clean_text("text\nwith\nnewlines\tand\ttabs")
+            == "text with newlines and tabs"
         )
 
         # Test long text truncation

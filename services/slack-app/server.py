@@ -16,7 +16,9 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # FastAPI app
-app = FastAPI(title="Alfred Slack App", description="Slack integration for Alfred Agent Platform")
+app = FastAPI(
+    title="Alfred Slack App", description="Slack integration for Alfred Agent Platform"
+)
 
 # Metrics
 REQUESTS = Counter("slack_app_requests_total", "Total requests", ["endpoint"])

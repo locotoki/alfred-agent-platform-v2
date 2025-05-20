@@ -45,6 +45,8 @@ if __name__ == "__main__":
     port = int(os.environ.get("PORT", 8014))
     logger.info(f"Starting WhatsApp Adapter on port {port}")
     token_preview = os.environ.get("WHATSAPP_API_TOKEN", "Not set")
-    token_preview = token_preview[0:5] + "..." if len(token_preview) > 5 else token_preview
+    token_preview = (
+        token_preview[0:5] + "..." if len(token_preview) > 5 else token_preview
+    )
     logger.info(f"WhatsApp API Token: {token_preview}")
     app.run(host="0.0.0.0", port=port)

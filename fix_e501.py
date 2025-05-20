@@ -47,7 +47,9 @@ def fix_e501_violations(violations_file="flake8_violations.txt"):
     for filepath, file_violations in sorted(files.items()):
         print(f"\n{filepath}: {len(file_violations)} violations")
         for v in sorted(file_violations, key=lambda x: x["line_num"]):
-            print(f"  Line {v['line_num']}: {v['length']} chars (column {v['col_num']})")
+            print(
+                f"  Line {v['line_num']}: {v['length']} chars (column {v['col_num']})"
+            )
 
     print("\nFix suggestions:")
     print("1. Break long lines at logical points (commas, operators)")

@@ -1,10 +1,13 @@
+"""OpenTelemetry tracing provider for observability."""
+
 import os
 from functools import wraps
 from typing import Any, Dict, Optional
 
 import structlog
 from opentelemetry import trace
-from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExporter
+from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import \
+    OTLPSpanExporter
 from opentelemetry.sdk.resources import SERVICE_NAME, SERVICE_VERSION, Resource
 from opentelemetry.sdk.trace import TracerProvider
 from opentelemetry.sdk.trace.export import BatchSpanProcessor
@@ -14,7 +17,15 @@ logger = structlog.get_logger(__name__)
 
 
 class TracingProvider:
+    """Provider for OpenTelemetry tracing functionality."""
+
     def __init__(self, service_name: str, service_version: str = "1.0.0"):
+        """Initialize the tracing provider with service information.
+
+        Args:
+            service_name: Name of the service for tracing
+            service_version: Version of the service, defaults to 1.0.0
+        """
         self.service_name = service_name
         self.service_version = service_version
         self.tracer = self._setup_tracing()
@@ -44,7 +55,16 @@ class TracingProvider:
         return trace.get_tracer(self.service_name)
 
     def trace_function(self, span_name: Optional[str] = None):
-        """Decorator to trace function execution."""
+        """Create a decorator to trace function execution.
+
+        Apply to functions to automatically create spans for OpenTelemetry tracing.
+
+        Args:
+            span_name: Optional custom name for the span. Defaults to function name.
+
+        Returns:
+            A decorator function for tracing.
+        """
 
         def decorator(func):
             @wraps(func)

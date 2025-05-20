@@ -28,7 +28,9 @@ app = App(
 # Command prefix for slash commands
 COMMAND_PREFIX = os.getenv("COMMAND_PREFIX", "/alfred")
 DEFAULT_CHANNEL = os.getenv("DEFAULT_CHANNEL", "general")
-ALLOWED_COMMANDS = os.getenv("ALLOWED_COMMANDS", "help,status,search,ask,agents,health").split(",")
+ALLOWED_COMMANDS = os.getenv(
+    "ALLOWED_COMMANDS", "help,status,search,ask,agents,health"
+).split(",")
 
 # Define allowed commands as a set for faster lookups
 ALLOWED_COMMANDS_SET = set(ALLOWED_COMMANDS)
@@ -187,7 +189,9 @@ if __name__ == "__main__":
     print(f"⚡️ Bolt app is running in HTTP mode on port {port}!")
     print(f"Slack events URL: http://your-server:{port}/slack/events")
     print(f"Slack commands URL: http://your-server:{port}/slack/commands")
-    print(f"Health endpoints: http://your-server:{port}/healthz, http://your-server:{port}/readyz")
+    print(
+        f"Health endpoints: http://your-server:{port}/healthz, http://your-server:{port}/readyz"
+    )
 
     # Set debug mode to False to avoid the reloader
     flask_app.run(host="0.0.0.0", port=port, debug=False)

@@ -33,11 +33,11 @@ def merge_compose_files(services_data):
         for service_name in service_list:
             # Check in services directory first
             compose_file = services_dir / service_name / "compose.yml"
-            
+
             # If not found, check in adapters directory
             if not compose_file.exists():
                 compose_file = adapters_dir / service_name / "compose.yml"
-                
+
             if compose_file.exists():
                 try:
                     with open(compose_file, "r") as f:
@@ -69,7 +69,7 @@ def merge_compose_files(services_data):
     for service_name in final_compose["services"]:
         if "environment" not in final_compose["services"][service_name]:
             final_compose["services"][service_name]["environment"] = []
-            
+
         # Add standard environment variables
         if isinstance(final_compose["services"][service_name]["environment"], list):
             env_vars = final_compose["services"][service_name]["environment"]
