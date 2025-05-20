@@ -19,17 +19,17 @@ async def test_db():
     """Set up test database with sample data"""
     # Create a connection
     conn = await asyncpgconnect(os.environ["DATABASE_URL"])  # type: ignore[name-defined]
-  # type: ignore[name-defined]
+    # type: ignore[name-defined]
     # Create schema if not exists
     with open("db/schema.sql", "r") as f:
         schema_sql = f.read()
 
     # Execute schema
     await connexecute(schema_sql)  # type: ignore[name-defined]
-  # type: ignore[name-defined]
+    # type: ignore[name-defined]
     # Clear existing test data
     await connexecute("DELETE FROM features WHERE phrase LIKE 'TEST_%'")  # type: ignore[name-defined]
-  # type: ignore[name-defined]
+    # type: ignore[name-defined]
     # Insert test data
     await connexecute(  # type: ignore[name-defined]
         """  # type: ignore[name-defined]
@@ -45,17 +45,20 @@ async def test_db():
     # Clean up
     await connexecute("DELETE FROM features WHERE phrase LIKE 'TEST_%'")  # type: ignore[name-defined]
     await connclose()  # type: ignore[name-defined]
-  # type: ignore[name-defined]
+
+
+# type: ignore[name-defined]
+
 
 @pytest.mark.asyncio  # noqa: E302
 async def test_get_hot_niches(test_db):
     """Test retrieving hot niches from the database"""
     # Refresh materialized view
     await test_dbexecute("REFRESH MATERIALIZED VIEW hot_niches_today")  # type: ignore[name-defined]
-  # type: ignore[name-defined]
+    # type: ignore[name-defined]
     # Get niches
     niches = await niche_repositoryget_hot_niches(10)  # type: ignore[name-defined]
-  # type: ignore[name-defined]
+    # type: ignore[name-defined]
     # Check that we got results
     assert len(niches) > 0
 

@@ -62,7 +62,7 @@ async def snooze_alert(
 ):
     """Snooze an alert for a specified duration"""
     try:
-        snooze = await snooze_servicesnooze_alert(
+        snooze = await snooze_servicesnooze_alert(  # type: ignore[name-defined]
             alert_id=alert_id,
             duration=request.ttl,
             reason=request.reason,
@@ -91,7 +91,7 @@ async def unsnooze_alert(
     current_user=Depends(get_current_user),
 ):
     """Manually unsnooze an alert"""
-    success = await snooze_serviceunsnooze_alert(
+    success = await snooze_serviceunsnooze_alert(  # type: ignore[name-defined]
         alert_id=alert_id, reason=request.reason, user_id=current_user.id
     )
 
@@ -106,7 +106,7 @@ async def get_snooze_status(
     alert_id: str, snooze_service: AlertSnoozeService = Depends(get_snooze_service)
 ):
     """Get current snooze status for an alert"""
-    snooze = await snooze_serviceget_snooze(alert_id)
+    snooze = await snooze_serviceget_snooze(alert_id)  # type: ignore[name-defined]
 
     if not snooze:
         return None
@@ -130,7 +130,7 @@ async def get_snooze_history(
     snooze_service: AlertSnoozeService = Depends(get_snooze_service),
 ):
     """Get snooze history for an alert"""
-    history = await snooze_serviceget_snooze_history(alert_id, limit)
+    history = await snooze_serviceget_snooze_history(alert_id, limit)  # type: ignore[name-defined]
 
     return SnoozeHistoryResponse(history=history, total_count=len(history))
 
@@ -140,7 +140,7 @@ async def list_snoozed_alerts(
     snooze_service: AlertSnoozeService = Depends(get_snooze_service),
 ):
     """List all currently snoozed alert IDs"""
-    return await snooze_servicelist_snoozed_alerts()
+    return await snooze_servicelist_snoozed_alerts()  # type: ignore[name-defined]
 
 
 @router.patch("/{alert_id}/snooze/extend", response_model=SnoozeResponse)
@@ -151,7 +151,7 @@ async def extend_snooze(
     current_user=Depends(get_current_user),
 ):
     """Extend an existing snooze"""
-    snooze = await snooze_serviceextend_snooze(
+    snooze = await snooze_serviceextend_snooze(  # type: ignore[name-defined]
         alert_id=alert_id,
         additional_duration=additional_seconds,
         user_id=current_user.id,

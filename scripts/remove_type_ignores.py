@@ -2,7 +2,6 @@
 """Remove unnecessary '# type: ignore' comments from Python files"""
 
 import argparse
-import os
 import re
 import subprocess
 from concurrent.futures import ThreadPoolExecutor

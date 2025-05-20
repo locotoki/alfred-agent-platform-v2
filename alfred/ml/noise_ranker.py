@@ -5,7 +5,7 @@ probability, helping to reduce alert fatigue.
 """
 
 from dataclasses import dataclass
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any, Dict, List, Optional, Tuple, Union  # noqa: F401
 
 import joblib
 import numpy as np

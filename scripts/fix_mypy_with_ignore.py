@@ -7,7 +7,6 @@ Later, type hints and fixes can be gradually added.
 
 import os
 import re
-import sys
 from pathlib import Path
 
 

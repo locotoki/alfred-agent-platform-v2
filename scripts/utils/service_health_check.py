@@ -52,7 +52,7 @@ async def check_all_services() -> List[Dict[str, Any]]:
     for service_name, config in SERVICES.items():
         tasks.append(check_service_health(service_name, config))
 
-    results = await asynciogather(*tasks)
+    results = await asynciogather(*tasks)  # type: ignore[name-defined]
     return results
 
 
