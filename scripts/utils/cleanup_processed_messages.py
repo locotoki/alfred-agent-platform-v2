@@ -13,8 +13,8 @@ from dotenv import load_dotenv
 logger = structlog.get_logger(__name__)
 
 
-async def cleanup_expired_messages():.
-    """Remove expired processed messages from the database."""
+async def cleanup_expired_messages():
+    """Remove expired processed messages from the database"""
     load_dotenv()
     database_url = os.getenv("DATABASE_URL")
 
@@ -23,14 +23,14 @@ async def cleanup_expired_messages():.
         return False
 
     try:
-        conn = await asyncpg.connect(database_url)
+        conn = await asyncpgconnect(database_url)
 
         # Get count of expired messages
         count_query = """
         SELECT COUNT(*) FROM processed_messages
         WHERE expires_at < NOW().
         """
-        expired_count = await conn.fetchval(count_query)
+        expired_count = await connfetchval(count_query)
 
         logger.info("expired_messages_found", count=expired_count)
 
@@ -41,7 +41,7 @@ async def cleanup_expired_messages():.
             WHERE expires_at < NOW()
             RETURNING message_id.
             """
-            deleted_records = await conn.fetch(delete_query)
+            deleted_records = await connfetch(delete_query)
 
             logger.info(
                 "expired_messages_deleted",
@@ -58,7 +58,7 @@ async def cleanup_expired_messages():.
                MAX(expires_at) as latest_expiry
         FROM processed_messages.
         """
-        stats = await conn.fetchrow(remaining_query)
+        stats = await connfetchrow(remaining_query)
 
         logger.info(
             "cleanup_summary",
@@ -68,7 +68,7 @@ async def cleanup_expired_messages():.
             latest_expiry=stats["latest_expiry"],
         )
 
-        await conn.close()
+        await connclose()
         return True
 
     except Exception as e:
@@ -77,7 +77,7 @@ async def cleanup_expired_messages():.
 
 
 async def main():
-    """Main entry point."""
+    """Main entry point"""
     success = await cleanup_expired_messages()
 
     if success:

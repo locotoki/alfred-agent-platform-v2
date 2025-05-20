@@ -1,4 +1,4 @@
-"""Alfred remediation module."""
+"""Alfred remediation module"""
 
 from typing import List
 

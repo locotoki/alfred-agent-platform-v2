@@ -7,7 +7,7 @@ import pytest
 from backend.alfred.ml.alert_dataset import load_alert_dataset
 
 
-def test_training_speed(benchmark):.
+def test_training_speed(benchmark):
     """Benchmark the full training pipeline speed."""
     # Note: This is a mock version that doesn't actually train
     # Real training would take too long for CI
@@ -58,9 +58,7 @@ def test_memory_usage():
     memory_increase = final_memory - initial_memory
 
     # Should use less than 500MB for dataset
-    assert (
-        memory_increase < 500
-    ), f"Memory increase {memory_increase}MB exceeds 500MB limit"
+    assert memory_increase < 500, f"Memory increase {memory_increase}MB exceeds 500MB limit"
 
 
 @pytest.mark.benchmark(group="training", warmup=False)

@@ -1,4 +1,4 @@
-"""Slack diagnostics command module."""
+"""Slack diagnostics command module"""
 
 from .bot import DiagnosticsBot
 

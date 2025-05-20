@@ -61,9 +61,18 @@ Each phase of development requires specific documentation:
 - We use [isort](https://pycqa.github.io/isort/) for import sorting
 - Type hints are required for all new code
 
-**Formatting Baseline**: As of [ops/black-baseline-fix branch], the entire codebase has been formatted with Black v24.1.1 and isort to establish a consistent baseline. All future PRs must maintain this formatting standard.
+**Formatting Baseline**: As of [chore/black-24.4.2-standardise-formatting branch], the entire codebase has been formatted with Black v24.4.2 and isort to establish a consistent baseline. All future PRs must maintain this formatting standard.
 
-For a detailed overview of our Python formatting standards and implementation, see [Black Formatting Standards](docs/formatting/BLACK-FORMATTING-STANDARDS.md). All Python files in the codebase are formatted using Black v24.1.1 with these settings.
+You can easily apply formatting to your code by running:
+```bash
+pre-commit run --all-files
+```
+or install the hooks to run automatically on commit:
+```bash
+pre-commit install
+```
+
+For a detailed overview of our Python formatting standards and implementation, see [Black Formatting Standards](docs/formatting/BLACK-FORMATTING-STANDARDS.md). All Python files in the codebase are formatted using Black v24.4.2 with these settings.
 
 ## Metrics and Monitoring Standards
 

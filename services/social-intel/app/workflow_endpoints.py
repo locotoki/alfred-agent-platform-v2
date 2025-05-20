@@ -1,5 +1,5 @@
-"""Fixed workflow endpoints module to address datetime parsing issues."""
-
+"""Fixed workflow endpoints module to address datetime parsing issues"""
+# type: ignore
 import glob
 import json
 import os

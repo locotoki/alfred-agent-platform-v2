@@ -1,4 +1,4 @@
-"""Main entry point for diagnostics bot."""
+"""Main entry point for diagnostics bot"""
 
 import asyncio
 import os
@@ -13,8 +13,8 @@ from alfred.slack.diagnostics.bot import DiagnosticsBot
 logger = structlog.get_logger()
 
 
-async def main() -> None:.
-    """Run the diagnostics bot."""
+async def main() -> None:
+    """Run the diagnostics bot"""
     # Initialize Slack app
     app = AsyncApp(
         token=os.environ.get("SLACK_BOT_TOKEN"),

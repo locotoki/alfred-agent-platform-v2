@@ -1,4 +1,4 @@
-"""Alfred UI module."""
+"""Alfred UI module"""
 
 from typing import List
 

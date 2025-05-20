@@ -1,4 +1,4 @@
-"""Dynamic threshold optimization service for ML noise reduction."""
+"""Dynamic threshold optimization service for ML noise reduction"""
 
 import json
 from dataclasses import dataclass
@@ -9,16 +9,16 @@ from alfred.metrics.protocols import MetricsCollector
 
 
 @dataclass
-class ThresholdConfig:.
-    """Configuration for dynamic thresholds."""
+class ThresholdConfig:
+    """Configuration for dynamic thresholds"""
 
     noise_threshold: float = 0.7
     confidence_min: float = 0.85
     batch_size: int = 100
     learning_rate: float = 0.01
 
-    def to_dict(self) -> Dict[str, float]:.
-        """Convert to dictionary representation."""
+    def to_dict(self) -> Dict[str, float]:
+        """Convert to dictionary representation"""
         return {
             "noise_threshold": self.noise_threshold,
             "confidence_min": self.confidence_min,
@@ -28,11 +28,11 @@ class ThresholdConfig:.
 
     @classmethod
     def from_dict(cls, data: Dict[str, float]) -> "ThresholdConfig":
-        """Create from dictionary representation."""
+        """Create from dictionary representation"""
         return cls(**data)
 
 
-class ThresholdService(Service):.
+class ThresholdService(Service):
     """Service for managing dynamic ML thresholds.
 
     This service allows runtime adjustment of ML model thresholds based on performance
@@ -55,7 +55,7 @@ class ThresholdService(Service):.
         self._config = self._load_config()
 
     def _load_config(self) -> ThresholdConfig:
-        """Load configuration from disk or use defaults."""
+        """Load configuration from disk or use defaults"""
         try:
             with open(self.config_path, "r") as f:
                 data = json.load(f)
@@ -64,7 +64,7 @@ class ThresholdService(Service):.
             return ThresholdConfig()
 
     def _save_config(self) -> None:
-        """Persist configuration to disk."""
+        """Persist configuration to disk"""
         try:
             with open(self.config_path, "w") as f:
                 json.dump(self._config.to_dict(), f, indent=2)
@@ -115,9 +115,7 @@ class ThresholdService(Service):.
 
         return self._config.to_dict()
 
-    def optimize_thresholds(
-        self, performance_metrics: Dict[str, float]
-    ) -> Dict[str, float]:
+    def optimize_thresholds(self, performance_metrics: Dict[str, float]) -> Dict[str, float]:
         """Automatically optimize thresholds based on performance.
 
         Args:
@@ -130,25 +128,17 @@ class ThresholdService(Service):.
         if "false_positive_rate" in performance_metrics:
             fpr = performance_metrics["false_positive_rate"]
             if fpr > 0.1:  # Too many false positives
-                self._config.noise_threshold = min(
-                    0.95, self._config.noise_threshold + 0.05
-                )
+                self._config.noise_threshold = min(0.95, self._config.noise_threshold + 0.05)
             elif fpr < 0.05:  # Too conservative
-                self._config.noise_threshold = max(
-                    0.5, self._config.noise_threshold - 0.02
-                )
+                self._config.noise_threshold = max(0.5, self._config.noise_threshold - 0.02)
 
         # Adjust confidence based on accuracy
         if "accuracy" in performance_metrics:
             acc = performance_metrics["accuracy"]
             if acc < 0.9:
-                self._config.confidence_min = min(
-                    0.95, self._config.confidence_min + 0.02
-                )
+                self._config.confidence_min = min(0.95, self._config.confidence_min + 0.02)
             elif acc > 0.95:
-                self._config.confidence_min = max(
-                    0.7, self._config.confidence_min - 0.01
-                )
+                self._config.confidence_min = max(0.7, self._config.confidence_min - 0.01)
 
         self._save_config()
         return self._config.to_dict()

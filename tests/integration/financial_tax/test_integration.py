@@ -9,16 +9,16 @@ from libs.a2a_adapter import A2AEnvelope
 
 
 @pytest.mark.integration
-class TestFinancialTaxIntegration:.
+class TestFinancialTaxIntegration:
     """Integration test suite for Financial Tax Agent."""
 
     @pytest.fixture
-    async def test_db(self, test_db):.
+    async def test_db(self, test_db):
         """Provide database connection with test schema."""
         return test_db
 
     @pytest.fixture
-    async def agent(self, pubsub_transport, supabase_transport, policy_middleware):.
+    async def agent(self, pubsub_transport, supabase_transport, policy_middleware):
         """Create Financial Tax Agent instance."""
         agent = FinancialTaxAgent(
             pubsub_transport=pubsub_transport,
@@ -37,7 +37,7 @@ class TestFinancialTaxIntegration:.
     @pytest.mark.asyncio
     async def test_end_to_end_tax_calculation(
         self, agent, supabase_transport, pubsub_transport
-    ):.
+    ):
         """Test complete tax calculation flow."""
         # Create test envelope
         envelope = A2AEnvelope(

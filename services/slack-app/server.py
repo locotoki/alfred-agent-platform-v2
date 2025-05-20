@@ -1,5 +1,6 @@
-"""FastAPI server for Slack App integration with Socket Mode."""
+"""FastAPI server for Slack App integration with Socket Mode"""
 
+# type: ignore
 import logging
 import os
 import threading
@@ -14,9 +15,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # FastAPI app
-app = FastAPI(
-    title="Alfred Slack App", description="Slack integration for Alfred Agent Platform"
-)
+app = FastAPI(title="Alfred Slack App", description="Slack integration for Alfred Agent Platform")
 
 # Metrics
 REQUESTS = Counter("slack_app_requests_total", "Total requests", ["endpoint"])
@@ -32,7 +31,7 @@ slack_app = App(
 # Register slash command handlers
 @slack_app.command("/alfred")
 def handle_alfred_command(ack, command, client):
-    """Handle the /alfred slash command."""
+    """Handle the /alfred slash command"""
     ack()
 
     # Parse subcommand and arguments
@@ -80,20 +79,20 @@ def handle_alfred_command(ack, command, client):
 # FastAPI endpoints
 @app.get("/health")
 def health_check():
-    """Health check endpoint for the Slack app."""
+    """Health check endpoint for the Slack app"""
     REQUESTS.labels(endpoint="/health").inc()
     return {"status": "healthy"}
 
 
 @app.get("/metrics")
 def metrics():
-    """Prometheus metrics endpoint."""
+    """Prometheus metrics endpoint"""
     REQUESTS.labels(endpoint="/metrics").inc()
     return Response(generate_latest(), media_type=CONTENT_TYPE_LATEST)
 
 
 def start_socket_mode():
-    """Start Socket Mode handler in a separate thread."""
+    """Start Socket Mode handler in a separate thread"""
     app_token = os.environ.get("SLACK_APP_TOKEN")
     if not app_token:
         logger.error("SLACK_APP_TOKEN not found in environment")
@@ -106,7 +105,7 @@ def start_socket_mode():
 # Start Socket Mode on application startup
 @app.on_event("startup")
 def startup_event():
-    """Start Socket Mode handler when the FastAPI app starts."""
+    """Start Socket Mode handler when the FastAPI app starts"""
     thread = threading.Thread(target=start_socket_mode)
     thread.daemon = True
     thread.start()

@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""Manual test script for YouTube-focused flows in SocialIntelligence Agent."""
+"""Manual test script for YouTube-focused flows in SocialIntelligence Agent"""
 
 import argparse
 import asyncio
@@ -11,11 +11,13 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 # Import agent
 from agents.social_intel.flows.youtube_flows import (  # noqa: E402
-    youtube_blueprint_flow, youtube_niche_scout_flow)
+    youtube_blueprint_flow,
+    youtube_niche_scout_flow,
+)
 
 
-async def test_niche_scout(queries=None):.
-    """Test YouTube Niche-Scout workflow."""
+async def test_niche_scout(queries=None):
+    """Test YouTube Niche-Scout workflow"""
     if not queries:
         queries = [
             "nursery rhymes",
@@ -51,7 +53,7 @@ async def test_niche_scout(queries=None):.
 
 
 async def test_blueprint(seed_url=None, auto_niche=False):
-    """Test Seed-to-Blueprint workflow."""
+    """Test Seed-to-Blueprint workflow"""
     if not seed_url and not auto_niche:
         seed_url = "https://www.youtube.com/watch?v=dQw4w9WgXcQ"  # Example video
 
@@ -82,7 +84,7 @@ async def test_blueprint(seed_url=None, auto_niche=False):
 
 
 def parse_args():
-    """Parse command line arguments."""
+    """Parse command line arguments"""
     parser = argparse.ArgumentParser(description="Test YouTube agent workflows")
 
     # Add arguments
@@ -97,15 +99,13 @@ def parse_args():
 
     parser.add_argument("--seed-url", help="Seed URL for Blueprint")
 
-    parser.add_argument(
-        "--auto-niche", action="store_true", help="Auto-select niche for Blueprint"
-    )
+    parser.add_argument("--auto-niche", action="store_true", help="Auto-select niche for Blueprint")
 
     return parser.parse_args()
 
 
 async def main():
-    """Main function."""
+    """Main function"""
     args = parse_args()
 
     # Create output directories

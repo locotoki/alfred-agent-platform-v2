@@ -1,5 +1,6 @@
-"""Social Intelligence Service Main Application."""
+"""Social Intelligence Service Main Application"""
 
+# type: ignore
 import asyncio
 import os
 from contextlib import asynccontextmanager
@@ -11,23 +12,23 @@ import structlog
 import yaml
 from app.blueprint import SeedToBlueprint
 from app.niche_scout import NicheScout
-from app.workflow_endpoints import (get_scheduled_workflows,
-                                    get_workflow_history, get_workflow_result,
-                                    schedule_workflow)
+from app.workflow_endpoints import (
+    get_scheduled_workflows,
+    get_workflow_history,
+    get_workflow_result,
+    schedule_workflow,
+)
 from fastapi import Body, FastAPI, HTTPException, Query, Request
 from fastapi.responses import HTMLResponse, JSONResponse
 
 from agents.social_intel.agent import SocialIntelAgent
-from libs.a2a_adapter import (PolicyMiddleware, PubSubTransport,
-                              SupabaseTransport)
+from libs.a2a_adapter import PolicyMiddleware, PubSubTransport, SupabaseTransport
 from libs.agent_core.health import create_health_app
 
 logger = structlog.get_logger(__name__)
 
 # Initialize services
-pubsub_transport = PubSubTransport(
-    project_id=os.getenv("GCP_PROJECT_ID", "alfred-agent-platform")
-)
+pubsub_transport = PubSubTransport(project_id=os.getenv("GCP_PROJECT_ID", "alfred-agent-platform"))
 
 supabase_transport = SupabaseTransport(database_url=os.getenv("DATABASE_URL"))
 
@@ -44,12 +45,12 @@ social_agent = SocialIntelAgent(
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    """Manage application lifecycle."""
+    """Manage application lifecycle"""
     # Import database module here to avoid circular imports
     from app.database import close_pool, get_pool
 
     # Startup
-    await supabase_transport.connect()
+    await supabase_transportconnect()
 
     # Initialize database connection pool
     try:
@@ -65,8 +66,8 @@ async def lifespan(app: FastAPI):
     yield
 
     # Shutdown
-    await social_agent.stop()
-    await supabase_transport.disconnect()
+    await social_agentstop()
+    await supabase_transportdisconnect()
 
     # Close database connection pool
     try:
@@ -92,7 +93,7 @@ app.mount("/health", health_app)
 
 @app.get("/status")
 async def get_status():
-    """Get agent status."""
+    """Get agent status"""
     return {
         "agent": "social-intel",
         "version": "1.0.0",
@@ -103,9 +104,9 @@ async def get_status():
 
 @app.post("/force-analyze")
 async def force_analyze(query: str):
-    """Force an immediate trend analysis."""
+    """Force an immediate trend analysis"""
     try:
-        result = await social_agent._analyze_trend({"query": query})
+        result = await social_agent_analyze_trend({"query": query})
         return result
     except Exception as e:
         logger.error("force_analyze_failed", error=str(e))
@@ -116,14 +117,10 @@ async def force_analyze(query: str):
 async def run_niche_scout(
     request: Request,
     query: str = Query(None, description="Optional query to focus the niche analysis"),
-    category: str = Query(
-        None, description="Main content category (e.g., 'tech', 'kids')"
-    ),
-    subcategory: str = Query(
-        None, description="Specific subcategory (e.g., 'kids.nursery')"
-    ),
+    category: str = Query(None, description="Main content category (e.g., 'tech', 'kids')"),
+    subcategory: str = Query(None, description="Specific subcategory (e.g., 'kids.nursery')"),
 ):
-    """Run the Niche-Scout workflow to find trending YouTube niches."""
+    """Run the Niche-Scout workflow to find trending YouTube niches"""
     # Log that we entered the endpoint handler
     print(
         f"DEBUG: Entered niche-scout endpoint handler with "
@@ -135,11 +132,11 @@ async def run_niche_scout(
         json_data = {}
         try:
             # Get request body
-            body = await request.body()
+            body = await requestbody()
             print(f"DEBUG: Request body: {body}")
 
             # Parse JSON
-            json_data = await request.json()
+            json_data = await requestjson()
             print(f"DEBUG: Parsed JSON: {json_data}")
             logger.info("Received JSON payload", payload=json_data)
 
@@ -164,13 +161,9 @@ async def run_niche_scout(
                 json_subcategory = data.get("subcategory")
                 if json_subcategory:
                     subcategory = json_subcategory
-                    logger.info(
-                        "Using subcategory from JSON payload", subcategory=subcategory
-                    )
+                    logger.info("Using subcategory from JSON payload", subcategory=subcategory)
         except Exception as e:
-            logger.error(
-                "Failed to parse JSON body, using query parameters", error=str(e)
-            )
+            logger.error("Failed to parse JSON body, using query parameters", error=str(e))
 
         # Log the final parameter values being used
         logger.info(
@@ -182,9 +175,7 @@ async def run_niche_scout(
             task_id=json_data.get("task_id", "none"),
         )
         niche_scout = NicheScout()
-        result, json_path, report_path = await niche_scout.run(
-            query, category, subcategory
-        )
+        result, json_path, report_path = await niche_scoutrun(query, category, subcategory)
 
         # Add file paths to the result
         result["_files"] = {"json_report": json_path, "report_file": report_path}
@@ -209,14 +200,10 @@ async def run_niche_scout(
 async def run_niche_scout_alt1(
     request: Request,
     query: str = Query(None, description="Optional query to focus the niche analysis"),
-    category: str = Query(
-        None, description="Main content category (e.g., 'tech', 'kids')"
-    ),
-    subcategory: str = Query(
-        None, description="Specific subcategory (e.g., 'kids.nursery')"
-    ),
+    category: str = Query(None, description="Main content category (e.g., 'tech', 'kids')"),
+    subcategory: str = Query(None, description="Specific subcategory (e.g., 'kids.nursery')"),
 ):
-    """Alternative path for Niche-Scout workflow."""
+    """Alternative path for Niche-Scout workflow"""
     return await run_niche_scout(request, query, category, subcategory)
 
 
@@ -224,14 +211,10 @@ async def run_niche_scout_alt1(
 async def run_niche_scout_alt2(
     request: Request,
     query: str = Query(None, description="Optional query to focus the niche analysis"),
-    category: str = Query(
-        None, description="Main content category (e.g., 'tech', 'kids')"
-    ),
-    subcategory: str = Query(
-        None, description="Specific subcategory (e.g., 'kids.nursery')"
-    ),
+    category: str = Query(None, description="Main content category (e.g., 'tech', 'kids')"),
+    subcategory: str = Query(None, description="Specific subcategory (e.g., 'kids.nursery')"),
 ):
-    """Alternative path for Niche-Scout workflow."""
+    """Alternative path for Niche-Scout workflow"""
     return await run_niche_scout(request, query, category, subcategory)
 
 
@@ -239,16 +222,14 @@ async def run_niche_scout_alt2(
 async def run_seed_to_blueprint(
     request: Request,
     video_url: str = Query(None, description="URL of the seed video to analyze"),
-    niche: str = Query(
-        None, description="Niche to analyze if no seed video is provided"
-    ),
+    niche: str = Query(None, description="Niche to analyze if no seed video is provided"),
 ):
-    """Run the Seed-to-Blueprint workflow to create a channel strategy."""
+    """Run the Seed-to-Blueprint workflow to create a channel strategy"""
     try:
         # Try to parse JSON body if present
         json_data = {}
         try:
-            json_data = await request.json()
+            json_data = await requestjson()
             logger.info("Received JSON payload for blueprint", payload=json_data)
 
             # If this is an A2A envelope, extract the relevant fields
@@ -258,9 +239,7 @@ async def run_seed_to_blueprint(
                 video_url = data.get("video_url", video_url)
                 niche = data.get("niche", niche)
         except Exception as e:
-            logger.debug(
-                "Failed to parse JSON body, using query parameters", error=str(e)
-            )
+            logger.debug("Failed to parse JSON body, using query parameters", error=str(e))
 
         if not video_url and not niche:
             raise HTTPException(
@@ -276,7 +255,7 @@ async def run_seed_to_blueprint(
         )
 
         blueprint = SeedToBlueprint()
-        result, json_path, report_path = await blueprint.run(video_url, niche)
+        result, json_path, report_path = await blueprintrun(video_url, niche)
 
         # Add file paths to the result
         result["_files"] = {"json_report": json_path, "report_file": report_path}
@@ -295,11 +274,9 @@ async def run_seed_to_blueprint(
 async def run_seed_to_blueprint_alt1(
     request: Request,
     video_url: str = Query(None, description="URL of the seed video to analyze"),
-    niche: str = Query(
-        None, description="Niche to analyze if no seed video is provided"
-    ),
+    niche: str = Query(None, description="Niche to analyze if no seed video is provided"),
 ):
-    """Alternative path for Seed-to-Blueprint workflow."""
+    """Alternative path for Seed-to-Blueprint workflow"""
     return await run_seed_to_blueprint(request, video_url, niche)
 
 
@@ -307,11 +284,9 @@ async def run_seed_to_blueprint_alt1(
 async def run_seed_to_blueprint_alt2(
     request: Request,
     video_url: str = Query(None, description="URL of the seed video to analyze"),
-    niche: str = Query(
-        None, description="Niche to analyze if no seed video is provided"
-    ),
+    niche: str = Query(None, description="Niche to analyze if no seed video is provided"),
 ):
-    """Alternative path for Seed-to-Blueprint workflow."""
+    """Alternative path for Seed-to-Blueprint workflow"""
     return await run_seed_to_blueprint(request, video_url, niche)
 
 
@@ -324,7 +299,7 @@ async def get_workflow_result_endpoint(
         description="Type of workflow result to retrieve (niche-scout or seed-to-blueprint)",
     ),
 ):
-    """Retrieve previously generated workflow results by ID."""
+    """Retrieve previously generated workflow results by ID"""
     return await get_workflow_result(result_id, type)
 
 
@@ -334,7 +309,7 @@ async def get_workflow_result_alt1(
     result_id: str,
     type: str = Query(..., description="Type of workflow result to retrieve"),
 ):
-    """Alternative path for workflow results."""
+    """Alternative path for workflow results"""
     return await get_workflow_result(result_id, type)
 
 
@@ -343,47 +318,47 @@ async def get_workflow_result_alt2(
     result_id: str,
     type: str = Query(..., description="Type of workflow result to retrieve"),
 ):
-    """Alternative path for workflow results."""
+    """Alternative path for workflow results"""
     return await get_workflow_result(result_id, type)
 
 
 # Workflow history endpoint
 @app.get("/workflow-history")
 async def get_workflow_history_endpoint():
-    """Retrieve history of workflow executions."""
+    """Retrieve history of workflow executions"""
     return await get_workflow_history()
 
 
 # Alternative routes for workflow history
 @app.get("/youtube/workflow-history")
 async def get_workflow_history_alt1():
-    """Alternative path for workflow history."""
+    """Alternative path for workflow history"""
     return await get_workflow_history()
 
 
 @app.get("/api/youtube/workflow-history")
 async def get_workflow_history_alt2():
-    """Alternative path for workflow history."""
+    """Alternative path for workflow history"""
     return await get_workflow_history()
 
 
 # Scheduled workflows endpoint
 @app.get("/scheduled-workflows")
 async def get_scheduled_workflows_endpoint():
-    """Retrieve scheduled workflows."""
+    """Retrieve scheduled workflows"""
     return await get_scheduled_workflows()
 
 
 # Alternative routes for scheduled workflows
 @app.get("/youtube/scheduled-workflows")
 async def get_scheduled_workflows_alt1():
-    """Alternative path for scheduled workflows."""
+    """Alternative path for scheduled workflows"""
     return await get_scheduled_workflows()
 
 
 @app.get("/api/youtube/scheduled-workflows")
 async def get_scheduled_workflows_alt2():
-    """Alternative path for scheduled workflows."""
+    """Alternative path for scheduled workflows"""
     return await get_scheduled_workflows()
 
 
@@ -392,12 +367,10 @@ async def get_scheduled_workflows_alt2():
 async def schedule_workflow_endpoint(
     workflow_type: str = Body(..., description="Type of workflow to schedule"),
     parameters: Dict[str, Any] = Body(..., description="Workflow parameters"),
-    frequency: str = Body(
-        ..., description="Schedule frequency (daily, weekly, monthly, once)"
-    ),
+    frequency: str = Body(..., description="Schedule frequency (daily, weekly, monthly, once)"),
     next_run: str = Body(..., description="Next scheduled run time"),
 ):
-    """Schedule a new workflow execution."""
+    """Schedule a new workflow execution"""
     return await schedule_workflow(workflow_type, parameters, frequency, next_run)
 
 
@@ -406,12 +379,10 @@ async def schedule_workflow_endpoint(
 async def schedule_workflow_alt1(
     workflow_type: str = Body(..., description="Type of workflow to schedule"),
     parameters: Dict[str, Any] = Body(..., description="Workflow parameters"),
-    frequency: str = Body(
-        ..., description="Schedule frequency (daily, weekly, monthly, once)"
-    ),
+    frequency: str = Body(..., description="Schedule frequency (daily, weekly, monthly, once)"),
     next_run: str = Body(..., description="Next scheduled run time"),
 ):
-    """Alternative path for scheduling workflows."""
+    """Alternative path for scheduling workflows"""
     return await schedule_workflow(workflow_type, parameters, frequency, next_run)
 
 
@@ -419,12 +390,10 @@ async def schedule_workflow_alt1(
 async def schedule_workflow_alt2(
     workflow_type: str = Body(..., description="Type of workflow to schedule"),
     parameters: Dict[str, Any] = Body(..., description="Workflow parameters"),
-    frequency: str = Body(
-        ..., description="Schedule frequency (daily, weekly, monthly, once)"
-    ),
+    frequency: str = Body(..., description="Schedule frequency (daily, weekly, monthly, once)"),
     next_run: str = Body(..., description="Next scheduled run time"),
 ):
-    """Alternative path for scheduling workflows."""
+    """Alternative path for scheduling workflows"""
     return await schedule_workflow(workflow_type, parameters, frequency, next_run)
 
 
@@ -433,7 +402,7 @@ async def schedule_workflow_alt2(
 
 @app.get("/openapi.yaml", include_in_schema=False)
 async def get_custom_openapi_yaml():
-    """Serve the custom OpenAPI YAML file."""
+    """Serve the custom OpenAPI YAML file"""
     with open("api/openapi.yaml", "r") as f:
         yaml_content = f.read()
     return JSONResponse(content=yaml.safe_load(yaml_content))
@@ -441,8 +410,8 @@ async def get_custom_openapi_yaml():
 
 @app.get("/docs", include_in_schema=False)
 async def custom_swagger_ui_html():
-    """Serve Swagger UI with the custom OpenAPI definition."""
-    swagger_ui_html =. """
+    """Serve Swagger UI with the custom OpenAPI definition"""
+    swagger_ui_html = """
     <!DOCTYPE html>
     <html>
     <head>
@@ -495,8 +464,8 @@ async def custom_swagger_ui_html():
 
 
 # Disable the default FastAPI OpenAPI schema
-def custom_openapi():.
-    """Override the default OpenAPI schema with a custom one."""
+def custom_openapi():
+    """Override the default OpenAPI schema with a custom one"""
     with open("api/openapi.yaml", "r") as f:
         return yaml.safe_load(f)
 

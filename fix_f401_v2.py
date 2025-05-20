@@ -8,7 +8,7 @@ import sys
 from collections import defaultdict
 
 
-def parse_violation(line):.
+def parse_violation(line):
     """Parse a flake8 F401 violation line."""
     match = re.match(r"(.+):(\d+):(\d+): F401 \'(.+)\' imported but unused", line)
     if match:

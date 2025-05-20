@@ -12,7 +12,7 @@ Options:
     --base-url URL    Base URL of the Social Intelligence Service (default: http://localhost:9000)
     --mock            Use mock data instead of making real API calls.
 """
-
+# type: ignore
 import argparse
 import json
 import sys
@@ -110,9 +110,7 @@ def run_test(base_url: str, test_case: Dict[str, Any], use_mock: bool = False) -
             has_data = False
 
         # Print results
-        print(
-            f"Status: {response.status_code} (Expected: {test_case['expected_status']})"
-        )
+        print(f"Status: {response.status_code} (Expected: {test_case['expected_status']})")
         print(f"Response time: {duration:.2f} seconds")
         print(f"Response has valid JSON: {has_data}")
 

@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
-"""Generate docker-compose.yml from individual service compose snippets."""
+"""Generate docker-compose.yml from individual service compose snippets"""
+
 from pathlib import Path
 
 import yaml
 
 
-def load_services():.
-    """Load the canonical services list."""
+def load_services():
+    """Load the canonical services list"""
     with open("services.yaml", "r") as f:
         services_data = yaml.safe_load(f)
 
@@ -15,7 +16,7 @@ def load_services():.
 
 
 def merge_compose_files(services_data):
-    """Merge all service compose snippets into a single compose file."""
+    """Merge all service compose snippets into a single compose file"""
     final_compose = {
         "version": "3.8",
         "services": {},
@@ -51,25 +52,15 @@ def merge_compose_files(services_data):
                             if isinstance(svc_config["environment"], list):
                                 env_vars = svc_config["environment"]
                                 if not any(
-                                    env.startswith("ALFRED_ENVIRONMENT=")
-                                    for env in env_vars
+                                    env.startswith("ALFRED_ENVIRONMENT=") for env in env_vars
                                 ):
-                                    env_vars.append(
-                                        "ALFRED_ENVIRONMENT=${ALFRED_ENVIRONMENT}"
-                                    )
-                                if not any(
-                                    env.startswith("ALFRED_LOG_LEVEL=")
-                                    for env in env_vars
-                                ):
-                                    env_vars.append(
-                                        "ALFRED_LOG_LEVEL=${ALFRED_LOG_LEVEL}"
-                                    )
+                                    env_vars.append("ALFRED_ENVIRONMENT=${ALFRED_ENVIRONMENT}")
+                                if not any(env.startswith("ALFRED_LOG_LEVEL=") for env in env_vars):
+                                    env_vars.append("ALFRED_LOG_LEVEL=${ALFRED_LOG_LEVEL}")
                             elif isinstance(svc_config["environment"], dict):
                                 env_dict = svc_config["environment"]
                                 if "ALFRED_ENVIRONMENT" not in env_dict:
-                                    env_dict["ALFRED_ENVIRONMENT"] = (
-                                        "${ALFRED_ENVIRONMENT}"
-                                    )
+                                    env_dict["ALFRED_ENVIRONMENT"] = "${ALFRED_ENVIRONMENT}"
                                 if "ALFRED_LOG_LEVEL" not in env_dict:
                                     env_dict["ALFRED_LOG_LEVEL"] = "${ALFRED_LOG_LEVEL}"
 
@@ -96,14 +87,14 @@ def merge_compose_files(services_data):
 
 
 def write_compose_file(compose_data, output_file):
-    """Write the generated compose file."""
+    """Write the generated compose file"""
     with open(output_file, "w") as f:
         yaml.dump(compose_data, f, default_flow_style=False, sort_keys=False)
     print(f"Generated: {output_file}")
 
 
 def main():
-    """Generate the complete docker-compose file."""
+    """Generate the complete docker-compose file"""
     services_data = load_services()
     compose_data = merge_compose_files(services_data)
 

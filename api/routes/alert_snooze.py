@@ -1,4 +1,4 @@
-"""API routes for alert snooze functionality."""
+"""API routes for alert snooze functionality"""
 
 from datetime import datetime
 from typing import List, Optional
@@ -14,20 +14,20 @@ router = APIRouter(prefix="/api/v1/alerts", tags=["Alert Snooze"])
 
 
 class SnoozeRequest(BaseModel):
-    """Request to snooze an alert."""
+    """Request to snooze an alert"""
 
     ttl: int = Field(..., description="Time to live in seconds", ge=300, le=86400)
     reason: Optional[str] = Field(None, description="Reason for snoozing")
 
 
 class UnsnoozeRequest(BaseModel):
-    """Request to unsnooze an alert."""
+    """Request to unsnooze an alert"""
 
     reason: Optional[str] = Field(None, description="Reason for unsnoozing")
 
 
 class SnoozeResponse(BaseModel):
-    """Response for snooze operations."""
+    """Response for snooze operations"""
 
     id: str
     alert_id: str
@@ -39,15 +39,15 @@ class SnoozeResponse(BaseModel):
     is_active: bool
 
 
-class SnoozeHistoryResponse(BaseModel):.
-    """Response for snooze history."""
+class SnoozeHistoryResponse(BaseModel):
+    """Response for snooze history"""
 
     history: List[dict]
     total_count: int
 
 
-def get_snooze_service() -> AlertSnoozeService:.
-    """Dependency to get snooze service."""
+def get_snooze_service() -> AlertSnoozeService:
+    """Dependency to get snooze service"""
     redis_client = get_redis_client()
     config = SnoozeConfig()
     return AlertSnoozeService(redis_client, config=config)
@@ -60,7 +60,7 @@ async def snooze_alert(
     snooze_service: AlertSnoozeService = Depends(get_snooze_service),
     current_user=Depends(get_current_user),
 ):
-    """Snooze an alert for a specified duration."""
+    """Snooze an alert for a specified duration"""
     try:
         snooze = await snooze_service.snooze_alert(
             alert_id=alert_id,
@@ -90,7 +90,7 @@ async def unsnooze_alert(
     snooze_service: AlertSnoozeService = Depends(get_snooze_service),
     current_user=Depends(get_current_user),
 ):
-    """Manually unsnooze an alert."""
+    """Manually unsnooze an alert"""
     success = await snooze_service.unsnooze_alert(
         alert_id=alert_id, reason=request.reason, user_id=current_user.id
     )
@@ -105,7 +105,7 @@ async def unsnooze_alert(
 async def get_snooze_status(
     alert_id: str, snooze_service: AlertSnoozeService = Depends(get_snooze_service)
 ):
-    """Get current snooze status for an alert."""
+    """Get current snooze status for an alert"""
     snooze = await snooze_service.get_snooze(alert_id)
 
     if not snooze:
@@ -129,7 +129,7 @@ async def get_snooze_history(
     limit: int = 10,
     snooze_service: AlertSnoozeService = Depends(get_snooze_service),
 ):
-    """Get snooze history for an alert."""
+    """Get snooze history for an alert"""
     history = await snooze_service.get_snooze_history(alert_id, limit)
 
     return SnoozeHistoryResponse(history=history, total_count=len(history))
@@ -139,7 +139,7 @@ async def get_snooze_history(
 async def list_snoozed_alerts(
     snooze_service: AlertSnoozeService = Depends(get_snooze_service),
 ):
-    """List all currently snoozed alert IDs."""
+    """List all currently snoozed alert IDs"""
     return await snooze_service.list_snoozed_alerts()
 
 
@@ -150,7 +150,7 @@ async def extend_snooze(
     snooze_service: AlertSnoozeService = Depends(get_snooze_service),
     current_user=Depends(get_current_user),
 ):
-    """Extend an existing snooze."""
+    """Extend an existing snooze"""
     snooze = await snooze_service.extend_snooze(
         alert_id=alert_id,
         additional_duration=additional_seconds,

@@ -280,9 +280,7 @@ async def search_videos(query, max_results=10, youtube=None, published_after=Non
         view_count = int(stats.get("viewCount", 0))
         like_count = int(stats.get("likeCount", 0))
         comment_count = int(stats.get("commentCount", 0))
-        engagement_rate = (
-            ((like_count + comment_count) / view_count * 100) if view_count > 0 else 0
-        )
+        engagement_rate = ((like_count + comment_count) / view_count * 100) if view_count > 0 else 0
 
         # Calculate freshness score
         freshness = calculate_freshness_score(snippet.get("publishedAt", ""))
@@ -296,9 +294,7 @@ async def search_videos(query, max_results=10, youtube=None, published_after=Non
             "view_count": view_count,
             "like_count": like_count,
             "comment_count": comment_count,
-            "duration": parse_duration(
-                item.get("contentDetails", {}).get("duration", "PT0S")
-            ),
+            "duration": parse_duration(item.get("contentDetails", {}).get("duration", "PT0S")),
             "tags": snippet.get("tags", []),
             "description": snippet.get("description", ""),
             "engagement_rate": round(engagement_rate, 2),
@@ -361,15 +357,11 @@ async def get_channel_details(channel_ids, youtube=None):
                 "view_count": view_count,
                 "country": snippet.get("country", "Unknown"),
                 "published_at": snippet.get("publishedAt", ""),
-                "thumbnail": snippet.get("thumbnails", {})
-                .get("high", {})
-                .get("url", ""),
+                "thumbnail": snippet.get("thumbnails", {}).get("high", {}).get("url", ""),
                 "views_per_video": int(views_per_video),
                 "views_per_sub": round(views_per_sub, 2),
                 "keywords": (
-                    branding.get("keywords", "").split(",")
-                    if branding.get("keywords")
-                    else []
+                    branding.get("keywords", "").split(",") if branding.get("keywords") else []
                 ),
             }
             channels.append(channel_data)
@@ -428,14 +420,8 @@ def identify_video_pattern(videos):
             except:
                 pass
 
-        top_day = (
-            max(days_of_week.items(), key=lambda x: x[1])[0]
-            if days_of_week
-            else "Unknown"
-        )
-        top_hour = (
-            max(hours_of_day.items(), key=lambda x: x[1])[0] if hours_of_day else -1
-        )
+        top_day = max(days_of_week.items(), key=lambda x: x[1])[0] if days_of_week else "Unknown"
+        top_hour = max(hours_of_day.items(), key=lambda x: x[1])[0] if hours_of_day else -1
     else:
         top_day = "Unknown"
         top_hour = -1
@@ -602,36 +588,22 @@ async def analyze_niche(category, subcategory):
             if i < len(title_words) - 2:
                 # Look for 3-word phrases
                 phrase = " ".join(title_words[i : i + 3])
-                if (
-                    len(phrase) > 8
-                    and "official" not in phrase
-                    and "video" not in phrase
-                ):
-                    weight = (
-                        1.0 + (video["view_count"] / 100000) * 0.5
-                    )  # Weight by views
+                if len(phrase) > 8 and "official" not in phrase and "video" not in phrase:
+                    weight = 1.0 + (video["view_count"] / 100000) * 0.5  # Weight by views
                     niche_keywords[phrase] = niche_keywords.get(phrase, 0) + weight
 
             if i < len(title_words) - 1:
                 # Look for 2-word phrases
                 phrase = " ".join(title_words[i : i + 2])
-                if (
-                    len(phrase) > 5
-                    and "official" not in phrase
-                    and "video" not in phrase
-                ):
-                    weight = (
-                        1.0 + (video["view_count"] / 100000) * 0.3
-                    )  # Weight by views
+                if len(phrase) > 5 and "official" not in phrase and "video" not in phrase:
+                    weight = 1.0 + (video["view_count"] / 100000) * 0.3  # Weight by views
                     niche_keywords[phrase] = niche_keywords.get(phrase, 0) + weight
 
         # Extract from tags
         for tag in video.get("tags", []):
             if 5 < len(tag) < 30 and " " in tag:
                 weight = 1.0 + (video["view_count"] / 100000) * 0.4
-                niche_keywords[tag.lower()] = (
-                    niche_keywords.get(tag.lower(), 0) + weight
-                )
+                niche_keywords[tag.lower()] = niche_keywords.get(tag.lower(), 0) + weight
 
     # Sort keywords by frequency
     sorted_keywords = sorted(niche_keywords.items(), key=lambda x: x[1], reverse=True)
@@ -650,9 +622,7 @@ async def analyze_niche(category, subcategory):
 
         if len(matching_videos) >= 2:
             # Calculate metrics
-            avg_views = sum(v["view_count"] for v in matching_videos) / len(
-                matching_videos
-            )
+            avg_views = sum(v["view_count"] for v in matching_videos) / len(matching_videos)
             total_views = sum(v["view_count"] for v in matching_videos)
             avg_likes = (
                 sum(v["like_count"] for v in matching_videos) / len(matching_videos)
@@ -672,35 +642,27 @@ async def analyze_niche(category, subcategory):
             )
 
             # Calculate competition
-            channel_diversity = len(
-                set(v["channel_id"] for v in matching_videos)
-            ) / len(matching_videos)
+            channel_diversity = len(set(v["channel_id"] for v in matching_videos)) / len(
+                matching_videos
+            )
 
             # Enhanced scoring formula
-            view_factor = (
-                avg_views / 10000
-            ) ** 0.5  # Square root to reduce impact of outliers
+            view_factor = (avg_views / 10000) ** 0.5  # Square root to reduce impact of outliers
             engagement_factor = 1 + engagement / 10
             freshness_factor = 0.7 + (avg_freshness * 0.6)  # 0.7-1.3 range
             competition_factor = 0.5 + (channel_diversity * 0.5)  # 0.5-1.0 range
 
             # Final score calculation
-            score = (
-                view_factor * engagement_factor * freshness_factor * competition_factor
-            )
+            score = view_factor * engagement_factor * freshness_factor * competition_factor
 
             # Gather top channels for this niche
-            video_channels = [
-                (v["channel_id"], v["channel_title"]) for v in matching_videos
-            ]
+            video_channels = [(v["channel_id"], v["channel_title"]) for v in matching_videos]
             channel_counts = {}
             for ch_id, ch_title in video_channels:
                 channel_counts[ch_id] = channel_counts.get(ch_id, 0) + 1
 
             top_channels = []
-            for ch_id, count in sorted(
-                channel_counts.items(), key=lambda x: x[1], reverse=True
-            )[
+            for ch_id, count in sorted(channel_counts.items(), key=lambda x: x[1], reverse=True)[
                 :3
             ]:  # Increased from 2 to 3
                 if ch_id in channel_map:
@@ -710,9 +672,7 @@ async def analyze_niche(category, subcategory):
                             "name": ch_data["title"],
                             "subs": ch_data["subscribers"],
                             "videos": ch_data["video_count"],
-                            "views_per_video": ch_data.get(
-                                "views_per_video", "Unknown"
-                            ),
+                            "views_per_video": ch_data.get("views_per_video", "Unknown"),
                             "thumbnail": ch_data.get("thumbnail", ""),
                         }
                     )
@@ -754,9 +714,9 @@ async def analyze_niche(category, subcategory):
                         "engagement_rate": v.get("engagement_rate", 0),
                         "thumbnail": v.get("thumbnail", ""),
                     }
-                    for v in sorted(
-                        matching_videos, key=lambda x: x["view_count"], reverse=True
-                    )[:3]
+                    for v in sorted(matching_videos, key=lambda x: x["view_count"], reverse=True)[
+                        :3
+                    ]
                 ],
             }
             niches.append(niche_data)
@@ -803,8 +763,7 @@ async def analyze_niche(category, subcategory):
         "trending_niches": trend_niches,
         "top_niches": trend_niches[:5],
         "actual_processing_time": round(processing_time, 2),
-        "actual_cost": 0.05
-        * len(search_queries),  # Approximate cost based on API usage
+        "actual_cost": 0.05 * len(search_queries),  # Approximate cost based on API usage
         "videos_analyzed": len(all_videos),
         "channels_analyzed": len(channels),
         "visualization_guide": visualization_guide,
@@ -815,16 +774,10 @@ async def analyze_niche(category, subcategory):
                 "Use numbers when relevant (e.g., '5 Ways to...')",
                 "Include emotional triggers or questions to increase curiosity",
             ],
-            "optimal_duration": identify_video_pattern(all_videos).get(
-                "avg_duration", 0
-            ),
+            "optimal_duration": identify_video_pattern(all_videos).get("avg_duration", 0),
             "recommended_upload_times": {
-                "day": identify_video_pattern(all_videos).get(
-                    "best_upload_day", "Unknown"
-                ),
-                "hour": identify_video_pattern(all_videos).get(
-                    "best_upload_hour", "Unknown"
-                ),
+                "day": identify_video_pattern(all_videos).get("best_upload_day", "Unknown"),
+                "hour": identify_video_pattern(all_videos).get("best_upload_hour", "Unknown"),
             },
             "keyword_recommendations": [kw for kw, _ in sorted_keywords[:10]],
         },
@@ -846,9 +799,7 @@ async def analyze_niche(category, subcategory):
 
     print("Viewer-ready results saved to viewer-ready-results.json")
     print("Copy this into your browser console to view:")
-    print(
-        f"localStorage.setItem('youtube-results', JSON.stringify({json.dumps([result])}))"
-    )
+    print(f"localStorage.setItem('youtube-results', JSON.stringify({json.dumps([result])}))")
 
     # Print visualization guide
     if visualization_guide.get("chart_file"):

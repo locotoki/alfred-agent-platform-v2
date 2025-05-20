@@ -6,8 +6,7 @@ import os
 import pytest
 
 from agents.financial_tax.agent import FinancialTaxAgent
-from libs.a2a_adapter import (A2AEnvelope, PolicyMiddleware, PubSubTransport,
-                              SupabaseTransport)
+from libs.a2a_adapter import A2AEnvelope, PolicyMiddleware, PubSubTransport, SupabaseTransport
 
 pytestmark = pytest.mark.integration
 
@@ -21,11 +20,9 @@ def event_loop():
 
 
 @pytest.fixture
-async def pubsub_transport():.
+async def pubsub_transport():
     """Create real PubSubTransport instance."""
-    transport = PubSubTransport(
-        project_id=os.getenv("GCP_PROJECT_ID", "alfred-agent-platform")
-    )
+    transport = PubSubTransport(project_id=os.getenv("GCP_PROJECT_ID", "alfred-agent-platform"))
     yield transport
 
 
@@ -58,11 +55,11 @@ async def financial_tax_agent(pubsub_transport, supabase_transport, policy_middl
     return agent
 
 
-class TestFinancialTaxAgentIntegration:.
+class TestFinancialTaxAgentIntegration:
     """Integration tests for Financial Tax Agent."""
 
     @pytest.mark.asyncio
-    async def test_agent_lifecycle(self, financial_tax_agent):.
+    async def test_agent_lifecycle(self, financial_tax_agent):
         """Test agent startup and shutdown."""
         # Start agent
         await financial_tax_agent.start()
@@ -78,7 +75,7 @@ class TestFinancialTaxAgentIntegration:.
     @pytest.mark.asyncio
     async def test_tax_calculation_flow(
         self, financial_tax_agent, pubsub_transport, supabase_transport
-    ):.
+    ):
         """Test end-to-end tax calculation flow."""
         # Create test envelope
         envelope = A2AEnvelope(
@@ -104,9 +101,7 @@ class TestFinancialTaxAgentIntegration:.
         assert "result" in result
 
     @pytest.mark.asyncio
-    async def test_financial_analysis_flow(
-        self, financial_tax_agent, supabase_transport
-    ):
+    async def test_financial_analysis_flow(self, financial_tax_agent, supabase_transport):
         """Test end-to-end financial analysis flow."""
         envelope = A2AEnvelope(
             intent="FINANCIAL_ANALYSIS",
@@ -183,9 +178,7 @@ class TestFinancialTaxAgentIntegration:.
         assert "result" in result
 
     @pytest.mark.asyncio
-    async def test_error_handling_integration(
-        self, financial_tax_agent, supabase_transport
-    ):
+    async def test_error_handling_integration(self, financial_tax_agent, supabase_transport):
         """Test error handling in integration context."""
         # Create envelope with invalid data
         envelope = A2AEnvelope(
@@ -205,9 +198,7 @@ class TestFinancialTaxAgentIntegration:.
             await financial_tax_agent.process_task(envelope)
 
     @pytest.mark.asyncio
-    async def test_concurrent_task_processing(
-        self, financial_tax_agent, supabase_transport
-    ):
+    async def test_concurrent_task_processing(self, financial_tax_agent, supabase_transport):
         """Test processing multiple tasks concurrently."""
         # Create multiple envelopes
         envelopes = [

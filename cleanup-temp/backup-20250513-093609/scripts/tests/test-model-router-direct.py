@@ -9,7 +9,7 @@ import sys
 import requests
 
 
-def get_models():.
+def get_models():
     """Get models from the registry."""
     try:
         response = requests.get("http://localhost:8079/api/v1/models", timeout=5)
@@ -85,9 +85,7 @@ def main():
     if model_id:
         test_model_router(model_id, message)
     else:
-        print(
-            f"Model '{model_name}' not found. Please choose from the available models."
-        )
+        print(f"Model '{model_name}' not found. Please choose from the available models.")
 
 
 if __name__ == "__main__":

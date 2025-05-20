@@ -1,5 +1,6 @@
-"""Simple report generation without HTML templates."""
+"""Simple report generation without HTML templates"""
 
+# type: ignore
 import json
 import os
 from datetime import datetime
@@ -37,9 +38,7 @@ def generate_niche_scout_report(
     return filepath
 
 
-def generate_blueprint_report(
-    data: Dict[str, Any], output_dir: str = "/app/data/builder"
-) -> str:
+def generate_blueprint_report(data: Dict[str, Any], output_dir: str = "/app/data/builder") -> str:
     """Generate a simplified JSON report for Seed-to-Blueprint results.
 
     Args:

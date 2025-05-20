@@ -8,13 +8,13 @@ from abc import abstractmethod
 from typing import Any, Callable, Dict, List, Optional, Protocol
 
 
-class SlackClient(Protocol):.
-    """Protocol for Slack API client interactions."""
+class SlackClient(Protocol):
+    """Protocol for Slack API client interactions"""
 
     @abstractmethod
     async def send_message(
         self, channel: str, text: str, blocks: Optional[List[Dict[str, Any]]] = None
-    ) -> Dict[str, Any]:.
+    ) -> Dict[str, Any]:
         """Send a message to a Slack channel.
 
         Args:
@@ -34,7 +34,7 @@ class SlackClient(Protocol):.
         timestamp: str,
         text: str,
         blocks: Optional[List[Dict[str, Any]]] = None,
-    ) -> Dict[str, Any]:.
+    ) -> Dict[str, Any]:
         """Update an existing message.
 
         Args:
@@ -49,7 +49,7 @@ class SlackClient(Protocol):.
         ...
 
     @abstractmethod
-    async def get_user_info(self, user_id: str) -> Dict[str, Any]:.
+    async def get_user_info(self, user_id: str) -> Dict[str, Any]:
         """Get information about a user.
 
         Args:
@@ -61,8 +61,8 @@ class SlackClient(Protocol):.
         ...
 
 
-class CommandHandler(Protocol):.
-    """Protocol for slash command handlers."""
+class CommandHandler(Protocol):
+    """Protocol for slash command handlers"""
 
     @abstractmethod
     def handle_command(
@@ -70,7 +70,7 @@ class CommandHandler(Protocol):.
         command: Dict[str, Any],
         ack: Callable[[], None],
         say: Callable[[str], None],
-    ) -> None:.
+    ) -> None:
         """Handle a slash command.
 
         Args:
@@ -81,7 +81,7 @@ class CommandHandler(Protocol):.
         ...
 
     @abstractmethod
-    def get_command_help(self) -> str:.
+    def get_command_help(self) -> str:
         """Get help text for this command.
 
         Returns:
@@ -90,11 +90,11 @@ class CommandHandler(Protocol):.
         ...
 
 
-class EventListener(Protocol):.
-    """Protocol for Slack event listeners."""
+class EventListener(Protocol):
+    """Protocol for Slack event listeners"""
 
     @abstractmethod
-    def handle_event(self, event: Dict[str, Any]) -> None:.
+    def handle_event(self, event: Dict[str, Any]) -> None:
         """Handle a Slack event.
 
         Args:
@@ -103,7 +103,7 @@ class EventListener(Protocol):.
         ...
 
     @abstractmethod
-    def get_event_types(self) -> List[str]:.
+    def get_event_types(self) -> List[str]:
         """Get list of event types this listener handles.
 
         Returns:
@@ -112,11 +112,11 @@ class EventListener(Protocol):.
         ...
 
 
-class DiagnosticsBot(Protocol):.
-    """Protocol for the Slack diagnostics bot."""
+class DiagnosticsBot(Protocol):
+    """Protocol for the Slack diagnostics bot"""
 
     @abstractmethod
-    async def check_health(self, services: List[str]) -> Dict[str, bool]:.
+    async def check_health(self, services: List[str]) -> Dict[str, bool]:
         """Check health of specified services.
 
         Args:
@@ -128,7 +128,7 @@ class DiagnosticsBot(Protocol):.
         ...
 
     @abstractmethod
-    def generate_grafana_link(self, service_name: str, metric_type: str) -> str:.
+    def generate_grafana_link(self, service_name: str, metric_type: str) -> str:
         """Generate Grafana link for service metrics.
 
         Args:
@@ -141,7 +141,7 @@ class DiagnosticsBot(Protocol):.
         ...
 
     @abstractmethod
-    def format_health_table(self, health_data: Dict[str, bool]) -> str:.
+    def format_health_table(self, health_data: Dict[str, bool]) -> str:
         """Format health data as a table.
 
         Args:

@@ -9,19 +9,19 @@ from datetime import timedelta
 from typing import List
 
 from alfred.alerts.models.alert_group import AlertGroup
-from alfred.core.protocols import AlertProtocol
+from alfred.alerts.protocols import AlertProtocol
 
 logger = logging.getLogger(__name__)
 
 
-class AlertGroupingService:.
-    """Service for grouping and correlating alerts."""
+class AlertGroupingService:
+    """Service for grouping and correlating alerts"""
 
     def __init__(
         self,
         time_window: timedelta = timedelta(minutes=5),
         similarity_threshold: float = 0.8,
-    ):.
+    ):
         """Initialize alert grouping service.
 
         Args:
@@ -31,7 +31,7 @@ class AlertGroupingService:.
         self.time_window = time_window
         self.similarity_threshold = similarity_threshold
 
-    def group_alerts(self, alerts: List[AlertProtocol]) -> List[AlertGroup]:.
+    def group_alerts(self, alerts: List[AlertProtocol]) -> List[AlertGroup]:
         """Group related alerts based on similarity and time proximity.
 
         Args:
@@ -43,9 +43,7 @@ class AlertGroupingService:.
         # Implementation placeholder
         raise NotImplementedError("Alert grouping algorithm not implemented")
 
-    def calculate_similarity(
-        self, alert1: AlertProtocol, alert2: AlertProtocol
-    ) -> float:
+    def calculate_similarity(self, alert1: AlertProtocol, alert2: AlertProtocol) -> float:
         """Calculate similarity score between two alerts.
 
         Args:

@@ -8,7 +8,7 @@ import uuid
 from datetime import datetime
 
 
-class A2AEnvelope:.
+class A2AEnvelope:
     """Simple A2A envelope implementation."""
 
     def __init__(self, intent, data=None, task_id=None, trace_id=None):
@@ -33,7 +33,7 @@ class A2AEnvelope:.
 class MockSocialIntelAgent:
     """Mock SocialIntelligence Agent for integration testing."""
 
-    def __init__(self):.
+    def __init__(self):
         """Initialize the agent."""
         # Set up mocked components
         self.intents_supported = [
@@ -108,9 +108,7 @@ class MockSocialIntelAgent:
 
         # Save mock digest
         with open("niche_scout/digest.md", "w") as f:
-            f.write(
-                f"# YouTube Niche Scout - {datetime.now().strftime('%Y-%m-%d')}\n\n"
-            )
+            f.write(f"# YouTube Niche Scout - {datetime.now().strftime('%Y-%m-%d')}\n\n")
             f.write("## Top Trending Niches\n\n")
             for i, niche in enumerate(trending_niches, 1):
                 f.write(f"{i}. **{niche['query']}** - Score: {niche['score']:.2f}\n")
@@ -132,9 +130,7 @@ class MockSocialIntelAgent:
         print("\n=== Running Seed-to-Blueprint Workflow ===\n")
 
         # Get seed URL or auto-niche flag
-        seed_url = content.get(
-            "seed_url", "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
-        )
+        seed_url = content.get("seed_url", "https://www.youtube.com/watch?v=dQw4w9WgXcQ")
         auto_niche = content.get("auto_niche", False)
 
         if auto_niche:

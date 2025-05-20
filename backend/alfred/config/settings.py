@@ -1,10 +1,10 @@
-"""Configuration settings for Alfred ML components."""
+"""Configuration settings for Alfred ML components"""
 
 import os
 
 
-class Settings:.
-    """Application settings with environment variable support."""
+class Settings:
+    """Application settings with environment variable support"""
 
     # Database configuration
     ALERT_DB_URI: str = os.getenv(
@@ -21,7 +21,7 @@ class Settings:.
 
     @classmethod
     def get_database_url(cls) -> str:
-        """Get database URL with safety checks."""
+        """Get database URL with safety checks"""
         if not cls.ALERT_DB_URI:
             raise ValueError("ALERT_DB_URI environment variable not set")
         return cls.ALERT_DB_URI

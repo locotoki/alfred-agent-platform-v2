@@ -10,10 +10,10 @@ import pytest
 from alfred.ml.thresholds import ThresholdConfig, ThresholdService
 
 
-class TestThresholdConfig:.
+class TestThresholdConfig:
     """Test ThresholdConfig dataclass."""
 
-    def test_default_values(self):.
+    def test_default_values(self):
         """Test default configuration values."""
         config = ThresholdConfig()
         assert config.noise_threshold == 0.7
@@ -21,7 +21,7 @@ class TestThresholdConfig:.
         assert config.batch_size == 100
         assert config.learning_rate == 0.01
 
-    def test_to_dict(self):.
+    def test_to_dict(self):
         """Test conversion to dictionary."""
         config = ThresholdConfig(noise_threshold=0.8)
         data = config.to_dict()
@@ -48,7 +48,7 @@ class TestThresholdService:
     """Test ThresholdService functionality."""
 
     @pytest.fixture
-    def temp_config_file(self):.
+    def temp_config_file(self):
         """Create a temporary config file."""
         with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as f:
             json.dump(
@@ -67,11 +67,9 @@ class TestThresholdService:
         """Create a mock metrics collector."""
         return Mock()
 
-    def test_initialization_with_file(self, temp_config_file, metrics_mock):.
+    def test_initialization_with_file(self, temp_config_file, metrics_mock):
         """Test service initialization with existing config file."""
-        service = ThresholdService(
-            metrics=metrics_mock, config_path=str(temp_config_file)
-        )
+        service = ThresholdService(metrics=metrics_mock, config_path=str(temp_config_file))
 
         config = service.get_thresholds()
         assert config["noise_threshold"] == 0.75
@@ -82,9 +80,7 @@ class TestThresholdService:
 
     def test_initialization_without_file(self, metrics_mock):
         """Test service initialization without config file."""
-        service = ThresholdService(
-            metrics=metrics_mock, config_path="/nonexistent/path.json"
-        )
+        service = ThresholdService(metrics=metrics_mock, config_path="/nonexistent/path.json")
 
         config = service.get_thresholds()
         assert config["noise_threshold"] == 0.7  # Default
@@ -103,9 +99,7 @@ class TestThresholdService:
 
     def test_update_thresholds_valid(self, temp_config_file, metrics_mock):
         """Test updating thresholds with valid values."""
-        service = ThresholdService(
-            metrics=metrics_mock, config_path=str(temp_config_file)
-        )
+        service = ThresholdService(metrics=metrics_mock, config_path=str(temp_config_file))
 
         updates = {"noise_threshold": 0.85, "batch_size": 150}
 
@@ -132,9 +126,7 @@ class TestThresholdService:
     def test_save_config_error_handling(self, metrics_mock):
         """Test error handling when saving config fails."""
         with patch("builtins.open", side_effect=PermissionError("No write access")):
-            service = ThresholdService(
-                metrics=metrics_mock, config_path="/readonly/config.json"
-            )
+            service = ThresholdService(metrics=metrics_mock, config_path="/readonly/config.json")
 
             # Should not raise, but should track error
             service._save_config()
@@ -209,9 +201,7 @@ class TestThresholdService:
 
     def test_optimize_thresholds_combined_metrics(self, temp_config_file, metrics_mock):
         """Test optimization with multiple performance metrics."""
-        service = ThresholdService(
-            metrics=metrics_mock, config_path=str(temp_config_file)
-        )
+        service = ThresholdService(metrics=metrics_mock, config_path=str(temp_config_file))
 
         performance_metrics = {"false_positive_rate": 0.12, "accuracy": 0.88}
 

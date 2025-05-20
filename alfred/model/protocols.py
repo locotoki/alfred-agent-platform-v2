@@ -8,11 +8,11 @@ from abc import abstractmethod
 from typing import Any, Dict, List, Optional, Protocol
 
 
-class ModelRouter(Protocol):.
-    """Protocol for model routing and selection."""
+class ModelRouter(Protocol):
+    """Protocol for model routing and selection"""
 
     @abstractmethod
-    async def route_request(self, task_type: str, payload: Dict[str, Any]) -> str:.
+    async def route_request(self, task_type: str, payload: Dict[str, Any]) -> str:
         """Route a request to the appropriate model.
 
         Args:
@@ -25,7 +25,7 @@ class ModelRouter(Protocol):.
         ...
 
     @abstractmethod
-    async def get_available_models(self) -> List[Dict[str, Any]]:.
+    async def get_available_models(self) -> List[Dict[str, Any]]:
         """Get list of available models.
 
         Returns:
@@ -34,7 +34,7 @@ class ModelRouter(Protocol):.
         ...
 
     @abstractmethod
-    async def get_model_metrics(self, model_id: str) -> Dict[str, float]:.
+    async def get_model_metrics(self, model_id: str) -> Dict[str, float]:
         """Get metrics for a specific model.
 
         Args:
@@ -46,11 +46,11 @@ class ModelRouter(Protocol):.
         ...
 
 
-class ModelRegistry(Protocol):.
-    """Protocol for model registration and discovery."""
+class ModelRegistry(Protocol):
+    """Protocol for model registration and discovery"""
 
     @abstractmethod
-    async def register_model(self, model_config: Dict[str, Any]) -> str:.
+    async def register_model(self, model_config: Dict[str, Any]) -> str:
         """Register a new model.
 
         Args:
@@ -62,7 +62,7 @@ class ModelRegistry(Protocol):.
         ...
 
     @abstractmethod
-    async def update_model(self, model_id: str, updates: Dict[str, Any]) -> bool:.
+    async def update_model(self, model_id: str, updates: Dict[str, Any]) -> bool:
         """Update an existing model's configuration.
 
         Args:
@@ -75,7 +75,7 @@ class ModelRegistry(Protocol):.
         ...
 
     @abstractmethod
-    async def get_model(self, model_id: str) -> Optional[Dict[str, Any]]:.
+    async def get_model(self, model_id: str) -> Optional[Dict[str, Any]]:
         """Get model configuration by ID.
 
         Args:
@@ -87,7 +87,7 @@ class ModelRegistry(Protocol):.
         ...
 
     @abstractmethod
-    async def list_models(self, provider: Optional[str] = None) -> List[Dict[str, Any]]:.
+    async def list_models(self, provider: Optional[str] = None) -> List[Dict[str, Any]]:
         """List all registered models.
 
         Args:
@@ -99,11 +99,11 @@ class ModelRegistry(Protocol):.
         ...
 
 
-class Model(Protocol):.
-    """Protocol for individual model interfaces."""
+class Model(Protocol):
+    """Protocol for individual model interfaces"""
 
     @abstractmethod
-    async def predict(self, input_data: Dict[str, Any]) -> Dict[str, Any]:.
+    async def predict(self, input_data: Dict[str, Any]) -> Dict[str, Any]:
         """Make a prediction using the model.
 
         Args:
@@ -115,7 +115,7 @@ class Model(Protocol):.
         ...
 
     @abstractmethod
-    def get_info(self) -> Dict[str, Any]:.
+    def get_info(self) -> Dict[str, Any]:
         """Get model information.
 
         Returns:
@@ -124,7 +124,7 @@ class Model(Protocol):.
         ...
 
     @abstractmethod
-    def get_capabilities(self) -> List[str]:.
+    def get_capabilities(self) -> List[str]:
         """Get model capabilities.
 
         Returns:
@@ -133,13 +133,11 @@ class Model(Protocol):.
         ...
 
 
-class ModelMonitor(Protocol):.
-    """Protocol for model monitoring and observability."""
+class ModelMonitor(Protocol):
+    """Protocol for model monitoring and observability"""
 
     @abstractmethod
-    def record_prediction(
-        self, model_id: str, duration_ms: float, success: bool
-    ) -> None:.
+    def record_prediction(self, model_id: str, duration_ms: float, success: bool) -> None:
         """Record a prediction event.
 
         Args:
@@ -150,7 +148,7 @@ class ModelMonitor(Protocol):.
         ...
 
     @abstractmethod
-    def get_model_stats(self, model_id: str, time_window: int = 3600) -> Dict[str, Any]:.
+    def get_model_stats(self, model_id: str, time_window: int = 3600) -> Dict[str, Any]:
         """Get model statistics over a time window.
 
         Args:

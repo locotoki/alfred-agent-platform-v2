@@ -60,7 +60,7 @@ class MetricsCollector:
         )
 
     def track_task(self, intent: str):
-        """Decorator to track task metrics."""
+        """Decorator to track task metrics"""
 
         def decorator(func: Callable) -> Callable:
             @wraps(func)
@@ -88,9 +88,9 @@ class MetricsCollector:
 
                 finally:
                     duration = time.time() - start_time
-                    self.task_duration.labels(
-                        service=self.service_name, intent=intent
-                    ).observe(duration)
+                    self.task_duration.labels(service=self.service_name, intent=intent).observe(
+                        duration
+                    )
                     self.active_tasks.labels(service=self.service_name).dec()
 
             return wrapper
@@ -98,7 +98,7 @@ class MetricsCollector:
         return decorator
 
     def track_api(self, endpoint: str, method: str):
-        """Decorator to track API metrics."""
+        """Decorator to track API metrics"""
 
         def decorator(func: Callable) -> Callable:
             @wraps(func)
@@ -136,7 +136,7 @@ class MetricsCollector:
         return decorator
 
     def track_pubsub(self, topic: str, operation: str):
-        """Track Pub/Sub metrics."""
+        """Track Pub/Sub metrics"""
 
         def decorator(func: Callable) -> Callable:
             @wraps(func)

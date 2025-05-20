@@ -16,7 +16,7 @@ import sys
 import requests
 
 
-class OllamaChat:.
+class OllamaChat:
     """Simple command-line chat interface for Ollama."""
 
     def __init__(self, model="tinyllama"):
@@ -63,9 +63,7 @@ class OllamaChat:.
                     assistant_message = result["message"]["content"]
 
                     # Add assistant response to history
-                    self.history.append(
-                        {"role": "assistant", "content": assistant_message}
-                    )
+                    self.history.append({"role": "assistant", "content": assistant_message})
 
                     return assistant_message
                 else:
@@ -81,9 +79,7 @@ class OllamaChat:.
         print("Loading model... (first response may take a moment)")
 
         # Send initial message to load the model
-        initial_response = self.send_message(
-            "Hello! Please introduce yourself briefly."
-        )
+        initial_response = self.send_message("Hello! Please introduce yourself briefly.")
         print(f"\nModel: {initial_response}\n")
 
         while True:

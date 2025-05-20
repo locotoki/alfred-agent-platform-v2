@@ -42,7 +42,5 @@ def query():
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 8013))
     logger.info(f"Starting RAG Gateway on port {port}")
-    logger.info(
-        f"OpenAI API Key: {os.environ.get('OPENAI_API_KEY', 'Not set')[0:5]}..."
-    )
+    logger.info(f"OpenAI API Key: {os.environ.get('OPENAI_API_KEY', 'Not set')[0:5]}...")
     app.run(host="0.0.0.0", port=port)

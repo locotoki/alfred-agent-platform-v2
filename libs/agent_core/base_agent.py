@@ -5,8 +5,7 @@ from typing import Any, Dict, List
 
 import structlog
 
-from libs.a2a_adapter import (A2AEnvelope, PolicyMiddleware, PubSubTransport,
-                              SupabaseTransport)
+from libs.a2a_adapter import A2AEnvelope, PolicyMiddleware, PubSubTransport, SupabaseTransport
 
 logger = structlog.get_logger(__name__)
 
@@ -33,10 +32,10 @@ class BaseAgent(ABC):
 
     @abstractmethod
     async def process_task(self, envelope: A2AEnvelope) -> Dict[str, Any]:
-        """Process a task and return results."""
+        """Process a task and return results"""
 
-    async def start(self):.
-        """Start the agent."""
+    async def start(self):
+        """Start the agent"""
         logger.info(
             "agent_starting",
             name=self.name,
@@ -47,19 +46,17 @@ class BaseAgent(ABC):
         self.is_running = True
 
         # Register agent
-        await self._register_agent()
+        await self_register_agent()
 
         # Start heartbeat
         self._tasks.add(asyncio.create_task(self._heartbeat_loop()))
 
         # Start subscription
         subscription_name = f"{self.name}-subscription"
-        await self.pubsub.subscribe(
-            subscription_name, self._handle_message, self._handle_error
-        )
+        await selfpubsub.subscribe(subscription_name, self._handle_message, self._handle_error)
 
     async def stop(self):
-        """Stop the agent."""
+        """Stop the agent"""
         logger.info("agent_stopping", name=self.name)
 
         self.is_running = False
@@ -69,42 +66,40 @@ class BaseAgent(ABC):
             task.cancel()
 
         # Wait for tasks to complete
-        await asyncio.gather(*self._tasks, return_exceptions=True)
+        await asynciogather(*self._tasks, return_exceptions=True)
 
         # Update agent status
-        await self._update_agent_status("inactive")
+        await self_update_agent_status("inactive")
 
     async def _handle_message(self, envelope: A2AEnvelope):
-        """Handle incoming message."""
+        """Handle incoming message"""
         # Apply policy middleware
         if hasattr(self.policy, "apply_policies"):
-            envelope = await self.policy.apply_policies(envelope)
+            envelope = await selfpolicy.apply_policies(envelope)
 
         try:
             # Check if intent is supported
             if envelope.intent not in self.supported_intents:
-                logger.warning(
-                    "unsupported_intent", intent=envelope.intent, agent=self.name
-                )
+                logger.warning("unsupported_intent", intent=envelope.intent, agent=self.name)
                 return
 
             # Check for duplicate
-            is_duplicate = await self.supabase.check_duplicate(envelope.task_id)
+            is_duplicate = await selfsupabase.check_duplicate(envelope.task_id)
             if is_duplicate:
                 logger.info("duplicate_message", task_id=envelope.task_id)
                 return
 
             # Update task status to processing
-            await self.supabase.update_task_status(envelope.task_id, "processing")
+            await selfsupabase.update_task_status(envelope.task_id, "processing")
 
             # Process task
-            result = await self.process_task(envelope)
+            result = await selfprocess_task(envelope)
 
             # Store result
-            await self.supabase.store_task_result(envelope.task_id, "success", result)
+            await selfsupabase.store_task_result(envelope.task_id, "success", result)
 
             # Update task status to completed
-            await self.supabase.update_task_status(envelope.task_id, "completed")
+            await selfsupabase.update_task_status(envelope.task_id, "completed")
 
             # Publish completion
             completion_envelope = A2AEnvelope(
@@ -114,7 +109,7 @@ class BaseAgent(ABC):
                 trace_id=envelope.trace_id,
             )
 
-            await self.pubsub.publish_task(
+            await selfpubsub.publish_task(
                 completion_envelope, topic=self.pubsub.completed_topic_path
             )
 
@@ -127,14 +122,14 @@ class BaseAgent(ABC):
             )
 
             # Update task status to failed
-            await self.supabase.update_task_status(envelope.task_id, "failed", str(e))
+            await selfsupabase.update_task_status(envelope.task_id, "failed", str(e))
 
     async def _handle_error(self, error: Exception):
-        """Handle subscription errors."""
+        """Handle subscription errors"""
         logger.error("subscription_error", error=str(error), agent=self.name)
 
     async def _register_agent(self):
-        """Register agent in database."""
+        """Register agent in database"""
         # Simplified stub implementation
         logger.info(
             "agent_registered",
@@ -146,7 +141,7 @@ class BaseAgent(ABC):
         )
 
     async def _heartbeat_loop(self):
-        """Send heartbeat to maintain agent status."""
+        """Send heartbeat to maintain agent status"""
         while self.is_running:
             try:
                 # Simplified stub implementation
@@ -163,7 +158,7 @@ class BaseAgent(ABC):
                 await asyncio.sleep(5)  # Retry after 5 seconds
 
     async def _update_agent_status(self, status: str):
-        """Update agent status in registry."""
+        """Update agent status in registry"""
         # Simplified stub implementation
         logger.info(
             "agent_status_updated",

@@ -1,25 +1,29 @@
-"""LangChain implementations for Financial Tax Agent."""
+"""LangChain implementations for Financial Tax Agent"""
 
 from langchain.chains import LLMChain
 from langchain.output_parsers import PydanticOutputParser
 from langchain.prompts import PromptTemplate
 from langchain_openai import ChatOpenAI
 
-from .models import (ComplianceCheckRequest, ComplianceCheckResponse,
-                     FinancialAnalysisRequest, FinancialAnalysisResponse,
-                     TaxCalculationRequest, TaxCalculationResponse,
-                     TaxRateRequest, TaxRateResponse)
+from .models import (
+    ComplianceCheckRequest,
+    ComplianceCheckResponse,
+    FinancialAnalysisRequest,
+    FinancialAnalysisResponse,
+    TaxCalculationRequest,
+    TaxCalculationResponse,
+    TaxRateRequest,
+    TaxRateResponse,
+)
 
 
-class TaxCalculationChain:.
-    """Chain for tax calculation processing."""
+class TaxCalculationChain:
+    """Chain for tax calculation processing"""
 
-    def __init__(self, llm: ChatOpenAI = None):.
-        """Initialize the tax calculation chain with an optional LLM."""
+    def __init__(self, llm: ChatOpenAI = None):
+        """Initialize the tax calculation chain with an optional LLM"""
         self.llm = llm or ChatOpenAI(temperature=0, model="gpt-4")
-        self.output_parser = PydanticOutputParser(
-            pydantic_object=TaxCalculationResponse
-        )
+        self.output_parser = PydanticOutputParser(pydantic_object=TaxCalculationResponse)
 
         self.prompt = PromptTemplate(
             template="""You are a tax calculation expert. Calculate the tax liability
@@ -53,16 +57,14 @@ Provide a detailed tax calculation including:
                 "entity_type",
                 "additional_info",
             ],
-            partial_variables={
-                "format_instructions": self.output_parser.get_format_instructions()
-            },
+            partial_variables={"format_instructions": self.output_parser.get_format_instructions()},
         )
 
         self.chain = LLMChain(llm=self.llm, prompt=self.prompt)
 
     async def calculate(self, request: TaxCalculationRequest) -> TaxCalculationResponse:
-        """Process tax calculation request."""
-        result = await self.chain.ainvoke(
+        """Process tax calculation request"""
+        result = await selfchain.ainvoke(
             {
                 "income": request.income,
                 "deductions": request.deductions,
@@ -78,14 +80,12 @@ Provide a detailed tax calculation including:
 
 
 class FinancialAnalysisChain:
-    """Chain for financial analysis processing."""
+    """Chain for financial analysis processing"""
 
-    def __init__(self, llm: ChatOpenAI = None):.
-        """Initialize the financial analysis chain with an optional LLM."""
+    def __init__(self, llm: ChatOpenAI = None):
+        """Initialize the financial analysis chain with an optional LLM"""
         self.llm = llm or ChatOpenAI(temperature=0, model="gpt-4")
-        self.output_parser = PydanticOutputParser(
-            pydantic_object=FinancialAnalysisResponse
-        )
+        self.output_parser = PydanticOutputParser(pydantic_object=FinancialAnalysisResponse)
 
         self.prompt = PromptTemplate(
             template="""You are a financial analyst. Analyze the following financial data:
@@ -113,18 +113,14 @@ Provide a comprehensive financial analysis including:
                 "industry",
                 "custom_metrics",
             ],
-            partial_variables={
-                "format_instructions": self.output_parser.get_format_instructions()
-            },
+            partial_variables={"format_instructions": self.output_parser.get_format_instructions()},
         )
 
         self.chain = LLMChain(llm=self.llm, prompt=self.prompt)
 
-    async def analyze(
-        self, request: FinancialAnalysisRequest
-    ) -> FinancialAnalysisResponse:
-        """Process financial analysis request."""
-        result = await self.chain.ainvoke(
+    async def analyze(self, request: FinancialAnalysisRequest) -> FinancialAnalysisResponse:
+        """Process financial analysis request"""
+        result = await selfchain.ainvoke(
             {
                 "financial_statements": request.financial_statements,
                 "analysis_type": request.analysis_type,
@@ -138,14 +134,12 @@ Provide a comprehensive financial analysis including:
 
 
 class ComplianceCheckChain:
-    """Chain for tax compliance checking."""
+    """Chain for tax compliance checking"""
 
-    def __init__(self, llm: ChatOpenAI = None):.
-        """Initialize the compliance check chain with an optional LLM."""
+    def __init__(self, llm: ChatOpenAI = None):
+        """Initialize the compliance check chain with an optional LLM"""
         self.llm = llm or ChatOpenAI(temperature=0, model="gpt-4")
-        self.output_parser = PydanticOutputParser(
-            pydantic_object=ComplianceCheckResponse
-        )
+        self.output_parser = PydanticOutputParser(pydantic_object=ComplianceCheckResponse)
 
         self.prompt = PromptTemplate(
             template="""You are a tax compliance expert. Review the following
@@ -173,18 +167,14 @@ Perform a comprehensive compliance check and provide:
                 "tax_year",
                 "compliance_areas",
             ],
-            partial_variables={
-                "format_instructions": self.output_parser.get_format_instructions()
-            },
+            partial_variables={"format_instructions": self.output_parser.get_format_instructions()},
         )
 
         self.chain = LLMChain(llm=self.llm, prompt=self.prompt)
 
-    async def check_compliance(
-        self, request: ComplianceCheckRequest
-    ) -> ComplianceCheckResponse:
-        """Process compliance check request."""
-        result = await self.chain.ainvoke(
+    async def check_compliance(self, request: ComplianceCheckRequest) -> ComplianceCheckResponse:
+        """Process compliance check request"""
+        result = await selfchain.ainvoke(
             {
                 "entity_type": request.entity_type.value,
                 "transactions": request.transactions,
@@ -198,10 +188,10 @@ Perform a comprehensive compliance check and provide:
 
 
 class RateLookupChain:
-    """Chain for tax rate lookup."""
+    """Chain for tax rate lookup"""
 
-    def __init__(self, llm: ChatOpenAI = None):.
-        """Initialize the tax rate lookup chain with an optional LLM."""
+    def __init__(self, llm: ChatOpenAI = None):
+        """Initialize the tax rate lookup chain with an optional LLM"""
         self.llm = llm or ChatOpenAI(temperature=0, model="gpt-4")
         self.output_parser = PydanticOutputParser(pydantic_object=TaxRateResponse)
 
@@ -230,16 +220,14 @@ Return comprehensive tax rate information including:
                 "income_level",
                 "special_categories",
             ],
-            partial_variables={
-                "format_instructions": self.output_parser.get_format_instructions()
-            },
+            partial_variables={"format_instructions": self.output_parser.get_format_instructions()},
         )
 
         self.chain = LLMChain(llm=self.llm, prompt=self.prompt)
 
     async def lookup_rates(self, request: TaxRateRequest) -> TaxRateResponse:
-        """Process tax rate lookup request."""
-        result = await self.chain.ainvoke(
+        """Process tax rate lookup request"""
+        result = await selfchain.ainvoke(
             {
                 "jurisdiction": request.jurisdiction.value,
                 "tax_year": request.tax_year,
