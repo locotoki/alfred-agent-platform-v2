@@ -4,7 +4,6 @@ This module contains basic smoke tests for the Telegram Adapter service.
 """
 
 import os
-from typing import Optional
 
 import pytest
 import requests
