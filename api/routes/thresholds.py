@@ -1,5 +1,4 @@
-"""API routes for dynamic threshold management."""
-
+"""API routes for dynamic threshold management"""
 from typing import Dict
 
 from fastapi import APIRouter, HTTPException, status
@@ -11,7 +10,7 @@ router = APIRouter(prefix="/thresholds", tags=["thresholds"])
 
 
 class ThresholdUpdate(BaseModel):
-    """Request model for threshold updates."""
+    """Request model for threshold updates"""
 
     noise_threshold: float = Field(
         None, ge=0.0, le=1.0, description="Noise detection threshold"
@@ -26,7 +25,7 @@ class ThresholdUpdate(BaseModel):
 
 
 class ThresholdResponse(BaseModel):
-    """Response model for threshold queries."""
+    """Response model for threshold queries"""
 
     noise_threshold: float
     confidence_min: float

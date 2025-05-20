@@ -10,7 +10,7 @@ from libs.a2a_adapter import (A2AEnvelope, PolicyMiddleware, PubSubTransport,
 
 
 @pytest.fixture
-def mock_pubsub():.
+def mock_pubsub():
     """Mock PubSub transport."""
     mock = MagicMock(spec=PubSubTransport)
     mock.publish_task = AsyncMock(return_value="test-message-id")
@@ -42,7 +42,7 @@ def mock_policy():
 
 
 @pytest.fixture
-def financial_tax_agent(mock_pubsub, mock_supabase, mock_policy):.
+def financial_tax_agent(mock_pubsub, mock_supabase, mock_policy):
     """Create Financial Tax Agent with mocks."""
     with patch("agents.financial_tax.agent.ChatOpenAI") as mock_openai:
         # Create a mock that actually inherits from the base class structure expected
@@ -82,7 +82,7 @@ def financial_tax_agent(mock_pubsub, mock_supabase, mock_policy):.
 class TestFinancialTaxAgent:
     """Test cases for Financial Tax Agent."""
 
-    async def test_agent_initialization(self, financial_tax_agent):.
+    async def test_agent_initialization(self, financial_tax_agent):
         """Test agent initializes with correct configuration."""
         assert financial_tax_agent.name == "financial-tax-agent"
         assert financial_tax_agent.version == "1.0.0"
@@ -97,7 +97,7 @@ class TestFinancialTaxAgent:
         assert financial_tax_agent.workflow_graph is not None
         assert financial_tax_agent.workflow is not None
 
-    async def test_process_tax_calculation(self, financial_tax_agent):.
+    async def test_process_tax_calculation(self, financial_tax_agent):
         """Test tax calculation processing."""
         envelope = A2AEnvelope(
             intent="TAX_CALCULATION",

@@ -1,4 +1,4 @@
-"""Unit tests for Financial Tax Agent."""
+"""Unit tests for Financial Tax Agent"""
 
 from unittest.mock import AsyncMock, MagicMock, patch
 
@@ -9,8 +9,8 @@ from libs.a2a_adapter import A2AEnvelope
 
 
 @pytest.fixture
-def mock_pubsub():.
-    """Mock PubSub transport."""
+def mock_pubsub():
+    """Mock PubSub transport"""
     mock = AsyncMock()
     mock.publish_task = AsyncMock(return_value="test-message-id")
     mock.completed_topic_path = "projects/test/topics/completed"
@@ -19,7 +19,7 @@ def mock_pubsub():.
 
 @pytest.fixture
 def mock_supabase():
-    """Mock Supabase transport."""
+    """Mock Supabase transport"""
     mock = AsyncMock()
     mock.store_task = AsyncMock(return_value="test-task-id")
     mock.update_task_status = AsyncMock()
@@ -32,15 +32,15 @@ def mock_supabase():
 
 @pytest.fixture
 def mock_policy():
-    """Mock Policy middleware."""
+    """Mock Policy middleware"""
     mock = AsyncMock()
     mock.apply_policies = AsyncMock(side_effect=lambda x: x)
     return mock
 
 
 @pytest.fixture
-def financial_tax_agent(mock_pubsub, mock_supabase, mock_policy):.
-    """Create Financial Tax Agent instance with mocked dependencies."""
+def financial_tax_agent(mock_pubsub, mock_supabase, mock_policy):
+    """Create Financial Tax Agent instance with mocked dependencies"""
     with patch("agents.financial_tax.agent.ChatOpenAI") as mock_openai:
         # Create a mock that actually inherits from the base class structure expected
         from typing import Any, Optional
@@ -77,11 +77,11 @@ def financial_tax_agent(mock_pubsub, mock_supabase, mock_policy):.
 
 
 class TestFinancialTaxAgent:
-    """Test suite for Financial Tax Agent."""
+    """Test suite for Financial Tax Agent"""
 
     @pytest.mark.asyncio
-    async def test_agent_initialization(self, financial_tax_agent):.
-        """Test agent initializes with correct properties."""
+    async def test_agent_initialization(self, financial_tax_agent):
+        """Test agent initializes with correct properties"""
         assert financial_tax_agent.name == "financial-tax-agent"
         assert financial_tax_agent.version == "1.0.0"
         assert "TAX_CALCULATION" in financial_tax_agent.supported_intents
@@ -91,7 +91,7 @@ class TestFinancialTaxAgent:
 
     @pytest.mark.asyncio
     async def test_tax_calculation_processing(self, financial_tax_agent):
-        """Test tax calculation processing."""
+        """Test tax calculation processing"""
         # Create test envelope
         envelope = A2AEnvelope(
             intent="TAX_CALCULATION",
@@ -124,7 +124,7 @@ class TestFinancialTaxAgent:
         with patch.object(
             financial_tax_agent.tax_calc_chain, "calculate", return_value=mock_result
         ):
-            result = await financial_tax_agent.process_task(envelope)
+            result = await financial_tax_agentprocess_task(envelope)
 
         assert result["status"] == "success"
         assert result["intent"] == "TAX_CALCULATION"
@@ -134,7 +134,7 @@ class TestFinancialTaxAgent:
 
     @pytest.mark.asyncio
     async def test_financial_analysis_processing(self, financial_tax_agent):
-        """Test financial analysis processing."""
+        """Test financial analysis processing"""
         envelope = A2AEnvelope(
             intent="FINANCIAL_ANALYSIS",
             content={
@@ -164,7 +164,7 @@ class TestFinancialTaxAgent:
         with patch.object(
             financial_tax_agent.analysis_chain, "analyze", return_value=mock_result
         ):
-            result = await financial_tax_agent.process_task(envelope)
+            result = await financial_tax_agentprocess_task(envelope)
 
         assert result["status"] == "success"
         assert result["intent"] == "FINANCIAL_ANALYSIS"
@@ -173,7 +173,7 @@ class TestFinancialTaxAgent:
 
     @pytest.mark.asyncio
     async def test_compliance_check_processing(self, financial_tax_agent):
-        """Test compliance check processing."""
+        """Test compliance check processing"""
         envelope = A2AEnvelope(
             intent="TAX_COMPLIANCE_CHECK",
             content={
@@ -214,7 +214,7 @@ class TestFinancialTaxAgent:
             "check_compliance",
             return_value=mock_result,
         ):
-            result = await financial_tax_agent.process_task(envelope)
+            result = await financial_tax_agentprocess_task(envelope)
 
         assert result["status"] == "success"
         assert result["intent"] == "TAX_COMPLIANCE_CHECK"
@@ -223,7 +223,7 @@ class TestFinancialTaxAgent:
 
     @pytest.mark.asyncio
     async def test_rate_lookup_processing(self, financial_tax_agent):
-        """Test tax rate lookup processing."""
+        """Test tax rate lookup processing"""
         envelope = A2AEnvelope(
             intent="RATE_SHEET_LOOKUP",
             content={
@@ -255,7 +255,7 @@ class TestFinancialTaxAgent:
             "lookup_rates",
             return_value=mock_result,
         ):
-            result = await financial_tax_agent.process_task(envelope)
+            result = await financial_tax_agentprocess_task(envelope)
 
         assert result["status"] == "success"
         assert result["intent"] == "RATE_SHEET_LOOKUP"
@@ -264,15 +264,15 @@ class TestFinancialTaxAgent:
 
     @pytest.mark.asyncio
     async def test_unsupported_intent_handling(self, financial_tax_agent):
-        """Test handling of unsupported intent."""
+        """Test handling of unsupported intent"""
         envelope = A2AEnvelope(intent="UNSUPPORTED_INTENT", content={"test": "data"})
 
         with pytest.raises(ValueError, match="Unsupported intent"):
-            await financial_tax_agent.process_task(envelope)
+            await financial_tax_agentprocess_task(envelope)
 
     @pytest.mark.asyncio
     async def test_workflow_routing(self, financial_tax_agent):
-        """Test the workflow correctly routes based on intent."""
+        """Test the workflow correctly routes based on intent"""
         test_state = {"intent": "TAX_CALCULATION", "content": {"test": "data"}}
 
         # Test routing logic
@@ -285,11 +285,11 @@ class TestFinancialTaxAgent:
 
     @pytest.mark.asyncio
     async def test_error_handling(self, financial_tax_agent):
-        """Test error handling in process_task."""
+        """Test error handling in process_task"""
         envelope = A2AEnvelope(
             intent="TAX_CALCULATION",
             content={"invalid": "data"},  # Missing required fields
         )
 
         with pytest.raises(Exception):
-            await financial_tax_agent.process_task(envelope)
+            await financial_tax_agentprocess_task(envelope)

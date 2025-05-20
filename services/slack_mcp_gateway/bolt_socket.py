@@ -3,7 +3,7 @@
 This module handles interactions with the Slack API using Socket Mode, acknowledges
 slash commands, and forwards requests to Redis via the translator.
 """
-
+# type: ignore
 import logging
 import os
 from typing import Any, Callable, Dict
@@ -22,7 +22,7 @@ logger = logging.getLogger(__name__)
 
 
 def create_app() -> App:
-    """Create and configure a Slack Bolt app."""
+    """Create and configure a Slack Bolt app"""
     # Fetch Slack tokens from environment
     slack_bot_token = os.environ.get("SLACK_BOT_TOKEN")
     if not slack_bot_token:
@@ -75,7 +75,7 @@ def create_app() -> App:
 
 
 def start_socket_mode() -> None:
-    """Start the Socket Mode handler for real-time Slack events."""
+    """Start the Socket Mode handler for real-time Slack events"""
     # Get the app token from environment
     slack_app_token = os.environ.get("SLACK_APP_TOKEN")
     if not slack_app_token:

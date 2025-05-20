@@ -1,22 +1,28 @@
-"""Agent Orchestrator that integrates with IntentRouter.
+"""Orchestrator for Agent coordination.
 
-This module implements the orchestrator that processes messages through the intent
-router and handles different intents appropriately.
+This module contains the AgentOrchestrator class which coordinates
+interactions between different agent types based on intent.
 """
+# type: ignore
+import asyncio
+import json
+import uuid
+from typing import Any, Dict, List, Optional
 
 import structlog
 from prometheus_client import Counter
 
-from alfred.agents.intent_router import router
+from .intent_router import Intent, IntentRouter
+
+# Create a default router instance
+router = IntentRouter()
+
+# Register common patterns
+router.register_pattern("help", r"(?:can you )?(?:help|assist) (?:me )?(?:with )?(?P<topic>.+)")
+router.register_pattern("summarize", r"(?:can you )?summarize (?P<text>.+)")
 
 # Prometheus metrics
-orchestrator_requests_total = Counter(
-    "alfred_orchestrator_requests_total",
-    "Total requests processed by orchestrator",
-    ["status"],
-)
-
-orchestrator_route_total = Counter(
+route_total = Counter(
     "alfred_orchestrator_route_total", "Total routes processed", ["intent_type"]
 )
 
@@ -26,11 +32,11 @@ logger = structlog.get_logger(__name__)
 class AgentOrchestrator:
     """Orchestrator that processes messages through intent routing."""
 
-    def __init__(self) -> None:.
+    def __init__(self) -> None:
         """Initialize the orchestrator with the default intent router."""
         self._intent_router = router
 
-    async def process_message(self, message: str, context: dict = None) -> dict:.
+    async def process_message(self, message: str, context: dict = None) -> dict:
         """Process a message through the orchestrator.
 
         Args:
@@ -38,84 +44,80 @@ class AgentOrchestrator:
             context: Optional context information
 
         Returns:
-            Response dictionary with result and metadata
+            dict: A response containing the processed result
         """
-        try:
-            # Route the message to determine intent
-            intent = self._intent_router.route(message)
+        if context is None:
+            context = {}
 
-            # Track metrics
-            orchestrator_route_total.labels(intent_type=intent.type).inc()
-
-            logger.info(
-                "Orchestrator routed message",
-                intent_type=intent.type,
-                confidence=intent.confidence,
-            )
-
-            # Handle special case for unknown_intent
-            if intent.type == "unknown_intent":
-                # Return help message without calling LLM
-                response = {
-                    "status": "success",
-                    "intent": intent.type,
-                    "confidence": intent.confidence,
-                    "response": self._get_help_response(),
-                    "llm_used": False,
-                }
-
-                orchestrator_requests_total.labels(status="success").inc()
-                return response
-
-            # For known intents, get the handler
-            handler = self._intent_router.get_handler(intent.type)
-
-            if handler:
-                # Execute the handler
-                result = handler(intent)
-
-                response = {
-                    "status": "success",
-                    "intent": intent.type,
-                    "confidence": intent.confidence,
-                    "response": result,
-                    "llm_used": False,  # Currently no LLM for basic handlers
-                }
-            else:
-                # No handler found, return error
-                response = {
-                    "status": "error",
-                    "intent": intent.type,
-                    "confidence": intent.confidence,
-                    "response": "No handler available for this intent",
-                    "llm_used": False,
-                }
-
-            orchestrator_requests_total.labels(status="success").inc()
-            return response
-
-        except Exception as e:
-            logger.error("Error processing message", error=str(e))
-            orchestrator_requests_total.labels(status="error").inc()
-
-            return {
-                "status": "error",
-                "error": str(e),
-                "response": "An error occurred while processing your request",
-                "llm_used": False,
-            }
-
-    def _get_help_response(self) -> str:
-        """Get help response for unknown intents."""
-        return (
-            "I didn't understand your request. Here's what I can help with:\n"
-            "• System health and status checks\n"
-            "• Answering questions about services\n"
-            "• Explaining alerts and metrics\n"
-            "• General assistance\n"
-            "\nTry saying 'hello', 'help', or 'status' to get started."
+        # Generate a request ID if not provided
+        request_id = context.get("request_id", str(uuid.uuid4()))
+        
+        # Add request ID to logger context
+        log = logger.bind(request_id=request_id)
+        log.info("processing_message", message_length=len(message))
+        
+        # Route to determine intent
+        intent = self._intent_router.route(message)
+        
+        # Increment the metric for the intent type
+        route_total.labels(intent_type=intent.type).inc()
+        
+        # Log the detected intent
+        log.info(
+            "intent_detected",
+            intent_type=intent.type, 
+            confidence=intent.confidence
         )
-
-
-# Global orchestrator instance
-orchestrator = AgentOrchestrator()
+        
+        # Process based on intent
+        response = await self._process_intent(intent, context)
+        
+        # Add metadata to response
+        response["request_id"] = request_id
+        response["intent"] = intent.type
+        response["confidence"] = intent.confidence
+        
+        return response
+    
+    async def _process_intent(self, intent: Intent, context: Dict[str, Any]) -> Dict[str, Any]:
+        """Process an intent through the appropriate agent.
+        
+        Args:
+            intent: The classified intent
+            context: Context information
+            
+        Returns:
+            dict: The processed response
+        """
+        # This is where we'd dispatch to different agents based on intent
+        # For now, use the default handlers from the router
+        text_response = self._intent_router.handle(intent, context=context)
+        
+        # For some intents, we might want to process asynchronously
+        # through other agents - here we could call those agents
+        
+        return {
+            "text": text_response or "I'm still learning how to respond to that.",
+            "processed": True,
+            "agent": "default"
+        }
+    
+    def register_agent_handler(self, intent_type: str, handler_fn: callable) -> None:
+        """Register an agent handler for a specific intent type.
+        
+        Args:
+            intent_type: The intent type to handle
+            handler_fn: The handler function
+        """
+        self._intent_router.register_handler(intent_type, handler_fn)
+        logger.info("agent_handler_registered", intent_type=intent_type)
+    
+    def register_intent_pattern(self, intent_type: str, pattern: str) -> None:
+        """Register a regex pattern for intent detection.
+        
+        Args:
+            intent_type: The intent type to match
+            pattern: The regex pattern
+        """
+        self._intent_router.register_pattern(intent_type, pattern)
+        logger.info("intent_pattern_registered", intent_type=intent_type)

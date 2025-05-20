@@ -16,10 +16,10 @@ from alfred.core.protocols import AlertProtocol
 
 
 @dataclass
-class NoiseRankingModel:.
-    """ML model for ranking alert noise levels."""
+class NoiseRankingModel:
+    """ML model for ranking alert noise levels"""
 
-    def __init__(self, model_path: str = None):.
+    def __init__(self, model_path: str = None):
         """Initialize the noise ranking model.
 
         Args:
@@ -150,7 +150,7 @@ class NoiseRankingModel:.
         self.model.fit(X_scaled, y)
 
     def save_model(self, path: str):
-        """Save trained model to disk."""
+        """Save trained model to disk"""
         if not self.model:
             raise ValueError("No model to save. Train a model first.")
 
@@ -164,7 +164,7 @@ class NoiseRankingModel:.
         )
 
     def load_model(self, path: str):
-        """Load model from disk."""
+        """Load model from disk"""
         data = joblib.load(path)
         self.model = data["model"]
         self.scaler = data["scaler"]

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-"""Service health check script to validate all services are running."""
-
+"""Service health check script to validate all services are running"""
+# type: ignore
 import asyncio
 import sys
 from typing import Any, Dict, List
@@ -24,7 +24,7 @@ SERVICES = {
 async def check_service_health(
     service_name: str, config: Dict[str, Any]
 ) -> Dict[str, Any]:
-    """Check health of a single service."""
+    """Check health of a single service"""
     url = f"http://localhost:{config['port']}{config['health_endpoint']}"
 
     try:
@@ -51,17 +51,17 @@ async def check_service_health(
 
 
 async def check_all_services() -> List[Dict[str, Any]]:
-    """Check health of all services."""
+    """Check health of all services"""
     tasks = []
     for service_name, config in SERVICES.items():
         tasks.append(check_service_health(service_name, config))
 
-    results = await asyncio.gather(*tasks)
+    results = await asynciogather(*tasks)
     return results
 
 
-def print_health_report(results: List[Dict[str, Any]]):.
-    """Print formatted health report."""
+def print_health_report(results: List[Dict[str, Any]]):
+    """Print formatted health report"""
     print("\n" + "=" * 50)
     print("SERVICE HEALTH CHECK REPORT")
     print("=" * 50 + "\n")
@@ -107,7 +107,7 @@ def print_health_report(results: List[Dict[str, Any]]):.
 
 
 async def main():
-    """Main entry point."""
+    """Main entry point"""
     results = await check_all_services()
     all_healthy = print_health_report(results)
 

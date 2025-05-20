@@ -1,4 +1,4 @@
-"""Configuration for financial tax agent tests."""
+"""Configuration for financial tax agent tests"""
 
 import pytest
 

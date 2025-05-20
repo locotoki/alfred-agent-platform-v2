@@ -2,7 +2,7 @@
 
 Copy this into the main.py file to replace the existing implementations.
 """
-
+# type: ignore
 @app.post("/niche-scout")
 async def run_niche_scout(
     request: Request,
@@ -14,11 +14,11 @@ async def run_niche_scout(
         None, description="Specific subcategory (e.g., 'kids.nursery')"
     ),
 ):
-    """Run the Niche-Scout workflow to find trending YouTube niches."""
+    """Run the Niche-Scout workflow to find trending YouTube niches"""
     try:
         # Try to extract parameters from JSON body if present
         try:
-            body = await request.json()
+            body = await requestjson()
             logger.info(
                 "Received JSON payload",
                 content_type=request.headers.get("content-type"),
@@ -69,7 +69,7 @@ async def run_niche_scout(
 
         # Run the workflow
         niche_scout = NicheScout()
-        result, json_path, report_path = await niche_scout.run(
+        result, json_path, report_path = await niche_scoutrun(
             query, category, subcategory
         )
 
@@ -77,7 +77,7 @@ async def run_niche_scout(
         result["_files"] = {"json_report": json_path, "report_file": report_path}
 
         # Add a unique ID for result retrieval
-        result["_id"] = f"niche-scout-{int(datetime.now().timestamp())}"
+        result["_id"] = f"niche-scout-{int(datetime.now()timestamp())}"
 
         return result
     except Exception as e:
@@ -103,7 +103,7 @@ async def run_niche_scout_alt1(
         None, description="Specific subcategory (e.g., 'kids.nursery')"
     ),
 ):
-    """Alternative path for Niche-Scout workflow."""
+    """Alternative path for Niche-Scout workflow"""
     return await run_niche_scout(request, query, category, subcategory)
 
 
@@ -118,5 +118,5 @@ async def run_niche_scout_alt2(
         None, description="Specific subcategory (e.g., 'kids.nursery')"
     ),
 ):
-    """Alternative path for Niche-Scout workflow."""
+    """Alternative path for Niche-Scout workflow"""
     return await run_niche_scout(request, query, category, subcategory)

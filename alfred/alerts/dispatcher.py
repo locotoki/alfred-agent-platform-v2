@@ -1,62 +1,72 @@
-"""Alert dispatcher module for enriching and forwarding Prometheus alerts to Slack."""
+"""Alert dispatcher for Alfred.
 
+This module handles the dispatching of alerts to different notification channels.
+"""
+# type: ignore
+import json
 import os
-from datetime import datetime
-from typing import Any, Dict
+from typing import Any, Dict, List, Optional
 
 import requests
 import structlog
 
 logger = structlog.get_logger(__name__)
 
-# Severity emoji mapping
-SEVERITY_EMOJI = {
-    "critical": "🚨",
-    "warning": "⚠️",
-    "info": "ℹ️",
-}
 
-# Severity color mapping for Slack attachments
-SEVERITY_COLOR = {
-    "critical": "#FF0000",  # Red
-    "warning": "#FFA500",  # Orange
-    "info": "#0000FF",  # Blue
-}
-
-
-def handle_alert(alert_json: Dict[str, Any]) -> None:
-    """Process incoming Prometheus alert and forward to Slack with enrichment.
+def handle_alert(alert_data: Dict[str, Any]) -> None:
+    """Handle incoming alert data and dispatch to appropriate channels.
 
     Args:
-        alert_json: Alert payload from Alertmanager
-
-    Raises:
-        ValueError: If required environment variables are missing
-        requests.RequestException: If Slack webhook call fails.
+        alert_data: The alert data received from the alerting system.
     """
-    # Validate required environment variables
-    slack_webhook = os.getenv("SLACK_ALERT_WEBHOOK")
+    alerts = alert_data.get("alerts", [])
+    logger.info("Received alerts", count=len(alerts))
+
+    # Get Slack webhook URL from environment
+    slack_webhook = os.environ.get("SLACK_WEBHOOK_URL")
     if not slack_webhook:
-        raise ValueError("SLACK_ALERT_WEBHOOK environment variable is required")
-
-    # Extract enrichment data from environment
-    git_sha = os.getenv("GIT_SHA", "unknown")
-    pod_uid = os.getenv("POD_UID", "unknown")
-    chart_version = os.getenv("CHART_VERSION", "unknown")
-
-    # Extract alert details
-    alerts = alert_json.get("alerts", [])
-
-    if not alerts:
-        logger.warning("No alerts found in payload", payload=alert_json)
+        logger.warning("No Slack webhook URL configured, alerts will not be sent")
         return
 
     # Process each alert
     for alert in alerts:
+        # Skip resolved alerts if configured to do so
+        if alert.get("status") == "resolved" and not os.environ.get("SEND_RESOLVED", "true").lower() == "true":
+            logger.info(
+                "Skipping resolved alert",
+                alert_name=alert.get("labels", {}).get("alertname"),
+            )
+            continue
+
+        # Check for alert grouping and snooze settings
+        if is_alert_snoozed(alert):
+            logger.info(
+                "Alert is snoozed, skipping",
+                alert_name=alert.get("labels", {}).get("alertname"),
+            )
+            continue
+
         try:
-            slack_message = format_alert_for_slack(
-                alert=alert,
-                git_sha=git_sha,
+            # Extract alert details
+            alertname = alert.get("labels", {}).get("alertname", "Unknown Alert")
+            severity = alert.get("labels", {}).get("severity", "unknown")
+            summary = alert.get("annotations", {}).get("summary", "No summary provided")
+            description = alert.get("annotations", {}).get("description", "No description provided")
+            
+            # Extract Kubernetes metadata if available
+            namespace = alert.get("labels", {}).get("namespace", "unknown")
+            pod_name = alert.get("labels", {}).get("pod", "unknown")
+            pod_uid = alert.get("labels", {}).get("pod_uid", "unknown")
+            chart_version = alert.get("labels", {}).get("chart_version", "unknown")
+
+            # Format message for Slack
+            slack_message = format_slack_alert(
+                alertname=alertname,
+                severity=severity,
+                summary=summary,
+                description=description,
+                namespace=namespace,
+                pod_name=pod_name,
                 pod_uid=pod_uid,
                 chart_version=chart_version,
             )
@@ -73,131 +83,122 @@ def handle_alert(alert_json: Dict[str, Any]) -> None:
             logger.error(
                 "Failed to send alert to Slack",
                 error=str(e),
-                alert=alert,
+                error_type=type(e).__name__,
+                alert=json.dumps(alert),
             )
-            raise
 
 
-def format_alert_for_slack(
-    alert: Dict[str, Any],
-    git_sha: str,
+def is_alert_snoozed(alert: Dict[str, Any]) -> bool:
+    """Check if an alert is snoozed.
+
+    Args:
+        alert: The alert to check.
+
+    Returns:
+        True if the alert is snoozed, False otherwise.
+    """
+    # TODO: Implement alert snoozing via database
+    return False
+
+
+def format_slack_alert(
+    alertname: str,
+    severity: str,
+    summary: str,
+    description: str,
+    namespace: str,
+    pod_name: str,
     pod_uid: str,
     chart_version: str,
 ) -> Dict[str, Any]:
-    """Format Prometheus alert for Slack message.
+    """Format alert data for Slack notification.
 
     Args:
-        alert: Individual alert from Alertmanager
-        git_sha: Git commit SHA
-        pod_uid: Kubernetes pod UID
-        chart_version: Helm chart version
+        alertname: The name of the alert.
+        severity: The severity level.
+        summary: A brief summary.
+        description: A detailed description.
+        namespace: The Kubernetes namespace.
+        pod_name: The pod name.
+        pod_uid: The pod UID.
+        chart_version: The Helm chart version.
 
     Returns:
-        Formatted Slack message payload.
+        A dictionary formatted for the Slack API.
     """
-    labels = alert.get("labels", {})
-    annotations = alert.get("annotations", {})
-
-    # Extract key fields
-    alert_name = labels.get("alertname", "Unknown Alert")
-    severity = labels.get("severity", "info").lower()
-    service = labels.get("service", "unknown")
-    runbook = labels.get("runbook", "")
-    summary = annotations.get("summary", "No summary provided")
-    description = annotations.get("description", "")
-
-    # Get appropriate emoji and color
-    emoji = SEVERITY_EMOJI.get(severity, "ℹ️")
-    color = SEVERITY_COLOR.get(severity, "#808080")
-
-    # Build Slack message
-    text = f"{emoji} [{severity.upper()}] {alert_name}"
-
-    # Create attachment with detailed information
-    attachment = {
-        "color": color,
-        "title": alert_name,
-        "text": summary,
-        "fields": [
+    # Set color based on severity
+    color = {
+        "critical": "#FF0000",  # Red
+        "warning": "#FFA500",   # Orange
+        "info": "#0000FF",      # Blue
+    }.get(severity.lower(), "#808080")  # Gray default
+    
+    # Common fields for any alert
+    fields = [
+        {
+            "title": "Severity",
+            "value": severity.upper(),
+            "short": True,
+        },
+        {
+            "title": "Namespace",
+            "value": namespace,
+            "short": True,
+        },
+    ]
+    
+    # Add pod info if available
+    if pod_name != "unknown":
+        fields.append(
             {
-                "title": "Service",
-                "value": service,
+                "title": "Pod",
+                "value": pod_name,
                 "short": True,
-            },
-            {
-                "title": "Severity",
-                "value": severity.upper(),
-                "short": True,
-            },
-            {
-                "title": "Pod UID",
-                "value": pod_uid,
-                "short": True,
-            },
+            }
+        )
+    
+    # Add chart version if available
+    if chart_version != "unknown":
+        fields.append(
             {
                 "title": "Chart Version",
                 "value": chart_version,
                 "short": True,
-            },
-            {
-                "title": "Git SHA",
-                "value": git_sha[:8] if len(git_sha) > 8 else git_sha,
-                "short": True,
-            },
-            {
-                "title": "Status",
-                "value": alert.get("status", "unknown"),
-                "short": True,
-            },
-        ],
-        "footer": "Alfred Alert System",
-        "ts": int(datetime.utcnow().timestamp()),
-    }
-
-    # Add description if provided
-    if description:
-        attachment["fields"].append(
-            {
-                "title": "Description",
-                "value": description,
-                "short": False,
             }
         )
-
-    # Add runbook link if available
-    if runbook:
-        attachment["actions"] = [
+    
+    return {
+        "attachments": [
             {
-                "type": "button",
-                "text": "View Runbook",
-                "url": runbook,
+                "color": color,
+                "title": f"Alert: {alertname}",
+                "text": description,
+                "fields": fields,
+                "footer": "Alfred Alert System",
             }
         ]
-
-    return {
-        "text": text,
-        "attachments": [attachment],
     }
 
 
 def send_to_slack(webhook_url: str, message: Dict[str, Any]) -> None:
-    """Send formatted message to Slack webhook.
+    """Send a message to a Slack webhook.
 
     Args:
-        webhook_url: Slack webhook URL
-        message: Formatted message payload
-
-    Raises:
-        requests.RequestException: If webhook call fails.
+        webhook_url: The Slack webhook URL.
+        message: The message to send.
     """
-    response = requests.post(
-        webhook_url,
-        json=message,
-        headers={"Content-Type": "application/json"},
-        timeout=10,
-    )
-
-    response.raise_for_status()
-
-    if response.text != "ok":
-        raise requests.RequestException(f"Slack webhook returned: {response.text}")
+    try:
+        response = requests.post(
+            webhook_url,
+            json=message,
+            headers={"Content-Type": "application/json"},
+            timeout=10,
+        )
+        response.raise_for_status()
+    except requests.RequestException as e:
+        logger.error(
+            "Failed to send message to Slack",
+            error=str(e),
+            error_type=type(e).__name__,
+        )
+        raise

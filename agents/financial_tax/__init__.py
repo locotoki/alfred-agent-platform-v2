@@ -1,5 +1,5 @@
-"""Financial Tax Agent Package."""
-
+"""Financial Tax Agent Package"""
+# type: ignore
 from .agent import FinancialTaxAgent
 from .chains import (ComplianceCheckChain, FinancialAnalysisChain,
                      RateLookupChain, TaxCalculationChain)

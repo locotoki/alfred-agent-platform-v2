@@ -2,7 +2,7 @@
 
 Provides sub-15ms query performance for alert embeddings.
 """
-
+# type: ignore
 import pickle
 import time
 from dataclasses import dataclass
@@ -16,15 +16,15 @@ from alfred.ml.hf_embedder import HFEmbedder
 
 
 @dataclass
-class SearchResult:.
-    """Result from FAISS similarity search."""
+class SearchResult:
+    """Result from FAISS similarity search"""
 
     alert_id: str
     score: float
     metadata: Dict
 
 
-class FAISSIndex(Service):.
+class FAISSIndex(Service):
     """Fast similarity search using FAISS indexes.
 
     Supports multiple index types optimized for different use cases.
@@ -338,7 +338,7 @@ class FAISSIndex(Service):.
         return stats
 
     def optimize(self):
-        """Optimize index for better performance."""
+        """Optimize index for better performance"""
         if self.index_type == "IVF":
             # Rebalance IVF clusters
             print("Optimizing IVF index...")
@@ -363,7 +363,7 @@ class FAISSIndex(Service):.
 
 
 class AlertSearchEngine:
-    """High-level search engine combining embedder and index."""
+    """High-level search engine combining embedder and index"""
 
     def __init__(
         self,

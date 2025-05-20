@@ -18,7 +18,7 @@ from alfred.remediation.graphs import (complete_remediation, escalate_issue,
 
 
 @pytest.fixture
-def basic_state():.
+def basic_state():
     """Basic remediation state for testing."""
     return {
         "service_name": "test-service",

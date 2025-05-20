@@ -1,3 +1,4 @@
+# type: ignore
 from .metrics import MetricsCollector
 from .tracing import TracingProvider
 

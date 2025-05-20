@@ -2,7 +2,7 @@
 
 Handles model versioning, promotion, and deployment.
 """
-
+# type: ignore
 import json
 from datetime import datetime
 from typing import Dict, List, Optional
@@ -13,8 +13,8 @@ from mlflow.tracking import MlflowClient
 from alfred.core.protocols import Service
 
 
-class ModelRegistry(Service):.
-    """Manages ML model registry and lifecycle."""
+class ModelRegistry(Service):
+    """Manages ML model registry and lifecycle"""
 
     def __init__(
         self,

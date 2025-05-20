@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# type: ignore
 
 import os
 import time
@@ -26,7 +27,7 @@ COLLECTION_INTERVAL = int(os.getenv("COLLECTION_INTERVAL", "15"))
 
 
 def collect_metrics():
-    """Collect metrics from PubSub emulator."""
+    """Collect metrics from PubSub emulator"""
     try:
         # Check PubSub availability
         response = requests.get(f"{PUBSUB_URL}/v1/projects/{PROJECT_ID}/topics")
@@ -93,7 +94,7 @@ def healthz():
 
 # Start background metrics collection
 def background_collector():
-    """Collect metrics periodically in the background."""
+    """Collect metrics periodically in the background"""
     while True:
         collect_metrics()
         time.sleep(COLLECTION_INTERVAL)

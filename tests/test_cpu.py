@@ -21,7 +21,7 @@ def client():
     return TestClient(app)
 
 
-def test_cpu_endpoint_returns_expected_keys_and_values(client):.
+def test_cpu_endpoint_returns_expected_keys_and_values(client):
     """Test GET /cpu returns expected JSON with CPU usage and load averages."""
     response = client.get("/cpu")
     assert response.status_code == 200

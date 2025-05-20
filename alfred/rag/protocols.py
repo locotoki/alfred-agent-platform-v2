@@ -3,18 +3,17 @@
 This module defines the abstract interfaces used throughout the alfred.rag subsystem for
 retrieval-augmented generation functionality.
 """
-
 from abc import abstractmethod
 from typing import Any, Dict, List, Optional, Protocol, Tuple
 
 
-class VectorStore(Protocol):.
-    """Protocol for vector database operations."""
+class VectorStore(Protocol):
+    """Protocol for vector database operations"""
 
     @abstractmethod
     async def add_documents(
         self, documents: List[Dict[str, Any]], collection_name: str
-    ) -> List[str]:.
+    ) -> List[str]:
         """Add documents to the vector store.
 
         Args:
@@ -29,7 +28,7 @@ class VectorStore(Protocol):.
     @abstractmethod
     async def search(
         self, query: str, collection_name: str, k: int = 10
-    ) -> List[Tuple[Dict[str, Any], float]]:.
+    ) -> List[Tuple[Dict[str, Any], float]]:
         """Search for similar documents.
 
         Args:
@@ -45,7 +44,7 @@ class VectorStore(Protocol):.
     @abstractmethod
     async def delete_documents(
         self, document_ids: List[str], collection_name: str
-    ) -> bool:.
+    ) -> bool:
         """Delete documents from the vector store.
 
         Args:
@@ -60,7 +59,7 @@ class VectorStore(Protocol):.
     @abstractmethod
     async def create_collection(
         self, collection_name: str, config: Optional[Dict[str, Any]] = None
-    ) -> bool:.
+    ) -> bool:
         """Create a new collection.
 
         Args:
@@ -73,11 +72,11 @@ class VectorStore(Protocol):.
         ...
 
 
-class Embedder(Protocol):.
-    """Protocol for text embedding generation."""
+class Embedder(Protocol):
+    """Protocol for text embedding generation"""
 
     @abstractmethod
-    async def embed_text(self, text: str) -> List[float]:.
+    async def embed_text(self, text: str) -> List[float]:
         """Generate embedding for a single text.
 
         Args:
@@ -89,7 +88,7 @@ class Embedder(Protocol):.
         ...
 
     @abstractmethod
-    async def embed_batch(self, texts: List[str]) -> List[List[float]]:.
+    async def embed_batch(self, texts: List[str]) -> List[List[float]]:
         """Generate embeddings for multiple texts.
 
         Args:
@@ -101,7 +100,7 @@ class Embedder(Protocol):.
         ...
 
     @abstractmethod
-    def get_dimension(self) -> int:.
+    def get_dimension(self) -> int:
         """Get the dimension of embeddings.
 
         Returns:
@@ -110,13 +109,13 @@ class Embedder(Protocol):.
         ...
 
 
-class DocumentProcessor(Protocol):.
-    """Protocol for document processing and chunking."""
+class DocumentProcessor(Protocol):
+    """Protocol for document processing and chunking"""
 
     @abstractmethod
     def process_document(
         self, content: str, metadata: Dict[str, Any]
-    ) -> List[Dict[str, Any]]:.
+    ) -> List[Dict[str, Any]]:
         """Process a document into chunks.
 
         Args:
@@ -129,7 +128,7 @@ class DocumentProcessor(Protocol):.
         ...
 
     @abstractmethod
-    def clean_text(self, text: str) -> str:.
+    def clean_text(self, text: str) -> str:
         """Clean and normalize text.
 
         Args:
@@ -141,11 +140,11 @@ class DocumentProcessor(Protocol):.
         ...
 
 
-class RAGEngine(Protocol):.
-    """Protocol for the main RAG engine."""
+class RAGEngine(Protocol):
+    """Protocol for the main RAG engine"""
 
     @abstractmethod
-    async def retrieve_and_generate(self, query: str, context_limit: int = 5) -> str:.
+    async def retrieve_and_generate(self, query: str, context_limit: int = 5) -> str:
         """Retrieve relevant context and generate a response.
 
         Args:
@@ -158,7 +157,7 @@ class RAGEngine(Protocol):.
         ...
 
     @abstractmethod
-    async def index_documents(self, documents: List[Dict[str, Any]]) -> bool:.
+    async def index_documents(self, documents: List[Dict[str, Any]]) -> bool:
         """Index new documents into the RAG system.
 
         Args:
@@ -170,7 +169,7 @@ class RAGEngine(Protocol):.
         ...
 
     @abstractmethod
-    def get_config(self) -> Dict[str, Any]:.
+    def get_config(self) -> Dict[str, Any]:
         """Get current RAG configuration.
 
         Returns:

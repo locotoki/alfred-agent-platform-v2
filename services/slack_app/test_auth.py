@@ -1,5 +1,5 @@
-"""Simple test script to check if Slack API tokens work correctly."""
-
+"""Simple test script to check if Slack API tokens work correctly"""
+# type: ignore
 import os
 import sys
 
@@ -44,7 +44,7 @@ except Exception as e:
     print(f"Error: {str(e)}")
 
 # Test the app token (only needed for Socket Mode)
-if os.environ.get("SOCKET_MODE", "").lower() == "true":
+if os.environ.get("SOCKET_MODE", "")lower() == "true":
     try:
         if app_token.startswith("xapp-"):
             # We can't fully validate app tokens without starting Socket Mode

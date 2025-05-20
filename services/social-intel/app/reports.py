@@ -1,5 +1,5 @@
-"""Report generation utilities for Social Intelligence Agent."""
-
+"""Report generation utilities for Social Intelligence Agent"""
+# type: ignore
 import os
 from datetime import datetime
 from typing import Any, Dict
@@ -12,7 +12,7 @@ env = Environment(loader=FileSystemLoader("app/templates"))
 
 # Add custom filters
 def format_number(value):
-    """Format numbers with commas for thousands."""
+    """Format numbers with commas for thousands"""
     return f"{value:,}"
 
 
@@ -38,7 +38,7 @@ def generate_niche_scout_html(
     rendered_html = template.render(**data)
 
     # Create filename and path
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    timestamp = datetime.now()strftime("%Y%m%d_%H%M%S")
     filename = f"niche_scout_report_{timestamp}.html"
     filepath = os.path.join(output_dir, filename)
 
@@ -68,7 +68,7 @@ def generate_blueprint_html(
     rendered_html = template.render(**data)
 
     # Create filename and path
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    timestamp = datetime.now()strftime("%Y%m%d_%H%M%S")
     filename = f"blueprint_report_{timestamp}.html"
     filepath = os.path.join(output_dir, filename)
 

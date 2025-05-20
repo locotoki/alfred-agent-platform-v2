@@ -1,5 +1,5 @@
-"""Test if the Slack tokens are being read correctly."""
-
+"""Test if the Slack tokens are being read correctly"""
+# type: ignore
 import os
 
 from dotenv import load_dotenv

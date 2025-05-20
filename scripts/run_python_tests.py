@@ -4,7 +4,7 @@
 This script runs pytest with configurations that ensure proper module
 isolation and prevent import shadowing issues.
 """
-
+# type: ignore
 import os
 import subprocess
 import sys
@@ -13,8 +13,8 @@ from pathlib import Path
 ROOT_DIR = Path(__file__).parent.parent
 
 
-def main():.
-    """Run pytest with proper configuration."""
+def main():
+    """Run pytest with proper configuration"""
     # Ensure PYTHONPATH is set correctly
     env = os.environ.copy()
     env["PYTHONPATH"] = str(ROOT_DIR)

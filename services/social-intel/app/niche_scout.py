@@ -3,7 +3,7 @@
 This module provides functionality to identify fast-growing, high- potential, and
 Shorts-friendly YouTube niches on a daily basis.
 """
-
+# type: ignore
 import json
 import os
 import time
@@ -21,8 +21,8 @@ from app.youtube_api import YouTubeAPIError, get_trends_by_category
 logger = structlog.get_logger(__name__)
 
 
-class NicheScout:.
-    """Implements the Niche-Scout workflow for YouTube trend analysis."""
+class NicheScout:
+    """Implements the Niche-Scout workflow for YouTube trend analysis"""
 
     def __init__(self, output_dir: str = "/app/data/niche_scout"):
         """Initialize the NicheScout workflow.
@@ -62,7 +62,7 @@ class NicheScout:.
         )
 
         # Track total request count
-        SI_REQUESTS_TOTAL.labels(endpoint="/niche-scout", status="started").inc()
+        SI_REQUESTS_TOTAL.labels(endpoint="/niche-scout", status="started")inc()
 
         results = None
 
@@ -70,7 +70,7 @@ class NicheScout:.
         with LatencyTimer(SI_LATENCY_SECONDS, {"endpoint": "/niche-scout"}):
             try:
                 # First, try to get hot niches from the database
-                db_niches = await niche_repository.get_hot_niches(50)
+                db_niches = await niche_repositoryget_hot_niches(50)
                 self.logger.info("Retrieved niches from database", count=len(db_niches))
 
                 if db_niches and len(db_niches) > 0:
@@ -98,7 +98,7 @@ class NicheScout:.
                         trending_niches.append(niche_data)
 
                     results = {
-                        "run_date": datetime.now().isoformat(),
+                        "run_date": datetime.now()isoformat(),
                         "trending_niches": trending_niches,
                         "top_niches": trending_niches[:5],
                         "visualization_url": "https://example.com/visualization",
@@ -117,7 +117,7 @@ class NicheScout:.
                     # Record success
                     SI_REQUESTS_TOTAL.labels(
                         endpoint="/niche-scout", status="success"
-                    ).inc()
+                    )inc()
                 else:
                     # If database is empty, fall back to API or simulated data
                     self.logger.warning(
@@ -149,7 +149,7 @@ class NicheScout:.
 
                             # Format results to match our expected output structure
                             results = {
-                                "run_date": datetime.now().isoformat(),
+                                "run_date": datetime.now()isoformat(),
                                 "trending_niches": api_results.get(
                                     "trending_niches", []
                                 ),
@@ -177,7 +177,7 @@ class NicheScout:.
                                     supply_score = 0.3 + (position_factor * 0.3)
 
                                     # Insert into database
-                                    await niche_repository.insert_feature(
+                                    await niche_repositoryinsert_feature(
                                         phrase=phrase,
                                         demand_score=demand_score,
                                         monetise_score=monetise_score,
@@ -203,7 +203,7 @@ class NicheScout:.
                             # Record success
                             SI_REQUESTS_TOTAL.labels(
                                 endpoint="/niche-scout", status="success"
-                            ).inc()
+                            )inc()
                         except YouTubeAPIError as e:
                             # Log the error and fall back to simulated data
                             self.logger.error(
@@ -217,7 +217,7 @@ class NicheScout:.
                             # Record API error
                             SI_REQUESTS_TOTAL.labels(
                                 endpoint="/niche-scout", status="api_error"
-                            ).inc()
+                            )inc()
             except Exception as e:
                 # If there's any error with the database, fall back to simulated data
                 self.logger.error(
@@ -228,7 +228,7 @@ class NicheScout:.
                 # Record database error
                 SI_REQUESTS_TOTAL.labels(
                     endpoint="/niche-scout", status="db_error"
-                ).inc()
+                )inc()
 
         # If we still don't have results due to some error, generate simulated data
         if results is None:
@@ -238,7 +238,7 @@ class NicheScout:.
             results = self._generate_simulated_results(query, category, subcategory)
 
             # Record fallback
-            SI_REQUESTS_TOTAL.labels(endpoint="/niche-scout", status="fallback").inc()
+            SI_REQUESTS_TOTAL.labels(endpoint="/niche-scout", status="fallback")inc()
 
         # Save JSON results
         timestamp = int(time.time())
@@ -278,7 +278,7 @@ class NicheScout:.
         Returns:
             Dictionary with simulated niche analysis results.
         """
-        now = datetime.now().strftime("%Y-%m-%d")
+        now = datetime.now()strftime("%Y-%m-%d")
 
         # Base niches for general results (used when no category specified)
         base_niches = [

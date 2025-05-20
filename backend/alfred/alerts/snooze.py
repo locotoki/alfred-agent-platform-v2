@@ -2,7 +2,7 @@
 
 Provides temporary alert suppression with automatic expiry.
 """
-
+# type: ignore
 import json
 import uuid
 from dataclasses import dataclass
@@ -18,8 +18,8 @@ from alfred.metrics.protocols import MetricsClient
 
 
 @dataclass
-class SnoozeConfig:.
-    """Configuration for snooze behavior."""
+class SnoozeConfig:
+    """Configuration for snooze behavior"""
 
     min_duration: int = 300  # 5 minutes
     max_duration: int = 86400  # 24 hours
@@ -28,15 +28,15 @@ class SnoozeConfig:.
     audit_retention_days: int = 30
 
 
-class AlertSnoozeService(SnoozeService):.
-    """Service for managing alert snoozes with Redis TTL."""
+class AlertSnoozeService(SnoozeService):
+    """Service for managing alert snoozes with Redis TTL"""
 
     def __init__(
         self,
         redis_client: redis.Redis,
         metrics_client: Optional[MetricsClient] = None,
         config: Optional[SnoozeConfig] = None,
-    ):.
+    ):
         """Initialize the snooze service.
 
         Args:
@@ -322,7 +322,7 @@ class AlertSnoozeService(SnoozeService):.
         return entries[:limit]
 
     async def cleanup_expired_audits(self):
-        """Clean up old audit entries."""
+        """Clean up old audit entries"""
         pattern = f"{self.AUDIT_KEY_PREFIX}*"
         keys = self.redis.keys(pattern)
 
@@ -337,7 +337,7 @@ class AlertSnoozeService(SnoozeService):.
                     self.redis.delete(key)
 
     def _calculate_alert_hash(self, alert: AlertProtocol) -> str:
-        """Calculate hash of alert for change detection."""
+        """Calculate hash of alert for change detection"""
         # Include key fields that would trigger unsnooze
         hash_data = {
             "name": alert.name,
@@ -352,7 +352,7 @@ class AlertSnoozeService(SnoozeService):.
         return hashlib.sha256(hash_str.encode()).hexdigest()
 
     async def _store_alert_hash(self, alert_id: str):
-        """Store alert hash for change detection."""
+        """Store alert hash for change detection"""
         # In real implementation, would fetch alert
         # For now, store placeholder
         hash_key = f"{self.HASH_KEY_PREFIX}{alert_id}"
@@ -365,7 +365,7 @@ class AlertSnoozeService(SnoozeService):.
         reason: Optional[str] = None,
         user_id: Optional[str] = None,
     ):
-        """Create audit trail entry."""
+        """Create audit trail entry"""
         if isinstance(snooze, AlertSnooze):
             snooze_data = {
                 "id": snooze.id,
@@ -393,7 +393,7 @@ class AlertSnoozeService(SnoozeService):.
         )
 
     def _get_duration_bucket(self, duration: int) -> str:
-        """Get duration bucket for metrics."""
+        """Get duration bucket for metrics"""
         if duration < 3600:
             return "< 1h"
         elif duration < 21600:

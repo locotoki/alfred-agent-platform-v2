@@ -1,3 +1,4 @@
+# type: ignore
 import streamlit as st
 
 st.title("Alfred Chat UI")

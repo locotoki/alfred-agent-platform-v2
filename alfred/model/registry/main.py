@@ -81,7 +81,7 @@ metrics_app = FastAPI(title="Model Registry Metrics")
 
 @app.get("/health")
 async def health_check():
-    """Detailed health check endpoint."""
+    """Detailed health check endpoint"""
     # Check database connectivity
     db_status = "ok"
     try:
@@ -100,13 +100,13 @@ async def health_check():
 
 @app.get("/healthz")
 async def simple_health():
-    """Simple health check for container probes."""
+    """Simple health check for container probes"""
     return {"status": "ok"}
 
 
 @app.get("/metrics")
 async def metrics():
-    """Prometheus metrics endpoint on the main service port."""
+    """Prometheus metrics endpoint on the main service port"""
     from fastapi.responses import Response
 
     return Response(
@@ -116,7 +116,7 @@ async def metrics():
 
 @metrics_app.get("/metrics")
 async def metrics_dedicated():
-    """Prometheus metrics endpoint for the dedicated metrics port."""
+    """Prometheus metrics endpoint for the dedicated metrics port"""
     from fastapi.responses import Response
 
     return Response(
@@ -126,7 +126,7 @@ async def metrics_dedicated():
 
 @app.get("/models", response_model=List[ModelSchema])
 async def get_models(db: AsyncSession = Depends(get_db)):
-    """Get all registered models."""
+    """Get all registered models"""
     result = await db.execute(select(ModelRegistry))
     models = result.scalars().all()
     return models
@@ -134,7 +134,7 @@ async def get_models(db: AsyncSession = Depends(get_db)):
 
 @app.get("/models/{model_id}", response_model=ModelSchema)
 async def get_model(model_id: int, db: AsyncSession = Depends(get_db)):
-    """Get model by ID."""
+    """Get model by ID"""
     result = await db.execute(select(ModelRegistry).where(ModelRegistry.id == model_id))
     model = result.scalar_one_or_none()
     if not model:
@@ -146,7 +146,7 @@ async def get_model(model_id: int, db: AsyncSession = Depends(get_db)):
 
 @app.post("/models", response_model=ModelSchema)
 async def create_model(model: ModelSchema, db: AsyncSession = Depends(get_db)):
-    """Create a new model."""
+    """Create a new model"""
     db_model = ModelRegistry(
         name=model.name,
         display_name=model.display_name,
@@ -165,7 +165,7 @@ async def create_model(model: ModelSchema, db: AsyncSession = Depends(get_db)):
 # Start metrics server on separate port
 @app.on_event("startup")
 async def start_metrics_server():
-    """Start metrics server on metrics port."""
+    """Start metrics server on metrics port"""
     # Use environment variable or default to 9092 to avoid conflict with healthcheck port 9091
     metrics_port = int(os.getenv("METRICS_PORT", 9092))
     thread = threading.Thread(

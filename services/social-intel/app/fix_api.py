@@ -3,7 +3,7 @@
 
 This script updates the main.py file to add JSON body handling to the endpoints.
 """
-
+# type: ignore
 import os
 import re
 import sys
@@ -13,7 +13,7 @@ MAIN_PY_PATH = "/app/main.py"
 
 
 def modify_endpoint(content, endpoint_pattern, new_param_pattern):
-    """Modify an endpoint definition to handle JSON payloads."""
+    """Modify an endpoint definition to handle JSON payloads"""
     # Find the endpoint
     matches = re.finditer(endpoint_pattern, content)
     for match in matches:
@@ -31,7 +31,7 @@ def modify_endpoint(content, endpoint_pattern, new_param_pattern):
 
 
 def fix_json_handling(content):
-    """Add JSON body handling to all endpoints."""
+    """Add JSON body handling to all endpoints"""
     # Add the Request import if not present
     if "from fastapi import FastAPI, HTTPException, Query" in content:
         content = content.replace(
@@ -68,13 +68,13 @@ def fix_json_handling(content):
     if niche_scout_match:
         # Insert JSON handling code
         implementation_pos = niche_scout_match.end()
-        json_handling_code =. """
+        json_handling_code = """
     try:
         # Try to parse JSON body if present
         json_data = {}
         try:
             # Parse JSON
-            json_data = await request.json()
+            json_data = await requestjson()
 
             # Process the A2A envelope
             if json_data.get("intent") == "YOUTUBE_NICHE_SCOUT":
@@ -117,8 +117,8 @@ def fix_json_handling(content):
     return content
 
 
-def main():.
-    """Main function to fix the API."""
+def main():
+    """Main function to fix the API"""
     print("Starting API fix script...")
 
     # Check if the file exists

@@ -10,7 +10,7 @@ from alfred.alerts.explainer.agent import ExplainerAgent
 
 
 @pytest.fixture
-def alert_payload():.
+def alert_payload():
     """Load the alert fixture."""
     # test file is at tests/unit/alfred/alerts/explainer/test_agent.py
     # fixture is at tests/fixtures/alerts/alert_critical.json
@@ -27,7 +27,7 @@ def stub_agent():
 
 
 @pytest.fixture
-def mock_llm():.
+def mock_llm():
     """Create a mock LLM."""
     mock = Mock()
     mock.invoke.return_value = "Mocked LLM response"
@@ -41,7 +41,7 @@ def test_explainer_agent_initialization():
     assert agent._chain is None
 
 
-def test_explainer_agent_with_llm():.
+def test_explainer_agent_with_llm():
     """Test agent initialization with LLM."""
     mock_llm = Mock()
     agent = ExplainerAgent(llm=mock_llm)
@@ -49,7 +49,7 @@ def test_explainer_agent_with_llm():.
     assert agent._chain is not None
 
 
-def test_explain_alert_stub_mode(stub_agent, alert_payload):.
+def test_explain_alert_stub_mode(stub_agent, alert_payload):
     """Test alert explanation in stub mode."""
     result = stub_agent.explain_alert(alert_payload)
 

@@ -16,7 +16,7 @@ import sys
 import requests
 
 
-class OllamaChat:.
+class OllamaChat:
     """Simple command-line chat interface for Ollama."""
 
     def __init__(self, model="tinyllama"):

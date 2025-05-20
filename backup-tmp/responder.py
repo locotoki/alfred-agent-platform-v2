@@ -16,7 +16,7 @@ import redis
 from slack_sdk import WebClient
 from slack_sdk.errors import SlackApiError
 
-from . import redis_bus
+import redis_bus  # Changed from relative import
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -29,7 +29,7 @@ HOSTNAME = os.environ.get("HOSTNAME", socket.gethostname())
 class ResponseHandler:
     """Handler for MCP responses that updates Slack threads."""
 
-    def __init__(self, slack_token: str):.
+    def __init__(self, slack_token: str):
         """Initialize the response handler.
 
         Args:
@@ -41,7 +41,7 @@ class ResponseHandler:
         self.task = None
         self.in_flight: Set[str] = set()  # Track request_ids of in-flight requests
 
-    def add_in_flight(self, request_id: str) -> None:.
+    def add_in_flight(self, request_id: str) -> None:
         """Add a request_id to the in-flight set.
 
         Args:
@@ -54,7 +54,7 @@ class ResponseHandler:
             # Keep the 500 most recent (assuming they're added in order)
             self.in_flight = set(list(self.in_flight)[-500:])
 
-    async def start(self) -> None:.
+    async def start(self) -> None:
         """Start the response handler as an asyncio task."""
         if self.task is None or self.task.done():
             self.stop_event.clear()

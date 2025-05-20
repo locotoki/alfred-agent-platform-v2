@@ -1,5 +1,4 @@
-"""Dynamic threshold optimization service for ML noise reduction."""
-
+"""Dynamic threshold optimization service for ML noise reduction"""
 import json
 from dataclasses import dataclass
 from typing import Dict, Optional
@@ -9,16 +8,16 @@ from alfred.metrics.protocols import MetricsCollector
 
 
 @dataclass
-class ThresholdConfig:.
-    """Configuration for dynamic thresholds."""
+class ThresholdConfig:
+    """Configuration for dynamic thresholds"""
 
     noise_threshold: float = 0.7
     confidence_min: float = 0.85
     batch_size: int = 100
     learning_rate: float = 0.01
 
-    def to_dict(self) -> Dict[str, float]:.
-        """Convert to dictionary representation."""
+    def to_dict(self) -> Dict[str, float]:
+        """Convert to dictionary representation"""
         return {
             "noise_threshold": self.noise_threshold,
             "confidence_min": self.confidence_min,
@@ -28,11 +27,11 @@ class ThresholdConfig:.
 
     @classmethod
     def from_dict(cls, data: Dict[str, float]) -> "ThresholdConfig":
-        """Create from dictionary representation."""
+        """Create from dictionary representation"""
         return cls(**data)
 
 
-class ThresholdService(Service):.
+class ThresholdService(Service):
     """Service for managing dynamic ML thresholds.
 
     This service allows runtime adjustment of ML model thresholds based on performance
@@ -55,7 +54,7 @@ class ThresholdService(Service):.
         self._config = self._load_config()
 
     def _load_config(self) -> ThresholdConfig:
-        """Load configuration from disk or use defaults."""
+        """Load configuration from disk or use defaults"""
         try:
             with open(self.config_path, "r") as f:
                 data = json.load(f)
@@ -64,7 +63,7 @@ class ThresholdService(Service):.
             return ThresholdConfig()
 
     def _save_config(self) -> None:
-        """Persist configuration to disk."""
+        """Persist configuration to disk"""
         try:
             with open(self.config_path, "w") as f:
                 json.dump(self._config.to_dict(), f, indent=2)

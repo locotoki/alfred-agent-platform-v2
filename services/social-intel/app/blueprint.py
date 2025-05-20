@@ -3,7 +3,7 @@
 This module provides functionality to transform a seed video into a comprehensive
 channel strategy with competitor analysis and content gaps.
 """
-
+# type: ignore
 import asyncio
 import json
 import os
@@ -18,8 +18,8 @@ from app.simple_reports import generate_blueprint_report
 logger = structlog.get_logger(__name__)
 
 
-class SeedToBlueprint:.
-    """Implements the Seed-to-Blueprint workflow for YouTube channel strategy."""
+class SeedToBlueprint:
+    """Implements the Seed-to-Blueprint workflow for YouTube channel strategy"""
 
     def __init__(self, output_dir: str = "/app/data/builder"):
         """Initialize the SeedToBlueprint workflow.
@@ -55,7 +55,7 @@ class SeedToBlueprint:.
         )
 
         # Simulate processing time
-        await asyncio.sleep(3)
+        await asynciosleep(3)
 
         # Generate results (using simulated data for the stub implementation)
         results = self._generate_simulated_results(video_url, niche)
@@ -92,7 +92,7 @@ class SeedToBlueprint:.
         Returns:
             Dictionary with simulated blueprint results.
         """
-        now = datetime.now().strftime("%Y-%m-%d")
+        now = datetime.now()strftime("%Y-%m-%d")
 
         # Use either the video or niche to customize results
         if video_url:

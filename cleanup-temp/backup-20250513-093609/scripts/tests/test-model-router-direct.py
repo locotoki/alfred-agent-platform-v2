@@ -9,7 +9,7 @@ import sys
 import requests
 
 
-def get_models():.
+def get_models():
     """Get models from the registry."""
     try:
         response = requests.get("http://localhost:8079/api/v1/models", timeout=5)

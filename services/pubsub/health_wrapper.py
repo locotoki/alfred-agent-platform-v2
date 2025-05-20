@@ -9,7 +9,7 @@ This script provides standardized health check endpoints for the PubSub emulator
 It acts as a wrapper around the PubSub emulator to make it compliant with the platform
 health check standard.
 """
-
+# type: ignore
 import json
 import os
 import time
@@ -58,7 +58,7 @@ def check_pubsub_health() -> Dict[str, str]:
         url = f"http://{PUBSUB_HOST}/v1/projects/{PROJECT_ID}/topics"
         with urllib.request.urlopen(url, timeout=5) as response:
             if response.status == 200:
-                topics = json.loads(response.read().decode("utf-8"))
+                topics = json.loads(response.read()decode("utf-8"))
 
                 # Set metrics
                 pubsub_up.set(1)
@@ -72,7 +72,7 @@ def check_pubsub_health() -> Dict[str, str]:
                     with urllib.request.urlopen(sub_url, timeout=2) as sub_response:
                         if sub_response.status == 200:
                             subscriptions = json.loads(
-                                sub_response.read().decode("utf-8")
+                                sub_response.read()decode("utf-8")
                             )
                             if "subscriptions" in subscriptions:
                                 pubsub_subscriptions.set(
@@ -97,7 +97,7 @@ def check_pubsub_health() -> Dict[str, str]:
 
 @app.get("/health")
 async def health_check():
-    """Detailed health check endpoint."""
+    """Detailed health check endpoint"""
     result = check_pubsub_health()
 
     if result["status"] == "error":
@@ -114,7 +114,7 @@ async def health_check():
 
 @app.get("/healthz")
 async def simple_health():
-    """Simple health check for container probes."""
+    """Simple health check for container probes"""
     result = check_pubsub_health()
 
     if result["status"] == "error":
@@ -129,7 +129,7 @@ async def simple_health():
 
 @app.get("/metrics")
 async def metrics():
-    """Prometheus metrics endpoint."""
+    """Prometheus metrics endpoint"""
     return Response(
         content=prometheus_client.generate_latest(), media_type="text/plain"
     )

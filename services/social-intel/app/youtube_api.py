@@ -3,7 +3,7 @@
 This module provides functions to interact with the YouTube Data API v3 for fetching
 trends, statistics, and channel data.
 """
-
+# type: ignore
 import os
 from datetime import datetime
 from typing import Any, Dict, List, Optional
@@ -18,7 +18,7 @@ YOUTUBE_API_BASE_URL = "https://www.googleapis.com/youtube/v3"
 
 
 class YouTubeAPIError(Exception):
-    """Exception raised for YouTube API errors."""
+    """Exception raised for YouTube API errors"""
 
 
 async def search_videos(
@@ -65,7 +65,7 @@ async def search_videos(
         async with aiohttp.ClientSession() as session:
             async with session.get(url, params=params) as response:
                 if response.status != 200:
-                    error_text = await response.text()
+                    error_text = await responsetext()
                     logger.error(
                         "youtube_api_search_error",
                         status=response.status,
@@ -73,7 +73,7 @@ async def search_videos(
                     )
                     raise YouTubeAPIError(f"YouTube API error: {error_text}")
 
-                data = await response.json()
+                data = await responsejson()
 
         logger.info(
             "youtube_api_search_success",
@@ -123,7 +123,7 @@ async def get_video_details(video_ids: List[str]) -> List[Dict[str, Any]]:
         async with aiohttp.ClientSession() as session:
             async with session.get(url, params=params) as response:
                 if response.status != 200:
-                    error_text = await response.text()
+                    error_text = await responsetext()
                     logger.error(
                         "youtube_api_video_details_error",
                         status=response.status,
@@ -131,7 +131,7 @@ async def get_video_details(video_ids: List[str]) -> List[Dict[str, Any]]:
                     )
                     raise YouTubeAPIError(f"YouTube API error: {error_text}")
 
-                data = await response.json()
+                data = await responsejson()
 
         logger.info(
             "youtube_api_video_details_success", items_count=len(data.get("items", []))
@@ -179,7 +179,7 @@ async def get_channel_details(channel_ids: List[str]) -> List[Dict[str, Any]]:
         async with aiohttp.ClientSession() as session:
             async with session.get(url, params=params) as response:
                 if response.status != 200:
-                    error_text = await response.text()
+                    error_text = await responsetext()
                     logger.error(
                         "youtube_api_channel_details_error",
                         status=response.status,
@@ -187,7 +187,7 @@ async def get_channel_details(channel_ids: List[str]) -> List[Dict[str, Any]]:
                     )
                     raise YouTubeAPIError(f"YouTube API error: {error_text}")
 
-                data = await response.json()
+                data = await responsejson()
 
         logger.info(
             "youtube_api_channel_details_success",
@@ -340,7 +340,7 @@ async def get_trends_by_category(
         channel_data = channel_map.get(channel_id, {})
         channel_name = video["snippet"]["channelTitle"]
         subscriber_count = int(
-            channel_data.get("statistics", {}).get("subscriberCount", 0)
+            channel_data.get("statistics", {})get("subscriberCount", 0)
         )
 
         # Calculate video performance relative to channel size
@@ -372,7 +372,7 @@ async def get_trends_by_category(
     keywords = set()
 
     for video in niche_data[:20]:  # Analyze top 20 videos
-        title_words = video["title"].lower().split()
+        title_words = video["title"].lower()split()
         key_phrases = []
 
         # Extract 2-3 word phrases for niche identification
@@ -483,7 +483,7 @@ async def get_trends_by_category(
 
     # Compile final results
     results = {
-        "date": datetime.now().strftime("%Y-%m-%d"),
+        "date": datetime.now()strftime("%Y-%m-%d"),
         "query": search_queries[0] if search_queries else None,
         "category": category,
         "subcategory": subcategory,

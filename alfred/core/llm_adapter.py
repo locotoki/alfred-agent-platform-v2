@@ -3,7 +3,6 @@
 This module implements the Strategy/Adapter pattern for LLM providers, starting with
 OpenAI GPT-4o-Turbo as the primary provider and Claude 3 Sonnet as a fallback option.
 """
-
 import os
 from abc import ABC, abstractmethod
 from typing import Any, AsyncIterator, Dict, List, Optional, Union
@@ -26,7 +25,7 @@ logger = structlog.get_logger(__name__)
 
 
 class Message:
-    """Represents a message in the conversation."""
+    """Represents a message in the conversation"""
 
     def __init__(self, role: str, content: str):
         self.role = role
@@ -37,7 +36,7 @@ class Message:
 
 
 class LLMAdapter(ABC):
-    """Abstract base class for LLM adapters."""
+    """Abstract base class for LLM adapters"""
 
     @abstractmethod
     async def generate(
@@ -48,7 +47,7 @@ class LLMAdapter(ABC):
         temperature: float = 0.7,
         max_tokens: Optional[int] = None,
         **kwargs: Any,
-    ) -> Union[str, AsyncIterator[str]]:.
+    ) -> Union[str, AsyncIterator[str]]:
         """Generate a response from the LLM.
 
         Args:
@@ -64,7 +63,7 @@ class LLMAdapter(ABC):
         ...
 
     @abstractmethod
-    def estimate_tokens(self, text: str) -> int:.
+    def estimate_tokens(self, text: str) -> int:
         """Estimate token count for the given text.
 
         Args:
@@ -76,8 +75,8 @@ class LLMAdapter(ABC):
         ...
 
 
-class OpenAIAdapter(LLMAdapter):.
-    """OpenAI GPT-4o-Turbo adapter implementation."""
+class OpenAIAdapter(LLMAdapter):
+    """OpenAI GPT-4o-Turbo adapter implementation"""
 
     def __init__(self, api_key: Optional[str] = None, model: str = "gpt-4o-turbo"):
         self.model = model
@@ -90,7 +89,7 @@ class OpenAIAdapter(LLMAdapter):.
 
     @property
     def client(self) -> Any:
-        """Lazy-load OpenAI client."""
+        """Lazy-load OpenAI client"""
         if self._client is None:
             try:
                 from openai import AsyncOpenAI
@@ -111,7 +110,7 @@ class OpenAIAdapter(LLMAdapter):.
         max_tokens: Optional[int] = None,
         **kwargs: Any,
     ) -> Union[str, AsyncIterator[str]]:
-        """Generate response using OpenAI API."""
+        """Generate response using OpenAI API"""
         try:
             message_dicts = [msg.to_dict() for msg in messages]
 
@@ -151,7 +150,7 @@ class OpenAIAdapter(LLMAdapter):.
             raise
 
     async def _stream_response(self, response: Any) -> AsyncIterator[str]:
-        """Stream response chunks from OpenAI."""
+        """Stream response chunks from OpenAI"""
         total_tokens = 0
         async for chunk in response:
             if chunk.choices and chunk.choices[0].delta.content:
@@ -174,8 +173,8 @@ class OpenAIAdapter(LLMAdapter):.
         return len(text) // 4
 
 
-class ClaudeAdapter(LLMAdapter):.
-    """Claude 3 Sonnet adapter implementation."""
+class ClaudeAdapter(LLMAdapter):
+    """Claude 3 Sonnet adapter implementation"""
 
     def __init__(
         self, api_key: Optional[str] = None, model: str = "claude-3-sonnet-20240229"
@@ -189,7 +188,7 @@ class ClaudeAdapter(LLMAdapter):.
 
     @property
     def client(self) -> Any:
-        """Lazy-load Anthropic client."""
+        """Lazy-load Anthropic client"""
         if self._client is None:
             try:
                 from anthropic import \
@@ -211,7 +210,7 @@ class ClaudeAdapter(LLMAdapter):.
         max_tokens: Optional[int] = None,
         **kwargs: Any,
     ) -> Union[str, AsyncIterator[str]]:
-        """Generate response using Claude API."""
+        """Generate response using Claude API"""
         try:
             # Claude expects system messages separately
             system_message = None
@@ -262,7 +261,7 @@ class ClaudeAdapter(LLMAdapter):.
             raise
 
     async def _stream_response(self, response: Any) -> AsyncIterator[str]:
-        """Stream response chunks from Claude."""
+        """Stream response chunks from Claude"""
         total_tokens = 0
         async for chunk in response:
             if chunk.type == "content_block_delta":
@@ -275,7 +274,7 @@ class ClaudeAdapter(LLMAdapter):.
         )
 
     def estimate_tokens(self, text: str) -> int:
-        """Estimate tokens for Claude."""
+        """Estimate tokens for Claude"""
         # Similar rough estimate
         return len(text) // 4
 

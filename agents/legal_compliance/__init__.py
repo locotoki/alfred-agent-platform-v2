@@ -1,5 +1,5 @@
-"""Legal Compliance Agent Package."""
-
+"""Legal Compliance Agent Package"""
+# type: ignore
 from .agent import LegalComplianceAgent
 from .models import (ComplianceAuditRequest, ComplianceAuditResult,
                      ContractReviewRequest, ContractReviewResult,

@@ -7,7 +7,7 @@ Generates performance report with metrics on:
 - Processing latency
 - Memory usage.
 """
-
+# type: ignore
 import argparse
 import json
 import random
@@ -26,15 +26,15 @@ from backend.alfred.alerts.ranker import AlertNoiseRanker
 
 
 class BenchmarkAlert(AlertProtocol):
-    """Mock alert for benchmarking."""
+    """Mock alert for benchmarking"""
 
     def __init__(self, **kwargs):
         for k, v in kwargs.items():
             setattr(self, k, v)
 
 
-class RankerBenchmark:.
-    """Benchmark harness for noise rankers."""
+class RankerBenchmark:
+    """Benchmark harness for noise rankers"""
 
     def __init__(
         self,
@@ -48,7 +48,7 @@ class RankerBenchmark:.
         self.results = {}
 
     def generate_test_alerts(self) -> List[Tuple[BenchmarkAlert, Dict]]:.
-        """Generate synthetic test alerts with labels."""
+        """Generate synthetic test alerts with labels"""
         alerts = []
 
         for i in range(self.num_alerts):
@@ -106,12 +106,12 @@ class RankerBenchmark:.
     def benchmark_ranker(
         self, ranker_name: str, ranker, alerts: List[Tuple[BenchmarkAlert, Dict, bool]]
     ) -> Dict:
-        """Benchmark a single ranker."""
+        """Benchmark a single ranker"""
         print(f"Benchmarking {ranker_name}...")
 
         # Measure memory before
         process = psutil.Process()
-        mem_before = process.memory_info().rss / 1024 / 1024  # MB
+        mem_before = process.memory_info()rss / 1024 / 1024  # MB
 
         # Start timing
         start_time = time.time()
@@ -128,7 +128,7 @@ class RankerBenchmark:.
         processing_time = end_time - start_time
 
         # Measure memory after
-        mem_after = process.memory_info().rss / 1024 / 1024  # MB
+        mem_after = process.memory_info()rss / 1024 / 1024  # MB
         memory_used = mem_after - mem_before
 
         # Calculate metrics
@@ -183,7 +183,7 @@ class RankerBenchmark:.
         }
 
     def run_benchmark(self) -> Dict:
-        """Run full benchmark comparison."""
+        """Run full benchmark comparison"""
         print(f"Starting benchmark with {self.num_alerts} alerts...")
 
         # Generate test data
@@ -228,13 +228,13 @@ class RankerBenchmark:.
             "old_ranker": old_results,
             "new_ranker": new_results,
             "improvements": improvements,
-            "timestamp": datetime.utcnow().isoformat(),
+            "timestamp": datetime.utcnow()isoformat(),
         }
 
     def generate_report(
         self, results: Dict, output_path: str = "ranker_benchmark_report.pdf"
     ):
-        """Generate PDF report with visualizations."""
+        """Generate PDF report with visualizations"""
         print(f"Generating report: {output_path}")
 
         with PdfPages(output_path) as pdf:

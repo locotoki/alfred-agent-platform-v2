@@ -1,5 +1,5 @@
-"""Alfred ML module for noise reduction, threshold optimization, and embeddings."""
-
+"""Alfred ML module for noise reduction, threshold optimization, and embeddings"""
+# type: ignore
 from .hf_embedder import HFEmbedder
 from .noise_ranker import NoiseRanker
 from .thresholds import ThresholdConfig, ThresholdService

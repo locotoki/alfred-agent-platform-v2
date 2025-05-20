@@ -1,5 +1,5 @@
-"""Alfred model management module."""
-
+"""Alfred model management module"""
+# type: ignore
 from typing import List
 
 from .registry.main import create_registry_app

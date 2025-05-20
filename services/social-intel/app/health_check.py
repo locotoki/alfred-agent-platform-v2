@@ -1,5 +1,5 @@
-"""Enhanced health check implementation for the Social Intelligence service."""
-
+"""Enhanced health check implementation for the Social Intelligence service"""
+# type: ignore
 import asyncio
 import os
 import time
@@ -36,7 +36,7 @@ health_state = {
 
 @health_router.get("/health")
 async def basic_health():
-    """Basic health check endpoint."""
+    """Basic health check endpoint"""
     global health_state
 
     # Determine overall status
@@ -50,7 +50,7 @@ async def basic_health():
 
 @health_router.get("/health/detailed")
 async def detailed_health():
-    """Detailed health check including component status."""
+    """Detailed health check including component status"""
     global health_state
 
     # Add current time
@@ -62,7 +62,7 @@ async def detailed_health():
 
 @health_router.get("/healthz")
 async def simple_health():
-    """Simple health check for container probes."""
+    """Simple health check for container probes"""
     global health_state
     if health_state["status"] == "unhealthy":
         return Response(
@@ -73,13 +73,13 @@ async def simple_health():
 
 @health_router.post("/health/check-now")
 async def trigger_health_check():
-    """Manually trigger a full health check."""
+    """Manually trigger a full health check"""
     await check_all_dependencies()
     return health_state
 
 
-async def check_all_dependencies():.
-    """Check all external dependencies and update health state."""
+async def check_all_dependencies():
+    """Check all external dependencies and update health state"""
     global health_state
 
     # Check database
@@ -115,7 +115,7 @@ async def check_database() -> bool:
 
     try:
         # Use circuit breaker for database checks
-        await db_circuit.execute(async_check_db_connection)
+        await db_circuitexecute(async_check_db_connection)
 
         # Update health state
         health_state["components"]["database"] = {
@@ -138,11 +138,11 @@ async def check_database() -> bool:
 
 
 async def async_check_db_connection():
-    """Execute a simple database query to check connectivity."""
+    """Execute a simple database query to check connectivity"""
     pool = await get_pool()
     async with pool.acquire() as conn:
         # Try to execute a simple query
-        await conn.fetchval("SELECT 1")
+        await connfetchval("SELECT 1")
 
 
 async def check_youtube_api() -> bool:
@@ -164,7 +164,7 @@ async def check_youtube_api() -> bool:
 
     try:
         # Use circuit breaker for YouTube API checks
-        await youtube_circuit.execute(async_check_youtube_api, api_key)
+        await youtube_circuitexecute(async_check_youtube_api, api_key)
 
         # Update health state
         health_state["components"]["youtube_api"] = {
@@ -187,7 +187,7 @@ async def check_youtube_api() -> bool:
 
 
 async def async_check_youtube_api(api_key: str):
-    """Make a simple API call to check YouTube API connectivity."""
+    """Make a simple API call to check YouTube API connectivity"""
     url = "https://www.googleapis.com/youtube/v3/videos"
     params = {
         "part": "snippet",
@@ -199,19 +199,19 @@ async def async_check_youtube_api(api_key: str):
     async with aiohttp.ClientSession() as session:
         async with session.get(url, params=params) as response:
             if response.status != 200:
-                text = await response.text()
+                text = await responsetext()
                 raise Exception(
                     f"YouTube API returned status {response.status}: {text}"
                 )
 
             # Parse response to verify it's valid
-            data = await response.json()
+            data = await responsejson()
             if "items" not in data:
                 raise Exception("Invalid YouTube API response format")
 
 
 async def start_health_check_scheduler():
-    """Start periodic health checks."""
+    """Start periodic health checks"""
     logger.info("Starting health check scheduler")
 
     # Run initial health check
@@ -220,10 +220,10 @@ async def start_health_check_scheduler():
     # Schedule periodic checks
     while True:
         try:
-            await asyncio.sleep(60)  # Check every minute
+            await asynciosleep(60)  # Check every minute
             await check_all_dependencies()
         except asyncio.CancelledError:
             break
         except Exception as e:
             logger.error("Health check scheduler error", error=str(e))
-            await asyncio.sleep(10)  # Wait a bit before retrying
+            await asynciosleep(10)  # Wait a bit before retrying

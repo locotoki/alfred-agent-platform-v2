@@ -11,11 +11,11 @@ from backend.alfred.ml.faiss_index import (AlertSearchEngine, FAISSIndex,
                                            SearchResult)
 
 
-class TestFAISSIndex:.
+class TestFAISSIndex:
     """Test FAISS index functionality."""
 
     @pytest.fixture
-    def index(self):.
+    def index(self):
         """Create test index."""
         return FAISSIndex(dimension=10, index_type="Flat")
 
@@ -26,7 +26,7 @@ class TestFAISSIndex:.
         return np.random.randn(5, 10).astype(np.float32)
 
     @pytest.fixture
-    def sample_ids(self):.
+    def sample_ids(self):
         """Create sample IDs."""
         return ["alert1", "alert2", "alert3", "alert4", "alert5"]
 
@@ -78,7 +78,7 @@ class TestFAISSIndex:.
         for i, alert_id in enumerate(sample_ids):
             assert index.id_map[i] == alert_id
 
-    def test_add_embeddings_with_metadata(self, index, sample_embeddings, sample_ids):.
+    def test_add_embeddings_with_metadata(self, index, sample_embeddings, sample_ids):
         """Test adding embeddings with metadata."""
         metadata = [
             {"severity": "high"},
@@ -137,7 +137,7 @@ class TestFAISSIndex:.
         for result in results:
             assert result.score >= 0.8
 
-    def test_batch_search(self, index, sample_embeddings, sample_ids):.
+    def test_batch_search(self, index, sample_embeddings, sample_ids):
         """Test batch search."""
         index.add_embeddings(sample_embeddings, sample_ids)
 
@@ -242,7 +242,7 @@ class TestAlertSearchEngine:
     """Test high-level search engine."""
 
     @pytest.fixture
-    def mock_embedder(self):.
+    def mock_embedder(self):
         """Mock HF embedder."""
         embedder = Mock()
         embedder.model_name = "test-model"
@@ -266,7 +266,7 @@ class TestAlertSearchEngine:
         assert engine.index is not None
         assert engine.index.dimension == 384
 
-    def test_index_alerts(self, engine, mock_embedder):.
+    def test_index_alerts(self, engine, mock_embedder):
         """Test indexing alerts."""
         alerts = [
             {

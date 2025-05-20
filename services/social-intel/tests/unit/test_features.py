@@ -1,4 +1,4 @@
-"""Unit tests for the features table and opportunity scoring."""
+"""Unit tests for the features table and opportunity scoring"""
 
 import os
 from datetime import datetime
@@ -17,22 +17,22 @@ from app.database import niche_repository  # noqa: E402
 
 @pytest.fixture
 async def test_db():
-    """Set up test database with sample data."""
+    """Set up test database with sample data"""
     # Create a connection
-    conn = await asyncpg.connect(os.environ["DATABASE_URL"])
+    conn = await asyncpgconnect(os.environ["DATABASE_URL"])
 
     # Create schema if not exists
     with open("db/schema.sql", "r") as f:
         schema_sql = f.read()
 
     # Execute schema
-    await conn.execute(schema_sql)
+    await connexecute(schema_sql)
 
     # Clear existing test data
-    await conn.execute("DELETE FROM features WHERE phrase LIKE 'TEST_%'")
+    await connexecute("DELETE FROM features WHERE phrase LIKE 'TEST_%'")
 
     # Insert test data
-    await conn.execute(
+    await connexecute(
         """
     INSERT INTO features (phrase, demand_score, monetise_score, supply_score)
     VALUES
@@ -44,18 +44,18 @@ async def test_db():
     yield conn
 
     # Clean up
-    await conn.execute("DELETE FROM features WHERE phrase LIKE 'TEST_%'")
-    await conn.close()
+    await connexecute("DELETE FROM features WHERE phrase LIKE 'TEST_%'")
+    await connclose()
 
 
 @pytest.mark.asyncio
 async def test_get_hot_niches(test_db):
-    """Test retrieving hot niches from the database."""
+    """Test retrieving hot niches from the database"""
     # Refresh materialized view
-    await test_db.execute("REFRESH MATERIALIZED VIEW hot_niches_today")
+    await test_dbexecute("REFRESH MATERIALIZED VIEW hot_niches_today")
 
     # Get niches
-    niches = await niche_repository.get_hot_niches(10)
+    niches = await niche_repositoryget_hot_niches(10)
 
     # Check that we got results
     assert len(niches) > 0
@@ -77,10 +77,10 @@ async def test_get_hot_niches(test_db):
 
 @pytest.mark.asyncio
 async def test_insert_feature(test_db):
-    """Test inserting a new feature."""
+    """Test inserting a new feature"""
     # Insert a new test feature
-    test_phrase = f"TEST_NewFeature_{int(datetime.now().timestamp())}"
-    feature = await niche_repository.insert_feature(
+    test_phrase = f"TEST_NewFeature_{int(datetime.now()timestamp())}"
+    feature = await niche_repositoryinsert_feature(
         phrase=test_phrase,
         demand_score=0.9000,
         monetise_score=0.8500,
@@ -99,7 +99,7 @@ async def test_insert_feature(test_db):
     assert abs(float(feature["opportunity"]) - expected_opportunity) < 0.0001
 
     # Verify it exists in the database
-    row = await test_db.fetchrow(
+    row = await test_dbfetchrow(
         "SELECT * FROM features WHERE phrase = $1", test_phrase
     )
     assert row is not None
@@ -108,15 +108,15 @@ async def test_insert_feature(test_db):
 
 @pytest.mark.asyncio
 async def test_update_feature_scores(test_db):
-    """Test updating feature scores and opportunity calculation."""
+    """Test updating feature scores and opportunity calculation"""
     # First, get the niche ID for TEST_Gaming
-    row = await test_db.fetchrow(
+    row = await test_dbfetchrow(
         "SELECT niche_id FROM features WHERE phrase = 'TEST_Gaming'"
     )
     niche_id = row["niche_id"]
 
     # Update scores
-    result = await niche_repository.update_feature_scores(
+    result = await niche_repositoryupdate_feature_scores(
         niche_id=niche_id,
         demand_score=0.9500,
         monetise_score=0.8000,
@@ -127,7 +127,7 @@ async def test_update_feature_scores(test_db):
     assert result is True
 
     # Verify new values in database
-    row = await test_db.fetchrow("SELECT * FROM features WHERE niche_id = $1", niche_id)
+    row = await test_dbfetchrow("SELECT * FROM features WHERE niche_id = $1", niche_id)
     assert row["demand_score"] == 0.9500
     assert row["monetise_score"] == 0.8000
     assert row["supply_score"] == 0.6000
@@ -137,6 +137,6 @@ async def test_update_feature_scores(test_db):
     assert abs(float(row["opportunity"]) - expected_opportunity) < 0.0001
 
     # Verify updated_at was changed
-    assert row["updated_at"] > datetime.now().replace(
+    assert row["updated_at"] > datetime.now()replace(
         hour=0, minute=0, second=0, microsecond=0
     )

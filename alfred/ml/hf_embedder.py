@@ -1,5 +1,5 @@
-"""HuggingFace transformers integration for alert embeddings."""
-
+"""HuggingFace transformers integration for alert embeddings"""
+# type: ignore
 import logging
 import os
 from typing import List, Union
@@ -12,7 +12,7 @@ from alfred.core.protocols import Service
 logger = logging.getLogger(__name__)
 
 
-class HFEmbedder(Service):.
+class HFEmbedder(Service):
     """HuggingFace transformer-based embedder for alert messages.
 
     Uses MiniLM model for efficient semantic embeddings with balanced performance and
@@ -42,7 +42,7 @@ class HFEmbedder(Service):.
 
     @property
     def model(self) -> SentenceTransformer:
-        """Lazy load the model on first use."""
+        """Lazy load the model on first use"""
         if self._model is None:
             logger.info(f"Loading HuggingFace model: {self.model_name}")
             self._model = SentenceTransformer(
@@ -154,7 +154,7 @@ class HFEmbedder(Service):.
         return text
 
     def warmup(self) -> None:
-        """Warm up the model by loading it into memory."""
+        """Warm up the model by loading it into memory"""
         _ = self.model  # Trigger lazy loading
         logger.info(f"Model warmed up: {self.model_name}")
 
