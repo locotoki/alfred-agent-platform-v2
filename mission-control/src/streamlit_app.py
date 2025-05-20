@@ -40,7 +40,7 @@ services = {
 }
 
 for service_name, service_url in services.items():
-    status = check_service_health(service_url)
+    status = check_service_health(service_url)  # type: ignore # Script-level code
     st.sidebar.text(f"{service_name}: {status}")
 
 # Tabs

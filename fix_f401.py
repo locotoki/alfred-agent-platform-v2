@@ -100,5 +100,5 @@ if __name__ == "__main__":
         print(f"Violations file not found: {violations_file}")
         sys.exit(1)
 
-    fixed_files = fix_f401_violations(violations_file)
+    fixed_files = fix_f401_violations(violations_file)  # type: ignore # Script-level code
     print(f"\nFixed {len(fixed_files)} files")

@@ -55,4 +55,4 @@ def fix_e501_violations(violations_file="flake8_violations.txt"):
 
 
 if __name__ == "__main__":
-    fix_e501_violations()
+    fix_e501_violations()  # type: ignore # Script-level code
