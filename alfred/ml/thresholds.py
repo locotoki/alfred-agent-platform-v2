@@ -1,8 +1,8 @@
-"""Dynamic threshold optimization service for ML noise reduction"""
+"""Dynamic threshold optimization service for ML noise reduction."""
 
 import json
 from dataclasses import dataclass
-from typing import Dict, Optional
+from typing import Any, Dict, Optional, Union, cast
 
 from alfred.core.protocols import Service
 from alfred.metrics.protocols import MetricsCollector
@@ -27,9 +27,16 @@ class ThresholdConfig:
         }
 
     @classmethod
-    def from_dict(cls, data: Dict[str, float]) -> "ThresholdConfig":
-        """Create from dictionary representation"""
-        return cls(**data)
+    def from_dict(cls, data: Dict[str, Union[float, int]]) -> "ThresholdConfig":
+        """Create from dictionary representation."""
+        # Convert to compatible types
+        typed_data: Dict[str, Any] = {}
+        for key, value in data.items():
+            if key == "batch_size":
+                typed_data[key] = int(value)
+            else:
+                typed_data[key] = float(value)
+        return cls(**typed_data)
 
 
 class ThresholdService(Service):
@@ -71,7 +78,8 @@ class ThresholdService(Service):
         except Exception as e:
             # Log but don't fail on save errors
             if self.metrics:
-                self.metrics.increment("threshold.save_error", {"error": str(e)})
+                metrics_collector = cast(Any, self.metrics)
+                metrics_collector.increment("threshold.save_error", {"error": str(e)})
 
     def get_thresholds(self) -> Dict[str, float]:
         """Get current threshold configuration.
@@ -110,8 +118,9 @@ class ThresholdService(Service):
 
         # Track metrics
         if self.metrics:
+            metrics_collector = cast(Any, self.metrics)
             for key, value in updates.items():
-                self.metrics.gauge(f"threshold.{key}", value)
+                metrics_collector.gauge(f"threshold.{key}", value)
 
         return self._config.to_dict()
 
@@ -142,3 +151,13 @@ class ThresholdService(Service):
 
         self._save_config()
         return self._config.to_dict()
+
+    async def start(self) -> None:
+        """Start the threshold service."""
+        # Nothing to start, just load the config
+        self._config = self._load_config()
+
+    async def stop(self) -> None:
+        """Stop the threshold service."""
+        # Save config on shutdown
+        self._save_config()

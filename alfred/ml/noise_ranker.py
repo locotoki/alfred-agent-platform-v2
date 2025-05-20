@@ -5,29 +5,30 @@ probability, helping to reduce alert fatigue.
 """
 
 from dataclasses import dataclass
-from typing import Dict, List, Tuple
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 import joblib
 import numpy as np
+from numpy.typing import NDArray
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.preprocessing import StandardScaler
 
-from alfred.core.protocols import AlertProtocol
+from alfred.alerts.protocols import AlertProtocol
 
 
 @dataclass
 class NoiseRankingModel:
     """ML model for ranking alert noise levels"""
 
-    def __init__(self, model_path: str = None):
+    def __init__(self, model_path: Optional[str] = None):
         """Initialize the noise ranking model.
 
         Args:
             model_path: Path to pre-trained model file
         """
-        self.model = None
-        self.scaler = StandardScaler()
-        self.feature_names = [
+        self.model: Any = None
+        self.scaler: StandardScaler = StandardScaler()
+        self.feature_names: List[str] = [
             "frequency_24h",
             "frequency_7d",
             "resolution_time_avg",
@@ -41,7 +42,9 @@ class NoiseRankingModel:
         if model_path:
             self.load_model(model_path)
 
-    def extract_features(self, alert: AlertProtocol, historical_data: Dict) -> np.ndarray:
+    def extract_features(
+        self, alert: AlertProtocol, historical_data: Dict[str, Any]
+    ) -> NDArray[Any]:
         """Extract features from an alert for ML prediction.
 
         Args:
@@ -79,7 +82,7 @@ class NoiseRankingModel:
 
         return np.array(features).reshape(1, -1)
 
-    def predict_noise_score(self, alert: AlertProtocol, historical_data: Dict) -> float:
+    def predict_noise_score(self, alert: AlertProtocol, historical_data: Dict[str, Any]) -> float:
         """Predict noise score for an alert (0-1, higher = more noise).
 
         Args:
@@ -98,10 +101,10 @@ class NoiseRankingModel:
         # Get probability of being noise
         noise_probability = self.model.predict_proba(features_scaled)[0][1]
 
-        return noise_probability
+        return float(noise_probability)
 
     def rank_alerts(
-        self, alerts: List[Tuple[AlertProtocol, Dict]]
+        self, alerts: List[Tuple[AlertProtocol, Dict[str, Any]]]
     ) -> List[Tuple[AlertProtocol, float]]:
         """Rank a list of alerts by noise score.
 
@@ -122,7 +125,7 @@ class NoiseRankingModel:
 
         return ranked
 
-    def train(self, training_data: List[Dict], labels: List[int]):
+    def train(self, training_data: List[Dict[str, Any]], labels: List[int]) -> None:
         """Train the noise ranking model.
 
         Args:
@@ -130,23 +133,27 @@ class NoiseRankingModel:
             labels: List of labels (0=signal, 1=noise).
         """
         # Convert to feature matrix
-        X = []
+        X: List[List[Any]] = []
         for data in training_data:
             features = [data.get(name, 0) for name in self.feature_names]
             X.append(features)
 
-        X = np.array(X)
-        y = np.array(labels)
+        X_array: NDArray[Any] = np.array(X)
+        y: NDArray[Any] = np.array(labels)
 
         # Scale features
-        X_scaled = self.scaler.fit_transform(X)
+        X_scaled = self.scaler.fit_transform(X_array)
 
         # Train model
         self.model = RandomForestClassifier(n_estimators=100, max_depth=10, random_state=42)
         self.model.fit(X_scaled, y)
 
-    def save_model(self, path: str):
-        """Save trained model to disk"""
+    def save_model(self, path: str) -> None:
+        """Save trained model to disk.
+
+        Args:
+            path: Path to save the model to.
+        """
         if not self.model:
             raise ValueError("No model to save. Train a model first.")
 
@@ -159,8 +166,12 @@ class NoiseRankingModel:
             path,
         )
 
-    def load_model(self, path: str):
-        """Load model from disk"""
+    def load_model(self, path: str) -> None:
+        """Load model from disk.
+
+        Args:
+            path: Path to load the model from.
+        """
         data = joblib.load(path)
         self.model = data["model"]
         self.scaler = data["scaler"]
