@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Update Prometheus alert rules with additional labels"""
+"""Update Prometheus alert rules with additional labels."""
 # type: ignore
 import re
 import sys
@@ -8,8 +8,8 @@ from pathlib import Path
 import yaml
 
 
-def update_alert_labels(file_path: Path) -> None:.
-    """Update alert labels in a single file"""
+def update_alert_labels(file_path: Path) -> None:
+    """Update alert labels in a single file."""
     with open(file_path, "r") as f:
         content = f.read()
 
@@ -58,9 +58,7 @@ def update_alert_labels(file_path: Path) -> None:.
 
             # Add runbook label
             if "runbook" not in rule["labels"]:
-                alert_name_snake = (
-                    re.sub(r"([A-Z])", r"_\1", rule["alert"]).lower().strip("_")
-                )
+                alert_name_snake = re.sub(r"([A-Z])", r"_\1", rule["alert"]).lower().strip("_")
                 runbook_url = f"https://github.com/alfred-agent-platform-v2/runbooks/{alert_name_snake}.md"  # noqa: E501
                 rule["labels"]["runbook"] = runbook_url
                 modified = True
@@ -77,7 +75,7 @@ def update_alert_labels(file_path: Path) -> None:.
 
 
 def main():
-    """Update all alert files"""
+    """Update all alert files."""
     alerts_dir = Path("charts/alerts")
 
     if not alerts_dir.exists():

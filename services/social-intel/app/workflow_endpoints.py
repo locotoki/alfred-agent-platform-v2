@@ -1,4 +1,5 @@
-"""Fixed workflow endpoints module to address datetime parsing issues"""
+"""Fixed workflow endpoints module to address datetime parsing issues."""
+
 # type: ignore
 import glob
 import json
@@ -11,7 +12,7 @@ import structlog
 logger = structlog.get_logger(__name__)
 
 
-def validate_datetime(dt_str: str) -> datetime:.
+def validate_datetime(dt_str: str) -> datetime:
     """Validate and parse a datetime string safely.
 
     Args:
@@ -86,18 +87,14 @@ async def get_workflow_history() -> List[Dict[str, Any]]:
                         parsed_date = validate_datetime(run_date)
                         formatted_date = parsed_date.isoformat()
                     except Exception as e:
-                        logger.error(
-                            "Error parsing run date", run_date=run_date, error=str(e)
-                        )
+                        logger.error("Error parsing run date", run_date=run_date, error=str(e))
                         # Fallback to file modification time
                         formatted_date = datetime.fromtimestamp(
                             os.path.getmtime(file_path)
                         ).isoformat()
                 else:
                     # Fallback to file modification time
-                    formatted_date = datetime.fromtimestamp(
-                        os.path.getmtime(file_path)
-                    ).isoformat()
+                    formatted_date = datetime.fromtimestamp(os.path.getmtime(file_path)).isoformat()
 
                 # Extract common fields
                 result_id = os.path.basename(file_path).replace(".json", "")
@@ -116,9 +113,7 @@ async def get_workflow_history() -> List[Dict[str, Any]]:
                     }
                 )
             except Exception as e:
-                logger.error(
-                    "Error processing history file", file=file_path, error=str(e)
-                )
+                logger.error("Error processing history file", file=file_path, error=str(e))
 
         return history
     except Exception as e:

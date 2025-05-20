@@ -3,6 +3,7 @@
 This simple echo agent processes the /alfred ping command and replies with the provided
 text. It listens to the MCP request stream and publishes to the response stream.
 """
+
 # type: ignore
 import json
 import logging
@@ -30,11 +31,11 @@ RESPONSE_STREAM = "mcp.responses"
 
 # Consumer group
 ECHO_CONSUMER_GROUP = "echo-agent"
-ECHO_CONSUMER_NAME = f"echo-{uuid.uuid4()hex[:8]}"
+ECHO_CONSUMER_NAME = f"echo-{uuid.uuid4().hex[:8]}"
 
 
 def get_redis_client() -> redis.Redis:
-    """Create and return a Redis client instance"""
+    """Create and return a Redis client instance."""
     client = redis.Redis(
         host=REDIS_HOST,
         port=REDIS_PORT,
@@ -45,8 +46,8 @@ def get_redis_client() -> redis.Redis:
     return client
 
 
-def ensure_consumer_group() -> None:.
-    """Ensure the consumer group exists for the echo agent"""
+def ensure_consumer_group() -> None:
+    """Ensure the consumer group exists for the echo agent."""
     client = get_redis_client()
 
     try:
@@ -58,16 +59,12 @@ def ensure_consumer_group() -> None:.
             client.xinfo_groups(REQUEST_STREAM)
         except redis.exceptions.ResponseError:
             client.xgroup_create(REQUEST_STREAM, ECHO_CONSUMER_GROUP, id="0")
-            logger.info(
-                f"Created consumer group {ECHO_CONSUMER_GROUP} for {REQUEST_STREAM}"
-            )
+            logger.info(f"Created consumer group {ECHO_CONSUMER_GROUP} for {REQUEST_STREAM}")
     except redis.exceptions.ResponseError:
         # Stream doesn't exist, create it with a dummy message
         client.xadd(REQUEST_STREAM, {"init": "true"})
         client.xgroup_create(REQUEST_STREAM, ECHO_CONSUMER_GROUP, id="0")
-        logger.info(
-            f"Created stream {REQUEST_STREAM} and consumer group {ECHO_CONSUMER_GROUP}"
-        )
+        logger.info(f"Created stream {REQUEST_STREAM} and consumer group {ECHO_CONSUMER_GROUP}")
 
 
 def publish_response(response: Dict[str, Any]) -> str:
@@ -88,9 +85,7 @@ def publish_response(response: Dict[str, Any]) -> str:
         # Add entry to the stream with response as 'data' field
         message_id = client.xadd(RESPONSE_STREAM, {"data": response_json})
 
-        logger.info(
-            f"Published response for request {response['request_id']} to {RESPONSE_STREAM}"
-        )
+        logger.info(f"Published response for request {response['request_id']} to {RESPONSE_STREAM}")
         return message_id
     except Exception as e:
         logger.error(f"Error publishing response to Redis: {e}")
@@ -148,7 +143,7 @@ def process_ping_command(request_data: Dict[str, Any]) -> Dict[str, Any]:
 
 
 def run_echo_agent() -> None:
-    """Run the echo agent, processing requests from the MCP stream"""
+    """Run the echo agent, processing requests from the MCP stream."""
     logger.info("Starting echo agent...")
     client = get_redis_client()
 
@@ -187,15 +182,10 @@ def run_echo_agent() -> None:
 
                             # Process only if this is a command we can handle
                             # This agent only handles /alfred ping
-                            if (
-                                "command" in request_data
-                                and request_data["command"] == "/alfred"
-                            ):
+                            if "command" in request_data and request_data["command"] == "/alfred":
                                 command_text = request_data.get("text", "").strip()
                                 if command_text.startswith("ping"):
-                                    logger.info(
-                                        f"Processing ping command: {command_text}"
-                                    )
+                                    logger.info(f"Processing ping command: {command_text}")
 
                                     # Process the ping command
                                     response = process_ping_command(request_data)
@@ -203,18 +193,12 @@ def run_echo_agent() -> None:
                                     # Publish the response
                                     publish_response(response)
                                 else:
-                                    logger.info(
-                                        f"Ignoring non-ping command: {command_text}"
-                                    )
+                                    logger.info(f"Ignoring non-ping command: {command_text}")
 
                         except json.JSONDecodeError as e:
-                            logger.error(
-                                f"Error decoding JSON from message {message_id}: {e}"
-                            )
+                            logger.error(f"Error decoding JSON from message {message_id}: {e}")
                     else:
-                        logger.warning(
-                            f"Received message {message_id} without data field"
-                        )
+                        logger.warning(f"Received message {message_id} without data field")
 
             except redis.exceptions.ConnectionError as e:
                 logger.error(f"Redis connection error: {e}")
