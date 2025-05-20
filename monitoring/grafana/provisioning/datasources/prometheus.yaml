@@ -5,6 +5,6 @@ datasources:
     type: prometheus
     access: proxy
     url: http://monitoring-metrics:9090
-    isDefault: true
+    isDefault: false
     version: 1
     editable: false
