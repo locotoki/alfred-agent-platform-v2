@@ -23,7 +23,7 @@ def fix_method_chaining(content):
 
 def fix_datetime_formatting(content):
     """Fix datetime function calls without proper parentheses"""
-    # Find patterns like datetime.now()strftime and fix to datetime.now().strftime
+    # Find patterns like datetime.now().strftime and fix to datetime.now().strftime
     content = re.sub(r"(now\(\))(\w+\()", r"\1.\2", content)
     return content
 

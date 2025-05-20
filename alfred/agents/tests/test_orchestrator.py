@@ -18,7 +18,7 @@ class TestAgentOrchestrator:
     async def test_unknown_intent_returns_help(self):
         """Test that unknown intent returns help without LLM"""
         # Test with a message that won't match any pattern
-        response = await selforchestrator.process_message("xyzzy123456")
+        response = await selforchestratorprocess_message("xyzzy123456")
 
         assert response["status"] == "success"
         assert response["intent"] == "unknown_intent"
@@ -33,7 +33,7 @@ class TestAgentOrchestrator:
         orchestrator_route_total._metrics.clear()
 
         # Process an unknown intent
-        await self.orchestrator.process_message("gibberish123")
+        await selforchestrator.process_message("gibberish123")
 
         # Check that metric was incremented
         metric_value = orchestrator_route_total.labels(intent_type="unknown_intent").get_value()
@@ -43,7 +43,7 @@ class TestAgentOrchestrator:
     async def test_known_intent_processes_correctly(self):
         """Test that known intents are processed correctly"""
         # Test greeting
-        response = await self.orchestrator.process_message("hello there")
+        response = await selforchestrator.process_message("hello there")
 
         assert response["status"] == "success"
         assert response["intent"] == "greeting"
@@ -54,7 +54,7 @@ class TestAgentOrchestrator:
     @pytest.mark.asyncio
     async def test_help_intent(self):
         """Test help intent processing"""
-        response = await selforchestrator.process_message("help me please")
+        response = await selforchestratorprocess_message("help me please")
 
         assert response["status"] == "success"
         assert response["intent"] == "help"
@@ -64,7 +64,7 @@ class TestAgentOrchestrator:
     @pytest.mark.asyncio
     async def test_status_intent(self):
         """Test status check intent"""
-        response = await selforchestrator.process_message("what's the status?")
+        response = await selforchestratorprocess_message("what's the status?")
 
         assert response["status"] == "success"
         assert response["intent"] == "status_check"
@@ -88,7 +88,7 @@ class TestAgentOrchestrator:
     async def test_no_llm_token_increment_for_unknown(self):
         """Test that no LLM tokens are used for unknown intent"""
         # This test verifies the requirement that unknown_intent doesn't use LLM
-        response = await selforchestrator.process_message("completely unknown text")
+        response = await selforchestratorprocess_message("completely unknown text")
 
         assert response["intent"] == "unknown_intent"
         assert response["llm_used"] is False

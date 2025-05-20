@@ -32,7 +32,7 @@ CONSUMER_NAME = "slack-responder"
 
 
 def get_redis_client() -> redis.Redis:
-    """Create and return a Redis client instance."""
+    """Create and return a Redis client instance"""
     client = redis.Redis(
         host=REDIS_HOST,
         port=REDIS_PORT,
@@ -69,7 +69,7 @@ def publish(message: Dict[str, Any]) -> str:
 
 
 def ensure_consumer_group() -> None:
-    """Ensure the consumer group exists, creating it if necessary."""
+    """Ensure the consumer group exists, creating it if necessary"""
     client = get_redis_client()
 
     try:

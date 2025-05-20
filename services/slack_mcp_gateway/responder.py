@@ -21,7 +21,7 @@ logger = logging.getLogger(__name__)
 
 
 class ResponseHandler:
-    """Handler for MCP responses that updates Slack threads."""
+    """Handler for MCP responses that updates Slack threads"""
 
     def __init__(self, slack_token: str):
         """Initialize the response handler.
@@ -34,7 +34,7 @@ class ResponseHandler:
         self.thread = None
 
     def start(self) -> None:
-        """Start the response handler thread."""
+        """Start the response handler thread"""
         if self.thread is None or not self.thread.is_alive():
             self.stop_event.clear()
             self.thread = threading.Thread(target=self._response_loop)
@@ -43,14 +43,14 @@ class ResponseHandler:
             logger.info("Started response handler thread")
 
     def stop(self) -> None:
-        """Stop the response handler thread."""
+        """Stop the response handler thread"""
         self.stop_event.set()
         if self.thread and self.thread.is_alive():
             self.thread.join(timeout=5.0)
             logger.info("Stopped response handler thread")
 
     def _response_loop(self) -> None:
-        """Process responses from Redis in a continuous loop."""
+        """Process responses from Redis in a continuous loop"""
         logger.info("Response handler thread started")
 
         for message_id, response in redis_bus.subscribe():

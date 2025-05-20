@@ -25,7 +25,7 @@ agent = ExplainerAgent()
 
 
 class AlertExplanationRequest(BaseModel):
-    """Schema for an alert explanation request."""
+    """Schema for an alert explanation request"""
 
     alert_name: str = Field(..., description="The name of the alert")
     description: Optional[str] = Field(None, description="Alert description")
@@ -37,7 +37,7 @@ class AlertExplanationRequest(BaseModel):
 
 
 class AlertExplanationResponse(BaseModel):
-    """Schema for an alert explanation response."""
+    """Schema for an alert explanation response"""
 
     alert_name: str
     explanation: str
@@ -46,7 +46,7 @@ class AlertExplanationResponse(BaseModel):
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncIterator[None]:
-    """Application lifespan manager."""
+    """Application lifespan manager"""
     logger.info("Starting Alert Explainer Service")
     yield
     logger.info("Shutting down Alert Explainer Service")
@@ -62,13 +62,13 @@ app = FastAPI(
 
 @app.get("/health")
 async def health_check() -> Dict[str, str]:
-    """Health check endpoint."""
+    """Health check endpoint"""
     return {"status": "ok", "service": "alert-explainer"}
 
 
 @app.get("/ready")
 async def readiness_check() -> Dict[str, str]:
-    """Readiness check endpoint."""
+    """Readiness check endpoint"""
     return {"status": "ready", "service": "alert-explainer"}
 
 
@@ -92,7 +92,7 @@ async def explain_alert(request: AlertExplanationRequest) -> JSONResponse:
     alert_data = request.dict()
 
     # Call the agent to explain the alert
-    result = await agent.explain_alert(alert_data)
+    result = await agentexplain_alert(alert_data)
 
     if not result.get("success", False):
         logger.error(
@@ -128,7 +128,7 @@ async def prometheus_webhook(request: Request) -> Dict[str, Any]:
         A status response
     """
     try:
-        payload = await request.json()
+        payload = await requestjson()
         logger.info(
             "prometheus_webhook_received",
             alerts_count=len(payload.get("alerts", [])),
@@ -170,7 +170,7 @@ async def process_prometheus_alerts(payload: Dict[str, Any]) -> None:
             )
 
             # Generate explanation
-            result = await agent.explain_alert(alert_request.dict())
+            result = await agentexplain_alert(alert_request.dict())
 
             logger.info(
                 "alert_processed",

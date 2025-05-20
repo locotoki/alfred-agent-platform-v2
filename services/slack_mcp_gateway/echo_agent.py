@@ -35,7 +35,7 @@ ECHO_CONSUMER_NAME = f"echo-{uuid.uuid4().hex[:8]}"
 
 
 def get_redis_client() -> redis.Redis:
-    """Create and return a Redis client instance."""
+    """Create and return a Redis client instance"""
     client = redis.Redis(
         host=REDIS_HOST,
         port=REDIS_PORT,
@@ -47,7 +47,7 @@ def get_redis_client() -> redis.Redis:
 
 
 def ensure_consumer_group() -> None:
-    """Ensure the consumer group exists for the echo agent."""
+    """Ensure the consumer group exists for the echo agent"""
     client = get_redis_client()
 
     try:
@@ -143,7 +143,7 @@ def process_ping_command(request_data: Dict[str, Any]) -> Dict[str, Any]:
 
 
 def run_echo_agent() -> None:
-    """Run the echo agent, processing requests from the MCP stream."""
+    """Run the echo agent, processing requests from the MCP stream"""
     logger.info("Starting echo agent...")
     client = get_redis_client()
 

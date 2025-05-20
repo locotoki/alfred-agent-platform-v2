@@ -28,10 +28,10 @@ logger = structlog.get_logger(__name__)
 
 
 class AgentOrchestrator:
-    """Orchestrator that processes messages through intent routing."""
+    """Orchestrator that processes messages through intent routing"""
 
     def __init__(self) -> None:
-        """Initialize the orchestrator with the default intent router."""
+        """Initialize the orchestrator with the default intent router"""
         self._intent_router = router
 
     async def process_message(self, message: str, context: dict = None) -> dict:
@@ -64,7 +64,7 @@ class AgentOrchestrator:
         log.info("intent_detected", intent_type=intent.type, confidence=intent.confidence)
 
         # Process based on intent
-        response = await self._process_intent(intent, context)
+        response = await self_process_intent(intent, context)
 
         # Add metadata to response
         response["request_id"] = request_id

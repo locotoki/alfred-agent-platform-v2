@@ -1,4 +1,4 @@
-"""Prefect flows for YouTube workflows in SocialIntelligence Agent."""
+"""Prefect flows for YouTube workflows in SocialIntelligence Agent"""
 
 import asyncio
 import json
@@ -35,7 +35,7 @@ logger = structlog.get_logger(__name__)
 # Initialize sentence transformer for embeddings
 @task(name="initialize_sentence_transformer")
 def initialize_sentence_transformer():
-    """Initialize the sentence transformer model for embeddings."""
+    """Initialize the sentence transformer model for embeddings"""
     return SentenceTransformer("all-MiniLM-L6-v2")
 
 
@@ -44,14 +44,14 @@ def initialize_sentence_transformer():
 
 @task(name="harvest_youtube_signals")
 async def harvest_youtube_signals(queries: List[str]) -> pd.DataFrame:
-    """Harvest signals from YouTube and Google Trends."""
+    """Harvest signals from YouTube and Google Trends"""
     youtube_api = YouTubeAPI()
     rows = []
     today = datetime.now().date().isoformat()
 
     for q in queries:
         # Get videos for this query
-        videos = await youtube_api.search_videos(q, limit=100)
+        videos = await youtube_apisearch_videos(q, limit=100)
 
         # Calculate total views
         view_sum = sum(
@@ -64,14 +64,14 @@ async def harvest_youtube_signals(queries: List[str]) -> pd.DataFrame:
         )
 
         # Get trend data
-        trend_data = await youtube_api.get_trend_data(q)
+        trend_data = await youtube_apiget_trend_data(q)
         rsv = trend_data["current_value"] if trend_data else 0
 
         # Add to results
         rows.append((today, q, view_sum, rsv))
 
         # Sleep to avoid rate limiting
-        await asyncio.sleep(1)
+        await asynciosleep(1)
 
     # Create DataFrame
     df = pd.DataFrame(rows, columns=["date", "query", "view_sum", "rsv"])
@@ -85,7 +85,7 @@ async def harvest_youtube_signals(queries: List[str]) -> pd.DataFrame:
 
 @task(name="score_cluster_niches")
 def score_cluster_niches(signals_df: pd.DataFrame) -> pd.DataFrame:
-    """Score and cluster the niches."""
+    """Score and cluster the niches"""
     # Get latest date data
     latest = signals_df[signals_df.date == signals_df.date.max()].copy()
 
@@ -122,7 +122,7 @@ def score_cluster_niches(signals_df: pd.DataFrame) -> pd.DataFrame:
 async def store_niche_vectors(
     niches_df: pd.DataFrame, vector_storage: YouTubeVectorStorage, sentence_transformer
 ):
-    """Store niche vectors in the vector database."""
+    """Store niche vectors in the vector database"""
     # Generate embeddings
     niche_texts = [
         f"YouTube niche: {row.query}. Views: {row.view_sum}. Trend score: {row.rsv}"
@@ -139,14 +139,14 @@ async def store_niche_vectors(
         niche_data = niche.to_dict()
 
         # Store in Qdrant
-        await vector_storage.store_niche_vector(niche_id, niche_data, niche_embeddings[i])
+        await vector_storagestore_niche_vector(niche_id, niche_data, niche_embeddings[i])
 
     logger.info("niche_vectors_stored", count=len(niches_df))
 
 
 @task(name="generate_niche_scout_digest")
 def generate_niche_scout_digest(trending_niches: pd.DataFrame) -> str:
-    """Generate a digest of the top niches."""
+    """Generate a digest of the top niches"""
     # Sort by score and get top 10
     top_niches = trending_niches.sort_values("score", ascending=False).head(10)
 
@@ -181,9 +181,9 @@ def generate_niche_scout_digest(trending_niches: pd.DataFrame) -> str:
 
 @task(name="get_top_video_for_niche")
 async def get_top_video_for_niche(niche: str) -> str:
-    """Get the top video for a given niche."""
+    """Get the top video for a given niche"""
     youtube_api = YouTubeAPI()
-    videos = await youtube_api.search_videos(niche, limit=10)
+    videos = await youtube_apisearch_videos(niche, limit=10)
 
     if not videos:
         raise ValueError(f"No videos found for niche: {niche}")
@@ -208,11 +208,11 @@ async def get_top_video_for_niche(niche: str) -> str:
 
 @task(name="ingest_seed_video")
 async def ingest_seed_video(seed_url: str) -> Dict[str, Any]:
-    """Ingest metadata for the seed video."""
+    """Ingest metadata for the seed video"""
     youtube_api = YouTubeAPI()
 
     # Get video metadata
-    video_data = await youtube_api.get_video_metadata(seed_url)
+    video_data = await youtube_apiget_video_metadata(seed_url)
 
     if not video_data:
         raise ValueError(f"Failed to retrieve data for seed video: {seed_url}")
@@ -229,7 +229,7 @@ async def ingest_seed_video(seed_url: str) -> Dict[str, Any]:
 
 @task(name="build_query_list")
 def build_query_list(seed_data: Dict[str, Any]) -> List[str]:
-    """Build a list of queries from the seed video data."""
+    """Build a list of queries from the seed video data"""
     # Extract title and tags
     title = seed_data.get("title", "")
     tags = seed_data.get("tags", [])
@@ -253,13 +253,13 @@ def build_query_list(seed_data: Dict[str, Any]) -> List[str]:
 
 @task(name="harvest_rank_channels")
 async def harvest_rank_channels(query_list: List[str]) -> pd.DataFrame:
-    """Harvest and rank channels related to the queries."""
+    """Harvest and rank channels related to the queries"""
     youtube_api = YouTubeAPI()
     all_channels = {}
 
     # Search for each query
     for query in query_list:
-        channels = await youtube_api.search_channels(query, limit=20)
+        channels = await youtube_apisearch_channels(query, limit=20)
 
         for channel in channels:
             channel_id = channel.get("id")
@@ -294,7 +294,7 @@ async def harvest_rank_channels(query_list: List[str]) -> pd.DataFrame:
             }
 
         # Sleep to avoid rate limiting
-        await asyncio.sleep(1)
+        await asynciosleep(1)
 
     # Convert to DataFrame
     channels_df = pd.DataFrame(list(all_channels.values()))
@@ -312,7 +312,7 @@ async def harvest_rank_channels(query_list: List[str]) -> pd.DataFrame:
 async def perform_gap_analysis(
     channels_df: pd.DataFrame, seed_data: Dict[str, Any]
 ) -> pd.DataFrame:
-    """Analyze content gaps between seed video and competing channels."""
+    """Analyze content gaps between seed video and competing channels"""
     youtube_api = YouTubeAPI()
 
     # Extract keywords from seed video
@@ -334,7 +334,7 @@ async def perform_gap_analysis(
         channel_id = channel.channel_id
 
         # Get channel videos
-        videos = await youtube_api.get_channel_videos(channel_id, limit=100)
+        videos = await youtube_apiget_channel_videos(channel_id, limit=100)
 
         if not videos:
             continue
@@ -370,7 +370,7 @@ async def perform_gap_analysis(
             )
 
         # Sleep to avoid rate limiting
-        await asyncio.sleep(1)
+        await asynciosleep(1)
 
     # Convert to DataFrame
     gap_df = pd.DataFrame(gap_rows)
@@ -405,7 +405,7 @@ async def perform_gap_analysis(
 def generate_blueprint(
     channels_df: pd.DataFrame, gap_df: pd.DataFrame, sentence_transformer
 ) -> Dict[str, Any]:
-    """Generate a channel blueprint based on analysis."""
+    """Generate a channel blueprint based on analysis"""
     # Load trending niches if available
     trending_niches_path = Path("niche_scout/trending_niches.csv")
     # trending_niches = None  # Reserved for future use
@@ -545,7 +545,7 @@ def generate_blueprint(
 
 @task(name="package_outputs")
 def package_outputs() -> str:
-    """Package all outputs into a zip file."""
+    """Package all outputs into a zip file"""
     # Create output directory if it doesn't exist
     os.makedirs("builder", exist_ok=True)
 
@@ -574,7 +574,7 @@ async def youtube_niche_scout_flow(
     queries: Optional[List[str]] = None,
     vector_storage: Optional[YouTubeVectorStorage] = None,
 ) -> NicheScoutResult:
-    """Run the Niche-Scout workflow."""
+    """Run the Niche-Scout workflow"""
     log = get_run_logger()
 
     if not queries:
@@ -630,7 +630,7 @@ async def youtube_blueprint_flow(
     auto_niche: bool = False,
     vector_storage: Optional[YouTubeVectorStorage] = None,
 ) -> BlueprintResult:
-    """Run the Seed-to-Blueprint workflow."""
+    """Run the Seed-to-Blueprint workflow"""
     log = get_run_logger()
 
     # Initialize sentence transformer

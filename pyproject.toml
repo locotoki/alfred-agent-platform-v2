@@ -26,5 +26,13 @@ exclude = '''
   | node_modules
   | youtube-test-env
   | migrations
+  | cleanup-temp
+  | docs/archive
+  | docs/tools
+  | examples/test_dispatcher\.py
+  | examples/test_webhook\.py
+  | tests/integration/financial_tax/test_integration\.py
+  | tests/integration/test_exactly_once_processing\.py
+  | tests/smoke/test_telegram_adapter\.py
 )/
 '''

@@ -232,8 +232,8 @@ def ui():
 
         <script>
             document.getElementById('send-command').addEventListener('click', function() {
-                const command = document.getElementById('command')value;
-                const text = document.getElementById('text')value || 'help';
+                const command = document.getElementById('command').value;
+                const text = document.getElementById('text').value || 'help';
 
                 fetch('/slack/commands', {
                     method: 'POST',

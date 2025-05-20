@@ -8,7 +8,7 @@ from typing import Dict
 
 
 class AlertFeatureFlags:
-    """Feature flag management for the alert system."""
+    """Feature flag management for the alert system"""
 
     @classmethod
     def is_enabled(cls, flag_name: str) -> bool:
