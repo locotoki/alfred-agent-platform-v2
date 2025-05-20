@@ -26,15 +26,16 @@ from backend.alfred.alerts.ranker import AlertNoiseRanker
 
 
 class BenchmarkAlert(AlertProtocol):
-    """Mock alert for benchmarking"""
+    """Mock alert for benchmarking."""
 
     def __init__(self, **kwargs):
+        """Initialize the mock alert with arbitrary properties."""
         for k, v in kwargs.items():
             setattr(self, k, v)
 
 
 class RankerBenchmark:
-    """Benchmark harness for noise rankers"""
+    """Benchmark harness for noise rankers."""
 
     def __init__(
         self,
@@ -42,13 +43,20 @@ class RankerBenchmark:
         old_ranker: LegacyRanker,
         num_alerts: int = 50000,
     ):
+        """Initialize the benchmark with rankers and test parameters.
+
+        Args:
+            new_ranker: The new ranker implementation to test
+            old_ranker: The legacy ranker to compare against
+            num_alerts: Number of test alerts to generate
+        """
         self.new_ranker = new_ranker
         self.old_ranker = old_ranker
         self.num_alerts = num_alerts
         self.results = {}
 
     def generate_test_alerts(self) -> List[Tuple[BenchmarkAlert, Dict, bool]]:
-        """Generate synthetic test alerts with labels"""
+        """Generate synthetic test alerts with labels."""
         alerts = []
 
         for i in range(self.num_alerts):
@@ -81,22 +89,14 @@ class RankerBenchmark:
 
             # Historical data
             historical = {
-                "count_24h": (
-                    random.randint(1, 100) if is_noise else random.randint(0, 5)
-                ),
-                "count_7d": (
-                    random.randint(10, 500) if is_noise else random.randint(0, 20)
-                ),
+                "count_24h": (random.randint(1, 100) if is_noise else random.randint(0, 5)),
+                "count_7d": (random.randint(10, 500) if is_noise else random.randint(0, 20)),
                 "avg_resolution_time": random.uniform(100, 10000),
                 "false_positive_rate": (
                     random.uniform(0.7, 0.95) if is_noise else random.uniform(0, 0.3)
                 ),
-                "snooze_count": (
-                    random.randint(0, 50) if is_noise else random.randint(0, 5)
-                ),
-                "ack_rate": (
-                    random.uniform(0.1, 0.5) if is_noise else random.uniform(0.5, 0.9)
-                ),
+                "snooze_count": (random.randint(0, 50) if is_noise else random.randint(0, 5)),
+                "ack_rate": (random.uniform(0.1, 0.5) if is_noise else random.uniform(0.5, 0.9)),
             }
 
             alerts.append((alert, historical, is_noise))
@@ -106,7 +106,7 @@ class RankerBenchmark:
     def benchmark_ranker(
         self, ranker_name: str, ranker, alerts: List[Tuple[BenchmarkAlert, Dict, bool]]
     ) -> Dict:
-        """Benchmark a single ranker"""
+        """Benchmark a single ranker."""
         print(f"Benchmarking {ranker_name}...")
 
         # Measure memory before
@@ -183,16 +183,14 @@ class RankerBenchmark:
         }
 
     def run_benchmark(self) -> Dict:
-        """Run full benchmark comparison"""
+        """Run full benchmark comparison."""
         print(f"Starting benchmark with {self.num_alerts} alerts...")
 
         # Generate test data
         alerts = self.generate_test_alerts()
 
         # Benchmark old ranker
-        old_results = self.benchmark_ranker(
-            "Legacy Ranker (v1)", self.old_ranker, alerts
-        )
+        old_results = self.benchmark_ranker("Legacy Ranker (v1)", self.old_ranker, alerts)
 
         # Benchmark new ranker
         new_results = self.benchmark_ranker("ML Ranker (v2)", self.new_ranker, alerts)
@@ -205,10 +203,7 @@ class RankerBenchmark:
                 * 100
             ),
             "false_negative_improvement": (
-                (
-                    old_results["false_negative_rate"]
-                    - new_results["false_negative_rate"]
-                )
+                (old_results["false_negative_rate"] - new_results["false_negative_rate"])
                 / old_results["false_negative_rate"]
                 * 100
             ),
@@ -231,10 +226,8 @@ class RankerBenchmark:
             "timestamp": datetime.utcnow().isoformat(),
         }
 
-    def generate_report(
-        self, results: Dict, output_path: str = "ranker_benchmark_report.pdf"
-    ):
-        """Generate PDF report with visualizations"""
+    def generate_report(self, results: Dict, output_path: str = "ranker_benchmark_report.pdf"):
+        """Generate PDF report with visualizations."""
         print(f"Generating report: {output_path}")
 
         with PdfPages(output_path) as pdf:
@@ -328,11 +321,7 @@ Key Findings:
                         cm_data[i][j],
                         ha="center",
                         va="center",
-                        color=(
-                            "white"
-                            if cm_data[i][j] > sum(sum(cm_data, [])) / 4
-                            else "black"
-                        ),
+                        color=("white" if cm_data[i][j] > sum(sum(cm_data, [])) / 4 else "black"),
                     )
 
             # Processing performance
@@ -470,12 +459,11 @@ Key Findings:
 
 
 def main():
+    """Run the benchmark tool as a command-line application."""
     parser = argparse.ArgumentParser(description="Benchmark noise ranker versions")
     parser.add_argument("--new", default="v2", help="New ranker version")
     parser.add_argument("--old", default="v1", help="Old ranker version")
-    parser.add_argument(
-        "--alerts", type=int, default=50000, help="Number of test alerts"
-    )
+    parser.add_argument("--alerts", type=int, default=50000, help="Number of test alerts")
     parser.add_argument(
         "--output", default="ranker_benchmark_report.pdf", help="Output report path"
     )
@@ -508,13 +496,9 @@ def main():
     # Print summary
     print("\nSummary:")
     print(f"- Volume reduction: {results['new_ranker']['suppression_rate']*100:.1f}%")
-    print(
-        f"- False negative rate: {results['new_ranker']['false_negative_rate']*100:.2f}%"
-    )
+    print(f"- False negative rate: {results['new_ranker']['false_negative_rate']*100:.2f}%")
     print(f"- P95 latency: {results['new_ranker']['p95_latency_ms']:.1f}ms")
-    print(
-        f"- Overall improvement: {results['improvements']['volume_reduction_improvement']:.1f}%"
-    )
+    print(f"- Overall improvement: {results['improvements']['volume_reduction_improvement']:.1f}%")
 
 
 if __name__ == "__main__":
