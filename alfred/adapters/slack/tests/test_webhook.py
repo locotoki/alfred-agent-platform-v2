@@ -1,9 +1,10 @@
-"""Tests for Slack webhook with HMAC verification"""
+"""Tests for Slack webhook with HMAC verification."""
 
 import hashlib
 import hmac
 import json
 import time
+from typing import Any, Dict
 from unittest.mock import patch
 
 import pytest
@@ -13,14 +14,15 @@ from alfred.adapters.slack.webhook import SlackVerifier, app
 
 
 class TestSlackVerifier:
-    """Test Slack signature verification"""
+    """Test Slack signature verification."""
 
     @pytest.fixture
-    def verifier(self):
+    def verifier(self) -> SlackVerifier:
+        """Return a SlackVerifier instance for testing."""
         return SlackVerifier("test-secret")
 
-    def test_valid_signature(self, verifier):
-        """Test verification with valid signature"""
+    def test_valid_signature(self, verifier: SlackVerifier) -> None:
+        """Test verification with valid signature."""
         timestamp = str(int(time.time()))
         body = b'{"test": "data"}'
 
@@ -30,16 +32,16 @@ class TestSlackVerifier:
 
         assert verifier.verify_signature(timestamp, body, expected_sig) is True
 
-    def test_invalid_signature(self, verifier):
-        """Test verification with invalid signature"""
+    def test_invalid_signature(self, verifier: SlackVerifier) -> None:
+        """Test verification with invalid signature."""
         timestamp = str(int(time.time()))
         body = b'{"test": "data"}'
         invalid_sig = "v0=invalid_signature"
 
         assert verifier.verify_signature(timestamp, body, invalid_sig) is False
 
-    def test_old_timestamp(self, verifier):
-        """Test verification with old timestamp"""
+    def test_old_timestamp(self, verifier: SlackVerifier) -> None:
+        """Test verification with old timestamp."""
         # Timestamp from 10 minutes ago
         old_timestamp = str(int(time.time()) - 600)
         body = b'{"test": "data"}'
@@ -50,8 +52,8 @@ class TestSlackVerifier:
 
         assert verifier.verify_signature(old_timestamp, body, valid_sig) is False
 
-    def test_invalid_timestamp_format(self, verifier):
-        """Test verification with invalid timestamp format"""
+    def test_invalid_timestamp_format(self, verifier: SlackVerifier) -> None:
+        """Test verification with invalid timestamp format."""
         invalid_timestamp = "not-a-number"
         body = b'{"test": "data"}'
         sig = "v0=some_signature"
@@ -60,15 +62,16 @@ class TestSlackVerifier:
 
 
 class TestSlackWebhook:
-    """Test Slack webhook endpoints"""
+    """Test Slack webhook endpoints."""
 
     @pytest.fixture
-    def client(self):
+    def client(self) -> TestClient:
+        """Return a TestClient instance for testing."""
         return TestClient(app)
 
     @pytest.fixture
-    def valid_headers(self):
-        """Generate valid Slack headers"""
+    def valid_headers(self) -> Dict[str, str]:
+        """Generate valid Slack headers."""
         timestamp = str(int(time.time()))
         body = json.dumps({"test": "data"})
 
@@ -82,21 +85,21 @@ class TestSlackWebhook:
             "Content-Type": "application/json",
         }
 
-    def test_health_endpoint(self, client):
-        """Test health check endpoint"""
+    def test_health_endpoint(self, client: TestClient) -> None:
+        """Test health check endpoint."""
         response = client.get("/health")
         assert response.status_code == 200
         assert response.json()["status"] == "healthy"
 
-    def test_root_endpoint(self, client):
-        """Test root endpoint"""
+    def test_root_endpoint(self, client: TestClient) -> None:
+        """Test root endpoint."""
         response = client.get("/")
         assert response.status_code == 200
         assert "Alfred Slack Adapter" in response.json()["service"]
 
     @patch("alfred.adapters.slack.webhook.verifier")
-    def test_url_verification_challenge(self, mock_verifier, client):
-        """Test URL verification challenge response"""
+    def test_url_verification_challenge(self, mock_verifier: Any, client: TestClient) -> None:
+        """Test URL verification challenge response."""
         mock_verifier.verify_signature.return_value = True
 
         challenge_data = {
@@ -118,8 +121,8 @@ class TestSlackWebhook:
         assert response.json()["challenge"] == "test-challenge-string"
 
     @patch("alfred.adapters.slack.webhook.verifier")
-    def test_slash_command_ping(self, mock_verifier, client):
-        """Test /alfred ping slash command"""
+    def test_slash_command_ping(self, mock_verifier: Any, client: TestClient) -> None:
+        """Test /alfred ping slash command."""
         mock_verifier.verify_signature.return_value = True
 
         form_data = "command=/alfred&text=ping"
@@ -139,8 +142,8 @@ class TestSlackWebhook:
         assert response.json()["response_type"] == "in_channel"
 
     @patch("alfred.adapters.slack.webhook.verifier")
-    def test_slash_command_other(self, mock_verifier, client):
-        """Test /alfred with other text"""
+    def test_slash_command_other(self, mock_verifier: Any, client: TestClient) -> None:
+        """Test /alfred with other text."""
         mock_verifier.verify_signature.return_value = True
 
         form_data = "command=/alfred&text=help"
@@ -160,8 +163,8 @@ class TestSlackWebhook:
         assert response.json()["response_type"] == "ephemeral"
 
     @patch("alfred.adapters.slack.webhook.verifier")
-    def test_invalid_signature(self, mock_verifier, client):
-        """Test request with invalid signature"""
+    def test_invalid_signature(self, mock_verifier: Any, client: TestClient) -> None:
+        """Test request with invalid signature."""
         mock_verifier.verify_signature.return_value = False
 
         response = client.post(
@@ -177,8 +180,8 @@ class TestSlackWebhook:
         assert response.status_code == 401
         assert "Invalid signature" in response.json()["detail"]
 
-    def test_missing_signature_headers(self, client):
-        """Test request without signature headers"""
+    def test_missing_signature_headers(self, client: TestClient) -> None:
+        """Test request without signature headers."""
         with patch("alfred.adapters.slack.webhook.verifier") as mock_verifier:
             mock_verifier.verify_signature.return_value = True
 
@@ -192,8 +195,8 @@ class TestSlackWebhook:
             assert "Missing signature headers" in response.json()["detail"]
 
     @patch("alfred.adapters.slack.webhook.verifier")
-    def test_invalid_json(self, mock_verifier, client):
-        """Test request with invalid JSON"""
+    def test_invalid_json(self, mock_verifier: Any, client: TestClient) -> None:
+        """Test request with invalid JSON."""
         mock_verifier.verify_signature.return_value = True
 
         response = client.post(
@@ -210,8 +213,8 @@ class TestSlackWebhook:
         assert "Invalid JSON" in response.json()["detail"]
 
     @patch("alfred.adapters.slack.webhook.verifier")
-    def test_regular_event(self, mock_verifier, client):
-        """Test regular Slack event"""
+    def test_regular_event(self, mock_verifier: Any, client: TestClient) -> None:
+        """Test regular Slack event."""
         mock_verifier.verify_signature.return_value = True
 
         event_data = {
@@ -233,8 +236,8 @@ class TestSlackWebhook:
         assert response.json()["status"] == "ok"
 
     @patch("alfred.adapters.slack.webhook.verifier", None)
-    def test_no_verifier(self, client):
-        """Test behavior when verifier is not configured"""
+    def test_no_verifier(self, client: TestClient) -> None:
+        """Test behavior when verifier is not configured."""
         # Should still accept requests when verifier is None
         response = client.post(
             "/slack/events",
