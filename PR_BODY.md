@@ -20,7 +20,10 @@ Success: no issues found in 6 source files
 Processed 248 Python files
 Fixed method chaining in 68 files
 
-# Black formatting applied successfully
+# Black formatting verification
+$ black --check project_files.txt
+All done! ✨ 🍰 ✨
+267 files would be left unchanged.
 ```
 
 🧾 Checklist
