@@ -10,6 +10,7 @@
 ### Changed
 - Enhanced grouping algorithm with ML similarity scoring
 - Established repository-wide Black and isort formatting baseline (ops/black-baseline-fix)
+- Fixed PostgreSQL version to v15 to match data directory format (fix/sc-180-postgres-version)
 
 ### Documentation
 - Added comprehensive noise reduction guide in docs/dev/
