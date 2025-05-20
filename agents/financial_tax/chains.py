@@ -5,10 +5,16 @@ from langchain.output_parsers import PydanticOutputParser
 from langchain.prompts import PromptTemplate
 from langchain_openai import ChatOpenAI
 
-from .models import (ComplianceCheckRequest, ComplianceCheckResponse,
-                     FinancialAnalysisRequest, FinancialAnalysisResponse,
-                     TaxCalculationRequest, TaxCalculationResponse,
-                     TaxRateRequest, TaxRateResponse)
+from .models import (
+    ComplianceCheckRequest,
+    ComplianceCheckResponse,
+    FinancialAnalysisRequest,
+    FinancialAnalysisResponse,
+    TaxCalculationRequest,
+    TaxCalculationResponse,
+    TaxRateRequest,
+    TaxRateResponse,
+)
 
 
 class TaxCalculationChain:
@@ -58,7 +64,7 @@ Provide a detailed tax calculation including:
 
     async def calculate(self, request: TaxCalculationRequest) -> TaxCalculationResponse:
         """Process tax calculation request"""
-        result = await self.chain.invoke(
+        result = await self.chain.ainvoke(
             {
                 "income": request.income,
                 "deductions": request.deductions,
@@ -114,7 +120,7 @@ Provide a comprehensive financial analysis including:
 
     async def analyze(self, request: FinancialAnalysisRequest) -> FinancialAnalysisResponse:
         """Process financial analysis request"""
-        result = await self.chain.invoke(
+        result = await self.chain.ainvoke(
             {
                 "financial_statements": request.financial_statements,
                 "analysis_type": request.analysis_type,
@@ -168,7 +174,7 @@ Perform a comprehensive compliance check and provide:
 
     async def check_compliance(self, request: ComplianceCheckRequest) -> ComplianceCheckResponse:
         """Process compliance check request"""
-        result = await self.chain.invoke(
+        result = await self.chain.ainvoke(
             {
                 "entity_type": request.entity_type.value,
                 "transactions": request.transactions,
@@ -221,7 +227,7 @@ Return comprehensive tax rate information including:
 
     async def lookup_rates(self, request: TaxRateRequest) -> TaxRateResponse:
         """Process tax rate lookup request"""
-        result = await self.chain.invoke(
+        result = await self.chain.ainvoke(
             {
                 "jurisdiction": request.jurisdiction.value,
                 "tax_year": request.tax_year,

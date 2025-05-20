@@ -44,13 +44,17 @@ if __name__ == "__main__":
 
             # Initialize and start the socket mode handler
             handler = SocketModeHandler(app, app_token)
-            handler.start()
+            # Using type ignore for start method since Bolt typing is incomplete
+            handler.start()  # type: ignore
             print("⚡️ Bolt app is running! Connected to Slack via Socket Mode.")
             print(f"COMMAND_PREFIX: {os.environ.get('COMMAND_PREFIX', '/alfred')}")
             print(f"ALLOWED_COMMANDS: {os.environ.get('ALLOWED_COMMANDS', 'help,status')}")
         else:
             # HTTP mode - for production with events API
-            app.start(port=3000)
+            # Using Any type for the start method since Bolt typing is incomplete
+            from typing import Any, cast
+
+            cast(Any, app).start(port=3000)
             print("⚡️ Bolt app is running! Listening to HTTP events.")
     except Exception as e:
         print(f"Error starting Slack app: {str(e)}")

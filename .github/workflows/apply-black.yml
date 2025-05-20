@@ -14,7 +14,7 @@ on:
 
 env:
   PYTHON_VERSION: "3.11"
-  BLACK_VERSION: "24.1.1"
+  BLACK_VERSION: "24.4.2"
 
 jobs:
   format:
@@ -39,7 +39,8 @@ jobs:
       - name: Run Black formatter
         run: |
           echo "Running Black formatter version ${{ env.BLACK_VERSION }}..."
-          black --exclude "(youtube-test-env/|migrations/|node_modules/|\.git/|\.mypy_cache/|\.env/|\.venv/|env/|venv/|\.ipynb/)" .
+          # Use configuration from pyproject.toml
+          black .
 
       - name: Check if there are changes
         id: check_changes

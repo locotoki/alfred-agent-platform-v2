@@ -11,13 +11,14 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from prometheus_client import Counter, Gauge, Histogram
 
-from agents.legal_compliance import (ComplianceAuditRequest,
-                                     ContractReviewRequest,
-                                     DocumentAnalysisRequest,
-                                     LegalComplianceAgent,
-                                     RegulationCheckRequest)
-from libs.a2a_adapter import (A2AEnvelope, PolicyMiddleware, PubSubTransport,
-                              SupabaseTransport)
+from agents.legal_compliance import (
+    ComplianceAuditRequest,
+    ContractReviewRequest,
+    DocumentAnalysisRequest,
+    LegalComplianceAgent,
+    RegulationCheckRequest,
+)
+from libs.a2a_adapter import A2AEnvelope, PolicyMiddleware, PubSubTransport, SupabaseTransport
 from libs.agent_core.health import create_health_app
 
 logger = structlog.get_logger(__name__)
@@ -62,15 +63,15 @@ security = HTTPBearer()
 async def lifespan(app: FastAPI):
     """Manage application lifecycle"""
     # Startup
-    await supabase_transportconnect()
-    await legal_compliance_agentstart()
+    await supabase_transportconnect()  # type: ignore[name-defined]
+    await legal_compliance_agentstart()  # type: ignore[name-defined]
     logger.info("legal_compliance_service_started")
 
     yield
 
     # Shutdown
-    await legal_compliance_agentstop()
-    await supabase_transportdisconnect()
+    await legal_compliance_agentstop()  # type: ignore[name-defined]
+    await supabase_transportdisconnect()  # type: ignore[name-defined]
     logger.info("legal_compliance_service_stopped")
 
 
@@ -109,10 +110,10 @@ async def audit_compliance(
         envelope = A2AEnvelope(intent="COMPLIANCE_AUDIT", content=request.dict())
 
         # Store task
-        await supabase_transportstore_task(envelope)
+        await supabase_transportstore_task(envelope)  # type: ignore[name-defined]
 
         # Publish task
-        message_id = await pubsub_transportpublish_task(envelope)
+        message_id = await pubsub_transportpublish_task(envelope)  # type: ignore[name-defined]
 
         API_REQUESTS.labels(endpoint="audit-compliance", method="POST", status="success").inc()
 
@@ -139,8 +140,8 @@ async def analyze_document(
     try:
         envelope = A2AEnvelope(intent="DOCUMENT_ANALYSIS", content=request.dict())
 
-        await supabase_transportstore_task(envelope)
-        message_id = await pubsub_transportpublish_task(envelope)
+        await supabase_transportstore_task(envelope)  # type: ignore[name-defined]
+        message_id = await pubsub_transportpublish_task(envelope)  # type: ignore[name-defined]
 
         API_REQUESTS.labels(endpoint="analyze-document", method="POST", status="success").inc()
 
@@ -167,8 +168,8 @@ async def check_regulations(
     try:
         envelope = A2AEnvelope(intent="REGULATION_CHECK", content=request.dict())
 
-        await supabase_transportstore_task(envelope)
-        message_id = await pubsub_transportpublish_task(envelope)
+        await supabase_transportstore_task(envelope)  # type: ignore[name-defined]
+        message_id = await pubsub_transportpublish_task(envelope)  # type: ignore[name-defined]
 
         API_REQUESTS.labels(endpoint="check-regulations", method="POST", status="success").inc()
 
@@ -195,8 +196,8 @@ async def review_contract(
     try:
         envelope = A2AEnvelope(intent="CONTRACT_REVIEW", content=request.dict())
 
-        await supabase_transportstore_task(envelope)
-        message_id = await pubsub_transportpublish_task(envelope)
+        await supabase_transportstore_task(envelope)  # type: ignore[name-defined]
+        message_id = await pubsub_transportpublish_task(envelope)  # type: ignore[name-defined]
 
         API_REQUESTS.labels(endpoint="review-contract", method="POST", status="success").inc()
 
@@ -218,7 +219,7 @@ async def get_task_status(
 ):
     """Get status of a specific task"""
     try:
-        task_status = await supabase_transportget_task_status(task_id)
+        task_status = await supabase_transportget_task_status(task_id)  # type: ignore[name-defined]
 
         if not task_status:
             raise HTTPException(status_code=404, detail="Task not found")

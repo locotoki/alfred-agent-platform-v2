@@ -13,6 +13,7 @@ from datetime import datetime
 from typing import Any, Dict, Optional, Tuple
 
 import structlog
+
 # Use simple reports instead of HTML templates
 from app.simple_reports import generate_blueprint_report
 

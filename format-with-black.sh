@@ -13,11 +13,12 @@ fi
 
 # Install Black
 echo "Installing Black formatter..."
-$PYTHON_CMD -m pip install black==24.1.1
+$PYTHON_CMD -m pip install black==24.4.2
 
 # Format codebase with Black
 echo "Formatting code with Black..."
-$PYTHON_CMD -m black --exclude "(youtube-test-env/|migrations/|node_modules/|\.git/|\.mypy_cache/|\.env/|\.venv/|env/|venv/|\.ipynb/)" .
+# Use configuration from pyproject.toml
+$PYTHON_CMD -m black .
 
 # Report completion
 echo "Black formatting complete\!"

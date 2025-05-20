@@ -24,12 +24,13 @@ jobs:
       - name: Install Black
         run: |
           python -m pip install --upgrade pip
-          pip install black==24.1.1
+          pip install black==24.4.2
 
       - name: Run Black check
         run: |
-          echo "Running Black format check with version 24.1.1..."
-          black --check --exclude "(youtube-test-env/|migrations/|node_modules/|\.git/|\.mypy_cache/|\.env/|\.venv/|env/|venv/|\.ipynb/)" .
+          echo "Running Black format check with version 24.4.2..."
+          # Use configuration from pyproject.toml for consistency with local runs
+          black --check .
 
   isort-check:
     runs-on: ubuntu-latest

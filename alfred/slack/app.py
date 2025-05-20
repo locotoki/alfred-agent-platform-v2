@@ -141,11 +141,15 @@ if __name__ == "__main__":
     # Start the Slack Bolt app
     if os.environ.get("SOCKET_MODE", "true").lower() == "true":
         handler = SocketModeHandler(app, os.environ.get("SLACK_APP_TOKEN"))
-        handler.start()
+        # Using type ignore for start method since Bolt typing is incomplete
+        handler.start()  # type: ignore
         print("⚡️ Bolt app is running! Connected to Slack.")
     else:
         # HTTP mode - for production with events API
-        app.start(port=3000)
+        # Using Any type for the start method since Bolt typing is incomplete
+        from typing import Any, cast
+
+        cast(Any, app).start(port=3000)
         print("⚡️ Bolt app is running! Listening to HTTP events.")
 
 

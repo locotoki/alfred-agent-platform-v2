@@ -5,8 +5,7 @@ import os
 import re
 import subprocess
 import sys
-import tempfile
-from pathlib import Path
+from pathlib import Path  # noqa: F401
 
 
 def run_mypy_and_get_errors():

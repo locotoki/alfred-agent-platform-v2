@@ -264,4 +264,4 @@ async def test_a2a_integration():
 
 
 if __name__ == "__main__":
-    asyncio.run(test_a2a_integration())
+    asyncio.run(test_a2a_integration())  # type: ignore # Script-level code

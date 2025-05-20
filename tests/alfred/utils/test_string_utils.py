@@ -1,7 +1,5 @@
 """Tests for string utility functions."""
 
-import pytest
-
 from alfred.utils.string_utils import split_text, truncate
 
 

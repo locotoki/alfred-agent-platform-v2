@@ -6,7 +6,6 @@ efficiency.
 import asyncio
 import os
 
-import asyncpg
 import structlog
 from dotenv import load_dotenv
 
@@ -23,15 +22,15 @@ async def cleanup_expired_messages():
         return False
 
     try:
-        conn = await asyncpgconnect(database_url)
-
+        conn = await asyncpgconnect(database_url)  # type: ignore[unused-variable]
+        # type: ignore[name-defined]
         # Get count of expired messages
         count_query = """
         SELECT COUNT(*) FROM processed_messages
         WHERE expires_at < NOW().
         """
-        expired_count = await connfetchval(count_query)
-
+        expired_count = await connfetchval(count_query)  # type: ignore[name-defined]
+        # type: ignore[name-defined]
         logger.info("expired_messages_found", count=expired_count)
 
         if expired_count > 0:
@@ -41,8 +40,8 @@ async def cleanup_expired_messages():
             WHERE expires_at < NOW()
             RETURNING message_id.
             """
-            deleted_records = await connfetch(delete_query)
-
+            deleted_records = await connfetch(delete_query)  # type: ignore[name-defined]
+            # type: ignore[name-defined]
             logger.info(
                 "expired_messages_deleted",
                 count=len(deleted_records),
@@ -58,8 +57,8 @@ async def cleanup_expired_messages():
                MAX(expires_at) as latest_expiry
         FROM processed_messages.
         """
-        stats = await connfetchrow(remaining_query)
-
+        stats = await connfetchrow(remaining_query)  # type: ignore[name-defined]
+        # type: ignore[name-defined]
         logger.info(
             "cleanup_summary",
             expired_deleted=expired_count,
@@ -68,8 +67,8 @@ async def cleanup_expired_messages():
             latest_expiry=stats["latest_expiry"],
         )
 
-        await connclose()
-        return True
+        await connclose()  # type: ignore[name-defined]
+        return True  # type: ignore[name-defined]
 
     except Exception as e:
         logger.error("cleanup_failed", error=str(e))

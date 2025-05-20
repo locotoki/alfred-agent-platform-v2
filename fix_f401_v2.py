@@ -158,4 +158,4 @@ def main(violations_file="flake8_violations.txt"):
 
 if __name__ == "__main__":
     violations_file = sys.argv[1] if len(sys.argv) > 1 else "flake8_violations.txt"
-    main(violations_file)
+    main(violations_file)  # type: ignore # Script-level code
