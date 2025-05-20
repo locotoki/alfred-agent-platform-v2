@@ -50,7 +50,9 @@ class DiagnosticsBot:
             return None
 
         full_command = f"{command} {text}".strip()
-        logger.info("processing_command", command=full_command, channel=channel, user=user)
+        logger.info(
+            "processing_command", command=full_command, channel=channel, user=user
+        )
 
         handler = self.commands.get(full_command)
         if not handler:
@@ -113,7 +115,9 @@ class DiagnosticsBot:
 
                 return cast(
                     SlackResponse,
-                    await self.slack_client.chat_postMessage(channel=channel, blocks=blocks),
+                    await self.slack_client.chat_postMessage(
+                        channel=channel, blocks=blocks
+                    ),
                 )
 
         except Exception as e:
@@ -180,7 +184,9 @@ class DiagnosticsBot:
 
                 return cast(
                     SlackResponse,
-                    await self.slack_client.chat_postMessage(channel=channel, blocks=blocks),
+                    await self.slack_client.chat_postMessage(
+                        channel=channel, blocks=blocks
+                    ),
                 )
 
         except Exception as e:

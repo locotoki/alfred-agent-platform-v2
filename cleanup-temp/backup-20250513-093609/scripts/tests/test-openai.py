@@ -72,7 +72,9 @@ def test_openai_api():
 
         if response.status_code == 200:
             result = response.json()
-            message = result.get("choices", [{}])[0].get("message", {}).get("content", "")
+            message = (
+                result.get("choices", [{}])[0].get("message", {}).get("content", "")
+            )
             print("\nResponse from OpenAI:")
             print(message)
         else:

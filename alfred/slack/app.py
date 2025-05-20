@@ -18,7 +18,9 @@ app = App(
 # Command prefix for slash commands
 COMMAND_PREFIX = os.getenv("COMMAND_PREFIX", "/alfred")
 DEFAULT_CHANNEL = os.getenv("DEFAULT_CHANNEL", "general")
-ALLOWED_COMMANDS = os.getenv("ALLOWED_COMMANDS", "help,status,search,ask,agents,health").split(",")
+ALLOWED_COMMANDS = os.getenv(
+    "ALLOWED_COMMANDS", "help,status,search,ask,agents,health"
+).split(",")
 
 # Define allowed commands as a set for faster lookups
 ALLOWED_COMMANDS_SET = set(ALLOWED_COMMANDS)

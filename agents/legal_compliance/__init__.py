@@ -1,14 +1,10 @@
+"""Legal Compliance Agent Package."""
+
 from .agent import LegalComplianceAgent
-from .models import (
-    ComplianceAuditRequest,
-    ComplianceAuditResult,
-    ContractReviewRequest,
-    ContractReviewResult,
-    DocumentAnalysisRequest,
-    DocumentAnalysisResult,
-    RegulationCheckRequest,
-    RegulationCheckResult,
-)
+from .models import (ComplianceAuditRequest, ComplianceAuditResult,
+                     ContractReviewRequest, ContractReviewResult,
+                     DocumentAnalysisRequest, DocumentAnalysisResult,
+                     RegulationCheckRequest, RegulationCheckResult)
 
 __all__ = [
     "LegalComplianceAgent",

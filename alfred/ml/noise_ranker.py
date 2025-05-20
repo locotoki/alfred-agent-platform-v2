@@ -42,7 +42,9 @@ class NoiseRankingModel:
         if model_path:
             self.load_model(model_path)
 
-    def extract_features(self, alert: AlertProtocol, historical_data: Dict) -> np.ndarray:
+    def extract_features(
+        self, alert: AlertProtocol, historical_data: Dict
+    ) -> np.ndarray:
         """Extract features from an alert for ML prediction.
 
         Args:
@@ -143,7 +145,9 @@ class NoiseRankingModel:
         X_scaled = self.scaler.fit_transform(X)
 
         # Train model
-        self.model = RandomForestClassifier(n_estimators=100, max_depth=10, random_state=42)
+        self.model = RandomForestClassifier(
+            n_estimators=100, max_depth=10, random_state=42
+        )
         self.model.fit(X_scaled, y)
 
     def save_model(self, path: str):

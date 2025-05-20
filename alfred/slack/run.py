@@ -47,7 +47,9 @@ if __name__ == "__main__":
             handler.start()
             print("⚡️ Bolt app is running! Connected to Slack via Socket Mode.")
             print(f"COMMAND_PREFIX: {os.environ.get('COMMAND_PREFIX', '/alfred')}")
-            print(f"ALLOWED_COMMANDS: {os.environ.get('ALLOWED_COMMANDS', 'help,status')}")
+            print(
+                f"ALLOWED_COMMANDS: {os.environ.get('ALLOWED_COMMANDS', 'help,status')}"
+            )
         else:
             # HTTP mode - for production with events API
             app.start(port=3000)

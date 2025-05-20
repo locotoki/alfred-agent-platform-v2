@@ -65,14 +65,18 @@ class IntentRouter:
                         raw_message=message,
                     )
 
-                    intents_total.labels(intent_type=intent_type, status="success").inc()
+                    intents_total.labels(
+                        intent_type=intent_type, status="success"
+                    ).inc()
 
                     logger.info("Intent classified", intent=intent_type, confidence=0.9)
 
                     return intent
 
             # If no pattern matches, return unknown intent
-            intent = Intent(type="unknown_intent", confidence=0.0, entities={}, raw_message=message)
+            intent = Intent(
+                type="unknown_intent", confidence=0.0, entities={}, raw_message=message
+            )
 
             intents_total.labels(intent_type="unknown_intent", status="success").inc()
 
@@ -108,7 +112,9 @@ class IntentRouter:
         if pattern:
             self._patterns[intent_type] = re.compile(pattern, re.IGNORECASE)
 
-        logger.info("Handler registered", intent_type=intent_type, has_pattern=bool(pattern))
+        logger.info(
+            "Handler registered", intent_type=intent_type, has_pattern=bool(pattern)
+        )
 
     def get_handler(self, intent_type: str) -> Optional[Callable[..., Any]]:
         """Get handler for an intent type.

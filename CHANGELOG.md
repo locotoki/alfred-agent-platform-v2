@@ -57,8 +57,6 @@
 - Noise reduction: 42%
 - Zero rollbacks during deployment
 
-<<<<<<< HEAD
-=======
 ## [0.8.4] - 2025-05-17
 
 ### Added

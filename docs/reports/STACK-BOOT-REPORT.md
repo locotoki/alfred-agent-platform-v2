@@ -3,7 +3,7 @@
 ## Summary of Issues
 The local stack cannot start properly due to several critical issues:
 
-1. **PostgreSQL version incompatibility**: 
+1. **PostgreSQL version incompatibility**:
    - Error: `database files are incompatible with server`
    - Details: The data directory was initialized by PostgreSQL version 15, but the current container uses version 14.18
    - Impact: Database cannot start

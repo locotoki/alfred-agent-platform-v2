@@ -7,7 +7,8 @@ from unittest.mock import AsyncMock, MagicMock, patch
 import pytest
 
 from agents.social_intel.agent import SocialIntelAgent
-from agents.social_intel.models.youtube_models import BlueprintResult, NicheScoutResult
+from agents.social_intel.models.youtube_models import (BlueprintResult,
+                                                       NicheScoutResult)
 from libs.a2a_adapter import A2AEnvelope
 
 
@@ -52,7 +53,9 @@ def mock_youtube_api():
 @pytest.fixture
 def mock_vector_storage():
     """Mock YouTubeVectorStorage."""
-    with patch("agents.social_intel.models.youtube_vectors.YouTubeVectorStorage") as mock:
+    with patch(
+        "agents.social_intel.models.youtube_vectors.YouTubeVectorStorage"
+    ) as mock:
         # Setup mock methods
         instance = mock.return_value
         instance.initialize_collections = AsyncMock()
@@ -68,7 +71,9 @@ def mock_vector_storage():
 @pytest.fixture
 def mock_youtube_niche_scout_flow():
     """Mock youtube_niche_scout_flow."""
-    with patch("agents.social_intel.flows.youtube_flows.youtube_niche_scout_flow") as mock:
+    with patch(
+        "agents.social_intel.flows.youtube_flows.youtube_niche_scout_flow"
+    ) as mock:
         # Setup mock return value
         mock.return_value = NicheScoutResult(
             run_date=datetime.now(),
@@ -82,7 +87,9 @@ def mock_youtube_niche_scout_flow():
 @pytest.fixture
 def mock_youtube_blueprint_flow():
     """Mock youtube_blueprint_flow."""
-    with patch("agents.social_intel.flows.youtube_flows.youtube_blueprint_flow") as mock:
+    with patch(
+        "agents.social_intel.flows.youtube_flows.youtube_blueprint_flow"
+    ) as mock:
         # Setup mock return value
         mock.return_value = BlueprintResult(
             run_date=datetime.now(),

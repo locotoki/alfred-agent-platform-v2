@@ -65,7 +65,9 @@ def post_message():
 
     # Store the message for history
     if text and "health" in text.lower():
-        state.health_reports.append({"channel": channel, "text": text, "timestamp": "now"})
+        state.health_reports.append(
+            {"channel": channel, "text": text, "timestamp": "now"}
+        )
 
     return jsonify(
         {

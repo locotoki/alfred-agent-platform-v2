@@ -48,7 +48,9 @@ def financial_tax_agent(mock_pubsub, mock_supabase, mock_policy):
         from langchain.schema.runnable import Runnable
 
         class MockLLM(Runnable):
-            def invoke(self, input: Any, config: Optional[Any] = None, **kwargs: Any) -> Any:
+            def invoke(
+                self, input: Any, config: Optional[Any] = None, **kwargs: Any
+            ) -> Any:
                 return "test response"
 
             def _call(self, *args, **kwargs):
@@ -159,7 +161,9 @@ class TestFinancialTaxAgent:
             ],
         }
 
-        with patch.object(financial_tax_agent.analysis_chain, "analyze", return_value=mock_result):
+        with patch.object(
+            financial_tax_agent.analysis_chain, "analyze", return_value=mock_result
+        ):
             result = await financial_tax_agent.process_task(envelope)
 
         assert result["status"] == "success"

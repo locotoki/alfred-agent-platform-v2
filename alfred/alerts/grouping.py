@@ -43,7 +43,9 @@ class AlertGroupingService:
         # Implementation placeholder
         raise NotImplementedError("Alert grouping algorithm not implemented")
 
-    def calculate_similarity(self, alert1: AlertProtocol, alert2: AlertProtocol) -> float:
+    def calculate_similarity(
+        self, alert1: AlertProtocol, alert2: AlertProtocol
+    ) -> float:
         """Calculate similarity score between two alerts.
 
         Args:

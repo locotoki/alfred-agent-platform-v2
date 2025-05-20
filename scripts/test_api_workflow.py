@@ -141,7 +141,9 @@ def parse_args():
 
     parser.add_argument("--seed-url", help="Seed URL for Blueprint")
 
-    parser.add_argument("--auto-niche", action="store_true", help="Auto-select niche for Blueprint")
+    parser.add_argument(
+        "--auto-niche", action="store_true", help="Auto-select niche for Blueprint"
+    )
 
     parser.add_argument("--host", default="localhost", help="API host")
 
@@ -166,14 +168,18 @@ def main():
 
     if args.workflow in ["blueprint", "both"]:
         print("\n=== Testing Blueprint Workflow ===\n")
-        blueprint_result = test_blueprint(args.seed_url, args.auto_niche, args.host, args.port)
+        blueprint_result = test_blueprint(
+            args.seed_url, args.auto_niche, args.host, args.port
+        )
 
         if blueprint_result:
             print("\nBlueprint Result:")
             blueprint = blueprint_result.get("data", {}).get("blueprint", {})
             print(f"Positioning: {blueprint.get('positioning', '')[:100]}...")
             print(f"Content Pillars: {', '.join(blueprint.get('content_pillars', []))}")
-            print(f"Blueprint URL: {blueprint_result.get('data', {}).get('blueprint_url', '')}")
+            print(
+                f"Blueprint URL: {blueprint_result.get('data', {}).get('blueprint_url', '')}"
+            )
 
 
 if __name__ == "__main__":

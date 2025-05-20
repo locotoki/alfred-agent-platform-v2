@@ -13,7 +13,9 @@ st.set_page_config(
 
 # Title and description
 st.title("Alfred Agent Platform - Development Interface")
-st.caption("⚠️ This is a development-only interface and not intended for production use.")
+st.caption(
+    "⚠️ This is a development-only interface and not intended for production use."
+)
 
 # Sidebar
 st.sidebar.header("Services")

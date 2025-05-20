@@ -217,7 +217,9 @@ class ModelRegistry(Service):
             # Get current and archived production versions
             all_versions = self.client.search_model_versions(f"name='{model_name}'")
 
-            production_versions = [v for v in all_versions if v.current_stage == "Production"]
+            production_versions = [
+                v for v in all_versions if v.current_stage == "Production"
+            ]
             archived_versions = [
                 v
                 for v in all_versions
@@ -252,14 +254,18 @@ class ModelRegistry(Service):
                 value=datetime.now().isoformat(),
             )
 
-            print(f"Rolled back from v{current_prod.version} to v{restore_version.version}")
+            print(
+                f"Rolled back from v{current_prod.version} to v{restore_version.version}"
+            )
             return True
 
         except Exception as e:
             print(f"Error during rollback: {e}")
             return False
 
-    def get_model_lineage(self, model_name: Optional[str] = None, limit: int = 10) -> List[Dict]:
+    def get_model_lineage(
+        self, model_name: Optional[str] = None, limit: int = 10
+    ) -> List[Dict]:
         """Get model version history.
 
         Args:
@@ -296,7 +302,9 @@ class ModelRegistry(Service):
 
         return lineage
 
-    def export_model_metadata(self, version: str, model_name: Optional[str] = None) -> Dict:
+    def export_model_metadata(
+        self, version: str, model_name: Optional[str] = None
+    ) -> Dict:
         """Export complete model metadata.
 
         Args:
@@ -341,7 +349,9 @@ if __name__ == "__main__":
     import argparse
 
     parser = argparse.ArgumentParser(description="Model Registry Management")
-    parser.add_argument("--mlflow-uri", default="http://localhost:5000", help="MLflow server URI")
+    parser.add_argument(
+        "--mlflow-uri", default="http://localhost:5000", help="MLflow server URI"
+    )
     parser.add_argument("--model-name", default="alert-noise-ranker", help="Model name")
     parser.add_argument(
         "--action",

@@ -115,7 +115,9 @@ class ThresholdService(Service):
 
         return self._config.to_dict()
 
-    def optimize_thresholds(self, performance_metrics: Dict[str, float]) -> Dict[str, float]:
+    def optimize_thresholds(
+        self, performance_metrics: Dict[str, float]
+    ) -> Dict[str, float]:
         """Automatically optimize thresholds based on performance.
 
         Args:
@@ -128,17 +130,25 @@ class ThresholdService(Service):
         if "false_positive_rate" in performance_metrics:
             fpr = performance_metrics["false_positive_rate"]
             if fpr > 0.1:  # Too many false positives
-                self._config.noise_threshold = min(0.95, self._config.noise_threshold + 0.05)
+                self._config.noise_threshold = min(
+                    0.95, self._config.noise_threshold + 0.05
+                )
             elif fpr < 0.05:  # Too conservative
-                self._config.noise_threshold = max(0.5, self._config.noise_threshold - 0.02)
+                self._config.noise_threshold = max(
+                    0.5, self._config.noise_threshold - 0.02
+                )
 
         # Adjust confidence based on accuracy
         if "accuracy" in performance_metrics:
             acc = performance_metrics["accuracy"]
             if acc < 0.9:
-                self._config.confidence_min = min(0.95, self._config.confidence_min + 0.02)
+                self._config.confidence_min = min(
+                    0.95, self._config.confidence_min + 0.02
+                )
             elif acc > 0.95:
-                self._config.confidence_min = max(0.7, self._config.confidence_min - 0.01)
+                self._config.confidence_min = max(
+                    0.7, self._config.confidence_min - 0.01
+                )
 
         self._save_config()
         return self._config.to_dict()

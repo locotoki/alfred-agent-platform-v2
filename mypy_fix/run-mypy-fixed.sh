@@ -13,13 +13,13 @@ fi
 
 # Install setuptools and required typing extensions
 echo "Installing required typing dependencies..."
-pip install setuptools typing-extensions
+python3 -m pip install setuptools typing-extensions
 
 # Use the fixed mypy.ini configuration that handles namespace packages
 echo "Running mypy with fixed configuration..."
 
 # Run mypy with the fixed configuration
-python -m mypy --config-file=mypy_fix/mypy.ini \
+python3 -m mypy --config-file=mypy_fix/mypy.ini \
     --explicit-package-bases \
     --namespace-packages \
     libs/ agents/ services/ tests/

@@ -4,24 +4,17 @@ from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
-from agents.financial_tax.chains import (
-    ComplianceCheckChain,
-    FinancialAnalysisChain,
-    RateLookupChain,
-    TaxCalculationChain,
-)
-from agents.financial_tax.models import (
-    ComplianceCheckRequest,
-    ComplianceCheckResponse,
-    EntityType,
-    FinancialAnalysisRequest,
-    FinancialAnalysisResponse,
-    TaxCalculationRequest,
-    TaxCalculationResponse,
-    TaxJurisdiction,
-    TaxRateRequest,
-    TaxRateResponse,
-)
+from agents.financial_tax.chains import (ComplianceCheckChain,
+                                         FinancialAnalysisChain,
+                                         RateLookupChain, TaxCalculationChain)
+from agents.financial_tax.models import (ComplianceCheckRequest,
+                                         ComplianceCheckResponse, EntityType,
+                                         FinancialAnalysisRequest,
+                                         FinancialAnalysisResponse,
+                                         TaxCalculationRequest,
+                                         TaxCalculationResponse,
+                                         TaxJurisdiction, TaxRateRequest,
+                                         TaxRateResponse)
 
 
 @pytest.fixture
@@ -32,7 +25,9 @@ def mock_llm():
     from langchain.schema.runnable import Runnable
 
     class MockLLM(Runnable):
-        def invoke(self, input: Any, config: Optional[Any] = None, **kwargs: Any) -> Any:
+        def invoke(
+            self, input: Any, config: Optional[Any] = None, **kwargs: Any
+        ) -> Any:
             return "test response"
 
         def _call(self, *args, **kwargs):

@@ -15,7 +15,9 @@ from alfred.alerts.dispatcher import handle_alert  # noqa: E402
 def test_dispatcher():
     """Test the dispatcher with local alert files."""
     # Set test environment variables
-    os.environ["SLACK_ALERT_WEBHOOK"] = "https://hooks.slack.com/services/TEST/WEBHOOK/URL"
+    os.environ["SLACK_ALERT_WEBHOOK"] = (
+        "https://hooks.slack.com/services/TEST/WEBHOOK/URL"
+    )
     os.environ["GIT_SHA"] = "abc123def456789"
     os.environ["POD_UID"] = "test-pod-12345"
     os.environ["CHART_VERSION"] = "0.8.2-test"
