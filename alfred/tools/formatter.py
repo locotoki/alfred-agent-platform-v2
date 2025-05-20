@@ -43,6 +43,10 @@ class JsonFormatter:
 class YamlFormatter:
     """Tool for formatting YAML data."""
 
+    def __init__(self) -> None:
+        """Initialize the YAML formatter."""
+        pass
+
     def format(self, data: Union[Dict[str, Any], List[Any]]) -> str:
         """Format data as a YAML string.
 
