@@ -3,18 +3,14 @@
 import pytest
 from pydantic import ValidationError
 
-from agents.financial_tax.models import (
-    ComplianceCheckRequest,
-    ComplianceCheckResponse,
-    EntityType,
-    FinancialAnalysisRequest,
-    FinancialAnalysisResponse,
-    TaxCalculationRequest,
-    TaxCalculationResponse,
-    TaxJurisdiction,
-    TaxRateRequest,
-    TaxRateResponse,
-)
+from agents.financial_tax.models import (ComplianceCheckRequest,
+                                         ComplianceCheckResponse, EntityType,
+                                         FinancialAnalysisRequest,
+                                         FinancialAnalysisResponse,
+                                         TaxCalculationRequest,
+                                         TaxCalculationResponse,
+                                         TaxJurisdiction, TaxRateRequest,
+                                         TaxRateResponse)
 
 
 class TestModels:

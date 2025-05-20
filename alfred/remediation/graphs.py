@@ -222,7 +222,7 @@ def create_remediation_graph(
     max_retries: int = settings.MAX_RETRIES,
 ) -> Tuple[StateGraph, RemediationState]:
     """Create a remediation graph for a service.
-    
+
     This is a simple alias to restart_then_verify for backward compatibility.
 
     Args:

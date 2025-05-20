@@ -122,7 +122,7 @@ class TestFinancialTaxAgent:
         with patch.object(
             financial_tax_agent.tax_calc_chain, "calculate", return_value=mock_result
         ):
-            result = await financial_tax_agentprocess_task(envelope)
+            result = await financial_tax_agent.process_task(envelope)
 
         assert result["status"] == "success"
         assert result["intent"] == "TAX_CALCULATION"
@@ -160,7 +160,7 @@ class TestFinancialTaxAgent:
         }
 
         with patch.object(financial_tax_agent.analysis_chain, "analyze", return_value=mock_result):
-            result = await financial_tax_agentprocess_task(envelope)
+            result = await financial_tax_agent.process_task(envelope)
 
         assert result["status"] == "success"
         assert result["intent"] == "FINANCIAL_ANALYSIS"
@@ -210,7 +210,7 @@ class TestFinancialTaxAgent:
             "check_compliance",
             return_value=mock_result,
         ):
-            result = await financial_tax_agentprocess_task(envelope)
+            result = await financial_tax_agent.process_task(envelope)
 
         assert result["status"] == "success"
         assert result["intent"] == "TAX_COMPLIANCE_CHECK"
@@ -251,7 +251,7 @@ class TestFinancialTaxAgent:
             "lookup_rates",
             return_value=mock_result,
         ):
-            result = await financial_tax_agentprocess_task(envelope)
+            result = await financial_tax_agent.process_task(envelope)
 
         assert result["status"] == "success"
         assert result["intent"] == "RATE_SHEET_LOOKUP"
@@ -264,7 +264,7 @@ class TestFinancialTaxAgent:
         envelope = A2AEnvelope(intent="UNSUPPORTED_INTENT", content={"test": "data"})
 
         with pytest.raises(ValueError, match="Unsupported intent"):
-            await financial_tax_agentprocess_task(envelope)
+            await financial_tax_agent.process_task(envelope)
 
     @pytest.mark.asyncio
     async def test_workflow_routing(self, financial_tax_agent):
@@ -288,4 +288,4 @@ class TestFinancialTaxAgent:
         )
 
         with pytest.raises(Exception):
-            await financial_tax_agentprocess_task(envelope)
+            await financial_tax_agent.process_task(envelope)

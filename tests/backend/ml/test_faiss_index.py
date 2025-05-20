@@ -7,7 +7,8 @@ from unittest.mock import Mock
 import numpy as np
 import pytest
 
-from backend.alfred.ml.faiss_index import AlertSearchEngine, FAISSIndex, SearchResult
+from backend.alfred.ml.faiss_index import (AlertSearchEngine, FAISSIndex,
+                                           SearchResult)
 
 
 class TestFAISSIndex:

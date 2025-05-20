@@ -12,7 +12,7 @@ import requests
 pytestmark = pytest.mark.smoke
 
 
-def get_adapter_url() -> str:.
+def get_adapter_url() -> str:
     """Get the URL for the Telegram adapter service."""
     return os.environ.get("TELEGRAM_ADAPTER_URL", "http://localhost:3002")
 
@@ -23,7 +23,7 @@ def adapter_url() -> str:
     return get_adapter_url()
 
 
-def test_health_endpoint(adapter_url: str) -> None:.
+def test_health_endpoint(adapter_url: str) -> None:
     """Test that the health endpoint returns a 200 status code."""
     response = requests.get(f"{adapter_url}/health", timeout=5)
     assert response.status_code == 200
@@ -58,9 +58,7 @@ def test_webhook_post(adapter_url: str) -> None:
         },
     }
 
-    response = requests.post(
-        f"{adapter_url}/telegram/webhook", json=update_data, timeout=5
-    )
+    response = requests.post(f"{adapter_url}/telegram/webhook", json=update_data, timeout=5)
 
     # The webhook should always return a 200 status code to Telegram
     assert response.status_code == 200

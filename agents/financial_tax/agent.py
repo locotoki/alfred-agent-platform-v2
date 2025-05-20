@@ -9,18 +9,10 @@ from langgraph.graph import END, Graph
 from libs.a2a_adapter import A2AEnvelope
 from libs.agent_core import BaseAgent
 
-from .chains import (
-    ComplianceCheckChain,
-    FinancialAnalysisChain,
-    RateLookupChain,
-    TaxCalculationChain,
-)
-from .models import (
-    ComplianceCheckRequest,
-    FinancialAnalysisRequest,
-    TaxCalculationRequest,
-    TaxRateRequest,
-)
+from .chains import (ComplianceCheckChain, FinancialAnalysisChain,
+                     RateLookupChain, TaxCalculationChain)
+from .models import (ComplianceCheckRequest, FinancialAnalysisRequest,
+                     TaxCalculationRequest, TaxRateRequest)
 
 logger = structlog.get_logger(__name__)
 
@@ -110,7 +102,7 @@ class FinancialTaxAgent(BaseAgent):
 
         try:
             # Execute the workflow
-            result = await selfworkflowainvoke(
+            result = await self.workflow.invoke(
                 {
                     "envelope": envelope,
                     "intent": envelope.intent,
@@ -158,28 +150,28 @@ class FinancialTaxAgent(BaseAgent):
     async def _process_tax_calculation(self, state: Dict[str, Any]) -> Dict[str, Any]:
         """Process tax calculation request"""
         request = TaxCalculationRequest(**state["parsed_content"])
-        result = await selftax_calc_chaincalculate(request)
+        result = await self.tax_calc_chain.calculate(request)
         state["result"] = result.dict()
         return state
 
     async def _process_financial_analysis(self, state: Dict[str, Any]) -> Dict[str, Any]:
         """Process financial analysis request"""
         request = FinancialAnalysisRequest(**state["parsed_content"])
-        result = await selfanalysis_chainanalyze(request)
+        result = await self.analysis_chain.analyze(request)
         state["result"] = result.dict()
         return state
 
     async def _process_compliance_check(self, state: Dict[str, Any]) -> Dict[str, Any]:
         """Process compliance check request"""
         request = ComplianceCheckRequest(**state["parsed_content"])
-        result = await selfcompliance_chaincheck_compliance(request)
+        result = await self.compliance_chain.check_compliance(request)
         state["result"] = result.dict()
         return state
 
     async def _process_rate_lookup(self, state: Dict[str, Any]) -> Dict[str, Any]:
         """Process rate lookup request"""
         request = TaxRateRequest(**state["parsed_content"])
-        result = await selfrate_lookup_chainlookup_rates(request)
+        result = await self.rate_lookup_chain.lookup_rates(request)
         state["result"] = result.dict()
         return state
 
@@ -196,7 +188,7 @@ class FinancialTaxAgent(BaseAgent):
     async def _handle_tax_calculation(self, envelope: A2AEnvelope) -> Dict[str, Any]:
         """Handle tax calculation requests"""
         request = TaxCalculationRequest(**envelope.content)
-        result = await selftax_calc_chaincalculate(request)
+        result = await self.tax_calc_chain.calculate(request)
 
         return {
             "status": "success",
@@ -213,7 +205,7 @@ class FinancialTaxAgent(BaseAgent):
     async def _handle_financial_analysis(self, envelope: A2AEnvelope) -> Dict[str, Any]:
         """Handle financial analysis requests"""
         request = FinancialAnalysisRequest(**envelope.content)
-        result = await selfanalysis_chainanalyze(request)
+        result = await self.analysis_chain.analyze(request)
 
         return {
             "status": "success",
@@ -225,7 +217,7 @@ class FinancialTaxAgent(BaseAgent):
     async def _handle_compliance_check(self, envelope: A2AEnvelope) -> Dict[str, Any]:
         """Handle compliance check requests"""
         request = ComplianceCheckRequest(**envelope.content)
-        result = await selfcompliance_chaincheck_compliance(request)
+        result = await self.compliance_chain.check_compliance(request)
 
         return {
             "status": "success",
@@ -240,7 +232,7 @@ class FinancialTaxAgent(BaseAgent):
     async def _handle_rate_lookup(self, envelope: A2AEnvelope) -> Dict[str, Any]:
         """Handle tax rate lookup requests"""
         request = TaxRateRequest(**envelope.content)
-        result = await selfrate_lookup_chainlookup_rates(request)
+        result = await self.rate_lookup_chain.lookup_rates(request)
 
         return {
             "status": "success",

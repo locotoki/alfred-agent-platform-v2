@@ -15,7 +15,7 @@ class Service(Protocol):
     async def start(self) -> None:
         """Start the service"""
         ...
-        
+
     @abstractmethod
     async def stop(self) -> None:
         """Stop the service gracefully"""

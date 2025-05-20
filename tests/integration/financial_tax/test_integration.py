@@ -35,9 +35,7 @@ class TestFinancialTaxIntegration:
         await agent.stop()
 
     @pytest.mark.asyncio
-    async def test_end_to_end_tax_calculation(
-        self, agent, supabase_transport, pubsub_transport
-    ):
+    async def test_end_to_end_tax_calculation(self, agent, supabase_transport, pubsub_transport):
         """Test complete tax calculation flow."""
         # Create test envelope
         envelope = A2AEnvelope(
@@ -76,9 +74,7 @@ class TestFinancialTaxIntegration:
         assert completion_envelope.correlation_id == envelope.task_id
 
     @pytest.mark.asyncio
-    async def test_cross_agent_integration(
-        self, agent, supabase_transport, pubsub_transport
-    ):
+    async def test_cross_agent_integration(self, agent, supabase_transport, pubsub_transport):
         """Test cross-agent integration scenario."""
         # Simulate legal compliance agent triggering tax calculation
         legal_envelope = A2AEnvelope(
@@ -202,7 +198,7 @@ class TestFinancialTaxIntegration:
 
         # Check agent registry
         async with supabase_transport._pool.acquire() as conn:
-            result = await conn.fetchrow(.
+            result = await conn.fetchrow(
                 """
                 SELECT last_heartbeat, status
                 FROM agent_registry
@@ -243,7 +239,7 @@ class TestFinancialTaxIntegration:
                 """
                 SELECT COUNT(*)
                 FROM task_results
-                WHERE task_id = $1::text.
+                WHERE task_id = $1::text
                 """,
                 envelope.task_id,
             )

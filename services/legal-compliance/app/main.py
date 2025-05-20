@@ -11,14 +11,13 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from prometheus_client import Counter, Gauge, Histogram
 
-from agents.legal_compliance import (
-    ComplianceAuditRequest,
-    ContractReviewRequest,
-    DocumentAnalysisRequest,
-    LegalComplianceAgent,
-    RegulationCheckRequest,
-)
-from libs.a2a_adapter import A2AEnvelope, PolicyMiddleware, PubSubTransport, SupabaseTransport
+from agents.legal_compliance import (ComplianceAuditRequest,
+                                     ContractReviewRequest,
+                                     DocumentAnalysisRequest,
+                                     LegalComplianceAgent,
+                                     RegulationCheckRequest)
+from libs.a2a_adapter import (A2AEnvelope, PolicyMiddleware, PubSubTransport,
+                              SupabaseTransport)
 from libs.agent_core.health import create_health_app
 
 logger = structlog.get_logger(__name__)
