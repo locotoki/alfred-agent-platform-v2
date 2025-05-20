@@ -26,12 +26,18 @@ def merge_compose_files(services_data):
     }
 
     services_dir = Path("services")
+    adapters_dir = Path("adapters")
 
     # Process each service group
     for category, service_list in services_data.items():
         for service_name in service_list:
+            # Check in services directory first
             compose_file = services_dir / service_name / "compose.yml"
-
+            
+            # If not found, check in adapters directory
+            if not compose_file.exists():
+                compose_file = adapters_dir / service_name / "compose.yml"
+                
             if compose_file.exists():
                 try:
                     with open(compose_file, "r") as f:
@@ -59,9 +65,24 @@ def merge_compose_files(services_data):
             else:
                 print(f"Warning: No compose.yml found for {service_name}")
 
-    # Add common environment extends
-    env_extends = {".env-common": {"env_file": ".env"}}
-    final_compose = {**env_extends, **final_compose}
+    # Add environment configuration directly to services
+    for service_name in final_compose["services"]:
+        if "environment" not in final_compose["services"][service_name]:
+            final_compose["services"][service_name]["environment"] = []
+            
+        # Add standard environment variables
+        if isinstance(final_compose["services"][service_name]["environment"], list):
+            env_vars = final_compose["services"][service_name]["environment"]
+            if not any(env.startswith("ALFRED_ENVIRONMENT=") for env in env_vars):
+                env_vars.append("ALFRED_ENVIRONMENT=${ALFRED_ENVIRONMENT}")
+            if not any(env.startswith("ALFRED_LOG_LEVEL=") for env in env_vars):
+                env_vars.append("ALFRED_LOG_LEVEL=${ALFRED_LOG_LEVEL}")
+        elif isinstance(final_compose["services"][service_name]["environment"], dict):
+            env_dict = final_compose["services"][service_name]["environment"]
+            if "ALFRED_ENVIRONMENT" not in env_dict:
+                env_dict["ALFRED_ENVIRONMENT"] = "${ALFRED_ENVIRONMENT}"
+            if "ALFRED_LOG_LEVEL" not in env_dict:
+                env_dict["ALFRED_LOG_LEVEL"] = "${ALFRED_LOG_LEVEL}"
 
     return final_compose
 
