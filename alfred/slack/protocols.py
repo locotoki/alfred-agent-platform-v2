@@ -3,6 +3,7 @@
 This module defines the abstract interfaces used throughout the alfred.slack subsystem
 for Slack bot integration and messaging.
 """
+
 from abc import abstractmethod
 from typing import Any, Callable, Dict, List, Optional, Protocol
 

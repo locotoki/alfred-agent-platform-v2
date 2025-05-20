@@ -4,7 +4,7 @@
 This script runs pytest with configurations that ensure proper module
 isolation and prevent import shadowing issues.
 """
-# type: ignore
+
 import os
 import subprocess
 import sys

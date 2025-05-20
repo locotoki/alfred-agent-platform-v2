@@ -1,5 +1,5 @@
 """Simple test script that just prints some information"""
-# type: ignore
+
 import os
 
 from dotenv import load_dotenv

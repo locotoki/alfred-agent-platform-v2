@@ -1,5 +1,5 @@
 """Adapters for SocialIntelligence Agent"""
-# type: ignore
+
 from .a2a_adapter import (YouTubeBlueprintAdapter, YouTubeNicheScoutAdapter,
                           map_intent_to_adapter)
 

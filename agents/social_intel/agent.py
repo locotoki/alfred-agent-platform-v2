@@ -1,5 +1,5 @@
 """Stub implementation of Social Intelligence Agent"""
-# type: ignore
+
 from typing import Any, Dict
 
 import structlog

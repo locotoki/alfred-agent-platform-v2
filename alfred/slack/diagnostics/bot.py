@@ -1,5 +1,5 @@
 """Slack diagnostics bot for Alfred platform"""
-# type: ignore
+
 from typing import Optional, cast
 
 import httpx

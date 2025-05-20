@@ -1,4 +1,3 @@
-# type: ignore
 import os
 
 from fastapi import FastAPI, Response

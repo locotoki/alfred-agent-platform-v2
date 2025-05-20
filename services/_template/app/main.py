@@ -1,5 +1,5 @@
 """Template service with standardized health and metrics endpoints"""
-# type: ignore
+
 import logging
 import os
 from typing import Any, Dict

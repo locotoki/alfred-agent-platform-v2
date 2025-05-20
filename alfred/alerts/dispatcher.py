@@ -2,7 +2,7 @@
 
 This module handles the dispatching of alerts to different notification channels.
 """
-# type: ignore
+
 import json
 import os
 from typing import Any, Dict, List, Optional
@@ -31,7 +31,10 @@ def handle_alert(alert_data: Dict[str, Any]) -> None:
     # Process each alert
     for alert in alerts:
         # Skip resolved alerts if configured to do so
-        if alert.get("status") == "resolved" and not os.environ.get("SEND_RESOLVED", "true").lower() == "true":
+        if (
+            alert.get("status") == "resolved"
+            and not os.environ.get("SEND_RESOLVED", "true").lower() == "true"
+        ):
             logger.info(
                 "Skipping resolved alert",
                 alert_name=alert.get("labels", {}).get("alertname"),
@@ -51,8 +54,10 @@ def handle_alert(alert_data: Dict[str, Any]) -> None:
             alertname = alert.get("labels", {}).get("alertname", "Unknown Alert")
             severity = alert.get("labels", {}).get("severity", "unknown")
             summary = alert.get("annotations", {}).get("summary", "No summary provided")
-            description = alert.get("annotations", {}).get("description", "No description provided")
-            
+            description = alert.get("annotations", {}).get(
+                "description", "No description provided"
+            )
+
             # Extract Kubernetes metadata if available
             namespace = alert.get("labels", {}).get("namespace", "unknown")
             pod_name = alert.get("labels", {}).get("pod", "unknown")
@@ -129,10 +134,12 @@ def format_slack_alert(
     # Set color based on severity
     color = {
         "critical": "#FF0000",  # Red
-        "warning": "#FFA500",   # Orange
-        "info": "#0000FF",      # Blue
-    }.get(severity.lower(), "#808080")  # Gray default
-    
+        "warning": "#FFA500",  # Orange
+        "info": "#0000FF",  # Blue
+    }.get(
+        severity.lower(), "#808080"
+    )  # Gray default
+
     # Common fields for any alert
     fields = [
         {
@@ -146,7 +153,7 @@ def format_slack_alert(
             "short": True,
         },
     ]
-    
+
     # Add pod info if available
     if pod_name != "unknown":
         fields.append(
@@ -156,7 +163,7 @@ def format_slack_alert(
                 "short": True,
             }
         )
-    
+
     # Add chart version if available
     if chart_version != "unknown":
         fields.append(
@@ -166,7 +173,7 @@ def format_slack_alert(
                 "short": True,
             }
         )
-    
+
     return {
         "attachments": [
             {

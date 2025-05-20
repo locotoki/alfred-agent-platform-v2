@@ -1,5 +1,5 @@
 """Alfred remediation module"""
-# type: ignore
+
 from typing import List
 
 from .graphs import create_remediation_graph

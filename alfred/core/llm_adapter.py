@@ -3,6 +3,7 @@
 This module implements the Strategy/Adapter pattern for LLM providers, starting with
 OpenAI GPT-4o-Turbo as the primary provider and Claude 3 Sonnet as a fallback option.
 """
+
 import os
 from abc import ABC, abstractmethod
 from typing import Any, AsyncIterator, Dict, List, Optional, Union

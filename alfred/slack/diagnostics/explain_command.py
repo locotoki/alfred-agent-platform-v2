@@ -1,4 +1,5 @@
 """Slash command handler for alert explanations"""
+
 import logging
 from typing import Any, Dict
 

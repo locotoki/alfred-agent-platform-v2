@@ -1,4 +1,5 @@
 """API routes for dynamic threshold management"""
+
 from typing import Dict
 
 from fastapi import APIRouter, HTTPException, status

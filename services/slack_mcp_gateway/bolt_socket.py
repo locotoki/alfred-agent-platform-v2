@@ -3,6 +3,7 @@
 This module handles interactions with the Slack API using Socket Mode, acknowledges
 slash commands, and forwards requests to Redis via the translator.
 """
+
 # type: ignore
 import logging
 import os

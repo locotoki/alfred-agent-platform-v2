@@ -1,5 +1,5 @@
 """Financial Tax Agent implementation"""
-# type: ignore
+
 from typing import Any, Dict
 
 import structlog

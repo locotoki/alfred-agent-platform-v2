@@ -5,7 +5,7 @@ Implements the three required endpoints as specified in HEALTH_CHECK_STANDARD.md
 2. /healthz - Simple health probe
 3. /metrics - Prometheus metrics.
 """
-# type: ignore
+
 import prometheus_client
 import structlog
 from fastapi import FastAPI, Response

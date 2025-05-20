@@ -3,7 +3,7 @@
 
 Expose GET /cpu returning current CPU usage and load-average in JSON.
 """
-# type: ignore
+
 import os
 
 import psutil

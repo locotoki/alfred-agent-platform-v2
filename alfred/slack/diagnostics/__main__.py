@@ -1,4 +1,5 @@
 """Main entry point for diagnostics bot"""
+
 import asyncio
 import os
 from typing import Any

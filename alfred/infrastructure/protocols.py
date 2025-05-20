@@ -3,6 +3,7 @@
 This module defines the abstract interfaces used throughout the alfred.infrastructure
 subsystem for infrastructure management and orchestration.
 """
+
 from abc import abstractmethod
 from typing import Any, Callable, Dict, List, Optional, Protocol
 

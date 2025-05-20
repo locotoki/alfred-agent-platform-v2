@@ -6,7 +6,7 @@ This script scans the codebase for Python files and fixes common import issues:
 2. Standardizes import paths
 3. Fixes direct imports from the old health.py to the new health package.
 """
-# type: ignore
+
 import os
 import re
 from pathlib import Path

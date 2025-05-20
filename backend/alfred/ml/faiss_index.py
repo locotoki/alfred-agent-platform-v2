@@ -2,7 +2,7 @@
 
 Provides sub-15ms query performance for alert embeddings.
 """
-# type: ignore
+
 import pickle
 import time
 from dataclasses import dataclass

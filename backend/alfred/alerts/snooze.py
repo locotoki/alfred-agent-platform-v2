@@ -2,7 +2,7 @@
 
 Provides temporary alert suppression with automatic expiry.
 """
-# type: ignore
+
 import json
 import uuid
 from dataclasses import dataclass

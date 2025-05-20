@@ -13,10 +13,9 @@ import socket
 from typing import Any, Dict, Optional, Set
 
 import redis
+import redis_bus  # Changed from relative import
 from slack_sdk import WebClient
 from slack_sdk.errors import SlackApiError
-
-import redis_bus  # Changed from relative import
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)

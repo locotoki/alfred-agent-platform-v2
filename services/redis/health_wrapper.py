@@ -9,7 +9,7 @@ This script provides standardized health check endpoints for Redis:
 It acts as a wrapper around Redis to make it compliant with the platform
 health check standard.
 """
-# type: ignore
+
 import os
 import time
 from typing import Dict

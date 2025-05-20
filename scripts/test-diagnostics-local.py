@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Test the diagnostics bot locally without Kubernetes"""
-# type: ignore
+
 import asyncio
 from unittest.mock import AsyncMock
 

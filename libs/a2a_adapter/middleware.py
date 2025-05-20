@@ -1,5 +1,5 @@
 """Stub implementation of middleware for A2A Adapter"""
-# type: ignore
+
 from typing import Any, Callable, Dict, List
 
 import redis

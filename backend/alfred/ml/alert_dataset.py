@@ -2,7 +2,7 @@
 
 Loads alert data from database and prepares for ML training.
 """
-# type: ignore
+
 import hashlib
 import re
 from typing import Dict, Tuple
