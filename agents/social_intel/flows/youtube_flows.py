@@ -19,9 +19,14 @@ from prefect.utilities.asyncutils import sync_compatible
 from sentence_transformers import SentenceTransformer
 
 from ..models.youtube_api import YouTubeAPI
-from ..models.youtube_models import (BlueprintResult, NicheScoutResult,
-                                     YouTubeBlueprint, YouTubeChannel,
-                                     YouTubeGap, YouTubeNiche)
+from ..models.youtube_models import (
+    BlueprintResult,
+    NicheScoutResult,
+    YouTubeBlueprint,
+    YouTubeChannel,
+    YouTubeGap,
+    YouTubeNiche,
+)
 from ..models.youtube_vectors import YouTubeVectorStorage
 
 logger = structlog.get_logger(__name__)
