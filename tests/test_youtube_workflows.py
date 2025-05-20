@@ -7,7 +7,8 @@ from unittest.mock import AsyncMock, MagicMock, patch
 import pytest
 
 from agents.social_intel.agent import SocialIntelAgent
-from agents.social_intel.models.youtube_models import BlueprintResult, NicheScoutResult
+from agents.social_intel.models.youtube_models import (BlueprintResult,
+                                                       NicheScoutResult)
 from libs.a2a_adapter import A2AEnvelope
 
 

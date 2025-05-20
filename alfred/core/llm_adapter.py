@@ -193,7 +193,8 @@ class ClaudeAdapter(LLMAdapter):
         """Lazy-load Anthropic client."""
         if self._client is None:
             try:
-                from anthropic import AsyncAnthropic  # type: ignore[import-not-found]
+                from anthropic import \
+                    AsyncAnthropic  # type: ignore[import-not-found]
 
                 self._client = AsyncAnthropic(api_key=self.api_key)
             except ImportError:

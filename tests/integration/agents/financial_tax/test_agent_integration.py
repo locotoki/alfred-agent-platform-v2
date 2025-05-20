@@ -6,12 +6,8 @@ import os
 import pytest
 
 from agents.financial_tax.agent import FinancialTaxAgent
-from libs.a2a_adapter import (
-    A2AEnvelope,
-    PolicyMiddleware,
-    PubSubTransport,
-    SupabaseTransport,
-)
+from libs.a2a_adapter import (A2AEnvelope, PolicyMiddleware, PubSubTransport,
+                              SupabaseTransport)
 
 pytestmark = pytest.mark.integration
 

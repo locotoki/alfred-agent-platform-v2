@@ -2,7 +2,8 @@
 
 import pytest
 
-from alfred.agents.orchestrator import AgentOrchestrator, orchestrator_route_total
+from alfred.agents.orchestrator import (AgentOrchestrator,
+                                        orchestrator_route_total)
 
 
 class TestAgentOrchestrator:

@@ -6,7 +6,8 @@ from unittest.mock import Mock, patch
 import pytest
 import requests
 
-from alfred.alerts.dispatcher import format_alert_for_slack, handle_alert, send_to_slack
+from alfred.alerts.dispatcher import (format_alert_for_slack, handle_alert,
+                                      send_to_slack)
 
 # Mark all tests in this module with the alerts marker
 pytestmark = pytest.mark.alerts

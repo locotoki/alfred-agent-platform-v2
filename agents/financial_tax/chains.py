@@ -5,16 +5,10 @@ from langchain.output_parsers import PydanticOutputParser
 from langchain.prompts import PromptTemplate
 from langchain_openai import ChatOpenAI
 
-from .models import (
-    ComplianceCheckRequest,
-    ComplianceCheckResponse,
-    FinancialAnalysisRequest,
-    FinancialAnalysisResponse,
-    TaxCalculationRequest,
-    TaxCalculationResponse,
-    TaxRateRequest,
-    TaxRateResponse,
-)
+from .models import (ComplianceCheckRequest, ComplianceCheckResponse,
+                     FinancialAnalysisRequest, FinancialAnalysisResponse,
+                     TaxCalculationRequest, TaxCalculationResponse,
+                     TaxRateRequest, TaxRateResponse)
 
 
 class TaxCalculationChain:

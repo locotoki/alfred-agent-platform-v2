@@ -11,17 +11,15 @@ import structlog
 import yaml
 from app.blueprint import SeedToBlueprint
 from app.niche_scout import NicheScout
-from app.workflow_endpoints import (
-    get_scheduled_workflows,
-    get_workflow_history,
-    get_workflow_result,
-    schedule_workflow,
-)
+from app.workflow_endpoints import (get_scheduled_workflows,
+                                    get_workflow_history, get_workflow_result,
+                                    schedule_workflow)
 from fastapi import Body, FastAPI, HTTPException, Query, Request
 from fastapi.responses import HTMLResponse, JSONResponse
 
 from agents.social_intel.agent import SocialIntelAgent
-from libs.a2a_adapter import PolicyMiddleware, PubSubTransport, SupabaseTransport
+from libs.a2a_adapter import (PolicyMiddleware, PubSubTransport,
+                              SupabaseTransport)
 from libs.agent_core.health import create_health_app
 
 logger = structlog.get_logger(__name__)
