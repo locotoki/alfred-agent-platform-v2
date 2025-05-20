@@ -4,6 +4,15 @@ set -euo pipefail
 echo "=== Docker Compose Health Check ==="
 echo ""
 
+# Check for required dependencies
+if ! command -v jq &> /dev/null; then
+    echo "✗ jq is not installed - this tool is required for JSON processing"
+    echo "  Install with: apt-get update && apt-get install -y jq"
+    echo "  Or: brew install jq (on macOS)"
+    exit 1
+fi
+echo "✓ jq is installed"
+
 # Check Docker is running
 if ! docker info > /dev/null 2>&1; then
     echo "✗ Docker is not running"
