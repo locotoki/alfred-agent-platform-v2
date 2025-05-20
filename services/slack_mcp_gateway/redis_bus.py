@@ -3,6 +3,7 @@
 This module handles publishing task requests to Redis streams and subscribing to
 response streams for consumption by the responder.
 """
+
 # type: ignore
 import json
 import logging
@@ -31,7 +32,7 @@ CONSUMER_NAME = "slack-responder"
 
 
 def get_redis_client() -> redis.Redis:
-    """Create and return a Redis client instance"""
+    """Create and return a Redis client instance."""
     client = redis.Redis(
         host=REDIS_HOST,
         port=REDIS_PORT,
@@ -68,7 +69,7 @@ def publish(message: Dict[str, Any]) -> str:
 
 
 def ensure_consumer_group() -> None:
-    """Ensure the consumer group exists, creating it if necessary"""
+    """Ensure the consumer group exists, creating it if necessary."""
     client = get_redis_client()
 
     try:
@@ -80,16 +81,12 @@ def ensure_consumer_group() -> None:
             client.xinfo_groups(RESPONSE_STREAM)
         except redis.exceptions.ResponseError:
             client.xgroup_create(RESPONSE_STREAM, CONSUMER_GROUP, id="0")
-            logger.info(
-                f"Created consumer group {CONSUMER_GROUP} for {RESPONSE_STREAM}"
-            )
+            logger.info(f"Created consumer group {CONSUMER_GROUP} for {RESPONSE_STREAM}")
     except redis.exceptions.ResponseError:
         # Stream doesn't exist, create it with a dummy message that we'll discard
         client.xadd(RESPONSE_STREAM, {"init": "true"})
         client.xgroup_create(RESPONSE_STREAM, CONSUMER_GROUP, id="0")
-        logger.info(
-            f"Created stream {RESPONSE_STREAM} and consumer group {CONSUMER_GROUP}"
-        )
+        logger.info(f"Created stream {RESPONSE_STREAM} and consumer group {CONSUMER_GROUP}")
 
 
 def subscribe() -> Iterator[Tuple[str, Dict[str, Any]]]:
@@ -133,13 +130,9 @@ def subscribe() -> Iterator[Tuple[str, Dict[str, Any]]]:
                             # Yield the parsed message
                             yield message_id, response_data
                         except json.JSONDecodeError as e:
-                            logger.error(
-                                f"Error decoding JSON from message {message_id}: {e}"
-                            )
+                            logger.error(f"Error decoding JSON from message {message_id}: {e}")
                     else:
-                        logger.warning(
-                            f"Received message {message_id} without data field"
-                        )
+                        logger.warning(f"Received message {message_id} without data field")
         except redis.exceptions.ConnectionError as e:
             logger.error(f"Redis connection error: {e}")
             # TODO: Implement reconnection logic with backoff
