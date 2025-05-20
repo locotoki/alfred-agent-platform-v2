@@ -156,8 +156,10 @@ class NicheScout:
                                 ),
                                 "top_niches": api_results.get("top_niches", []),
                                 "visualization_url": "https://example.com/visualization",
-                                "actual_cost": 95.50,  # This would be calculated based on actual API usage
-                                "actual_processing_time": 120.5,  # This would be the actual time taken
+                                # This would be calculated based on actual API usage
+                                "actual_cost": 95.50,
+                                # This would be the actual time taken
+                                "actual_processing_time": 120.5,
                             }
 
                             # Also add results to database for future use
