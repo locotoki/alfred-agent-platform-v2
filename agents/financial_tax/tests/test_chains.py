@@ -14,7 +14,7 @@ from agents.financial_tax.models import (ComplianceCheckRequest, EntityType,
 
 
 @pytest.fixture
-def mock_llm():
+def mock_llm():.
     """Mock LLM for testing chains."""
     with patch("agents.financial_tax.chains.ChatOpenAI") as mock:
         from typing import Any, Optional
@@ -57,18 +57,18 @@ def mock_chain():
 
 
 @pytest.fixture
-def mock_parser():
+def mock_parser():.
     """Create a mock output parser for testing."""
     parser = MagicMock()
     parser.parse = MagicMock()
     return parser
 
 
-class TestTaxCalculationChain:
+class TestTaxCalculationChain:.
     """Test suite for TaxCalculationChain."""
 
     @pytest.fixture
-    def tax_calc_chain(self, mock_chain, mock_parser, mock_llm):
+    def tax_calc_chain(self, mock_chain, mock_parser, mock_llm):.
         """Create TaxCalculationChain instance."""
         chain = TaxCalculationChain(llm=mock_llm)
         # Replace the chain and output parser with our mocks
@@ -77,10 +77,10 @@ class TestTaxCalculationChain:
         return chain
 
     @pytest.mark.asyncio
-    async def test_calculate_success(self, tax_calc_chain):
+    async def test_calculate_success(self, tax_calc_chain):.
         """Test successful tax calculation."""
         # Mock the chain result
-        mock_result = """
+        mock_result =. """
         {
             "gross_income": 100000,
             "total_deductions": 17000,
@@ -134,7 +134,7 @@ class TestFinancialAnalysisChain:
     """Test suite for FinancialAnalysisChain."""
 
     @pytest.fixture
-    def analysis_chain(self, mock_chain, mock_parser, mock_llm):
+    def analysis_chain(self, mock_chain, mock_parser, mock_llm):.
         """Create FinancialAnalysisChain instance."""
         chain = FinancialAnalysisChain(llm=mock_llm)
         # Replace the chain and output parser with our mocks
@@ -143,9 +143,9 @@ class TestFinancialAnalysisChain:
         return chain
 
     @pytest.mark.asyncio
-    async def test_analyze_success(self, analysis_chain):
+    async def test_analyze_success(self, analysis_chain):.
         """Test successful financial analysis."""
-        mock_result = """
+        mock_result =. """
         {
             "summary": {"overall_health": "strong", "profitability": "above average"},
             "key_metrics": {"gross_margin": 0.25, "debt_to_equity": 0.4},
@@ -194,7 +194,7 @@ class TestComplianceCheckChain:
     """Test suite for ComplianceCheckChain."""
 
     @pytest.fixture
-    def compliance_chain(self, mock_chain, mock_parser, mock_llm):
+    def compliance_chain(self, mock_chain, mock_parser, mock_llm):.
         """Create ComplianceCheckChain instance."""
         chain = ComplianceCheckChain(llm=mock_llm)
         # Replace the chain and output parser with our mocks
@@ -203,9 +203,9 @@ class TestComplianceCheckChain:
         return chain
 
     @pytest.mark.asyncio
-    async def test_check_compliance_success(self, compliance_chain):
+    async def test_check_compliance_success(self, compliance_chain):.
         """Test successful compliance check."""
-        mock_result = """
+        mock_result =. """
         {
             "compliance_status": "partial_compliance",
             "issues_found": [
@@ -259,7 +259,7 @@ class TestRateLookupChain:
     """Test suite for RateLookupChain."""
 
     @pytest.fixture
-    def rate_lookup_chain(self, mock_chain, mock_parser, mock_llm):
+    def rate_lookup_chain(self, mock_chain, mock_parser, mock_llm):.
         """Create RateLookupChain instance."""
         chain = RateLookupChain(llm=mock_llm)
         # Replace the chain and output parser with our mocks
@@ -268,9 +268,9 @@ class TestRateLookupChain:
         return chain
 
     @pytest.mark.asyncio
-    async def test_lookup_rates_success(self, rate_lookup_chain):
+    async def test_lookup_rates_success(self, rate_lookup_chain):.
         """Test successful tax rate lookup."""
-        mock_result = """
+        mock_result =. """
         {
             "jurisdiction": "US-CA",
             "tax_year": 2024,

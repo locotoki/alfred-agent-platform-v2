@@ -1,5 +1,5 @@
-"""
-Fixed implementation of niche-scout endpoints that properly handles JSON bodies.
+"""Fixed implementation of niche-scout endpoints that properly handles JSON bodies.
+
 Copy this into the main.py file to replace the existing implementations.
 """
 

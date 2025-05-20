@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-"""
-Fix script for social-intel API to handle JSON payloads properly.
+"""Fix script for social-intel API to handle JSON payloads properly.
+
 This script updates the main.py file to add JSON body handling to the endpoints.
 """
 
@@ -20,7 +20,7 @@ def modify_endpoint(content, endpoint_pattern, new_param_pattern):
         endpoint_pos = match.start()
 
         # Find the parameter list closing parenthesis
-        params_end_pattern = r'\):\s*"""'
+        params_end_pattern = r'\):\s*."""'
         params_match = re.search(params_end_pattern, content[endpoint_pos:])
         if params_match:
             # Insert the request parameter
@@ -63,12 +63,12 @@ def fix_json_handling(content):
     )
 
     # Find the run_niche_scout function implementation
-    niche_scout_pattern = r'async def run_niche_scout\([^)]*\):\s*"""[^"]*"""'
+    niche_scout_pattern = r'async def run_niche_scout\([^)]*\):\s*"""[^"]*."""'
     niche_scout_match = re.search(niche_scout_pattern, content)
     if niche_scout_match:
         # Insert JSON handling code
         implementation_pos = niche_scout_match.end()
-        json_handling_code = """
+        json_handling_code =. """
     try:
         # Try to parse JSON body if present
         json_data = {}
@@ -117,7 +117,7 @@ def fix_json_handling(content):
     return content
 
 
-def main():
+def main():.
     """Main function to fix the API."""
     print("Starting API fix script...")
 

@@ -1,8 +1,7 @@
-"""
-Seed-to-Blueprint Workflow Implementation for Social Intelligence Agent.
+"""Seed-to-Blueprint Workflow Implementation for Social Intelligence Agent.
 
-This module provides functionality to transform a seed video into a
-comprehensive channel strategy with competitor analysis and content gaps.
+This module provides functionality to transform a seed video into a comprehensive
+channel strategy with competitor analysis and content gaps.
 """
 
 import asyncio
@@ -19,14 +18,14 @@ from app.simple_reports import generate_blueprint_report
 logger = structlog.get_logger(__name__)
 
 
-class SeedToBlueprint:
+class SeedToBlueprint:.
     """Implements the Seed-to-Blueprint workflow for YouTube channel strategy."""
 
     def __init__(self, output_dir: str = "/app/data/builder"):
         """Initialize the SeedToBlueprint workflow.
 
         Args:
-            output_dir: Directory to store output data and results
+            output_dir: Directory to store output data and results.
         """
         self.output_dir = output_dir
         os.makedirs(output_dir, exist_ok=True)
@@ -46,7 +45,7 @@ class SeedToBlueprint:
             Tuple containing:
                 - Dictionary with the blueprint results
                 - Path to the JSON data file
-                - Path to the HTML report
+                - Path to the HTML report.
         """
         if not video_url and not niche:
             raise ValueError("Either video_url or niche must be provided")
@@ -91,7 +90,7 @@ class SeedToBlueprint:
             niche: Optional niche if no seed video provided
 
         Returns:
-            Dictionary with simulated blueprint results
+            Dictionary with simulated blueprint results.
         """
         now = datetime.now().strftime("%Y-%m-%d")
 

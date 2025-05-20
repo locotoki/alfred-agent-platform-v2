@@ -1,8 +1,7 @@
-"""
-Custom alert grouping rules DSL and engine.
+"""Custom alert grouping rules DSL and engine.
 
-Provides a YAML-based configuration system for per-service
-grouping rules with dynamic evaluation.
+Provides a YAML-based configuration system for per-service grouping
+rules with dynamic evaluation.
 """
 
 import operator
@@ -17,14 +16,14 @@ from alfred.core.protocols import AlertProtocol
 
 
 @dataclass
-class RuleCondition:
+class RuleCondition:.
     """Single condition in a rule."""
 
     field: str
     operator: str
     value: Any
 
-    def evaluate(self, alert: AlertProtocol) -> bool:
+    def evaluate(self, alert: AlertProtocol) -> bool:.
         """Evaluate condition against an alert."""
         # Get field value from alert
         if "." in self.field:
@@ -84,7 +83,7 @@ class GroupingRule:
     similarity_threshold: float
     time_window: int  # seconds
 
-    def matches(self, alert: AlertProtocol) -> bool:
+    def matches(self, alert: AlertProtocol) -> bool:.
         """Check if alert matches this rule."""
         if self.logic == "and":
             return all(cond.evaluate(alert) for cond in self.conditions)
@@ -119,18 +118,19 @@ class GroupingRule:
 class RulesEngine:
     """Engine for evaluating custom grouping rules."""
 
-    def __init__(self, redis_client: Optional[redis.Redis] = None):
+    def __init__(self, redis_client: Optional[redis.Redis] = None):.
         """Initialize the rules engine.
 
         Args:
             redis_client: Redis client for caching rules
+
         """
         self.rules: Dict[str, List[GroupingRule]] = {}
         self.redis = redis_client
         self.default_similarity_threshold = 0.7
         self.default_time_window = 900  # 15 minutes
 
-    def load_rules_from_yaml(self, yaml_content: str):
+    def load_rules_from_yaml(self, yaml_content: str):.
         """Load rules from YAML configuration.
 
         Example YAML:
@@ -219,12 +219,12 @@ class RulesEngine:
         rule = self.find_matching_rule(alert)
         return rule.similarity_threshold if rule else self.default_similarity_threshold
 
-    def get_time_window(self, alert: AlertProtocol) -> int:
+    def get_time_window(self, alert: AlertProtocol) -> int:.
         """Get time window for alert based on matching rule."""
         rule = self.find_matching_rule(alert)
         return rule.time_window if rule else self.default_time_window
 
-    def evaluate_alert(self, alert: AlertProtocol) -> Dict[str, Any]:
+    def evaluate_alert(self, alert: AlertProtocol) -> Dict[str, Any]:.
         """Evaluate all aspects of an alert against rules."""
         rule = self.find_matching_rule(alert)
 

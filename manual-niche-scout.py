@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""
-Manual Niche Scout Workflow Script
+"""Manual Niche Scout Workflow Script.
 
-This script directly uses the YouTube API to perform a niche analysis for YouTube content.
-It bypasses the usual platform services and provides a direct way to analyze trends.
+This script directly uses the YouTube API to perform a niche analysis
+for YouTube content. It bypasses the usual platform services and
+provides a direct way to analyze trends.
 """
 
 import argparse

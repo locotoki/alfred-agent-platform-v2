@@ -8,7 +8,7 @@ import uuid
 from datetime import datetime
 
 
-class A2AEnvelope:
+class A2AEnvelope:.
     """Simple A2A envelope implementation."""
 
     def __init__(self, intent, data=None, task_id=None, trace_id=None):
@@ -33,7 +33,7 @@ class A2AEnvelope:
 class MockSocialIntelAgent:
     """Mock SocialIntelligence Agent for integration testing."""
 
-    def __init__(self):
+    def __init__(self):.
         """Initialize the agent."""
         # Set up mocked components
         self.intents_supported = [

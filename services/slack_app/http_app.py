@@ -1,5 +1,5 @@
-"""
-Slack app with HTTP mode instead of Socket Mode.
+"""Slack app with HTTP mode instead of Socket Mode.
+
 This version is designed to run when we don't have a valid App Token for Socket Mode.
 """
 
@@ -39,7 +39,7 @@ ALLOWED_COMMANDS_SET = set(ALLOWED_COMMANDS)
 # Command handler for /alfred
 @app.command(f"{COMMAND_PREFIX}")
 def handle_alfred_command(ack, command, say):
-    """Handle the /alfred slash command"""
+    """Handle the /alfred slash command."""
     ack()  # Acknowledge command request
 
     # Parse the command text
@@ -72,7 +72,7 @@ def handle_alfred_command(ack, command, say):
 
 
 def handle_help_command(say):
-    """Handle the help command"""
+    """Handle the help command."""
     help_text = (
         "*Alfred Slack Bot Commands*\n\n"
         "• `/alfred help` - Show this help message\n"
@@ -86,7 +86,7 @@ def handle_help_command(say):
 
 
 def handle_status_command(say):
-    """Handle the status command"""
+    """Handle the status command."""
     status_text = (
         "*Alfred Platform Status*\n\n"
         "• Platform Version: v0.8.1\n"
@@ -98,7 +98,7 @@ def handle_status_command(say):
 
 
 def handle_health_command(say):
-    """Handle the health command"""
+    """Handle the health command."""
     health_text = (
         "*Alfred Health Status*\n\n"
         "```\n"
@@ -123,31 +123,31 @@ handler = SlackRequestHandler(app)
 
 @flask_app.route("/slack/events", methods=["POST"])
 def slack_events():
-    """Handle Slack events"""
+    """Handle Slack events."""
     return handler.handle(request)
 
 
 @flask_app.route("/slack/commands", methods=["POST"])
 def slack_commands():
-    """Handle Slack commands"""
+    """Handle Slack commands."""
     return handler.handle(request)
 
 
 @flask_app.route("/healthz")
 def health():
-    """Health check endpoint"""
+    """Health check endpoint."""
     return jsonify({"status": "ok", "service": "slack-app"})
 
 
 @flask_app.route("/readyz")
 def ready():
-    """Readiness check endpoint"""
+    """Readiness check endpoint."""
     return jsonify({"status": "ready", "service": "slack-app"})
 
 
 @flask_app.route("/")
 def home():
-    """Home page"""
+    """Home page."""
     return jsonify(
         {
             "name": "Alfred Slack App",
@@ -160,7 +160,7 @@ def home():
 
 
 def find_available_port(start_port, max_attempts=10):
-    """Find an available port starting from start_port"""
+    """Find an available port starting from start_port."""
     for port_offset in range(max_attempts):
         port = start_port + port_offset
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)

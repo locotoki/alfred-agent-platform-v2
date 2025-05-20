@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""
-PubSub Emulator Health Check Wrapper for the Alfred Agent Platform.
+"""PubSub Emulator Health Check Wrapper for the Alfred Agent Platform.
 
 This script provides standardized health check endpoints for the PubSub emulator:
 1. /health - Detailed health status
@@ -52,7 +51,7 @@ def check_pubsub_health() -> Dict[str, str]:
     """Check PubSub emulator connection and status.
 
     Returns:
-        Dictionary with PubSub health status
+        Dictionary with PubSub health status.
     """
     try:
         # Try to list topics

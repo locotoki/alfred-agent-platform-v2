@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-"""
-Test script for directly calling the Model Router with a specific numeric model ID.
+"""Test script for directly calling the Model Router with a specific numeric
+model ID.
 """
 
 import json
@@ -9,7 +9,7 @@ import sys
 import requests
 
 
-def get_models():
+def get_models():.
     """Get models from the registry."""
     try:
         response = requests.get("http://localhost:8079/api/v1/models", timeout=5)

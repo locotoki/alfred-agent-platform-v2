@@ -1,8 +1,7 @@
-"""
-Responder module for processing MCP responses and updating Slack threads.
+"""Responder module for processing MCP responses and updating Slack threads.
 
-This module runs a background task to consume responses from Redis and
-update the corresponding Slack thread using the chat.update API.
+This module runs a background task to consume responses from Redis and update the
+corresponding Slack thread using the chat.update API.
 """
 
 import logging
@@ -20,12 +19,11 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-class ResponseHandler:
+class ResponseHandler:.
     """Handler for MCP responses that updates Slack threads."""
 
-    def __init__(self, slack_token: str):
-        """
-        Initialize the response handler.
+    def __init__(self, slack_token: str):.
+        """Initialize the response handler.
 
         Args:
             slack_token: The Slack bot token for API calls
@@ -34,7 +32,7 @@ class ResponseHandler:
         self.stop_event = threading.Event()
         self.thread = None
 
-    def start(self) -> None:
+    def start(self) -> None:.
         """Start the response handler thread."""
         if self.thread is None or not self.thread.is_alive():
             self.stop_event.clear()
@@ -51,9 +49,7 @@ class ResponseHandler:
             logger.info("Stopped response handler thread")
 
     def _response_loop(self) -> None:
-        """
-        Main loop for processing responses from Redis.
-        """
+        """Main loop for processing responses from Redis."""
         logger.info("Response handler thread started")
 
         for message_id, response in redis_bus.subscribe():
@@ -66,11 +62,10 @@ class ResponseHandler:
                 logger.error(f"Error processing response {message_id}: {e}")
 
     def _process_response(self, response: Dict[str, Any]) -> None:
-        """
-        Process a response and update the corresponding Slack thread.
+        """Process a response and update the corresponding Slack thread.
 
         Args:
-            response: The response data from MCP
+            response: The response data from MCP.
         """
         # Extract relevant fields from the response
         request_id = response.get("request_id")
@@ -93,15 +88,14 @@ class ResponseHandler:
             logger.error(f"Response for {request_id} lacks response_url or channel_id")
 
     def _send_response_url(self, response_url: str, text: str) -> bool:
-        """
-        Send a response using a Slack response_url.
+        """Send a response using a Slack response_url.
 
         Args:
             response_url: The Slack response URL
             text: The message text to send
 
         Returns:
-            True if successful, False otherwise
+            True if successful, False otherwise.
         """
         try:
             payload = {"text": text, "replace_original": False}
@@ -123,8 +117,7 @@ class ResponseHandler:
             return False
 
     def _update_thread(self, channel: str, thread_ts: Optional[str], text: str) -> bool:
-        """
-        Update a Slack thread using the WebClient.
+        """Update a Slack thread using the WebClient.
 
         Args:
             channel: The channel ID
@@ -132,7 +125,7 @@ class ResponseHandler:
             text: The message text
 
         Returns:
-            True if successful, False otherwise
+            True if successful, False otherwise.
         """
         try:
             kwargs = {"channel": channel, "text": text}

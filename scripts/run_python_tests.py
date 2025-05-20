@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
-"""
-Run Python tests with proper module isolation.
+"""Run Python tests with proper module isolation.
 
-This script runs pytest with configurations that ensure proper module isolation
-and prevent import shadowing issues.
+This script runs pytest with configurations that ensure proper module
+isolation and prevent import shadowing issues.
 """
 
 import os
@@ -14,7 +13,7 @@ from pathlib import Path
 ROOT_DIR = Path(__file__).parent.parent
 
 
-def main():
+def main():.
     """Run pytest with proper configuration."""
     # Ensure PYTHONPATH is set correctly
     env = os.environ.copy()

@@ -29,7 +29,7 @@ def generate_niche_scout_html(
         output_dir: Directory to save the report
 
     Returns:
-        Path to the generated HTML report
+        Path to the generated HTML report.
     """
     # Load the template
     template = env.get_template("niche_scout_report.html")
@@ -59,7 +59,7 @@ def generate_blueprint_html(
         output_dir: Directory to save the report
 
     Returns:
-        Path to the generated HTML report
+        Path to the generated HTML report.
     """
     # Load the template
     template = env.get_template("blueprint_report.html")

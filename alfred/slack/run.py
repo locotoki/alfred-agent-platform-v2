@@ -1,6 +1,6 @@
 #!/usr/bin/env python
-"""
-Entry point for the Slack app.
+"""Entry point for the Slack app.
+
 This is the script you run to start the app.
 """
 import os

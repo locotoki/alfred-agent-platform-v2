@@ -1,1 +1,1 @@
-"""Integration tests for Financial Tax Agent"""
+"""Integration tests for Financial Tax Agent."""

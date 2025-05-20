@@ -7,11 +7,11 @@ import pytest
 from backend.alfred.ml.model_registry import ModelRegistry
 
 
-class TestModelRegistry:
+class TestModelRegistry:.
     """Test model registry functionality."""
 
     @pytest.fixture
-    def mock_mlflow_client(self):
+    def mock_mlflow_client(self):.
         """Mock MLflow client."""
         with patch("backend.alfred.ml.model_registry.MlflowClient") as mock:
             yield mock

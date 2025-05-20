@@ -1,5 +1,5 @@
-"""
-Development server for the Slack app.
+"""Development server for the Slack app.
+
 Runs the Flask server only for testing health endpoints.
 """
 
@@ -15,19 +15,19 @@ app = Flask(__name__)
 
 @app.route("/healthz")
 def health():
-    """Health check endpoint"""
+    """Health check endpoint."""
     return jsonify({"status": "ok", "service": "slack-app"})
 
 
 @app.route("/readyz")
 def ready():
-    """Readiness check endpoint"""
+    """Readiness check endpoint."""
     return jsonify({"status": "ready", "service": "slack-app"})
 
 
 @app.route("/")
 def home():
-    """Home page"""
+    """Home page."""
     return jsonify(
         {
             "name": "Alfred Slack App",
@@ -45,7 +45,7 @@ def home():
 
 @app.route("/mock/health")
 def mock_health_command():
-    """Mock the /alfred health command response"""
+    """Mock the /alfred health command response."""
     health_response = {
         "text": (
             "*Alfred Health Status*\n\n```\n"

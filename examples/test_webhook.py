@@ -12,7 +12,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 from alfred.alerts.dispatcher import handle_alert  # noqa: E402
 
 
-def test_with_webhook(webhook_url):
+def test_with_webhook(webhook_url):.
     """Test the dispatcher with real Slack webhook."""
     # Set environment variables
     os.environ["SLACK_ALERT_WEBHOOK"] = webhook_url

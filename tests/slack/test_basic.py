@@ -9,20 +9,20 @@ import pytest
 
 @pytest.fixture
 def mock_slack_client():
-    """Mock Slack client for testing"""
+    """Mock Slack client for testing."""
     mock = MagicMock()
     return mock
 
 
 @pytest.fixture
-def mock_ack():
-    """Mock ack function for testing"""
+def mock_ack():.
+    """Mock ack function for testing."""
     return MagicMock()
 
 
 # Simple smoke test to verify environment variables are available
-def test_slack_environment_variables():
-    """Test that required Slack environment variables are set"""
+def test_slack_environment_variables():.
+    """Test that required Slack environment variables are set."""
     assert os.environ.get("SLACK_BOT_TOKEN"), "SLACK_BOT_TOKEN must be set"
     assert os.environ.get("SLACK_APP_TOKEN"), "SLACK_APP_TOKEN must be set"
     assert os.environ.get("SLACK_SIGNING_SECRET"), "SLACK_SIGNING_SECRET must be set"
@@ -31,7 +31,7 @@ def test_slack_environment_variables():
 # This test will be enabled once the slack_app package is created
 @pytest.mark.skip(reason="Waiting for slack_app package implementation")
 def test_alfred_help_command(mock_ack, mock_slack_client):
-    """Test the /alfred help command"""
+    """Test the /alfred help command."""
     # Mock command payload would look like this:
     # command = {"text": "help", "channel_id": "C123456"}
 

@@ -1,7 +1,7 @@
 """Alert Explanation Agent.
 
-This agent consumes alert payloads and generates human-readable explanations
-with suggested remediation steps and runbook links.
+This agent consumes alert payloads and generates human-readable explanations with
+suggested remediation steps and runbook links.
 """
 
 import logging
@@ -14,16 +14,16 @@ from langchain.prompts import PromptTemplate
 logger = logging.getLogger(__name__)
 
 
-class ExplainerAgent:
+class ExplainerAgent:.
     """Agent that generates explanations for alerts."""
 
-    def __init__(self, llm: Optional[LLM] = None):
+    def __init__(self, llm: Optional[LLM] = None):.
         """Initialize the agent with optional LLM configuration."""
         self.llm = llm
         self._chain: Optional[LLMChain] = None
         self._setup_chain()
 
-    def _setup_chain(self) -> None:
+    def _setup_chain(self) -> None:.
         """Set up the LangChain for alert explanation."""
         if not self.llm:
             logger.warning("No LLM configured, using stub mode")
@@ -48,7 +48,7 @@ Format your response as:
 Explanation: <brief explanation>
 Potential Causes: <list of causes>
 Remediation: <steps to fix>
-Runbook: <link if available>
+Runbook: <link if available>.
 """,
         )
 
@@ -61,7 +61,7 @@ Runbook: <link if available>
             alert_payload: The alert notification payload
 
         Returns:
-            Dict containing the explanation and metadata
+            Dict containing the explanation and metadata.
         """
         alert_name = alert_payload.get("alert_name", "Unknown")
         alert_details = alert_payload.get("description", "No details provided")
@@ -102,6 +102,6 @@ Runbook: <link if available>
             "explanation": f"""Explanation: This is a stub explanation for {alert_name}
 Potential Causes: Stub mode - no LLM configured
 Remediation: Configure a proper LLM for real explanations
-Runbook: https://example.com/runbooks/{alert_name.lower().replace(' ', '-')}""",
+Runbook: https://example.com/runbooks/{alert_name.lower().replace(' ', '-')}.""",
             "success": True,
         }

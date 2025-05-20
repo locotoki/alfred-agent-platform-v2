@@ -1,6 +1,4 @@
-"""
-Enhanced Prometheus metrics for the Social Intelligence service.
-"""
+"""Enhanced Prometheus metrics for the Social Intelligence service."""
 
 import time
 
@@ -103,7 +101,7 @@ class LatencyTimer:
         return False  # Don't suppress exceptions
 
 
-class YouTubeApiTimer(LatencyTimer):
+class YouTubeApiTimer(LatencyTimer):.
     """Specialized timer for YouTube API calls that also counts requests."""
 
     def __init__(self, endpoint, status="success"):

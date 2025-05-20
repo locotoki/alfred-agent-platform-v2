@@ -1,14 +1,12 @@
 #!/usr/bin/env python3
-"""
-Scaffold compose.yml snippets for each service based on services.yaml
-"""
+"""Scaffold compose.yml snippets for each service based on services.yaml."""
 from pathlib import Path
 
 import yaml
 
 
-def load_services():
-    """Load the canonical services list"""
+def load_services():.
+    """Load the canonical services list."""
     with open("services.yaml", "r") as f:
         services_data = yaml.safe_load(f)
 
@@ -20,7 +18,7 @@ def load_services():
 
 
 def create_compose_snippet(service_name, service_dir):
-    """Create a default compose.yml snippet for a service"""
+    """Create a default compose.yml snippet for a service."""
     compose_file = service_dir / "compose.yml"
 
     # Default snippet template
@@ -76,7 +74,7 @@ def create_compose_snippet(service_name, service_dir):
 
 
 def main():
-    """Scaffold compose snippets for all services"""
+    """Scaffold compose snippets for all services."""
     services = load_services()
     services_dir = Path("services")
 

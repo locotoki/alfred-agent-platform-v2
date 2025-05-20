@@ -1,8 +1,8 @@
-"""
-Enhanced ML-based alert noise ranking with HuggingFace transformers.
+"""Enhanced ML-based alert noise ranking with HuggingFace transformers.
 
-Uses HuggingFace transformers for semantic similarity and TF-IDF for feature extraction.
-Reduces alert volume by 45% with minimal false negatives.
+Uses HuggingFace transformers for semantic similarity and TF-IDF for
+feature extraction. Reduces alert volume by 45% with minimal false
+negatives.
 """
 
 from dataclasses import dataclass
@@ -22,7 +22,7 @@ from alfred.ml import HFEmbedder
 
 
 @dataclass
-class AlertFeatures:
+class AlertFeatures:.
     """Feature vector for alert ranking."""
 
     alert_id: str
@@ -33,8 +33,10 @@ class AlertFeatures:
     service_features: np.ndarray
 
 
-class AlertNoiseRanker:
-    """ML-based alert noise ranking using HuggingFace transformers and TF-IDF."""
+class AlertNoiseRanker:.
+    """ML-based alert noise ranking using HuggingFace transformers and TF-
+    IDF.
+    """
 
     def __init__(
         self,
@@ -49,7 +51,8 @@ class AlertNoiseRanker:
             model_path: Path to pre-trained model
             redis_client: Redis client for caching
             metrics_client: Metrics client for monitoring
-            device: Device to run embeddings on (cpu/cuda)
+            device: Device to run embeddings on (cpu/cuda).
+
         """
         # ML models
         self.embedder = HFEmbedder(device=device)
@@ -78,7 +81,8 @@ class AlertNoiseRanker:
             historical_data: Historical context
 
         Returns:
-            AlertFeatures with all feature vectors
+            AlertFeatures with all feature vectors.
+
         """
         # Text embedding using HuggingFace transformers
         alert_text = f"{alert.name} {alert.description} {alert.summary}"
@@ -142,7 +146,8 @@ class AlertNoiseRanker:
             historical_data: Historical context
 
         Returns:
-            Noise score between 0 and 1
+            Noise score between 0 and 1.
+
         """
         # Check cache first
         cache_key = f"noise_score:{alert.id}"
@@ -191,14 +196,16 @@ class AlertNoiseRanker:
     def calculate_similarity_score(
         self, alert1: AlertProtocol, alert2: AlertProtocol
     ) -> float:
-        """Calculate semantic similarity between two alerts using HF embeddings.
+        """Calculate semantic similarity between two alerts using HF
+        embeddings.
 
         Args:
             alert1: First alert
             alert2: Second alert
 
         Returns:
-            Similarity score between 0 and 1
+            Similarity score between 0 and 1.
+
         """
         # Get embeddings for both alerts
         text1 = f"{alert1.name} {alert1.description} {alert1.summary}"
@@ -225,7 +232,8 @@ class AlertNoiseRanker:
             threshold: Minimum similarity score
 
         Returns:
-            List of (alert, similarity_score) tuples above threshold
+            List of (alert, similarity_score) tuples above threshold.
+
         """
         query_text = (
             f"{query_alert.name} {query_alert.description} {query_alert.summary}"
@@ -263,7 +271,8 @@ class AlertNoiseRanker:
             historical_data: Map of alert_id to historical data
 
         Returns:
-            List of (alert, noise_score) tuples, sorted by score descending
+            List of (alert, noise_score) tuples, sorted by score descending.
+
         """
         ranked = []
 
@@ -293,7 +302,8 @@ class AlertNoiseRanker:
             historical_data: Historical context
 
         Returns:
-            True if alert should be suppressed
+            True if alert should be suppressed.
+
         """
         score = self.predict_noise_score(alert, historical_data)
 
@@ -311,7 +321,8 @@ class AlertNoiseRanker:
 
         Args:
             training_data: List of alert features
-            labels: List of labels (0=signal, 1=noise)
+            labels: List of labels (0=signal, 1=noise).
+
         """
         # Prepare feature matrix
         feature_vectors = []
@@ -393,12 +404,12 @@ class AlertNoiseRanker:
         # Would be calculated from metrics in production
         return 10.0  # Placeholder
 
-    def _get_service_false_positive_rate(self, service: str) -> float:
+    def _get_service_false_positive_rate(self, service: str) -> float:.
         """Get historical false positive rate for a service."""
         # Would be calculated from feedback data
         return 0.1  # Placeholder
 
-    def _severity_to_score(self, severity: str) -> float:
+    def _severity_to_score(self, severity: str) -> float:.
         """Convert severity to numeric score."""
         mapping = {"critical": 5.0, "warning": 3.0, "info": 2.0, "debug": 1.0}
         return mapping.get(severity.lower(), 2.0)
@@ -408,7 +419,7 @@ class AlertNoiseRanker:
         # Would query metrics system in production
         return 0.015  # Placeholder
 
-    def warmup(self):
+    def warmup(self):.
         """Warm up the embedder model."""
         self.embedder.warmup()
         print(f"Model warmed up: {self.embedder.get_model_info()}")

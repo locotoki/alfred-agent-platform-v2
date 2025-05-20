@@ -7,7 +7,7 @@ import structlog
 logger = structlog.get_logger(__name__)
 
 
-class SocialIntelAgent:
+class SocialIntelAgent:.
     """Stub implementation of SocialIntelAgent."""
 
     def __init__(self, pubsub_transport, supabase_transport, policy_middleware):

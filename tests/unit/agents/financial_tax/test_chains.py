@@ -1,4 +1,4 @@
-"""Tests for Financial Tax Agent chains"""
+"""Tests for Financial Tax Agent chains."""
 
 from unittest.mock import AsyncMock, MagicMock
 
@@ -18,8 +18,8 @@ from agents.financial_tax.models import (ComplianceCheckRequest,
 
 
 @pytest.fixture
-def mock_llm():
-    """Mock LLM for chain tests"""
+def mock_llm():.
+    """Mock LLM for chain tests."""
     from typing import Any, Optional
 
     from langchain.schema.runnable import Runnable
@@ -45,10 +45,10 @@ def mock_llm():
 
 
 class TestTaxCalculationChain:
-    """Test cases for TaxCalculationChain"""
+    """Test cases for TaxCalculationChain."""
 
-    def test_chain_initialization(self, mock_llm):
-        """Test chain initializes with proper configuration"""
+    def test_chain_initialization(self, mock_llm):.
+        """Test chain initializes with proper configuration."""
         chain = TaxCalculationChain(llm=mock_llm)
 
         assert chain.llm == mock_llm
@@ -56,12 +56,12 @@ class TestTaxCalculationChain:
         assert chain.prompt is not None
         assert chain.chain is not None
 
-    async def test_calculate_with_valid_request(self, mock_llm):
-        """Test tax calculation with valid request"""
+    async def test_calculate_with_valid_request(self, mock_llm):.
+        """Test tax calculation with valid request."""
         chain = TaxCalculationChain(llm=mock_llm)
 
         # Mock the chain run method
-        mock_response = """
+        mock_response =. """
         {
             "gross_income": 150000.0,
             "total_deductions": 27700.0,
@@ -108,7 +108,7 @@ class TestTaxCalculationChain:
         )
 
     async def test_calculate_with_parsing_error(self, mock_llm):
-        """Test error handling when LLM returns unparseable result"""
+        """Test error handling when LLM returns unparseable result."""
         chain = TaxCalculationChain(llm=mock_llm)
 
         # Mock invalid response
@@ -128,13 +128,13 @@ class TestTaxCalculationChain:
 
 
 class TestFinancialAnalysisChain:
-    """Test cases for FinancialAnalysisChain"""
+    """Test cases for FinancialAnalysisChain."""
 
-    async def test_analyze_with_valid_request(self, mock_llm):
-        """Test financial analysis with valid request"""
+    async def test_analyze_with_valid_request(self, mock_llm):.
+        """Test financial analysis with valid request."""
         chain = FinancialAnalysisChain(llm=mock_llm)
 
-        mock_response = """
+        mock_response =. """
         {
             "summary": {"overall_health": "good"},
             "key_metrics": {"profit_margin": 25.0, "current_ratio": 2.5},
@@ -166,13 +166,13 @@ class TestFinancialAnalysisChain:
 
 
 class TestComplianceCheckChain:
-    """Test cases for ComplianceCheckChain"""
+    """Test cases for ComplianceCheckChain."""
 
-    async def test_check_compliance_with_valid_request(self, mock_llm):
-        """Test compliance check with valid request"""
+    async def test_check_compliance_with_valid_request(self, mock_llm):.
+        """Test compliance check with valid request."""
         chain = ComplianceCheckChain(llm=mock_llm)
 
-        mock_response = """
+        mock_response =. """
         {
             "compliance_status": "partially_compliant",
             "issues_found": [{"area": "sales_tax", "issue": "Missing nexus registration"}],
@@ -200,13 +200,13 @@ class TestComplianceCheckChain:
 
 
 class TestRateLookupChain:
-    """Test cases for RateLookupChain"""
+    """Test cases for RateLookupChain."""
 
-    async def test_lookup_rates_with_valid_request(self, mock_llm):
-        """Test tax rate lookup with valid request"""
+    async def test_lookup_rates_with_valid_request(self, mock_llm):.
+        """Test tax rate lookup with valid request."""
         chain = RateLookupChain(llm=mock_llm)
 
-        mock_response = """
+        mock_response =. """
         {
             "jurisdiction": "US-CA",
             "tax_year": 2024,

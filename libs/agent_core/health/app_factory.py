@@ -3,7 +3,7 @@
 Implements the three required endpoints as specified in HEALTH_CHECK_STANDARD.md:
 1. /health - Detailed health status
 2. /healthz - Simple health probe
-3. /metrics - Prometheus metrics
+3. /metrics - Prometheus metrics.
 """
 
 import prometheus_client
@@ -23,7 +23,7 @@ def create_health_app(service_name: str, version: str) -> FastAPI:
         version: The version of the service
 
     Returns:
-        A FastAPI app with standardized health endpoints
+        A FastAPI app with standardized health endpoints.
     """
     health_app = FastAPI(
         title=f"{service_name} Health",
@@ -37,7 +37,8 @@ def create_health_app(service_name: str, version: str) -> FastAPI:
     # 1. /health - Detailed Health Status
     @health_app.get("/health")
     async def health_check() -> dict:
-        """Detailed health check endpoint used by monitoring systems and dependencies."""
+        """Detailed health check endpoint used by monitoring systems and
+        dependencies."""
         service_deps = dependency_tracker.check_dependencies()
         overall_status = "error" if "error" in service_deps.values() else "ok"
 

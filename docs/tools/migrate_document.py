@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""
-Document Migration Tool
+"""Document Migration Tool.
 
 This script automates part of the document migration process by:
 1. Copying content from a source document to a target document
@@ -33,6 +32,7 @@ Examples:
 
     # Check for duplicates before migration
     python migrate_document.py old_docs/guide.md new_docs/guides/guide.md --check-duplicates
+
 """
 
 import argparse
@@ -96,7 +96,7 @@ TEMPLATES = {
 *Common issues and their solutions.*
 
 ## Related Documents
-{cross_references}
+{cross_references}.
 """,
     "workflow": """# {title}
 
@@ -120,7 +120,7 @@ TEMPLATES = {
 *Example usage scenarios.*
 
 ## Related Documents
-{cross_references}
+{cross_references}.
 """,
     "project": """# {title}
 
@@ -144,7 +144,7 @@ TEMPLATES = {
 *Expected project outputs.*
 
 ## Related Documents
-{cross_references}
+{cross_references}.
 """,
     "architecture": """# {title}
 
@@ -168,7 +168,7 @@ TEMPLATES = {
 *Performance, security, scalability considerations.*
 
 ## Related Documents
-{cross_references}
+{cross_references}.
 """,
     "guide": """# {title}
 
@@ -192,7 +192,7 @@ TEMPLATES = {
 *Common issues and solutions.*
 
 ## Related Documents
-{cross_references}
+{cross_references}.
 """,
     "api": """# {title}
 
@@ -219,7 +219,7 @@ TEMPLATES = {
 *Error codes and troubleshooting.*
 
 ## Related Documents
-{cross_references}
+{cross_references}.
 """,
     "general": """# {title}
 
@@ -233,7 +233,7 @@ TEMPLATES = {
 ## Content
 
 ## Related Documents
-{cross_references}
+{cross_references}.
 """,
 }
 
@@ -245,9 +245,8 @@ LINK_PATTERN = re.compile(r"\[([^\]]+)\]\(([^)]+)\)")
 
 
 class DocumentMigrator:
-    """
-    Handles the migration of documentation from one location to another
-    with formatting, templates, and metadata additions.
+    """Handles the migration of documentation from one location to another with
+    formatting, templates, and metadata additions.
     """
 
     def __init__(
@@ -261,8 +260,7 @@ class DocumentMigrator:
         verbose: bool = False,
         dry_run: bool = False,
     ):
-        """
-        Initialize the document migrator.
+        """Initialize the document migrator.
 
         Args:
             source_path: Path to the source document
@@ -272,7 +270,8 @@ class DocumentMigrator:
             status: Document status (draft, review, approved)
             check_duplicates: Whether to check for potential duplicates
             verbose: Whether to show detailed output
-            dry_run: Whether to perform a dry run (no changes)
+            dry_run: Whether to perform a dry run (no changes).
+
         """
         self.source_path = Path(source_path)
         self.target_path = Path(target_path)
@@ -291,11 +290,11 @@ class DocumentMigrator:
         self.cross_references = []
 
     def validate_inputs(self) -> bool:
-        """
-        Validate that source exists and target directory is writable.
+        """Validate that source exists and target directory is writable.
 
         Returns:
-            bool: True if validation passed, False otherwise
+            bool: True if validation passed, False otherwise.
+
         """
         # Check source file exists
         if not self.source_path.exists() or not self.source_path.is_file():
@@ -340,11 +339,11 @@ class DocumentMigrator:
         return True
 
     def read_source(self) -> bool:
-        """
-        Read the content of the source document.
+        """Read the content of the source document.
 
         Returns:
-            bool: True if successful, False otherwise
+            bool: True if successful, False otherwise.
+
         """
         try:
             with open(self.source_path, "r", encoding="utf-8") as f:
@@ -360,11 +359,11 @@ class DocumentMigrator:
             return False
 
     def extract_metadata(self) -> Dict[str, str]:
-        """
-        Extract metadata from the source document.
+        """Extract metadata from the source document.
 
         Returns:
-            Dict containing metadata fields and values
+            Dict containing metadata fields and values.
+
         """
         metadata = {}
 
@@ -395,11 +394,11 @@ class DocumentMigrator:
         return metadata
 
     def detect_document_type(self) -> str:
-        """
-        Detect the document type based on content and path.
+        """Detect the document type based on content and path.
 
         Returns:
-            Detected document type
+            Detected document type.
+
         """
         if self.doc_type:
             return self.doc_type
@@ -445,11 +444,11 @@ class DocumentMigrator:
         return "general"
 
     def format_headings(self) -> str:
-        """
-        Format headings to match documentation standards.
+        """Format headings to match documentation standards.
 
         Returns:
-            Content with reformatted headings
+            Content with reformatted headings.
+
         """
         content = self.source_content
 
@@ -477,11 +476,11 @@ class DocumentMigrator:
         return content
 
     def extract_cross_references(self) -> List[str]:
-        """
-        Extract cross-references from the document.
+        """Extract cross-references from the document.
 
         Returns:
-            List of cross-reference links
+            List of cross-reference links.
+
         """
         links = LINK_PATTERN.finditer(self.source_content)
         references = []
@@ -503,11 +502,11 @@ class DocumentMigrator:
         return references
 
     def create_target_content(self) -> str:
-        """
-        Create content for the target document using appropriate template.
+        """Create content for the target document using appropriate template.
 
         Returns:
-            Formatted content for target document
+            Formatted content for target document.
+
         """
         # Detect document type if not specified
         doc_type = self.detect_document_type()
@@ -572,11 +571,12 @@ class DocumentMigrator:
         return target_content
 
     def check_for_duplicates(self) -> List[Dict[str, Any]]:
-        """
-        Check for potential duplicate documents based on title and content similarity.
+        """Check for potential duplicate documents based on title and content
+        similarity.
 
         Returns:
-            List of potential duplicate documents with similarity scores
+            List of potential duplicate documents with similarity scores.
+
         """
         if not self.check_duplicates:
             return []
@@ -658,11 +658,11 @@ class DocumentMigrator:
         return potential_duplicates
 
     def write_target(self) -> bool:
-        """
-        Write the migrated content to the target file.
+        """Write the migrated content to the target file.
 
         Returns:
-            bool: True if successful, False otherwise
+            bool: True if successful, False otherwise.
+
         """
         if self.dry_run:
             logger.info("Dry run - not writing target file")
@@ -682,11 +682,11 @@ class DocumentMigrator:
             return False
 
     def migrate(self) -> Dict[str, Any]:
-        """
-        Perform the full document migration process.
+        """Perform the full document migration process.
 
         Returns:
-            Dict containing migration results and metadata
+            Dict containing migration results and metadata.
+
         """
         logger.info(f"Starting migration from {self.source_path} to {self.target_path}")
 

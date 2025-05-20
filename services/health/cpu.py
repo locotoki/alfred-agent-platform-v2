@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""
-CPU probe endpoint for the Alfred Agent Platform.
+"""CPU probe endpoint for the Alfred Agent Platform.
 
 Expose GET /cpu returning current CPU usage and load-average in JSON.
 """
@@ -19,9 +18,7 @@ app = FastAPI(
 
 @app.get("/cpu")
 async def cpu_probe():
-    """
-    Get current CPU usage percent and load average.
-    """
+    """Get current CPU usage percent and load average."""
     used_percent = psutil.cpu_percent()
     load_avg_1m, load_avg_5m, load_avg_15m = os.getloadavg()
     return {

@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
-"""
-Create a direct replacement of the process_command function in streamlit_chat_ui.py
+"""Create a direct replacement of the process_command function in
+streamlit_chat_ui.py.
 """
 
 import re
 
 # The new process_command function
 NEW_FUNCTION = '''
-def process_command(message: str) -> str:
+def process_command(message: str) -> str:.
     """Process commands with direct model calls."""
     # Special case for help
     if message.startswith("/help") or message == "help":

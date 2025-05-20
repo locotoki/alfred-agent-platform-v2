@@ -1,6 +1,4 @@
-"""
-Enhanced health check implementation for the Social Intelligence service.
-"""
+"""Enhanced health check implementation for the Social Intelligence service."""
 
 import asyncio
 import os
@@ -80,7 +78,7 @@ async def trigger_health_check():
     return health_state
 
 
-async def check_all_dependencies():
+async def check_all_dependencies():.
     """Check all external dependencies and update health state."""
     global health_state
 
@@ -108,11 +106,10 @@ async def check_all_dependencies():
 
 
 async def check_database() -> bool:
-    """
-    Check database connectivity.
+    """Check database connectivity.
 
     Returns:
-        True if database is healthy, False otherwise
+        True if database is healthy, False otherwise.
     """
     global health_state
 
@@ -149,11 +146,10 @@ async def async_check_db_connection():
 
 
 async def check_youtube_api() -> bool:
-    """
-    Check YouTube API connectivity.
+    """Check YouTube API connectivity.
 
     Returns:
-        True if YouTube API is accessible, False otherwise
+        True if YouTube API is accessible, False otherwise.
     """
     global health_state
 

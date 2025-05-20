@@ -1,20 +1,20 @@
 """Protocol interfaces for alfred.llm module.
 
-This module defines the abstract interfaces used throughout the alfred.llm
-subsystem for language model interactions and management.
+This module defines the abstract interfaces used throughout the alfred.llm subsystem for
+language model interactions and management.
 """
 
 from abc import abstractmethod
 from typing import Any, AsyncIterator, Dict, List, Optional, Protocol
 
 
-class LLMProvider(Protocol):
+class LLMProvider(Protocol):.
     """Protocol for LLM provider interfaces."""
 
     @abstractmethod
     async def generate(
         self, prompt: str, config: Optional[Dict[str, Any]] = None
-    ) -> str:
+    ) -> str:.
         """Generate text from a prompt.
 
         Args:
@@ -29,7 +29,7 @@ class LLMProvider(Protocol):
     @abstractmethod
     async def generate_stream(
         self, prompt: str, config: Optional[Dict[str, Any]] = None
-    ) -> AsyncIterator[str]:
+    ) -> AsyncIterator[str]:.
         """Generate text stream from a prompt.
 
         Args:
@@ -44,7 +44,7 @@ class LLMProvider(Protocol):
     @abstractmethod
     async def chat_completion(
         self, messages: List[Dict[str, str]], config: Optional[Dict[str, Any]] = None
-    ) -> str:
+    ) -> str:.
         """Generate chat completion.
 
         Args:
@@ -57,7 +57,7 @@ class LLMProvider(Protocol):
         ...
 
     @abstractmethod
-    def get_model_info(self) -> Dict[str, Any]:
+    def get_model_info(self) -> Dict[str, Any]:.
         """Get information about the model.
 
         Returns:
@@ -66,11 +66,11 @@ class LLMProvider(Protocol):
         ...
 
 
-class LLMRouter(Protocol):
+class LLMRouter(Protocol):.
     """Protocol for routing requests to appropriate LLM providers."""
 
     @abstractmethod
-    async def route(self, task_type: str, input_data: Dict[str, Any]) -> str:
+    async def route(self, task_type: str, input_data: Dict[str, Any]) -> str:.
         """Route request to appropriate LLM provider.
 
         Args:
@@ -83,7 +83,7 @@ class LLMRouter(Protocol):
         ...
 
     @abstractmethod
-    def register_provider(self, provider_id: str, provider: LLMProvider) -> None:
+    def register_provider(self, provider_id: str, provider: LLMProvider) -> None:.
         """Register a new LLM provider.
 
         Args:
@@ -93,7 +93,7 @@ class LLMRouter(Protocol):
         ...
 
     @abstractmethod
-    def get_providers(self) -> Dict[str, LLMProvider]:
+    def get_providers(self) -> Dict[str, LLMProvider]:.
         """Get all registered providers.
 
         Returns:
@@ -102,11 +102,11 @@ class LLMRouter(Protocol):
         ...
 
 
-class PromptTemplate(Protocol):
+class PromptTemplate(Protocol):.
     """Protocol for prompt template management."""
 
     @abstractmethod
-    def format(self, **kwargs: Any) -> str:
+    def format(self, **kwargs: Any) -> str:.
         """Format the template with given variables.
 
         Args:
@@ -118,7 +118,7 @@ class PromptTemplate(Protocol):
         ...
 
     @abstractmethod
-    def get_variables(self) -> List[str]:
+    def get_variables(self) -> List[str]:.
         """Get list of template variables.
 
         Returns:
@@ -127,7 +127,7 @@ class PromptTemplate(Protocol):
         ...
 
     @abstractmethod
-    def validate(self, **kwargs: Any) -> bool:
+    def validate(self, **kwargs: Any) -> bool:.
         """Validate that all required variables are provided.
 
         Args:
@@ -139,11 +139,11 @@ class PromptTemplate(Protocol):
         ...
 
 
-class TokenCounter(Protocol):
+class TokenCounter(Protocol):.
     """Protocol for token counting and cost estimation."""
 
     @abstractmethod
-    def count_tokens(self, text: str, model: str) -> int:
+    def count_tokens(self, text: str, model: str) -> int:.
         """Count tokens in text for a specific model.
 
         Args:
@@ -172,11 +172,11 @@ class TokenCounter(Protocol):
         ...
 
 
-class LLMCache(Protocol):
+class LLMCache(Protocol):.
     """Protocol for LLM response caching."""
 
     @abstractmethod
-    async def get(self, key: str) -> Optional[str]:
+    async def get(self, key: str) -> Optional[str]:.
         """Get cached response.
 
         Args:
@@ -188,7 +188,7 @@ class LLMCache(Protocol):
         ...
 
     @abstractmethod
-    async def set(self, key: str, value: str, ttl: Optional[int] = None) -> None:
+    async def set(self, key: str, value: str, ttl: Optional[int] = None) -> None:.
         """Set cached response.
 
         Args:
@@ -199,7 +199,7 @@ class LLMCache(Protocol):
         ...
 
     @abstractmethod
-    async def invalidate(self, pattern: str) -> int:
+    async def invalidate(self, pattern: str) -> int:.
         """Invalidate cache entries matching pattern.
 
         Args:

@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""
-Test script for the Niche-Scout workflow API.
+"""Test script for the Niche-Scout workflow API.
 
 This script tests the Social Intelligence Service API endpoint for the Niche-Scout workflow.
 It sends various test cases with different categories and subcategories to verify the API
@@ -11,7 +10,7 @@ Usage:
 
 Options:
     --base-url URL    Base URL of the Social Intelligence Service (default: http://localhost:9000)
-    --mock            Use mock data instead of making real API calls
+    --mock            Use mock data instead of making real API calls.
 """
 
 import argparse
@@ -73,6 +72,7 @@ def run_test(base_url: str, test_case: Dict[str, Any], use_mock: bool = False) -
 
     Returns:
         bool: True if test passed, False otherwise.
+
     """
     endpoint = f"{base_url}/niche-scout"
     params = {}

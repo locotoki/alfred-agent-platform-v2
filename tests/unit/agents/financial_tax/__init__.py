@@ -1,1 +1,1 @@
-"""Unit tests for Financial Tax Agent"""
+"""Unit tests for Financial Tax Agent."""

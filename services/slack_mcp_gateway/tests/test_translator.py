@@ -1,6 +1,4 @@
-"""
-Tests for the translator module.
-"""
+"""Tests for the translator module."""
 
 import re
 import uuid

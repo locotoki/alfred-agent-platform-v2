@@ -1,8 +1,7 @@
-"""
-Echo agent for testing the Slack MCP Gateway integration.
+"""Echo agent for testing the Slack MCP Gateway integration.
 
-This simple echo agent processes the /alfred ping command and replies with the provided text.
-It listens to the MCP request stream and publishes to the response stream.
+This simple echo agent processes the /alfred ping command and replies with the provided
+text. It listens to the MCP request stream and publishes to the response stream.
 """
 
 import json
@@ -46,7 +45,7 @@ def get_redis_client() -> redis.Redis:
     return client
 
 
-def ensure_consumer_group() -> None:
+def ensure_consumer_group() -> None:.
     """Ensure the consumer group exists for the echo agent."""
     client = get_redis_client()
 
@@ -72,14 +71,13 @@ def ensure_consumer_group() -> None:
 
 
 def publish_response(response: Dict[str, Any]) -> str:
-    """
-    Publish a response to the MCP responses stream.
+    """Publish a response to the MCP responses stream.
 
     Args:
         response: The response data to publish
 
     Returns:
-        The message ID assigned by Redis
+        The message ID assigned by Redis.
     """
     client = get_redis_client()
 
@@ -100,14 +98,13 @@ def publish_response(response: Dict[str, Any]) -> str:
 
 
 def process_ping_command(request_data: Dict[str, Any]) -> Dict[str, Any]:
-    """
-    Process a ping command and generate a response.
+    """Process a ping command and generate a response.
 
     Args:
         request_data: The request data from Slack
 
     Returns:
-        The response data
+        The response data.
     """
     try:
         # Extract command text (everything after /alfred ping)
@@ -151,9 +148,7 @@ def process_ping_command(request_data: Dict[str, Any]) -> Dict[str, Any]:
 
 
 def run_echo_agent() -> None:
-    """
-    Run the echo agent, processing requests from the MCP stream.
-    """
+    """Run the echo agent, processing requests from the MCP stream."""
     logger.info("Starting echo agent...")
     client = get_redis_client()
 

@@ -1,5 +1,4 @@
-"""
-ML model retraining pipeline with MLflow integration.
+"""ML model retraining pipeline with MLflow integration.
 
 Automates training, validation, and model registry updates.
 """
@@ -22,7 +21,7 @@ from alfred.core.protocols import Service
 from alfred.ml.alert_dataset import AlertDataset
 
 
-class RetrainPipeline(Service):
+class RetrainPipeline(Service):.
     """Automated ML model retraining pipeline with MLflow tracking."""
 
     def __init__(
@@ -40,7 +39,8 @@ class RetrainPipeline(Service):
             experiment_name: MLflow experiment name
             model_name: Model name in registry
             min_f1_score: Minimum F1 score for promotion
-            min_precision: Minimum precision for promotion
+            min_precision: Minimum precision for promotion.
+
         """
         self.mlflow_uri = mlflow_uri
         self.experiment_name = experiment_name
@@ -68,7 +68,8 @@ class RetrainPipeline(Service):
             random_state: Random seed
 
         Returns:
-            Trained model and metrics dictionary
+            Trained model and metrics dictionary.
+
         """
         # Extract features and labels
         X, y = dataset.prepare_training_data()
@@ -139,7 +140,8 @@ class RetrainPipeline(Service):
             dataset_info: Dataset metadata
 
         Returns:
-            MLflow run ID
+            MLflow run ID.
+
         """
         with mlflow.start_run() as run:
             # Log parameters
@@ -185,7 +187,8 @@ class RetrainPipeline(Service):
             metrics: Model metrics
 
         Returns:
-            True if promoted, False otherwise
+            True if promoted, False otherwise.
+
         """
         # Check promotion criteria
         if (
@@ -237,7 +240,8 @@ class RetrainPipeline(Service):
             version: Model version to test
 
         Returns:
-            Staging metrics
+            Staging metrics.
+
         """
         # Load staging model
         model_uri = f"models:/{self.model_name}/{version}"
@@ -257,7 +261,8 @@ class RetrainPipeline(Service):
             force_promotion: Force promotion regardless of metrics
 
         Returns:
-            Pipeline execution results
+            Pipeline execution results.
+
         """
         print(f"Starting retraining pipeline at {datetime.now()}")
 
@@ -295,7 +300,8 @@ class RetrainPipeline(Service):
         """Get URI of current production model.
 
         Returns:
-            Production model URI
+            Production model URI.
+
         """
         try:
             production_versions = self.client.get_latest_versions(

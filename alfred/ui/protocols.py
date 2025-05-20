@@ -1,18 +1,18 @@
 """Protocol interfaces for alfred.ui module.
 
-This module defines the abstract interfaces used throughout the alfred.ui
-subsystem for user interface components and interactions.
+This module defines the abstract interfaces used throughout the alfred.ui subsystem for
+user interface components and interactions.
 """
 
 from abc import abstractmethod
 from typing import Any, Dict, List, Optional, Protocol
 
 
-class ChatInterface(Protocol):
+class ChatInterface(Protocol):.
     """Protocol for chat interface implementations."""
 
     @abstractmethod
-    async def send_message(self, message: str, user_id: str) -> Dict[str, Any]:
+    async def send_message(self, message: str, user_id: str) -> Dict[str, Any]:.
         """Send a message in the chat.
 
         Args:
@@ -27,7 +27,7 @@ class ChatInterface(Protocol):
     @abstractmethod
     async def get_conversation_history(
         self, user_id: str, limit: int = 50
-    ) -> List[Dict[str, Any]]:
+    ) -> List[Dict[str, Any]]:.
         """Get conversation history for a user.
 
         Args:
@@ -40,7 +40,7 @@ class ChatInterface(Protocol):
         ...
 
     @abstractmethod
-    def render_message(self, message: Dict[str, Any]) -> str:
+    def render_message(self, message: Dict[str, Any]) -> str:.
         """Render a message for display.
 
         Args:
@@ -52,11 +52,11 @@ class ChatInterface(Protocol):
         ...
 
 
-class DashboardWidget(Protocol):
+class DashboardWidget(Protocol):.
     """Protocol for dashboard widget components."""
 
     @abstractmethod
-    def render(self) -> str:
+    def render(self) -> str:.
         """Render the widget.
 
         Returns:
@@ -65,7 +65,7 @@ class DashboardWidget(Protocol):
         ...
 
     @abstractmethod
-    def update_data(self, data: Dict[str, Any]) -> None:
+    def update_data(self, data: Dict[str, Any]) -> None:.
         """Update widget data.
 
         Args:
@@ -74,7 +74,7 @@ class DashboardWidget(Protocol):
         ...
 
     @abstractmethod
-    def get_config(self) -> Dict[str, Any]:
+    def get_config(self) -> Dict[str, Any]:.
         """Get widget configuration.
 
         Returns:
@@ -83,11 +83,11 @@ class DashboardWidget(Protocol):
         ...
 
 
-class UITheme(Protocol):
+class UITheme(Protocol):.
     """Protocol for UI theming."""
 
     @abstractmethod
-    def get_colors(self) -> Dict[str, str]:
+    def get_colors(self) -> Dict[str, str]:.
         """Get theme colors.
 
         Returns:
@@ -96,7 +96,7 @@ class UITheme(Protocol):
         ...
 
     @abstractmethod
-    def get_fonts(self) -> Dict[str, str]:
+    def get_fonts(self) -> Dict[str, str]:.
         """Get theme fonts.
 
         Returns:
@@ -105,7 +105,7 @@ class UITheme(Protocol):
         ...
 
     @abstractmethod
-    def get_styles(self, component: str) -> Dict[str, Any]:
+    def get_styles(self, component: str) -> Dict[str, Any]:.
         """Get styles for a specific component.
 
         Args:
@@ -117,11 +117,11 @@ class UITheme(Protocol):
         ...
 
 
-class FormValidator(Protocol):
+class FormValidator(Protocol):.
     """Protocol for form validation."""
 
     @abstractmethod
-    def validate_field(self, field_name: str, value: Any) -> tuple[bool, Optional[str]]:
+    def validate_field(self, field_name: str, value: Any) -> tuple[bool, Optional[str]]:.
         """Validate a single form field.
 
         Args:
@@ -134,7 +134,7 @@ class FormValidator(Protocol):
         ...
 
     @abstractmethod
-    def validate_form(self, form_data: Dict[str, Any]) -> Dict[str, str]:
+    def validate_form(self, form_data: Dict[str, Any]) -> Dict[str, str]:.
         """Validate entire form.
 
         Args:
@@ -146,7 +146,7 @@ class FormValidator(Protocol):
         ...
 
 
-class NotificationManager(Protocol):
+class NotificationManager(Protocol):.
     """Protocol for UI notifications."""
 
     @abstractmethod
@@ -166,7 +166,7 @@ class NotificationManager(Protocol):
         ...
 
     @abstractmethod
-    def hide_notification(self, notification_id: str) -> None:
+    def hide_notification(self, notification_id: str) -> None:.
         """Hide a notification.
 
         Args:
@@ -175,16 +175,16 @@ class NotificationManager(Protocol):
         ...
 
     @abstractmethod
-    def clear_all_notifications(self) -> None:
+    def clear_all_notifications(self) -> None:.
         """Clear all notifications."""
         ...
 
 
-class SessionManager(Protocol):
+class SessionManager(Protocol):.
     """Protocol for user session management."""
 
     @abstractmethod
-    def create_session(self, user_id: str, session_data: Dict[str, Any]) -> str:
+    def create_session(self, user_id: str, session_data: Dict[str, Any]) -> str:.
         """Create a new user session.
 
         Args:
@@ -197,7 +197,7 @@ class SessionManager(Protocol):
         ...
 
     @abstractmethod
-    def get_session(self, session_id: str) -> Optional[Dict[str, Any]]:
+    def get_session(self, session_id: str) -> Optional[Dict[str, Any]]:.
         """Get session data.
 
         Args:
@@ -209,7 +209,7 @@ class SessionManager(Protocol):
         ...
 
     @abstractmethod
-    def update_session(self, session_id: str, updates: Dict[str, Any]) -> bool:
+    def update_session(self, session_id: str, updates: Dict[str, Any]) -> bool:.
         """Update session data.
 
         Args:
@@ -222,7 +222,7 @@ class SessionManager(Protocol):
         ...
 
     @abstractmethod
-    def end_session(self, session_id: str) -> bool:
+    def end_session(self, session_id: str) -> bool:.
         """End a session.
 
         Args:

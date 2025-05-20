@@ -1,8 +1,7 @@
-"""
-Slack Bolt Socket Mode listener for the MCP Gateway.
+"""Slack Bolt Socket Mode listener for the MCP Gateway.
 
-This module handles interactions with the Slack API using Socket Mode,
-acknowledges slash commands, and forwards requests to Redis via the translator.
+This module handles interactions with the Slack API using Socket Mode, acknowledges
+slash commands, and forwards requests to Redis via the translator.
 """
 
 import logging
@@ -47,12 +46,11 @@ def create_app() -> App:
     # Register the alfred command handler
     @app.command("/alfred")
     def handle_alfred_command(ack: Callable, command: Dict[str, Any]) -> None:
-        """
-        Handle the /alfred slash command.
+        """Handle the /alfred slash command.
 
         Args:
             ack: Function to acknowledge the command request
-            command: The command data from Slack
+            command: The command data from Slack.
         """
         # Immediately acknowledge the command to avoid timeout
         ack({"text": "Processing your request..."})
@@ -77,9 +75,7 @@ def create_app() -> App:
 
 
 def start_socket_mode() -> None:
-    """
-    Start the Socket Mode handler for real-time Slack events.
-    """
+    """Start the Socket Mode handler for real-time Slack events."""
     # Get the app token from environment
     slack_app_token = os.environ.get("SLACK_APP_TOKEN")
     if not slack_app_token:

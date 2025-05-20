@@ -1,5 +1,4 @@
-"""
-Alert snooze functionality with Redis TTL queue.
+"""Alert snooze functionality with Redis TTL queue.
 
 Provides temporary alert suppression with automatic expiry.
 """
@@ -19,7 +18,7 @@ from alfred.metrics.protocols import MetricsClient
 
 
 @dataclass
-class SnoozeConfig:
+class SnoozeConfig:.
     """Configuration for snooze behavior."""
 
     min_duration: int = 300  # 5 minutes
@@ -29,7 +28,7 @@ class SnoozeConfig:
     audit_retention_days: int = 30
 
 
-class AlertSnoozeService(SnoozeService):
+class AlertSnoozeService(SnoozeService):.
     """Service for managing alert snoozes with Redis TTL."""
 
     def __init__(
@@ -37,13 +36,14 @@ class AlertSnoozeService(SnoozeService):
         redis_client: redis.Redis,
         metrics_client: Optional[MetricsClient] = None,
         config: Optional[SnoozeConfig] = None,
-    ):
+    ):.
         """Initialize the snooze service.
 
         Args:
             redis_client: Redis client for TTL queue
             metrics_client: Metrics client for monitoring
             config: Snooze configuration
+
         """
         self.redis = redis_client
         self.metrics = metrics_client
@@ -70,7 +70,8 @@ class AlertSnoozeService(SnoozeService):
             user_id: ID of user who initiated snooze
 
         Returns:
-            AlertSnooze record
+            AlertSnooze record.
+
         """
         # Validate duration
         duration = max(
@@ -135,7 +136,8 @@ class AlertSnoozeService(SnoozeService):
             user_id: ID of user who initiated unsnooze
 
         Returns:
-            True if alert was unsnoozed, False if not found
+            True if alert was unsnoozed, False if not found.
+
         """
         snooze_key = f"{self.SNOOZE_KEY_PREFIX}{alert_id}"
 
@@ -171,7 +173,8 @@ class AlertSnoozeService(SnoozeService):
             alert_id: ID of alert to check
 
         Returns:
-            True if alert is snoozed
+            True if alert is snoozed.
+
         """
         snooze_key = f"{self.SNOOZE_KEY_PREFIX}{alert_id}"
         return bool(self.redis.exists(snooze_key))
@@ -183,7 +186,8 @@ class AlertSnoozeService(SnoozeService):
             alert_id: ID of alert
 
         Returns:
-            AlertSnooze if found, None otherwise
+            AlertSnooze if found, None otherwise.
+
         """
         snooze_key = f"{self.SNOOZE_KEY_PREFIX}{alert_id}"
         snooze_data = self.redis.get(snooze_key)
@@ -207,7 +211,8 @@ class AlertSnoozeService(SnoozeService):
         """List all currently snoozed alert IDs.
 
         Returns:
-            List of snoozed alert IDs
+            List of snoozed alert IDs.
+
         """
         pattern = f"{self.SNOOZE_KEY_PREFIX}*"
         keys = self.redis.keys(pattern)
@@ -227,7 +232,8 @@ class AlertSnoozeService(SnoozeService):
             alert: Alert to check
 
         Returns:
-            True if alert has changed
+            True if alert has changed.
+
         """
         if not self.config.auto_unsnooze_on_change:
             return False
@@ -248,7 +254,8 @@ class AlertSnoozeService(SnoozeService):
             alert: Alert to check
 
         Returns:
-            True if alert was unsnoozed
+            True if alert was unsnoozed.
+
         """
         if await self.check_alert_changed(alert):
             return await self.unsnooze_alert(
@@ -267,7 +274,8 @@ class AlertSnoozeService(SnoozeService):
             user_id: ID of user extending snooze
 
         Returns:
-            Updated AlertSnooze or None if not found
+            Updated AlertSnooze or None if not found.
+
         """
         current_snooze = await self.get_snooze(alert_id)
         if not current_snooze:
@@ -295,7 +303,8 @@ class AlertSnoozeService(SnoozeService):
             limit: Maximum number of records
 
         Returns:
-            List of audit entries
+            List of audit entries.
+
         """
         audit_pattern = f"{self.AUDIT_KEY_PREFIX}{alert_id}:*"
         keys = self.redis.keys(audit_pattern)

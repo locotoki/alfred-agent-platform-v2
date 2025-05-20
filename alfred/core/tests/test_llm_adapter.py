@@ -8,7 +8,7 @@ from alfred.core.llm_adapter import (ClaudeAdapter, Message, OpenAIAdapter,
                                      create_llm_adapter)
 
 
-class TestMessage:
+class TestMessage:.
     """Test Message class."""
 
     def test_message_creation(self):
@@ -170,7 +170,7 @@ class TestTokenBudgetGuard:
     """Test token budget guard for test suite."""
 
     @pytest.mark.asyncio
-    async def test_token_limit_in_tests(self):
+    async def test_token_limit_in_tests(self):.
         """Ensure test suite doesn't exceed token budget."""
         # This is a meta-test to ensure our test suite is efficient
         # In a real implementation, you'd track actual token usage

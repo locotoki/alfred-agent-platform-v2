@@ -6,7 +6,7 @@ from typing import Any, Dict, List, Optional
 from pydantic import BaseModel, Field
 
 
-class TaxJurisdiction(str, Enum):
+class TaxJurisdiction(str, Enum):.
     """Supported tax jurisdictions."""
 
     US_FEDERAL = "US-FED"
@@ -64,7 +64,7 @@ class TaxCalculationResponse(BaseModel):
     calculation_details: List[str]
 
 
-class FinancialAnalysisRequest(BaseModel):
+class FinancialAnalysisRequest(BaseModel):.
     """Request model for financial analysis."""
 
     financial_statements: Dict[str, Dict[str, float]] = Field(
@@ -90,7 +90,7 @@ class FinancialAnalysisResponse(BaseModel):
     benchmark_comparison: Optional[Dict[str, Any]] = None
 
 
-class ComplianceCheckRequest(BaseModel):
+class ComplianceCheckRequest(BaseModel):.
     """Request model for tax compliance check."""
 
     entity_type: EntityType
@@ -128,7 +128,7 @@ class TaxRateRequest(BaseModel):
     special_categories: Optional[List[str]] = None
 
 
-class TaxRateResponse(BaseModel):
+class TaxRateResponse(BaseModel):.
     """Response model for tax rate lookup."""
 
     jurisdiction: TaxJurisdiction

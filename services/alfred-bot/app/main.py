@@ -129,7 +129,7 @@ async def handle_trend_analysis(client, channel_id, user_id, query):
 
 async def show_help(client, channel_id):
     """Show help message."""
-    help_text = """
+    help_text =. """
 *Alfred Bot Commands:*
 - `/alfred help` - Show this help message
 - `/alfred ping` - Test bot responsiveness
@@ -143,7 +143,7 @@ async def show_help(client, channel_id):
 
 # Create FastAPI app
 @asynccontextmanager
-async def lifespan(app: FastAPI):
+async def lifespan(app: FastAPI):.
     """Manage application lifecycle."""
     # Startup
     await supabase_transport.connect()

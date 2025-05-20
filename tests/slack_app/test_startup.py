@@ -1,5 +1,5 @@
-"""
-Test the Slack app startup functionality.
+"""Test the Slack app startup functionality.
+
 This is a basic smoke test to verify the application can initialize without errors.
 """
 
@@ -12,7 +12,7 @@ import pytest
 
 # Capture stdout for testing
 @pytest.fixture
-def capture_stdout(monkeypatch):
+def capture_stdout(monkeypatch):.
     """Capture stdout for testing."""
     buffer = {"stdout": "", "write_calls": 0}
 

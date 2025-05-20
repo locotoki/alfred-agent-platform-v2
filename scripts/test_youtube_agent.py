@@ -14,7 +14,7 @@ from agents.social_intel.flows.youtube_flows import (  # noqa: E402
     youtube_blueprint_flow, youtube_niche_scout_flow)
 
 
-async def test_niche_scout(queries=None):
+async def test_niche_scout(queries=None):.
     """Test YouTube Niche-Scout workflow."""
     if not queries:
         queries = [

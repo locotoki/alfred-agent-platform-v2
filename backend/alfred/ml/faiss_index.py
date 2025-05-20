@@ -1,5 +1,4 @@
-"""
-FAISS vector index for fast similarity search.
+"""FAISS vector index for fast similarity search.
 
 Provides sub-15ms query performance for alert embeddings.
 """
@@ -17,7 +16,7 @@ from alfred.ml.hf_embedder import HFEmbedder
 
 
 @dataclass
-class SearchResult:
+class SearchResult:.
     """Result from FAISS similarity search."""
 
     alert_id: str
@@ -25,7 +24,7 @@ class SearchResult:
     metadata: Dict
 
 
-class FAISSIndex(Service):
+class FAISSIndex(Service):.
     """Fast similarity search using FAISS indexes.
 
     Supports multiple index types optimized for different use cases.
@@ -46,7 +45,8 @@ class FAISSIndex(Service):
             index_type: Index type (IVF, LSH, HNSW, Flat)
             nlist: Number of clusters for IVF
             nprobe: Number of clusters to search
-            device: Device to use (cpu/gpu)
+            device: Device to use (cpu/gpu).
+
         """
         self.dimension = dimension
         self.index_type = index_type
@@ -70,7 +70,8 @@ class FAISSIndex(Service):
         """Create FAISS index based on type.
 
         Returns:
-            FAISS index instance
+            FAISS index instance.
+
         """
         if self.index_type == "Flat":
             # Exact search (slow but accurate)
@@ -111,7 +112,8 @@ class FAISSIndex(Service):
         Args:
             embeddings: Embedding vectors
             alert_ids: Alert identifiers
-            metadata: Optional metadata for each alert
+            metadata: Optional metadata for each alert.
+
         """
         if embeddings.shape[1] != self.dimension:
             raise ValueError(
@@ -162,7 +164,8 @@ class FAISSIndex(Service):
             threshold: Minimum similarity score
 
         Returns:
-            List of search results
+            List of search results.
+
         """
         if query_embedding.shape[0] != self.dimension:
             raise ValueError(
@@ -214,7 +217,8 @@ class FAISSIndex(Service):
             threshold: Minimum similarity score
 
         Returns:
-            List of result lists
+            List of result lists.
+
         """
         if query_embeddings.shape[1] != self.dimension:
             raise ValueError(
@@ -260,7 +264,8 @@ class FAISSIndex(Service):
         """Save index to disk.
 
         Args:
-            path: Save path
+            path: Save path.
+
         """
         # Save FAISS index
         faiss.write_index(self.index, f"{path}.index")
@@ -285,7 +290,8 @@ class FAISSIndex(Service):
         """Load index from disk.
 
         Args:
-            path: Load path
+            path: Load path.
+
         """
         # Load FAISS index
         self.index = faiss.read_index(f"{path}.index")
@@ -308,7 +314,8 @@ class FAISSIndex(Service):
         """Get index statistics.
 
         Returns:
-            Statistics dictionary
+            Statistics dictionary.
+
         """
         stats = {
             "total_vectors": self.index.ntotal,
@@ -346,7 +353,8 @@ class FAISSIndex(Service):
         """Remove alerts from index (soft delete).
 
         Args:
-            alert_ids: Alert IDs to remove
+            alert_ids: Alert IDs to remove.
+
         """
         # FAISS doesn't support direct removal, so we mark as deleted
         for alert_id in alert_ids:
@@ -368,7 +376,8 @@ class AlertSearchEngine:
         Args:
             embedder: HF embedder instance
             index_type: FAISS index type
-            device: Device to use
+            device: Device to use.
+
         """
         self.embedder = embedder or HFEmbedder(device=device)
         self.index = FAISSIndex(
@@ -381,7 +390,8 @@ class AlertSearchEngine:
         """Index a batch of alerts.
 
         Args:
-            alerts: List of alert dictionaries
+            alerts: List of alert dictionaries.
+
         """
         # Extract texts and IDs
         texts = []
@@ -421,7 +431,8 @@ class AlertSearchEngine:
             threshold: Minimum similarity
 
         Returns:
-            Search results
+            Search results.
+
         """
         # Generate query embedding
         query_embedding = self.embedder.embed(query_text)
@@ -435,7 +446,8 @@ class AlertSearchEngine:
         """Get performance statistics.
 
         Returns:
-            Performance stats
+            Performance stats.
+
         """
         stats = self.index.get_stats()
         stats["embedder_model"] = self.embedder.model_name

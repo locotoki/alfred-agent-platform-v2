@@ -1,4 +1,4 @@
-"""Unit tests for Financial Tax Agent"""
+"""Unit tests for Financial Tax Agent."""
 
 from unittest.mock import AsyncMock, MagicMock, patch
 
@@ -9,7 +9,7 @@ from libs.a2a_adapter import A2AEnvelope
 
 
 @pytest.fixture
-def mock_pubsub():
+def mock_pubsub():.
     """Mock PubSub transport."""
     mock = AsyncMock()
     mock.publish_task = AsyncMock(return_value="test-message-id")
@@ -39,7 +39,7 @@ def mock_policy():
 
 
 @pytest.fixture
-def financial_tax_agent(mock_pubsub, mock_supabase, mock_policy):
+def financial_tax_agent(mock_pubsub, mock_supabase, mock_policy):.
     """Create Financial Tax Agent instance with mocked dependencies."""
     with patch("agents.financial_tax.agent.ChatOpenAI") as mock_openai:
         # Create a mock that actually inherits from the base class structure expected
@@ -80,7 +80,7 @@ class TestFinancialTaxAgent:
     """Test suite for Financial Tax Agent."""
 
     @pytest.mark.asyncio
-    async def test_agent_initialization(self, financial_tax_agent):
+    async def test_agent_initialization(self, financial_tax_agent):.
         """Test agent initializes with correct properties."""
         assert financial_tax_agent.name == "financial-tax-agent"
         assert financial_tax_agent.version == "1.0.0"

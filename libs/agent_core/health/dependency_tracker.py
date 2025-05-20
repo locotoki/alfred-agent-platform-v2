@@ -10,10 +10,10 @@ import structlog
 logger = structlog.get_logger(__name__)
 
 
-class DependencyTracker:
+class DependencyTracker:.
     """Tracks dependencies and their health status."""
 
-    def __init__(self, service_name: str):
+    def __init__(self, service_name: str):.
         """Initialize the dependency tracker.
 
         Args:
@@ -27,7 +27,7 @@ class DependencyTracker:
 
         Args:
             name: The name of the dependency
-            status: The initial status of the dependency
+            status: The initial status of the dependency.
         """
         self.dependencies[name] = status
         logger.info(
@@ -42,7 +42,7 @@ class DependencyTracker:
 
         Args:
             name: The name of the dependency
-            status: The new status of the dependency
+            status: The new status of the dependency.
         """
         if name in self.dependencies:
             self.dependencies[name] = status
@@ -63,6 +63,6 @@ class DependencyTracker:
         """Check all service dependencies and return their status.
 
         Returns:
-            A dictionary mapping dependency names to their status
+            A dictionary mapping dependency names to their status.
         """
         return self.dependencies.copy()

@@ -1,7 +1,7 @@
 """Intent Router for Alfred agents.
 
-This module implements the intent routing system that maps incoming
-messages to appropriate handlers based on intent classification.
+This module implements the intent routing system that maps incoming messages to
+appropriate handlers based on intent classification.
 """
 
 import re
@@ -42,7 +42,7 @@ class IntentRouter:
         # Register default handlers
         self._register_default_handlers()
 
-    def route(self, message: str) -> Intent:
+    def route(self, message: str) -> Intent:.
         """Route a message to determine its intent.
 
         Args:
@@ -105,7 +105,7 @@ class IntentRouter:
         Args:
             intent_type: The intent type to handle
             handler: Callable to handle the intent
-            pattern: Optional regex pattern for intent detection
+            pattern: Optional regex pattern for intent detection.
         """
         self._handlers[intent_type] = handler
 
@@ -123,7 +123,7 @@ class IntentRouter:
             intent_type: The intent type
 
         Returns:
-            Handler callable or None
+            Handler callable or None.
         """
         return self._handlers.get(intent_type)
 

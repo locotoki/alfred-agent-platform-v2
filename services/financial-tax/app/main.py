@@ -1,4 +1,4 @@
-"""Financial Tax Service FastAPI Application"""
+"""Financial Tax Service FastAPI Application."""
 
 import os
 from contextlib import asynccontextmanager
