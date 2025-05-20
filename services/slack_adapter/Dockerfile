@@ -9,13 +9,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy requirements first for better caching
-COPY services/slack_app/requirements.txt .
+COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy the application code
-COPY services/slack_app /app
-COPY alfred /app/alfred
-COPY libs /app/libs
+COPY . /app
 
 # Create non-root user
 RUN useradd -m alfred

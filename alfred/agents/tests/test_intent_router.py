@@ -154,8 +154,6 @@ class TestIntentRouter:
         # Note: In a real test, you'd use prometheus_client.REGISTRY
         # to check actual metric values
 
-        from prometheus_client import REGISTRY
-
         from alfred.agents.intent_router import intents_total
 
         # Reset metrics

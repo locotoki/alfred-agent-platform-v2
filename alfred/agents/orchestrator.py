@@ -4,10 +4,8 @@ This module contains the AgentOrchestrator class which coordinates
 interactions between different agent types based on intent.
 """
 
-import asyncio
-import json
 import uuid
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any, Callable, Dict, Optional
 
 import structlog
 from prometheus_client import Counter

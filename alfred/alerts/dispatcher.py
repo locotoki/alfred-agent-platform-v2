@@ -5,7 +5,7 @@ This module handles the dispatching of alerts to different notification channels
 
 import json
 import os
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict
 
 import requests
 import structlog
