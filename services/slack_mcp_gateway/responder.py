@@ -32,7 +32,7 @@ class ResponseHandler:
         self.stop_event = threading.Event()
         self.thread = None
 
-    def start(self) -> None:.
+    def start(self) -> None:
         """Start the response handler thread"""
         if self.thread is None or not self.thread.is_alive():
             self.stop_event.clear()

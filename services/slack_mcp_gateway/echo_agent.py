@@ -30,7 +30,7 @@ RESPONSE_STREAM = "mcp.responses"
 
 # Consumer group
 ECHO_CONSUMER_GROUP = "echo-agent"
-ECHO_CONSUMER_NAME = f"echo-{uuid.uuid4()hex[:8]}"
+ECHO_CONSUMER_NAME = f"echo-{uuid.uuid4().hex[:8]}"
 
 
 def get_redis_client() -> redis.Redis:
@@ -45,7 +45,7 @@ def get_redis_client() -> redis.Redis:
     return client
 
 
-def ensure_consumer_group() -> None:.
+def ensure_consumer_group() -> None:
     """Ensure the consumer group exists for the echo agent"""
     client = get_redis_client()
 
