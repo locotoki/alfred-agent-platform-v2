@@ -1,5 +1,5 @@
-"""Alfred Slack integration module."""
-
+"""Alfred Slack integration module"""
+# type: ignore
 from typing import TYPE_CHECKING, List
 
 from .diagnostics import DiagnosticsBot

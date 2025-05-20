@@ -4,7 +4,6 @@ Uses HuggingFace transformers for semantic similarity and TF-IDF for
 feature extraction. Reduces alert volume by 45% with minimal false
 negatives.
 """
-
 from dataclasses import dataclass
 from datetime import datetime
 from typing import Dict, List, Optional, Tuple
@@ -22,8 +21,8 @@ from alfred.ml import HFEmbedder
 
 
 @dataclass
-class AlertFeatures:.
-    """Feature vector for alert ranking."""
+class AlertFeatures:
+    """Feature vector for alert ranking"""
 
     alert_id: str
     text_embedding: np.ndarray
@@ -33,7 +32,7 @@ class AlertFeatures:.
     service_features: np.ndarray
 
 
-class AlertNoiseRanker:.
+class AlertNoiseRanker:
     """ML-based alert noise ranking using HuggingFace transformers and TF-
     IDF.
     """
@@ -369,7 +368,7 @@ class AlertNoiseRanker:.
         print(f"Training complete. False negative rate: {false_negative_rate:.3f}")
 
     def save_model(self, path: str):
-        """Save trained model to disk."""
+        """Save trained model to disk"""
         if not self.rf_model:
             raise ValueError("No model to save. Train a model first.")
 
@@ -385,7 +384,7 @@ class AlertNoiseRanker:.
         )
 
     def load_model(self, path: str):
-        """Load model from disk."""
+        """Load model from disk"""
         data = joblib.load(path)
         self.rf_model = data["rf_model"]
         self.scaler = data["scaler"]
@@ -394,32 +393,32 @@ class AlertNoiseRanker:.
         self.false_negative_target = data["false_negative_target"]
 
     def _get_service_criticality(self, service: str) -> float:
-        """Get criticality score for a service."""
+        """Get criticality score for a service"""
         # In production, this would be from configuration
         critical_services = {"api", "database", "payment", "auth"}
         return 5.0 if service in critical_services else 3.0
 
     def _get_service_alert_rate(self, service: str) -> float:
-        """Get alert rate for a service."""
+        """Get alert rate for a service"""
         # Would be calculated from metrics in production
         return 10.0  # Placeholder
 
-    def _get_service_false_positive_rate(self, service: str) -> float:.
-        """Get historical false positive rate for a service."""
+    def _get_service_false_positive_rate(self, service: str) -> float:
+        """Get historical false positive rate for a service"""
         # Would be calculated from feedback data
         return 0.1  # Placeholder
 
-    def _severity_to_score(self, severity: str) -> float:.
-        """Convert severity to numeric score."""
+    def _severity_to_score(self, severity: str) -> float:
+        """Convert severity to numeric score"""
         mapping = {"critical": 5.0, "warning": 3.0, "info": 2.0, "debug": 1.0}
         return mapping.get(severity.lower(), 2.0)
 
     def _get_current_false_negative_rate(self) -> float:
-        """Get current false negative rate from metrics."""
+        """Get current false negative rate from metrics"""
         # Would query metrics system in production
         return 0.015  # Placeholder
 
-    def warmup(self):.
-        """Warm up the embedder model."""
+    def warmup(self):
+        """Warm up the embedder model"""
         self.embedder.warmup()
         print(f"Model warmed up: {self.embedder.get_model_info()}")

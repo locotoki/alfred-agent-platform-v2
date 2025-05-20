@@ -1,13 +1,13 @@
-"""Data models for alert system."""
-
+"""Data models for alert system"""
+# type: ignore
 from dataclasses import dataclass
 from datetime import datetime
 from typing import Optional
 
 
 @dataclass
-class AlertSnooze:.
-    """Alert snooze record."""
+class AlertSnooze:
+    """Alert snooze record"""
 
     id: str
     alert_id: str

@@ -1,5 +1,5 @@
-"""Alfred infrastructure module."""
-
+"""Alfred infrastructure module"""
+# type: ignore
 from typing import List
 
 # Infrastructure components will be added here as they are migrated

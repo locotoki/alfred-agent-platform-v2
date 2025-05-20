@@ -3,7 +3,7 @@
 This server simulates the complete functionality without requiring real Slack
 authentication.
 """
-
+# type: ignore
 from flask import Flask, Response, jsonify, request
 
 app = Flask(__name__)
@@ -233,9 +233,9 @@ def ui():
         <div id="result" style="margin-top: 20px;"></div>
 
         <script>
-            document.getElementById('send-command').addEventListener('click', function() {
-                const command = document.getElementById('command').value;
-                const text = document.getElementById('text').value || 'help';
+            document.getElementById('send-command')addEventListener('click', function() {
+                const command = document.getElementById('command')value;
+                const text = document.getElementById('text')value || 'help';
 
                 fetch('/slack/commands', {
                     method: 'POST',
@@ -247,7 +247,7 @@ def ui():
                 .then(response => response.json())
                 .then(data => {
                     const resultDiv = document.getElementById('result');
-                    resultDiv.innerHTML = `<div class="success">Command executed!</div><div class="terminal"><div class="output">${data.text.replace(/\\n/g, '<br>').replace(/\\*/g, '<strong>').replace(/\\`/g, '<code>').replace(/\\`\\`\\`/g, '')}</div></div>`;  # noqa: E501
+                    resultDiv.innerHTML = `<div class="success">Command executed!</div><div class="terminal"><div class="output">${data.text.replace(/\\n/g, '<br>')replace(/\\*/g, '<strong>').replace(/\\`/g, '<code>')replace(/\\`\\`\\`/g, '')}</div></div>`;  # noqa: E501
                 })
                 .catch(error => {
                     console.error('Error:', error);

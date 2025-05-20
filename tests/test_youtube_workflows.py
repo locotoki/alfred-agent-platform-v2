@@ -13,7 +13,7 @@ from libs.a2a_adapter import A2AEnvelope
 
 
 @pytest.fixture
-def mock_youtube_api():.
+def mock_youtube_api():
     """Mock YouTubeAPI."""
     with patch("agents.social_intel.models.youtube_api.YouTubeAPI") as mock:
         # Setup mock methods
@@ -139,7 +139,7 @@ def mock_agent(
 
 
 @pytest.mark.asyncio
-async def test_youtube_niche_scout(mock_agent, mock_youtube_niche_scout_flow):.
+async def test_youtube_niche_scout(mock_agent, mock_youtube_niche_scout_flow):
     """Test YOUTUBE_NICHE_SCOUT intent."""
     # Create test envelope
     envelope = A2AEnvelope(

@@ -1,4 +1,4 @@
-"""Unit tests for Financial Tax Agent models."""
+"""Unit tests for Financial Tax Agent models"""
 
 import pytest
 from pydantic import ValidationError
@@ -13,11 +13,11 @@ from agents.financial_tax.models import (ComplianceCheckRequest,
                                          TaxRateResponse)
 
 
-class TestModels:.
-    """Test suite for Financial Tax Agent models."""
+class TestModels:
+    """Test suite for Financial Tax Agent models"""
 
-    def test_tax_calculation_request_valid(self):.
-        """Test valid tax calculation request."""
+    def test_tax_calculation_request_valid(self):
+        """Test valid tax calculation request"""
         request = TaxCalculationRequest(
             income=100000,
             deductions={"mortgage": 12000},
@@ -33,7 +33,7 @@ class TestModels:.
         assert request.entity_type == EntityType.INDIVIDUAL
 
     def test_tax_calculation_request_invalid(self):
-        """Test invalid tax calculation request."""
+        """Test invalid tax calculation request"""
         with pytest.raises(ValidationError):
             TaxCalculationRequest(
                 income="not_a_number",  # Should be float
@@ -43,7 +43,7 @@ class TestModels:.
             )
 
     def test_financial_analysis_request_valid(self):
-        """Test valid financial analysis request."""
+        """Test valid financial analysis request"""
         request = FinancialAnalysisRequest(
             financial_statements={
                 "income_statement": {"revenue": 1000000, "expenses": 750000},
@@ -60,7 +60,7 @@ class TestModels:.
         assert len(request.custom_metrics) == 2
 
     def test_compliance_check_request_valid(self):
-        """Test valid compliance check request."""
+        """Test valid compliance check request"""
         request = ComplianceCheckRequest(
             entity_type=EntityType.CORPORATION,
             transactions=[
@@ -77,7 +77,7 @@ class TestModels:.
         assert request.jurisdiction == TaxJurisdiction.US_NY
 
     def test_tax_rate_request_valid(self):
-        """Test valid tax rate request."""
+        """Test valid tax rate request"""
         request = TaxRateRequest(
             jurisdiction=TaxJurisdiction.US_CA,
             tax_year=2024,
@@ -91,7 +91,7 @@ class TestModels:.
         assert "capital_gains" in request.special_categories
 
     def test_tax_calculation_response_valid(self):
-        """Test valid tax calculation response."""
+        """Test valid tax calculation response"""
         response = TaxCalculationResponse(
             gross_income=100000,
             total_deductions=17000,
@@ -111,7 +111,7 @@ class TestModels:.
         assert len(response.calculation_details) == 2
 
     def test_financial_analysis_response_valid(self):
-        """Test valid financial analysis response."""
+        """Test valid financial analysis response"""
         response = FinancialAnalysisResponse(
             summary={"overall_health": "strong"},
             key_metrics={"profit_margin": 0.25, "debt_ratio": 0.4},
@@ -127,7 +127,7 @@ class TestModels:.
         assert "chart1" in response.visualizations
 
     def test_compliance_check_response_valid(self):
-        """Test valid compliance check response."""
+        """Test valid compliance check response"""
         response = ComplianceCheckResponse(
             compliance_status="partial_compliance",
             issues_found=[
@@ -148,7 +148,7 @@ class TestModels:.
         assert "sales_tax" in response.detailed_findings
 
     def test_tax_rate_response_valid(self):
-        """Test valid tax rate response."""
+        """Test valid tax rate response"""
         response = TaxRateResponse(
             jurisdiction=TaxJurisdiction.US_CA,
             tax_year=2024,
@@ -170,7 +170,7 @@ class TestModels:.
         assert response.special_rates["capital_gains"] == 0.15
 
     def test_tax_jurisdiction_enum(self):
-        """Test tax jurisdiction enum."""
+        """Test tax jurisdiction enum"""
         assert TaxJurisdiction.US_CA == "US-CA"
         assert TaxJurisdiction.US_NY == "US-NY"
         assert TaxJurisdiction.UK == "UK"
@@ -194,7 +194,7 @@ class TestModels:.
         assert len(valid_jurisdictions) == 12
 
     def test_entity_type_enum(self):
-        """Test entity type enum."""
+        """Test entity type enum"""
         assert EntityType.INDIVIDUAL == "individual"
         assert EntityType.CORPORATION == "corporation"
         assert EntityType.PARTNERSHIP == "partnership"

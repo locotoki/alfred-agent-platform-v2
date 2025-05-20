@@ -1,6 +1,6 @@
 #!/usr/bin/env python
-"""Test script for YouTube workflows via the API."""
-
+"""Test script for YouTube workflows via the API"""
+# type: ignore
 import argparse
 import time
 from datetime import datetime
@@ -9,7 +9,7 @@ import requests
 
 
 def test_niche_scout(host="localhost", port=9000):
-    """Test the Niche-Scout workflow via API."""
+    """Test the Niche-Scout workflow via API"""
     url = f"http://{host}:{port}/api/tasks"
 
     # Create task payload
@@ -24,7 +24,7 @@ def test_niche_scout(host="localhost", port=9000):
                 "budget travel",
             ]
         },
-        "trace_id": f"trace_{datetime.now().isoformat()}",
+        "trace_id": f"trace_{datetime.now()isoformat()}",
     }
 
     # Post task
@@ -35,7 +35,7 @@ def test_niche_scout(host="localhost", port=9000):
         print(response.text)
         return None
 
-    task_id = response.json().get("task_id")
+    task_id = response.json()get("task_id")
     print(f"Task created: {task_id}")
 
     # Poll for results
@@ -71,14 +71,14 @@ def test_niche_scout(host="localhost", port=9000):
 
 
 def test_blueprint(seed_url=None, auto_niche=False, host="localhost", port=9000):
-    """Test the Blueprint workflow via API."""
+    """Test the Blueprint workflow via API"""
     url = f"http://{host}:{port}/api/tasks"
 
     # Create task payload
     payload = {
         "intent": "YOUTUBE_BLUEPRINT",
         "data": {"auto_niche": auto_niche},
-        "trace_id": f"trace_{datetime.now().isoformat()}",
+        "trace_id": f"trace_{datetime.now()isoformat()}",
     }
 
     if seed_url:
@@ -92,7 +92,7 @@ def test_blueprint(seed_url=None, auto_niche=False, host="localhost", port=9000)
         print(response.text)
         return None
 
-    task_id = response.json().get("task_id")
+    task_id = response.json()get("task_id")
     print(f"Task created: {task_id}")
 
     # Poll for results
@@ -128,7 +128,7 @@ def test_blueprint(seed_url=None, auto_niche=False, host="localhost", port=9000)
 
 
 def parse_args():
-    """Parse command line arguments."""
+    """Parse command line arguments"""
     parser = argparse.ArgumentParser(description="Test YouTube agent API workflows")
 
     # Add arguments
@@ -153,7 +153,7 @@ def parse_args():
 
 
 def main():
-    """Main function."""
+    """Main function"""
     args = parse_args()
 
     if args.workflow in ["niche_scout", "both"]:
@@ -162,7 +162,7 @@ def main():
 
         if niche_result:
             print("\nNiche Scout Result:")
-            top_niches = niche_result.get("data", {}).get("top_niches", [])
+            top_niches = niche_result.get("data", {})get("top_niches", [])
             for i, niche in enumerate(top_niches[:3], 1):
                 print(f"{i}. {niche.get('query')} - Score: {niche.get('score')}")
 
@@ -174,11 +174,11 @@ def main():
 
         if blueprint_result:
             print("\nBlueprint Result:")
-            blueprint = blueprint_result.get("data", {}).get("blueprint", {})
+            blueprint = blueprint_result.get("data", {})get("blueprint", {})
             print(f"Positioning: {blueprint.get('positioning', '')[:100]}...")
             print(f"Content Pillars: {', '.join(blueprint.get('content_pillars', []))}")
             print(
-                f"Blueprint URL: {blueprint_result.get('data', {}).get('blueprint_url', '')}"
+                f"Blueprint URL: {blueprint_result.get('data', {})get('blueprint_url', '')}"
             )
 
 

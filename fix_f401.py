@@ -7,7 +7,7 @@ import re
 import sys
 
 
-def fix_f401_violations(violations_file):.
+def fix_f401_violations(violations_file):
     """Parse violations file and remove unused imports."""
     fixed_files = set()
 

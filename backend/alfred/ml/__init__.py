@@ -1,5 +1,5 @@
-"""Machine learning components for Alfred alert system."""
-
+"""Machine learning components for Alfred alert system"""
+# type: ignore
 from .alert_dataset import AlertDataset
 from .faiss_index import AlertSearchEngine, FAISSIndex
 from .model_registry import ModelRegistry

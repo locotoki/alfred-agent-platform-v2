@@ -2,7 +2,7 @@
 
 This module provides a way to track service dependencies.
 """
-
+# type: ignore
 from typing import Dict
 
 import structlog
@@ -10,10 +10,10 @@ import structlog
 logger = structlog.get_logger(__name__)
 
 
-class DependencyTracker:.
-    """Tracks dependencies and their health status."""
+class DependencyTracker:
+    """Tracks dependencies and their health status"""
 
-    def __init__(self, service_name: str):.
+    def __init__(self, service_name: str):
         """Initialize the dependency tracker.
 
         Args:

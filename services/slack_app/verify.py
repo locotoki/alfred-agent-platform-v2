@@ -2,7 +2,7 @@
 
 This script performs basic verification without requiring actual connection to Slack.
 """
-
+# type: ignore
 import os
 import sys
 

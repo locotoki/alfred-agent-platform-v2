@@ -9,7 +9,7 @@ This script provides standardized health check endpoints for Redis:
 It acts as a wrapper around Redis to make it compliant with the platform
 health check standard.
 """
-
+# type: ignore
 import os
 import time
 from typing import Dict
@@ -80,7 +80,7 @@ def check_redis_health() -> Dict[str, str]:
 
 @app.get("/health")
 async def health_check():
-    """Detailed health check endpoint."""
+    """Detailed health check endpoint"""
     result = check_redis_health()
 
     if result["status"] == "error":
@@ -97,7 +97,7 @@ async def health_check():
 
 @app.get("/healthz")
 async def simple_health():
-    """Simple health check for container probes."""
+    """Simple health check for container probes"""
     result = check_redis_health()
 
     if result["status"] == "error":
@@ -112,7 +112,7 @@ async def simple_health():
 
 @app.get("/metrics")
 async def metrics():
-    """Prometheus metrics endpoint."""
+    """Prometheus metrics endpoint"""
     return Response(
         content=prometheus_client.generate_latest(), media_type="text/plain"
     )

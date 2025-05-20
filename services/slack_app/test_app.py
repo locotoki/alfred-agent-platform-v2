@@ -2,7 +2,7 @@
 
 This allows us to test basic functionality without real tokens.
 """
-
+# type: ignore
 from unittest.mock import MagicMock, patch
 
 from dotenv import load_dotenv

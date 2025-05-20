@@ -6,7 +6,7 @@ import re
 from pathlib import Path
 
 
-def fix_docstrings_in_file(filepath):.
+def fix_docstrings_in_file(filepath):
     """Add periods to docstrings that don't end with punctuation."""
     with open(filepath, "r", encoding="utf-8") as f:
         content = f.read()

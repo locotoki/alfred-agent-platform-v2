@@ -3,7 +3,7 @@
 from backend.alfred.ml.alert_dataset import load_alert_dataset
 
 
-def test_load_alert_dataset_default():.
+def test_load_alert_dataset_default():
     """Test loading dataset with default parameters."""
     dataset = load_alert_dataset()
 

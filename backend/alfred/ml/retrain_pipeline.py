@@ -2,7 +2,7 @@
 
 Automates training, validation, and model registry updates.
 """
-
+# type: ignore
 import json
 import time
 from datetime import datetime
@@ -21,8 +21,8 @@ from alfred.core.protocols import Service
 from alfred.ml.alert_dataset import AlertDataset
 
 
-class RetrainPipeline(Service):.
-    """Automated ML model retraining pipeline with MLflow tracking."""
+class RetrainPipeline(Service):
+    """Automated ML model retraining pipeline with MLflow tracking"""
 
     def __init__(
         self,

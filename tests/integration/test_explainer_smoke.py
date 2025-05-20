@@ -8,7 +8,7 @@ import pytest
 import requests
 
 
-def wait_for_service(url: str, timeout: int = 30):.
+def wait_for_service(url: str, timeout: int = 30):
     """Wait for a service to become available."""
     start_time = time.time()
     while time.time() - start_time < timeout:

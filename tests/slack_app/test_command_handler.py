@@ -10,7 +10,7 @@ from services.slack_app.app import (COMMAND_PREFIX, app, handle_alfred_command,
                                     handle_help_command)
 
 
-def test_command_registration():.
+def test_command_registration():
     """Test that the command is registered correctly."""
     # Get all registered listeners
     listeners = app.listeners

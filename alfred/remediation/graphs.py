@@ -3,7 +3,6 @@
 This module provides LangGraph-based workflows for service remediation, including
 restart, health verification, and escalation paths.
 """
-
 import logging
 import time
 from typing import Any, Dict, Tuple
@@ -16,12 +15,12 @@ from alfred.remediation import settings
 logger = logging.getLogger(__name__)
 
 
-class RemediationState(Dict[str, Any]):.
-    """Type definition for remediation graph state."""
+class RemediationState(Dict[str, Any]):
+    """Type definition for remediation graph state"""
 
 
-def restart_service(state: RemediationState) -> RemediationState:.
-    """Restart a service using n8n workflow."""
+def restart_service(state: RemediationState) -> RemediationState:
+    """Restart a service using n8n workflow"""
     service_name = state.get("service_name")
     logger.info(f"Restarting service: {service_name}")
 
@@ -48,7 +47,7 @@ def restart_service(state: RemediationState) -> RemediationState:.
 
 
 def wait_for_stabilization(state: RemediationState) -> RemediationState:
-    """Wait for service to stabilize after restart."""
+    """Wait for service to stabilize after restart"""
     wait_seconds = state.get("wait_seconds", settings.DEFAULT_WAIT_SECONDS)
     service_name = state.get("service_name")
     logger.info(f"Waiting {wait_seconds}s for {service_name} to stabilize")
@@ -61,7 +60,7 @@ def wait_for_stabilization(state: RemediationState) -> RemediationState:
 
 
 def probe_health(state: RemediationState) -> RemediationState:
-    """Probe service health after restart."""
+    """Probe service health after restart"""
     service_name = state.get("service_name")
     logger.info(f"Probing health for: {service_name}")
 
@@ -90,7 +89,7 @@ def probe_health(state: RemediationState) -> RemediationState:
 
 
 def should_retry_or_complete(state: RemediationState) -> str:
-    """Decision node to determine if we should retry restart or complete."""
+    """Decision node to determine if we should retry restart or complete"""
     max_retries = state.get("max_retries", settings.MAX_RETRIES)
     current_retry = state.get("retry_count", 0)
     health_ok = state.get("health_ok", False)
@@ -107,7 +106,7 @@ def should_retry_or_complete(state: RemediationState) -> str:
 
 
 def complete_remediation(state: RemediationState) -> RemediationState:
-    """Complete remediation with success."""
+    """Complete remediation with success"""
     service_name = state.get("service_name")
     thread_ts = state.get("thread_ts")
     channel = state.get("channel")
@@ -128,7 +127,7 @@ def complete_remediation(state: RemediationState) -> RemediationState:
 
 
 def escalate_issue(state: RemediationState) -> RemediationState:
-    """Escalate issue after max retries."""
+    """Escalate issue after max retries"""
     service_name = state.get("service_name")
     thread_ts = state.get("thread_ts")
     channel = state.get("channel")

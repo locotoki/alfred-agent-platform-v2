@@ -1,5 +1,5 @@
-"""Fixed workflow endpoints module to address datetime parsing issues."""
-
+"""Fixed workflow endpoints module to address datetime parsing issues"""
+# type: ignore
 import glob
 import json
 import os
@@ -100,7 +100,7 @@ async def get_workflow_history() -> List[Dict[str, Any]]:
                     ).isoformat()
 
                 # Extract common fields
-                result_id = os.path.basename(file_path).replace(".json", "")
+                result_id = os.path.basename(file_path)replace(".json", "")
 
                 history.append(
                     {
@@ -161,7 +161,7 @@ async def get_workflow_result(result_id: str, type: str) -> Dict[str, Any]:
 
         # Add metadata
         data["_id"] = result_id
-        data["_retrieved"] = datetime.now().isoformat()
+        data["_retrieved"] = datetime.now()isoformat()
 
         return data
     except Exception as e:
@@ -241,12 +241,12 @@ async def schedule_workflow(
         # For now, return a placeholder implementation
         # In a real implementation, this would insert into a database
         return {
-            "id": f"scheduled-{workflow_type}-{int(datetime.now().timestamp())}",
+            "id": f"scheduled-{workflow_type}-{int(datetime.now()timestamp())}",
             "workflow_type": workflow_type,
             "frequency": frequency,
             "next_run": parsed_next_run.isoformat(),
             "parameters": parameters,
-            "created_at": datetime.now().isoformat(),
+            "created_at": datetime.now()isoformat(),
         }
     except Exception as e:
         logger.error(

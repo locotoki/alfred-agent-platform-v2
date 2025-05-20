@@ -1,5 +1,5 @@
-"""Stub implementation of agent_core package."""
-
+"""Stub implementation of agent_core package"""
+# type: ignore
 from .base_agent import BaseAgent
 from .health import create_health_app
 

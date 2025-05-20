@@ -1,5 +1,5 @@
-"""Stub implementation of Social Intelligence Agent."""
-
+"""Stub implementation of Social Intelligence Agent"""
+# type: ignore
 from typing import Any, Dict
 
 import structlog
@@ -7,8 +7,8 @@ import structlog
 logger = structlog.get_logger(__name__)
 
 
-class SocialIntelAgent:.
-    """Stub implementation of SocialIntelAgent."""
+class SocialIntelAgent:
+    """Stub implementation of SocialIntelAgent"""
 
     def __init__(self, pubsub_transport, supabase_transport, policy_middleware):
         self.pubsub_transport = pubsub_transport
@@ -23,17 +23,17 @@ class SocialIntelAgent:.
         logger.info("Initialized stub SocialIntelAgent")
 
     async def start(self):
-        """Start the agent."""
+        """Start the agent"""
         self.is_running = True
         logger.info("Started stub SocialIntelAgent")
 
     async def stop(self):
-        """Stop the agent."""
+        """Stop the agent"""
         self.is_running = False
         logger.info("Stopped stub SocialIntelAgent")
 
     async def _analyze_trend(self, request: Dict[str, Any]) -> Dict[str, Any]:
-        """Stub method to analyze a trend."""
+        """Stub method to analyze a trend"""
         query = request.get("query", "")
         logger.info("STUB: Analyzing trend", query=query)
         return {

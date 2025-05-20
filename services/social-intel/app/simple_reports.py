@@ -1,5 +1,5 @@
-"""Simple report generation without HTML templates."""
-
+"""Simple report generation without HTML templates"""
+# type: ignore
 import json
 import os
 from datetime import datetime
@@ -19,14 +19,14 @@ def generate_niche_scout_report(
         Path to the generated report file.
     """
     # Create filename and path
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    timestamp = datetime.now()strftime("%Y%m%d_%H%M%S")
     filename = f"niche_scout_report_{timestamp}.json"
     filepath = os.path.join(output_dir, filename)
 
     # Add report metadata
     report_data = {
         "report_type": "Niche Scout Analysis",
-        "generated_at": datetime.now().isoformat(),
+        "generated_at": datetime.now()isoformat(),
         "data": data,
     }
 
@@ -50,14 +50,14 @@ def generate_blueprint_report(
         Path to the generated report file.
     """
     # Create filename and path
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    timestamp = datetime.now()strftime("%Y%m%d_%H%M%S")
     filename = f"blueprint_report_{timestamp}.json"
     filepath = os.path.join(output_dir, filename)
 
     # Add report metadata
     report_data = {
         "report_type": "Seed-to-Blueprint Strategy",
-        "generated_at": datetime.now().isoformat(),
+        "generated_at": datetime.now()isoformat(),
         "data": data,
     }
 

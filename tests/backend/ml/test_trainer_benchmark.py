@@ -7,7 +7,7 @@ import pytest
 from backend.alfred.ml.alert_dataset import load_alert_dataset
 
 
-def test_training_speed(benchmark):.
+def test_training_speed(benchmark):
     """Benchmark the full training pipeline speed."""
     # Note: This is a mock version that doesn't actually train
     # Real training would take too long for CI

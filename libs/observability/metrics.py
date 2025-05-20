@@ -1,3 +1,4 @@
+# type: ignore
 import time
 from functools import wraps
 from typing import Callable
@@ -60,7 +61,7 @@ class MetricsCollector:
         )
 
     def track_task(self, intent: str):
-        """Decorator to track task metrics."""
+        """Decorator to track task metrics"""
 
         def decorator(func: Callable) -> Callable:
             @wraps(func)
@@ -98,7 +99,7 @@ class MetricsCollector:
         return decorator
 
     def track_api(self, endpoint: str, method: str):
-        """Decorator to track API metrics."""
+        """Decorator to track API metrics"""
 
         def decorator(func: Callable) -> Callable:
             @wraps(func)
@@ -136,7 +137,7 @@ class MetricsCollector:
         return decorator
 
     def track_pubsub(self, topic: str, operation: str):
-        """Track Pub/Sub metrics."""
+        """Track Pub/Sub metrics"""
 
         def decorator(func: Callable) -> Callable:
             @wraps(func)

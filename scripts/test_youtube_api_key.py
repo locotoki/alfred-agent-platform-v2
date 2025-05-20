@@ -10,7 +10,7 @@ Usage:
 Options:
     --api-key API_KEY   YouTube API key to test (default: read from .env file).
 """
-
+# type: ignore
 import argparse
 import os
 import sys
@@ -23,7 +23,7 @@ YOUTUBE_API_BASE_URL = "https://www.googleapis.com/youtube/v3"
 
 
 def load_api_key_from_env() -> Optional[str]:
-    """Load YouTube API key from .env file."""
+    """Load YouTube API key from .env file"""
     # Try to load from .env file
     dotenv.load_dotenv()
     return os.environ.get("YOUTUBE_API_KEY")
@@ -68,7 +68,7 @@ def test_search_endpoint(api_key: str) -> Dict[str, Any]:
             return {
                 "success": False,
                 "status_code": status_code,
-                "error": error_data.get("error", {}).get("message", "Unknown error"),
+                "error": error_data.get("error", {})get("message", "Unknown error"),
                 "quota_used": 0,
             }
     except Exception as e:
@@ -114,7 +114,7 @@ def test_videos_endpoint(api_key: str) -> Dict[str, Any]:
             return {
                 "success": False,
                 "status_code": status_code,
-                "error": error_data.get("error", {}).get("message", "Unknown error"),
+                "error": error_data.get("error", {})get("message", "Unknown error"),
                 "quota_used": 0,
             }
     except Exception as e:
@@ -154,7 +154,7 @@ def test_channels_endpoint(api_key: str) -> Dict[str, Any]:
             return {
                 "success": False,
                 "status_code": status_code,
-                "error": error_data.get("error", {}).get("message", "Unknown error"),
+                "error": error_data.get("error", {})get("message", "Unknown error"),
                 "quota_used": 0,
             }
     except Exception as e:

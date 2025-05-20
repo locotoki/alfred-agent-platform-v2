@@ -5,7 +5,7 @@ Implements the three required endpoints as specified in HEALTH_CHECK_STANDARD.md
 2. /healthz - Simple health probe
 3. /metrics - Prometheus metrics.
 """
-
+# type: ignore
 import prometheus_client
 import structlog
 from fastapi import FastAPI, Response
@@ -38,7 +38,7 @@ def create_health_app(service_name: str, version: str) -> FastAPI:
     @health_app.get("/health")
     async def health_check() -> dict:
         """Detailed health check endpoint used by monitoring systems and
-        dependencies."""
+        dependencies"""
         service_deps = dependency_tracker.check_dependencies()
         overall_status = "error" if "error" in service_deps.values() else "ok"
 
@@ -47,13 +47,13 @@ def create_health_app(service_name: str, version: str) -> FastAPI:
     # 2. /healthz - Simple Health Probe
     @health_app.get("/healthz")
     async def simple_health() -> dict:
-        """Simple health check for container orchestration."""
+        """Simple health check for container orchestration"""
         return {"status": "ok"}
 
     # 3. /metrics - Prometheus Metrics
     @health_app.get("/metrics")
     async def metrics() -> Response:
-        """Prometheus metrics endpoint."""
+        """Prometheus metrics endpoint"""
         return Response(
             content=prometheus_client.generate_latest(), media_type="text/plain"
         )

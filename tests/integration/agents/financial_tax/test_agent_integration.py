@@ -21,7 +21,7 @@ def event_loop():
 
 
 @pytest.fixture
-async def pubsub_transport():.
+async def pubsub_transport():
     """Create real PubSubTransport instance."""
     transport = PubSubTransport(
         project_id=os.getenv("GCP_PROJECT_ID", "alfred-agent-platform")
@@ -58,11 +58,11 @@ async def financial_tax_agent(pubsub_transport, supabase_transport, policy_middl
     return agent
 
 
-class TestFinancialTaxAgentIntegration:.
+class TestFinancialTaxAgentIntegration:
     """Integration tests for Financial Tax Agent."""
 
     @pytest.mark.asyncio
-    async def test_agent_lifecycle(self, financial_tax_agent):.
+    async def test_agent_lifecycle(self, financial_tax_agent):
         """Test agent startup and shutdown."""
         # Start agent
         await financial_tax_agent.start()
@@ -78,7 +78,7 @@ class TestFinancialTaxAgentIntegration:.
     @pytest.mark.asyncio
     async def test_tax_calculation_flow(
         self, financial_tax_agent, pubsub_transport, supabase_transport
-    ):.
+    ):
         """Test end-to-end tax calculation flow."""
         # Create test envelope
         envelope = A2AEnvelope(

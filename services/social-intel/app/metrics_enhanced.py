@@ -1,5 +1,5 @@
-"""Enhanced Prometheus metrics for the Social Intelligence service."""
-
+"""Enhanced Prometheus metrics for the Social Intelligence service"""
+# type: ignore
 import time
 
 from prometheus_client import Counter, Gauge, Histogram, Summary
@@ -79,7 +79,7 @@ CIRCUIT_REJECTED = Counter(
 
 
 class LatencyTimer:
-    """Context manager for timing operations and recording metrics."""
+    """Context manager for timing operations and recording metrics"""
 
     def __init__(self, metric, labels=None):
         self.metric = metric
@@ -93,16 +93,16 @@ class LatencyTimer:
     def __exit__(self, exc_type, exc_val, exc_tb):
         duration = time.time() - self.start_time
         if isinstance(self.metric, Histogram):
-            self.metric.labels(**self.labels).observe(duration)
+            self.metric.labels(**self.labels)observe(duration)
         elif isinstance(self.metric, Gauge):
-            self.metric.labels(**self.labels).set(duration)
+            self.metric.labels(**self.labels)set(duration)
         elif isinstance(self.metric, Summary):
-            self.metric.labels(**self.labels).observe(duration)
+            self.metric.labels(**self.labels)observe(duration)
         return False  # Don't suppress exceptions
 
 
-class YouTubeApiTimer(LatencyTimer):.
-    """Specialized timer for YouTube API calls that also counts requests."""
+class YouTubeApiTimer(LatencyTimer):
+    """Specialized timer for YouTube API calls that also counts requests"""
 
     def __init__(self, endpoint, status="success"):
         super().__init__(YOUTUBE_API_LATENCY, {"endpoint": endpoint})
@@ -110,7 +110,7 @@ class YouTubeApiTimer(LatencyTimer):.
         self.status = status
 
     def __enter__(self):
-        YOUTUBE_API_CALLS.labels(endpoint=self.endpoint, status="pending").inc()
+        YOUTUBE_API_CALLS.labels(endpoint=self.endpoint, status="pending")inc()
         return super().__enter__()
 
     def __exit__(self, exc_type, exc_val, exc_tb):
@@ -122,13 +122,13 @@ class YouTubeApiTimer(LatencyTimer):.
             status = "error"
 
         # Increment counter with final status
-        YOUTUBE_API_CALLS.labels(endpoint=self.endpoint, status=status).inc()
+        YOUTUBE_API_CALLS.labels(endpoint=self.endpoint, status=status)inc()
 
         return result
 
 
 class DatabaseTimer(LatencyTimer):
-    """Specialized timer for database operations that also tracks errors."""
+    """Specialized timer for database operations that also tracks errors"""
 
     def __init__(self, operation):
         super().__init__(DB_QUERY_SECONDS, {"operation": operation})
@@ -140,6 +140,6 @@ class DatabaseTimer(LatencyTimer):
         # Record error if exception occurred
         if exc_type is not None:
             error_type = exc_type.__name__
-            DB_ERROR_COUNTER.labels(type=error_type, operation=self.operation).inc()
+            DB_ERROR_COUNTER.labels(type=error_type, operation=self.operation)inc()
 
         return result

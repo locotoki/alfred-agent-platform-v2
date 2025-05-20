@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
-"""Test the diagnostics bot locally without Kubernetes."""
-
+"""Test the diagnostics bot locally without Kubernetes"""
+# type: ignore
 import asyncio
 from unittest.mock import AsyncMock
 
 from alfred.slack.diagnostics import DiagnosticsBot
 
 
-async def test_local_diagnostics():.
-    """Test diagnostics bot commands locally."""
+async def test_local_diagnostics():
+    """Test diagnostics bot commands locally"""
     # Mock Slack client
     slack_client = AsyncMock()
     slack_client.chat_postMessage = AsyncMock()
@@ -24,7 +24,7 @@ async def test_local_diagnostics():.
 
     # Test /diag health
     print("1. Testing /diag health command:")
-    await bot.handle_command("/diag", "test-channel", "test-user", "health")
+    await bothandle_command("/diag", "test-channel", "test-user", "health")
 
     health_response = slack_client.chat_postMessage.call_args
     if health_response:
@@ -35,7 +35,7 @@ async def test_local_diagnostics():.
                 print(f"   {block['text']['text']}")
 
     print("\n2. Testing /diag metrics command:")
-    await bot.handle_command("/diag", "test-channel", "test-user", "metrics")
+    await bothandle_command("/diag", "test-channel", "test-user", "metrics")
 
     metrics_response = slack_client.chat_postMessage.call_args
     if metrics_response:

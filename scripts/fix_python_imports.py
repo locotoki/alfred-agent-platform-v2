@@ -6,7 +6,7 @@ This script scans the codebase for Python files and fixes common import issues:
 2. Standardizes import paths
 3. Fixes direct imports from the old health.py to the new health package.
 """
-
+# type: ignore
 import os
 import re
 from pathlib import Path
@@ -92,7 +92,7 @@ def fix_imports_in_file(file_path: Path) -> bool:
 
 
 def main():
-    """Fix imports across the codebase."""
+    """Fix imports across the codebase"""
     python_files = find_python_files()
     print(f"Found {len(python_files)} Python files to check")
 

@@ -1,4 +1,4 @@
-"""Tests for LLM adapter implementations."""
+"""Tests for LLM adapter implementations"""
 
 from unittest.mock import AsyncMock, MagicMock, patch
 
@@ -8,8 +8,8 @@ from alfred.core.llm_adapter import (ClaudeAdapter, Message, OpenAIAdapter,
                                      create_llm_adapter)
 
 
-class TestMessage:.
-    """Test Message class."""
+class TestMessage:
+    """Test Message class"""
 
     def test_message_creation(self):
         msg = Message("user", "Hello")
@@ -22,7 +22,7 @@ class TestMessage:.
 
 
 class TestOpenAIAdapter:
-    """Test OpenAI adapter implementation."""
+    """Test OpenAI adapter implementation"""
 
     @pytest.fixture
     def adapter(self):
@@ -46,7 +46,7 @@ class TestOpenAIAdapter:
         # Patch the client property
         with patch.object(adapter, "_client", mock_client):
             messages = [Message("user", "Hello")]
-            result = await adapter.generate(messages)
+            result = await adaptergenerate(messages)
 
             assert result == "Test response"
 
@@ -77,7 +77,7 @@ class TestOpenAIAdapter:
         # Patch the client property
         with patch.object(adapter, "_client", mock_client):
             messages = [Message("user", "Hi")]
-            result = await adapter.generate(messages, stream=True)
+            result = await adaptergenerate(messages, stream=True)
 
             # Collect stream
             chunks = []
@@ -106,7 +106,7 @@ class TestOpenAIAdapter:
 
 
 class TestClaudeAdapter:
-    """Test Claude adapter implementation."""
+    """Test Claude adapter implementation"""
 
     @pytest.fixture
     def adapter(self):
@@ -131,7 +131,7 @@ class TestClaudeAdapter:
                 Message("system", "You are a helpful assistant"),
                 Message("user", "Hello"),
             ]
-            result = await adapter.generate(messages)
+            result = await adaptergenerate(messages)
 
             assert result == "Claude response"
 
@@ -149,7 +149,7 @@ class TestClaudeAdapter:
 
 
 class TestFactory:
-    """Test factory function."""
+    """Test factory function"""
 
     def test_create_openai_adapter(self):
         with patch.dict("os.environ", {"OPENAI_API_KEY": "test"}):
@@ -167,11 +167,11 @@ class TestFactory:
 
 
 class TestTokenBudgetGuard:
-    """Test token budget guard for test suite."""
+    """Test token budget guard for test suite"""
 
     @pytest.mark.asyncio
-    async def test_token_limit_in_tests(self):.
-        """Ensure test suite doesn't exceed token budget."""
+    async def test_token_limit_in_tests(self):
+        """Ensure test suite doesn't exceed token budget"""
         # This is a meta-test to ensure our test suite is efficient
         # In a real implementation, you'd track actual token usage
 

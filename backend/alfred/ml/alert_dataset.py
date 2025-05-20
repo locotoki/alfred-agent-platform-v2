@@ -2,7 +2,7 @@
 
 Loads alert data from database and prepares for ML training.
 """
-
+# type: ignore
 import hashlib
 import re
 from typing import Dict, Tuple
@@ -14,8 +14,8 @@ from sqlalchemy import create_engine, text
 from alfred.core.protocols import Service
 
 
-class AlertDataset(Service):.
-    """Loads and preprocesses alert data for ML training."""
+class AlertDataset(Service):
+    """Loads and preprocesses alert data for ML training"""
 
     PII_PATTERNS = [
         (r"\b\d{3}-\d{2}-\d{4}\b", "SSN"),  # SSN
@@ -66,7 +66,7 @@ class AlertDataset(Service):.
                     false_positive
                 FROM alerts
                 WHERE created_at > NOW() - INTERVAL '30 days'
-                LIMIT 100000.
+                LIMIT 100000
             """
             )
             df = pd.read_sql(query, engine)

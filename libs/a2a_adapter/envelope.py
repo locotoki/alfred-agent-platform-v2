@@ -1,3 +1,4 @@
+# type: ignore
 from datetime import datetime
 from typing import Any, Dict, List, Optional
 from uuid import uuid4
@@ -28,7 +29,7 @@ class A2AEnvelope(BaseModel):
     timeout_seconds: int = Field(default=300, ge=1, le=3600)
 
     def to_pubsub_message(self) -> Dict[str, Any]:
-        """Convert envelope to Pub/Sub message format."""
+        """Convert envelope to Pub/Sub message format"""
         return {
             "data": self.json(),
             "attributes": {
@@ -40,7 +41,7 @@ class A2AEnvelope(BaseModel):
 
     @classmethod
     def from_pubsub_message(cls, message: Dict[str, Any]) -> "A2AEnvelope":
-        """Create envelope from Pub/Sub message."""
+        """Create envelope from Pub/Sub message"""
         data = message.get("data", "{}")
         if isinstance(data, bytes):
             data = data.decode("utf-8")

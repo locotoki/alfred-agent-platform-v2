@@ -15,13 +15,13 @@ def mock_slack_client():
 
 
 @pytest.fixture
-def mock_ack():.
+def mock_ack():
     """Mock ack function for testing."""
     return MagicMock()
 
 
 # Simple smoke test to verify environment variables are available
-def test_slack_environment_variables():.
+def test_slack_environment_variables():
     """Test that required Slack environment variables are set."""
     assert os.environ.get("SLACK_BOT_TOKEN"), "SLACK_BOT_TOKEN must be set"
     assert os.environ.get("SLACK_APP_TOKEN"), "SLACK_APP_TOKEN must be set"

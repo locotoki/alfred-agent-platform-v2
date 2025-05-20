@@ -5,7 +5,7 @@ from unittest.mock import Mock, patch
 from alfred.slack.diagnostics.explain_command import handle_explain_command
 
 
-def test_handle_explain_command_success():.
+def test_handle_explain_command_success():
     """Test successful explain command handling."""
     result = handle_explain_command("explain", "ALERT-123")
 

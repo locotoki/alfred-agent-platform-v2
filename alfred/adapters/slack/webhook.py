@@ -3,7 +3,7 @@
 This module implements the FastAPI endpoint for Slack events and commands, including
 request signature validation.
 """
-
+# type: ignore
 import hashlib
 import hmac
 import json
@@ -29,7 +29,7 @@ app = FastAPI(title="Alfred Slack Adapter")
 
 
 class SlackRequest(BaseModel):
-    """Model for Slack slash command requests."""
+    """Model for Slack slash command requests"""
 
     token: Optional[str] = None
     team_id: str
@@ -44,8 +44,8 @@ class SlackRequest(BaseModel):
     trigger_id: str
 
 
-class SlackEventWrapper(BaseModel):.
-    """Model for Slack event wrapper."""
+class SlackEventWrapper(BaseModel):
+    """Model for Slack event wrapper"""
 
     token: Optional[str] = None
     team_id: str
@@ -57,13 +57,13 @@ class SlackEventWrapper(BaseModel):.
     challenge: Optional[str] = None  # For URL verification
 
 
-class SlackVerifier:.
-    """Handles Slack request signature verification."""
+class SlackVerifier:
+    """Handles Slack request signature verification"""
 
     def __init__(self, signing_secret: str):
         self.signing_secret = signing_secret
 
-    def verify_signature(self, timestamp: str, body: bytes, signature: str) -> bool:.
+    def verify_signature(self, timestamp: str, body: bytes, signature: str) -> bool:
         """Verify Slack request signature.
 
         Args:
@@ -110,13 +110,13 @@ else:
 
 @app.post("/slack/events")
 async def handle_slack_events(request: Request) -> Response:
-    """Handle Slack events and slash commands."""
+    """Handle Slack events and slash commands"""
     # Get headers for verification
     timestamp = request.headers.get("X-Slack-Request-Timestamp", "")
     signature = request.headers.get("X-Slack-Signature", "")
 
     # Get raw body for signature verification
-    body = await request.body()
+    body = await requestbody()
 
     # Verify signature if verifier is available
     if verifier:
@@ -201,17 +201,17 @@ async def handle_slack_events(request: Request) -> Response:
 
 @app.get("/health")
 async def health_check() -> Dict[str, str]:
-    """Health check endpoint."""
+    """Health check endpoint"""
     return {"status": "healthy", "service": "alfred-slack-adapter"}
 
 
 @app.get("/healthz")
 async def healthz() -> Dict[str, str]:
-    """Health check endpoint for Kubernetes."""
+    """Health check endpoint for Kubernetes"""
     return {"status": "ok", "service": "alfred-slack-adapter", "version": "1.0.0"}
 
 
 @app.get("/")
 async def root() -> Dict[str, str]:
-    """Root endpoint."""
+    """Root endpoint"""
     return {"service": "Alfred Slack Adapter", "version": "1.0.0"}

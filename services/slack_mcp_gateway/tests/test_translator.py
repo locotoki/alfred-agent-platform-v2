@@ -1,4 +1,4 @@
-"""Tests for the translator module."""
+"""Tests for the translator module"""
 
 import re
 import uuid
@@ -62,7 +62,7 @@ def task_request_schema():
 
 
 def test_build_task_request_structure(slack_command_payload, task_request_schema):
-    """Test that the task request has the correct structure."""
+    """Test that the task request has the correct structure"""
     # Call the function to build a task request
     task_request = translator.build_task_request(slack_command_payload)
 
@@ -80,7 +80,7 @@ def test_build_task_request_structure(slack_command_payload, task_request_schema
 
 
 def test_build_task_request_field_values(slack_command_payload):
-    """Test that the field values are correctly mapped from the input payload."""
+    """Test that the field values are correctly mapped from the input payload"""
     task_request = translator.build_task_request(slack_command_payload)
 
     # Check field mappings
@@ -102,7 +102,7 @@ def test_build_task_request_field_values(slack_command_payload):
 
 
 def test_build_task_request_uuid_format(slack_command_payload):
-    """Test that the request_id is a valid UUID."""
+    """Test that the request_id is a valid UUID"""
     task_request = translator.build_task_request(slack_command_payload)
 
     # Validate UUID format
@@ -111,7 +111,7 @@ def test_build_task_request_uuid_format(slack_command_payload):
 
 
 def test_build_task_request_timestamp_format(slack_command_payload):
-    """Test that the timestamp is in the correct ISO format with Z suffix."""
+    """Test that the timestamp is in the correct ISO format with Z suffix"""
     task_request = translator.build_task_request(slack_command_payload)
 
     # Validate ISO 8601 format with Z suffix
@@ -123,7 +123,7 @@ def test_build_task_request_timestamp_format(slack_command_payload):
 
 
 def test_build_task_request_empty_text(slack_command_payload):
-    """Test handling of empty command text."""
+    """Test handling of empty command text"""
     # Modify payload to have empty text
     modified_payload = slack_command_payload.copy()
     modified_payload["text"] = ""

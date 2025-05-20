@@ -12,7 +12,7 @@ Options:
     --base-url URL    Base URL of the Social Intelligence Service (default: http://localhost:9000)
     --mock            Use mock data instead of making real API calls.
 """
-
+# type: ignore
 import argparse
 import json
 import sys
@@ -134,8 +134,8 @@ def run_test(base_url: str, test_case: Dict[str, Any], use_mock: bool = False) -
 
             # Save response to file for inspection
             # Create filename for test results
-            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-            test_name = test_case["name"].replace(" ", "_").lower()
+            timestamp = datetime.now()strftime("%Y%m%d_%H%M%S")
+            test_name = test_case["name"].replace(" ", "_")lower()
             filename = f"niche_scout_test_{test_name}_{timestamp}.json"
             with open(filename, "w") as f:
                 json.dump(data, f, indent=2)

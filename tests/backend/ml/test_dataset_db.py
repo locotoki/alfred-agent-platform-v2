@@ -12,7 +12,7 @@ from backend.alfred.ml.alert_dataset import (_severity_to_label, _strip_pii,
 
 
 @pytest.fixture
-def test_db():.
+def test_db():
     """Create a temporary SQLite database for testing."""
     with tempfile.NamedTemporaryFile(suffix=".db") as tmp:
         engine = create_engine(f"sqlite:///{tmp.name}")

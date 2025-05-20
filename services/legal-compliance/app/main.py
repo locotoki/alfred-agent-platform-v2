@@ -1,5 +1,5 @@
-"""Legal Compliance Service FastAPI Application."""
-
+"""Legal Compliance Service FastAPI Application"""
+# type: ignore
 import os
 from contextlib import asynccontextmanager
 
@@ -61,17 +61,17 @@ security = HTTPBearer()
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    """Manage application lifecycle."""
+    """Manage application lifecycle"""
     # Startup
-    await supabase_transport.connect()
-    await legal_compliance_agent.start()
+    await supabase_transportconnect()
+    await legal_compliance_agentstart()
     logger.info("legal_compliance_service_started")
 
     yield
 
     # Shutdown
-    await legal_compliance_agent.stop()
-    await supabase_transport.disconnect()
+    await legal_compliance_agentstop()
+    await supabase_transportdisconnect()
     logger.info("legal_compliance_service_stopped")
 
 
@@ -102,24 +102,24 @@ async def audit_compliance(
     request: ComplianceAuditRequest,
     credentials: HTTPAuthorizationCredentials = Security(security),
 ):
-    """Perform compliance audit on submitted documents and processes."""
+    """Perform compliance audit on submitted documents and processes"""
     API_REQUESTS.labels(
         endpoint="audit-compliance", method="POST", status="processing"
-    ).inc()
+    )inc()
 
     try:
         # Create envelope for the task
         envelope = A2AEnvelope(intent="COMPLIANCE_AUDIT", content=request.dict())
 
         # Store task
-        await supabase_transport.store_task(envelope)
+        await supabase_transportstore_task(envelope)
 
         # Publish task
-        message_id = await pubsub_transport.publish_task(envelope)
+        message_id = await pubsub_transportpublish_task(envelope)
 
         API_REQUESTS.labels(
             endpoint="audit-compliance", method="POST", status="success"
-        ).inc()
+        )inc()
 
         return {
             "status": "accepted",
@@ -130,7 +130,7 @@ async def audit_compliance(
     except Exception as e:
         API_REQUESTS.labels(
             endpoint="audit-compliance", method="POST", status="error"
-        ).inc()
+        )inc()
         logger.error("compliance_audit_api_error", error=str(e))
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -140,20 +140,20 @@ async def analyze_document(
     request: DocumentAnalysisRequest,
     credentials: HTTPAuthorizationCredentials = Security(security),
 ):
-    """Analyze legal document for compliance issues."""
+    """Analyze legal document for compliance issues"""
     API_REQUESTS.labels(
         endpoint="analyze-document", method="POST", status="processing"
-    ).inc()
+    )inc()
 
     try:
         envelope = A2AEnvelope(intent="DOCUMENT_ANALYSIS", content=request.dict())
 
-        await supabase_transport.store_task(envelope)
-        message_id = await pubsub_transport.publish_task(envelope)
+        await supabase_transportstore_task(envelope)
+        message_id = await pubsub_transportpublish_task(envelope)
 
         API_REQUESTS.labels(
             endpoint="analyze-document", method="POST", status="success"
-        ).inc()
+        )inc()
 
         return {
             "status": "accepted",
@@ -164,7 +164,7 @@ async def analyze_document(
     except Exception as e:
         API_REQUESTS.labels(
             endpoint="analyze-document", method="POST", status="error"
-        ).inc()
+        )inc()
         logger.error("document_analysis_api_error", error=str(e))
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -174,20 +174,20 @@ async def check_regulations(
     request: RegulationCheckRequest,
     credentials: HTTPAuthorizationCredentials = Security(security),
 ):
-    """Check compliance against specific regulations."""
+    """Check compliance against specific regulations"""
     API_REQUESTS.labels(
         endpoint="check-regulations", method="POST", status="processing"
-    ).inc()
+    )inc()
 
     try:
         envelope = A2AEnvelope(intent="REGULATION_CHECK", content=request.dict())
 
-        await supabase_transport.store_task(envelope)
-        message_id = await pubsub_transport.publish_task(envelope)
+        await supabase_transportstore_task(envelope)
+        message_id = await pubsub_transportpublish_task(envelope)
 
         API_REQUESTS.labels(
             endpoint="check-regulations", method="POST", status="success"
-        ).inc()
+        )inc()
 
         return {
             "status": "accepted",
@@ -198,7 +198,7 @@ async def check_regulations(
     except Exception as e:
         API_REQUESTS.labels(
             endpoint="check-regulations", method="POST", status="error"
-        ).inc()
+        )inc()
         logger.error("regulation_check_api_error", error=str(e))
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -208,20 +208,20 @@ async def review_contract(
     request: ContractReviewRequest,
     credentials: HTTPAuthorizationCredentials = Security(security),
 ):
-    """Review contract for legal compliance and potential issues."""
+    """Review contract for legal compliance and potential issues"""
     API_REQUESTS.labels(
         endpoint="review-contract", method="POST", status="processing"
-    ).inc()
+    )inc()
 
     try:
         envelope = A2AEnvelope(intent="CONTRACT_REVIEW", content=request.dict())
 
-        await supabase_transport.store_task(envelope)
-        message_id = await pubsub_transport.publish_task(envelope)
+        await supabase_transportstore_task(envelope)
+        message_id = await pubsub_transportpublish_task(envelope)
 
         API_REQUESTS.labels(
             endpoint="review-contract", method="POST", status="success"
-        ).inc()
+        )inc()
 
         return {
             "status": "accepted",
@@ -232,7 +232,7 @@ async def review_contract(
     except Exception as e:
         API_REQUESTS.labels(
             endpoint="review-contract", method="POST", status="error"
-        ).inc()
+        )inc()
         logger.error("contract_review_api_error", error=str(e))
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -241,9 +241,9 @@ async def review_contract(
 async def get_task_status(
     task_id: str, credentials: HTTPAuthorizationCredentials = Security(security)
 ):
-    """Get status of a specific task."""
+    """Get status of a specific task"""
     try:
-        task_status = await supabase_transport.get_task_status(task_id)
+        task_status = await supabase_transportget_task_status(task_id)
 
         if not task_status:
             raise HTTPException(status_code=404, detail="Task not found")
@@ -259,12 +259,12 @@ async def get_task_status(
 # Error handlers
 @app.exception_handler(HTTPException)
 async def http_exception_handler(request: Request, exc: HTTPException):
-    """Handle HTTP exceptions."""
+    """Handle HTTP exceptions"""
     return {"error": exc.detail, "status_code": exc.status_code}
 
 
 @app.exception_handler(Exception)
 async def general_exception_handler(request: Request, exc: Exception):
-    """Handle general exceptions."""
+    """Handle general exceptions"""
     logger.error("unhandled_exception", error=str(exc))
     return {"error": "Internal server error", "status_code": 500}

@@ -1,1 +1,1 @@
-"""Tests for alfred.agents module."""
+"""Tests for alfred.agents module"""

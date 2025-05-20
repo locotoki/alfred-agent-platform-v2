@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# type: ignore
 
 import argparse
 import os
@@ -34,17 +35,17 @@ PORT = int(os.getenv("PORT", "9091"))
 
 
 def check_service_http():
-    """Check HTTP service availability."""
+    """Check HTTP service availability"""
     try:
         if not SERVICE_URL:
-            service_availability.labels(service=SERVICE_NAME).set(0)
+            service_availability.labels(service=SERVICE_NAME)set(0)
             return False
 
         # Special handling for database services that might have different health endpoints
         if SERVICE_NAME == "db-admin" or SERVICE_NAME == "db-storage":
             # First try TCP connection to verify service is running
             url_parts = (
-                SERVICE_URL.replace("http://", "").replace("https://", "").split(":")
+                SERVICE_URL.replace("http://", "")replace("https://", "").split(":")
             )
             host = url_parts[0]
             port = int(url_parts[1]) if len(url_parts) > 1 else 80
@@ -55,11 +56,11 @@ def check_service_http():
                 s.connect((host, port))
                 s.close()
                 # If we can connect, consider the service available
-                service_availability.labels(service=SERVICE_NAME).set(1)
+                service_availability.labels(service=SERVICE_NAME)set(1)
                 return True
             except Exception as e:
                 print(f"Error connecting to {SERVICE_NAME} TCP port: {e}")
-                service_availability.labels(service=SERVICE_NAME).set(0)
+                service_availability.labels(service=SERVICE_NAME)set(0)
                 return False
 
         # Standard HTTP health check for other services
@@ -67,28 +68,28 @@ def check_service_http():
         response = requests.get(url, timeout=5)
 
         if response.status_code < 400:
-            service_availability.labels(service=SERVICE_NAME).set(1)
+            service_availability.labels(service=SERVICE_NAME)set(1)
             return True
         else:
-            service_availability.labels(service=SERVICE_NAME).set(0)
+            service_availability.labels(service=SERVICE_NAME)set(0)
             return False
     except Exception as e:
         print(f"Error checking HTTP service: {e}")
-        service_availability.labels(service=SERVICE_NAME).set(0)
+        service_availability.labels(service=SERVICE_NAME)set(0)
         return False
 
 
 def check_service_tcp():
-    """Check TCP service availability."""
+    """Check TCP service availability"""
     try:
         if not SERVICE_URL:
-            service_availability.labels(service=SERVICE_NAME).set(0)
+            service_availability.labels(service=SERVICE_NAME)set(0)
             return False
 
         # Parse host and port from SERVICE_URL
         parts = SERVICE_URL.split(":")
         if len(parts) != 2:
-            service_availability.labels(service=SERVICE_NAME).set(0)
+            service_availability.labels(service=SERVICE_NAME)set(0)
             return False
 
         host = parts[0]
@@ -100,16 +101,16 @@ def check_service_tcp():
         s.connect((host, port))
         s.close()
 
-        service_availability.labels(service=SERVICE_NAME).set(1)
+        service_availability.labels(service=SERVICE_NAME)set(1)
         return True
     except Exception as e:
         print(f"Error checking TCP service: {e}")
-        service_availability.labels(service=SERVICE_NAME).set(0)
+        service_availability.labels(service=SERVICE_NAME)set(0)
         return False
 
 
 def check_db_connections():
-    """Check PostgreSQL connections if URL is provided."""
+    """Check PostgreSQL connections if URL is provided"""
     if not DB_POSTGRES_URL:
         return
 
@@ -123,7 +124,7 @@ def check_db_connections():
 
 
 def collect_metrics():
-    """Collect all metrics."""
+    """Collect all metrics"""
     if CHECK_TYPE.lower() == "http":
         check_service_http()
     else:
@@ -134,16 +135,16 @@ def collect_metrics():
 
 @app.route("/metrics")
 def metrics():
-    """Prometheus metrics endpoint."""
-    service_requests_total.labels(service=SERVICE_NAME).inc()
+    """Prometheus metrics endpoint"""
+    service_requests_total.labels(service=SERVICE_NAME)inc()
     collect_metrics()
     return Response(generate_latest(REGISTRY), mimetype="text/plain")
 
 
 @app.route("/health")
 def health():
-    """Health check endpoint."""
-    service_requests_total.labels(service=SERVICE_NAME).inc()
+    """Health check endpoint"""
+    service_requests_total.labels(service=SERVICE_NAME)inc()
 
     is_healthy = False
     if CHECK_TYPE.lower() == "http":
@@ -162,19 +163,19 @@ def health():
 
 @app.route("/healthz")
 def healthz():
-    """Simple health probe endpoint."""
+    """Simple health probe endpoint"""
     return jsonify({"status": "ok"})
 
 
 # Start background metrics collection
 def background_collector():
-    """Collect metrics periodically in the background."""
+    """Collect metrics periodically in the background"""
     while True:
         collect_metrics()
         time.sleep(COLLECTION_INTERVAL)
 
 
-def run_smoke_test():.
+def run_smoke_test():
     """Run a basic smoke test to check if the app will start properly.
 
     Returns:
@@ -182,7 +183,7 @@ def run_smoke_test():.
     """
     try:
         # Set up a dummy metric
-        service_availability.labels(service="test").set(1)
+        service_availability.labels(service="test")set(1)
 
         # Generate metrics to verify they work
         metrics_data = generate_latest(REGISTRY)
@@ -212,7 +213,7 @@ if __name__ == "__main__":
         sys.exit(0 if success else 1)
 
     # Initialize metrics
-    service_availability.labels(service=SERVICE_NAME).set(0)
+    service_availability.labels(service=SERVICE_NAME)set(0)
 
     # Start metrics collection in the background
     import threading

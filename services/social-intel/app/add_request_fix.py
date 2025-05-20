@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
-"""Simple script to add Request parameter to endpoint handlers."""
+"""Simple script to add Request parameter to endpoint handlers"""
+# type: ignore
 import re
 import sys
 
 
-def patch_endpoints(file_path):.
-    """Add Request parameter to endpoint handlers."""
+def patch_endpoints(file_path):
+    """Add Request parameter to endpoint handlers"""
     with open(file_path, "r") as f:
         content = f.read()
 
@@ -46,8 +47,8 @@ def patch_endpoints(file_path):.
 
     # Add JSON body handling to the niche-scout endpoint
     content = re.sub(
-        r'"""Run the Niche-Scout workflow to find trending YouTube niches."""\s*try:',
-        r'."""Run the Niche-Scout workflow to find trending YouTube niches."""\n    try:\n        # Try to parse JSON body if present\n        json_data = {}\n        try:\n            json_data = await request.json()\n            \n            # Process the A2A envelope\n            if json_data.get("intent") == "YOUTUBE_NICHE_SCOUT":\n                data = json_data.get("data", {})\n                \n                # Get queries\n                queries = data.get("queries", [])\n                if queries and isinstance(queries, list):\n                    query = queries[0]  # Use the first query\n                \n                # Get category\n                json_category = data.get("category")\n                if json_category:\n                    if json_category != "All":\n                        category = json_category\n                    else:\n                        category = None  # "All" means no category filtering\n        except Exception as e:\n            # Log the error and continue with query parameters\n            pass\n        \n        # Log the final parameters being used\n        logger.info("niche_scout_request",\n                  query=query,\n                  category=category,\n                  subcategory=subcategory,\n                  has_json=bool(json_data))\n        try:',
+        r'"""Run the Niche-Scout workflow to find trending YouTube niches"""\s*try:',
+        r'."""Run the Niche-Scout workflow to find trending YouTube niches"""\n    try:\n        # Try to parse JSON body if present\n        json_data = {}\n        try:\n            json_data = await requestjson()\n            \n            # Process the A2A envelope\n            if json_data.get("intent") == "YOUTUBE_NICHE_SCOUT":\n                data = json_data.get("data", {})\n                \n                # Get queries\n                queries = data.get("queries", [])\n                if queries and isinstance(queries, list):\n                    query = queries[0]  # Use the first query\n                \n                # Get category\n                json_category = data.get("category")\n                if json_category:\n                    if json_category != "All":\n                        category = json_category\n                    else:\n                        category = None  # "All" means no category filtering\n        except Exception as e:\n            # Log the error and continue with query parameters\n            pass\n        \n        # Log the final parameters being used\n        logger.info("niche_scout_request",\n                  query=query,\n                  category=category,\n                  subcategory=subcategory,\n                  has_json=bool(json_data))\n        try:',
         content,
     )
 

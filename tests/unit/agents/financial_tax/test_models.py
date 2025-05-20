@@ -13,10 +13,10 @@ from agents.financial_tax.models import (ComplianceCheckRequest,
                                          TaxRateResponse)
 
 
-class TestTaxCalculationModels:.
+class TestTaxCalculationModels:
     """Test cases for Tax Calculation models."""
 
-    def test_tax_calculation_request(self):.
+    def test_tax_calculation_request(self):
         """Test TaxCalculationRequest model."""
         request = TaxCalculationRequest(
             income=150000.0,
@@ -63,7 +63,7 @@ class TestTaxCalculationModels:.
 class TestFinancialAnalysisModels:
     """Test cases for Financial Analysis models."""
 
-    def test_financial_analysis_request(self):.
+    def test_financial_analysis_request(self):
         """Test FinancialAnalysisRequest model."""
         request = FinancialAnalysisRequest(
             financial_statements={
@@ -99,7 +99,7 @@ class TestFinancialAnalysisModels:
 class TestComplianceCheckModels:
     """Test cases for Compliance Check models."""
 
-    def test_compliance_check_request(self):.
+    def test_compliance_check_request(self):
         """Test ComplianceCheckRequest model."""
         request = ComplianceCheckRequest(
             entity_type=EntityType.CORPORATION,
@@ -132,7 +132,7 @@ class TestComplianceCheckModels:
 class TestTaxRateModels:
     """Test cases for Tax Rate models."""
 
-    def test_tax_rate_request(self):.
+    def test_tax_rate_request(self):
         """Test TaxRateRequest model."""
         request = TaxRateRequest(
             jurisdiction=TaxJurisdiction.US_CA,
@@ -146,7 +146,7 @@ class TestTaxRateModels:
         assert request.entity_type == EntityType.INDIVIDUAL
         assert request.income_level == 150000.0
 
-    def test_tax_rate_response(self):.
+    def test_tax_rate_response(self):
         """Test TaxRateResponse model."""
         response = TaxRateResponse(
             jurisdiction=TaxJurisdiction.US_CA,
@@ -171,7 +171,7 @@ class TestTaxRateModels:
 class TestModelValidation:
     """Test cases for model validation edge cases."""
 
-    def test_invalid_tax_year(self):.
+    def test_invalid_tax_year(self):
         """Test tax year validation."""
         # Valid request
         request = TaxCalculationRequest(
@@ -186,7 +186,7 @@ class TestModelValidation:
 
         # We can't test invalid years because Pydantic doesn't have validation on tax_year
 
-    def test_negative_income(self):.
+    def test_negative_income(self):
         """Test negative income is allowed."""
         request = TaxCalculationRequest(
             income=-5000,
@@ -198,7 +198,7 @@ class TestModelValidation:
         )
         assert request.income == -5000
 
-    def test_enum_validation(self):.
+    def test_enum_validation(self):
         """Test enum values are validated."""
         # Test with invalid jurisdiction by using a string
         with pytest.raises(ValidationError):

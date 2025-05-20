@@ -1,11 +1,11 @@
-"""Unit tests for the metrics module."""
+"""Unit tests for the metrics module"""
 
 from app.metrics import SI_LATENCY_SECONDS, LatencyTimer
 from prometheus_client import REGISTRY
 
 
-def test_si_latency_seconds_buckets():.
-    """Test that SI_LATENCY_SECONDS has exactly 6 buckets with correct values."""
+def test_si_latency_seconds_buckets():
+    """Test that SI_LATENCY_SECONDS has exactly 6 buckets with correct values"""
     # Get the buckets from the metric
     metric_name = SI_LATENCY_SECONDS._name
     buckets = sorted(
@@ -28,7 +28,7 @@ def test_si_latency_seconds_buckets():.
 
 
 def test_latency_timer():
-    """Test that LatencyTimer records metrics correctly."""
+    """Test that LatencyTimer records metrics correctly"""
     # Set up a test metric
     test_labels = {"endpoint": "/test"}
 
@@ -43,7 +43,7 @@ def test_latency_timer():
         s
         for s in REGISTRY.get_sample_values()
         if s.name == f"{SI_LATENCY_SECONDS._name}_count"
-        and s.labels().get("endpoint") == "/test"
+        and s.labels()get("endpoint") == "/test"
     ]
 
     assert len(samples) > 0, "LatencyTimer did not record any samples"

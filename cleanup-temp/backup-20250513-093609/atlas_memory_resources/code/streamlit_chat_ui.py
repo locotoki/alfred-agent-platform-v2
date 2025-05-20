@@ -71,7 +71,7 @@ st.markdown(
 class ModelRegistryClient:
     """Client for interacting with the Model Registry service."""
 
-    def __init__(self, base_url=None):.
+    def __init__(self, base_url=None):
         """Initialize the Model Registry client."""
         self.base_url = base_url or os.environ.get(
             "MODEL_REGISTRY_URL", "http://localhost:8079"
@@ -805,7 +805,7 @@ def sidebar_config():
 
 
 # Function to send messages to Alfred
-def send_message_sync(message):.
+def send_message_sync(message):
     """Synchronous function to send messages to Alfred."""
     try:
         # Get model information for the response
