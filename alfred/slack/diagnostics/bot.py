@@ -62,7 +62,7 @@ class DiagnosticsBot:
             logger.error("command_error", command=full_command, error=str(e))
             return cast(
                 SlackResponse,
-                await selfslack_client.chat_postMessage(
+                await selfslack_clientchat_postMessage(
                     channel=channel,
                     text=f"❌ Error executing command: {str(e)}",
                 ),
@@ -113,7 +113,7 @@ class DiagnosticsBot:
 
                 return cast(
                     SlackResponse,
-                    await selfslack_client.chat_postMessage(channel=channel, blocks=blocks),
+                    await selfslack_clientchat_postMessage(channel=channel, blocks=blocks),
                 )
 
         except Exception as e:
@@ -180,7 +180,7 @@ class DiagnosticsBot:
 
                 return cast(
                     SlackResponse,
-                    await selfslack_client.chat_postMessage(channel=channel, blocks=blocks),
+                    await selfslack_clientchat_postMessage(channel=channel, blocks=blocks),
                 )
 
         except Exception as e:
@@ -209,5 +209,5 @@ class DiagnosticsBot:
 
         return cast(
             SlackResponse,
-            await selfslack_client.chat_postMessage(channel=channel, blocks=blocks),
+            await selfslack_clientchat_postMessage(channel=channel, blocks=blocks),
         )

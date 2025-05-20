@@ -8,7 +8,7 @@ import structlog
 def setup_logging(service_name: str, log_level: str = "INFO") -> None:
     """Setup structured logging with structlog"""
     logging.basicConfig(
-        format="%(message)s",
+        format="%(message).s",
         stream=sys.stdout,
         level=getattr(logging, log_level.upper()),
     )

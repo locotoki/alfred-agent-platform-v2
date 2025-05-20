@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Remove unnecessary '# type: ignore' comments from Python files."""
+"""Remove unnecessary '# type: ignore' comments from Python files"""
 
 import argparse
 import os
@@ -10,7 +10,7 @@ from pathlib import Path
 
 
 def get_python_files(exclude_venv=True):
-    """Get all Python files in the project."""
+    """Get all Python files in the project"""
     root_dir = Path(".")
     python_files = []
 
@@ -23,7 +23,7 @@ def get_python_files(exclude_venv=True):
 
 
 def remove_blanket_type_ignore(file_path):
-    """Remove '# type: ignore' from the top of the file."""
+    """Remove '# type: ignore' from the top of the file"""
     with open(file_path, "r", encoding="utf-8") as f:
         content = f.read()
 
@@ -40,7 +40,7 @@ def remove_blanket_type_ignore(file_path):
 
 
 def check_mypy(paths=None):
-    """Run mypy on the given paths or the entire project."""
+    """Run mypy on the given paths or the entire project"""
     cmd = ["mypy"]
     if paths:
         cmd.extend(str(p) for p in paths)
@@ -55,7 +55,7 @@ def check_mypy(paths=None):
 
 
 def process_file(file_path, check=True, verbose=False):
-    """Process a single file, remove type: ignore and check if mypy still passes."""
+    """Process a single file, remove type: ignore and check if mypy still passes"""
     original_content = None
     if check:
         with open(file_path, "r", encoding="utf-8") as f:

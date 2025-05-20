@@ -214,3 +214,24 @@ def restart_then_verify(
     workflow.set_entry_point("restart")
 
     return workflow.compile(), initial_state  # type: ignore[return-value]
+
+
+def create_remediation_graph(
+    service_name: str,
+    wait_seconds: int = settings.DEFAULT_WAIT_SECONDS,
+    max_retries: int = settings.MAX_RETRIES,
+) -> Tuple[StateGraph, RemediationState]:
+    """Create a remediation graph for a service.
+    
+    This is a simple alias to restart_then_verify for backward compatibility.
+
+    Args:
+        service_name: Name of the service to remediate
+        wait_seconds: Time to wait for service stabilization
+        max_retries: Maximum number of restart attempts
+
+    Returns:
+        Tuple of (StateGraph, initial_state): The configured remediation workflow
+        and its initial state.
+    """
+    return restart_then_verify(service_name, wait_seconds, max_retries)

@@ -11,11 +11,13 @@ class TestMessage:
     """Test Message class"""
 
     def test_message_creation(self):
+        """Test Message object creation with role and content"""
         msg = Message("user", "Hello")
         assert msg.role == "user"
         assert msg.content == "Hello"
 
     def test_message_to_dict(self):
+        """Test Message.to_dict conversion method"""
         msg = Message("assistant", "Hi there")
         assert msg.to_dict() == {"role": "assistant", "content": "Hi there"}
 
@@ -25,12 +27,14 @@ class TestOpenAIAdapter:
 
     @pytest.fixture
     def adapter(self):
+        """Create a test OpenAIAdapter instance with mocked credentials"""
         # Mock environment variable
         with patch.dict("os.environ", {"OPENAI_API_KEY": "test-key"}):
             return OpenAIAdapter(api_key="test-key")
 
     @pytest.mark.asyncio
     async def test_generate_non_streaming(self, adapter):
+        """Test non-streaming text generation with OpenAI adapter"""
         # Mock the client property
         mock_client = AsyncMock()
 
@@ -45,7 +49,7 @@ class TestOpenAIAdapter:
         # Patch the client property
         with patch.object(adapter, "_client", mock_client):
             messages = [Message("user", "Hello")]
-            result = await adaptergenerate(messages)
+            result = await adapter.generate(messages)
 
             assert result == "Test response"
 
@@ -59,6 +63,7 @@ class TestOpenAIAdapter:
 
     @pytest.mark.asyncio
     async def test_generate_streaming(self, adapter):
+        """Test streaming text generation with OpenAI adapter"""
         # Mock the client property
         mock_client = AsyncMock()
 
@@ -76,7 +81,7 @@ class TestOpenAIAdapter:
         # Patch the client property
         with patch.object(adapter, "_client", mock_client):
             messages = [Message("user", "Hi")]
-            result = await adaptergenerate(messages, stream=True)
+            result = await adapter.generate(messages, stream=True)
 
             # Collect stream
             chunks = []
@@ -86,18 +91,21 @@ class TestOpenAIAdapter:
             assert chunks == ["Hello", " world"]
 
     def test_estimate_tokens(self, adapter):
+        """Test token estimation method in OpenAI adapter"""
         # Test rough estimation
         text = "This is a test message"
         tokens = adapter.estimate_tokens(text)
         assert tokens == len(text) // 4
 
     def test_missing_api_key(self):
+        """Test error handling when API key is missing and not in environment"""
         # Temporarily clear the env var
         with patch.dict("os.environ", {}, clear=True):
             with pytest.raises(ValueError, match="OpenAI API key not provided"):
                 OpenAIAdapter(api_key=None)
 
     def test_missing_api_key_with_env(self):
+        """Test fallback to environment variable for API key"""
         # Test with env var set
         with patch.dict("os.environ", {"OPENAI_API_KEY": "env-key"}):
             adapter = OpenAIAdapter()
@@ -109,11 +117,13 @@ class TestClaudeAdapter:
 
     @pytest.fixture
     def adapter(self):
+        """Create a test ClaudeAdapter instance with mocked credentials"""
         with patch.dict("os.environ", {"ANTHROPIC_API_KEY": "test-key"}):
             return ClaudeAdapter(api_key="test-key")
 
     @pytest.mark.asyncio
     async def test_generate_with_system_message(self, adapter):
+        """Test text generation with system message in Claude adapter"""
         # Mock the client property
         mock_client = AsyncMock()
 
@@ -130,7 +140,7 @@ class TestClaudeAdapter:
                 Message("system", "You are a helpful assistant"),
                 Message("user", "Hello"),
             ]
-            result = await adaptergenerate(messages)
+            result = await adapter.generate(messages)
 
             assert result == "Claude response"
 
@@ -142,6 +152,7 @@ class TestClaudeAdapter:
             assert call_args["max_tokens"] == 4096
 
     def test_estimate_tokens(self, adapter):
+        """Test token estimation method in Claude adapter"""
         text = "Test message for Claude"
         tokens = adapter.estimate_tokens(text)
         assert tokens == len(text) // 4
@@ -151,16 +162,19 @@ class TestFactory:
     """Test factory function"""
 
     def test_create_openai_adapter(self):
+        """Test creation of OpenAI adapter through factory function"""
         with patch.dict("os.environ", {"OPENAI_API_KEY": "test"}):
             adapter = create_llm_adapter("openai")
             assert isinstance(adapter, OpenAIAdapter)
 
     def test_create_claude_adapter(self):
+        """Test creation of Claude adapter through factory function"""
         with patch.dict("os.environ", {"ANTHROPIC_API_KEY": "test"}):
             adapter = create_llm_adapter("claude")
             assert isinstance(adapter, ClaudeAdapter)
 
     def test_unknown_provider(self):
+        """Test error handling for unknown LLM providers"""
         with pytest.raises(ValueError, match="Unknown provider: gpt-j"):
             create_llm_adapter("gpt-j")
 

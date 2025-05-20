@@ -21,7 +21,7 @@ logger = structlog.get_logger(__name__)
 
 @dataclass
 class Intent:
-    """Represents a classified intent."""
+    """Represents a classified intent"""
 
     type: str
     confidence: float
@@ -33,7 +33,7 @@ class Intent:
 
 
 class IntentRouter:
-    """Routes messages to appropriate handlers based on intent."""
+    """Routes messages to appropriate handlers based on intent"""
 
     def __init__(self) -> None:
         self._handlers: Dict[str, Callable[..., Any]] = {}
@@ -140,7 +140,7 @@ class IntentRouter:
             return None
 
     def _register_default_handlers(self) -> None:
-        """Register default intent handlers."""
+        """Register default intent handlers"""
         # Register a help handler
         self.register_handler("help", self._help_handler)
 
@@ -155,17 +155,17 @@ class IntentRouter:
         self.register_handler("greeting", self._greeting_handler)
 
     def _help_handler(self, intent: Intent, **kwargs: Any) -> str:
-        """Handle help requests."""
+        """Handle help requests"""
         return "I can assist with various tasks. What would you like to know?"
 
     def _gratitude_handler(self, intent: Intent, **kwargs: Any) -> str:
-        """Handle expressions of gratitude."""
+        """Handle expressions of gratitude"""
         return "You're welcome! Is there anything else I can help with?"
 
     def _greeting_handler(self, intent: Intent, **kwargs: Any) -> str:
-        """Handle greeting intents."""
+        """Handle greeting intents"""
         return "Hello! How can I assist you today?"
 
     def _unknown_handler(self, intent: Intent, **kwargs: Any) -> str:
-        """Handle unknown intents."""
+        """Handle unknown intents"""
         return "I'm not sure I understand. Could you please rephrase that?"
