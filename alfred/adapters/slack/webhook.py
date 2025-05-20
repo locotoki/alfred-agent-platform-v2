@@ -114,7 +114,7 @@ async def handle_slack_events(request: Request) -> Response:
     signature = request.headers.get("X-Slack-Signature", "")
 
     # Get raw body for signature verification
-    body = await requestbody()
+    body = await request.body()
 
     # Verify signature if verifier is available
     if verifier:
