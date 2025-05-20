@@ -3,7 +3,7 @@
 import os
 
 
-class Settings:
+class Settings:.
     """Application settings with environment variable support."""
 
     # Database configuration

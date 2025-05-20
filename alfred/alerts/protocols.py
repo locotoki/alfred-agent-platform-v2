@@ -1,12 +1,10 @@
-"""
-Protocol definitions for alert system.
-"""
+"""Protocol definitions for alert system."""
 
 from abc import abstractmethod
 from typing import Any, Optional, Protocol
 
 
-class SnoozeService(Protocol):
+class SnoozeService(Protocol):.
     """Protocol for alert snooze service."""
 
     @abstractmethod
@@ -16,18 +14,18 @@ class SnoozeService(Protocol):
         duration: int,
         reason: Optional[str] = None,
         user_id: Optional[str] = None,
-    ) -> Any:
+    ) -> Any:.
         """Snooze an alert."""
         ...
 
     @abstractmethod
     async def unsnooze_alert(
         self, alert_id: str, reason: Optional[str] = None, user_id: Optional[str] = None
-    ) -> bool:
+    ) -> bool:.
         """Unsnooze an alert."""
         ...
 
     @abstractmethod
-    async def is_snoozed(self, alert_id: str) -> bool:
+    async def is_snoozed(self, alert_id: str) -> bool:.
         """Check if alert is snoozed."""
         ...

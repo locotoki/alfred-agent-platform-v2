@@ -1,4 +1,4 @@
-"""Tests for Financial Tax Agent"""
+"""Tests for Financial Tax Agent."""
 
 from unittest.mock import AsyncMock, MagicMock, patch
 
@@ -10,8 +10,8 @@ from libs.a2a_adapter import (A2AEnvelope, PolicyMiddleware, PubSubTransport,
 
 
 @pytest.fixture
-def mock_pubsub():
-    """Mock PubSub transport"""
+def mock_pubsub():.
+    """Mock PubSub transport."""
     mock = MagicMock(spec=PubSubTransport)
     mock.publish_task = AsyncMock(return_value="test-message-id")
     mock.subscribe = AsyncMock()
@@ -21,7 +21,7 @@ def mock_pubsub():
 
 @pytest.fixture
 def mock_supabase():
-    """Mock Supabase transport"""
+    """Mock Supabase transport."""
     mock = MagicMock(spec=SupabaseTransport)
     mock.check_duplicate = AsyncMock(return_value=False)
     mock.update_task_status = AsyncMock()
@@ -36,14 +36,14 @@ def mock_supabase():
 
 @pytest.fixture
 def mock_policy():
-    """Mock Policy middleware"""
+    """Mock Policy middleware."""
     mock = MagicMock(spec=PolicyMiddleware)
     return mock
 
 
 @pytest.fixture
-def financial_tax_agent(mock_pubsub, mock_supabase, mock_policy):
-    """Create Financial Tax Agent with mocks"""
+def financial_tax_agent(mock_pubsub, mock_supabase, mock_policy):.
+    """Create Financial Tax Agent with mocks."""
     with patch("agents.financial_tax.agent.ChatOpenAI") as mock_openai:
         # Create a mock that actually inherits from the base class structure expected
         from typing import Any, Optional
@@ -80,10 +80,10 @@ def financial_tax_agent(mock_pubsub, mock_supabase, mock_policy):
 
 
 class TestFinancialTaxAgent:
-    """Test cases for Financial Tax Agent"""
+    """Test cases for Financial Tax Agent."""
 
-    async def test_agent_initialization(self, financial_tax_agent):
-        """Test agent initializes with correct configuration"""
+    async def test_agent_initialization(self, financial_tax_agent):.
+        """Test agent initializes with correct configuration."""
         assert financial_tax_agent.name == "financial-tax-agent"
         assert financial_tax_agent.version == "1.0.0"
         assert len(financial_tax_agent.supported_intents) == 4
@@ -93,12 +93,12 @@ class TestFinancialTaxAgent:
         assert "RATE_SHEET_LOOKUP" in financial_tax_agent.supported_intents
 
     async def test_workflow_graph_setup(self, financial_tax_agent):
-        """Test workflow graph is properly configured"""
+        """Test workflow graph is properly configured."""
         assert financial_tax_agent.workflow_graph is not None
         assert financial_tax_agent.workflow is not None
 
-    async def test_process_tax_calculation(self, financial_tax_agent):
-        """Test tax calculation processing"""
+    async def test_process_tax_calculation(self, financial_tax_agent):.
+        """Test tax calculation processing."""
         envelope = A2AEnvelope(
             intent="TAX_CALCULATION",
             content={
@@ -136,7 +136,7 @@ class TestFinancialTaxAgent:
         assert result["result"]["taxable_income"] == 86150
 
     async def test_process_financial_analysis(self, financial_tax_agent):
-        """Test financial analysis processing"""
+        """Test financial analysis processing."""
         envelope = A2AEnvelope(
             intent="FINANCIAL_ANALYSIS",
             content={
@@ -188,7 +188,7 @@ class TestFinancialTaxAgent:
         assert result["result"]["metrics"]["net_income"] == 70000
 
     async def test_process_compliance_check(self, financial_tax_agent):
-        """Test compliance check processing"""
+        """Test compliance check processing."""
         envelope = A2AEnvelope(
             intent="TAX_COMPLIANCE_CHECK",
             content={
@@ -228,7 +228,7 @@ class TestFinancialTaxAgent:
         assert len(result["result"]["issues_found"]) == 1
 
     async def test_process_rate_lookup(self, financial_tax_agent):
-        """Test tax rate lookup processing"""
+        """Test tax rate lookup processing."""
         envelope = A2AEnvelope(
             intent="RATE_SHEET_LOOKUP",
             content={
@@ -279,7 +279,7 @@ class TestFinancialTaxAgent:
         assert len(result["result"]["tax_brackets"]) == 2
 
     async def test_error_handling(self, financial_tax_agent):
-        """Test error handling in process_task"""
+        """Test error handling in process_task."""
         envelope = A2AEnvelope(intent="INVALID_INTENT", content={})
 
         financial_tax_agent.workflow.ainvoke = AsyncMock(
@@ -290,7 +290,7 @@ class TestFinancialTaxAgent:
             await financial_tax_agent.process_task(envelope)
 
     async def test_route_by_intent(self, financial_tax_agent):
-        """Test intent routing logic"""
+        """Test intent routing logic."""
         # Test each valid intent
         state = {"intent": "TAX_CALCULATION"}
         assert financial_tax_agent._route_by_intent(state) == "tax_calculation"
@@ -310,13 +310,13 @@ class TestFinancialTaxAgent:
             financial_tax_agent._route_by_intent(state)
 
     async def test_validate_data(self, financial_tax_agent):
-        """Test data validation logic"""
+        """Test data validation logic."""
         state = {"content": {"test": "data"}}
         result = await financial_tax_agent._validate_data(state)
         assert result["is_valid"] is True
 
     async def test_format_response(self, financial_tax_agent):
-        """Test response formatting"""
+        """Test response formatting."""
         state = {"intent": "TAX_CALCULATION", "result": {"tax_liability": 5000}}
 
         result = await financial_tax_agent._format_response(state)

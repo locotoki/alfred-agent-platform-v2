@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""
-Test script for validating the YouTube API key configuration.
+"""Test script for validating the YouTube API key configuration.
 
 This script tests if the configured YouTube API key is valid and has access to the
 required YouTube Data API v3 endpoints that our application uses.
@@ -9,7 +8,7 @@ Usage:
     python test_youtube_api_key.py [--api-key API_KEY]
 
 Options:
-    --api-key API_KEY   YouTube API key to test (default: read from .env file)
+    --api-key API_KEY   YouTube API key to test (default: read from .env file).
 """
 
 import argparse
@@ -38,6 +37,7 @@ def test_search_endpoint(api_key: str) -> Dict[str, Any]:
 
     Returns:
         Dictionary with test results.
+
     """
     url = f"{YOUTUBE_API_BASE_URL}/search"
     params = {
@@ -83,6 +83,7 @@ def test_videos_endpoint(api_key: str) -> Dict[str, Any]:
 
     Returns:
         Dictionary with test results.
+
     """
     url = f"{YOUTUBE_API_BASE_URL}/videos"
     params = {
@@ -128,6 +129,7 @@ def test_channels_endpoint(api_key: str) -> Dict[str, Any]:
 
     Returns:
         Dictionary with test results.
+
     """
     url = f"{YOUTUBE_API_BASE_URL}/channels"
     params = {"part": "snippet,statistics", "forUsername": "Google", "key": api_key}
@@ -167,6 +169,7 @@ def run_all_tests(api_key: str) -> List[Dict[str, Any]]:
 
     Returns:
         List of test results.
+
     """
     results = []
 

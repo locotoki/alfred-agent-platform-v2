@@ -1,6 +1,4 @@
-"""
-Unit tests for the features table and opportunity scoring.
-"""
+"""Unit tests for the features table and opportunity scoring."""
 
 import os
 from datetime import datetime
@@ -39,7 +37,7 @@ async def test_db():
     INSERT INTO features (phrase, demand_score, monetise_score, supply_score)
     VALUES
       ('TEST_Gaming', 0.8000, 0.7500, 0.5000),
-      ('TEST_Cooking', 0.7000, 0.8000, 0.6000)
+      ('TEST_Cooking', 0.7000, 0.8000, 0.6000).
     """
     )
 

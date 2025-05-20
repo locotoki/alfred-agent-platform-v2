@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""
-Documentation Validator Script
+"""Documentation Validator Script.
 
 This tool validates Markdown documentation files against the Alfred Agent Platform
 documentation standards. It checks for compliance with formatting, metadata requirements,
@@ -39,6 +38,7 @@ Examples:
 
     # Show metadata changes without making them
     python doc_validator.py --fix-metadata --dry-run /path/to/docs
+
 """
 
 import argparse
@@ -94,21 +94,21 @@ class ValidationResult:
     statistics: Dict[str, Any]
 
 
-class DocumentValidator:
-    """
-    Validates Markdown documentation files against the Alfred Agent Platform standards.
+class DocumentValidator:.
+    """Validates Markdown documentation files against the Alfred Agent Platform
+    standards.
     """
 
     def __init__(
         self, base_path: str, check_links: bool = False, verbose: bool = False
-    ):
-        """
-        Initialize the validator.
+    ):.
+        """Initialize the validator.
 
         Args:
             base_path: Base path of the documentation directory
             check_links: Whether to check link validity
             verbose: Whether to show detailed output
+
         """
         self.base_path = Path(base_path)
         self.check_links = check_links
@@ -116,15 +116,15 @@ class DocumentValidator:
         self.results: List[ValidationResult] = []
         self.heading_counts = defaultdict(int)
 
-    def validate_file(self, file_path: str) -> ValidationResult:
-        """
-        Validate a single Markdown file.
+    def validate_file(self, file_path: str) -> ValidationResult:.
+        """Validate a single Markdown file.
 
         Args:
             file_path: Path to the Markdown file to validate
 
         Returns:
             ValidationResult containing issues found and statistics
+
         """
         path = Path(file_path)
         if not path.exists():
@@ -215,11 +215,11 @@ class DocumentValidator:
         return result
 
     def validate_all(self) -> List[ValidationResult]:
-        """
-        Validate all Markdown files in the specified directory.
+        """Validate all Markdown files in the specified directory.
 
         Returns:
-            List of ValidationResults for all files
+            List of ValidationResults for all files.
+
         """
         md_files = list(self.base_path.glob("**/*.md"))
         logger.info(f"Found {len(md_files)} Markdown files to validate")
@@ -420,8 +420,8 @@ class DocumentValidator:
         return issues
 
     def _check_duplicate_content(self) -> None:
-        """
-        Check for potential duplicate content across files.
+        """Check for potential duplicate content across files.
+
         This method is called after all files have been validated.
         """
         # Find headings that appear multiple times
@@ -457,15 +457,15 @@ class DocumentValidator:
     def generate_report(
         self, output_file: str = "validation_report.md", suggest_fixes: bool = False
     ) -> str:
-        """
-        Generate a Markdown report of validation results.
+        """Generate a Markdown report of validation results.
 
         Args:
             output_file: Path to write the report to
             suggest_fixes: Whether to include suggested fixes
 
         Returns:
-            Path to the generated report file
+            Path to the generated report file.
+
         """
         error_count = sum(
             1
@@ -705,8 +705,8 @@ def main():
 
 
 class MetadataFixer:
-    """
-    A class to automatically add or fix metadata in Markdown documentation files.
+    """A class to automatically add or fix metadata in Markdown documentation
+    files.
     """
 
     def __init__(
@@ -715,13 +715,13 @@ class MetadataFixer:
         dry_run: bool = False,
         verbose: bool = False,
     ):
-        """
-        Initialize the metadata fixer.
+        """Initialize the metadata fixer.
 
         Args:
             owner: Default owner to use for metadata
             dry_run: If True, show changes without making them
-            verbose: Show detailed output
+            verbose: Show detailed output.
+
         """
         self.owner = owner
         self.dry_run = dry_run
@@ -760,12 +760,12 @@ class MetadataFixer:
         return metadata
 
     def detect_metadata_format(self, content: str) -> Tuple[str, Dict[str, str]]:
-        """
-        Detect what format the metadata is in, if any.
+        """Detect what format the metadata is in, if any.
 
         Returns:
             Tuple of (format_type, metadata_dict)
             format_type can be "standard", "yaml", "simple", "comment", or "none"
+
         """
         # Check for standard format first
         standard_metadata = METADATA_PATTERN.finditer(content)
@@ -814,15 +814,16 @@ class MetadataFixer:
     def generate_metadata_block(
         self, title: Optional[str], existing_metadata: Dict[str, str]
     ) -> str:
-        """
-        Generate a metadata block with the specified title and any existing metadata.
+        """Generate a metadata block with the specified title and any existing
+        metadata.
 
         Args:
             title: Document title (extracted from heading)
             existing_metadata: Any existing metadata to include
 
         Returns:
-            Formatted metadata block as string
+            Formatted metadata block as string.
+
         """
         metadata_lines = []
 
@@ -847,14 +848,14 @@ class MetadataFixer:
         return "\n".join(metadata_lines)
 
     def fix_metadata(self, file_path: str) -> bool:
-        """
-        Add or fix metadata in a Markdown file.
+        """Add or fix metadata in a Markdown file.
 
         Args:
             file_path: Path to the file to fix
 
         Returns:
-            True if changes were made, False otherwise
+            True if changes were made, False otherwise.
+
         """
         try:
             with open(file_path, "r", encoding="utf-8") as f:
@@ -1026,14 +1027,14 @@ class MetadataFixer:
         return self.fix_metadata(file_path)
 
     def fix_directory(self, dir_path: str) -> List[str]:
-        """
-        Fix metadata in all Markdown files in a directory.
+        """Fix metadata in all Markdown files in a directory.
 
         Args:
             dir_path: Path to the directory
 
         Returns:
-            List of fixed file paths
+            List of fixed file paths.
+
         """
         self.fixed_files = []
 

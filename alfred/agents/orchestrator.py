@@ -1,7 +1,7 @@
 """Agent Orchestrator that integrates with IntentRouter.
 
-This module implements the orchestrator that processes messages through
-the intent router and handles different intents appropriately.
+This module implements the orchestrator that processes messages through the intent
+router and handles different intents appropriately.
 """
 
 import structlog
@@ -26,11 +26,11 @@ logger = structlog.get_logger(__name__)
 class AgentOrchestrator:
     """Orchestrator that processes messages through intent routing."""
 
-    def __init__(self) -> None:
+    def __init__(self) -> None:.
         """Initialize the orchestrator with the default intent router."""
         self._intent_router = router
 
-    async def process_message(self, message: str, context: dict = None) -> dict:
+    async def process_message(self, message: str, context: dict = None) -> dict:.
         """Process a message through the orchestrator.
 
         Args:

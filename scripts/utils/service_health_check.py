@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
-"""
-Service health check script to validate all services are running.
-"""
+"""Service health check script to validate all services are running."""
 
 import asyncio
 import sys
@@ -62,7 +60,7 @@ async def check_all_services() -> List[Dict[str, Any]]:
     return results
 
 
-def print_health_report(results: List[Dict[str, Any]]):
+def print_health_report(results: List[Dict[str, Any]]):.
     """Print formatted health report."""
     print("\n" + "=" * 50)
     print("SERVICE HEALTH CHECK REPORT")

@@ -1,11 +1,10 @@
 #!/usr/bin/env python3
-"""
-Fix Python imports across the codebase.
+"""Fix Python imports across the codebase.
 
 This script scans the codebase for Python files and fixes common import issues:
 1. Updates imports after module reorganization
 2. Standardizes import paths
-3. Fixes direct imports from the old health.py to the new health package
+3. Fixes direct imports from the old health.py to the new health package.
 """
 
 import os
@@ -43,7 +42,8 @@ def find_python_files() -> List[Path]:
     """Find all Python files in the codebase.
 
     Returns:
-        List of Path objects to Python files
+        List of Path objects to Python files.
+
     """
     python_files = []
 
@@ -65,7 +65,8 @@ def fix_imports_in_file(file_path: Path) -> bool:
         file_path: Path to the Python file
 
     Returns:
-        True if changes were made, False otherwise
+        True if changes were made, False otherwise.
+
     """
     try:
         with open(file_path, "r") as f:

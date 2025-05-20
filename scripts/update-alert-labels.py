@@ -8,7 +8,7 @@ from pathlib import Path
 import yaml
 
 
-def update_alert_labels(file_path: Path) -> None:
+def update_alert_labels(file_path: Path) -> None:.
     """Update alert labels in a single file."""
     with open(file_path, "r") as f:
         content = f.read()

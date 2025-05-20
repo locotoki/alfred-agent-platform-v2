@@ -1,5 +1,5 @@
-"""
-Test script for the Slack app.
+"""Test script for the Slack app.
+
 This allows us to test basic functionality without real tokens.
 """
 

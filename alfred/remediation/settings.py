@@ -1,8 +1,7 @@
-"""
-Configuration settings for the remediation system.
+"""Configuration settings for the remediation system.
 
-This module provides configurable settings for the remediation system,
-allowing for environment-based configuration.
+This module provides configurable settings for the remediation system, allowing for
+environment-based configuration.
 """
 
 import os
@@ -40,7 +39,7 @@ def get_webhook_url(service_name: str) -> str:
         service_name: The name of the service to get a webhook for
 
     Returns:
-        The webhook URL to use for the service
+        The webhook URL to use for the service.
     """
     service_env_var = (
         f"REMEDIATION_N8N_WEBHOOK_{service_name.upper().replace('-', '_')}"

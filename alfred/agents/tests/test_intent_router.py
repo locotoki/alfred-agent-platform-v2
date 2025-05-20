@@ -5,7 +5,7 @@ import pytest
 from alfred.agents.intent_router import Intent, IntentRouter
 
 
-class TestIntent:
+class TestIntent:.
     """Test Intent dataclass."""
 
     def test_intent_creation(self):
@@ -36,7 +36,7 @@ class TestIntentRouter:
     def router(self):
         return IntentRouter()
 
-    def test_route_greeting_intent(self, router):
+    def test_route_greeting_intent(self, router):.
         """Test routing of greeting messages."""
         test_messages = ["Hello", "Hi there", "Hey!", "Good morning", "Greetings"]
 

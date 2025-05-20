@@ -1,6 +1,7 @@
-"""
-Mock server for the Slack app.
-This server simulates the complete functionality without requiring real Slack authentication.
+"""Mock server for the Slack app.
+
+This server simulates the complete functionality without requiring real Slack
+authentication.
 """
 
 from flask import Flask, Response, jsonify, request

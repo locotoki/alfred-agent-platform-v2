@@ -1,6 +1,4 @@
-"""
-Template service with standardized health and metrics endpoints.
-"""
+"""Template service with standardized health and metrics endpoints."""
 
 import logging
 import os
@@ -27,8 +25,8 @@ SERVICE_VERSION = "0.1.0"
 # Standard health endpoints
 @app.get("/health")
 async def health() -> Dict[str, Any]:
-    """
-    Detailed health endpoint that returns comprehensive status.
+    """Detailed health endpoint that returns comprehensive status.
+
     Used by monitoring systems to get detailed health information.
     """
     return {
@@ -44,8 +42,8 @@ async def health() -> Dict[str, Any]:
 
 @app.get("/healthz")
 async def healthz() -> Dict[str, str]:
-    """
-    Simple health probe endpoint.
+    """Simple health probe endpoint.
+
     Used by container orchestrators like Kubernetes for liveness probes.
     """
     return {"status": "ok"}
@@ -53,11 +51,11 @@ async def healthz() -> Dict[str, str]:
 
 @app.get("/metrics")
 async def metrics() -> Response:
-    """
-    Prometheus metrics endpoint.
+    """Prometheus metrics endpoint.
+
     Returns metrics in Prometheus text format.
     """
-    metrics_text = f"""# HELP service_health Service health status (1 = healthy, 0 = unhealthy)
+    metrics_text = f."""# HELP service_health Service health status (1 = healthy, 0 = unhealthy)
 # TYPE service_health gauge
 service_health{{name="{SERVICE_NAME}",version="{SERVICE_VERSION}"}} 1
 

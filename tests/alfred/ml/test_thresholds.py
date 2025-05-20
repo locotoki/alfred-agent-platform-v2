@@ -10,10 +10,10 @@ import pytest
 from alfred.ml.thresholds import ThresholdConfig, ThresholdService
 
 
-class TestThresholdConfig:
+class TestThresholdConfig:.
     """Test ThresholdConfig dataclass."""
 
-    def test_default_values(self):
+    def test_default_values(self):.
         """Test default configuration values."""
         config = ThresholdConfig()
         assert config.noise_threshold == 0.7
@@ -21,7 +21,7 @@ class TestThresholdConfig:
         assert config.batch_size == 100
         assert config.learning_rate == 0.01
 
-    def test_to_dict(self):
+    def test_to_dict(self):.
         """Test conversion to dictionary."""
         config = ThresholdConfig(noise_threshold=0.8)
         data = config.to_dict()
@@ -48,7 +48,7 @@ class TestThresholdService:
     """Test ThresholdService functionality."""
 
     @pytest.fixture
-    def temp_config_file(self):
+    def temp_config_file(self):.
         """Create a temporary config file."""
         with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as f:
             json.dump(
@@ -67,7 +67,7 @@ class TestThresholdService:
         """Create a mock metrics collector."""
         return Mock()
 
-    def test_initialization_with_file(self, temp_config_file, metrics_mock):
+    def test_initialization_with_file(self, temp_config_file, metrics_mock):.
         """Test service initialization with existing config file."""
         service = ThresholdService(
             metrics=metrics_mock, config_path=str(temp_config_file)

@@ -51,7 +51,7 @@ class ExplainResponse(BaseModel):
 
 
 @asynccontextmanager
-async def lifespan(app: FastAPI) -> AsyncIterator[None]:
+async def lifespan(app: FastAPI) -> AsyncIterator[None]:.
     """Application lifespan manager."""
     logger.info("Starting Alert Explainer Service")
     yield

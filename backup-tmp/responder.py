@@ -1,8 +1,8 @@
-"""
-Responder module for processing MCP responses and updating Slack threads.
+"""Responder module for processing MCP responses and updating Slack threads.
 
-This module runs a background asyncio task to consume responses from Redis and
-update the corresponding Slack thread using the chat.update API.
+This module runs a background asyncio task to consume responses from
+Redis and update the corresponding Slack thread using the chat.update
+API.
 """
 
 import asyncio
@@ -29,24 +29,24 @@ HOSTNAME = os.environ.get("HOSTNAME", socket.gethostname())
 class ResponseHandler:
     """Handler for MCP responses that updates Slack threads."""
 
-    def __init__(self, slack_token: str):
-        """
-        Initialize the response handler.
+    def __init__(self, slack_token: str):.
+        """Initialize the response handler.
 
         Args:
             slack_token: The Slack bot token for API calls
+
         """
         self.client = WebClient(token=slack_token)
         self.stop_event = asyncio.Event()
         self.task = None
         self.in_flight: Set[str] = set()  # Track request_ids of in-flight requests
 
-    def add_in_flight(self, request_id: str) -> None:
-        """
-        Add a request_id to the in-flight set.
+    def add_in_flight(self, request_id: str) -> None:.
+        """Add a request_id to the in-flight set.
 
         Args:
             request_id: The request ID to track
+
         """
         self.in_flight.add(request_id)
         # Trim the set if it gets too large (unlikely, but a safeguard)
@@ -54,7 +54,7 @@ class ResponseHandler:
             # Keep the 500 most recent (assuming they're added in order)
             self.in_flight = set(list(self.in_flight)[-500:])
 
-    async def start(self) -> None:
+    async def start(self) -> None:.
         """Start the response handler as an asyncio task."""
         if self.task is None or self.task.done():
             self.stop_event.clear()
@@ -101,8 +101,7 @@ class ResponseHandler:
                 logger.error(f"Error processing response {message_id}: {e}")
 
     async def _subscribe_async(self, stream, group, consumer_id):
-        """
-        Async wrapper around redis_bus.subscribe() that works with asyncio.
+        """Async wrapper around redis_bus.subscribe() that works with asyncio.
 
         Args:
             stream: The Redis stream to subscribe to
@@ -110,7 +109,8 @@ class ResponseHandler:
             consumer_id: The consumer ID (usually the hostname)
 
         Yields:
-            Tuples of (message_id, response_data)
+            Tuples of (message_id, response_data).
+
         """
         # We'll use an executor to run the blocking Redis operations
         loop = asyncio.get_event_loop()
@@ -182,12 +182,12 @@ class ResponseHandler:
     async def _process_response(
         self, response: Dict[str, Any], message_id: str
     ) -> None:
-        """
-        Process a response and update the corresponding Slack thread.
+        """Process a response and update the corresponding Slack thread.
 
         Args:
             response: The response data from MCP
-            message_id: The Redis message ID
+            message_id: The Redis message ID.
+
         """
         # Extract relevant fields from the response
         request_id = response.get("request_id")
@@ -235,14 +235,14 @@ class ResponseHandler:
             logger.error(f"Slack API error: {e.response['error']}")
 
     def _render_to_slack(self, response: Dict[str, Any]) -> Optional[list]:
-        """
-        Render response to Slack blocks format.
+        """Render response to Slack blocks format.
 
         Args:
             response: The response data
 
         Returns:
-            List of Slack blocks or None if no blocks could be created
+            List of Slack blocks or None if no blocks could be created.
+
         """
         try:
             # Extract response data

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-"""
-Cleanup job for expired processed messages to maintain deduplication efficiency.
+"""Cleanup job for expired processed messages to maintain deduplication
+efficiency.
 """
 
 import asyncio
@@ -13,7 +13,7 @@ from dotenv import load_dotenv
 logger = structlog.get_logger(__name__)
 
 
-async def cleanup_expired_messages():
+async def cleanup_expired_messages():.
     """Remove expired processed messages from the database."""
     load_dotenv()
     database_url = os.getenv("DATABASE_URL")
@@ -28,7 +28,7 @@ async def cleanup_expired_messages():
         # Get count of expired messages
         count_query = """
         SELECT COUNT(*) FROM processed_messages
-        WHERE expires_at < NOW()
+        WHERE expires_at < NOW().
         """
         expired_count = await conn.fetchval(count_query)
 
@@ -39,7 +39,7 @@ async def cleanup_expired_messages():
             delete_query = """
             DELETE FROM processed_messages
             WHERE expires_at < NOW()
-            RETURNING message_id
+            RETURNING message_id.
             """
             deleted_records = await conn.fetch(delete_query)
 
@@ -56,7 +56,7 @@ async def cleanup_expired_messages():
         SELECT COUNT(*) as total,
                MIN(processed_at) as oldest,
                MAX(expires_at) as latest_expiry
-        FROM processed_messages
+        FROM processed_messages.
         """
         stats = await conn.fetchrow(remaining_query)
 

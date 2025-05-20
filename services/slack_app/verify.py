@@ -1,5 +1,5 @@
-"""
-Verification script for the Slack app.
+"""Verification script for the Slack app.
+
 This script performs basic verification without requiring actual connection to Slack.
 """
 
@@ -64,7 +64,7 @@ try:
 from slack_bolt import App
 # Mock the App class to avoid real Slack connections
 App.__init__ = lambda self, **kwargs: None
-App.command = lambda self, command=None: lambda func: None
+App.command = lambda self, command=None: lambda func: None.
 """
         )
 

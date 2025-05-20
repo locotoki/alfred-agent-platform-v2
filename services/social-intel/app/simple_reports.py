@@ -16,7 +16,7 @@ def generate_niche_scout_report(
         output_dir: Directory to save the report
 
     Returns:
-        Path to the generated report file
+        Path to the generated report file.
     """
     # Create filename and path
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -47,7 +47,7 @@ def generate_blueprint_report(
         output_dir: Directory to save the report
 
     Returns:
-        Path to the generated report file
+        Path to the generated report file.
     """
     # Create filename and path
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")

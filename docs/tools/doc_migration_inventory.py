@@ -1,13 +1,12 @@
 #!/usr/bin/env python3
-"""
-Document Migration Inventory Tool
+"""Document Migration Inventory Tool.
 
 This script helps with the documentation migration process by:
 1. Scanning all directories for Markdown files
 2. Creating an inventory of markdown files with metadata
 3. Identifying potential duplicates based on title similarity
 4. Generating recommendations for target locations in the new structure
-5. Creating a CSV or JSON report with migration recommendations
+5. Creating a CSV or JSON report with migration recommendations.
 """
 
 import argparse
@@ -34,7 +33,7 @@ logger = logging.getLogger("doc_migration")
 
 
 class DocMigrationInventory:
-    """Class to handle document migration inventory process"""
+    """Class to handle document migration inventory process."""
 
     def __init__(
         self,
@@ -44,15 +43,15 @@ class DocMigrationInventory:
         similarity_threshold=0.8,
         ignore_dirs=None,
     ):
-        """
-        Initialize the document migration inventory tool
+        """Initialize the document migration inventory tool.
 
         Args:
             root_dir (str): Root directory to scan (default: current directory)
             output_format (str): Format for the report ('json' or 'csv')
             output_file (str): Output file path
             similarity_threshold (float): Threshold for determining title similarity (0.0-1.0)
-            ignore_dirs (list): List of directory paths to ignore during scan
+            ignore_dirs (list): List of directory paths to ignore during scan.
+
         """
         self.root_dir = Path(root_dir or os.getcwd())
         self.output_format = output_format.lower()
@@ -86,7 +85,7 @@ class DocMigrationInventory:
         }
 
     def scan_markdown_files(self):
-        """Scan all directories for Markdown files and collect metadata"""
+        """Scan all directories for Markdown files and collect metadata."""
         logger.info(f"Scanning for Markdown files in {self.root_dir}")
         try:
             for root, dirs, files in os.walk(self.root_dir, topdown=True):
@@ -143,7 +142,9 @@ class DocMigrationInventory:
             return []
 
     def identify_duplicates(self):
-        """Identify potential duplicates based on title similarity and content hash"""
+        """Identify potential duplicates based on title similarity and content
+        hash.
+        """
         logger.info("Identifying potential duplicates")
         try:
             # Group files by content hash
@@ -207,7 +208,9 @@ class DocMigrationInventory:
             return []
 
     def generate_recommendations(self):
-        """Generate recommendations for target locations in the new structure"""
+        """Generate recommendations for target locations in the new
+        structure.
+        """
         logger.info("Generating target location recommendations")
         try:
             recommendations = {}
@@ -276,7 +279,9 @@ class DocMigrationInventory:
             return {}
 
     def create_report(self):
-        """Create a CSV or JSON report of the document inventory with migration recommendations"""
+        """Create a CSV or JSON report of the document inventory with migration
+        recommendations.
+        """
         logger.info(f"Creating {self.output_format} report at {self.output_file}")
         try:
             # Combine inventory and recommendations
@@ -335,7 +340,9 @@ class DocMigrationInventory:
             return None
 
     def _extract_title(self, file_path):
-        """Extract title from markdown file (from first heading or front matter)"""
+        """Extract title from markdown file (from first heading or front
+        matter).
+        """
         try:
             with open(file_path, "r", encoding="utf-8", errors="replace") as f:
                 content = f.read()
@@ -363,7 +370,7 @@ class DocMigrationInventory:
             return None
 
     def _calculate_file_hash(self, file_path):
-        """Calculate SHA256 hash of file content for duplicate detection"""
+        """Calculate SHA256 hash of file content for duplicate detection."""
         try:
             with open(file_path, "rb") as f:
                 content = f.read()
@@ -373,7 +380,7 @@ class DocMigrationInventory:
             return None
 
     def _analyze_content_signals(self, file_path):
-        """Analyze content of the file to determine its type/category"""
+        """Analyze content of the file to determine its type/category."""
         signals = {category: 0 for category in self.content_patterns}
 
         try:
@@ -396,7 +403,7 @@ class DocMigrationInventory:
         return signals
 
     def _get_secondary_category(self, signals):
-        """Get the secondary category from content signals"""
+        """Get the secondary category from content signals."""
         if not signals:
             return None
 
@@ -406,8 +413,8 @@ class DocMigrationInventory:
             return sorted_signals[1][0]
         return None
 
-    def run_full_process(self):
-        """Run the full document migration inventory process"""
+    def run_full_process(self):.
+        """Run the full document migration inventory process."""
         logger.info("Starting document migration inventory process")
         self.scan_markdown_files()
         self.identify_duplicates()
@@ -418,7 +425,7 @@ class DocMigrationInventory:
 
 
 def main():
-    """Main function to run the script"""
+    """Main function to run the script."""
     parser = argparse.ArgumentParser(description="Document Migration Inventory Tool")
     parser.add_argument("--root-dir", type=str, help="Root directory to scan")
     parser.add_argument(

@@ -83,7 +83,7 @@ class TestExactlyOnceProcessing:
         """Test cleanup of expired messages."""
         async with supabase_transport._pool.acquire() as conn:
             # Insert an expired message
-            await conn.execute(
+            await conn.execute(.
                 """
                 INSERT INTO processed_messages (message_id, processed_at, expires_at)
                 VALUES ($1, $2, $3)
@@ -97,7 +97,7 @@ class TestExactlyOnceProcessing:
             await conn.execute(
                 """
                 INSERT INTO processed_messages (message_id)
-                VALUES ($1)
+                VALUES ($1).
                 """,
                 "test_valid_101112",
             )
@@ -133,7 +133,7 @@ class TestExactlyOnceProcessing:
                 """
                 SELECT processed_at, expires_at
                 FROM processed_messages
-                WHERE message_id = $1
+                WHERE message_id = $1.
                 """,
                 message_id,
             )

@@ -1,8 +1,7 @@
-"""
-ML-based noise ranking for alerts.
+"""ML-based noise ranking for alerts.
 
-This module implements a machine learning model to rank alerts
-by their "noise" probability, helping to reduce alert fatigue.
+This module implements a machine learning model to rank alerts by their "noise"
+probability, helping to reduce alert fatigue.
 """
 
 from dataclasses import dataclass
@@ -17,10 +16,10 @@ from alfred.core.protocols import AlertProtocol
 
 
 @dataclass
-class NoiseRankingModel:
+class NoiseRankingModel:.
     """ML model for ranking alert noise levels."""
 
-    def __init__(self, model_path: str = None):
+    def __init__(self, model_path: str = None):.
         """Initialize the noise ranking model.
 
         Args:
@@ -52,7 +51,7 @@ class NoiseRankingModel:
             historical_data: Historical metrics for the alert type
 
         Returns:
-            Feature vector for the alert
+            Feature vector for the alert.
         """
         features = []
 
@@ -90,7 +89,7 @@ class NoiseRankingModel:
             historical_data: Historical context
 
         Returns:
-            Noise score between 0 and 1
+            Noise score between 0 and 1.
         """
         if not self.model:
             raise ValueError("Model not loaded. Train or load a model first.")
@@ -112,7 +111,7 @@ class NoiseRankingModel:
             alerts: List of (alert, historical_data) tuples
 
         Returns:
-            List of (alert, noise_score) tuples, sorted by score descending
+            List of (alert, noise_score) tuples, sorted by score descending.
         """
         ranked = []
 
@@ -130,7 +129,7 @@ class NoiseRankingModel:
 
         Args:
             training_data: List of feature dictionaries
-            labels: List of labels (0=signal, 1=noise)
+            labels: List of labels (0=signal, 1=noise).
         """
         # Convert to feature matrix
         X = []

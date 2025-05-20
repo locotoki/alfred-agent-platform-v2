@@ -1,5 +1,5 @@
-"""
-Database connection module for Social Intelligence Service.
+"""Database connection module for Social Intelligence Service.
+
 Provides pool management and query utilities.
 """
 
@@ -15,7 +15,7 @@ logger = structlog.get_logger(__name__)
 _pool = None
 
 
-async def get_pool():
+async def get_pool():.
     """Get or create the database connection pool."""
     global _pool
     if _pool is None:

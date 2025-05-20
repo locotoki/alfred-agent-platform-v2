@@ -7,7 +7,7 @@ import structlog
 logger = structlog.get_logger(__name__)
 
 
-class PubSubTransport:
+class PubSubTransport:.
     """Stub implementation of PubSubTransport for social-intel container."""
 
     def __init__(self, project_id: str):

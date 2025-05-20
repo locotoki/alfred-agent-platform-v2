@@ -1,3 +1,1 @@
-"""
-Tests for the remediation package.
-"""
+"""Tests for the remediation package."""

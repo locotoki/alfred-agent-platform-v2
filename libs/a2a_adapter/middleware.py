@@ -8,7 +8,7 @@ import structlog
 logger = structlog.get_logger(__name__)
 
 
-class PolicyMiddleware:
+class PolicyMiddleware:.
     """Stub implementation of PolicyMiddleware for social-intel container."""
 
     def __init__(self, redis_client: redis.Redis):

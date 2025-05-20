@@ -8,13 +8,13 @@ from abc import abstractmethod
 from typing import Any, Callable, Dict, List, Optional, Protocol
 
 
-class ServiceDiscovery(Protocol):
+class ServiceDiscovery(Protocol):.
     """Protocol for service discovery and registration."""
 
     @abstractmethod
     async def register_service(
         self, service_name: str, service_info: Dict[str, Any]
-    ) -> bool:
+    ) -> bool:.
         """Register a service with discovery system.
 
         Args:
@@ -27,7 +27,7 @@ class ServiceDiscovery(Protocol):
         ...
 
     @abstractmethod
-    async def discover_service(self, service_name: str) -> Optional[Dict[str, Any]]:
+    async def discover_service(self, service_name: str) -> Optional[Dict[str, Any]]:.
         """Discover a service by name.
 
         Args:
@@ -41,7 +41,7 @@ class ServiceDiscovery(Protocol):
     @abstractmethod
     async def list_services(
         self, service_type: Optional[str] = None
-    ) -> List[Dict[str, Any]]:
+    ) -> List[Dict[str, Any]]:.
         """List all registered services.
 
         Args:
@@ -53,7 +53,7 @@ class ServiceDiscovery(Protocol):
         ...
 
     @abstractmethod
-    async def health_check(self, service_name: str) -> bool:
+    async def health_check(self, service_name: str) -> bool:.
         """Check health of a service.
 
         Args:
@@ -65,11 +65,11 @@ class ServiceDiscovery(Protocol):
         ...
 
 
-class ConfigurationManager(Protocol):
+class ConfigurationManager(Protocol):.
     """Protocol for configuration management."""
 
     @abstractmethod
-    def get_config(self, key: str, default: Any = None) -> Any:
+    def get_config(self, key: str, default: Any = None) -> Any:.
         """Get configuration value.
 
         Args:
@@ -82,7 +82,7 @@ class ConfigurationManager(Protocol):
         ...
 
     @abstractmethod
-    def set_config(self, key: str, value: Any) -> None:
+    def set_config(self, key: str, value: Any) -> None:.
         """Set configuration value.
 
         Args:
@@ -92,12 +92,12 @@ class ConfigurationManager(Protocol):
         ...
 
     @abstractmethod
-    def reload_config(self) -> None:
+    def reload_config(self) -> None:.
         """Reload configuration from source."""
         ...
 
     @abstractmethod
-    def validate_config(self) -> bool:
+    def validate_config(self) -> bool:.
         """Validate current configuration.
 
         Returns:
@@ -106,11 +106,11 @@ class ConfigurationManager(Protocol):
         ...
 
 
-class SecretManager(Protocol):
+class SecretManager(Protocol):.
     """Protocol for secret management."""
 
     @abstractmethod
-    async def get_secret(self, secret_name: str) -> Optional[str]:
+    async def get_secret(self, secret_name: str) -> Optional[str]:.
         """Retrieve a secret value.
 
         Args:
@@ -122,7 +122,7 @@ class SecretManager(Protocol):
         ...
 
     @abstractmethod
-    async def set_secret(self, secret_name: str, secret_value: str) -> bool:
+    async def set_secret(self, secret_name: str, secret_value: str) -> bool:.
         """Store a secret value.
 
         Args:
@@ -135,7 +135,7 @@ class SecretManager(Protocol):
         ...
 
     @abstractmethod
-    async def rotate_secret(self, secret_name: str) -> str:
+    async def rotate_secret(self, secret_name: str) -> str:.
         """Rotate a secret value.
 
         Args:
@@ -147,11 +147,11 @@ class SecretManager(Protocol):
         ...
 
 
-class QueueManager(Protocol):
+class QueueManager(Protocol):.
     """Protocol for message queue management."""
 
     @abstractmethod
-    async def publish(self, topic: str, message: Dict[str, Any]) -> bool:
+    async def publish(self, topic: str, message: Dict[str, Any]) -> bool:.
         """Publish a message to a topic.
 
         Args:
@@ -166,7 +166,7 @@ class QueueManager(Protocol):
     @abstractmethod
     async def subscribe(
         self, topic: str, handler: Callable[[Dict[str, Any]], None]
-    ) -> str:
+    ) -> str:.
         """Subscribe to a topic.
 
         Args:
@@ -179,7 +179,7 @@ class QueueManager(Protocol):
         ...
 
     @abstractmethod
-    async def unsubscribe(self, subscription_id: str) -> bool:
+    async def unsubscribe(self, subscription_id: str) -> bool:.
         """Unsubscribe from a topic.
 
         Args:
@@ -191,11 +191,11 @@ class QueueManager(Protocol):
         ...
 
 
-class CacheManager(Protocol):
+class CacheManager(Protocol):.
     """Protocol for distributed cache management."""
 
     @abstractmethod
-    async def get(self, key: str) -> Optional[Any]:
+    async def get(self, key: str) -> Optional[Any]:.
         """Get value from cache.
 
         Args:
@@ -207,7 +207,7 @@ class CacheManager(Protocol):
         ...
 
     @abstractmethod
-    async def set(self, key: str, value: Any, ttl: Optional[int] = None) -> bool:
+    async def set(self, key: str, value: Any, ttl: Optional[int] = None) -> bool:.
         """Set value in cache.
 
         Args:
@@ -221,7 +221,7 @@ class CacheManager(Protocol):
         ...
 
     @abstractmethod
-    async def delete(self, key: str) -> bool:
+    async def delete(self, key: str) -> bool:.
         """Delete value from cache.
 
         Args:
@@ -233,7 +233,7 @@ class CacheManager(Protocol):
         ...
 
     @abstractmethod
-    async def clear(self, pattern: Optional[str] = None) -> int:
+    async def clear(self, pattern: Optional[str] = None) -> int:.
         """Clear cache entries.
 
         Args:

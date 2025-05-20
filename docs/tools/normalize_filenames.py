@@ -1,12 +1,11 @@
 #!/usr/bin/env python3
-"""
-Normalize Filenames in Staging Area
+"""Normalize Filenames in Staging Area.
 
 This script normalizes filenames in the staging-area directory by:
 1. Removing special characters and spaces
 2. Converting to lowercase with hyphens as separators
 3. Removing hexadecimal suffixes and Zone.Identifier files
-4. Creating a mapping file that tracks old and new filenames
+4. Creating a mapping file that tracks old and new filenames.
 """
 
 import argparse
@@ -28,7 +27,7 @@ logger = logging.getLogger("normalize_filenames")
 
 
 class FilenameNormalizer:
-    """Class to handle filename normalization process"""
+    """Class to handle filename normalization process."""
 
     def __init__(
         self,
@@ -38,15 +37,15 @@ class FilenameNormalizer:
         hex_suffix_pattern=r"\s+[0-9a-f]{32}",
         output_mapping="filename_mapping.csv",
     ):
-        """
-        Initialize the filename normalizer
+        """Initialize the filename normalizer.
 
         Args:
             staging_dir (str): Path to the staging-area directory
             dry_run (bool): If True, only show what would be done without actually renaming
             remove_zone_identifier (bool): If True, remove .Zone.Identifier files
             hex_suffix_pattern (str): Regex pattern to match hexadecimal suffixes in filenames
-            output_mapping (str): Path to the output mapping file
+            output_mapping (str): Path to the output mapping file.
+
         """
         self.staging_dir = Path(staging_dir or "")
         self.dry_run = dry_run
@@ -59,14 +58,15 @@ class FilenameNormalizer:
         self.errors = []
 
     def normalize_filename(self, filename):
-        """
-        Normalize a filename by removing special characters and converting to lowercase with hyphens
+        """Normalize a filename by removing special characters and converting
+        to lowercase with hyphens.
 
         Args:
             filename (str): The filename to normalize
 
         Returns:
-            str: The normalized filename
+            str: The normalized filename.
+
         """
         # Extract the base name and extension
         name, ext = os.path.splitext(filename)
@@ -88,11 +88,11 @@ class FilenameNormalizer:
         return f"{name}{ext}"
 
     def process_directory(self):
-        """
-        Process all files in the staging directory and its subdirectories
+        """Process all files in the staging directory and its subdirectories.
 
         Returns:
-            dict: Statistics of processed files
+            dict: Statistics of processed files.
+
         """
         if not self.staging_dir.exists():
             logger.error(f"Directory does not exist: {self.staging_dir}")
@@ -178,11 +178,11 @@ class FilenameNormalizer:
         }
 
     def _write_mapping_file(self, mappings):
-        """
-        Write the mapping file
+        """Write the mapping file.
 
         Args:
-            mappings (dict): Dictionary of directory -> list of (old_name, new_name) tuples
+            mappings (dict): Dictionary of directory -> list of (old_name, new_name) tuples.
+
         """
         if self.dry_run:
             logger.info("Dry run: Not writing mapping file")
@@ -203,7 +203,7 @@ class FilenameNormalizer:
             self.errors.append(("mapping_file", str(e)))
 
     def print_summary(self):
-        """Print a summary of the operations performed"""
+        """Print a summary of the operations performed."""
         logger.info("=== Summary ===")
 
         if self.renamed_files:
@@ -234,7 +234,7 @@ class FilenameNormalizer:
 
 
 def main():
-    """Main function to run the script"""
+    """Main function to run the script."""
     parser = argparse.ArgumentParser(
         description="Normalize filenames in the staging-area directory"
     )

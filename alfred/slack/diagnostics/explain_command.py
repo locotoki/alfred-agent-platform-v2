@@ -8,7 +8,7 @@ from alfred.alerts.explainer import ExplainerAgent
 logger = logging.getLogger(__name__)
 
 
-def handle_explain_command(command: str, alert_id: str) -> Dict[str, Any]:
+def handle_explain_command(command: str, alert_id: str) -> Dict[str, Any]:.
     """Handle the /diag explain <alert-id> command.
 
     Args:

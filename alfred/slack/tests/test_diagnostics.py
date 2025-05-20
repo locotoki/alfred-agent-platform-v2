@@ -9,18 +9,18 @@ from slack_sdk.web.async_client import AsyncWebClient
 from alfred.slack.diagnostics import DiagnosticsBot
 
 
-class TestDiagnosticsBot:
+class TestDiagnosticsBot:.
     """Test cases for DiagnosticsBot."""
 
     @pytest.fixture
-    def slack_client(self) -> AsyncMock:
+    def slack_client(self) -> AsyncMock:.
         """Mock Slack client."""
         client = AsyncMock(spec=AsyncWebClient)
         client.chat_postMessage = AsyncMock()
         return client
 
     @pytest.fixture
-    def bot(self, slack_client: AsyncMock) -> DiagnosticsBot:
+    def bot(self, slack_client: AsyncMock) -> DiagnosticsBot:.
         """Create diagnostics bot instance."""
         return DiagnosticsBot(
             slack_client=slack_client,

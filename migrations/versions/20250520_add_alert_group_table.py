@@ -1,9 +1,8 @@
-"""Add alert group table
+"""Add alert group table.
 
 Revision ID: 20250520_001
 Revises:
 Create Date: 2025-05-20 00:00:00.000000
-
 """
 
 import sqlalchemy as sa

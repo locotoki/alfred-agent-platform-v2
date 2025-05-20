@@ -1,8 +1,8 @@
 """Telegram adapter for Alfred platform.
 
-This module implements a FastAPI application that serves as a Telegram adapter
-for the Alfred platform. It handles incoming webhook requests from Telegram,
-processes the messages and routes them to Alfred.
+This module implements a FastAPI application that serves as a Telegram
+adapter for the Alfred platform. It handles incoming webhook requests
+from Telegram, processes the messages and routes them to Alfred.
 """
 
 import json

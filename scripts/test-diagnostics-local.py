@@ -7,7 +7,7 @@ from unittest.mock import AsyncMock
 from alfred.slack.diagnostics import DiagnosticsBot
 
 
-async def test_local_diagnostics():
+async def test_local_diagnostics():.
     """Test diagnostics bot commands locally."""
     # Mock Slack client
     slack_client = AsyncMock()

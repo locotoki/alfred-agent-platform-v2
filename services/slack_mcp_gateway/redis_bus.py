@@ -1,8 +1,7 @@
-"""
-Redis message bus for the Slack MCP Gateway.
+"""Redis message bus for the Slack MCP Gateway.
 
-This module handles publishing task requests to Redis streams and
-subscribing to response streams for consumption by the responder.
+This module handles publishing task requests to Redis streams and subscribing to
+response streams for consumption by the responder.
 """
 
 import json
@@ -43,9 +42,8 @@ def get_redis_client() -> redis.Redis:
     return client
 
 
-def publish(message: Dict[str, Any]) -> str:
-    """
-    Publish a message to the MCP requests stream.
+def publish(message: Dict[str, Any]) -> str:.
+    """Publish a message to the MCP requests stream.
 
     Args:
         message: The task request to publish
@@ -70,9 +68,7 @@ def publish(message: Dict[str, Any]) -> str:
 
 
 def ensure_consumer_group() -> None:
-    """
-    Ensure the consumer group exists, creating it if necessary.
-    """
+    """Ensure the consumer group exists, creating it if necessary."""
     client = get_redis_client()
 
     try:
@@ -97,11 +93,10 @@ def ensure_consumer_group() -> None:
 
 
 def subscribe() -> Iterator[Tuple[str, Dict[str, Any]]]:
-    """
-    Subscribe to the MCP responses stream and yield responses.
+    """Subscribe to the MCP responses stream and yield responses.
 
     Returns:
-        An iterator yielding tuples of (message_id, response_data)
+        An iterator yielding tuples of (message_id, response_data).
     """
     client = get_redis_client()
 

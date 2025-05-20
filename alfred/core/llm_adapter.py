@@ -1,8 +1,7 @@
 """LLM Adapter implementation for Alfred Core.
 
-This module implements the Strategy/Adapter pattern for LLM providers,
-starting with OpenAI GPT-4o-Turbo as the primary provider and Claude 3
-Sonnet as a fallback option.
+This module implements the Strategy/Adapter pattern for LLM providers, starting with
+OpenAI GPT-4o-Turbo as the primary provider and Claude 3 Sonnet as a fallback option.
 """
 
 import os
@@ -49,7 +48,7 @@ class LLMAdapter(ABC):
         temperature: float = 0.7,
         max_tokens: Optional[int] = None,
         **kwargs: Any,
-    ) -> Union[str, AsyncIterator[str]]:
+    ) -> Union[str, AsyncIterator[str]]:.
         """Generate a response from the LLM.
 
         Args:
@@ -65,7 +64,7 @@ class LLMAdapter(ABC):
         ...
 
     @abstractmethod
-    def estimate_tokens(self, text: str) -> int:
+    def estimate_tokens(self, text: str) -> int:.
         """Estimate token count for the given text.
 
         Args:
@@ -77,7 +76,7 @@ class LLMAdapter(ABC):
         ...
 
 
-class OpenAIAdapter(LLMAdapter):
+class OpenAIAdapter(LLMAdapter):.
     """OpenAI GPT-4o-Turbo adapter implementation."""
 
     def __init__(self, api_key: Optional[str] = None, model: str = "gpt-4o-turbo"):
@@ -175,7 +174,7 @@ class OpenAIAdapter(LLMAdapter):
         return len(text) // 4
 
 
-class ClaudeAdapter(LLMAdapter):
+class ClaudeAdapter(LLMAdapter):.
     """Claude 3 Sonnet adapter implementation."""
 
     def __init__(

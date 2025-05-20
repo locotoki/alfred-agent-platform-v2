@@ -8,11 +8,11 @@ from abc import abstractmethod
 from typing import Any, Dict, List, Optional, Protocol
 
 
-class RemediationState(Protocol):
+class RemediationState(Protocol):.
     """Protocol for remediation workflow state."""
 
     @abstractmethod
-    def get_service_name(self) -> str:
+    def get_service_name(self) -> str:.
         """Get the name of the service being remediated.
 
         Returns:
@@ -21,7 +21,7 @@ class RemediationState(Protocol):
         ...
 
     @abstractmethod
-    def get_status(self) -> str:
+    def get_status(self) -> str:.
         """Get current remediation status.
 
         Returns:
@@ -30,7 +30,7 @@ class RemediationState(Protocol):
         ...
 
     @abstractmethod
-    def set_result(self, result: Dict[str, Any]) -> None:
+    def set_result(self, result: Dict[str, Any]) -> None:.
         """Set remediation result.
 
         Args:
@@ -39,11 +39,11 @@ class RemediationState(Protocol):
         ...
 
 
-class ServiceRemediation(Protocol):
+class ServiceRemediation(Protocol):.
     """Protocol for service remediation actions."""
 
     @abstractmethod
-    async def restart_service(self, service_name: str) -> bool:
+    async def restart_service(self, service_name: str) -> bool:.
         """Restart a service.
 
         Args:
@@ -55,7 +55,7 @@ class ServiceRemediation(Protocol):
         ...
 
     @abstractmethod
-    async def check_health(self, service_name: str) -> Dict[str, Any]:
+    async def check_health(self, service_name: str) -> Dict[str, Any]:.
         """Check service health status.
 
         Args:
@@ -67,7 +67,7 @@ class ServiceRemediation(Protocol):
         ...
 
     @abstractmethod
-    async def scale_service(self, service_name: str, replicas: int) -> bool:
+    async def scale_service(self, service_name: str, replicas: int) -> bool:.
         """Scale a service to specified replicas.
 
         Args:
@@ -80,11 +80,11 @@ class ServiceRemediation(Protocol):
         ...
 
 
-class WorkflowOrchestrator(Protocol):
+class WorkflowOrchestrator(Protocol):.
     """Protocol for remediation workflow orchestration."""
 
     @abstractmethod
-    def create_workflow(self, workflow_type: str, config: Dict[str, Any]) -> str:
+    def create_workflow(self, workflow_type: str, config: Dict[str, Any]) -> str:.
         """Create a new remediation workflow.
 
         Args:
@@ -99,7 +99,7 @@ class WorkflowOrchestrator(Protocol):
     @abstractmethod
     async def execute_workflow(
         self, workflow_id: str, input_state: Dict[str, Any]
-    ) -> Dict[str, Any]:
+    ) -> Dict[str, Any]:.
         """Execute a remediation workflow.
 
         Args:
@@ -112,7 +112,7 @@ class WorkflowOrchestrator(Protocol):
         ...
 
     @abstractmethod
-    def get_workflow_status(self, workflow_id: str) -> Dict[str, Any]:
+    def get_workflow_status(self, workflow_id: str) -> Dict[str, Any]:.
         """Get status of a running workflow.
 
         Args:
@@ -124,11 +124,11 @@ class WorkflowOrchestrator(Protocol):
         ...
 
 
-class AlertHandler(Protocol):
+class AlertHandler(Protocol):.
     """Protocol for handling alerts and triggering remediation."""
 
     @abstractmethod
-    def process_alert(self, alert: Dict[str, Any]) -> Optional[str]:
+    def process_alert(self, alert: Dict[str, Any]) -> Optional[str]:.
         """Process an incoming alert and determine remediation action.
 
         Args:
@@ -142,7 +142,7 @@ class AlertHandler(Protocol):
     @abstractmethod
     def get_remediation_history(
         self, service_name: str, limit: int = 10
-    ) -> List[Dict[str, Any]]:
+    ) -> List[Dict[str, Any]]:.
         """Get remediation history for a service.
 
         Args:
@@ -155,13 +155,13 @@ class AlertHandler(Protocol):
         ...
 
 
-class EscalationPolicy(Protocol):
+class EscalationPolicy(Protocol):.
     """Protocol for escalation policies."""
 
     @abstractmethod
     def should_escalate(
         self, service_name: str, failure_count: int, time_window: int
-    ) -> bool:
+    ) -> bool:.
         """Determine if issue should be escalated.
 
         Args:
@@ -175,7 +175,7 @@ class EscalationPolicy(Protocol):
         ...
 
     @abstractmethod
-    def get_escalation_target(self, service_name: str, level: int) -> str:
+    def get_escalation_target(self, service_name: str, level: int) -> str:.
         """Get escalation target for a given level.
 
         Args:

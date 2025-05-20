@@ -13,10 +13,10 @@ from agents.financial_tax.models import (ComplianceCheckRequest,
                                          TaxRateResponse)
 
 
-class TestModels:
+class TestModels:.
     """Test suite for Financial Tax Agent models."""
 
-    def test_tax_calculation_request_valid(self):
+    def test_tax_calculation_request_valid(self):.
         """Test valid tax calculation request."""
         request = TaxCalculationRequest(
             income=100000,

@@ -11,10 +11,10 @@ from .models import (ComplianceCheckRequest, ComplianceCheckResponse,
                      TaxRateRequest, TaxRateResponse)
 
 
-class TaxCalculationChain:
+class TaxCalculationChain:.
     """Chain for tax calculation processing."""
 
-    def __init__(self, llm: ChatOpenAI = None):
+    def __init__(self, llm: ChatOpenAI = None):.
         """Initialize the tax calculation chain with an optional LLM."""
         self.llm = llm or ChatOpenAI(temperature=0, model="gpt-4")
         self.output_parser = PydanticOutputParser(
@@ -42,7 +42,7 @@ Provide a detailed tax calculation including:
 6. Effective and marginal tax rates
 7. Detailed breakdown of calculations
 
-{format_instructions}
+{format_instructions}.
 """,
             input_variables=[
                 "income",
@@ -80,7 +80,7 @@ Provide a detailed tax calculation including:
 class FinancialAnalysisChain:
     """Chain for financial analysis processing."""
 
-    def __init__(self, llm: ChatOpenAI = None):
+    def __init__(self, llm: ChatOpenAI = None):.
         """Initialize the financial analysis chain with an optional LLM."""
         self.llm = llm or ChatOpenAI(temperature=0, model="gpt-4")
         self.output_parser = PydanticOutputParser(
@@ -104,7 +104,7 @@ Provide a comprehensive financial analysis including:
 5. Recommendations
 6. Industry benchmarks if available
 
-{format_instructions}
+{format_instructions}.
 """,
             input_variables=[
                 "financial_statements",
@@ -140,7 +140,7 @@ Provide a comprehensive financial analysis including:
 class ComplianceCheckChain:
     """Chain for tax compliance checking."""
 
-    def __init__(self, llm: ChatOpenAI = None):
+    def __init__(self, llm: ChatOpenAI = None):.
         """Initialize the compliance check chain with an optional LLM."""
         self.llm = llm or ChatOpenAI(temperature=0, model="gpt-4")
         self.output_parser = PydanticOutputParser(
@@ -164,7 +164,7 @@ Perform a comprehensive compliance check and provide:
 4. Detailed findings by compliance area
 5. Recommendations for remediation
 
-{format_instructions}
+{format_instructions}.
 """,
             input_variables=[
                 "entity_type",
@@ -200,7 +200,7 @@ Perform a comprehensive compliance check and provide:
 class RateLookupChain:
     """Chain for tax rate lookup."""
 
-    def __init__(self, llm: ChatOpenAI = None):
+    def __init__(self, llm: ChatOpenAI = None):.
         """Initialize the tax rate lookup chain with an optional LLM."""
         self.llm = llm or ChatOpenAI(temperature=0, model="gpt-4")
         self.output_parser = PydanticOutputParser(pydantic_object=TaxRateResponse)
@@ -221,7 +221,7 @@ Return comprehensive tax rate information including:
 4. Special rates for different categories
 5. Additional relevant information
 
-{format_instructions}
+{format_instructions}.
 """,
             input_variables=[
                 "jurisdiction",

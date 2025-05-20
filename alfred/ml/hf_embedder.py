@@ -12,11 +12,11 @@ from alfred.core.protocols import Service
 logger = logging.getLogger(__name__)
 
 
-class HFEmbedder(Service):
+class HFEmbedder(Service):.
     """HuggingFace transformer-based embedder for alert messages.
 
-    Uses MiniLM model for efficient semantic embeddings with
-    balanced performance and resource usage.
+    Uses MiniLM model for efficient semantic embeddings with balanced performance and
+    resource usage.
     """
 
     DEFAULT_MODEL = "all-MiniLM-L6-v2"
@@ -33,7 +33,7 @@ class HFEmbedder(Service):
         Args:
             model_name: HuggingFace model name (default: all-MiniLM-L6-v2)
             device: Device to run model on (cpu/cuda)
-            batch_size: Batch size for encoding
+            batch_size: Batch size for encoding.
         """
         self.model_name = model_name
         self.device = device
@@ -58,7 +58,7 @@ class HFEmbedder(Service):
             texts: Single text or list of texts to embed
 
         Returns:
-            Numpy array of embeddings (1D for single text, 2D for list)
+            Numpy array of embeddings (1D for single text, 2D for list).
         """
         if isinstance(texts, str):
             texts = [texts]
@@ -92,7 +92,7 @@ class HFEmbedder(Service):
             embeddings2: Second embedding vector
 
         Returns:
-            Cosine similarity score (0-1)
+            Cosine similarity score (0-1).
         """
         # Normalize vectors
         norm1 = np.linalg.norm(embeddings1)
@@ -118,7 +118,7 @@ class HFEmbedder(Service):
             candidate_embeddings: Matrix of candidate embeddings
 
         Returns:
-            Array of similarity scores
+            Array of similarity scores.
         """
         # Normalize query
         query_norm = query_embedding / np.linalg.norm(query_embedding)
@@ -139,7 +139,7 @@ class HFEmbedder(Service):
             text: Input text
 
         Returns:
-            Cleaned text
+            Cleaned text.
         """
         # Basic cleaning
         text = text.strip()
@@ -162,7 +162,7 @@ class HFEmbedder(Service):
         """Get information about the loaded model.
 
         Returns:
-            Dictionary with model metadata
+            Dictionary with model metadata.
         """
         return {
             "model_name": self.model_name,

@@ -13,7 +13,7 @@ from alfred.slack.diagnostics.bot import DiagnosticsBot
 logger = structlog.get_logger()
 
 
-async def main() -> None:
+async def main() -> None:.
     """Run the diagnostics bot."""
     # Initialize Slack app
     app = AsyncApp(

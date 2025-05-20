@@ -1,8 +1,7 @@
-"""
-Niche-Scout Workflow Implementation for Social Intelligence Agent.
+"""Niche-Scout Workflow Implementation for Social Intelligence Agent.
 
-This module provides functionality to identify fast-growing, high-potential,
-and Shorts-friendly YouTube niches on a daily basis.
+This module provides functionality to identify fast-growing, high- potential, and
+Shorts-friendly YouTube niches on a daily basis.
 """
 
 import json
@@ -22,14 +21,14 @@ from app.youtube_api import YouTubeAPIError, get_trends_by_category
 logger = structlog.get_logger(__name__)
 
 
-class NicheScout:
+class NicheScout:.
     """Implements the Niche-Scout workflow for YouTube trend analysis."""
 
     def __init__(self, output_dir: str = "/app/data/niche_scout"):
         """Initialize the NicheScout workflow.
 
         Args:
-            output_dir: Directory to store output data and results
+            output_dir: Directory to store output data and results.
         """
         self.output_dir = output_dir
         os.makedirs(output_dir, exist_ok=True)
@@ -277,7 +276,7 @@ class NicheScout:
             subcategory: Optional subcategory for more specific analysis
 
         Returns:
-            Dictionary with simulated niche analysis results
+            Dictionary with simulated niche analysis results.
         """
         now = datetime.now().strftime("%Y-%m-%d")
 

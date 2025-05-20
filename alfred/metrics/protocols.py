@@ -1,7 +1,7 @@
 """Protocol interfaces for alfred.metrics module.
 
-This module defines the abstract interfaces used throughout the alfred.metrics
-subsystem for metrics collection, monitoring, and observability.
+This module defines the abstract interfaces used throughout the alfred.metrics subsystem
+for metrics collection, monitoring, and observability.
 """
 
 from abc import abstractmethod
@@ -10,11 +10,11 @@ from typing import Any, Dict, List, Optional, Protocol
 from prometheus_client import CollectorRegistry
 
 
-class MetricsCollector(Protocol):
+class MetricsCollector(Protocol):.
     """Protocol for metrics collection."""
 
     @abstractmethod
-    def collect_metrics(self) -> Dict[str, float]:
+    def collect_metrics(self) -> Dict[str, float]:.
         """Collect current metrics.
 
         Returns:
@@ -29,7 +29,7 @@ class MetricsCollector(Protocol):
         metric_type: str,
         description: str,
         labels: Optional[List[str]] = None,
-    ) -> None:
+    ) -> None:.
         """Register a new metric.
 
         Args:
@@ -41,11 +41,11 @@ class MetricsCollector(Protocol):
         ...
 
 
-class ServiceMonitor(Protocol):
+class ServiceMonitor(Protocol):.
     """Protocol for monitoring service health."""
 
     @abstractmethod
-    def check_service_health(self, service_name: str, service_url: str) -> bool:
+    def check_service_health(self, service_name: str, service_url: str) -> bool:.
         """Check if a service is healthy.
 
         Args:
@@ -58,7 +58,7 @@ class ServiceMonitor(Protocol):
         ...
 
     @abstractmethod
-    def get_service_metrics(self, service_name: str) -> Dict[str, Any]:
+    def get_service_metrics(self, service_name: str) -> Dict[str, Any]:.
         """Get metrics for a specific service.
 
         Args:
@@ -70,11 +70,11 @@ class ServiceMonitor(Protocol):
         ...
 
 
-class PrometheusExporter(Protocol):
+class PrometheusExporter(Protocol):.
     """Protocol for Prometheus metrics export."""
 
     @abstractmethod
-    def export_metrics(self) -> str:
+    def export_metrics(self) -> str:.
         """Export metrics in Prometheus format.
 
         Returns:
@@ -83,7 +83,7 @@ class PrometheusExporter(Protocol):
         ...
 
     @abstractmethod
-    def get_registry(self) -> CollectorRegistry:
+    def get_registry(self) -> CollectorRegistry:.
         """Get the Prometheus collector registry.
 
         Returns:
@@ -92,11 +92,11 @@ class PrometheusExporter(Protocol):
         ...
 
 
-class DatabaseMetricsCollector(Protocol):
+class DatabaseMetricsCollector(Protocol):.
     """Protocol for database-specific metrics collection."""
 
     @abstractmethod
-    def collect_connection_metrics(self) -> Dict[str, int]:
+    def collect_connection_metrics(self) -> Dict[str, int]:.
         """Collect database connection metrics.
 
         Returns:
@@ -105,7 +105,7 @@ class DatabaseMetricsCollector(Protocol):
         ...
 
     @abstractmethod
-    def collect_query_metrics(self) -> Dict[str, float]:
+    def collect_query_metrics(self) -> Dict[str, float]:.
         """Collect database query performance metrics.
 
         Returns:

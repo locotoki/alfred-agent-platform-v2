@@ -1,7 +1,7 @@
 """Slack webhook adapter with HMAC verification.
 
-This module implements the FastAPI endpoint for Slack events and commands,
-including request signature validation.
+This module implements the FastAPI endpoint for Slack events and commands, including
+request signature validation.
 """
 
 import hashlib
@@ -44,7 +44,7 @@ class SlackRequest(BaseModel):
     trigger_id: str
 
 
-class SlackEventWrapper(BaseModel):
+class SlackEventWrapper(BaseModel):.
     """Model for Slack event wrapper."""
 
     token: Optional[str] = None
@@ -57,13 +57,13 @@ class SlackEventWrapper(BaseModel):
     challenge: Optional[str] = None  # For URL verification
 
 
-class SlackVerifier:
+class SlackVerifier:.
     """Handles Slack request signature verification."""
 
     def __init__(self, signing_secret: str):
         self.signing_secret = signing_secret
 
-    def verify_signature(self, timestamp: str, body: bytes, signature: str) -> bool:
+    def verify_signature(self, timestamp: str, body: bytes, signature: str) -> bool:.
         """Verify Slack request signature.
 
         Args:
@@ -111,7 +111,6 @@ else:
 @app.post("/slack/events")
 async def handle_slack_events(request: Request) -> Response:
     """Handle Slack events and slash commands."""
-
     # Get headers for verification
     timestamp = request.headers.get("X-Slack-Request-Timestamp", "")
     signature = request.headers.get("X-Slack-Signature", "")

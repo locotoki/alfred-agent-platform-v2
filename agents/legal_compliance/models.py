@@ -1,4 +1,4 @@
-"""Legal Compliance Agent Models"""
+"""Legal Compliance Agent Models."""
 
 from datetime import datetime
 from enum import Enum
@@ -36,7 +36,7 @@ class DocumentType(str, Enum):
 
 # Request Models
 class ComplianceAuditRequest(BaseModel):
-    """Request model for compliance audit"""
+    """Request model for compliance audit."""
 
     organization_name: str
     audit_scope: List[str]
@@ -45,8 +45,8 @@ class ComplianceAuditRequest(BaseModel):
     include_recommendations: bool = True
 
 
-class DocumentAnalysisRequest(BaseModel):
-    """Request model for document analysis"""
+class DocumentAnalysisRequest(BaseModel):.
+    """Request model for document analysis."""
 
     document_type: DocumentType
     document_content: str
@@ -55,8 +55,8 @@ class DocumentAnalysisRequest(BaseModel):
     check_for_pii: bool = True
 
 
-class RegulationCheckRequest(BaseModel):
-    """Request model for regulation checks"""
+class RegulationCheckRequest(BaseModel):.
+    """Request model for regulation checks."""
 
     business_activity: str
     jurisdictions: List[str]
@@ -64,8 +64,8 @@ class RegulationCheckRequest(BaseModel):
     specific_regulations: Optional[List[str]] = None
 
 
-class ContractReviewRequest(BaseModel):
-    """Request model for contract review"""
+class ContractReviewRequest(BaseModel):.
+    """Request model for contract review."""
 
     contract_type: str
     contract_content: str
@@ -79,7 +79,7 @@ class ContractReviewRequest(BaseModel):
 
 # Result Models
 class ComplianceIssue(BaseModel):
-    """Compliance issue model"""
+    """Compliance issue model."""
 
     issue_id: str
     category: ComplianceCategory
@@ -89,8 +89,8 @@ class ComplianceIssue(BaseModel):
     recommendations: List[str]
 
 
-class ComplianceAuditResult(BaseModel):
-    """Result model for compliance audit"""
+class ComplianceAuditResult(BaseModel):.
+    """Result model for compliance audit."""
 
     audit_id: str
     organization_name: str
@@ -101,8 +101,8 @@ class ComplianceAuditResult(BaseModel):
     executive_summary: str
 
 
-class DocumentAnalysisResult(BaseModel):
-    """Result model for document analysis"""
+class DocumentAnalysisResult(BaseModel):.
+    """Result model for document analysis."""
 
     document_id: str
     document_type: DocumentType
@@ -114,8 +114,8 @@ class DocumentAnalysisResult(BaseModel):
     summary: str
 
 
-class RegulationCheckResult(BaseModel):
-    """Result model for regulation checks"""
+class RegulationCheckResult(BaseModel):.
+    """Result model for regulation checks."""
 
     check_id: str
     business_activity: str
@@ -125,8 +125,8 @@ class RegulationCheckResult(BaseModel):
     recommendations: List[str]
 
 
-class ContractReviewResult(BaseModel):
-    """Result model for contract review"""
+class ContractReviewResult(BaseModel):.
+    """Result model for contract review."""
 
     review_id: str
     contract_type: str

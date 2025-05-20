@@ -1,6 +1,4 @@
-"""
-Data models for alert system.
-"""
+"""Data models for alert system."""
 
 from dataclasses import dataclass
 from datetime import datetime
@@ -8,7 +6,7 @@ from typing import Optional
 
 
 @dataclass
-class AlertSnooze:
+class AlertSnooze:.
     """Alert snooze record."""
 
     id: str

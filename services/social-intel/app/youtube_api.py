@@ -1,5 +1,4 @@
-"""
-YouTube API Integration Module.
+"""YouTube API Integration Module.
 
 This module provides functions to interact with the YouTube Data API v3 for fetching
 trends, statistics, and channel data.
@@ -42,7 +41,7 @@ async def search_videos(
         List of video objects with snippet information
 
     Raises:
-        YouTubeAPIError: If the API request fails
+        YouTubeAPIError: If the API request fails.
     """
     if not YOUTUBE_API_KEY:
         raise YouTubeAPIError("YouTube API key is not configured")
@@ -99,7 +98,7 @@ async def get_video_details(video_ids: List[str]) -> List[Dict[str, Any]]:
         List of video details including statistics
 
     Raises:
-        YouTubeAPIError: If the API request fails
+        YouTubeAPIError: If the API request fails.
     """
     if not YOUTUBE_API_KEY:
         raise YouTubeAPIError("YouTube API key is not configured")
@@ -155,7 +154,7 @@ async def get_channel_details(channel_ids: List[str]) -> List[Dict[str, Any]]:
         List of channel details including statistics
 
     Raises:
-        YouTubeAPIError: If the API request fails
+        YouTubeAPIError: If the API request fails.
     """
     if not YOUTUBE_API_KEY:
         raise YouTubeAPIError("YouTube API key is not configured")

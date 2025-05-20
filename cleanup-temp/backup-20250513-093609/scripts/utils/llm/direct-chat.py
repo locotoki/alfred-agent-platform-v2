@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""
-Direct chat interface with Ollama LLM models.
+"""Direct chat interface with Ollama LLM models.
 
 This script provides a simple command-line chat interface to Ollama models,
 completely bypassing the model router and the Streamlit UI.
@@ -17,14 +16,15 @@ import sys
 import requests
 
 
-class OllamaChat:
+class OllamaChat:.
     """Simple command-line chat interface for Ollama."""
 
     def __init__(self, model="tinyllama"):
         """Initialize the chat interface.
 
         Args:
-            model: The Ollama model to use (default: tinyllama)
+            model: The Ollama model to use (default: tinyllama).
+
         """
         self.model = model
         self.history = []
@@ -37,7 +37,8 @@ class OllamaChat:
             message: The message to send
 
         Returns:
-            The model's response
+            The model's response.
+
         """
         # Add user message to history
         self.history.append({"role": "user", "content": message})

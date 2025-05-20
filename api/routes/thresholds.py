@@ -43,7 +43,8 @@ async def get_thresholds() -> ThresholdResponse:
     """Get current threshold configuration.
 
     Returns:
-        Current threshold values
+        Current threshold values.
+
     """
     thresholds = threshold_service.get_thresholds()
     return ThresholdResponse(**thresholds)
@@ -60,7 +61,8 @@ async def update_thresholds(updates: ThresholdUpdate) -> ThresholdResponse:
         Updated threshold values
 
     Raises:
-        HTTPException: If update fails
+        HTTPException: If update fails.
+
     """
     try:
         # Filter out None values
@@ -92,7 +94,8 @@ async def optimize_thresholds(metrics: Dict[str, float]) -> ThresholdResponse:
         metrics: Performance metrics (e.g., false_positive_rate, accuracy)
 
     Returns:
-        Optimized threshold values
+        Optimized threshold values.
+
     """
     try:
         optimized = threshold_service.optimize_thresholds(metrics)

@@ -13,7 +13,7 @@ from alfred.alerts.dispatcher import (format_alert_for_slack, handle_alert,
 pytestmark = pytest.mark.alerts
 
 
-class TestHandleAlert:
+class TestHandleAlert:.
     """Test suite for handle_alert function."""
 
     @patch("alfred.alerts.dispatcher.send_to_slack")
