@@ -9,10 +9,18 @@ from langgraph.graph import END, Graph
 from libs.a2a_adapter import A2AEnvelope
 from libs.agent_core import BaseAgent
 
-from .chains import (ComplianceCheckChain, FinancialAnalysisChain,
-                     RateLookupChain, TaxCalculationChain)
-from .models import (ComplianceCheckRequest, FinancialAnalysisRequest,
-                     TaxCalculationRequest, TaxRateRequest)
+from .chains import (
+    ComplianceCheckChain,
+    FinancialAnalysisChain,
+    RateLookupChain,
+    TaxCalculationChain,
+)
+from .models import (
+    ComplianceCheckRequest,
+    FinancialAnalysisRequest,
+    TaxCalculationRequest,
+    TaxRateRequest,
+)
 
 logger = structlog.get_logger(__name__)
 

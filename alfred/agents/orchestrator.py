@@ -32,7 +32,9 @@ class AgentOrchestrator:
         """Initialize the orchestrator with the default intent router"""
         self._intent_router = router
 
-    async def process_message(self, message: str, context: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+    async def process_message(
+        self, message: str, context: Optional[Dict[str, Any]] = None
+    ) -> Dict[str, Any]:
         """Process a message through the orchestrator.
 
         Args:
