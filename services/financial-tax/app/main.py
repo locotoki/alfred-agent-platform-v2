@@ -11,14 +11,11 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from prometheus_client import Counter, Gauge, Histogram
 
-from agents.financial_tax import (
-    ComplianceCheckRequest,
-    FinancialAnalysisRequest,
-    FinancialTaxAgent,
-    TaxCalculationRequest,
-    TaxRateRequest,
-)
-from libs.a2a_adapter import A2AEnvelope, PolicyMiddleware, PubSubTransport, SupabaseTransport
+from agents.financial_tax import (ComplianceCheckRequest,
+                                  FinancialAnalysisRequest, FinancialTaxAgent,
+                                  TaxCalculationRequest, TaxRateRequest)
+from libs.a2a_adapter import (A2AEnvelope, PolicyMiddleware, PubSubTransport,
+                              SupabaseTransport)
 from libs.agent_core.health import create_health_app
 
 logger = structlog.get_logger(__name__)
@@ -61,15 +58,15 @@ security = HTTPBearer()
 async def lifespan(app: FastAPI):
     """Manage application lifecycle"""
     # Startup
-    await supabase_transportconnect()
-    await financial_tax_agentstart()
+    await supabase_transport.connect()
+    await financial_tax_agent.start()
     logger.info("financial_tax_service_started")
 
     yield
 
     # Shutdown
-    await financial_tax_agentstop()
-    await supabase_transportdisconnect()
+    await financial_tax_agent.stop()
+    await supabase_transport.disconnect()
     logger.info("financial_tax_service_stopped")
 
 
@@ -108,10 +105,10 @@ async def calculate_tax(
         envelope = A2AEnvelope(intent="TAX_CALCULATION", content=request.dict())
 
         # Store task
-        await supabase_transportstore_task(envelope)
+        await supabase_transport.store_task(envelope)
 
         # Publish task
-        message_id = await pubsub_transportpublish_task(envelope)
+        message_id = await pubsub_transport.publish_task(envelope)
 
         API_REQUESTS.labels(endpoint="calculate-tax", method="POST", status="success").inc()
 
@@ -138,8 +135,8 @@ async def analyze_financials(
     try:
         envelope = A2AEnvelope(intent="FINANCIAL_ANALYSIS", content=request.dict())
 
-        await supabase_transportstore_task(envelope)
-        message_id = await pubsub_transportpublish_task(envelope)
+        await supabase_transport.store_task(envelope)
+        message_id = await pubsub_transport.publish_task(envelope)
 
         API_REQUESTS.labels(endpoint="analyze-financials", method="POST", status="success").inc()
 
@@ -166,8 +163,8 @@ async def check_compliance(
     try:
         envelope = A2AEnvelope(intent="TAX_COMPLIANCE_CHECK", content=request.dict())
 
-        await supabase_transportstore_task(envelope)
-        message_id = await pubsub_transportpublish_task(envelope)
+        await supabase_transport.store_task(envelope)
+        message_id = await pubsub_transport.publish_task(envelope)
 
         API_REQUESTS.labels(endpoint="check-compliance", method="POST", status="success").inc()
 
@@ -203,8 +200,8 @@ async def get_tax_rates(
 
         envelope = A2AEnvelope(intent="RATE_SHEET_LOOKUP", content=rate_request.dict())
 
-        await supabase_transportstore_task(envelope)
-        message_id = await pubsub_transportpublish_task(envelope)
+        await supabase_transport.store_task(envelope)
+        message_id = await pubsub_transport.publish_task(envelope)
 
         API_REQUESTS.labels(endpoint="tax-rates", method="GET", status="success").inc()
 
@@ -226,7 +223,7 @@ async def get_task_status(
 ):
     """Get status of a specific task"""
     try:
-        task_status = await supabase_transportget_task_status(task_id)
+        task_status = await supabase_transport.get_task_status(task_id)
 
         if not task_status:
             raise HTTPException(status_code=404, detail="Task not found")

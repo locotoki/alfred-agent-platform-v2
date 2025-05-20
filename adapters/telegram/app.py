@@ -13,14 +13,8 @@ from typing import Any, Optional
 
 from fastapi import FastAPI, Request, Response, status
 from fastapi.middleware.cors import CORSMiddleware
-from prometheus_client import (
-    CONTENT_TYPE_LATEST,
-    CollectorRegistry,
-    Counter,
-    Histogram,
-    generate_latest,
-    multiprocess,
-)
+from prometheus_client import (CONTENT_TYPE_LATEST, CollectorRegistry, Counter,
+                               Histogram, generate_latest, multiprocess)
 from telegram import Update
 from telegram.ext import Application, CommandHandler, MessageHandler, filters
 

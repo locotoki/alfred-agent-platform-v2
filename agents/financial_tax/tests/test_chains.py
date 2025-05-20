@@ -4,20 +4,13 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-from agents.financial_tax.chains import (
-    ComplianceCheckChain,
-    FinancialAnalysisChain,
-    RateLookupChain,
-    TaxCalculationChain,
-)
-from agents.financial_tax.models import (
-    ComplianceCheckRequest,
-    EntityType,
-    FinancialAnalysisRequest,
-    TaxCalculationRequest,
-    TaxJurisdiction,
-    TaxRateRequest,
-)
+from agents.financial_tax.chains import (ComplianceCheckChain,
+                                         FinancialAnalysisChain,
+                                         RateLookupChain, TaxCalculationChain)
+from agents.financial_tax.models import (ComplianceCheckRequest, EntityType,
+                                         FinancialAnalysisRequest,
+                                         TaxCalculationRequest,
+                                         TaxJurisdiction, TaxRateRequest)
 
 
 @pytest.fixture
@@ -126,7 +119,7 @@ class TestTaxCalculationChain:
             entity_type=EntityType.INDIVIDUAL,
         )
 
-        result = await tax_calc_chaincalculate(request)
+        result = await tax_calc_chain.calculate(request)
 
         assert result.gross_income == 100000
         assert result.net_tax_due == 18000
@@ -186,7 +179,7 @@ class TestFinancialAnalysisChain:
             industry="technology",
         )
 
-        result = await analysis_chainanalyze(request)
+        result = await analysis_chain.analyze(request)
 
         assert result.key_metrics["gross_margin"] == 0.25
         assert len(result.insights) == 2
@@ -251,7 +244,7 @@ class TestComplianceCheckChain:
             compliance_areas=["sales_tax", "income_tax"],
         )
 
-        result = await compliance_chaincheck_compliance(request)
+        result = await compliance_chain.check_compliance(request)
 
         assert result.compliance_status == "partial_compliance"
         assert result.risk_level == "medium"
@@ -313,7 +306,7 @@ class TestRateLookupChain:
             income_level=100000,
         )
 
-        result = await rate_lookup_chainlookup_rates(request)
+        result = await rate_lookup_chain.lookup_rates(request)
 
         assert result.jurisdiction == "US-CA"
         assert result.standard_deduction == 13850

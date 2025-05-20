@@ -22,17 +22,13 @@ class TestExactlyOnceProcessing:
         """Clean up test data before and after tests."""
         # Clean before test
         async with supabase_transport._pool.acquire() as conn:
-            await conn.execute(
-                "DELETE FROM processed_messages WHERE message_id LIKE 'test_%'"
-            )
+            await conn.execute("DELETE FROM processed_messages WHERE message_id LIKE 'test_%'")
 
         yield
 
         # Clean after test
         async with supabase_transport._pool.acquire() as conn:
-            await conn.execute(
-                "DELETE FROM processed_messages WHERE message_id LIKE 'test_%'"
-            )
+            await conn.execute("DELETE FROM processed_messages WHERE message_id LIKE 'test_%'")
 
     @pytest.mark.asyncio
     async def test_duplicate_detection(self, supabase_transport, cleanup_test_data):
@@ -56,9 +52,7 @@ class TestExactlyOnceProcessing:
             assert result == 1
 
     @pytest.mark.asyncio
-    async def test_concurrent_duplicate_checks(
-        self, supabase_transport, cleanup_test_data
-    ):
+    async def test_concurrent_duplicate_checks(self, supabase_transport, cleanup_test_data):
         """Test duplicate detection under concurrent access."""
         message_id = "test_concurrent_456"
 
@@ -77,13 +71,11 @@ class TestExactlyOnceProcessing:
         assert true_count == 9
 
     @pytest.mark.asyncio
-    async def test_cleanup_expired_messages(
-        self, supabase_transport, cleanup_test_data
-    ):
+    async def test_cleanup_expired_messages(self, supabase_transport, cleanup_test_data):
         """Test cleanup of expired messages."""
         async with supabase_transport._pool.acquire() as conn:
             # Insert an expired message
-            await conn.execute(.
+            await conn.execute(
                 """
                 INSERT INTO processed_messages (message_id, processed_at, expires_at)
                 VALUES ($1, $2, $3)
@@ -97,7 +89,7 @@ class TestExactlyOnceProcessing:
             await conn.execute(
                 """
                 INSERT INTO processed_messages (message_id)
-                VALUES ($1).
+                VALUES ($1)
                 """,
                 "test_valid_101112",
             )
@@ -120,9 +112,7 @@ class TestExactlyOnceProcessing:
             assert valid_count == 1
 
     @pytest.mark.asyncio
-    async def test_message_expiration_timing(
-        self, supabase_transport, cleanup_test_data
-    ):
+    async def test_message_expiration_timing(self, supabase_transport, cleanup_test_data):
         """Test that messages have correct expiration times."""
         message_id = "test_expiration_131415"
 
@@ -133,7 +123,7 @@ class TestExactlyOnceProcessing:
                 """
                 SELECT processed_at, expires_at
                 FROM processed_messages
-                WHERE message_id = $1.
+                WHERE message_id = $1
                 """,
                 message_id,
             )

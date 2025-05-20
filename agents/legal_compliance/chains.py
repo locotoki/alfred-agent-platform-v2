@@ -5,12 +5,8 @@ from langchain.output_parsers import PydanticOutputParser
 from langchain.prompts import PromptTemplate
 from langchain_openai import ChatOpenAI
 
-from .models import (
-    ComplianceAuditResult,
-    ContractReviewResult,
-    DocumentAnalysisResult,
-    RegulationCheckResult,
-)
+from .models import (ComplianceAuditResult, ContractReviewResult,
+                     DocumentAnalysisResult, RegulationCheckResult)
 
 # Initialize the LLM
 llm = ChatOpenAI(
