@@ -1,0 +1,1 @@
+# SC-LS-001 Local Stack Boot Test\n\nSee local/notes/boot_errors_sc-ls-001.log for full findings.\n\nIssues found:\n- PostgreSQL incompatibility\n- Grafana datasource config issues\n- Docker compose generation bug\n- jq dependency missing
