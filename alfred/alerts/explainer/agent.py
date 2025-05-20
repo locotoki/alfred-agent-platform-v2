@@ -5,7 +5,7 @@ alert metadata and providing actionable context.
 """
 
 import re
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, Optional, Union
 
 import structlog
 from langchain.chains import LLMChain
@@ -87,7 +87,7 @@ Be concise but informative.
         try:
             if self._chain:
                 # Use the LLM chain to generate the explanation
-                explanation = await self_chain.arun(
+                explanation = await self._chain.arun(
                     alert_name=alert_name,
                     alert_details=alert_details,
                     metric_value=metric_value,

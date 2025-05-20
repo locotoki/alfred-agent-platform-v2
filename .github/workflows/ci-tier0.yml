@@ -154,15 +154,31 @@ jobs:
       - name: Build Slack Adapter Docker image
         run: |
           echo "Building Slack Adapter Docker image..."
-          docker build -t alfred-slack-adapter:test -f alfred/adapters/slack/Dockerfile .
+          if [ -f "services/slack_adapter/Dockerfile" ]; then
+            echo "Building from services/slack_adapter/Dockerfile (newer service)..."
+            docker build -t services-slack-adapter:test -f services/slack_adapter/Dockerfile services/slack_adapter/
+            echo "Build of services/slack_adapter successful"
+          else
+            echo "Building from alfred/adapters/slack/Dockerfile (legacy)..."
+            docker build -t alfred-slack-adapter:test -f alfred/adapters/slack/Dockerfile .
+          fi
 
       - name: Test Docker image
         run: |
           echo "Testing Slack Adapter Docker image..."
-          docker run --rm -d --name slack-adapter-test -p 8000:8000 alfred-slack-adapter:test
-          sleep 5
-          curl -f http://localhost:8000/healthz || exit 1
-          docker stop slack-adapter-test
+          if [ -f "services/slack_adapter/Dockerfile" ]; then
+            echo "Testing services/slack_adapter container..."
+            docker run --rm -d --name slack-adapter-test -p 3000:3000 services-slack-adapter:test
+            sleep 5
+            curl -f http://localhost:3000/health || exit 1
+            docker stop slack-adapter-test
+          else
+            echo "Testing alfred/adapters/slack container..."
+            docker run --rm -d --name slack-adapter-test -p 8000:8000 alfred-slack-adapter:test
+            sleep 5
+            curl -f http://localhost:8000/healthz || exit 1
+            docker stop slack-adapter-test
+          fi
 
   # CI summary (informational only)
   ci-summary:
