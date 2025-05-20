@@ -194,7 +194,10 @@ class FinancialTaxAgent(BaseAgent):
                 "key_metrics": {"gross_margin": 0.25, "debt_to_equity": 0.4},
                 "trends": {"revenue_growth": [0.05, 0.07, 0.06, 0.08]},
                 "insights": ["Strong revenue growth", "Healthy profit margins"],
-                "recommendations": ["Consider expanding operations", "Maintain current debt levels"],
+                "recommendations": [
+                    "Consider expanding operations",
+                    "Maintain current debt levels",
+                ],
                 "visualizations": None,
                 "benchmark_comparison": {"industry_avg": 0.20},
             }

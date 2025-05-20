@@ -125,11 +125,11 @@ class TestFinancialTaxAgent:
             "response": {
                 "status": "success",
                 "intent": "TAX_CALCULATION",
-                "result": mock_result.dict.return_value
+                "result": mock_result.dict.return_value,
             }
         }
         financial_tax_agent.workflow = mock_workflow
-        
+
         # Call the process_task method
         result = await financial_tax_agent.process_task(envelope)
 
@@ -174,11 +174,11 @@ class TestFinancialTaxAgent:
             "response": {
                 "status": "success",
                 "intent": "FINANCIAL_ANALYSIS",
-                "result": mock_result.dict.return_value
+                "result": mock_result.dict.return_value,
             }
         }
         financial_tax_agent.workflow = mock_workflow
-        
+
         # Call the process_task method
         result = await financial_tax_agent.process_task(envelope)
 
@@ -231,11 +231,11 @@ class TestFinancialTaxAgent:
             "response": {
                 "status": "success",
                 "intent": "TAX_COMPLIANCE_CHECK",
-                "result": mock_result.dict.return_value
+                "result": mock_result.dict.return_value,
             }
         }
         financial_tax_agent.workflow = mock_workflow
-        
+
         # Call the process_task method
         result = await financial_tax_agent.process_task(envelope)
 
@@ -279,11 +279,11 @@ class TestFinancialTaxAgent:
             "response": {
                 "status": "success",
                 "intent": "RATE_SHEET_LOOKUP",
-                "result": mock_result.dict.return_value
+                "result": mock_result.dict.return_value,
             }
         }
         financial_tax_agent.workflow = mock_workflow
-        
+
         # Call the process_task method
         result = await financial_tax_agent.process_task(envelope)
 
@@ -301,7 +301,7 @@ class TestFinancialTaxAgent:
         mock_workflow = AsyncMock()
         mock_workflow.invoke.side_effect = ValueError("Unsupported intent: UNSUPPORTED_INTENT")
         financial_tax_agent.workflow = mock_workflow
-        
+
         with pytest.raises(ValueError, match="Unsupported intent"):
             await financial_tax_agent.process_task(envelope)
 
