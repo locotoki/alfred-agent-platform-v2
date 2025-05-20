@@ -11,6 +11,7 @@
 - Enhanced grouping algorithm with ML similarity scoring
 - Established repository-wide Black and isort formatting baseline (ops/black-baseline-fix)
 - Fixed PostgreSQL version to v15 to match data directory format (fix/sc-180-postgres-version)
+- Fixed Grafana datasource configuration to avoid multiple default datasources (fix/sc-181-grafana-datasource)
 
 ### Documentation
 - Added comprehensive noise reduction guide in docs/dev/
