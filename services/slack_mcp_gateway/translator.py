@@ -9,7 +9,7 @@ from datetime import datetime
 from typing import Any, Dict
 
 
-def build_task_request(payload: Dict[str, Any]) -> Dict[str, Any]:.
+def build_task_request(payload: Dict[str, Any]) -> Dict[str, Any]:
     """Convert a Slack command payload to an MCP task request.
 
     Args:

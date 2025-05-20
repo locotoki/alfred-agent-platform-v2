@@ -42,7 +42,7 @@ def get_redis_client() -> redis.Redis:
     return client
 
 
-def publish(message: Dict[str, Any]) -> str:.
+def publish(message: Dict[str, Any]) -> str:
     """Publish a message to the MCP requests stream.
 
     Args:

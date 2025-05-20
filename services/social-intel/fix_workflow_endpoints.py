@@ -11,7 +11,7 @@ import structlog
 logger = structlog.get_logger(__name__)
 
 
-def validate_datetime(dt_str: str) -> datetime:.
+def validate_datetime(dt_str: str) -> datetime:
     """Validate and parse a datetime string safely.
 
     Args:

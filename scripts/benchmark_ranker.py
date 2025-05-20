@@ -47,7 +47,7 @@ class RankerBenchmark:
         self.num_alerts = num_alerts
         self.results = {}
 
-    def generate_test_alerts(self) -> List[Tuple[BenchmarkAlert, Dict]]:.
+    def generate_test_alerts(self) -> List[Tuple[BenchmarkAlert, Dict, bool]]:
         """Generate synthetic test alerts with labels"""
         alerts = []
 
@@ -111,7 +111,7 @@ class RankerBenchmark:
 
         # Measure memory before
         process = psutil.Process()
-        mem_before = process.memory_info()rss / 1024 / 1024  # MB
+        mem_before = process.memory_info().rss / 1024 / 1024  # MB
 
         # Start timing
         start_time = time.time()
@@ -128,7 +128,7 @@ class RankerBenchmark:
         processing_time = end_time - start_time
 
         # Measure memory after
-        mem_after = process.memory_info()rss / 1024 / 1024  # MB
+        mem_after = process.memory_info().rss / 1024 / 1024  # MB
         memory_used = mem_after - mem_before
 
         # Calculate metrics
