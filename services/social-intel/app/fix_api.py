@@ -3,7 +3,7 @@
 
 This script updates the main.py file to add JSON body handling to the endpoints.
 """
-# type: ignore
+
 import os
 import re
 import sys

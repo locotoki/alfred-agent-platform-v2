@@ -2,7 +2,7 @@
 
 Automates training, validation, and model registry updates.
 """
-# type: ignore
+
 import json
 import time
 from datetime import datetime

@@ -1,5 +1,5 @@
 """Data models for Financial Tax Agent"""
-# type: ignore
+
 from enum import Enum
 from typing import Any, Dict, List, Optional
 

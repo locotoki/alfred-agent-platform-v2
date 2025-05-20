@@ -3,6 +3,7 @@
 This module defines the abstract interfaces used throughout the alfred.metrics subsystem
 for metrics collection, monitoring, and observability.
 """
+
 from abc import abstractmethod
 from typing import Any, Dict, List, Optional, Protocol
 

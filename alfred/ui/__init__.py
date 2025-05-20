@@ -1,5 +1,5 @@
 """Alfred UI module"""
-# type: ignore
+
 from typing import List
 
 # Will be imported when streamlit_chat is properly typed

@@ -2,7 +2,7 @@
 """Cleanup job for expired processed messages to maintain deduplication
 efficiency.
 """
-# type: ignore
+
 import asyncio
 import os
 

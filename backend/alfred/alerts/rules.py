@@ -3,7 +3,7 @@
 Provides a YAML-based configuration system for per-service grouping
 rules with dynamic evaluation.
 """
-# type: ignore
+
 import operator
 import re
 from dataclasses import dataclass

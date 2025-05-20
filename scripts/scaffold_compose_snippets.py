@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Scaffold compose.yml snippets for each service based on services.yaml"""
-# type: ignore
+
 from pathlib import Path
 
 import yaml

@@ -2,7 +2,7 @@
 
 This module provides a way to track service dependencies.
 """
-# type: ignore
+
 from typing import Dict
 
 import structlog

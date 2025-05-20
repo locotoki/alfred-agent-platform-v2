@@ -1,4 +1,5 @@
 """Alfred Core Application Module"""
+
 from typing import Any, Dict, Optional
 
 import structlog

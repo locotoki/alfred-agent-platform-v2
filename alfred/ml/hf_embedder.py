@@ -1,5 +1,5 @@
 """HuggingFace transformers integration for alert embeddings"""
-# type: ignore
+
 import logging
 import os
 from typing import List, Union

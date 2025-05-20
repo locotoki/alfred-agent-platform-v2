@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Simple script to add Request parameter to endpoint handlers"""
-# type: ignore
+
 import re
 import sys
 

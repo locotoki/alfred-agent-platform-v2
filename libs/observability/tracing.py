@@ -1,5 +1,5 @@
 """OpenTelemetry tracing provider for observability"""
-# type: ignore
+
 import os
 from functools import wraps
 from typing import Any, Dict, Optional

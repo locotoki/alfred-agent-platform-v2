@@ -3,7 +3,7 @@
 This module provides an agent that explains alerts in natural language by analyzing
 alert metadata and providing actionable context.
 """
-# type: ignore
+
 import re
 from typing import Any, Dict, List, Optional, Union
 
@@ -55,7 +55,7 @@ Explain:
 4. Priority level (High, Medium, Low)
 
 Be concise but informative.
-"""
+""",
         )
 
         self._chain = LLMChain(llm=self.llm, prompt=prompt)
@@ -76,7 +76,7 @@ Be concise but informative.
         alert_name = alert_data.get("alertname", "Unknown Alert")
         alert_details = alert_data.get("description", "No details provided")
         metric_value = alert_data.get("value", "Unknown")
-        
+
         logger.info(
             "explaining_alert",
             alert_name=alert_name,
@@ -85,7 +85,7 @@ Be concise but informative.
 
         # Generate explanation
         explanation = ""
-        
+
         try:
             if self._chain:
                 # Use the LLM chain to generate the explanation
@@ -101,15 +101,15 @@ Be concise but informative.
                     alert_name, alert_details
                 )
                 explanations_total.labels(result="fallback").inc()
-                
+
             logger.info("explanation_generated", length=len(explanation))
-            
+
             return {
                 "explanation": explanation,
                 "alert_name": alert_name,
                 "success": True,
             }
-            
+
         except Exception as e:
             logger.error(
                 "explanation_error",
@@ -118,7 +118,7 @@ Be concise but informative.
                 alert_name=alert_name,
             )
             explanations_total.labels(result="error").inc()
-            
+
             return {
                 "explanation": "Error generating explanation",
                 "alert_name": alert_name,
@@ -126,7 +126,9 @@ Be concise but informative.
                 "success": False,
             }
 
-    def _generate_fallback_explanation(self, alert_name: str, alert_details: str) -> str:
+    def _generate_fallback_explanation(
+        self, alert_name: str, alert_details: str
+    ) -> str:
         """Generate a basic fallback explanation when LLM is unavailable.
 
         Args:
@@ -145,71 +147,81 @@ Be concise but informative.
 
         # Check for memory-related alerts
         if re.search(r"memory|ram|oom", alert_name.lower()):
-            explanation_parts.extend([
-                "",
-                "This appears to be a memory-related alert.",
-                "Potential causes:",
-                "- Memory leak in application",
-                "- Insufficient resources allocated",
-                "- Unexpected traffic spike",
-                "",
-                "Recommended actions:",
-                "- Check system memory usage",
-                "- Review recent deployments",
-                "- Consider scaling resources if needed",
-            ])
+            explanation_parts.extend(
+                [
+                    "",
+                    "This appears to be a memory-related alert.",
+                    "Potential causes:",
+                    "- Memory leak in application",
+                    "- Insufficient resources allocated",
+                    "- Unexpected traffic spike",
+                    "",
+                    "Recommended actions:",
+                    "- Check system memory usage",
+                    "- Review recent deployments",
+                    "- Consider scaling resources if needed",
+                ]
+            )
         # CPU alerts
         elif re.search(r"cpu|load|performance", alert_name.lower()):
-            explanation_parts.extend([
-                "",
-                "This appears to be a CPU/performance alert.",
-                "Potential causes:",
-                "- High computational load",
-                "- Inefficient code or queries",
-                "- Resource contention",
-                "",
-                "Recommended actions:",
-                "- Review system metrics",
-                "- Check for long-running processes",
-                "- Analyze recent code changes",
-            ])
+            explanation_parts.extend(
+                [
+                    "",
+                    "This appears to be a CPU/performance alert.",
+                    "Potential causes:",
+                    "- High computational load",
+                    "- Inefficient code or queries",
+                    "- Resource contention",
+                    "",
+                    "Recommended actions:",
+                    "- Review system metrics",
+                    "- Check for long-running processes",
+                    "- Analyze recent code changes",
+                ]
+            )
         # Disk alerts
         elif re.search(r"disk|storage|volume", alert_name.lower()):
-            explanation_parts.extend([
-                "",
-                "This appears to be a disk/storage alert.",
-                "Potential causes:",
-                "- Running out of disk space",
-                "- High I/O operations",
-                "- Logs or temporary files accumulation",
-                "",
-                "Recommended actions:",
-                "- Check disk usage and growth patterns",
-                "- Review log rotation settings",
-                "- Clean unnecessary files or add capacity",
-            ])
+            explanation_parts.extend(
+                [
+                    "",
+                    "This appears to be a disk/storage alert.",
+                    "Potential causes:",
+                    "- Running out of disk space",
+                    "- High I/O operations",
+                    "- Logs or temporary files accumulation",
+                    "",
+                    "Recommended actions:",
+                    "- Check disk usage and growth patterns",
+                    "- Review log rotation settings",
+                    "- Clean unnecessary files or add capacity",
+                ]
+            )
         # Network alerts
         elif re.search(r"network|connect|latency|timeout", alert_name.lower()):
-            explanation_parts.extend([
-                "",
-                "This appears to be a network-related alert.",
-                "Potential causes:",
-                "- Network congestion",
-                "- Service unavailability",
-                "- DNS or routing issues",
-                "",
-                "Recommended actions:",
-                "- Verify network connectivity",
-                "- Check dependent service status",
-                "- Review recent network changes",
-            ])
+            explanation_parts.extend(
+                [
+                    "",
+                    "This appears to be a network-related alert.",
+                    "Potential causes:",
+                    "- Network congestion",
+                    "- Service unavailability",
+                    "- DNS or routing issues",
+                    "",
+                    "Recommended actions:",
+                    "- Verify network connectivity",
+                    "- Check dependent service status",
+                    "- Review recent network changes",
+                ]
+            )
         # Generic fallback
         else:
-            explanation_parts.extend([
-                "",
-                "Please investigate the system metrics and logs for more information.",
-                "",
-                "Priority: To be determined based on system impact",
-            ])
+            explanation_parts.extend(
+                [
+                    "",
+                    "Please investigate the system metrics and logs for more information.",
+                    "",
+                    "Priority: To be determined based on system impact",
+                ]
+            )
 
         return "\n".join(explanation_parts)

@@ -2,7 +2,7 @@
 
 This implements the standard health checks required by the platform.
 """
-# type: ignore
+
 from fastapi import APIRouter, Response
 
 router = APIRouter()

@@ -3,7 +3,7 @@
 This module implements the FastAPI endpoint for Slack events and commands, including
 request signature validation.
 """
-# type: ignore
+
 import hashlib
 import hmac
 import json

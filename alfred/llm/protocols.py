@@ -3,6 +3,7 @@
 This module defines the abstract interfaces used throughout the alfred.llm subsystem for
 language model interactions and management.
 """
+
 from abc import abstractmethod
 from typing import Any, AsyncIterator, Dict, List, Optional, Protocol
 

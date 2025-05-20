@@ -3,7 +3,7 @@
 This server simulates the complete functionality without requiring real Slack
 authentication.
 """
-# type: ignore
+
 from flask import Flask, Response, jsonify, request
 
 app = Flask(__name__)

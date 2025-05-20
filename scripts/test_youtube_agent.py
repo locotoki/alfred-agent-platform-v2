@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """Manual test script for YouTube-focused flows in SocialIntelligence Agent"""
-# type: ignore
+
 import argparse
 import asyncio
 import os

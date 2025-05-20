@@ -1,4 +1,5 @@
 """Enhanced health check implementation for the Social Intelligence service"""
+
 # type: ignore
 import asyncio
 import os

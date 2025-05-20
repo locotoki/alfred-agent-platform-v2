@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Generate docker-compose.yml from individual service compose snippets"""
-# type: ignore
+
 from pathlib import Path
 
 import yaml

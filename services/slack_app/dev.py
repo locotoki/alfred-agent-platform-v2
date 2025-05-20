@@ -2,7 +2,7 @@
 
 Runs the Flask server only for testing health endpoints.
 """
-# type: ignore
+
 from dotenv import load_dotenv
 from flask import Flask, jsonify
 

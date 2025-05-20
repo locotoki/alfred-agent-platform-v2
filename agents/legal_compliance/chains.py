@@ -1,5 +1,5 @@
 """Legal Compliance Chain Components"""
-# type: ignore
+
 from langchain.chains import LLMChain
 from langchain.output_parsers import PydanticOutputParser
 from langchain.prompts import PromptTemplate

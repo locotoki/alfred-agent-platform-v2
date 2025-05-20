@@ -1,5 +1,5 @@
 """A2A adapters for SocialIntelligence Agent"""
-# type: ignore
+
 from datetime import datetime
 from typing import Any, Dict
 

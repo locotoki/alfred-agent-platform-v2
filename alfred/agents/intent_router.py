@@ -3,7 +3,7 @@
 This module implements the intent routing system that maps incoming messages to
 appropriate handlers based on intent classification.
 """
-# type: ignore
+
 import re
 from dataclasses import dataclass
 from typing import Any, Callable, Dict, Optional
@@ -80,14 +80,14 @@ class IntentRouter:
             elif any(word in message_lower for word in ["search", "find", "get"]):
                 intent.type = "search"
                 intent.confidence = 0.8
-            elif any(word in message_lower for word in ["thank", "thanks", "appreciate"]):
+            elif any(
+                word in message_lower for word in ["thank", "thanks", "appreciate"]
+            ):
                 intent.type = "gratitude"
                 intent.confidence = 0.9
 
         # Track the intent
-        intents_total.labels(
-            intent_type=intent.type, status="processed"
-        ).inc()
+        intents_total.labels(intent_type=intent.type, status="processed").inc()
 
         logger.info("intent_classified", type=intent.type, confidence=intent.confidence)
         return intent
@@ -145,17 +145,15 @@ class IntentRouter:
         """Register default intent handlers."""
         # Register a help handler
         self.register_handler("help", self._help_handler)
-        
+
         # Register gratitude handler
         self.register_handler("gratitude", self._gratitude_handler)
-        
+
         # Register a fallback handler for unknown intents
         self.register_handler("unknown", self._unknown_handler)
-        
+
         # Register a simple pattern for greetings
-        self.register_pattern(
-            "greeting", r"^(?:hi|hello|hey|greetings)(?:\s|$)"
-        )
+        self.register_pattern("greeting", r"^(?:hi|hello|hey|greetings)(?:\s|$)")
         self.register_handler("greeting", self._greeting_handler)
 
     def _help_handler(self, intent: Intent, **kwargs: Any) -> str:

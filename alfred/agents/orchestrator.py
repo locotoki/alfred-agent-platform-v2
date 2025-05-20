@@ -3,7 +3,7 @@
 This module contains the AgentOrchestrator class which coordinates
 interactions between different agent types based on intent.
 """
-# type: ignore
+
 import asyncio
 import json
 import uuid
@@ -18,7 +18,9 @@ from .intent_router import Intent, IntentRouter
 router = IntentRouter()
 
 # Register common patterns
-router.register_pattern("help", r"(?:can you )?(?:help|assist) (?:me )?(?:with )?(?P<topic>.+)")
+router.register_pattern(
+    "help", r"(?:can you )?(?:help|assist) (?:me )?(?:with )?(?P<topic>.+)"
+)
 router.register_pattern("summarize", r"(?:can you )?summarize (?P<text>.+)")
 
 # Prometheus metrics
@@ -51,70 +53,70 @@ class AgentOrchestrator:
 
         # Generate a request ID if not provided
         request_id = context.get("request_id", str(uuid.uuid4()))
-        
+
         # Add request ID to logger context
         log = logger.bind(request_id=request_id)
         log.info("processing_message", message_length=len(message))
-        
+
         # Route to determine intent
         intent = self._intent_router.route(message)
-        
+
         # Increment the metric for the intent type
         route_total.labels(intent_type=intent.type).inc()
-        
+
         # Log the detected intent
         log.info(
-            "intent_detected",
-            intent_type=intent.type, 
-            confidence=intent.confidence
+            "intent_detected", intent_type=intent.type, confidence=intent.confidence
         )
-        
+
         # Process based on intent
         response = await self._process_intent(intent, context)
-        
+
         # Add metadata to response
         response["request_id"] = request_id
         response["intent"] = intent.type
         response["confidence"] = intent.confidence
-        
+
         return response
-    
-    async def _process_intent(self, intent: Intent, context: Dict[str, Any]) -> Dict[str, Any]:
+
+    async def _process_intent(
+        self, intent: Intent, context: Dict[str, Any]
+    ) -> Dict[str, Any]:
         """Process an intent through the appropriate agent.
-        
+
         Args:
             intent: The classified intent
             context: Context information
-            
+
         Returns:
             dict: The processed response
         """
         # This is where we'd dispatch to different agents based on intent
         # For now, use the default handlers from the router
         text_response = self._intent_router.handle(intent, context=context)
-        
+
         # For some intents, we might want to process asynchronously
         # through other agents - here we could call those agents
-        
+
         return {
             "text": text_response or "I'm still learning how to respond to that.",
             "processed": True,
-            "agent": "default"
+            "agent": "default",
         }
-    
+
     def register_agent_handler(self, intent_type: str, handler_fn: callable) -> None:
         """Register an agent handler for a specific intent type.
-        
+
         Args:
             intent_type: The intent type to handle
             handler_fn: The handler function
         """
         self._intent_router.register_handler(intent_type, handler_fn)
         logger.info("agent_handler_registered", intent_type=intent_type)
-    
+
     def register_intent_pattern(self, intent_type: str, pattern: str) -> None:
         """Register a regex pattern for intent detection.
-        
+
         Args:
             intent_type: The intent type to match
             pattern: The regex pattern

@@ -3,7 +3,7 @@
 This module implements a FastAPI service that provides alert explanation
 functionality via a REST API interface.
 """
-# type: ignore
+
 import asyncio
 import json
 import os
@@ -75,10 +75,10 @@ async def readiness_check() -> Dict[str, str]:
 @app.post("/api/v1/explain", response_model=AlertExplanationResponse)
 async def explain_alert(request: AlertExplanationRequest) -> JSONResponse:
     """Explain an alert in natural language.
-    
+
     Args:
         request: The alert explanation request
-        
+
     Returns:
         A JSON response with the explanation
     """
@@ -87,30 +87,27 @@ async def explain_alert(request: AlertExplanationRequest) -> JSONResponse:
         alert_name=request.alert_name,
         has_description=bool(request.description),
     )
-    
+
     # Convert request to dict for the agent
     alert_data = request.dict()
-    
+
     # Call the agent to explain the alert
     result = await agent.explain_alert(alert_data)
-    
+
     if not result.get("success", False):
         logger.error(
-            "alert_explanation_failed", 
+            "alert_explanation_failed",
             alert_name=request.alert_name,
             error=result.get("error", "Unknown error"),
         )
-        raise HTTPException(
-            status_code=500, 
-            detail="Failed to generate explanation"
-        )
-    
+        raise HTTPException(status_code=500, detail="Failed to generate explanation")
+
     logger.info(
         "alert_explanation_success",
         alert_name=request.alert_name,
         explanation_length=len(result.get("explanation", "")),
     )
-    
+
     return JSONResponse(
         content={
             "alert_name": result.get("alert_name", request.alert_name),
@@ -123,25 +120,25 @@ async def explain_alert(request: AlertExplanationRequest) -> JSONResponse:
 @app.post("/api/v1/webhook/prometheus")
 async def prometheus_webhook(request: Request) -> Dict[str, Any]:
     """Handle Prometheus Alertmanager webhook.
-    
+
     Args:
         request: The webhook request
-        
+
     Returns:
         A status response
     """
     try:
         payload = await request.json()
         logger.info(
-            "prometheus_webhook_received", 
+            "prometheus_webhook_received",
             alerts_count=len(payload.get("alerts", [])),
         )
-        
+
         # Process alerts asynchronously
         asyncio.create_task(process_prometheus_alerts(payload))
-        
+
         return {"status": "processing", "alerts_count": len(payload.get("alerts", []))}
-        
+
     except Exception as e:
         logger.error(
             "prometheus_webhook_error",
@@ -149,19 +146,18 @@ async def prometheus_webhook(request: Request) -> Dict[str, Any]:
             error_type=type(e).__name__,
         )
         raise HTTPException(
-            status_code=400, 
-            detail="Invalid Prometheus Alertmanager payload"
+            status_code=400, detail="Invalid Prometheus Alertmanager payload"
         )
 
 
 async def process_prometheus_alerts(payload: Dict[str, Any]) -> None:
     """Process Prometheus alerts asynchronously.
-    
+
     Args:
         payload: The Prometheus Alertmanager payload
     """
     alerts = payload.get("alerts", [])
-    
+
     for alert in alerts:
         try:
             # Convert Prometheus alert format to our format
@@ -174,16 +170,16 @@ async def process_prometheus_alerts(payload: Dict[str, Any]) -> None:
                 startsAt=alert.get("startsAt", ""),
                 endsAt=alert.get("endsAt", ""),
             )
-            
+
             # Generate explanation
             result = await agent.explain_alert(alert_request.dict())
-            
+
             logger.info(
                 "alert_processed",
                 alert_name=alert_request.alert_name,
                 success=result.get("success", False),
             )
-            
+
         except Exception as e:
             logger.error(
                 "alert_processing_error",

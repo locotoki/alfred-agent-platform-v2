@@ -2,7 +2,7 @@
 
 This module provides a feature flag system for controlling alert system behavior.
 """
-# type: ignore
+
 import os
 from typing import Dict
 
@@ -13,7 +13,7 @@ class AlertFeatureFlags:
     @classmethod
     def is_enabled(cls, flag_name: str) -> bool:
         """Check if a feature flag is enabled.
-        
+
         Feature flags are controlled via environment variables.
 
         Args:
@@ -37,9 +37,9 @@ class AlertFeatureFlags:
             "ALERT_SNOOZE_ENABLED": cls.is_snooze_enabled(),
             "ALERT_NOTIFY_RESOLVED": cls.is_resolved_notification_enabled(),
         }
-        
+
         return flags
-    
+
     @classmethod
     def is_grouping_enabled(cls) -> bool:
         """Check if alert grouping is enabled.
@@ -48,7 +48,7 @@ class AlertFeatureFlags:
             True if enabled, False otherwise.
         """
         return cls.is_enabled("ALERT_GROUPING_ENABLED")
-    
+
     @classmethod
     def is_explanation_enabled(cls) -> bool:
         """Check if alert explanation is enabled.
@@ -57,7 +57,7 @@ class AlertFeatureFlags:
             True if enabled, False otherwise.
         """
         return cls.is_enabled("ALERT_EXPLAIN_ENABLED")
-    
+
     @classmethod
     def is_snooze_enabled(cls) -> bool:
         """Check if alert snooze functionality is enabled.
@@ -66,7 +66,7 @@ class AlertFeatureFlags:
             True if enabled, False otherwise.
         """
         return cls.is_enabled("ALERT_SNOOZE_ENABLED")
-    
+
     @classmethod
     def is_resolved_notification_enabled(cls) -> bool:
         """Check if resolved alert notifications are enabled.
@@ -75,7 +75,7 @@ class AlertFeatureFlags:
             True if enabled, False otherwise.
         """
         return cls.is_enabled("ALERT_NOTIFY_RESOLVED")
-    
+
     @classmethod
     def group_by_default(cls) -> bool:
         """Check if alerts should be grouped by default.

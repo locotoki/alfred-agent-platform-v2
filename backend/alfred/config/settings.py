@@ -1,5 +1,5 @@
 """Configuration settings for Alfred ML components"""
-# type: ignore
+
 import os
 
 

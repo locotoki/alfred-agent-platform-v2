@@ -2,7 +2,7 @@
 """Database validation script to ensure all required tables and indexes
 exist.
 """
-# type: ignore
+
 import asyncio
 import os
 

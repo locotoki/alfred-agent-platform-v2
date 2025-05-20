@@ -1,37 +1,38 @@
 """Protocol definitions for alert system"""
+
 from abc import abstractmethod
 from datetime import datetime
-from typing import Any, Dict, Optional, Protocol, List
+from typing import Any, Dict, List, Optional, Protocol
 
 
 class AlertProtocol(Protocol):
     """Protocol for alert entities"""
-    
+
     @property
     def id(self) -> str:
         """Get alert ID"""
         ...
-        
+
     @property
     def service(self) -> str:
         """Get service name"""
         ...
-        
+
     @property
     def severity(self) -> str:
         """Get alert severity"""
         ...
-        
+
     @property
     def timestamp(self) -> datetime:
         """Get alert timestamp"""
         ...
-        
+
     @property
     def message(self) -> str:
         """Get alert message"""
         ...
-        
+
     @property
     def details(self) -> Dict[str, Any]:
         """Get alert details"""

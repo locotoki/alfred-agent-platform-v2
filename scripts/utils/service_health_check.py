@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Service health check script to validate all services are running"""
-# type: ignore
+
 import asyncio
 import sys
 from typing import Any, Dict, List

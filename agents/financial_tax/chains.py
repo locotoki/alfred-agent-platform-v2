@@ -1,5 +1,5 @@
 """LangChain implementations for Financial Tax Agent"""
-# type: ignore
+
 from langchain.chains import LLMChain
 from langchain.output_parsers import PydanticOutputParser
 from langchain.prompts import PromptTemplate
