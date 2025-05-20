@@ -6,7 +6,7 @@ import httpx  # type: ignore[import-not-found]
 import pytest
 from slack_sdk.web.async_client import AsyncWebClient
 
-from alfred.slack.diagnostics import DiagnosticsBot
+from alfred.slack.diagnostics.bot import DiagnosticsBot
 
 
 class TestDiagnosticsBot:
@@ -32,14 +32,14 @@ class TestDiagnosticsBot:
     async def test_disabled_bot(self, slack_client: AsyncMock) -> None:
         """Test bot when disabled"""
         bot = DiagnosticsBot(slack_client=slack_client, enabled=False)
-        result = await bothandle_command("/diag", "C123", "U456", "health")
+        result = await bot.handle_command("/diag", "C123", "U456", "health")
         assert result is None
         slack_client.chat_postMessage.assert_not_called()
 
     @pytest.mark.asyncio
     async def test_unknown_command(self, bot: DiagnosticsBot, slack_client: AsyncMock) -> None:
         """Test handling unknown command"""
-        await bothandle_command("/diag", "C123", "U456", "unknown")
+        await bot.handle_command("/diag", "C123", "U456", "unknown")
         slack_client.chat_postMessage.assert_called_once()
         call_args = slack_client.chat_postMessage.call_args
         assert "Commands" in str(call_args)
@@ -50,7 +50,7 @@ class TestDiagnosticsBot:
         # Mock the command dictionary entry to raise an exception
         bot.commands["/diag health"] = AsyncMock(side_effect=Exception("Test error"))
 
-        await bothandle_command("/diag", "C123", "U456", "health")
+        await bot.handle_command("/diag", "C123", "U456", "health")
 
         slack_client.chat_postMessage.assert_called_once()
         call_args = slack_client.chat_postMessage.call_args
@@ -77,7 +77,7 @@ class TestDiagnosticsBot:
         health_response.json.return_value = {"status": "healthy"}
         mock_client.get.return_value = health_response
 
-        await bothandle_command("/diag", "C123", "U456", "health")
+        await bot.handle_command("/diag", "C123", "U456", "health")
 
         # Verify Slack message sent
         slack_client.chat_postMessage.assert_called_once()
@@ -104,7 +104,7 @@ class TestDiagnosticsBot:
         # Mock failed health response
         mock_client.get.side_effect = httpx.ConnectError("Connection refused")
 
-        await bothandle_command("/diag", "C123", "U456", "health")
+        await bot.handle_command("/diag", "C123", "U456", "health")
 
         slack_client.chat_postMessage.assert_called_once()
         call_args = slack_client.chat_postMessage.call_args
@@ -131,7 +131,7 @@ class TestDiagnosticsBot:
         }
         mock_client.get.return_value = prom_response
 
-        await bothandle_command("/diag", "C123", "U456", "metrics")
+        await bot.handle_command("/diag", "C123", "U456", "metrics")
 
         slack_client.chat_postMessage.assert_called_once()
         call_args = slack_client.chat_postMessage.call_args
@@ -157,7 +157,7 @@ class TestDiagnosticsBot:
         prom_response.json.return_value = {"status": "success", "data": {"result": []}}
         mock_client.get.return_value = prom_response
 
-        await bothandle_command("/diag", "C123", "U456", "metrics")
+        await bot.handle_command("/diag", "C123", "U456", "metrics")
 
         slack_client.chat_postMessage.assert_called_once()
         call_args = slack_client.chat_postMessage.call_args

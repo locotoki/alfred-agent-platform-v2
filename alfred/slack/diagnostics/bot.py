@@ -54,7 +54,7 @@ class DiagnosticsBot:
 
         handler = self.commands.get(full_command)
         if not handler:
-            return await self_send_help(channel)
+            return await self._send_help(channel)
 
         try:
             return await handler(channel, user)
@@ -62,7 +62,7 @@ class DiagnosticsBot:
             logger.error("command_error", command=full_command, error=str(e))
             return cast(
                 SlackResponse,
-                await selfslack_clientchat_postMessage(
+                await self.slack_client.chat_postMessage(
                     channel=channel,
                     text=f"❌ Error executing command: {str(e)}",
                 ),
@@ -93,7 +93,7 @@ class DiagnosticsBot:
 
                 for service_name, url in services:
                     try:
-                        response = await clientget(url, timeout=5.0)
+                        response = await client.get(url, timeout=5.0)
                         status = "✅" if response.status_code == 200 else "❌"
                         health_data = response.json()
                         status_text = health_data.get("status", "unknown")
@@ -113,7 +113,7 @@ class DiagnosticsBot:
 
                 return cast(
                     SlackResponse,
-                    await selfslack_clientchat_postMessage(channel=channel, blocks=blocks),
+                    await self.slack_client.chat_postMessage(channel=channel, blocks=blocks),
                 )
 
         except Exception as e:
@@ -146,7 +146,7 @@ class DiagnosticsBot:
 
                 for metric_name, query in queries.items():
                     try:
-                        response = await clientget(
+                        response = await client.get(
                             f"{self.prometheus_url}/api/v1/query",
                             params={"query": query},
                             timeout=5.0,
@@ -180,7 +180,7 @@ class DiagnosticsBot:
 
                 return cast(
                     SlackResponse,
-                    await selfslack_clientchat_postMessage(channel=channel, blocks=blocks),
+                    await self.slack_client.chat_postMessage(channel=channel, blocks=blocks),
                 )
 
         except Exception as e:
@@ -209,5 +209,5 @@ class DiagnosticsBot:
 
         return cast(
             SlackResponse,
-            await selfslack_clientchat_postMessage(channel=channel, blocks=blocks),
+            await self.slack_client.chat_postMessage(channel=channel, blocks=blocks),
         )
