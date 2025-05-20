@@ -114,7 +114,9 @@ class FAISSIndex(Service):
             metadata: Optional metadata for each alert
         """
         if embeddings.shape[1] != self.dimension:
-            raise ValueError(f"Expected dimension {self.dimension}, got {embeddings.shape[1]}")
+            raise ValueError(
+                f"Expected dimension {self.dimension}, got {embeddings.shape[1]}"
+            )
 
         if len(embeddings) != len(alert_ids):
             raise ValueError("Embeddings and IDs must have same length")
@@ -163,7 +165,9 @@ class FAISSIndex(Service):
             List of search results
         """
         if query_embedding.shape[0] != self.dimension:
-            raise ValueError(f"Expected dimension {self.dimension}, got {query_embedding.shape[0]}")
+            raise ValueError(
+                f"Expected dimension {self.dimension}, got {query_embedding.shape[0]}"
+            )
 
         # Ensure query is 2D
         if query_embedding.ndim == 1:
@@ -225,7 +229,9 @@ class FAISSIndex(Service):
         start_time = time.time()
         distances, indices = self.index.search(query_embeddings, k)
         query_time = time.time() - start_time
-        self.query_times.extend([query_time / len(query_embeddings)] * len(query_embeddings))
+        self.query_times.extend(
+            [query_time / len(query_embeddings)] * len(query_embeddings)
+        )
 
         # Convert to results
         all_results = []
@@ -442,7 +448,9 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description="FAISS Alert Search")
     parser.add_argument("--action", choices=["build", "search", "stats"], required=True)
-    parser.add_argument("--index-path", default="alert_index", help="Index save/load path")
+    parser.add_argument(
+        "--index-path", default="alert_index", help="Index save/load path"
+    )
     parser.add_argument("--query", help="Search query")
     parser.add_argument("--k", type=int, default=10, help="Number of results")
 

@@ -248,7 +248,9 @@ Last consolidated: {datetime.now().strftime('%Y-%m-%d')}
 
         if self.dry_run:
             logger.info("\nThis was a dry run. No files were actually consolidated.")
-            logger.info("To actually consolidate files, run without the --dry-run option.")
+            logger.info(
+                "To actually consolidate files, run without the --dry-run option."
+            )
         else:
             logger.info(f"\nSuccessfully consolidated documents into {self.target_dir}")
 

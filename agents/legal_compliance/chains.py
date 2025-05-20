@@ -75,10 +75,14 @@ Provide a comprehensive document analysis:
         "compliance_frameworks",
         "check_for_pii",
     ],
-    partial_variables={"format_instructions": document_parser.get_format_instructions()},
+    partial_variables={
+        "format_instructions": document_parser.get_format_instructions()
+    },
 )
 
-document_chain = LLMChain(llm=llm, prompt=document_prompt, output_parser=document_parser)
+document_chain = LLMChain(
+    llm=llm, prompt=document_prompt, output_parser=document_parser
+)
 
 # Regulation Check Chain
 regulation_parser = PydanticOutputParser(pydantic_object=RegulationCheckResult)
@@ -104,10 +108,14 @@ Provide a comprehensive regulation check result:
         "industry_sector",
         "specific_regulations",
     ],
-    partial_variables={"format_instructions": regulation_parser.get_format_instructions()},
+    partial_variables={
+        "format_instructions": regulation_parser.get_format_instructions()
+    },
 )
 
-regulation_chain = LLMChain(llm=llm, prompt=regulation_prompt, output_parser=regulation_parser)
+regulation_chain = LLMChain(
+    llm=llm, prompt=regulation_prompt, output_parser=regulation_parser
+)
 
 # Contract Review Chain
 contract_parser = PydanticOutputParser(pydantic_object=ContractReviewResult)
@@ -136,7 +144,11 @@ Provide a comprehensive contract review:
         "jurisdiction",
         "review_focus",
     ],
-    partial_variables={"format_instructions": contract_parser.get_format_instructions()},
+    partial_variables={
+        "format_instructions": contract_parser.get_format_instructions()
+    },
 )
 
-contract_chain = LLMChain(llm=llm, prompt=contract_prompt, output_parser=contract_parser)
+contract_chain = LLMChain(
+    llm=llm, prompt=contract_prompt, output_parser=contract_parser
+)

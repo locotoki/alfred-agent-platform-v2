@@ -57,7 +57,8 @@ class DocMigrationInventory:
         self.root_dir = Path(root_dir or os.getcwd())
         self.output_format = output_format.lower()
         self.output_file = (
-            output_file or f"doc_migration_inventory_{int(time.time())}.{self.output_format}"
+            output_file
+            or f"doc_migration_inventory_{int(time.time())}.{self.output_format}"
         )
         self.similarity_threshold = similarity_threshold
         self.ignore_dirs = [Path(d).resolve() for d in (ignore_dirs or [])]
@@ -111,7 +112,11 @@ class DocMigrationInventory:
                             # Extract title from file content or use filename
                             title = self._extract_title(file_path)
                             if not title:
-                                title = file_path.stem.replace("_", " ").replace("-", " ").title()
+                                title = (
+                                    file_path.stem.replace("_", " ")
+                                    .replace("-", " ")
+                                    .title()
+                                )
 
                             # Calculate content hash for duplicates detection
                             content_hash = self._calculate_file_hash(file_path)
@@ -147,7 +152,9 @@ class DocMigrationInventory:
                 hash_groups[doc["content_hash"]].append(doc)
 
             # Exact duplicates (same content hash)
-            exact_duplicates = {h: docs for h, docs in hash_groups.items() if len(docs) > 1}
+            exact_duplicates = {
+                h: docs for h, docs in hash_groups.items() if len(docs) > 1
+            }
 
             # Title similarity detection
             potential_duplicates = []
@@ -172,7 +179,9 @@ class DocMigrationInventory:
                     if doc1["content_hash"] == doc2["content_hash"]:
                         continue
 
-                    similarity = SequenceMatcher(None, doc1["title"], doc2["title"]).ratio()
+                    similarity = SequenceMatcher(
+                        None, doc1["title"], doc2["title"]
+                    ).ratio()
                     if similarity >= self.similarity_threshold:
                         if not similar_docs:
                             similar_docs.append(doc1)
@@ -189,7 +198,9 @@ class DocMigrationInventory:
                     processed_indices.add(i)
 
             self.potential_duplicates = potential_duplicates
-            logger.info(f"Found {len(potential_duplicates)} sets of potential duplicates")
+            logger.info(
+                f"Found {len(potential_duplicates)} sets of potential duplicates"
+            )
             return potential_duplicates
         except Exception as e:
             logger.error(f"Error identifying duplicates: {e}")
@@ -206,7 +217,9 @@ class DocMigrationInventory:
                 signals = doc["content_signals"]
 
                 # Get the top signal category
-                top_category = max(signals.items(), key=lambda x: x[1], default=(None, 0))
+                top_category = max(
+                    signals.items(), key=lambda x: x[1], default=(None, 0)
+                )
 
                 if top_category[0] and top_category[1] > 0:
                     # Map category to recommended folder structure
@@ -222,16 +235,22 @@ class DocMigrationInventory:
                         "testing": "docs/testing/",
                     }
 
-                    recommended_path = category_map.get(top_category[0], "docs/general/")
+                    recommended_path = category_map.get(
+                        top_category[0], "docs/general/"
+                    )
 
                     # For files in potential duplicate sets, add a note
                     duplicate_note = ""
                     for dup_set in self.potential_duplicates:
                         if any(d["path"] == doc["path"] for d in dup_set["files"]):
                             if dup_set["type"] == "exact_duplicate":
-                                duplicate_note = "ATTENTION: Exact duplicate content exists"
+                                duplicate_note = (
+                                    "ATTENTION: Exact duplicate content exists"
+                                )
                             else:
-                                duplicate_note = "ATTENTION: Similar document title exists"
+                                duplicate_note = (
+                                    "ATTENTION: Similar document title exists"
+                                )
                             break
 
                     recommendations[doc["path"]] = {
@@ -301,7 +320,9 @@ class DocMigrationInventory:
                             "title": entry["title"],
                             "size_bytes": entry["size_bytes"],
                             "last_modified": entry["last_modified"],
-                            "recommended_location": entry.get("recommended_location", ""),
+                            "recommended_location": entry.get(
+                                "recommended_location", ""
+                            ),
                             "confidence": entry.get("confidence", 0),
                             "duplicate_note": entry.get("duplicate_note", ""),
                         }
@@ -320,7 +341,9 @@ class DocMigrationInventory:
                 content = f.read()
 
                 # Try to extract from front matter
-                front_matter_match = re.search(r"^---\s+(.*?)\s+---", content, re.DOTALL)
+                front_matter_match = re.search(
+                    r"^---\s+(.*?)\s+---", content, re.DOTALL
+                )
                 if front_matter_match:
                     front_matter = front_matter_match.group(1)
                     title_match = re.search(
@@ -435,8 +458,12 @@ def main():
     if report_file:
         print(f"\nReport generated successfully: {report_file}")
         print(f"Found {len(inventory.markdown_files)} markdown files")
-        print(f"Identified {len(inventory.potential_duplicates)} sets of potential duplicates")
-        print(f"Generated recommendations for {len(inventory.target_recommendations)} files")
+        print(
+            f"Identified {len(inventory.potential_duplicates)} sets of potential duplicates"
+        )
+        print(
+            f"Generated recommendations for {len(inventory.target_recommendations)} files"
+        )
     else:
         print("Failed to generate report. Check the logs for details.")
 

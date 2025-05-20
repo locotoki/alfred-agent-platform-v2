@@ -12,7 +12,9 @@ class ServiceDiscovery(Protocol):
     """Protocol for service discovery and registration."""
 
     @abstractmethod
-    async def register_service(self, service_name: str, service_info: Dict[str, Any]) -> bool:
+    async def register_service(
+        self, service_name: str, service_info: Dict[str, Any]
+    ) -> bool:
         """Register a service with discovery system.
 
         Args:
@@ -37,7 +39,9 @@ class ServiceDiscovery(Protocol):
         ...
 
     @abstractmethod
-    async def list_services(self, service_type: Optional[str] = None) -> List[Dict[str, Any]]:
+    async def list_services(
+        self, service_type: Optional[str] = None
+    ) -> List[Dict[str, Any]]:
         """List all registered services.
 
         Args:
@@ -160,7 +164,9 @@ class QueueManager(Protocol):
         ...
 
     @abstractmethod
-    async def subscribe(self, topic: str, handler: Callable[[Dict[str, Any]], None]) -> str:
+    async def subscribe(
+        self, topic: str, handler: Callable[[Dict[str, Any]], None]
+    ) -> str:
         """Subscribe to a topic.
 
         Args:

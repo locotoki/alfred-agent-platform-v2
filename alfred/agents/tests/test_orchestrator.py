@@ -36,7 +36,9 @@ class TestAgentOrchestrator:
         await self.orchestrator.process_message("gibberish123")
 
         # Check that metric was incremented
-        metric_value = orchestrator_route_total.labels(intent_type="unknown_intent")._value.get()
+        metric_value = orchestrator_route_total.labels(
+            intent_type="unknown_intent"
+        )._value.get()
         assert metric_value == 1.0
 
     @pytest.mark.asyncio

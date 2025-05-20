@@ -73,7 +73,9 @@ class ModelRegistryClient:
 
     def __init__(self, base_url=None):
         """Initialize the Model Registry client."""
-        self.base_url = base_url or os.environ.get("MODEL_REGISTRY_URL", "http://localhost:8079")
+        self.base_url = base_url or os.environ.get(
+            "MODEL_REGISTRY_URL", "http://localhost:8079"
+        )
         self._models_cache = {}
         self._last_refresh = 0
         self._cache_ttl = 60  # Cache TTL in seconds
@@ -207,7 +209,9 @@ async def send_message_async(message: str) -> str:
             model_id = st.session_state.selected_model
 
             if st.session_state.debug_mode:
-                st.sidebar.write("Sending to Model Router", {"message": message, "model": model_id})
+                st.sidebar.write(
+                    "Sending to Model Router", {"message": message, "model": model_id}
+                )
 
             # Process the message
             response_data = await st.session_state.model_router_client.process_message(
@@ -272,7 +276,9 @@ async def send_message_async(message: str) -> str:
             # Simulate a basic response
             if response.status_code == 404:
                 if st.session_state.debug_mode:
-                    st.sidebar.warning("API endpoint not found. Using simulated response.")
+                    st.sidebar.warning(
+                        "API endpoint not found. Using simulated response."
+                    )
 
                 # Create a simulated response with the selected model info
                 model_info = ""
@@ -360,7 +366,9 @@ def init_session_state():
         st.session_state.model_registry_client = ModelRegistryClient(MODEL_REGISTRY_URL)
 
     if "use_direct_inference" not in st.session_state:
-        st.session_state.use_direct_inference = True  # Enable direct model inference by default
+        st.session_state.use_direct_inference = (
+            True  # Enable direct model inference by default
+        )
 
 
 def process_command(message: str) -> str:
@@ -430,7 +438,9 @@ def process_command(message: str) -> str:
                 if "message" in result and "content" in result["message"]:
                     return result["message"]["content"]
                 else:
-                    return f"Received response but couldn't extract content: {str(result)}"
+                    return (
+                        f"Received response but couldn't extract content: {str(result)}"
+                    )
         except Exception as e:
             if st.session_state.debug_mode:
                 st.sidebar.error(f"Error with {endpoint}: {str(e)}")
@@ -575,11 +585,15 @@ def sidebar_config():
     )
 
     # Filter models by selected provider
-    provider_models = [model for model in models if model["provider"] == selected_provider]
+    provider_models = [
+        model for model in models if model["provider"] == selected_provider
+    ]
 
     # Create select box for models from the selected provider
     model_options = {model["name"]: model["id"] for model in provider_models}
-    selected_model_name = st.sidebar.selectbox("Model", list(model_options.keys()), index=0)
+    selected_model_name = st.sidebar.selectbox(
+        "Model", list(model_options.keys()), index=0
+    )
 
     # Update selected model in session state
     selected_model_id = model_options[selected_model_name]
@@ -607,7 +621,9 @@ def sidebar_config():
 
     # Alfred API URL (only if not using direct inference)
     if not st.session_state.use_direct_inference:
-        api_url = st.sidebar.text_input("Alfred API URL", value=st.session_state.api_url)
+        api_url = st.sidebar.text_input(
+            "Alfred API URL", value=st.session_state.api_url
+        )
         if api_url != st.session_state.api_url:
             st.session_state.api_url = api_url
 
@@ -678,7 +694,9 @@ def sidebar_config():
                                 )
                             else:
                                 # Try root endpoint as fallback
-                                root_response = requests.get(st.session_state.api_url, timeout=3)
+                                root_response = requests.get(
+                                    st.session_state.api_url, timeout=3
+                                )
                                 if root_response.status_code == 200:
                                     st.success(
                                         f"Connected to Alfred Bot API ({root_response.elapsed.total_seconds():.3f}s)"
@@ -689,7 +707,9 @@ def sidebar_config():
                                     )
                         except Exception:
                             # Try root endpoint as fallback
-                            root_response = requests.get(st.session_state.api_url, timeout=3)
+                            root_response = requests.get(
+                                st.session_state.api_url, timeout=3
+                            )
                             if root_response.status_code == 200:
                                 st.success(
                                     f"Connected to Alfred Bot API ({root_response.elapsed.total_seconds():.3f}s)"
@@ -701,7 +721,9 @@ def sidebar_config():
 
                 # Check Model Registry connection
                 try:
-                    registry_health_url = f"{st.session_state.model_registry_url}/health"
+                    registry_health_url = (
+                        f"{st.session_state.model_registry_url}/health"
+                    )
                     registry_response = requests.get(registry_health_url, timeout=3)
 
                     if registry_response.status_code == 200:
@@ -712,15 +734,21 @@ def sidebar_config():
                         st.warning(
                             f"Model Registry health check failed: {registry_response.status_code}"
                         )
-                        st.info("Using built-in model list instead of dynamic model discovery.")
+                        st.info(
+                            "Using built-in model list instead of dynamic model discovery."
+                        )
                 except Exception:
                     st.info("Model Registry service is not running.")
-                    st.success("✅ Using built-in model list with OpenAI and Ollama models.")
+                    st.success(
+                        "✅ Using built-in model list with OpenAI and Ollama models."
+                    )
 
                 # Check Model Router connection (only if using direct inference)
                 if st.session_state.use_direct_inference:
                     try:
-                        router_health_url = f"{st.session_state.model_router_url}/health"
+                        router_health_url = (
+                            f"{st.session_state.model_router_url}/health"
+                        )
                         router_response = requests.get(router_health_url, timeout=3)
 
                         if router_response.status_code == 200:
@@ -749,7 +777,9 @@ def sidebar_config():
                                 f"Connected to Ollama - Available models: {', '.join(model_names)}"
                             )
                         else:
-                            st.warning(f"Ollama check failed: {ollama_response.status_code}")
+                            st.warning(
+                                f"Ollama check failed: {ollama_response.status_code}"
+                            )
                     except Exception as e:
                         st.warning(f"Ollama connection failed: {str(e)}")
 
@@ -892,7 +922,10 @@ def send_message_sync(message):
             for word in ["can", "able", "capability", "do for me", "help me"]
         ):
             return f"As your AI assistant{model_info}, I can help with many tasks including:\n\n- Answering questions and providing information\n- Processing and analyzing data\n- Integrating with various systems and services\n- Selecting appropriate models for specific tasks\n- Routing queries to specialized agents when needed\n\nWhat type of assistance do you need today?"
-        elif any(word in message.lower() for word in ["thank", "thanks", "appreciate", "helpful"]):
+        elif any(
+            word in message.lower()
+            for word in ["thank", "thanks", "appreciate", "helpful"]
+        ):
             return f"You're welcome! I'm glad I could be of assistance{model_info}. Feel free to ask if you need anything else."
         else:
             # More varied generic responses

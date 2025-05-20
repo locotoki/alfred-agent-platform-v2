@@ -4,7 +4,6 @@ This module contains basic smoke tests for the Telegram Adapter service.
 """
 
 import os
-from typing import Optional
 
 import pytest
 import requests
@@ -59,7 +58,9 @@ def test_webhook_post(adapter_url: str) -> None:
         },
     }
 
-    response = requests.post(f"{adapter_url}/telegram/webhook", json=update_data, timeout=5)
+    response = requests.post(
+        f"{adapter_url}/telegram/webhook", json=update_data, timeout=5
+    )
 
     # The webhook should always return a 200 status code to Telegram
     assert response.status_code == 200

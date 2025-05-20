@@ -5,7 +5,12 @@ from unittest.mock import AsyncMock, MagicMock, patch
 import pytest
 
 from agents.financial_tax.agent import FinancialTaxAgent
-from libs.a2a_adapter import A2AEnvelope, PolicyMiddleware, PubSubTransport, SupabaseTransport
+from libs.a2a_adapter import (
+    A2AEnvelope,
+    PolicyMiddleware,
+    PubSubTransport,
+    SupabaseTransport,
+)
 
 
 @pytest.fixture
@@ -50,7 +55,9 @@ def financial_tax_agent(mock_pubsub, mock_supabase, mock_policy):
         from langchain.schema.runnable import Runnable
 
         class MockLLM(Runnable):
-            def invoke(self, input: Any, config: Optional[Any] = None, **kwargs: Any) -> Any:
+            def invoke(
+                self, input: Any, config: Optional[Any] = None, **kwargs: Any
+            ) -> Any:
                 return "test response"
 
             def _call(self, *args, **kwargs):

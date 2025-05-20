@@ -32,7 +32,9 @@ def mock_llm():
     from langchain.schema.runnable import Runnable
 
     class MockLLM(Runnable):
-        def invoke(self, input: Any, config: Optional[Any] = None, **kwargs: Any) -> Any:
+        def invoke(
+            self, input: Any, config: Optional[Any] = None, **kwargs: Any
+        ) -> Any:
             return "test response"
 
         def _call(self, *args, **kwargs):

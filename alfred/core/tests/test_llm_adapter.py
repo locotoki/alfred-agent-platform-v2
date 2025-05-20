@@ -4,7 +4,12 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-from alfred.core.llm_adapter import ClaudeAdapter, Message, OpenAIAdapter, create_llm_adapter
+from alfred.core.llm_adapter import (
+    ClaudeAdapter,
+    Message,
+    OpenAIAdapter,
+    create_llm_adapter,
+)
 
 
 class TestMessage:

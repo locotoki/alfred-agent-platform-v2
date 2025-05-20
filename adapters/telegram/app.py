@@ -31,7 +31,9 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 # Initialize FastAPI app
-app = FastAPI(title="Telegram Adapter", description="Telegram adapter for Alfred Agent Platform")
+app = FastAPI(
+    title="Telegram Adapter", description="Telegram adapter for Alfred Agent Platform"
+)
 
 # Add CORS middleware
 app.add_middleware(
@@ -50,7 +52,9 @@ REQUEST_COUNT = Counter(
 )
 
 REQUEST_LATENCY = Histogram(
-    "telegram_adapter_request_latency_seconds", "Request latency in seconds", ["method", "endpoint"]
+    "telegram_adapter_request_latency_seconds",
+    "Request latency in seconds",
+    ["method", "endpoint"],
 )
 
 MESSAGE_COUNT = Counter(
@@ -130,7 +134,9 @@ async def message_handler(update: Update, context):
     if response:
         await update.message.reply_text(response)
     else:
-        await update.message.reply_text("Sorry, I couldn't process your request at the moment.")
+        await update.message.reply_text(
+            "Sorry, I couldn't process your request at the moment."
+        )
 
 
 # Register handlers
@@ -154,14 +160,18 @@ async def telegram_webhook(req: Request) -> dict:
         update = Update.de_json(update_data, bot_app.bot)
         await bot_app.process_update(update)
 
-        REQUEST_COUNT.labels(method="POST", endpoint="/telegram/webhook", status_code="200").inc()
+        REQUEST_COUNT.labels(
+            method="POST", endpoint="/telegram/webhook", status_code="200"
+        ).inc()
         REQUEST_LATENCY.labels(method="POST", endpoint="/telegram/webhook").observe(
             time.time() - start_time
         )
         return {"ok": True}
     except Exception as e:
         logger.error(f"Error processing webhook update: {e}")
-        REQUEST_COUNT.labels(method="POST", endpoint="/telegram/webhook", status_code="500").inc()
+        REQUEST_COUNT.labels(
+            method="POST", endpoint="/telegram/webhook", status_code="500"
+        ).inc()
         REQUEST_LATENCY.labels(method="POST", endpoint="/telegram/webhook").observe(
             time.time() - start_time
         )

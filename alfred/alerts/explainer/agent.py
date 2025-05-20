@@ -93,7 +93,9 @@ Runbook: <link if available>
                 "success": False,
             }
 
-    def _generate_stub_explanation(self, alert_name: str, alert_details: str) -> Dict[str, Any]:
+    def _generate_stub_explanation(
+        self, alert_name: str, alert_details: str
+    ) -> Dict[str, Any]:
         """Generate a stub explanation for testing."""
         return {
             "alert_name": alert_name,

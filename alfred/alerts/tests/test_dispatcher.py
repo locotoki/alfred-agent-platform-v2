@@ -81,7 +81,9 @@ class TestHandleAlert:
             handle_alert({"alerts": []})
             mock_send.assert_not_called()
 
-    @patch("alfred.alerts.dispatcher.send_to_slack", side_effect=Exception("Slack error"))
+    @patch(
+        "alfred.alerts.dispatcher.send_to_slack", side_effect=Exception("Slack error")
+    )
     @patch("alfred.alerts.dispatcher.format_alert_for_slack")
     def test_handle_alert_send_failure(self, mock_format, mock_send):
         """Test error handling when Slack send fails."""

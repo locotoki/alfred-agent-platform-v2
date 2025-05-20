@@ -73,7 +73,9 @@ class AlertSnoozeService(SnoozeService):
             AlertSnooze record
         """
         # Validate duration
-        duration = max(self.config.min_duration, min(duration, self.config.max_duration))
+        duration = max(
+            self.config.min_duration, min(duration, self.config.max_duration)
+        )
 
         # Create snooze record
         snooze_id = str(uuid.uuid4())
@@ -152,7 +154,9 @@ class AlertSnoozeService(SnoozeService):
         # Create audit entry
         snooze = json.loads(snooze_data)
         snooze["is_active"] = False
-        await self._create_audit_entry(snooze, action="unsnoozed", reason=reason, user_id=user_id)
+        await self._create_audit_entry(
+            snooze, action="unsnoozed", reason=reason, user_id=user_id
+        )
 
         # Emit metrics
         if self.metrics:
@@ -281,7 +285,9 @@ class AlertSnoozeService(SnoozeService):
             user_id=user_id,
         )
 
-    async def get_snooze_history(self, alert_id: str, limit: int = 10) -> List[Dict[str, Any]]:
+    async def get_snooze_history(
+        self, alert_id: str, limit: int = 10
+    ) -> List[Dict[str, Any]]:
         """Get snooze history for an alert.
 
         Args:

@@ -116,12 +116,18 @@ class AlertDataset(Service):
 
             # Time features
             hour = row["created_at"].hour if hasattr(row["created_at"], "hour") else 12
-            weekday = row["created_at"].weekday() if hasattr(row["created_at"], "weekday") else 3
+            weekday = (
+                row["created_at"].weekday()
+                if hasattr(row["created_at"], "weekday")
+                else 3
+            )
             is_weekend = 1 if weekday >= 5 else 0
             is_business_hours = 1 if 9 <= hour <= 17 and weekday < 5 else 0
 
             # Source features
-            source_hash = int(hashlib.md5(row["source"].encode()).hexdigest()[:8], 16) % 100
+            source_hash = (
+                int(hashlib.md5(row["source"].encode()).hexdigest()[:8], 16) % 100
+            )
 
             feature_vec = [
                 msg_len,
@@ -166,15 +172,21 @@ class AlertDataset(Service):
 
             # Check quick resolution
             if row.get("resolved", False) and "resolved_at" in row:
-                resolution_time = (row["resolved_at"] - row["created_at"]).total_seconds()
+                resolution_time = (
+                    row["resolved_at"] - row["created_at"]
+                ).total_seconds()
                 if resolution_time < 300:  # 5 minutes
                     is_noise = 1
 
             # Check low severity off-hours
             if row["severity"].lower() in ["info", "debug"]:
-                hour = row["created_at"].hour if hasattr(row["created_at"], "hour") else 12
+                hour = (
+                    row["created_at"].hour if hasattr(row["created_at"], "hour") else 12
+                )
                 weekday = (
-                    row["created_at"].weekday() if hasattr(row["created_at"], "weekday") else 3
+                    row["created_at"].weekday()
+                    if hasattr(row["created_at"], "weekday")
+                    else 3
                 )
                 if hour < 9 or hour > 17 or weekday >= 5:
                     is_noise = 1
@@ -223,13 +235,21 @@ class AlertDataset(Service):
             "source_count": self.data["source"].nunique(),
             "time_range": {
                 "start": (
-                    self.data["created_at"].min().isoformat() if not self.data.empty else None
+                    self.data["created_at"].min().isoformat()
+                    if not self.data.empty
+                    else None
                 ),
-                "end": (self.data["created_at"].max().isoformat() if not self.data.empty else None),
+                "end": (
+                    self.data["created_at"].max().isoformat()
+                    if not self.data.empty
+                    else None
+                ),
             },
         }
 
-    def split_by_time(self, test_days: int = 7) -> Tuple["AlertDataset", "AlertDataset"]:
+    def split_by_time(
+        self, test_days: int = 7
+    ) -> Tuple["AlertDataset", "AlertDataset"]:
         """Split dataset by time for temporal validation.
 
         Args:

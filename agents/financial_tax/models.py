@@ -37,7 +37,9 @@ class TaxCalculationRequest(BaseModel):
     """Request model for tax calculation."""
 
     income: float = Field(..., description="Gross income amount")
-    deductions: Dict[str, float] = Field(default_factory=dict, description="Itemized deductions")
+    deductions: Dict[str, float] = Field(
+        default_factory=dict, description="Itemized deductions"
+    )
     credits: Dict[str, float] = Field(default_factory=dict, description="Tax credits")
     jurisdiction: TaxJurisdiction = Field(..., description="Tax jurisdiction")
     tax_year: int = Field(..., description="Tax year")
@@ -71,7 +73,9 @@ class FinancialAnalysisRequest(BaseModel):
     analysis_type: str = Field(..., description="Type of analysis to perform")
     period: str = Field(..., description="Analysis period")
     industry: Optional[str] = Field(None, description="Industry for benchmarking")
-    custom_metrics: Optional[List[str]] = Field(None, description="Custom metrics to calculate")
+    custom_metrics: Optional[List[str]] = Field(
+        None, description="Custom metrics to calculate"
+    )
 
 
 class FinancialAnalysisResponse(BaseModel):

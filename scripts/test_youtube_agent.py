@@ -99,7 +99,9 @@ def parse_args():
 
     parser.add_argument("--seed-url", help="Seed URL for Blueprint")
 
-    parser.add_argument("--auto-niche", action="store_true", help="Auto-select niche for Blueprint")
+    parser.add_argument(
+        "--auto-niche", action="store_true", help="Auto-select niche for Blueprint"
+    )
 
     return parser.parse_args()
 
