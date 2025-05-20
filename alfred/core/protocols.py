@@ -8,6 +8,20 @@ from abc import abstractmethod
 from typing import Any, Dict, Protocol
 
 
+class Service(Protocol):
+    """Protocol for services that have lifecycle methods"""
+
+    @abstractmethod
+    async def start(self) -> None:
+        """Start the service"""
+        ...
+        
+    @abstractmethod
+    async def stop(self) -> None:
+        """Stop the service gracefully"""
+        ...
+
+
 class HealthCheckable(Protocol):
     """Protocol for components that can report health status"""
 

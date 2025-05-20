@@ -49,7 +49,7 @@ class TestOpenAIAdapter:
         # Patch the client property
         with patch.object(adapter, "_client", mock_client):
             messages = [Message("user", "Hello")]
-            result = await adaptergenerate(messages)
+            result = await adapter.generate(messages)
 
             assert result == "Test response"
 
@@ -81,7 +81,7 @@ class TestOpenAIAdapter:
         # Patch the client property
         with patch.object(adapter, "_client", mock_client):
             messages = [Message("user", "Hi")]
-            result = await adaptergenerate(messages, stream=True)
+            result = await adapter.generate(messages, stream=True)
 
             # Collect stream
             chunks = []
@@ -140,7 +140,7 @@ class TestClaudeAdapter:
                 Message("system", "You are a helpful assistant"),
                 Message("user", "Hello"),
             ]
-            result = await adaptergenerate(messages)
+            result = await adapter.generate(messages)
 
             assert result == "Claude response"
 

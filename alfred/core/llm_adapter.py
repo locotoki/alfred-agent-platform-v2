@@ -144,7 +144,7 @@ class OpenAIAdapter(LLMAdapter):
             # Add any additional kwargs
             params.update(kwargs)
 
-            response = await selfclient.chat.completions.create(**params)
+            response = await self.client.chat.completions.create(**params)
 
             llm_requests_total.labels(model=self.model, status="success").inc()
 
@@ -253,13 +253,13 @@ class ClaudeAdapter(LLMAdapter):
 
             params.update(kwargs)
 
-            response = await selfclient.messages.create(**params)
+            response = await self.client.messages.create(**params)
 
             llm_requests_total.labels(model=self.model, status="success").inc()
 
             if stream:
                 # Claude streaming requires different handling
-                stream_response = await selfclient.messages.create(**params, stream=True)
+                stream_response = await self.client.messages.create(**params, stream=True)
                 return self._stream_response(stream_response)
             else:
                 content = response.content[0].text
