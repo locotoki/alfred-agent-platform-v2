@@ -48,7 +48,7 @@ async def lifespan(app: FastAPI):
     from app.database import close_pool, get_pool
 
     # Startup
-    await supabase_transportconnect()
+    await supabase_transport.connect()
 
     # Initialize database connection pool
     try:
@@ -64,8 +64,8 @@ async def lifespan(app: FastAPI):
     yield
 
     # Shutdown
-    await social_agentstop()
-    await supabase_transportdisconnect()
+    await social_agent.stop()
+    await supabase_transport.disconnect()
 
     # Close database connection pool
     try:
@@ -104,7 +104,7 @@ async def get_status():
 async def force_analyze(query: str):
     """Force an immediate trend analysis"""
     try:
-        result = await social_agent_analyze_trend({"query": query})
+        result = await social_agent.analyze_trend({"query": query})
         return result
     except Exception as e:
         logger.error("force_analyze_failed", error=str(e))
@@ -130,11 +130,11 @@ async def run_niche_scout(
         json_data = {}
         try:
             # Get request body
-            body = await requestbody()
+            body = await request.body()
             print(f"DEBUG: Request body: {body}")
 
             # Parse JSON
-            json_data = await requestjson()
+            json_data = await request.json()
             print(f"DEBUG: Parsed JSON: {json_data}")
             logger.info("Received JSON payload", payload=json_data)
 
@@ -173,7 +173,7 @@ async def run_niche_scout(
             task_id=json_data.get("task_id", "none"),
         )
         niche_scout = NicheScout()
-        result, json_path, report_path = await niche_scoutrun(query, category, subcategory)
+        result, json_path, report_path = await niche_scout.run(query, category, subcategory)
 
         # Add file paths to the result
         result["_files"] = {"json_report": json_path, "report_file": report_path}
@@ -227,7 +227,7 @@ async def run_seed_to_blueprint(
         # Try to parse JSON body if present
         json_data = {}
         try:
-            json_data = await requestjson()
+            json_data = await request.json()
             logger.info("Received JSON payload for blueprint", payload=json_data)
 
             # If this is an A2A envelope, extract the relevant fields
@@ -253,7 +253,7 @@ async def run_seed_to_blueprint(
         )
 
         blueprint = SeedToBlueprint()
-        result, json_path, report_path = await blueprintrun(video_url, niche)
+        result, json_path, report_path = await blueprint.run(video_url, niche)
 
         # Add file paths to the result
         result["_files"] = {"json_report": json_path, "report_file": report_path}

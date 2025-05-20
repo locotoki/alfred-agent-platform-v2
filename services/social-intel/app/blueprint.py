@@ -54,7 +54,7 @@ class SeedToBlueprint:
         self.logger.info("Starting SeedToBlueprint workflow", video_url=video_url, niche=niche)
 
         # Simulate processing time
-        await asynciosleep(3)
+        await asyncio.sleep(3)
 
         # Generate results (using simulated data for the stub implementation)
         results = self._generate_simulated_results(video_url, niche)

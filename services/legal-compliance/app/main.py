@@ -62,15 +62,15 @@ security = HTTPBearer()
 async def lifespan(app: FastAPI):
     """Manage application lifecycle"""
     # Startup
-    await supabase_transportconnect()
-    await legal_compliance_agentstart()
+    await supabase_transport.connect()
+    await legal_compliance_agent.start()
     logger.info("legal_compliance_service_started")
 
     yield
 
     # Shutdown
-    await legal_compliance_agentstop()
-    await supabase_transportdisconnect()
+    await legal_compliance_agent.stop()
+    await supabase_transport.disconnect()
     logger.info("legal_compliance_service_stopped")
 
 
@@ -109,10 +109,10 @@ async def audit_compliance(
         envelope = A2AEnvelope(intent="COMPLIANCE_AUDIT", content=request.dict())
 
         # Store task
-        await supabase_transportstore_task(envelope)
+        await supabase_transport.store_task(envelope)
 
         # Publish task
-        message_id = await pubsub_transportpublish_task(envelope)
+        message_id = await pubsub_transport.publish_task(envelope)
 
         API_REQUESTS.labels(endpoint="audit-compliance", method="POST", status="success").inc()
 
@@ -139,8 +139,8 @@ async def analyze_document(
     try:
         envelope = A2AEnvelope(intent="DOCUMENT_ANALYSIS", content=request.dict())
 
-        await supabase_transportstore_task(envelope)
-        message_id = await pubsub_transportpublish_task(envelope)
+        await supabase_transport.store_task(envelope)
+        message_id = await pubsub_transport.publish_task(envelope)
 
         API_REQUESTS.labels(endpoint="analyze-document", method="POST", status="success").inc()
 
@@ -167,8 +167,8 @@ async def check_regulations(
     try:
         envelope = A2AEnvelope(intent="REGULATION_CHECK", content=request.dict())
 
-        await supabase_transportstore_task(envelope)
-        message_id = await pubsub_transportpublish_task(envelope)
+        await supabase_transport.store_task(envelope)
+        message_id = await pubsub_transport.publish_task(envelope)
 
         API_REQUESTS.labels(endpoint="check-regulations", method="POST", status="success").inc()
 
@@ -195,8 +195,8 @@ async def review_contract(
     try:
         envelope = A2AEnvelope(intent="CONTRACT_REVIEW", content=request.dict())
 
-        await supabase_transportstore_task(envelope)
-        message_id = await pubsub_transportpublish_task(envelope)
+        await supabase_transport.store_task(envelope)
+        message_id = await pubsub_transport.publish_task(envelope)
 
         API_REQUESTS.labels(endpoint="review-contract", method="POST", status="success").inc()
 
@@ -218,7 +218,7 @@ async def get_task_status(
 ):
     """Get status of a specific task"""
     try:
-        task_status = await supabase_transportget_task_status(task_id)
+        task_status = await supabase_transport.get_task_status(task_id)
 
         if not task_status:
             raise HTTPException(status_code=404, detail="Task not found")
