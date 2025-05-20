@@ -1,14 +1,12 @@
 #!/usr/bin/env python3
-"""
-Generate docker-compose.yml from individual service compose snippets
-"""
+"""Generate docker-compose.yml from individual service compose snippets."""
 from pathlib import Path
 
 import yaml
 
 
 def load_services():
-    """Load the canonical services list"""
+    """Load the canonical services list."""
     with open("services.yaml", "r") as f:
         services_data = yaml.safe_load(f)
 
@@ -17,7 +15,7 @@ def load_services():
 
 
 def merge_compose_files(services_data):
-    """Merge all service compose snippets into a single compose file"""
+    """Merge all service compose snippets into a single compose file."""
     final_compose = {
         "version": "3.8",
         "services": {},
@@ -33,11 +31,11 @@ def merge_compose_files(services_data):
         for service_name in service_list:
             # Check in services directory first
             compose_file = services_dir / service_name / "compose.yml"
-            
+
             # If not found, check in adapters directory
             if not compose_file.exists():
                 compose_file = adapters_dir / service_name / "compose.yml"
-                
+
             if compose_file.exists():
                 try:
                     with open(compose_file, "r") as f:
@@ -69,7 +67,7 @@ def merge_compose_files(services_data):
     for service_name in final_compose["services"]:
         if "environment" not in final_compose["services"][service_name]:
             final_compose["services"][service_name]["environment"] = []
-            
+
         # Add standard environment variables
         if isinstance(final_compose["services"][service_name]["environment"], list):
             env_vars = final_compose["services"][service_name]["environment"]
@@ -88,14 +86,14 @@ def merge_compose_files(services_data):
 
 
 def write_compose_file(compose_data, output_file):
-    """Write the generated compose file"""
+    """Write the generated compose file."""
     with open(output_file, "w") as f:
         yaml.dump(compose_data, f, default_flow_style=False, sort_keys=False)
     print(f"Generated: {output_file}")
 
 
 def main():
-    """Generate the complete docker-compose file"""
+    """Generate the complete docker-compose file."""
     services_data = load_services()
     compose_data = merge_compose_files(services_data)
 
