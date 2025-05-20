@@ -19,9 +19,14 @@ from prefect.utilities.asyncutils import sync_compatible
 from sentence_transformers import SentenceTransformer
 
 from ..models.youtube_api import YouTubeAPI
-from ..models.youtube_models import (BlueprintResult, NicheScoutResult,
-                                     YouTubeBlueprint, YouTubeChannel,
-                                     YouTubeGap, YouTubeNiche)
+from ..models.youtube_models import (
+    BlueprintResult,
+    NicheScoutResult,
+    YouTubeBlueprint,
+    YouTubeChannel,
+    YouTubeGap,
+    YouTubeNiche,
+)
 from ..models.youtube_vectors import YouTubeVectorStorage
 
 logger = structlog.get_logger(__name__)
@@ -128,17 +133,13 @@ async def store_niche_vectors(
 
     # Store vectors
     for i, (_, niche) in enumerate(niches_df.iterrows()):
-        niche_id = (
-            f"niche_{niche.query.replace(' ', '_').lower()}_{uuid.uuid4().hex[:8]}"
-        )
+        niche_id = f"niche_{niche.query.replace(' ', '_').lower()}_{uuid.uuid4().hex[:8]}"
 
         # Convert to dict for storage
         niche_data = niche.to_dict()
 
         # Store in Qdrant
-        await vector_storage.store_niche_vector(
-            niche_id, niche_data, niche_embeddings[i]
-        )
+        await vector_storage.store_niche_vector(niche_id, niche_data, niche_embeddings[i])
 
     logger.info("niche_vectors_stored", count=len(niches_df))
 
@@ -276,9 +277,7 @@ async def harvest_rank_channels(query_list: List[str]) -> pd.DataFrame:
                     subscribers = float(subscriber_text.replace("K", "")) * 1_000
                 else:
                     # Remove non-numeric characters
-                    subscribers = int(
-                        "".join(c for c in subscriber_text if c.isdigit()) or 0
-                    )
+                    subscribers = int("".join(c for c in subscriber_text if c.isdigit()) or 0)
             else:
                 subscribers = 0
 
@@ -291,9 +290,7 @@ async def harvest_rank_channels(query_list: List[str]) -> pd.DataFrame:
                 "video_count": 0,  # Will need to be fetched separately
                 "recent_upload_count": 0,
                 "thirty_day_delta": 0.0,
-                "primary_topics": query_list[
-                    :5
-                ],  # Using query list as proxy for topics
+                "primary_topics": query_list[:5],  # Using query list as proxy for topics
             }
 
         # Sleep to avoid rate limiting
@@ -390,9 +387,7 @@ async def perform_gap_analysis(
     pivot_df["seed_coverage"] = 1.0
 
     # Calculate average opportunity score per keyword
-    keyword_opportunity = (
-        gap_df.groupby("keyword")["opportunity_score"].mean().reset_index()
-    )
+    keyword_opportunity = gap_df.groupby("keyword")["opportunity_score"].mean().reset_index()
 
     # Merge with pivot
     result_df = pd.merge(pivot_df, keyword_opportunity, on="keyword")
@@ -502,9 +497,7 @@ def generate_blueprint(
     # Create positioning statement
     positioning = f"A channel focused on {pillar_names[0]} and {pillar_names[1]}, "
     positioning += f"distinguished by filling the content gap around {top_keywords[0]} "
-    positioning += (
-        f"that even top creators like {top_channels[0]} haven't fully covered."
-    )
+    positioning += f"that even top creators like {top_channels[0]} haven't fully covered."
 
     # Create the blueprint
     blueprint = {
@@ -617,14 +610,10 @@ async def youtube_niche_scout_flow(
     # Convert DataFrame to NicheScoutResult
     result = NicheScoutResult(
         run_date=datetime.now(),
-        trending_niches=[
-            YouTubeNiche(**row.to_dict()) for _, row in trending_niches.iterrows()
-        ],
+        trending_niches=[YouTubeNiche(**row.to_dict()) for _, row in trending_niches.iterrows()],
         top_niches=[
             YouTubeNiche(**row.to_dict())
-            for _, row in trending_niches.sort_values("score", ascending=False)
-            .head(10)
-            .iterrows()
+            for _, row in trending_niches.sort_values("score", ascending=False).head(10).iterrows()
         ],
         visualization_url=None,  # Would be populated in production
     )
@@ -686,8 +675,7 @@ async def youtube_blueprint_flow(
         seed_url=seed_url,
         seed_data=seed_data,
         top_channels=[
-            YouTubeChannel(**row.to_dict())
-            for _, row in channels_df.head(10).iterrows()
+            YouTubeChannel(**row.to_dict()) for _, row in channels_df.head(10).iterrows()
         ],
         gap_analysis=[
             YouTubeGap(

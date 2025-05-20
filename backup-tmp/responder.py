@@ -13,10 +13,9 @@ import socket
 from typing import Any, Dict, Optional, Set
 
 import redis
+import redis_bus  # Changed from relative import
 from slack_sdk import WebClient
 from slack_sdk.errors import SlackApiError
-
-from . import redis_bus
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -29,7 +28,7 @@ HOSTNAME = os.environ.get("HOSTNAME", socket.gethostname())
 class ResponseHandler:
     """Handler for MCP responses that updates Slack threads."""
 
-    def __init__(self, slack_token: str):.
+    def __init__(self, slack_token: str):
         """Initialize the response handler.
 
         Args:
@@ -41,7 +40,7 @@ class ResponseHandler:
         self.task = None
         self.in_flight: Set[str] = set()  # Track request_ids of in-flight requests
 
-    def add_in_flight(self, request_id: str) -> None:.
+    def add_in_flight(self, request_id: str) -> None:
         """Add a request_id to the in-flight set.
 
         Args:
@@ -54,7 +53,7 @@ class ResponseHandler:
             # Keep the 500 most recent (assuming they're added in order)
             self.in_flight = set(list(self.in_flight)[-500:])
 
-    async def start(self) -> None:.
+    async def start(self) -> None:
         """Start the response handler as an asyncio task."""
         if self.task is None or self.task.done():
             self.stop_event.clear()
@@ -85,9 +84,7 @@ class ResponseHandler:
 
                 # Skip if not in our in-flight set
                 if request_id not in self.in_flight:
-                    logger.info(
-                        f"Ignoring unrelated response for request_id: {request_id}"
-                    )
+                    logger.info(f"Ignoring unrelated response for request_id: {request_id}")
                     continue
 
                 # Set request_id in logger context
@@ -163,9 +160,7 @@ class ResponseHandler:
                                         f"Error decoding JSON from message {message_id}: {e}"
                                     )
                             else:
-                                logger.warning(
-                                    f"Received message {message_id} without data field"
-                                )
+                                logger.warning(f"Received message {message_id} without data field")
 
                     # Allow other tasks to run
                     await asyncio.sleep(0)
@@ -179,9 +174,7 @@ class ResponseHandler:
                 logger.error(f"Unexpected error in subscription: {e}")
                 await asyncio.sleep(5)
 
-    async def _process_response(
-        self, response: Dict[str, Any], message_id: str
-    ) -> None:
+    async def _process_response(self, response: Dict[str, Any], message_id: str) -> None:
         """Process a response and update the corresponding Slack thread.
 
         Args:
@@ -299,9 +292,7 @@ class ResponseHandler:
                         "fields": [
                             {
                                 "type": "mrkdwn",
-                                "text": "\n".join(
-                                    details[:10]
-                                ),  # Limit to avoid overflow
+                                "text": "\n".join(details[:10]),  # Limit to avoid overflow
                             }
                         ],
                     }

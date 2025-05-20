@@ -1,1 +1,1 @@
-"""Social Intelligence Service."""
+"""Social Intelligence Service"""

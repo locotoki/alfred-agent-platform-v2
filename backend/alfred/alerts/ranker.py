@@ -22,8 +22,8 @@ from alfred.ml import HFEmbedder
 
 
 @dataclass
-class AlertFeatures:.
-    """Feature vector for alert ranking."""
+class AlertFeatures:
+    """Feature vector for alert ranking"""
 
     alert_id: str
     text_embedding: np.ndarray
@@ -33,7 +33,7 @@ class AlertFeatures:.
     service_features: np.ndarray
 
 
-class AlertNoiseRanker:.
+class AlertNoiseRanker:
     """ML-based alert noise ranking using HuggingFace transformers and TF-
     IDF.
     """
@@ -71,9 +71,7 @@ class AlertNoiseRanker:.
         if model_path:
             self.load_model(model_path)
 
-    def extract_features(
-        self, alert: AlertProtocol, historical_data: Dict
-    ) -> AlertFeatures:
+    def extract_features(self, alert: AlertProtocol, historical_data: Dict) -> AlertFeatures:
         """Extract comprehensive features from an alert.
 
         Args:
@@ -193,9 +191,7 @@ class AlertNoiseRanker:.
 
         return noise_score
 
-    def calculate_similarity_score(
-        self, alert1: AlertProtocol, alert2: AlertProtocol
-    ) -> float:
+    def calculate_similarity_score(self, alert1: AlertProtocol, alert2: AlertProtocol) -> float:
         """Calculate semantic similarity between two alerts using HF
         embeddings.
 
@@ -235,22 +231,17 @@ class AlertNoiseRanker:.
             List of (alert, similarity_score) tuples above threshold.
 
         """
-        query_text = (
-            f"{query_alert.name} {query_alert.description} {query_alert.summary}"
-        )
+        query_text = f"{query_alert.name} {query_alert.description} {query_alert.summary}"
         query_embedding = self.embedder.embed(query_text)
 
         # Get embeddings for all candidates
         candidate_texts = [
-            f"{alert.name} {alert.description} {alert.summary}"
-            for alert in candidate_alerts
+            f"{alert.name} {alert.description} {alert.summary}" for alert in candidate_alerts
         ]
         candidate_embeddings = self.embedder.embed(candidate_texts)
 
         # Calculate similarities
-        similarities = self.embedder.batch_similarity(
-            query_embedding, candidate_embeddings
-        )
+        similarities = self.embedder.batch_similarity(query_embedding, candidate_embeddings)
 
         # Filter by threshold and sort
         similar_alerts = []
@@ -286,9 +277,7 @@ class AlertNoiseRanker:.
 
         # Emit volume reduction metrics
         if self.metrics:
-            suppressed_count = sum(
-                1 for _, score in ranked if score > self.noise_threshold
-            )
+            suppressed_count = sum(1 for _, score in ranked if score > self.noise_threshold)
             reduction_rate = suppressed_count / len(alerts) if alerts else 0
             self.metrics.gauge("alert_volume_reduction", reduction_rate)
 
@@ -369,7 +358,7 @@ class AlertNoiseRanker:.
         print(f"Training complete. False negative rate: {false_negative_rate:.3f}")
 
     def save_model(self, path: str):
-        """Save trained model to disk."""
+        """Save trained model to disk"""
         if not self.rf_model:
             raise ValueError("No model to save. Train a model first.")
 
@@ -385,7 +374,7 @@ class AlertNoiseRanker:.
         )
 
     def load_model(self, path: str):
-        """Load model from disk."""
+        """Load model from disk"""
         data = joblib.load(path)
         self.rf_model = data["rf_model"]
         self.scaler = data["scaler"]
@@ -394,32 +383,32 @@ class AlertNoiseRanker:.
         self.false_negative_target = data["false_negative_target"]
 
     def _get_service_criticality(self, service: str) -> float:
-        """Get criticality score for a service."""
+        """Get criticality score for a service"""
         # In production, this would be from configuration
         critical_services = {"api", "database", "payment", "auth"}
         return 5.0 if service in critical_services else 3.0
 
     def _get_service_alert_rate(self, service: str) -> float:
-        """Get alert rate for a service."""
+        """Get alert rate for a service"""
         # Would be calculated from metrics in production
         return 10.0  # Placeholder
 
-    def _get_service_false_positive_rate(self, service: str) -> float:.
-        """Get historical false positive rate for a service."""
+    def _get_service_false_positive_rate(self, service: str) -> float:
+        """Get historical false positive rate for a service"""
         # Would be calculated from feedback data
         return 0.1  # Placeholder
 
-    def _severity_to_score(self, severity: str) -> float:.
-        """Convert severity to numeric score."""
+    def _severity_to_score(self, severity: str) -> float:
+        """Convert severity to numeric score"""
         mapping = {"critical": 5.0, "warning": 3.0, "info": 2.0, "debug": 1.0}
         return mapping.get(severity.lower(), 2.0)
 
     def _get_current_false_negative_rate(self) -> float:
-        """Get current false negative rate from metrics."""
+        """Get current false negative rate from metrics"""
         # Would query metrics system in production
         return 0.015  # Placeholder
 
-    def warmup(self):.
-        """Warm up the embedder model."""
+    def warmup(self):
+        """Warm up the embedder model"""
         self.embedder.warmup()
         print(f"Model warmed up: {self.embedder.get_model_info()}")

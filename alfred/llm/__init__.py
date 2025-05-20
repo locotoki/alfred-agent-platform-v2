@@ -1,4 +1,4 @@
-"""Alfred LLM integration module."""
+"""Alfred LLM integration module"""
 
 from typing import List
 

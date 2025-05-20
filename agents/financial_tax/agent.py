@@ -1,4 +1,4 @@
-"""Financial Tax Agent implementation."""
+"""Financial Tax Agent implementation"""
 
 from typing import Any, Dict
 
@@ -9,16 +9,24 @@ from langgraph.graph import END, Graph
 from libs.a2a_adapter import A2AEnvelope
 from libs.agent_core import BaseAgent
 
-from .chains import (ComplianceCheckChain, FinancialAnalysisChain,
-                     RateLookupChain, TaxCalculationChain)
-from .models import (ComplianceCheckRequest, FinancialAnalysisRequest,
-                     TaxCalculationRequest, TaxRateRequest)
+from .chains import (
+    ComplianceCheckChain,
+    FinancialAnalysisChain,
+    RateLookupChain,
+    TaxCalculationChain,
+)
+from .models import (
+    ComplianceCheckRequest,
+    FinancialAnalysisRequest,
+    TaxCalculationRequest,
+    TaxRateRequest,
+)
 
 logger = structlog.get_logger(__name__)
 
 
-class FinancialTaxAgent(BaseAgent):.
-    """Agent for financial and tax analysis tasks."""
+class FinancialTaxAgent(BaseAgent):
+    """Agent for financial and tax analysis tasks"""
 
     def __init__(self, *args, **kwargs):
         super().__init__(
@@ -37,7 +45,7 @@ class FinancialTaxAgent(BaseAgent):.
         self.setup_graph()
 
     def setup_chains(self):
-        """Initialize LangChain configurations for each intent."""
+        """Initialize LangChain configurations for each intent"""
         llm = ChatOpenAI(
             temperature=0,
             model="gpt-4",
@@ -50,21 +58,15 @@ class FinancialTaxAgent(BaseAgent):.
         self.rate_lookup_chain = RateLookupChain(llm)
 
     def setup_graph(self):
-        """Setup LangGraph for complex workflow orchestration."""
+        """Setup LangGraph for complex workflow orchestration"""
         self.workflow_graph = Graph()
 
         # Add nodes for different processing steps
         self.workflow_graph.add_node("parse_request", self._parse_request)
         self.workflow_graph.add_node("validate_data", self._validate_data)
-        self.workflow_graph.add_node(
-            "process_tax_calculation", self._process_tax_calculation
-        )
-        self.workflow_graph.add_node(
-            "process_financial_analysis", self._process_financial_analysis
-        )
-        self.workflow_graph.add_node(
-            "process_compliance_check", self._process_compliance_check
-        )
+        self.workflow_graph.add_node("process_tax_calculation", self._process_tax_calculation)
+        self.workflow_graph.add_node("process_financial_analysis", self._process_financial_analysis)
+        self.workflow_graph.add_node("process_compliance_check", self._process_compliance_check)
         self.workflow_graph.add_node("process_rate_lookup", self._process_rate_lookup)
         self.workflow_graph.add_node("format_response", self._format_response)
 
@@ -99,7 +101,7 @@ class FinancialTaxAgent(BaseAgent):.
         self.workflow = self.workflow_graph.compile()
 
     async def process_task(self, envelope: A2AEnvelope) -> Dict[str, Any]:
-        """Process a financial/tax task."""
+        """Process a financial/tax task"""
         logger.info(
             "processing_financial_tax_task",
             task_id=envelope.task_id,
@@ -108,7 +110,7 @@ class FinancialTaxAgent(BaseAgent):.
 
         try:
             # Execute the workflow
-            result = await self.workflow.ainvoke(
+            result = await selfworkflow.ainvoke(
                 {
                     "envelope": envelope,
                     "intent": envelope.intent,
@@ -129,18 +131,18 @@ class FinancialTaxAgent(BaseAgent):.
 
     # Workflow node implementations
     async def _parse_request(self, state: Dict[str, Any]) -> Dict[str, Any]:
-        """Parse the incoming request."""
+        """Parse the incoming request"""
         state["parsed_content"] = state["content"]
         return state
 
     async def _validate_data(self, state: Dict[str, Any]) -> Dict[str, Any]:
-        """Validate the request data."""
+        """Validate the request data"""
         # Add validation logic here
         state["is_valid"] = True
         return state
 
     def _route_by_intent(self, state: Dict[str, Any]) -> str:
-        """Route to appropriate processor based on intent."""
+        """Route to appropriate processor based on intent"""
         intent = state["intent"]
         if intent == "TAX_CALCULATION":
             return "tax_calculation"
@@ -154,37 +156,35 @@ class FinancialTaxAgent(BaseAgent):.
             raise ValueError(f"Unsupported intent: {intent}")
 
     async def _process_tax_calculation(self, state: Dict[str, Any]) -> Dict[str, Any]:
-        """Process tax calculation request."""
+        """Process tax calculation request"""
         request = TaxCalculationRequest(**state["parsed_content"])
-        result = await self.tax_calc_chain.calculate(request)
+        result = await selftax_calc_chain.calculate(request)
         state["result"] = result.dict()
         return state
 
-    async def _process_financial_analysis(
-        self, state: Dict[str, Any]
-    ) -> Dict[str, Any]:
-        """Process financial analysis request."""
+    async def _process_financial_analysis(self, state: Dict[str, Any]) -> Dict[str, Any]:
+        """Process financial analysis request"""
         request = FinancialAnalysisRequest(**state["parsed_content"])
-        result = await self.analysis_chain.analyze(request)
+        result = await selfanalysis_chain.analyze(request)
         state["result"] = result.dict()
         return state
 
     async def _process_compliance_check(self, state: Dict[str, Any]) -> Dict[str, Any]:
-        """Process compliance check request."""
+        """Process compliance check request"""
         request = ComplianceCheckRequest(**state["parsed_content"])
-        result = await self.compliance_chain.check_compliance(request)
+        result = await selfcompliance_chain.check_compliance(request)
         state["result"] = result.dict()
         return state
 
     async def _process_rate_lookup(self, state: Dict[str, Any]) -> Dict[str, Any]:
-        """Process rate lookup request."""
+        """Process rate lookup request"""
         request = TaxRateRequest(**state["parsed_content"])
-        result = await self.rate_lookup_chain.lookup_rates(request)
+        result = await selfrate_lookup_chain.lookup_rates(request)
         state["result"] = result.dict()
         return state
 
     async def _format_response(self, state: Dict[str, Any]) -> Dict[str, Any]:
-        """Format the response for output."""
+        """Format the response for output"""
         state["response"] = {
             "status": "success",
             "intent": state["intent"],
@@ -194,9 +194,9 @@ class FinancialTaxAgent(BaseAgent):.
 
     # Specific handler methods for each intent
     async def _handle_tax_calculation(self, envelope: A2AEnvelope) -> Dict[str, Any]:
-        """Handle tax calculation requests."""
+        """Handle tax calculation requests"""
         request = TaxCalculationRequest(**envelope.content)
-        result = await self.tax_calc_chain.calculate(request)
+        result = await selftax_calc_chain.calculate(request)
 
         return {
             "status": "success",
@@ -211,9 +211,9 @@ class FinancialTaxAgent(BaseAgent):.
         }
 
     async def _handle_financial_analysis(self, envelope: A2AEnvelope) -> Dict[str, Any]:
-        """Handle financial analysis requests."""
+        """Handle financial analysis requests"""
         request = FinancialAnalysisRequest(**envelope.content)
-        result = await self.analysis_chain.analyze(request)
+        result = await selfanalysis_chain.analyze(request)
 
         return {
             "status": "success",
@@ -223,9 +223,9 @@ class FinancialTaxAgent(BaseAgent):.
         }
 
     async def _handle_compliance_check(self, envelope: A2AEnvelope) -> Dict[str, Any]:
-        """Handle compliance check requests."""
+        """Handle compliance check requests"""
         request = ComplianceCheckRequest(**envelope.content)
-        result = await self.compliance_chain.check_compliance(request)
+        result = await selfcompliance_chain.check_compliance(request)
 
         return {
             "status": "success",
@@ -233,16 +233,14 @@ class FinancialTaxAgent(BaseAgent):.
             "overall_status": result.compliance_status,
             "risk_level": result.risk_level,
             "critical_issues": [
-                issue
-                for issue in result.issues_found
-                if issue.get("severity") == "critical"
+                issue for issue in result.issues_found if issue.get("severity") == "critical"
             ],
         }
 
     async def _handle_rate_lookup(self, envelope: A2AEnvelope) -> Dict[str, Any]:
-        """Handle tax rate lookup requests."""
+        """Handle tax rate lookup requests"""
         request = TaxRateRequest(**envelope.content)
-        result = await self.rate_lookup_chain.lookup_rates(request)
+        result = await selfrate_lookup_chain.lookup_rates(request)
 
         return {
             "status": "success",

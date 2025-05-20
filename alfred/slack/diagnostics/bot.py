@@ -1,4 +1,4 @@
-"""Slack diagnostics bot for Alfred platform."""
+"""Slack diagnostics bot for Alfred platform"""
 
 from typing import Optional, cast
 
@@ -10,8 +10,8 @@ from slack_sdk.web.slack_response import SlackResponse
 logger = structlog.get_logger()
 
 
-class DiagnosticsBot:.
-    """Slack bot for system diagnostics and health checks."""
+class DiagnosticsBot:
+    """Slack bot for system diagnostics and health checks"""
 
     def __init__(
         self,
@@ -50,13 +50,11 @@ class DiagnosticsBot:.
             return None
 
         full_command = f"{command} {text}".strip()
-        logger.info(
-            "processing_command", command=full_command, channel=channel, user=user
-        )
+        logger.info("processing_command", command=full_command, channel=channel, user=user)
 
         handler = self.commands.get(full_command)
         if not handler:
-            return await self._send_help(channel)
+            return await self_send_help(channel)
 
         try:
             return await handler(channel, user)
@@ -64,14 +62,14 @@ class DiagnosticsBot:.
             logger.error("command_error", command=full_command, error=str(e))
             return cast(
                 SlackResponse,
-                await self.slack_client.chat_postMessage(
+                await selfslack_client.chat_postMessage(
                     channel=channel,
                     text=f"❌ Error executing command: {str(e)}",
                 ),
             )
 
     async def _handle_health_command(self, channel: str, user: str) -> SlackResponse:
-        """Handle health check command."""
+        """Handle health check command"""
         try:
             async with httpx.AsyncClient() as client:
                 # Check each service health endpoint
@@ -95,7 +93,7 @@ class DiagnosticsBot:.
 
                 for service_name, url in services:
                     try:
-                        response = await client.get(url, timeout=5.0)
+                        response = await clientget(url, timeout=5.0)
                         status = "✅" if response.status_code == 200 else "❌"
                         health_data = response.json()
                         status_text = health_data.get("status", "unknown")
@@ -115,9 +113,7 @@ class DiagnosticsBot:.
 
                 return cast(
                     SlackResponse,
-                    await self.slack_client.chat_postMessage(
-                        channel=channel, blocks=blocks
-                    ),
+                    await selfslack_client.chat_postMessage(channel=channel, blocks=blocks),
                 )
 
         except Exception as e:
@@ -125,7 +121,7 @@ class DiagnosticsBot:.
             raise
 
     async def _handle_metrics_command(self, channel: str, user: str) -> SlackResponse:
-        """Handle metrics query command."""
+        """Handle metrics query command"""
         try:
             async with httpx.AsyncClient() as client:
                 # Query Prometheus for key metrics
@@ -150,7 +146,7 @@ class DiagnosticsBot:.
 
                 for metric_name, query in queries.items():
                     try:
-                        response = await client.get(
+                        response = await clientget(
                             f"{self.prometheus_url}/api/v1/query",
                             params={"query": query},
                             timeout=5.0,
@@ -184,9 +180,7 @@ class DiagnosticsBot:.
 
                 return cast(
                     SlackResponse,
-                    await self.slack_client.chat_postMessage(
-                        channel=channel, blocks=blocks
-                    ),
+                    await selfslack_client.chat_postMessage(channel=channel, blocks=blocks),
                 )
 
         except Exception as e:
@@ -194,7 +188,7 @@ class DiagnosticsBot:.
             raise
 
     async def _send_help(self, channel: str) -> SlackResponse:
-        """Send help message."""
+        """Send help message"""
         blocks = [
             {
                 "type": "section",
@@ -215,5 +209,5 @@ class DiagnosticsBot:.
 
         return cast(
             SlackResponse,
-            await self.slack_client.chat_postMessage(channel=channel, blocks=blocks),
+            await selfslack_client.chat_postMessage(channel=channel, blocks=blocks),
         )

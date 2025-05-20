@@ -1,6 +1,6 @@
 #!/usr/bin/env python
-"""Test script for YouTube workflows via the API."""
-
+"""Test script for YouTube workflows via the API"""
+# type: ignore
 import argparse
 import time
 from datetime import datetime
@@ -9,7 +9,7 @@ import requests
 
 
 def test_niche_scout(host="localhost", port=9000):
-    """Test the Niche-Scout workflow via API."""
+    """Test the Niche-Scout workflow via API"""
     url = f"http://{host}:{port}/api/tasks"
 
     # Create task payload
@@ -71,7 +71,7 @@ def test_niche_scout(host="localhost", port=9000):
 
 
 def test_blueprint(seed_url=None, auto_niche=False, host="localhost", port=9000):
-    """Test the Blueprint workflow via API."""
+    """Test the Blueprint workflow via API"""
     url = f"http://{host}:{port}/api/tasks"
 
     # Create task payload
@@ -128,7 +128,7 @@ def test_blueprint(seed_url=None, auto_niche=False, host="localhost", port=9000)
 
 
 def parse_args():
-    """Parse command line arguments."""
+    """Parse command line arguments"""
     parser = argparse.ArgumentParser(description="Test YouTube agent API workflows")
 
     # Add arguments
@@ -141,9 +141,7 @@ def parse_args():
 
     parser.add_argument("--seed-url", help="Seed URL for Blueprint")
 
-    parser.add_argument(
-        "--auto-niche", action="store_true", help="Auto-select niche for Blueprint"
-    )
+    parser.add_argument("--auto-niche", action="store_true", help="Auto-select niche for Blueprint")
 
     parser.add_argument("--host", default="localhost", help="API host")
 
@@ -153,7 +151,7 @@ def parse_args():
 
 
 def main():
-    """Main function."""
+    """Main function"""
     args = parse_args()
 
     if args.workflow in ["niche_scout", "both"]:
@@ -168,18 +166,14 @@ def main():
 
     if args.workflow in ["blueprint", "both"]:
         print("\n=== Testing Blueprint Workflow ===\n")
-        blueprint_result = test_blueprint(
-            args.seed_url, args.auto_niche, args.host, args.port
-        )
+        blueprint_result = test_blueprint(args.seed_url, args.auto_niche, args.host, args.port)
 
         if blueprint_result:
             print("\nBlueprint Result:")
             blueprint = blueprint_result.get("data", {}).get("blueprint", {})
             print(f"Positioning: {blueprint.get('positioning', '')[:100]}...")
             print(f"Content Pillars: {', '.join(blueprint.get('content_pillars', []))}")
-            print(
-                f"Blueprint URL: {blueprint_result.get('data', {}).get('blueprint_url', '')}"
-            )
+            print(f"Blueprint URL: {blueprint_result.get('data', {}).get('blueprint_url', '')}")
 
 
 if __name__ == "__main__":

@@ -1,4 +1,4 @@
-"""OpenTelemetry tracing provider for observability."""
+"""OpenTelemetry tracing provider for observability"""
 
 import os
 from functools import wraps
@@ -6,8 +6,7 @@ from typing import Any, Dict, Optional
 
 import structlog
 from opentelemetry import trace
-from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import \
-    OTLPSpanExporter
+from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExporter
 from opentelemetry.sdk.resources import SERVICE_NAME, SERVICE_VERSION, Resource
 from opentelemetry.sdk.trace import TracerProvider
 from opentelemetry.sdk.trace.export import BatchSpanProcessor
@@ -16,8 +15,8 @@ from opentelemetry.trace import Status, StatusCode
 logger = structlog.get_logger(__name__)
 
 
-class TracingProvider:.
-    """Provider for OpenTelemetry tracing functionality."""
+class TracingProvider:
+    """Provider for OpenTelemetry tracing functionality"""
 
     def __init__(self, service_name: str, service_version: str = "1.0.0"):
         """Initialize the tracing provider with service information.
@@ -31,7 +30,7 @@ class TracingProvider:.
         self.tracer = self._setup_tracing()
 
     def _setup_tracing(self) -> trace.Tracer:
-        """Set up OpenTelemetry tracing."""
+        """Set up OpenTelemetry tracing"""
         resource = Resource(
             attributes={
                 SERVICE_NAME: self.service_name,
@@ -86,22 +85,22 @@ class TracingProvider:.
         return decorator
 
     def get_current_span(self) -> trace.Span:
-        """Get the current active span."""
+        """Get the current active span"""
         return trace.get_current_span()
 
-    def add_span_attributes(self, attributes: Dict[str, Any]):.
-        """Add attributes to the current span."""
+    def add_span_attributes(self, attributes: Dict[str, Any]):
+        """Add attributes to the current span"""
         span = self.get_current_span()
         if span and span.is_recording():
             for key, value in attributes.items():
                 span.set_attribute(key, value)
 
-    def add_span_event(self, name: str, attributes: Optional[Dict[str, Any]] = None):.
-        """Add an event to the current span."""
+    def add_span_event(self, name: str, attributes: Optional[Dict[str, Any]] = None):
+        """Add an event to the current span"""
         span = self.get_current_span()
         if span and span.is_recording():
             span.add_event(name, attributes=attributes)
 
-    def create_span(self, name: str) -> trace.Span:.
-        """Create a new span."""
+    def create_span(self, name: str) -> trace.Span:
+        """Create a new span"""
         return self.tracer.start_span(name)

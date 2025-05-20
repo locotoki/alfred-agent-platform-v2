@@ -320,9 +320,7 @@ class DocumentMigrator:
         # Ensure target has correct extension
         if self.target_path.suffix.lower() not in [".md", ".markdown"]:
             self.target_path = self.target_path.with_suffix(".md")
-            logger.info(
-                f"Adjusted target path to ensure markdown extension: {self.target_path}"
-            )
+            logger.info(f"Adjusted target path to ensure markdown extension: {self.target_path}")
 
         # Check target directory is writable
         if target_dir.exists() and not os.access(target_dir, os.W_OK):
@@ -350,9 +348,7 @@ class DocumentMigrator:
                 self.source_content = f.read()
 
             if self.verbose:
-                logger.info(
-                    f"Read {len(self.source_content)} bytes from {self.source_path}"
-                )
+                logger.info(f"Read {len(self.source_content)} bytes from {self.source_path}")
             return True
         except Exception as e:
             logger.error(f"Error reading source file: {e}")
@@ -374,9 +370,7 @@ class DocumentMigrator:
             metadata["Title"] = self.title
         else:
             # Use filename as title if no heading found
-            self.title = (
-                self.source_path.stem.replace("_", " ").replace("-", " ").title()
-            )
+            self.title = self.source_path.stem.replace("_", " ").replace("-", " ").title()
             metadata["Title"] = self.title
             logger.warning(f"No title found in document, using filename: {self.title}")
 
@@ -519,9 +513,7 @@ class DocumentMigrator:
         status = self.metadata.get("Status", self.status)
 
         # Format cross-references
-        cross_refs = (
-            "\n".join(self.cross_references) if self.cross_references else "*None*"
-        )
+        cross_refs = "\n".join(self.cross_references) if self.cross_references else "*None*"
 
         # Get template based on document type
         template = TEMPLATES.get(doc_type, TEMPLATES["general"])
@@ -589,9 +581,7 @@ class DocumentMigrator:
             markdown_files = list(docs_dir.glob("**/*.md"))
 
             # Calculate hash of source content for exact matches
-            source_hash = hashlib.sha256(
-                self.source_content.encode("utf-8")
-            ).hexdigest()
+            source_hash = hashlib.sha256(self.source_content.encode("utf-8")).hexdigest()
 
             for file_path in markdown_files:
                 # Skip the source file itself
@@ -646,14 +636,10 @@ class DocumentMigrator:
                         )
 
                 except Exception as e:
-                    logger.warning(
-                        f"Error checking file {file_path} for duplicates: {e}"
-                    )
+                    logger.warning(f"Error checking file {file_path} for duplicates: {e}")
 
         if self.verbose:
-            logger.info(
-                f"Found {len(potential_duplicates)} potential duplicate documents"
-            )
+            logger.info(f"Found {len(potential_duplicates)} potential duplicate documents")
 
         return potential_duplicates
 
@@ -709,9 +695,7 @@ class DocumentMigrator:
         if self.check_duplicates:
             potential_duplicates = self.check_for_duplicates()
             if potential_duplicates:
-                logger.warning(
-                    f"Found {len(potential_duplicates)} potential duplicates"
-                )
+                logger.warning(f"Found {len(potential_duplicates)} potential duplicates")
 
         # Create target content
         self.create_target_content()

@@ -1,4 +1,4 @@
-"""Stub implementation of A2A Adapter package."""
+"""Stub implementation of A2A Adapter package"""
 
 from .envelope import A2AEnvelope
 from .middleware import PolicyMiddleware

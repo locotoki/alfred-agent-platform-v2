@@ -1,4 +1,4 @@
-"""Alfred Slack integration module."""
+"""Alfred Slack integration module"""
 
 from typing import TYPE_CHECKING, List
 

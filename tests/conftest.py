@@ -16,8 +16,7 @@ import pytest
 import redis
 from google.cloud import pubsub_v1
 
-from libs.a2a_adapter import (PolicyMiddleware, PubSubTransport,
-                              SupabaseTransport)
+from libs.a2a_adapter import PolicyMiddleware, PubSubTransport, SupabaseTransport
 
 
 @pytest.fixture(scope="session")
@@ -29,7 +28,7 @@ def event_loop() -> Generator:
 
 
 @pytest.fixture(autouse=True)
-def setup_test_env():.
+def setup_test_env():
     """Set up test environment variables."""
     os.environ["ENVIRONMENT"] = "test"
     os.environ["PUBSUB_EMULATOR_HOST"] = "localhost:8085"
@@ -66,7 +65,7 @@ def mock_redis():
 
 
 @pytest.fixture
-def pubsub_transport(mock_pubsub):.
+def pubsub_transport(mock_pubsub):
     """Create PubSubTransport with mock."""
     transport = PubSubTransport(project_id="test-project")
     transport.publisher = mock_pubsub

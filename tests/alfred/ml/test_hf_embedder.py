@@ -8,11 +8,11 @@ import pytest
 from alfred.ml.hf_embedder import HFEmbedder
 
 
-class TestHFEmbedder:.
+class TestHFEmbedder:
     """Test HuggingFace transformer embedder functionality."""
 
     @pytest.fixture
-    def embedder(self):.
+    def embedder(self):
         """Create an embedder instance."""
         return HFEmbedder(device="cpu", batch_size=8)
 
@@ -36,9 +36,7 @@ class TestHFEmbedder:.
 
     def test_custom_model_initialization(self):
         """Test initialization with custom model."""
-        embedder = HFEmbedder(
-            model_name="bert-base-uncased", device="cuda", batch_size=16
-        )
+        embedder = HFEmbedder(model_name="bert-base-uncased", device="cuda", batch_size=16)
         assert embedder.model_name == "bert-base-uncased"
         assert embedder.device == "cuda"
         assert embedder.batch_size == 16
@@ -78,9 +76,7 @@ class TestHFEmbedder:.
         """Test embedding multiple texts."""
         texts = ["First alert", "Second alert", "Third alert"]
         mock_model = mock_sentence_transformer.return_value
-        expected_embeddings = np.array(
-            [[0.1, 0.2, 0.3], [0.4, 0.5, 0.6], [0.7, 0.8, 0.9]]
-        )
+        expected_embeddings = np.array([[0.1, 0.2, 0.3], [0.4, 0.5, 0.6], [0.7, 0.8, 0.9]])
         mock_model.encode.return_value = expected_embeddings
 
         embeddings = embedder.embed(texts)
@@ -96,8 +92,7 @@ class TestHFEmbedder:.
 
         # Test newline and tab removal
         assert (
-            embedder._clean_text("text\nwith\nnewlines\tand\ttabs")
-            == "text with newlines and tabs"
+            embedder._clean_text("text\nwith\nnewlines\tand\ttabs") == "text with newlines and tabs"
         )
 
         # Test long text truncation
@@ -128,7 +123,7 @@ class TestHFEmbedder:.
         vec2 = np.array([1.0, 0.0, 0.0])
         assert embedder.cosine_similarity(vec1, vec2) == 0.0
 
-    def test_batch_similarity(self, embedder):.
+    def test_batch_similarity(self, embedder):
         """Test batch similarity calculation."""
         query = np.array([1.0, 0.0, 0.0])
         candidates = np.array(
@@ -148,7 +143,7 @@ class TestHFEmbedder:.
         assert 0.7 < similarities[2] < 0.8  # 45 degrees
         assert similarities[3] == 0.0  # Opposite (clipped)
 
-    def test_batch_similarity_edge_cases(self, embedder):.
+    def test_batch_similarity_edge_cases(self, embedder):
         """Test batch similarity with edge cases."""
         # Empty candidates
         query = np.array([1.0, 0.0, 0.0])
@@ -162,7 +157,7 @@ class TestHFEmbedder:.
         assert len(similarities) == 2
         assert all(s == 0.0 for s in similarities)
 
-    def test_warmup(self, embedder, mock_sentence_transformer):.
+    def test_warmup(self, embedder, mock_sentence_transformer):
         """Test model warmup."""
         embedder.warmup()
 
@@ -170,7 +165,7 @@ class TestHFEmbedder:.
         assert embedder._model is not None
         mock_sentence_transformer.assert_called_once()
 
-    def test_get_model_info(self, embedder, mock_sentence_transformer):.
+    def test_get_model_info(self, embedder, mock_sentence_transformer):
         """Test getting model information."""
         mock_model = mock_sentence_transformer.return_value
         mock_model.get_sentence_embedding_dimension.return_value = 384

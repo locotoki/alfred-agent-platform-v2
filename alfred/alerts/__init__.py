@@ -1,4 +1,4 @@
-"""Alert enrichment and dispatching module."""
+"""Alert enrichment and dispatching module"""
 
 __version__ = "0.1.0"
 

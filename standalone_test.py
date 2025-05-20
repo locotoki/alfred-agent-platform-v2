@@ -6,10 +6,10 @@ from datetime import datetime
 
 
 # Mock YouTube API and vector storage
-class MockYouTubeAPI:.
+class MockYouTubeAPI:
     """Mock YouTube API for testing."""
 
-    async def search_videos(self, query, limit=10):.
+    async def search_videos(self, query, limit=10):
         """Mock video search."""
         return [
             {
@@ -57,7 +57,7 @@ class MockYouTubeAPI:.
 class MockVectorStorage:
     """Mock vector storage for testing."""
 
-    async def initialize_collections(self):.
+    async def initialize_collections(self):
         """Mock collection initialization."""
         print("Initializing vector collections...")
 
@@ -82,7 +82,7 @@ class MockSocialIntelAgent:
         self.youtube_api = MockYouTubeAPI()
         self.youtube_vectors = MockVectorStorage()
 
-    async def _youtube_niche_scout(self, content):.
+    async def _youtube_niche_scout(self, content):
         """Run YouTube Niche-Scout workflow."""
         print("\n=== Running Niche-Scout Workflow ===\n")
 
@@ -122,9 +122,7 @@ class MockSocialIntelAgent:
 
         # Save mock digest
         with open("niche_scout/digest.md", "w") as f:
-            f.write(
-                f"# YouTube Niche Scout - {datetime.now().strftime('%Y-%m-%d')}\n\n"
-            )
+            f.write(f"# YouTube Niche Scout - {datetime.now().strftime('%Y-%m-%d')}\n\n")
             f.write("## Top Trending Niches\n\n")
             for i, niche in enumerate(trending_niches, 1):
                 f.write(f"{i}. **{niche['query']}** - Score: {niche['score']:.2f}\n")
@@ -146,9 +144,7 @@ class MockSocialIntelAgent:
         print("\n=== Running Seed-to-Blueprint Workflow ===\n")
 
         # Get seed URL or auto-niche flag
-        seed_url = content.get(
-            "seed_url", "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
-        )
+        seed_url = content.get("seed_url", "https://www.youtube.com/watch?v=dQw4w9WgXcQ")
         auto_niche = content.get("auto_niche", False)
 
         if auto_niche:

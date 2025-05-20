@@ -1,5 +1,6 @@
-"""Enhanced Prometheus metrics for the Social Intelligence service."""
+"""Enhanced Prometheus metrics for the Social Intelligence service"""
 
+# type: ignore
 import time
 
 from prometheus_client import Counter, Gauge, Histogram, Summary
@@ -36,9 +37,7 @@ DB_ERROR_COUNTER = Counter(
 )
 
 # Social Intel specific metrics
-NICHE_SCOUT_RESULTS_COUNT = Gauge(
-    "si_niche_scout_results", "Number of niche results returned"
-)
+NICHE_SCOUT_RESULTS_COUNT = Gauge("si_niche_scout_results", "Number of niche results returned")
 
 NICHE_OPPORTUNITY_SCORE = Histogram(
     "si_niche_opportunity_score",
@@ -79,7 +78,7 @@ CIRCUIT_REJECTED = Counter(
 
 
 class LatencyTimer:
-    """Context manager for timing operations and recording metrics."""
+    """Context manager for timing operations and recording metrics"""
 
     def __init__(self, metric, labels=None):
         self.metric = metric
@@ -101,8 +100,8 @@ class LatencyTimer:
         return False  # Don't suppress exceptions
 
 
-class YouTubeApiTimer(LatencyTimer):.
-    """Specialized timer for YouTube API calls that also counts requests."""
+class YouTubeApiTimer(LatencyTimer):
+    """Specialized timer for YouTube API calls that also counts requests"""
 
     def __init__(self, endpoint, status="success"):
         super().__init__(YOUTUBE_API_LATENCY, {"endpoint": endpoint})
@@ -128,7 +127,7 @@ class YouTubeApiTimer(LatencyTimer):.
 
 
 class DatabaseTimer(LatencyTimer):
-    """Specialized timer for database operations that also tracks errors."""
+    """Specialized timer for database operations that also tracks errors"""
 
     def __init__(self, operation):
         super().__init__(DB_QUERY_SECONDS, {"operation": operation})

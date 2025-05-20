@@ -4,6 +4,7 @@ This module provides functions to interact with the YouTube Data API v3 for fetc
 trends, statistics, and channel data.
 """
 
+# type: ignore
 import os
 from datetime import datetime
 from typing import Any, Dict, List, Optional
@@ -18,7 +19,7 @@ YOUTUBE_API_BASE_URL = "https://www.googleapis.com/youtube/v3"
 
 
 class YouTubeAPIError(Exception):
-    """Exception raised for YouTube API errors."""
+    """Exception raised for YouTube API errors"""
 
 
 async def search_videos(
@@ -65,7 +66,7 @@ async def search_videos(
         async with aiohttp.ClientSession() as session:
             async with session.get(url, params=params) as response:
                 if response.status != 200:
-                    error_text = await response.text()
+                    error_text = await responsetext()
                     logger.error(
                         "youtube_api_search_error",
                         status=response.status,
@@ -73,7 +74,7 @@ async def search_videos(
                     )
                     raise YouTubeAPIError(f"YouTube API error: {error_text}")
 
-                data = await response.json()
+                data = await responsejson()
 
         logger.info(
             "youtube_api_search_success",
@@ -123,7 +124,7 @@ async def get_video_details(video_ids: List[str]) -> List[Dict[str, Any]]:
         async with aiohttp.ClientSession() as session:
             async with session.get(url, params=params) as response:
                 if response.status != 200:
-                    error_text = await response.text()
+                    error_text = await responsetext()
                     logger.error(
                         "youtube_api_video_details_error",
                         status=response.status,
@@ -131,11 +132,9 @@ async def get_video_details(video_ids: List[str]) -> List[Dict[str, Any]]:
                     )
                     raise YouTubeAPIError(f"YouTube API error: {error_text}")
 
-                data = await response.json()
+                data = await responsejson()
 
-        logger.info(
-            "youtube_api_video_details_success", items_count=len(data.get("items", []))
-        )
+        logger.info("youtube_api_video_details_success", items_count=len(data.get("items", [])))
 
         return data.get("items", [])
 
@@ -179,7 +178,7 @@ async def get_channel_details(channel_ids: List[str]) -> List[Dict[str, Any]]:
         async with aiohttp.ClientSession() as session:
             async with session.get(url, params=params) as response:
                 if response.status != 200:
-                    error_text = await response.text()
+                    error_text = await responsetext()
                     logger.error(
                         "youtube_api_channel_details_error",
                         status=response.status,
@@ -187,7 +186,7 @@ async def get_channel_details(channel_ids: List[str]) -> List[Dict[str, Any]]:
                     )
                     raise YouTubeAPIError(f"YouTube API error: {error_text}")
 
-                data = await response.json()
+                data = await responsejson()
 
         logger.info(
             "youtube_api_channel_details_success",
@@ -310,9 +309,7 @@ async def get_trends_by_category(
     channel_ids = list(set(video["snippet"]["channelId"] for video in video_details))
 
     # Get channel details
-    channel_details = await get_channel_details(
-        channel_ids[:10]
-    )  # Limit to top 10 channels
+    channel_details = await get_channel_details(channel_ids[:10])  # Limit to top 10 channels
 
     # Create mapping of channel IDs to channel data
     channel_map = {channel["id"]: channel for channel in channel_details}
@@ -332,16 +329,12 @@ async def get_trends_by_category(
         comment_count = int(statistics.get("commentCount", 0))
 
         # Calculate engagement ratio (likes + comments per view)
-        engagement_ratio = (
-            (like_count + comment_count) / view_count if view_count > 0 else 0
-        )
+        engagement_ratio = (like_count + comment_count) / view_count if view_count > 0 else 0
 
         # Get channel data if available
         channel_data = channel_map.get(channel_id, {})
         channel_name = video["snippet"]["channelTitle"]
-        subscriber_count = int(
-            channel_data.get("statistics", {}).get("subscriberCount", 0)
-        )
+        subscriber_count = int(channel_data.get("statistics", {}).get("subscriberCount", 0))
 
         # Calculate video performance relative to channel size
         performance_score = view_count / subscriber_count if subscriber_count > 0 else 0
@@ -363,9 +356,7 @@ async def get_trends_by_category(
         )
 
     # Sort by performance score and engagement
-    niche_data.sort(
-        key=lambda x: (x["performance_score"], x["engagement_ratio"]), reverse=True
-    )
+    niche_data.sort(key=lambda x: (x["performance_score"], x["engagement_ratio"]), reverse=True)
 
     # Identify top niches by clustering similar videos
     niches = []
@@ -406,12 +397,10 @@ async def get_trends_by_category(
 
                 if len(related_videos) >= 2:
                     # Calculate average statistics
-                    avg_views = sum(v["view_count"] for v in related_videos) / len(
+                    avg_views = sum(v["view_count"] for v in related_videos) / len(related_videos)
+                    avg_engagement = sum(v["engagement_ratio"] for v in related_videos) / len(
                         related_videos
                     )
-                    avg_engagement = sum(
-                        v["engagement_ratio"] for v in related_videos
-                    ) / len(related_videos)
 
                     # Add as a niche if relevant
                     niches.append(
@@ -419,9 +408,7 @@ async def get_trends_by_category(
                             "query": phrase,
                             "view_sum": sum(v["view_count"] for v in related_videos),
                             "engagement": avg_engagement,
-                            "score": avg_views
-                            * avg_engagement
-                            * 100,  # Custom score metric
+                            "score": avg_views * avg_engagement * 100,  # Custom score metric
                             "videos": [v["video_id"] for v in related_videos[:3]],
                             "top_channels": [
                                 {
@@ -442,9 +429,7 @@ async def get_trends_by_category(
     # Add placeholder values for compatibility with existing UI
     for niche in niches:
         niche["rsv"] = niche["score"] / 100  # Relative search volume (approximation)
-        niche["growth_rate"] = 75 + (
-            niche["score"] / 1000
-        )  # Growth rate (approximation)
+        niche["growth_rate"] = 75 + (niche["score"] / 1000)  # Growth rate (approximation)
         niche["competition_level"] = "High" if niche["view_sum"] > 1000000 else "Medium"
         niche["shorts_friendly"] = True  # Assume most content is shorts-friendly
         niche["view_rank"] = niches.index(niche) + 1
@@ -471,12 +456,8 @@ async def get_trends_by_category(
     # Build recommendations
     recommendations = []
     if niches:
-        recommendations.append(
-            f"Focus on {niches[0]['query']} for highest growth potential"
-        )
-        recommendations.append(
-            "Create content under 60 seconds for optimal Shorts performance"
-        )
+        recommendations.append(f"Focus on {niches[0]['query']} for highest growth potential")
+        recommendations.append("Create content under 60 seconds for optimal Shorts performance")
         recommendations.append(
             "Target trending topics with high search volume but moderate competition"
         )

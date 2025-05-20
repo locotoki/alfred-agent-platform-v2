@@ -1,4 +1,4 @@
-"""API routes for dynamic threshold management."""
+"""API routes for dynamic threshold management"""
 
 from typing import Dict
 
@@ -11,22 +11,16 @@ router = APIRouter(prefix="/thresholds", tags=["thresholds"])
 
 
 class ThresholdUpdate(BaseModel):
-    """Request model for threshold updates."""
+    """Request model for threshold updates"""
 
-    noise_threshold: float = Field(
-        None, ge=0.0, le=1.0, description="Noise detection threshold"
-    )
-    confidence_min: float = Field(
-        None, ge=0.0, le=1.0, description="Minimum confidence threshold"
-    )
+    noise_threshold: float = Field(None, ge=0.0, le=1.0, description="Noise detection threshold")
+    confidence_min: float = Field(None, ge=0.0, le=1.0, description="Minimum confidence threshold")
     batch_size: int = Field(None, ge=1, le=1000, description="Processing batch size")
-    learning_rate: float = Field(
-        None, ge=0.0001, le=1.0, description="Model learning rate"
-    )
+    learning_rate: float = Field(None, ge=0.0001, le=1.0, description="Model learning rate")
 
 
 class ThresholdResponse(BaseModel):
-    """Response model for threshold queries."""
+    """Response model for threshold queries"""
 
     noise_threshold: float
     confidence_min: float

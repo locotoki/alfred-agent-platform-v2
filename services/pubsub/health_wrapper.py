@@ -9,7 +9,7 @@ This script provides standardized health check endpoints for the PubSub emulator
 It acts as a wrapper around the PubSub emulator to make it compliant with the platform
 health check standard.
 """
-
+# type: ignore
 import json
 import os
 import time
@@ -35,16 +35,10 @@ app = FastAPI(
 
 # Prometheus metrics
 pubsub_up = Gauge("pubsub_up", "PubSub emulator availability")
-pubsub_requests_total = Counter(
-    "pubsub_requests_total", "Total PubSub requests processed"
-)
+pubsub_requests_total = Counter("pubsub_requests_total", "Total PubSub requests processed")
 pubsub_topics = Gauge("pubsub_topics", "Number of topics in PubSub")
-pubsub_subscriptions = Gauge(
-    "pubsub_subscriptions", "Number of subscriptions in PubSub"
-)
-pubsub_last_check_time = Gauge(
-    "pubsub_last_check_time", "Timestamp of last PubSub health check"
-)
+pubsub_subscriptions = Gauge("pubsub_subscriptions", "Number of subscriptions in PubSub")
+pubsub_last_check_time = Gauge("pubsub_last_check_time", "Timestamp of last PubSub health check")
 
 
 def check_pubsub_health() -> Dict[str, str]:
@@ -71,13 +65,9 @@ def check_pubsub_health() -> Dict[str, str]:
                 try:
                     with urllib.request.urlopen(sub_url, timeout=2) as sub_response:
                         if sub_response.status == 200:
-                            subscriptions = json.loads(
-                                sub_response.read().decode("utf-8")
-                            )
+                            subscriptions = json.loads(sub_response.read().decode("utf-8"))
                             if "subscriptions" in subscriptions:
-                                pubsub_subscriptions.set(
-                                    len(subscriptions["subscriptions"])
-                                )
+                                pubsub_subscriptions.set(len(subscriptions["subscriptions"]))
                 except Exception:
                     pass  # Ignore subscription check failures
 
@@ -97,7 +87,7 @@ def check_pubsub_health() -> Dict[str, str]:
 
 @app.get("/health")
 async def health_check():
-    """Detailed health check endpoint."""
+    """Detailed health check endpoint"""
     result = check_pubsub_health()
 
     if result["status"] == "error":
@@ -114,7 +104,7 @@ async def health_check():
 
 @app.get("/healthz")
 async def simple_health():
-    """Simple health check for container probes."""
+    """Simple health check for container probes"""
     result = check_pubsub_health()
 
     if result["status"] == "error":
@@ -129,10 +119,8 @@ async def simple_health():
 
 @app.get("/metrics")
 async def metrics():
-    """Prometheus metrics endpoint."""
-    return Response(
-        content=prometheus_client.generate_latest(), media_type="text/plain"
-    )
+    """Prometheus metrics endpoint"""
+    return Response(content=prometheus_client.generate_latest(), media_type="text/plain")
 
 
 if __name__ == "__main__":

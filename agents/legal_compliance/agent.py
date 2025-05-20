@@ -1,4 +1,4 @@
-"""Legal Compliance Agent Implementation."""
+"""Legal Compliance Agent Implementation"""
 
 from datetime import datetime
 from typing import Any, Dict
@@ -6,14 +6,16 @@ from uuid import uuid4
 
 import structlog
 
-from libs.a2a_adapter import (A2AEnvelope, PolicyMiddleware, PubSubTransport,
-                              SupabaseTransport)
+from libs.a2a_adapter import A2AEnvelope, PolicyMiddleware, PubSubTransport, SupabaseTransport
 from libs.agent_core.base_agent import BaseAgent
 
-from .chains import (audit_chain, contract_chain, document_chain,
-                     regulation_chain)
-from .models import (ComplianceAuditRequest, ContractReviewRequest,
-                     DocumentAnalysisRequest, RegulationCheckRequest)
+from .chains import audit_chain, contract_chain, document_chain, regulation_chain
+from .models import (
+    ComplianceAuditRequest,
+    ContractReviewRequest,
+    DocumentAnalysisRequest,
+    RegulationCheckRequest,
+)
 
 logger = structlog.get_logger(__name__)
 
@@ -42,19 +44,19 @@ class LegalComplianceAgent(BaseAgent):
         )
 
     async def process_task(self, envelope: A2AEnvelope) -> Dict[str, Any]:
-        """Process legal compliance tasks based on intent."""
+        """Process legal compliance tasks based on intent"""
         intent = envelope.intent
         content = envelope.content
 
         try:
             if intent == "COMPLIANCE_AUDIT":
-                return await self._process_compliance_audit(content)
+                return await self_process_compliance_audit(content)
             elif intent == "DOCUMENT_ANALYSIS":
-                return await self._process_document_analysis(content)
+                return await self_process_document_analysis(content)
             elif intent == "REGULATION_CHECK":
-                return await self._process_regulation_check(content)
+                return await self_process_regulation_check(content)
             elif intent == "CONTRACT_REVIEW":
-                return await self._process_contract_review(content)
+                return await self_process_contract_review(content)
             else:
                 raise ValueError(f"Unsupported intent: {intent}")
 
@@ -67,21 +69,17 @@ class LegalComplianceAgent(BaseAgent):
             )
             raise
 
-    async def _process_compliance_audit(
-        self, content: Dict[str, Any]
-    ) -> Dict[str, Any]:
-        """Process compliance audit request."""
+    async def _process_compliance_audit(self, content: Dict[str, Any]) -> Dict[str, Any]:
+        """Process compliance audit request"""
         try:
             # Validate request
             request = ComplianceAuditRequest(**content)
 
             # Execute audit chain
-            result = await audit_chain.arun(
+            result = await audit_chainarun(
                 organization_name=request.organization_name,
                 audit_scope=request.audit_scope,
-                compliance_categories=[
-                    cat.value for cat in request.compliance_categories
-                ],
+                compliance_categories=[cat.value for cat in request.compliance_categories],
                 documents=request.documents or [],
             )
 
@@ -99,21 +97,17 @@ class LegalComplianceAgent(BaseAgent):
                 "error_type": "compliance_audit_error",
             }
 
-    async def _process_document_analysis(
-        self, content: Dict[str, Any]
-    ) -> Dict[str, Any]:
-        """Process document analysis request."""
+    async def _process_document_analysis(self, content: Dict[str, Any]) -> Dict[str, Any]:
+        """Process document analysis request"""
         try:
             # Validate request
             request = DocumentAnalysisRequest(**content)
 
             # Execute document analysis chain
-            result = await document_chain.arun(
+            result = await document_chainarun(
                 document_type=request.document_type.value,
                 document_content=request.document_content,
-                compliance_frameworks=[
-                    fw.value for fw in request.compliance_frameworks
-                ],
+                compliance_frameworks=[fw.value for fw in request.compliance_frameworks],
                 check_for_pii=request.check_for_pii,
             )
 
@@ -131,16 +125,14 @@ class LegalComplianceAgent(BaseAgent):
                 "error_type": "document_analysis_error",
             }
 
-    async def _process_regulation_check(
-        self, content: Dict[str, Any]
-    ) -> Dict[str, Any]:
-        """Process regulation check request."""
+    async def _process_regulation_check(self, content: Dict[str, Any]) -> Dict[str, Any]:
+        """Process regulation check request"""
         try:
             # Validate request
             request = RegulationCheckRequest(**content)
 
             # Execute regulation check chain
-            result = await regulation_chain.arun(
+            result = await regulation_chainarun(
                 business_activity=request.business_activity,
                 jurisdictions=request.jurisdictions,
                 industry_sector=request.industry_sector,
@@ -161,13 +153,13 @@ class LegalComplianceAgent(BaseAgent):
             }
 
     async def _process_contract_review(self, content: Dict[str, Any]) -> Dict[str, Any]:
-        """Process contract review request."""
+        """Process contract review request"""
         try:
             # Validate request
             request = ContractReviewRequest(**content)
 
             # Execute contract review chain
-            result = await contract_chain.arun(
+            result = await contract_chainarun(
                 contract_type=request.contract_type,
                 contract_content=request.contract_content,
                 parties_involved=request.parties_involved,

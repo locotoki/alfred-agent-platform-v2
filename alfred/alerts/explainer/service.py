@@ -1,49 +1,43 @@
-"""Service module for the Alert Explainer Agent."""
+"""Alert Explainer Service API.
 
+This module implements a FastAPI service that provides alert explanation
+functionality via a REST API interface.
+"""
+
+import asyncio
+import json
+import os
 from contextlib import asynccontextmanager
-from typing import Any, AsyncIterator, Dict
+from typing import Any, AsyncIterator, Dict, List, Optional
 
 import structlog
-from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel
+from fastapi import FastAPI, HTTPException, Request
+from fastapi.responses import JSONResponse
+from pydantic import BaseModel, Field
 
-from alfred.alerts.explainer.agent import ExplainerAgent
+from .agent import ExplainerAgent
 
-# Configure structured logging
-structlog.configure(
-    processors=[
-        structlog.stdlib.filter_by_level,
-        structlog.stdlib.add_logger_name,
-        structlog.stdlib.add_log_level,
-        structlog.stdlib.PositionalArgumentsFormatter(),
-        structlog.processors.TimeStamper(fmt="iso"),
-        structlog.processors.StackInfoRenderer(),
-        structlog.processors.format_exc_info,
-        structlog.processors.UnicodeDecoder(),
-        structlog.dev.ConsoleRenderer(),
-    ],
-    context_class=dict,
-    logger_factory=structlog.stdlib.LoggerFactory(),
-    cache_logger_on_first_use=True,
-)
+# Configure logging
+logger = structlog.get_logger(__name__)
 
-logger = structlog.get_logger()
+# Initialize the agent
+agent = ExplainerAgent()
 
 
-class AlertPayload(BaseModel):
-    """Alert payload model."""
+class AlertExplanationRequest(BaseModel):
+    """Schema for an alert explanation request."""
 
-    alert_name: str
-    description: str
-    severity: str = "unknown"
-    value: str = "N/A"
-    metric: str = "unknown"
-    labels: Dict[str, Any] = {}
-    annotations: Dict[str, Any] = {}
+    alert_name: str = Field(..., description="The name of the alert")
+    description: Optional[str] = Field(None, description="Alert description")
+    labels: Optional[Dict[str, str]] = Field(None, description="Alert labels")
+    annotations: Optional[Dict[str, str]] = Field(None, description="Alert annotations")
+    value: Optional[str] = Field(None, description="Current metric value")
+    startsAt: Optional[str] = Field(None, description="Alert start time")
+    endsAt: Optional[str] = Field(None, description="Alert end time (if resolved)")
 
 
-class ExplainResponse(BaseModel):
-    """Response model for alert explanations."""
+class AlertExplanationResponse(BaseModel):
+    """Schema for an alert explanation response."""
 
     alert_name: str
     explanation: str
@@ -51,7 +45,7 @@ class ExplainResponse(BaseModel):
 
 
 @asynccontextmanager
-async def lifespan(app: FastAPI) -> AsyncIterator[None]:.
+async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     """Application lifespan manager."""
     logger.info("Starting Alert Explainer Service")
     yield
@@ -59,34 +53,134 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:.
 
 
 app = FastAPI(
-    title="Alert Explainer Service",
-    description="Generates human-readable explanations for alerts",
+    title="Alert Explainer API",
+    description="API for explaining alerts in natural language",
     version="0.1.0",
     lifespan=lifespan,
 )
 
-# Global agent instance
-agent = ExplainerAgent()  # Stub mode by default
-
 
 @app.get("/health")
-async def health() -> Dict[str, str]:
+async def health_check() -> Dict[str, str]:
     """Health check endpoint."""
-    return {"status": "healthy", "service": "alert-explainer"}
+    return {"status": "ok", "service": "alert-explainer"}
 
 
-@app.post("/explain", response_model=ExplainResponse)
-async def explain_alert(payload: AlertPayload) -> ExplainResponse:
-    """Generate an explanation for an alert."""
+@app.get("/ready")
+async def readiness_check() -> Dict[str, str]:
+    """Readiness check endpoint."""
+    return {"status": "ready", "service": "alert-explainer"}
+
+
+@app.post("/api/v1/explain", response_model=AlertExplanationResponse)
+async def explain_alert(request: AlertExplanationRequest) -> JSONResponse:
+    """Explain an alert in natural language.
+
+    Args:
+        request: The alert explanation request
+
+    Returns:
+        A JSON response with the explanation
+    """
+    logger.info(
+        "alert_explanation_request",
+        alert_name=request.alert_name,
+        has_description=bool(request.description),
+    )
+
+    # Convert request to dict for the agent
+    alert_data = request.dict()
+
+    # Call the agent to explain the alert
+    result = await agent.explain_alert(alert_data)
+
+    if not result.get("success", False):
+        logger.error(
+            "alert_explanation_failed",
+            alert_name=request.alert_name,
+            error=result.get("error", "Unknown error"),
+        )
+        raise HTTPException(status_code=500, detail="Failed to generate explanation")
+
+    logger.info(
+        "alert_explanation_success",
+        alert_name=request.alert_name,
+        explanation_length=len(result.get("explanation", "")),
+    )
+
+    return JSONResponse(
+        content={
+            "alert_name": result.get("alert_name", request.alert_name),
+            "explanation": result.get("explanation", ""),
+            "success": True,
+        }
+    )
+
+
+@app.post("/api/v1/webhook/prometheus")
+async def prometheus_webhook(request: Request) -> Dict[str, Any]:
+    """Handle Prometheus Alertmanager webhook.
+
+    Args:
+        request: The webhook request
+
+    Returns:
+        A status response
+    """
     try:
-        result = agent.explain_alert(payload.dict())
-        return ExplainResponse(**result)
+        payload = await request.json()
+        logger.info(
+            "prometheus_webhook_received",
+            alerts_count=len(payload.get("alerts", [])),
+        )
+
+        # Process alerts asynchronously
+        asyncio.create_task(process_prometheus_alerts(payload))
+
+        return {"status": "processing", "alerts_count": len(payload.get("alerts", []))}
+
     except Exception as e:
-        logger.error(f"Failed to explain alert: {e}", error=str(e))
-        raise HTTPException(status_code=500, detail=str(e))
+        logger.error(
+            "prometheus_webhook_error",
+            error=str(e),
+            error_type=type(e).__name__,
+        )
+        raise HTTPException(status_code=400, detail="Invalid Prometheus Alertmanager payload")
 
 
-if __name__ == "__main__":
-    import uvicorn
+async def process_prometheus_alerts(payload: Dict[str, Any]) -> None:
+    """Process Prometheus alerts asynchronously.
 
-    uvicorn.run(app, host="0.0.0.0", port=8080)
+    Args:
+        payload: The Prometheus Alertmanager payload
+    """
+    alerts = payload.get("alerts", [])
+
+    for alert in alerts:
+        try:
+            # Convert Prometheus alert format to our format
+            alert_request = AlertExplanationRequest(
+                alert_name=alert.get("labels", {}).get("alertname", "Unknown Alert"),
+                description=alert.get("annotations", {}).get("description", ""),
+                labels=alert.get("labels", {}),
+                annotations=alert.get("annotations", {}),
+                value=alert.get("annotations", {}).get("value", ""),
+                startsAt=alert.get("startsAt", ""),
+                endsAt=alert.get("endsAt", ""),
+            )
+
+            # Generate explanation
+            result = await agent.explain_alert(alert_request.dict())
+
+            logger.info(
+                "alert_processed",
+                alert_name=alert_request.alert_name,
+                success=result.get("success", False),
+            )
+
+        except Exception as e:
+            logger.error(
+                "alert_processing_error",
+                error=str(e),
+                error_type=type(e).__name__,
+            )

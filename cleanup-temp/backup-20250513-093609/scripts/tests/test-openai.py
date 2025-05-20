@@ -7,7 +7,7 @@ import re
 import requests
 
 
-def load_env():.
+def load_env():
     """Load environment variables from .env.llm file."""
     # Read from .env.llm
     try:
@@ -70,9 +70,7 @@ def test_openai_api():
 
         if response.status_code == 200:
             result = response.json()
-            message = (
-                result.get("choices", [{}])[0].get("message", {}).get("content", "")
-            )
+            message = result.get("choices", [{}])[0].get("message", {}).get("content", "")
             print("\nResponse from OpenAI:")
             print(message)
         else:

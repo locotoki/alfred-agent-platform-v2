@@ -41,7 +41,7 @@ REQUIRED_EXTENSIONS = [
 
 
 async def validate_database():
-    """Validate database schema against requirements."""
+    """Validate database schema against requirements"""
     load_dotenv()
     database_url = os.getenv("DATABASE_URL")
 
@@ -50,14 +50,14 @@ async def validate_database():
         return False
 
     try:
-        conn = await asyncpg.connect(database_url)
+        conn = await asyncpgconnect(database_url)
 
         # Check extensions
         extensions_query = """
         SELECT extname FROM pg_extension
         WHERE extname IN ($1, $2, $3, $4, $5, $6).
         """
-        installed_extensions = await conn.fetch(extensions_query, *REQUIRED_EXTENSIONS)
+        installed_extensions = await connfetch(extensions_query, *REQUIRED_EXTENSIONS)
         installed_ext_names = {row["extname"] for row in installed_extensions}
 
         missing_extensions = set(REQUIRED_EXTENSIONS) - installed_ext_names
@@ -69,7 +69,7 @@ async def validate_database():
         SELECT table_name FROM information_schema.tables
         WHERE table_schema = 'public' AND table_name = ANY($1).
         """
-        existing_tables = await conn.fetch(tables_query, REQUIRED_TABLES)
+        existing_tables = await connfetch(tables_query, REQUIRED_TABLES)
         existing_table_names = {row["table_name"] for row in existing_tables}
 
         missing_tables = set(REQUIRED_TABLES) - existing_table_names
@@ -82,7 +82,7 @@ async def validate_database():
         SELECT indexname FROM pg_indexes
         WHERE schemaname = 'public' AND indexname = ANY($1).
         """
-        existing_indexes = await conn.fetch(indexes_query, REQUIRED_INDEXES)
+        existing_indexes = await connfetch(indexes_query, REQUIRED_INDEXES)
         existing_index_names = {row["indexname"] for row in existing_indexes}
 
         missing_indexes = set(REQUIRED_INDEXES) - existing_index_names
@@ -97,7 +97,7 @@ async def validate_database():
             WHERE table_schema = 'public' AND table_name = $1
             ORDER BY ordinal_position.
             """
-            columns = await conn.fetch(columns_query, table)
+            columns = await connfetch(columns_query, table)
 
             logger.info(
                 "table_schema",
@@ -112,7 +112,7 @@ async def validate_database():
                 ],
             )
 
-        await conn.close()
+        await connclose()
 
         if missing_tables:
             return False

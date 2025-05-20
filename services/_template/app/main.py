@@ -1,4 +1,4 @@
-"""Template service with standardized health and metrics endpoints."""
+"""Template service with standardized health and metrics endpoints"""
 
 import logging
 import os
@@ -55,7 +55,7 @@ async def metrics() -> Response:
 
     Returns metrics in Prometheus text format.
     """
-    metrics_text = f."""# HELP service_health Service health status (1 = healthy, 0 = unhealthy)
+    metrics_text = f"""# HELP service_health Service health status (1 = healthy, 0 = unhealthy)
 # TYPE service_health gauge
 service_health{{name="{SERVICE_NAME}",version="{SERVICE_VERSION}"}} 1
 
@@ -80,7 +80,7 @@ service_request_duration_seconds_count{{service="{SERVICE_NAME}"}} 0
 # Main service endpoints
 @app.get("/")
 async def root() -> Dict[str, str]:
-    """Root endpoint that returns basic service information."""
+    """Root endpoint that returns basic service information"""
     return {
         "service": SERVICE_NAME,
         "version": SERVICE_VERSION,

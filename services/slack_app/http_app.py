@@ -3,6 +3,7 @@
 This version is designed to run when we don't have a valid App Token for Socket Mode.
 """
 
+# type: ignore
 import logging
 import os
 import socket
@@ -28,9 +29,7 @@ app = App(
 # Command prefix for slash commands
 COMMAND_PREFIX = os.getenv("COMMAND_PREFIX", "/alfred")
 DEFAULT_CHANNEL = os.getenv("DEFAULT_CHANNEL", "general")
-ALLOWED_COMMANDS = os.getenv(
-    "ALLOWED_COMMANDS", "help,status,search,ask,agents,health"
-).split(",")
+ALLOWED_COMMANDS = os.getenv("ALLOWED_COMMANDS", "help,status,search,ask,agents,health").split(",")
 
 # Define allowed commands as a set for faster lookups
 ALLOWED_COMMANDS_SET = set(ALLOWED_COMMANDS)
@@ -39,7 +38,7 @@ ALLOWED_COMMANDS_SET = set(ALLOWED_COMMANDS)
 # Command handler for /alfred
 @app.command(f"{COMMAND_PREFIX}")
 def handle_alfred_command(ack, command, say):
-    """Handle the /alfred slash command."""
+    """Handle the /alfred slash command"""
     ack()  # Acknowledge command request
 
     # Parse the command text
@@ -72,7 +71,7 @@ def handle_alfred_command(ack, command, say):
 
 
 def handle_help_command(say):
-    """Handle the help command."""
+    """Handle the help command"""
     help_text = (
         "*Alfred Slack Bot Commands*\n\n"
         "• `/alfred help` - Show this help message\n"
@@ -86,7 +85,7 @@ def handle_help_command(say):
 
 
 def handle_status_command(say):
-    """Handle the status command."""
+    """Handle the status command"""
     status_text = (
         "*Alfred Platform Status*\n\n"
         "• Platform Version: v0.8.1\n"
@@ -98,7 +97,7 @@ def handle_status_command(say):
 
 
 def handle_health_command(say):
-    """Handle the health command."""
+    """Handle the health command"""
     health_text = (
         "*Alfred Health Status*\n\n"
         "```\n"
@@ -123,31 +122,31 @@ handler = SlackRequestHandler(app)
 
 @flask_app.route("/slack/events", methods=["POST"])
 def slack_events():
-    """Handle Slack events."""
+    """Handle Slack events"""
     return handler.handle(request)
 
 
 @flask_app.route("/slack/commands", methods=["POST"])
 def slack_commands():
-    """Handle Slack commands."""
+    """Handle Slack commands"""
     return handler.handle(request)
 
 
 @flask_app.route("/healthz")
 def health():
-    """Health check endpoint."""
+    """Health check endpoint"""
     return jsonify({"status": "ok", "service": "slack-app"})
 
 
 @flask_app.route("/readyz")
 def ready():
-    """Readiness check endpoint."""
+    """Readiness check endpoint"""
     return jsonify({"status": "ready", "service": "slack-app"})
 
 
 @flask_app.route("/")
 def home():
-    """Home page."""
+    """Home page"""
     return jsonify(
         {
             "name": "Alfred Slack App",
@@ -160,7 +159,7 @@ def home():
 
 
 def find_available_port(start_port, max_attempts=10):
-    """Find an available port starting from start_port."""
+    """Find an available port starting from start_port"""
     for port_offset in range(max_attempts):
         port = start_port + port_offset
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -189,9 +188,7 @@ if __name__ == "__main__":
     print(f"⚡️ Bolt app is running in HTTP mode on port {port}!")
     print(f"Slack events URL: http://your-server:{port}/slack/events")
     print(f"Slack commands URL: http://your-server:{port}/slack/commands")
-    print(
-        f"Health endpoints: http://your-server:{port}/healthz, http://your-server:{port}/readyz"
-    )
+    print(f"Health endpoints: http://your-server:{port}/healthz, http://your-server:{port}/readyz")
 
     # Set debug mode to False to avoid the reloader
     flask_app.run(host="0.0.0.0", port=port, debug=False)

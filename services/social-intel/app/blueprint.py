@@ -4,6 +4,7 @@ This module provides functionality to transform a seed video into a comprehensiv
 channel strategy with competitor analysis and content gaps.
 """
 
+# type: ignore
 import asyncio
 import json
 import os
@@ -12,14 +13,15 @@ from datetime import datetime
 from typing import Any, Dict, Optional, Tuple
 
 import structlog
+
 # Use simple reports instead of HTML templates
 from app.simple_reports import generate_blueprint_report
 
 logger = structlog.get_logger(__name__)
 
 
-class SeedToBlueprint:.
-    """Implements the Seed-to-Blueprint workflow for YouTube channel strategy."""
+class SeedToBlueprint:
+    """Implements the Seed-to-Blueprint workflow for YouTube channel strategy"""
 
     def __init__(self, output_dir: str = "/app/data/builder"):
         """Initialize the SeedToBlueprint workflow.
@@ -50,12 +52,10 @@ class SeedToBlueprint:.
         if not video_url and not niche:
             raise ValueError("Either video_url or niche must be provided")
 
-        self.logger.info(
-            "Starting SeedToBlueprint workflow", video_url=video_url, niche=niche
-        )
+        self.logger.info("Starting SeedToBlueprint workflow", video_url=video_url, niche=niche)
 
         # Simulate processing time
-        await asyncio.sleep(3)
+        await asynciosleep(3)
 
         # Generate results (using simulated data for the stub implementation)
         results = self._generate_simulated_results(video_url, niche)

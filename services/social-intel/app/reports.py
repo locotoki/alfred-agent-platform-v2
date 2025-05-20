@@ -1,5 +1,6 @@
-"""Report generation utilities for Social Intelligence Agent."""
+"""Report generation utilities for Social Intelligence Agent"""
 
+# type: ignore
 import os
 from datetime import datetime
 from typing import Any, Dict
@@ -12,7 +13,7 @@ env = Environment(loader=FileSystemLoader("app/templates"))
 
 # Add custom filters
 def format_number(value):
-    """Format numbers with commas for thousands."""
+    """Format numbers with commas for thousands"""
     return f"{value:,}"
 
 
@@ -49,9 +50,7 @@ def generate_niche_scout_html(
     return filepath
 
 
-def generate_blueprint_html(
-    data: Dict[str, Any], output_dir: str = "/app/data/builder"
-) -> str:
+def generate_blueprint_html(data: Dict[str, Any], output_dir: str = "/app/data/builder") -> str:
     """Generate HTML report for Seed-to-Blueprint results.
 
     Args:

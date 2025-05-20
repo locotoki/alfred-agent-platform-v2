@@ -1,4 +1,4 @@
-"""Unit tests for alert dispatcher module."""
+"""Unit tests for alert dispatcher module"""
 
 import os
 from unittest.mock import Mock, patch
@@ -6,20 +6,19 @@ from unittest.mock import Mock, patch
 import pytest
 import requests
 
-from alfred.alerts.dispatcher import (format_alert_for_slack, handle_alert,
-                                      send_to_slack)
+from alfred.alerts.dispatcher import format_alert_for_slack, handle_alert, send_to_slack
 
 # Mark all tests in this module with the alerts marker
 pytestmark = pytest.mark.alerts
 
 
-class TestHandleAlert:.
-    """Test suite for handle_alert function."""
+class TestHandleAlert:
+    """Test suite for handle_alert function"""
 
     @patch("alfred.alerts.dispatcher.send_to_slack")
     @patch("alfred.alerts.dispatcher.format_alert_for_slack")
     def test_handle_alert_success(self, mock_format, mock_send):
-        """Test successful alert handling."""
+        """Test successful alert handling"""
         # Mock environment variables
         with patch.dict(
             os.environ,
@@ -65,14 +64,14 @@ class TestHandleAlert:.
             )
 
     def test_handle_alert_missing_webhook(self):
-        """Test error when SLACK_ALERT_WEBHOOK is missing."""
+        """Test error when SLACK_ALERT_WEBHOOK is missing"""
         with patch.dict(os.environ, {}, clear=True):
             with pytest.raises(ValueError, match="SLACK_ALERT_WEBHOOK"):
                 handle_alert({"alerts": [{}]})
 
     @patch("alfred.alerts.dispatcher.send_to_slack")
     def test_handle_alert_empty_alerts(self, mock_send):
-        """Test handling of empty alerts array."""
+        """Test handling of empty alerts array"""
         with patch.dict(
             os.environ,
             {
@@ -82,12 +81,10 @@ class TestHandleAlert:.
             handle_alert({"alerts": []})
             mock_send.assert_not_called()
 
-    @patch(
-        "alfred.alerts.dispatcher.send_to_slack", side_effect=Exception("Slack error")
-    )
+    @patch("alfred.alerts.dispatcher.send_to_slack", side_effect=Exception("Slack error"))
     @patch("alfred.alerts.dispatcher.format_alert_for_slack")
     def test_handle_alert_send_failure(self, mock_format, mock_send):
-        """Test error handling when Slack send fails."""
+        """Test error handling when Slack send fails"""
         with patch.dict(
             os.environ,
             {
@@ -101,7 +98,7 @@ class TestHandleAlert:.
 
 
 class TestFormatAlertForSlack:
-    """Test suite for format_alert_for_slack function."""
+    """Test suite for format_alert_for_slack function"""
 
     @pytest.mark.parametrize(
         "severity,expected_emoji,expected_color",
@@ -113,7 +110,7 @@ class TestFormatAlertForSlack:
         ],
     )
     def test_severity_formatting(self, severity, expected_emoji, expected_color):
-        """Test proper severity-based formatting."""
+        """Test proper severity-based formatting"""
         alert = {
             "labels": {
                 "alertname": "TestAlert",
@@ -157,7 +154,7 @@ class TestFormatAlertForSlack:
         assert attachment["actions"][0]["url"] == "https://example.com/runbook.md"
 
     def test_format_minimal_alert(self):
-        """Test formatting with minimal alert data."""
+        """Test formatting with minimal alert data"""
         alert = {
             "labels": {},
             "annotations": {},
@@ -176,7 +173,7 @@ class TestFormatAlertForSlack:
         assert "actions" not in attachment  # No runbook
 
     def test_format_with_description(self):
-        """Test that description is included when present."""
+        """Test that description is included when present"""
         alert = {
             "labels": {"alertname": "TestAlert"},
             "annotations": {
@@ -206,11 +203,11 @@ class TestFormatAlertForSlack:
 
 
 class TestSendToSlack:
-    """Test suite for send_to_slack function."""
+    """Test suite for send_to_slack function"""
 
     @patch("alfred.alerts.dispatcher.requests.post")
     def test_send_success(self, mock_post):
-        """Test successful Slack webhook call."""
+        """Test successful Slack webhook call"""
         mock_response = Mock()
         mock_response.text = "ok"
         mock_response.raise_for_status = Mock()
@@ -228,7 +225,7 @@ class TestSendToSlack:
 
     @patch("alfred.alerts.dispatcher.requests.post")
     def test_send_non_ok_response(self, mock_post):
-        """Test error handling for non-ok Slack response."""
+        """Test error handling for non-ok Slack response"""
         mock_response = Mock()
         mock_response.text = "invalid_payload"
         mock_response.raise_for_status = Mock()
@@ -239,7 +236,7 @@ class TestSendToSlack:
 
     @patch("alfred.alerts.dispatcher.requests.post")
     def test_send_http_error(self, mock_post):
-        """Test error handling for HTTP errors."""
+        """Test error handling for HTTP errors"""
         mock_response = Mock()
         mock_response.raise_for_status.side_effect = requests.HTTPError("404 Not Found")
         mock_post.return_value = mock_response

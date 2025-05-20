@@ -1,4 +1,4 @@
-"""Alfred model management module."""
+"""Alfred model management module"""
 
 from typing import List
 

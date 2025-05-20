@@ -42,144 +42,130 @@ class IntentRouter:
         # Register default handlers
         self._register_default_handlers()
 
-    def route(self, message: str) -> Intent:.
+    def route(self, message: str) -> Intent:
         """Route a message to determine its intent.
 
         Args:
             message: The incoming message text
 
         Returns:
-            Intent object with classification details
+            Intent: The classified intent
         """
-        try:
-            # Normalize message
-            normalized = message.lower().strip()
+        # Default to unknown intent with zero confidence
+        intent = Intent(
+            type="unknown",
+            confidence=0.0,
+            entities={},
+            raw_message=message,
+        )
 
-            # Try pattern matching first
-            for intent_type, pattern in self._patterns.items():
-                if pattern.search(normalized):
-                    intent = Intent(
-                        type=intent_type,
-                        confidence=0.9,  # High confidence for pattern match
-                        entities={},
-                        raw_message=message,
-                    )
+        # Try pattern matching first
+        for intent_type, pattern in self._patterns.items():
+            match = pattern.search(message)
+            if match:
+                intent.type = intent_type
+                intent.confidence = 0.95
+                intent.entities = match.groupdict()
+                break
 
-                    intents_total.labels(
-                        intent_type=intent_type, status="success"
-                    ).inc()
+        # If no pattern match, we could use ML-based classification here
+        if intent.type == "unknown":
+            # In a real implementation, this would use an ML model
+            # Here we just use some simplistic rules
+            message_lower = message.lower()
 
-                    logger.info("Intent classified", intent=intent_type, confidence=0.9)
+            if "help" in message_lower:
+                intent.type = "help"
+                intent.confidence = 0.9
+            elif any(word in message_lower for word in ["search", "find", "get"]):
+                intent.type = "search"
+                intent.confidence = 0.8
+            elif any(word in message_lower for word in ["thank", "thanks", "appreciate"]):
+                intent.type = "gratitude"
+                intent.confidence = 0.9
 
-                    return intent
+        # Track the intent
+        intents_total.labels(intent_type=intent.type, status="processed").inc()
 
-            # If no pattern matches, return unknown intent
-            intent = Intent(
-                type="unknown_intent", confidence=0.0, entities={}, raw_message=message
-            )
+        logger.info("intent_classified", type=intent.type, confidence=intent.confidence)
+        return intent
 
-            intents_total.labels(intent_type="unknown_intent", status="success").inc()
-
-            return intent
-
-        except Exception as e:
-            logger.error("Error routing intent", error=str(e))
-            intents_total.labels(intent_type="error", status="error").inc()
-
-            # Return error intent
-            return Intent(
-                type="error_intent",
-                confidence=0.0,
-                entities={"error": str(e)},
-                raw_message=message,
-            )
-
-    def register_handler(
-        self,
-        intent_type: str,
-        handler: Callable[..., Any],
-        pattern: Optional[str] = None,
-    ) -> None:
-        """Register a handler for an intent type.
+    def register_handler(self, intent_type: str, handler: Callable[..., Any]) -> None:
+        """Register a handler for a specific intent type.
 
         Args:
             intent_type: The intent type to handle
-            handler: Callable to handle the intent
-            pattern: Optional regex pattern for intent detection.
+            handler: The handler function
         """
         self._handlers[intent_type] = handler
+        logger.info("handler_registered", intent_type=intent_type)
 
-        if pattern:
-            self._patterns[intent_type] = re.compile(pattern, re.IGNORECASE)
-
-        logger.info(
-            "Handler registered", intent_type=intent_type, has_pattern=bool(pattern)
-        )
-
-    def get_handler(self, intent_type: str) -> Optional[Callable[..., Any]]:
-        """Get handler for an intent type.
+    def register_pattern(self, intent_type: str, pattern: str) -> None:
+        """Register a regex pattern to match a specific intent.
 
         Args:
-            intent_type: The intent type
+            intent_type: The intent type for matches
+            pattern: The regex pattern string
+        """
+        self._patterns[intent_type] = re.compile(pattern, re.IGNORECASE)
+        logger.info("pattern_registered", intent_type=intent_type, pattern=pattern)
+
+    def handle(self, intent: Intent, **kwargs: Any) -> Optional[str]:
+        """Handle an intent by routing it to the appropriate handler.
+
+        Args:
+            intent: The intent to handle
+            **kwargs: Additional keyword arguments to pass to the handler
 
         Returns:
-            Handler callable or None.
+            Optional[str]: The handler's response or None if no handler
         """
-        return self._handlers.get(intent_type)
+        handler = self._handlers.get(intent.type)
+        if not handler:
+            logger.warning("no_handler_for_intent", intent_type=intent.type)
+            return None
+
+        try:
+            response = handler(intent=intent, **kwargs)
+            intents_total.labels(intent_type=intent.type, status="handled").inc()
+            return response
+        except Exception as e:
+            logger.error(
+                "handler_error",
+                intent_type=intent.type,
+                error=str(e),
+                error_type=type(e).__name__,
+            )
+            intents_total.labels(intent_type=intent.type, status="error").inc()
+            return None
 
     def _register_default_handlers(self) -> None:
         """Register default intent handlers."""
-        # Greeting intent
-        self.register_handler(
-            "greeting",
-            self._handle_greeting,
-            pattern=r"\b(hello|hi|hey|greetings|good morning|good afternoon|good evening)\b",
-        )
+        # Register a help handler
+        self.register_handler("help", self._help_handler)
 
-        # Help intent
-        self.register_handler(
-            "help",
-            self._handle_help,
-            pattern=r"(help|assist|how to|what can you|guide|tutorial)",
-        )
+        # Register gratitude handler
+        self.register_handler("gratitude", self._gratitude_handler)
 
-        # Status check intent
-        self.register_handler(
-            "status_check",
-            self._handle_status,
-            pattern=r"\b(status|health|ping|alive|working)\b",
-        )
+        # Register a fallback handler for unknown intents
+        self.register_handler("unknown", self._unknown_handler)
 
-        # Unknown intent
-        self.register_handler("unknown_intent", self._handle_unknown)
+        # Register a simple pattern for greetings
+        self.register_pattern("greeting", r"^(?:hi|hello|hey|greetings)(?:\s|$)")
+        self.register_handler("greeting", self._greeting_handler)
 
-    def _handle_greeting(self, intent: Intent) -> str:
-        """Handle greeting intent."""
-        return "Hello! I'm Alfred, your AI assistant. How can I help you today?"
+    def _help_handler(self, intent: Intent, **kwargs: Any) -> str:
+        """Handle help requests."""
+        return "I can assist with various tasks. What would you like to know?"
 
-    def _handle_help(self, intent: Intent) -> str:
-        """Handle help intent."""
-        return (
-            "I can help you with:\n"
-            "• Checking system status\n"
-            "• Explaining alerts and metrics\n"
-            "• Answering questions about our services\n"
-            "• Providing technical assistance\n"
-            "\nWhat would you like help with?"
-        )
+    def _gratitude_handler(self, intent: Intent, **kwargs: Any) -> str:
+        """Handle expressions of gratitude."""
+        return "You're welcome! Is there anything else I can help with?"
 
-    def _handle_status(self, intent: Intent) -> str:
-        """Handle status check intent."""
-        return "All systems are operational. Alfred is ready to assist!"
+    def _greeting_handler(self, intent: Intent, **kwargs: Any) -> str:
+        """Handle greeting intents."""
+        return "Hello! How can I assist you today?"
 
-    def _handle_unknown(self, intent: Intent) -> str:
-        """Handle unknown intent with polite error."""
-        return (
-            "I'm not sure what you're asking for. "
-            "Could you please rephrase or try asking differently? "
-            "Type 'help' to see what I can do."
-        )
-
-
-# Global router instance
-router = IntentRouter()
+    def _unknown_handler(self, intent: Intent, **kwargs: Any) -> str:
+        """Handle unknown intents."""
+        return "I'm not sure I understand. Could you please rephrase that?"

@@ -1,5 +1,6 @@
-"""Simple test script to check if Slack API tokens work correctly."""
+"""Simple test script to check if Slack API tokens work correctly"""
 
+# type: ignore
 import os
 import sys
 

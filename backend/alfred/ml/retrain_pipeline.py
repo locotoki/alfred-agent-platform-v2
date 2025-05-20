@@ -13,16 +13,15 @@ import mlflow.sklearn
 import ray
 from mlflow.tracking import MlflowClient
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import (f1_score, precision_score, recall_score,
-                             roc_auc_score)
+from sklearn.metrics import f1_score, precision_score, recall_score, roc_auc_score
 from sklearn.model_selection import train_test_split
 
 from alfred.core.protocols import Service
 from alfred.ml.alert_dataset import AlertDataset
 
 
-class RetrainPipeline(Service):.
-    """Automated ML model retraining pipeline with MLflow tracking."""
+class RetrainPipeline(Service):
+    """Automated ML model retraining pipeline with MLflow tracking"""
 
     def __init__(
         self,
@@ -160,9 +159,7 @@ class RetrainPipeline(Service):.
             mlflow.log_metrics(metrics)
 
             # Log model
-            mlflow.sklearn.log_model(
-                model, "model", registered_model_name=self.model_name
-            )
+            mlflow.sklearn.log_model(model, "model", registered_model_name=self.model_name)
 
             # Log dataset info
             mlflow.log_dict(dataset_info, "dataset_info.json")
@@ -198,9 +195,7 @@ class RetrainPipeline(Service):.
         ):
 
             # Get latest model version
-            model_version = self.client.get_latest_versions(
-                self.model_name, stages=["None"]
-            )[0]
+            model_version = self.client.get_latest_versions(self.model_name, stages=["None"])[0]
 
             # Transition to staging
             self.client.transition_model_version_stage(
@@ -323,24 +318,14 @@ if __name__ == "__main__":
     import argparse
 
     parser = argparse.ArgumentParser(description="Alert ML Retraining Pipeline")
-    parser.add_argument(
-        "--dataset", required=True, help="Dataset source (DB URI or file)"
-    )
-    parser.add_argument(
-        "--mlflow-uri", default="http://localhost:5000", help="MLflow server URI"
-    )
-    parser.add_argument(
-        "--experiment", default="alert-noise-reduction", help="MLflow experiment"
-    )
-    parser.add_argument(
-        "--force-promotion", action="store_true", help="Force model promotion"
-    )
+    parser.add_argument("--dataset", required=True, help="Dataset source (DB URI or file)")
+    parser.add_argument("--mlflow-uri", default="http://localhost:5000", help="MLflow server URI")
+    parser.add_argument("--experiment", default="alert-noise-reduction", help="MLflow experiment")
+    parser.add_argument("--force-promotion", action="store_true", help="Force model promotion")
 
     args = parser.parse_args()
 
-    pipeline = RetrainPipeline(
-        mlflow_uri=args.mlflow_uri, experiment_name=args.experiment
-    )
+    pipeline = RetrainPipeline(mlflow_uri=args.mlflow_uri, experiment_name=args.experiment)
 
     results = pipeline.run_pipeline(
         dataset_source=args.dataset, force_promotion=args.force_promotion

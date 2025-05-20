@@ -1,4 +1,4 @@
-"""Configuration module for Alfred."""
+"""Configuration module for Alfred"""
 
 from .settings import settings
 

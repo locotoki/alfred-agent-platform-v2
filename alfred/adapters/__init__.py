@@ -1,4 +1,4 @@
-"""Alfred platform adapters package."""
+"""Alfred platform adapters package"""
 
 from typing import List
 

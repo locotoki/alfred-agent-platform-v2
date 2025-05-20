@@ -13,7 +13,7 @@ MAIN_PY_PATH = "/app/main.py"
 
 
 def modify_endpoint(content, endpoint_pattern, new_param_pattern):
-    """Modify an endpoint definition to handle JSON payloads."""
+    """Modify an endpoint definition to handle JSON payloads"""
     # Find the endpoint
     matches = re.finditer(endpoint_pattern, content)
     for match in matches:
@@ -31,7 +31,7 @@ def modify_endpoint(content, endpoint_pattern, new_param_pattern):
 
 
 def fix_json_handling(content):
-    """Add JSON body handling to all endpoints."""
+    """Add JSON body handling to all endpoints"""
     # Add the Request import if not present
     if "from fastapi import FastAPI, HTTPException, Query" in content:
         content = content.replace(
@@ -45,9 +45,7 @@ def fix_json_handling(content):
     content = modify_endpoint(content, endpoint_pattern, new_param_pattern)
 
     # Pattern to add request handling to youtube/niche-scout endpoint
-    endpoint_pattern = (
-        r'@app\.post\("/youtube/niche-scout"\)\s*async def run_niche_scout_alt1\('
-    )
+    endpoint_pattern = r'@app\.post\("/youtube/niche-scout"\)\s*async def run_niche_scout_alt1\('
     content = modify_endpoint(content, endpoint_pattern, new_param_pattern)
 
     # Pattern to add request handling to api/youtube/niche-scout endpoint
@@ -68,13 +66,13 @@ def fix_json_handling(content):
     if niche_scout_match:
         # Insert JSON handling code
         implementation_pos = niche_scout_match.end()
-        json_handling_code =. """
+        json_handling_code = """
     try:
         # Try to parse JSON body if present
         json_data = {}
         try:
             # Parse JSON
-            json_data = await request.json()
+            json_data = await requestjson()
 
             # Process the A2A envelope
             if json_data.get("intent") == "YOUTUBE_NICHE_SCOUT":
@@ -108,17 +106,13 @@ def fix_json_handling(content):
                   subcategory=subcategory,
                   json_task_id=json_data.get("task_id", "none") if json_data else "none")
 """
-        content = (
-            content[:implementation_pos]
-            + json_handling_code
-            + content[implementation_pos:]
-        )
+        content = content[:implementation_pos] + json_handling_code + content[implementation_pos:]
 
     return content
 
 
-def main():.
-    """Main function to fix the API."""
+def main():
+    """Main function to fix the API"""
     print("Starting API fix script...")
 
     # Check if the file exists

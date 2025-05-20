@@ -1,4 +1,4 @@
-"""Alert Explanation Agent module."""
+"""Alert Explanation Agent module"""
 
 from alfred.alerts.explainer.agent import ExplainerAgent
 

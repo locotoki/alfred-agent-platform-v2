@@ -8,11 +8,11 @@ from abc import abstractmethod
 from typing import Any, Dict, Protocol
 
 
-class HealthCheckable(Protocol):.
-    """Protocol for components that can report health status."""
+class HealthCheckable(Protocol):
+    """Protocol for components that can report health status"""
 
     @abstractmethod
-    async def health_check(self) -> Dict[str, Any]:.
+    async def health_check(self) -> Dict[str, Any]:
         """Check health status of the component.
 
         Returns:
@@ -21,11 +21,11 @@ class HealthCheckable(Protocol):.
         ...
 
 
-class ConfigLoader(Protocol):.
-    """Protocol for configuration loading."""
+class ConfigLoader(Protocol):
+    """Protocol for configuration loading"""
 
     @abstractmethod
-    def load_config(self, config_path: str) -> Dict[str, Any]:.
+    def load_config(self, config_path: str) -> Dict[str, Any]:
         """Load configuration from a file path.
 
         Args:
@@ -37,7 +37,7 @@ class ConfigLoader(Protocol):.
         ...
 
     @abstractmethod
-    def validate_config(self, config: Dict[str, Any]) -> bool:.
+    def validate_config(self, config: Dict[str, Any]) -> bool:
         """Validate a configuration dictionary.
 
         Args:
@@ -49,21 +49,21 @@ class ConfigLoader(Protocol):.
         ...
 
 
-class CoreApplication(Protocol):.
-    """Protocol for the main application interface."""
+class CoreApplication(Protocol):
+    """Protocol for the main application interface"""
 
     @abstractmethod
-    async def start(self) -> None:.
-        """Start the application."""
+    async def start(self) -> None:
+        """Start the application"""
         ...
 
     @abstractmethod
-    async def stop(self) -> None:.
-        """Stop the application gracefully."""
+    async def stop(self) -> None:
+        """Stop the application gracefully"""
         ...
 
     @abstractmethod
-    async def get_status(self) -> Dict[str, Any]:.
+    async def get_status(self) -> Dict[str, Any]:
         """Get current application status.
 
         Returns:

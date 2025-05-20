@@ -1,4 +1,4 @@
-"""Test if the Slack tokens are being read correctly."""
+"""Test if the Slack tokens are being read correctly"""
 
 import os
 

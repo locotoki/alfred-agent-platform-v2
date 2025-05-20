@@ -31,9 +31,7 @@ def slack_events():
             "timestamp": "2023-04-28T14:30:00Z",
             "source": "slack-bot",
             "destination": "user",
-            "payload": {
-                "text": f"Echo: {data.get('event', {}).get('text', 'No text')}"
-            },
+            "payload": {"text": f"Echo: {data.get('event', {}).get('text', 'No text')}"},
         }
     )
 
@@ -41,7 +39,5 @@ def slack_events():
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 8011))
     logger.info(f"Starting Slack Bot on port {port}")
-    logger.info(
-        f"Using Slack token: {os.environ.get('SLACK_BOT_TOKEN', 'Not set')[0:5]}..."
-    )
+    logger.info(f"Using Slack token: {os.environ.get('SLACK_BOT_TOKEN', 'Not set')[0:5]}...")
     app.run(host="0.0.0.0", port=port)

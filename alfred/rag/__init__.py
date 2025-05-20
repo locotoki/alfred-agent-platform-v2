@@ -1,4 +1,4 @@
-"""Alfred RAG module."""
+"""Alfred RAG module"""
 
 from typing import List
 

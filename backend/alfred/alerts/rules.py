@@ -16,15 +16,15 @@ from alfred.core.protocols import AlertProtocol
 
 
 @dataclass
-class RuleCondition:.
-    """Single condition in a rule."""
+class RuleCondition:
+    """Single condition in a rule"""
 
     field: str
     operator: str
     value: Any
 
-    def evaluate(self, alert: AlertProtocol) -> bool:.
-        """Evaluate condition against an alert."""
+    def evaluate(self, alert: AlertProtocol) -> bool:
+        """Evaluate condition against an alert"""
         # Get field value from alert
         if "." in self.field:
             # Nested field access
@@ -73,7 +73,7 @@ class RuleCondition:.
 
 @dataclass
 class GroupingRule:
-    """Custom grouping rule."""
+    """Custom grouping rule"""
 
     name: str
     priority: int
@@ -83,15 +83,15 @@ class GroupingRule:
     similarity_threshold: float
     time_window: int  # seconds
 
-    def matches(self, alert: AlertProtocol) -> bool:.
-        """Check if alert matches this rule."""
+    def matches(self, alert: AlertProtocol) -> bool:
+        """Check if alert matches this rule"""
         if self.logic == "and":
             return all(cond.evaluate(alert) for cond in self.conditions)
         else:  # 'or'
             return any(cond.evaluate(alert) for cond in self.conditions)
 
     def get_group_key(self, alert: AlertProtocol) -> str:
-        """Generate group key for alert based on this rule."""
+        """Generate group key for alert based on this rule"""
         key_parts = []
 
         for key in self.grouping_keys:
@@ -116,9 +116,9 @@ class GroupingRule:
 
 
 class RulesEngine:
-    """Engine for evaluating custom grouping rules."""
+    """Engine for evaluating custom grouping rules"""
 
-    def __init__(self, redis_client: Optional[redis.Redis] = None):.
+    def __init__(self, redis_client: Optional[redis.Redis] = None):
         """Initialize the rules engine.
 
         Args:
@@ -130,7 +130,7 @@ class RulesEngine:
         self.default_similarity_threshold = 0.7
         self.default_time_window = 900  # 15 minutes
 
-    def load_rules_from_yaml(self, yaml_content: str):.
+    def load_rules_from_yaml(self, yaml_content: str):
         """Load rules from YAML configuration.
 
         Example YAML:
@@ -178,9 +178,7 @@ class RulesEngine:
                     similarity_threshold=rule_config.get(
                         "similarity_threshold", self.default_similarity_threshold
                     ),
-                    time_window=rule_config.get(
-                        "time_window", self.default_time_window
-                    ),
+                    time_window=rule_config.get("time_window", self.default_time_window),
                 )
 
                 self.rules[service].append(rule)
@@ -189,12 +187,12 @@ class RulesEngine:
             self.rules[service].sort(key=lambda r: r.priority, reverse=True)
 
     def load_rules_from_file(self, filepath: str):
-        """Load rules from YAML file."""
+        """Load rules from YAML file"""
         with open(filepath, "r") as f:
             self.load_rules_from_yaml(f.read())
 
     def find_matching_rule(self, alert: AlertProtocol) -> Optional[GroupingRule]:
-        """Find the highest priority matching rule for an alert."""
+        """Find the highest priority matching rule for an alert"""
         service = alert.labels.get("service", "default")
         service_rules = self.rules.get(service, []) + self.rules.get("default", [])
 
@@ -205,7 +203,7 @@ class RulesEngine:
         return None
 
     def get_group_key(self, alert: AlertProtocol) -> str:
-        """Get group key for alert based on matching rule."""
+        """Get group key for alert based on matching rule"""
         rule = self.find_matching_rule(alert)
 
         if rule:
@@ -215,17 +213,17 @@ class RulesEngine:
             return f"{alert.labels.get('service', 'unknown')}:{alert.name}:{alert.severity}"
 
     def get_similarity_threshold(self, alert: AlertProtocol) -> float:
-        """Get similarity threshold for alert based on matching rule."""
+        """Get similarity threshold for alert based on matching rule"""
         rule = self.find_matching_rule(alert)
         return rule.similarity_threshold if rule else self.default_similarity_threshold
 
-    def get_time_window(self, alert: AlertProtocol) -> int:.
-        """Get time window for alert based on matching rule."""
+    def get_time_window(self, alert: AlertProtocol) -> int:
+        """Get time window for alert based on matching rule"""
         rule = self.find_matching_rule(alert)
         return rule.time_window if rule else self.default_time_window
 
-    def evaluate_alert(self, alert: AlertProtocol) -> Dict[str, Any]:.
-        """Evaluate all aspects of an alert against rules."""
+    def evaluate_alert(self, alert: AlertProtocol) -> Dict[str, Any]:
+        """Evaluate all aspects of an alert against rules"""
         rule = self.find_matching_rule(alert)
 
         return {
@@ -237,7 +235,7 @@ class RulesEngine:
         }
 
     def validate_rules(self) -> Dict[str, List[str]]:
-        """Validate all loaded rules and return any errors."""
+        """Validate all loaded rules and return any errors"""
         errors = {}
 
         for service, service_rules in self.rules.items():
@@ -284,7 +282,7 @@ class RulesEngine:
         return errors
 
     def get_rules_summary(self) -> Dict[str, Dict]:
-        """Get summary of all loaded rules."""
+        """Get summary of all loaded rules"""
         summary = {}
 
         for service, service_rules in self.rules.items():

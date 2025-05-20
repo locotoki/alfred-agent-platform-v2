@@ -92,7 +92,7 @@ def fix_imports_in_file(file_path: Path) -> bool:
 
 
 def main():
-    """Fix imports across the codebase."""
+    """Fix imports across the codebase"""
     python_files = find_python_files()
     print(f"Found {len(python_files)} Python files to check")
 
