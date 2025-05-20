@@ -1,22 +1,23 @@
 #!/usr/bin/env python3
 """Generate docker-compose.yml from individual service compose snippets."""
 from pathlib import Path
+from typing import Any, Dict, List
 
 import yaml
 
 
-def load_services():
+def load_services() -> Dict[str, List[str]]:
     """Load the canonical services list."""
     with open("services.yaml", "r") as f:
         services_data = yaml.safe_load(f)
 
     # Maintain grouped structure for profile assignment
-    return services_data
+    return services_data  # type: ignore
 
 
-def merge_compose_files(services_data):
+def merge_compose_files(services_data: Dict[str, List[str]]) -> Dict[str, Any]:
     """Merge all service compose snippets into a single compose file."""
-    final_compose = {
+    final_compose: Dict[str, Any] = {
         "version": "3.8",
         "services": {},
         "networks": {"alfred-network": {"driver": "bridge"}},
@@ -85,14 +86,14 @@ def merge_compose_files(services_data):
     return final_compose
 
 
-def write_compose_file(compose_data, output_file):
+def write_compose_file(compose_data: Dict[str, Any], output_file: str) -> None:
     """Write the generated compose file."""
     with open(output_file, "w") as f:
         yaml.dump(compose_data, f, default_flow_style=False, sort_keys=False)
     print(f"Generated: {output_file}")
 
 
-def main():
+def main() -> None:
     """Generate the complete docker-compose file."""
     services_data = load_services()
     compose_data = merge_compose_files(services_data)
