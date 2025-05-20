@@ -64,7 +64,7 @@ class AgentOrchestrator:
         log.info("intent_detected", intent_type=intent.type, confidence=intent.confidence)
 
         # Process based on intent
-        response = await self_process_intent(intent, context)
+        response = await self._process_intent(intent, context)
 
         # Add metadata to response
         response["request_id"] = request_id
