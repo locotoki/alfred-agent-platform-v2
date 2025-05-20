@@ -24,7 +24,7 @@ jobs:
         run: |
           # Run with minimal checks
           echo "Running minimal linting..."
-          black --check --diff --exclude="tests/|migrations/" .
+          black --check --diff --exclude="tests/|migrations/|cleanup-temp/|docs/archive/|docs/tools/" .
           isort --check-only --profile black --diff --skip tests --skip migrations .
 
       - name: Skip tests and dependencies

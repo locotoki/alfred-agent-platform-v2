@@ -5,7 +5,7 @@ interactions between different agent types based on intent.
 """
 
 import uuid
-from typing import Any, Dict
+from typing import Any, Callable, Dict, Optional
 
 import structlog
 from prometheus_client import Counter
@@ -32,7 +32,9 @@ class AgentOrchestrator:
         """Initialize the orchestrator with the default intent router"""
         self._intent_router = router
 
-    async def process_message(self, message: str, context: dict = None) -> dict:
+    async def process_message(
+        self, message: str, context: Optional[Dict[str, Any]] = None
+    ) -> Dict[str, Any]:
         """Process a message through the orchestrator.
 
         Args:
@@ -94,7 +96,7 @@ class AgentOrchestrator:
             "agent": "default",
         }
 
-    def register_agent_handler(self, intent_type: str, handler_fn: callable) -> None:
+    def register_agent_handler(self, intent_type: str, handler_fn: Callable[..., Any]) -> None:
         """Register an agent handler for a specific intent type.
 
         Args:

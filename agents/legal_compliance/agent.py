@@ -6,14 +6,17 @@ from uuid import uuid4
 
 import structlog
 
-from libs.a2a_adapter import (A2AEnvelope, PolicyMiddleware, PubSubTransport,
-                              SupabaseTransport)
+from libs.a2a_adapter import A2AEnvelope, PolicyMiddleware, PubSubTransport, SupabaseTransport
 from libs.agent_core.base_agent import BaseAgent
 
 # Import chains module but explicitly use each chain by module reference later
 from . import chains
-from .models import (ComplianceAuditRequest, ContractReviewRequest,
-                     DocumentAnalysisRequest, RegulationCheckRequest)
+from .models import (
+    ComplianceAuditRequest,
+    ContractReviewRequest,
+    DocumentAnalysisRequest,
+    RegulationCheckRequest,
+)
 
 logger = structlog.get_logger(__name__)
 

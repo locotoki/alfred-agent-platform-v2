@@ -128,7 +128,7 @@ class IntentRouter:
         try:
             response = handler(intent=intent, **kwargs)
             intents_total.labels(intent_type=intent.type, status="handled").inc()
-            return response
+            return str(response) if response is not None else None
         except Exception as e:
             logger.error(
                 "handler_error",

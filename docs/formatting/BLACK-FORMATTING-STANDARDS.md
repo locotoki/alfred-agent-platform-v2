@@ -6,7 +6,7 @@ This document outlines the Black formatting standards used in the Alfred Agent P
 
 We use Black with the following configuration parameters:
 
-- **Black Version:** 24.1.1
+- **Black Version:** 24.4.2
 - **Line Length:** 100 characters (as specified in `pyproject.toml`)
 - **Target Python Version:** 3.11
 
@@ -23,11 +23,10 @@ Black formatting is enforced in the following ways:
 ```yaml
 repos:
 - repo: https://github.com/psf/black
-  rev: 24.1.1
+  rev: 24.4.2
   hooks:
     - id: black
       language_version: python3.11
-      exclude: "(youtube-test-env/|migrations/|node_modules/|\.git/|\.mypy_cache/|\.env/|\.venv/|env/|venv/|\.ipynb/)"
 ```
 
 4. **Script for Manual Formatting:** The `scripts/apply-black-formatting.sh` script can be used to apply Black formatting manually:
@@ -84,7 +83,7 @@ You can run Black locally with the following command:
 
 ```bash
 # Install Black
-pip install black==24.1.1
+pip install black==24.4.2
 
 # Run Black on the entire codebase
 black .
@@ -100,7 +99,7 @@ black --check .
 
 If you encounter issues with Black formatting:
 
-1. Ensure you have the correct version installed (24.1.1)
+1. Ensure you have the correct version installed (24.4.2)
 2. Verify your `pyproject.toml` has the correct configuration
 3. Try running with the `--verbose` flag for more information
 4. For files that need to be excluded, add them to the exclude pattern in the relevant workflow or script

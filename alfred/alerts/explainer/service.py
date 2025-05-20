@@ -100,10 +100,11 @@ async def explain_alert(request: AlertExplanationRequest) -> JSONResponse:
         )
         raise HTTPException(status_code=500, detail="Failed to generate explanation")
 
+    explanation = result.get("explanation", "")
     logger.info(
         "alert_explanation_success",
         alert_name=request.alert_name,
-        explanation_length=len(result.get("explanation", "")),
+        explanation_length=len(explanation) if isinstance(explanation, str) else 0,
     )
 
     return JSONResponse(

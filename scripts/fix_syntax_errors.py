@@ -3,7 +3,7 @@
 
 import os
 import re
-from pathlib import Path
+from pathlib import Path  # noqa: F401
 
 
 def fix_syntax_errors(file_path):

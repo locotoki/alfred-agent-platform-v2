@@ -834,4 +834,4 @@ if __name__ == "__main__":
         API_KEY = args.api_key
 
     # Run the analysis
-    asyncio.run(analyze_niche(args.category, args.subcategory))
+    asyncio.run(analyze_niche(args.category, args.subcategory))  # type: ignore # Script-level code

@@ -1,10 +1,11 @@
-"""HuggingFace transformers integration for alert embeddings"""
+"""HuggingFace transformers integration for alert embeddings."""
 
 import logging
 import os
-from typing import List, Union
+from typing import Any, Dict, List, Union
 
 import numpy as np
+from numpy.typing import NDArray
 from sentence_transformers import SentenceTransformer
 
 from alfred.core.protocols import Service
@@ -38,7 +39,7 @@ class HFEmbedder(Service):
         self.model_name = model_name
         self.device = device
         self.batch_size = batch_size
-        self._model = None
+        self._model: Union[SentenceTransformer, None] = None
 
     @property
     def model(self) -> SentenceTransformer:
@@ -51,7 +52,7 @@ class HFEmbedder(Service):
             logger.info(f"Model loaded: {self.model_name} on {self.device}")
         return self._model
 
-    def embed(self, texts: Union[str, List[str]]) -> np.ndarray:
+    def embed(self, texts: Union[str, List[str]]) -> NDArray[Any]:
         """Generate embeddings for input text(s).
 
         Args:
@@ -79,10 +80,10 @@ class HFEmbedder(Service):
 
         # Return single embedding if single input
         if single_input:
-            return embeddings[0]
-        return embeddings
+            return np.array(embeddings[0], dtype=np.float32)
+        return np.array(embeddings, dtype=np.float32)
 
-    def cosine_similarity(self, embeddings1: np.ndarray, embeddings2: np.ndarray) -> float:
+    def cosine_similarity(self, embeddings1: NDArray[Any], embeddings2: NDArray[Any]) -> float:
         """Calculate cosine similarity between embeddings.
 
         Args:
@@ -107,8 +108,8 @@ class HFEmbedder(Service):
         return float(np.clip(similarity, 0.0, 1.0))
 
     def batch_similarity(
-        self, query_embedding: np.ndarray, candidate_embeddings: np.ndarray
-    ) -> np.ndarray:
+        self, query_embedding: NDArray[Any], candidate_embeddings: NDArray[Any]
+    ) -> NDArray[Any]:
         """Calculate similarities between query and multiple candidates.
 
         Args:
@@ -128,7 +129,7 @@ class HFEmbedder(Service):
         # Calculate similarities
         similarities = np.dot(normalized_candidates, query_norm)
 
-        return np.clip(similarities, 0.0, 1.0)
+        return np.array(np.clip(similarities, 0.0, 1.0), dtype=np.float32)
 
     def _clean_text(self, text: str) -> str:
         """Clean text for embedding.
@@ -156,7 +157,7 @@ class HFEmbedder(Service):
         _ = self.model  # Trigger lazy loading
         logger.info(f"Model warmed up: {self.model_name}")
 
-    def get_model_info(self) -> dict:
+    def get_model_info(self) -> Dict[str, Any]:
         """Get information about the loaded model.
 
         Returns:
@@ -169,3 +170,11 @@ class HFEmbedder(Service):
             "embedding_dimension": self.model.get_sentence_embedding_dimension(),
             "max_seq_length": self.model.max_seq_length,
         }
+
+    async def start(self) -> None:
+        """Start the service (warm up model)."""
+        self.warmup()
+
+    async def stop(self) -> None:
+        """Stop the service (no-op for HFEmbedder)."""
+        pass

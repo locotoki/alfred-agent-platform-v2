@@ -37,7 +37,10 @@ class JsonFormatter:
         Returns:
             Parsed Python object.
         """
-        return json.loads(text)
+        result = json.loads(text)
+        if isinstance(result, (dict, list)):
+            return result
+        raise ValueError(f"Expected dict or list, got {type(result).__name__}")
 
 
 class YamlFormatter:
@@ -67,4 +70,9 @@ class YamlFormatter:
         Returns:
             Parsed Python object.
         """
-        return yaml.safe_load(text)
+        result = yaml.safe_load(text)
+        if isinstance(result, (dict, list)):
+            return result
+        if result is None:
+            return {}  # Empty YAML document returns None, convert to empty dict
+        raise ValueError(f"Expected dict or list, got {type(result).__name__}")
