@@ -53,7 +53,7 @@ jobs:
           else
             # Run black and isort with strict checking
             echo "Running black and isort checks..."
-            black --check --exclude "(youtube-test-env/|migrations/|node_modules/|\.git/|\.mypy_cache/|\.env/|\.venv/|env/|venv/|\.ipynb/)" .
+            black --check --exclude "(youtube-test-env/|migrations/|node_modules/|\.git/|\.mypy_cache/|\.env/|\.venv/|env/|venv/|\.ipynb/|cleanup-temp/|docs/archive/|docs/tools/)" .
             isort --check-only --profile black --skip youtube-test-env --skip migrations .
           fi
 
