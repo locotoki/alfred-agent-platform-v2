@@ -4,20 +4,13 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-from agents.financial_tax.chains import (
-    ComplianceCheckChain,
-    FinancialAnalysisChain,
-    RateLookupChain,
-    TaxCalculationChain,
-)
-from agents.financial_tax.models import (
-    ComplianceCheckRequest,
-    EntityType,
-    FinancialAnalysisRequest,
-    TaxCalculationRequest,
-    TaxJurisdiction,
-    TaxRateRequest,
-)
+from agents.financial_tax.chains import (ComplianceCheckChain,
+                                         FinancialAnalysisChain,
+                                         RateLookupChain, TaxCalculationChain)
+from agents.financial_tax.models import (ComplianceCheckRequest, EntityType,
+                                         FinancialAnalysisRequest,
+                                         TaxCalculationRequest,
+                                         TaxJurisdiction, TaxRateRequest)
 
 
 @pytest.fixture

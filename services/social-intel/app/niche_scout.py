@@ -13,14 +13,8 @@ from typing import Any, Dict, Optional, Tuple
 
 import structlog
 from app.database import niche_repository
-from app.metrics import (
-    NICHE_OPPORTUNITY_SCORE,
-    NICHE_SCOUT_RESULTS_COUNT,
-    SI_LATENCY_SECONDS,
-    SI_REQUESTS_TOTAL,
-    LatencyTimer,
-)
-
+from app.metrics import (NICHE_OPPORTUNITY_SCORE, NICHE_SCOUT_RESULTS_COUNT,
+                         SI_LATENCY_SECONDS, SI_REQUESTS_TOTAL, LatencyTimer)
 # Use simple reports instead of HTML templates
 from app.simple_reports import generate_niche_scout_report
 from app.youtube_api import YouTubeAPIError, get_trends_by_category
