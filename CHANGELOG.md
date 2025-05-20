@@ -18,6 +18,7 @@
 ### Documentation
 - Added comprehensive noise reduction guide in docs/dev/
 - Documented custom rules YAML format and examples
+- Added local PostgreSQL upgrade guide (docs/local/pg_upgrade.md)
 
 ## [v0.2.0-alpha] - 2025-05-19
 
