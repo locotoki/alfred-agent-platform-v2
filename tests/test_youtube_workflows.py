@@ -51,10 +51,12 @@ sys.modules["youtubesearchpython"].VideosSearch = MockVideosSearch
 sys.modules["youtubesearchpython"].Video = MockYouTubeVideoFetcher
 
 from agents.social_intel.agent import SocialIntelAgent
-from agents.social_intel.models.youtube_models import (BlueprintResult,
-                                                       NicheScoutResult,
-                                                       YouTubeBlueprint,
-                                                       YouTubeVideo)
+from agents.social_intel.models.youtube_models import (
+    BlueprintResult,
+    NicheScoutResult,
+    YouTubeBlueprint,
+    YouTubeVideo,
+)
 from libs.a2a_adapter import A2AEnvelope
 
 
@@ -112,9 +114,7 @@ def mock_youtube_api():
 @pytest.fixture
 def mock_vector_storage():
     """Mock YouTubeVectorStorage."""
-    with patch(
-        "agents.social_intel.models.youtube_vectors.YouTubeVectorStorage"
-    ) as mock:
+    with patch("agents.social_intel.models.youtube_vectors.YouTubeVectorStorage") as mock:
         # Setup mock methods
         instance = mock.return_value
         instance.initialize_collections = AsyncMock()
@@ -137,9 +137,7 @@ def mock_youtube_niche_scout_flow():
         visualization_url=None,
     )
     async_mock = AsyncMock(return_value=mock_result)
-    with patch(
-        "agents.social_intel.flows.youtube_flows.youtube_niche_scout_flow", async_mock
-    ):
+    with patch("agents.social_intel.flows.youtube_flows.youtube_niche_scout_flow", async_mock):
         yield async_mock
 
 
@@ -173,9 +171,7 @@ def mock_youtube_blueprint_flow():
         blueprint_url="/tmp/test_blueprint.zip",
     )
     async_mock = AsyncMock(return_value=mock_result)
-    with patch(
-        "agents.social_intel.flows.youtube_flows.youtube_blueprint_flow", async_mock
-    ):
+    with patch("agents.social_intel.flows.youtube_flows.youtube_blueprint_flow", async_mock):
         yield async_mock
 
 
@@ -232,12 +228,8 @@ def mock_agent(
             }
 
             # Make them async mocks
-            mock_niche_scout.side_effect = AsyncMock(
-                return_value=mock_niche_scout.return_value
-            )
-            mock_blueprint.side_effect = AsyncMock(
-                return_value=mock_blueprint.return_value
-            )
+            mock_niche_scout.side_effect = AsyncMock(return_value=mock_niche_scout.return_value)
+            mock_blueprint.side_effect = AsyncMock(return_value=mock_blueprint.return_value)
 
             yield agent
 
