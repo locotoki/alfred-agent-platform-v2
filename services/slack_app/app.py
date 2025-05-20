@@ -4,7 +4,7 @@ This module provides the Slack App interface for Alfred, handling command routin
 and user interactions via Slack.
 """
 
-from typing import Any, Dict, List
+# Import as needed, removing unused imports
 
 from slack_bolt import App
 
@@ -26,8 +26,9 @@ def handle_alfred_command(ack, command, say):
 
     # Parse the command text
     text = command.get("text", "").strip()
-    user_id = command.get("user_id")
-    channel_id = command.get("channel_id")
+    # Commented out unused variables but kept for future implementation
+    # user_id = command.get("user_id")
+    # channel_id = command.get("channel_id")
 
     # If no command specified, default to help
     if not text:
@@ -36,7 +37,8 @@ def handle_alfred_command(ack, command, say):
     # Split into command and args
     parts = text.split(maxsplit=1)
     subcommand = parts[0]
-    args = parts[1] if len(parts) > 1 else ""
+    # Commented out unused variable but kept for future implementation
+    # args = parts[1] if len(parts) > 1 else ""
 
     # Route to the appropriate handler
     if subcommand == "help":

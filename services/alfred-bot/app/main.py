@@ -8,7 +8,8 @@ from fastapi import FastAPI, Request
 from slack_bolt import App
 from slack_bolt.adapter.fastapi import SlackRequestHandler
 
-from libs.a2a_adapter import A2AEnvelope, PolicyMiddleware, PubSubTransport, SupabaseTransport
+from libs.a2a_adapter import (A2AEnvelope, PolicyMiddleware, PubSubTransport,
+                              SupabaseTransport)
 from libs.agent_core.health import create_health_app
 
 logger = structlog.get_logger(__name__)
@@ -41,7 +42,7 @@ async def handle_alfred_command(ack, body, client):
         # Parse command
         parts = command_text.split(maxsplit=1)
         if not parts:
-            await clientchat_postMessage(
+            await client.chat_postMessage(
                 channel=channel_id,
                 text="Please specify a command. Try `/alfred help` for available commands.",
             )
@@ -58,14 +59,14 @@ async def handle_alfred_command(ack, body, client):
         elif command == "trend":
             await handle_trend_analysis(client, channel_id, user_id, args)
         else:
-            await clientchat_postMessage(
+            await client.chat_postMessage(
                 channel=channel_id,
                 text=f"Unknown command: {command}. Try `/alfred help` for available commands.",
             )
 
     except Exception as e:
         logger.error("command_handling_failed", error=str(e))
-        await clientchat_postMessage(
+        await client.chat_postMessage(
             channel=channel_id,
             text="Sorry, something went wrong. Please try again later.",
         )
@@ -76,14 +77,14 @@ async def handle_ping(client, channel_id, user_id):
     envelope = A2AEnvelope(intent="PING", content={"message": "ping", "user_id": user_id})
 
     try:
-        await pubsub_transportpublish_task(envelope)
+        await pubsub_transport.publish_task(envelope)
 
-        await clientchat_postMessage(
+        await client.chat_postMessage(
             channel=channel_id, text=f"Ping task created! Task ID: {envelope.task_id}"
         )
     except Exception as e:
         logger.error("ping_failed", error=str(e))
-        await clientchat_postMessage(
+        await client.chat_postMessage(
             channel=channel_id, text="Failed to create ping task. Please try again."
         )
 
@@ -91,7 +92,7 @@ async def handle_ping(client, channel_id, user_id):
 async def handle_trend_analysis(client, channel_id, user_id, query):
     """Handle trend analysis command"""
     if not query:
-        await clientchat_postMessage(
+        await client.chat_postMessage(
             channel=channel_id,
             text=(
                 "Please provide a trend to analyze. "
@@ -107,18 +108,18 @@ async def handle_trend_analysis(client, channel_id, user_id, query):
 
     try:
         # Store task
-        await supabase_transportstore_task(envelope)
+        await supabase_transport.store_task(envelope)
 
         # Publish task
-        await pubsub_transportpublish_task(envelope)
+        await pubsub_transport.publish_task(envelope)
 
-        await clientchat_postMessage(
+        await client.chat_postMessage(
             channel=channel_id,
             text=f"Analyzing trends for: {query}\nTask ID: {envelope.task_id}",
         )
     except Exception as e:
         logger.error("trend_analysis_failed", error=str(e))
-        await clientchat_postMessage(
+        await client.chat_postMessage(
             channel=channel_id, text="Failed to start trend analysis. Please try again."
         )
 
@@ -134,7 +135,7 @@ async def show_help(client, channel_id):
 - `/alfred cancel <task_id>` - Cancel a running task
     """
 
-    await clientchat_postMessage(channel=channel_id, text=help_text)
+    await client.chat_postMessage(channel=channel_id, text=help_text)
 
 
 # Create FastAPI app
@@ -142,13 +143,13 @@ async def show_help(client, channel_id):
 async def lifespan(app: FastAPI):
     """Manage application lifecycle"""
     # Startup
-    await supabase_transportconnect()
+    await supabase_transport.connect()
     logger.info("alfred_bot_started")
 
     yield
 
     # Shutdown
-    await supabase_transportdisconnect()
+    await supabase_transport.disconnect()
     logger.info("alfred_bot_stopped")
 
 
@@ -165,4 +166,4 @@ slack_handler = SlackRequestHandler(slack_app)
 @app.post("/slack/events")
 async def slack_events(request: Request):
     """Handle Slack events"""
-    return await slack_handlerhandle(request)
+    return await slack_handler.handle(request)
