@@ -10,3 +10,4 @@
 
 2. **pg_upgrade (keep data):**
    Follow upstream docs: https://www.postgresql.org/docs/15/pgupgrade.html
+EOF < /dev/null

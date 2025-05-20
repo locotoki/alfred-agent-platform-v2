@@ -13,10 +13,12 @@
 - Fixed PostgreSQL version to v15 to match data directory format (fix/sc-180-postgres-version)
 - Fixed Grafana datasource configuration to avoid multiple default datasources (fix/sc-181-grafana-datasource)
 - Fixed docker-compose generation script to handle environment variables properly (fix/sc-182-compose-generator)
+- Fixed jq parsing in health check scripts (fix/health-check-jq)
 
 ### Documentation
 - Added comprehensive noise reduction guide in docs/dev/
 - Documented custom rules YAML format and examples
+- Added local PostgreSQL upgrade guide (docs/local/pg_upgrade.md)
 
 ## [v0.2.0-alpha] - 2025-05-19
 
@@ -55,8 +57,6 @@
 - Noise reduction: 42%
 - Zero rollbacks during deployment
 
-<<<<<<< HEAD
-=======
 ## [0.8.4] - 2025-05-17
 
 ### Added
