@@ -26,16 +26,16 @@ from backend.alfred.alerts.ranker import AlertNoiseRanker
 
 
 class BenchmarkAlert(AlertProtocol):
-    """Mock alert for benchmarking."""
+    """Mock alert for benchmarking"""
 
     def __init__(self, **kwargs):
-        """Initialize the mock alert with arbitrary properties."""
+        """Initialize the mock alert with arbitrary properties"""
         for k, v in kwargs.items():
             setattr(self, k, v)
 
 
 class RankerBenchmark:
-    """Benchmark harness for noise rankers."""
+    """Benchmark harness for noise rankers"""
 
     def __init__(
         self,
@@ -56,7 +56,7 @@ class RankerBenchmark:
         self.results = {}
 
     def generate_test_alerts(self) -> List[Tuple[BenchmarkAlert, Dict, bool]]:
-        """Generate synthetic test alerts with labels."""
+        """Generate synthetic test alerts with labels"""
         alerts = []
 
         for i in range(self.num_alerts):
@@ -106,7 +106,7 @@ class RankerBenchmark:
     def benchmark_ranker(
         self, ranker_name: str, ranker, alerts: List[Tuple[BenchmarkAlert, Dict, bool]]
     ) -> Dict:
-        """Benchmark a single ranker."""
+        """Benchmark a single ranker"""
         print(f"Benchmarking {ranker_name}...")
 
         # Measure memory before
@@ -183,7 +183,7 @@ class RankerBenchmark:
         }
 
     def run_benchmark(self) -> Dict:
-        """Run full benchmark comparison."""
+        """Run full benchmark comparison"""
         print(f"Starting benchmark with {self.num_alerts} alerts...")
 
         # Generate test data
@@ -227,7 +227,7 @@ class RankerBenchmark:
         }
 
     def generate_report(self, results: Dict, output_path: str = "ranker_benchmark_report.pdf"):
-        """Generate PDF report with visualizations."""
+        """Generate PDF report with visualizations"""
         print(f"Generating report: {output_path}")
 
         with PdfPages(output_path) as pdf:
@@ -459,7 +459,7 @@ Key Findings:
 
 
 def main():
-    """Run the benchmark tool as a command-line application."""
+    """Run the benchmark tool as a command-line application"""
     parser = argparse.ArgumentParser(description="Benchmark noise ranker versions")
     parser.add_argument("--new", default="v2", help="New ranker version")
     parser.add_argument("--old", default="v1", help="Old ranker version")

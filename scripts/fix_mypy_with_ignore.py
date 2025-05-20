@@ -12,7 +12,7 @@ from pathlib import Path
 
 
 def add_type_ignore_to_file(file_path):
-    """Add '# type: ignore' to the top of the file."""
+    """Add '# type: ignore' to the top of the file"""
     with open(file_path, "r", encoding="utf-8", errors="ignore") as f:
         content = f.read()
 
@@ -46,7 +46,7 @@ def add_type_ignore_to_file(file_path):
 
 
 def main():
-    """Process Python files to add type ignore comments."""
+    """Process Python files to add type ignore comments"""
     # Define directories to process
     directories_to_process = [
         "agents",

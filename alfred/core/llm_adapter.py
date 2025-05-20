@@ -24,7 +24,7 @@ logger = structlog.get_logger(__name__)
 
 
 class Message:
-    """Represents a message in the conversation."""
+    """Represents a message in the conversation"""
 
     def __init__(self, role: str, content: str):
         """Initialize a new message.
@@ -46,7 +46,7 @@ class Message:
 
 
 class LLMAdapter(ABC):
-    """Abstract base class for LLM adapters."""
+    """Abstract base class for LLM adapters"""
 
     @abstractmethod
     async def generate(
@@ -86,7 +86,7 @@ class LLMAdapter(ABC):
 
 
 class OpenAIAdapter(LLMAdapter):
-    """OpenAI GPT-4o-Turbo adapter implementation."""
+    """OpenAI GPT-4o-Turbo adapter implementation"""
 
     def __init__(self, api_key: Optional[str] = None, model: str = "gpt-4o-turbo"):
         """Initialize the OpenAI adapter.
@@ -108,7 +108,7 @@ class OpenAIAdapter(LLMAdapter):
 
     @property
     def client(self) -> Any:
-        """Lazy-load OpenAI client."""
+        """Lazy-load OpenAI client"""
         if self._client is None:
             try:
                 from openai import AsyncOpenAI
@@ -127,7 +127,7 @@ class OpenAIAdapter(LLMAdapter):
         max_tokens: Optional[int] = None,
         **kwargs: Any,
     ) -> Union[str, AsyncIterator[str]]:
-        """Generate response using OpenAI API."""
+        """Generate response using OpenAI API"""
         try:
             message_dicts = [msg.to_dict() for msg in messages]
 
@@ -144,7 +144,7 @@ class OpenAIAdapter(LLMAdapter):
             # Add any additional kwargs
             params.update(kwargs)
 
-            response = await self.client.chat.completions.create(**params)
+            response = await selfclient.chat.completions.create(**params)
 
             llm_requests_total.labels(model=self.model, status="success").inc()
 
@@ -167,7 +167,7 @@ class OpenAIAdapter(LLMAdapter):
             raise
 
     async def _stream_response(self, response: Any) -> AsyncIterator[str]:
-        """Stream response chunks from OpenAI."""
+        """Stream response chunks from OpenAI"""
         total_tokens = 0
         async for chunk in response:
             if chunk.choices and chunk.choices[0].delta.content:
@@ -189,7 +189,7 @@ class OpenAIAdapter(LLMAdapter):
 
 
 class ClaudeAdapter(LLMAdapter):
-    """Claude 3 Sonnet adapter implementation."""
+    """Claude 3 Sonnet adapter implementation"""
 
     def __init__(self, api_key: Optional[str] = None, model: str = "claude-3-sonnet-20240229"):
         """Initialize the Claude adapter.
@@ -210,7 +210,7 @@ class ClaudeAdapter(LLMAdapter):
 
     @property
     def client(self) -> Any:
-        """Lazy-load Anthropic client."""
+        """Lazy-load Anthropic client"""
         if self._client is None:
             try:
                 from anthropic import AsyncAnthropic
@@ -229,7 +229,7 @@ class ClaudeAdapter(LLMAdapter):
         max_tokens: Optional[int] = None,
         **kwargs: Any,
     ) -> Union[str, AsyncIterator[str]]:
-        """Generate response using Claude API."""
+        """Generate response using Claude API"""
         try:
             # Claude expects system messages separately
             system_message = None
@@ -253,13 +253,13 @@ class ClaudeAdapter(LLMAdapter):
 
             params.update(kwargs)
 
-            response = await self.client.messages.create(**params)
+            response = await selfclient.messages.create(**params)
 
             llm_requests_total.labels(model=self.model, status="success").inc()
 
             if stream:
                 # Claude streaming requires different handling
-                stream_response = await self.client.messages.create(**params, stream=True)
+                stream_response = await selfclient.messages.create(**params, stream=True)
                 return self._stream_response(stream_response)
             else:
                 content = response.content[0].text
@@ -278,7 +278,7 @@ class ClaudeAdapter(LLMAdapter):
             raise
 
     async def _stream_response(self, response: Any) -> AsyncIterator[str]:
-        """Stream response chunks from Claude."""
+        """Stream response chunks from Claude"""
         total_tokens = 0
         async for chunk in response:
             if chunk.type == "content_block_delta":
@@ -289,7 +289,7 @@ class ClaudeAdapter(LLMAdapter):
         llm_tokens_total.labels(model=self.model, operation="stream_completion").inc(total_tokens)
 
     def estimate_tokens(self, text: str) -> int:
-        """Estimate tokens for Claude."""
+        """Estimate tokens for Claude"""
         # Similar rough estimate
         return len(text) // 4
 

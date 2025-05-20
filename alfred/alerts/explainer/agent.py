@@ -25,16 +25,16 @@ logger = structlog.get_logger(__name__)
 
 
 class ExplainerAgent:
-    """Agent for explaining alerts in natural language."""
+    """Agent for explaining alerts in natural language"""
 
     def __init__(self, llm: Optional[LLM] = None):
-        """Initialize the agent with optional LLM configuration."""
+        """Initialize the agent with optional LLM configuration"""
         self.llm = llm
         self._chain: Optional[LLMChain] = None
         self._setup_chain()
 
     def _setup_chain(self) -> None:
-        """Set up the LangChain for alert explanation."""
+        """Set up the LangChain for alert explanation"""
         if not self.llm:
             logger.warning("No LLM configured, using stub mode")
             return
@@ -87,7 +87,7 @@ Be concise but informative.
         try:
             if self._chain:
                 # Use the LLM chain to generate the explanation
-                explanation = await self._chain.arun(
+                explanation = await self_chain.arun(
                     alert_name=alert_name,
                     alert_details=alert_details,
                     metric_value=metric_value,

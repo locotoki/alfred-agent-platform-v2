@@ -5,7 +5,8 @@ from typing import Any, Dict, List
 
 import structlog
 
-from libs.a2a_adapter import A2AEnvelope, PolicyMiddleware, PubSubTransport, SupabaseTransport
+from libs.a2a_adapter import (A2AEnvelope, PolicyMiddleware, PubSubTransport,
+                              SupabaseTransport)
 
 logger = structlog.get_logger(__name__)
 
@@ -53,7 +54,7 @@ class BaseAgent(ABC):
 
         # Start subscription
         subscription_name = f"{self.name}-subscription"
-        await selfpubsub.subscribe(subscription_name, self._handle_message, self._handle_error)
+        await selfpubsubsubscribe(subscription_name, self._handle_message, self._handle_error)
 
     async def stop(self):
         """Stop the agent"""
@@ -75,7 +76,7 @@ class BaseAgent(ABC):
         """Handle incoming message"""
         # Apply policy middleware
         if hasattr(self.policy, "apply_policies"):
-            envelope = await selfpolicy.apply_policies(envelope)
+            envelope = await selfpolicyapply_policies(envelope)
 
         try:
             # Check if intent is supported
@@ -84,22 +85,22 @@ class BaseAgent(ABC):
                 return
 
             # Check for duplicate
-            is_duplicate = await selfsupabase.check_duplicate(envelope.task_id)
+            is_duplicate = await selfsupabasecheck_duplicate(envelope.task_id)
             if is_duplicate:
                 logger.info("duplicate_message", task_id=envelope.task_id)
                 return
 
             # Update task status to processing
-            await selfsupabase.update_task_status(envelope.task_id, "processing")
+            await selfsupabaseupdate_task_status(envelope.task_id, "processing")
 
             # Process task
             result = await selfprocess_task(envelope)
 
             # Store result
-            await selfsupabase.store_task_result(envelope.task_id, "success", result)
+            await selfsupabasestore_task_result(envelope.task_id, "success", result)
 
             # Update task status to completed
-            await selfsupabase.update_task_status(envelope.task_id, "completed")
+            await selfsupabaseupdate_task_status(envelope.task_id, "completed")
 
             # Publish completion
             completion_envelope = A2AEnvelope(
@@ -109,7 +110,7 @@ class BaseAgent(ABC):
                 trace_id=envelope.trace_id,
             )
 
-            await selfpubsub.publish_task(
+            await selfpubsubpublish_task(
                 completion_envelope, topic=self.pubsub.completed_topic_path
             )
 
@@ -122,7 +123,7 @@ class BaseAgent(ABC):
             )
 
             # Update task status to failed
-            await selfsupabase.update_task_status(envelope.task_id, "failed", str(e))
+            await selfsupabaseupdate_task_status(envelope.task_id, "failed", str(e))
 
     async def _handle_error(self, error: Exception):
         """Handle subscription errors"""
@@ -151,11 +152,11 @@ class BaseAgent(ABC):
                     timestamp=datetime.utcnow().isoformat(),
                 )
 
-                await asyncio.sleep(30)  # Heartbeat every 30 seconds
+                await asynciosleep(30)  # Heartbeat every 30 seconds
 
             except Exception as e:
                 logger.error("heartbeat_failed", error=str(e), agent=self.name)
-                await asyncio.sleep(5)  # Retry after 5 seconds
+                await asynciosleep(5)  # Retry after 5 seconds
 
     async def _update_agent_status(self, status: str):
         """Update agent status in registry"""

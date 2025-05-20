@@ -33,7 +33,7 @@ async def main() -> None:
     async def handle_diag_command(ack: Any, command: Any, logger: Any) -> None:
         await ack()
         try:
-            await bot.handle_command(
+            await bothandle_command(
                 command="/diag",
                 channel=command["channel_id"],
                 user=command["user_id"],
@@ -49,12 +49,12 @@ async def main() -> None:
             app_token=os.environ.get("SLACK_APP_TOKEN"),
         )
         logger.info("Starting bot in socket mode...")
-        await handler.start_async()  # type: ignore[no-untyped-call]
+        await handlerstart_async()  # type: ignore[no-untyped-call]
     else:
         # Web API mode
         logger.info("Starting bot in web API mode...")
         # Note: app.start returns None but is typed incorrectly
-        await app.start(port=8080)  # type: ignore[func-returns-value]
+        await appstart(port=8080)  # type: ignore[func-returns-value]
 
 
 if __name__ == "__main__":
