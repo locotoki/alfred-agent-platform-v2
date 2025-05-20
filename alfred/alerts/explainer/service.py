@@ -5,10 +5,8 @@ functionality via a REST API interface.
 """
 
 import asyncio
-import json
-import os
 from contextlib import asynccontextmanager
-from typing import Any, AsyncIterator, Dict, List, Optional
+from typing import Any, AsyncIterator, Dict, Optional
 
 import structlog
 from fastapi import FastAPI, HTTPException, Request
