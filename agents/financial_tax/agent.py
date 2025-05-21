@@ -130,12 +130,12 @@ class FinancialTaxAgent(BaseAgent):
             raise
 
     # Workflow node implementations
-    def _parse_request(self, state: Dict[str, Any]) -> Dict[str, Any]:
+    async def _parse_request(self, state: Dict[str, Any]) -> Dict[str, Any]:
         """Parse the incoming request"""
         state["parsed_content"] = state["content"]
         return state
 
-    def _validate_data(self, state: Dict[str, Any]) -> Dict[str, Any]:
+    async def _validate_data(self, state: Dict[str, Any]) -> Dict[str, Any]:
         """Validate the request data"""
         # Add validation logic here
         state["is_valid"] = True
@@ -155,11 +155,11 @@ class FinancialTaxAgent(BaseAgent):
         else:
             raise ValueError(f"Unsupported intent: {intent}")
 
-    def _process_tax_calculation(self, state: Dict[str, Any]) -> Dict[str, Any]:
+    async def _process_tax_calculation(self, state: Dict[str, Any]) -> Dict[str, Any]:
         """Process tax calculation request"""
         request = TaxCalculationRequest(**state["parsed_content"])
         # Use the mocked function that was passed during patch.object
-        result = self.tax_calc_chain.calculate(request)
+        result = await self.tax_calc_chain.calculate(request)
         # The mock will be directly returned by the patched method
         if hasattr(result, "dict"):
             state["result"] = result.dict()
@@ -179,11 +179,11 @@ class FinancialTaxAgent(BaseAgent):
             }
         return state
 
-    def _process_financial_analysis(self, state: Dict[str, Any]) -> Dict[str, Any]:
+    async def _process_financial_analysis(self, state: Dict[str, Any]) -> Dict[str, Any]:
         """Process financial analysis request"""
         request = FinancialAnalysisRequest(**state["parsed_content"])
         # Use the mocked function that was passed during patch.object
-        result = self.analysis_chain.analyze(request)
+        result = await self.analysis_chain.analyze(request)
         # The mock will be directly returned by the patched method
         if hasattr(result, "dict"):
             state["result"] = result.dict()
@@ -203,11 +203,11 @@ class FinancialTaxAgent(BaseAgent):
             }
         return state
 
-    def _process_compliance_check(self, state: Dict[str, Any]) -> Dict[str, Any]:
+    async def _process_compliance_check(self, state: Dict[str, Any]) -> Dict[str, Any]:
         """Process compliance check request"""
         request = ComplianceCheckRequest(**state["parsed_content"])
         # Use the mocked function that was passed during patch.object
-        result = self.compliance_chain.check_compliance(request)
+        result = await self.compliance_chain.check_compliance(request)
         # The mock will be directly returned by the patched method
         if hasattr(result, "dict"):
             state["result"] = result.dict()
@@ -234,11 +234,11 @@ class FinancialTaxAgent(BaseAgent):
             }
         return state
 
-    def _process_rate_lookup(self, state: Dict[str, Any]) -> Dict[str, Any]:
+    async def _process_rate_lookup(self, state: Dict[str, Any]) -> Dict[str, Any]:
         """Process rate lookup request"""
         request = TaxRateRequest(**state["parsed_content"])
         # Use the mocked function that was passed during patch.object
-        result = self.rate_lookup_chain.lookup_rates(request)
+        result = await self.rate_lookup_chain.lookup_rates(request)
         # The mock will be directly returned by the patched method
         if hasattr(result, "dict"):
             state["result"] = result.dict()
@@ -259,7 +259,7 @@ class FinancialTaxAgent(BaseAgent):
             }
         return state
 
-    def _format_response(self, state: Dict[str, Any]) -> Dict[str, Any]:
+    async def _format_response(self, state: Dict[str, Any]) -> Dict[str, Any]:
         """Format the response for output"""
         state["response"] = {
             "status": "success",
