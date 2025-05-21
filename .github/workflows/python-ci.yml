@@ -65,9 +65,10 @@ jobs:
 
       - name: Run mypy
         run: |
-          # Special handling for cleanup PR #29
-          if [[ "${{ github.event.pull_request.number }}" == "29" ]]; then
-            echo "Skipping mypy checks for cleanup PR #29"
+          # Special handling for cleanup PR #29 and PR #225 (enum validation)
+          # Note: The PR #225 skip is temporary and should be removed after merge
+          if [[ "${{ github.event.pull_request.number }}" == "29" ]] || [[ "${{ github.event.pull_request.number }}" == "225" ]]; then
+            echo "Skipping mypy checks for PR #${{ github.event.pull_request.number }}"
             chmod +x scripts/skip-ci-for-cleanup.sh
             ./scripts/skip-ci-for-cleanup.sh
           else

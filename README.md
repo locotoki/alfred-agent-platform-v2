@@ -21,7 +21,7 @@ A scalable, modular AI agent platform built with Docker, Supabase, and Pub/Sub m
 - **Alfred Bot**: Slack interface for platform interaction
 - **Social Intelligence**: Social media trend analysis and monitoring
 - **Legal Compliance**: Regulatory compliance checking and monitoring
-- **Financial-Tax**: Tax calculations, financial analysis, and compliance
+- **Financial-Tax**: Tax calculations, financial analysis, and compliance checking
 
 ## Quick Start
 
