@@ -39,44 +39,44 @@ def mock_llm():
 
     class MockLLM(Runnable):
         def invoke(self, input: Any, config: Optional[Dict[str, Any]] = None, **kwargs: Any) -> Any:
-            return "test response"
+            return "Mocked LLM response"
 
         async def ainvoke(
             self, input: Any, config: Optional[Dict[str, Any]] = None, **kwargs: Any
         ) -> Any:
-            return "test response"
+            return "Mocked LLM response"
 
         def batch(
             self, inputs: List[Any], config: Optional[Dict[str, Any]] = None, **kwargs: Any
         ) -> List[Any]:
-            return ["test response"] * len(inputs)
+            return ["Mocked LLM response"] * len(inputs)
 
         async def abatch(
             self, inputs: List[Any], config: Optional[Dict[str, Any]] = None, **kwargs: Any
         ) -> List[Any]:
-            return ["test response"] * len(inputs)
+            return ["Mocked LLM response"] * len(inputs)
 
         def stream(
             self, input: Any, config: Optional[Dict[str, Any]] = None, **kwargs: Any
         ) -> Iterator[Any]:
-            yield "test response"
+            yield "Mocked LLM response"
 
         async def astream(
             self, input: Any, config: Optional[Dict[str, Any]] = None, **kwargs: Any
         ) -> AsyncIterator[Any]:
-            yield "test response"
+            yield "Mocked LLM response"
 
         def generate(self, *args: Any, **kwargs: Any) -> LLMResult:
-            return LLMResult(generations=[[Generation(text="test")]])
+            return LLMResult(generations=[[Generation(text="Mocked LLM response")]])
 
         async def agenerate(self, *args: Any, **kwargs: Any) -> LLMResult:
-            return LLMResult(generations=[[Generation(text="test")]])
+            return LLMResult(generations=[[Generation(text="Mocked LLM response")]])
 
         def predict(self, *args: Any, **kwargs: Any) -> str:
-            return "test response"
+            return "Mocked LLM response"
 
         async def apredict(self, *args: Any, **kwargs: Any) -> str:
-            return "test response"
+            return "Mocked LLM response"
 
     return MockLLM()
 
@@ -90,11 +90,27 @@ def test_explainer_agent_initialization():
 
 def test_explainer_agent_with_llm():
     """Test agent initialization with LLM."""
-    with patch("alfred.alerts.explainer.agent.LLMChain"):
-        mock_llm = Mock(spec=["invoke", "predict"])
+    with patch("alfred.alerts.explainer.agent.LLMChain") as MockLLMChain:
+        # Create a mock chain with the necessary attributes
+        mock_chain = Mock(spec=["run", "arun"])
+        MockLLMChain.return_value = mock_chain
+
+        # Create a mock LLM
+        mock_llm = Mock(spec=["invoke", "predict", "ainvoke", "apredict"])
+
+        # Initialize the agent with the mock LLM
         agent = ExplainerAgent(llm=mock_llm)
+
+        # Verify the agent is configured correctly
         assert agent.llm == mock_llm
         assert agent._chain is not None
+
+        # Verify the LLMChain was created with the correct parameters
+        # We can't check the exact prompt since it's an implementation detail
+        MockLLMChain.assert_called_once()
+        args, kwargs = MockLLMChain.call_args
+        assert kwargs["llm"] == mock_llm
+        assert "prompt" in kwargs
 
 
 async def test_explain_alert_stub_mode(stub_agent, alert_payload):
@@ -127,6 +143,7 @@ Potential Causes: Network issues, process crashed
 Remediation: Restart the service
 Runbook: https://runbooks.alfred.ai/service-down"""
 
+    # Set up the mock to return the expected explanation
     mock_arun.return_value = expected_explanation
 
     agent = ExplainerAgent(llm=mock_llm)
@@ -136,8 +153,7 @@ Runbook: https://runbooks.alfred.ai/service-down"""
     assert result["alert_name"] == alert_payload["alert_name"]
     assert result["explanation"] == expected_explanation
 
-    # Since our implementation prefers arun over run when available,
-    # we expect arun to be called
+    # Verify the chain was called with the correct parameters
     mock_arun.assert_called_once_with(
         alert_name=alert_payload["alert_name"],
         alert_details=alert_payload["description"],
@@ -148,6 +164,7 @@ Runbook: https://runbooks.alfred.ai/service-down"""
 @patch.object(LLMChain, "arun")
 async def test_explain_alert_with_llm_failure(mock_arun, mock_llm, alert_payload):
     """Test explanation failure with LLM."""
+    # Set up the mock to raise an exception
     mock_arun.side_effect = Exception("LLM error")
 
     agent = ExplainerAgent(llm=mock_llm)

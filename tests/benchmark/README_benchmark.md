@@ -10,6 +10,10 @@ The benchmark tests measure performance characteristics of various components:
 - API response times
 - Resource utilization
 
+## Current Status
+
+As of SC-330, benchmark tests are marked with a skip reason by default instead of the previous `xfail` approach. This is to clearly separate performance tests from functional tests and to prevent benchmark tests from running in CI environments where they might be flaky due to variable resource availability.
+
 ## Running Benchmarks
 
 To run benchmark tests, you need to use both the `--run-benchmark` flag and the `-m benchmark` marker:
@@ -20,6 +24,9 @@ pytest --run-benchmark -m benchmark
 
 # Run a specific benchmark test with verbose output
 pytest tests/benchmark/specific_test.py -v --run-benchmark -m benchmark
+
+# Run with performance metrics detail
+pytest --run-benchmark -m benchmark --benchmark-columns=min,max,mean,stddev
 ```
 
 Without the `--run-benchmark` flag, the tests will be skipped with a message indicating they require a controlled environment.
@@ -66,3 +73,9 @@ def test_model_inference_speed():
     # Test implementation
     assert performance_metric < threshold
 ```
+
+## Future Improvements
+
+- [ ] Create dedicated benchmark CI job with appropriate resources
+- [ ] Implement historical performance tracking
+- [ ] Add comparative benchmarks between different implementations
