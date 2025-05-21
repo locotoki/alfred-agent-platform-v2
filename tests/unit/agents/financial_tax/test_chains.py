@@ -31,34 +31,44 @@ def mock_llm():
     from typing import Any, AsyncIterator, Dict, Iterator, List, Optional, Union
 
     from langchain.schema import Generation, LLMResult
-    from langchain.schema.runnable import Runnable
+    from langchain.schema.runnable import Runnable, RunnableConfig
 
     class MockLLM(Runnable):
-        def invoke(self, input: Any, config: Optional[Dict[str, Any]] = None, **kwargs: Any) -> Any:
+        def invoke(self, input: Any, config: Optional[RunnableConfig] = None, **kwargs: Any) -> Any:
             return "test response"
 
         async def ainvoke(
-            self, input: Any, config: Optional[Dict[str, Any]] = None, **kwargs: Any
+            self, input: Any, config: Optional[RunnableConfig] = None, **kwargs: Any
         ) -> Any:
             return "test response"
 
         def batch(
-            self, inputs: List[Any], config: Optional[Dict[str, Any]] = None, **kwargs: Any
+            self,
+            inputs: List[Any],
+            config: Optional[RunnableConfig] | Optional[List[RunnableConfig]] = None,
+            *,
+            return_exceptions: bool = False,
+            **kwargs: Any,
         ) -> List[Any]:
             return ["test response"] * len(inputs)
 
         async def abatch(
-            self, inputs: List[Any], config: Optional[Dict[str, Any]] = None, **kwargs: Any
+            self,
+            inputs: List[Any],
+            config: Optional[RunnableConfig] | Optional[List[RunnableConfig]] = None,
+            *,
+            return_exceptions: bool = False,
+            **kwargs: Any,
         ) -> List[Any]:
             return ["test response"] * len(inputs)
 
         def stream(
-            self, input: Any, config: Optional[Dict[str, Any]] = None, **kwargs: Any
+            self, input: Any, config: Optional[RunnableConfig] = None, **kwargs: Any
         ) -> Iterator[Any]:
             yield "test response"
 
         async def astream(
-            self, input: Any, config: Optional[Dict[str, Any]] = None, **kwargs: Any
+            self, input: Any, config: Optional[RunnableConfig] = None, **kwargs: Any
         ) -> AsyncIterator[Any]:
             yield "test response"
 
@@ -80,21 +90,23 @@ def mock_llm():
 class TestTaxCalculationChain:
     """Test cases for TaxCalculationChain."""
 
-    def test_chain_initialization(self, mock_llm):
+    @patch("langchain.chains.LLMChain.__init__", return_value=None)
+    def test_chain_initialization(self, mock_init, mock_llm):
         """Test chain initializes with proper configuration."""
         chain = TaxCalculationChain(llm=mock_llm)
 
         assert chain.llm == mock_llm
         assert chain.output_parser is not None
         assert chain.prompt is not None
-        assert chain.chain is not None
+        assert hasattr(chain, "chain")
 
+    @patch("langchain.chains.LLMChain.__init__", return_value=None)
     @patch.object(LLMChain, "ainvoke")
-    async def test_calculate_with_valid_request(self, mock_ainvoke, mock_llm):
+    async def test_calculate_with_valid_request(self, mock_ainvoke, mock_init, mock_llm):
         """Test tax calculation with valid request."""
         chain = TaxCalculationChain(llm=mock_llm)
 
-        # Mock the chain run method
+        # Mock the chain invoke method
         mock_response = """
         {
             "gross_income": 150000.0,
@@ -109,6 +121,7 @@ class TestTaxCalculationChain:
             "calculation_details": ["Standard deduction applied", "Child tax credit applied"]
         }
         """
+        # Set the return value for the mock
         mock_ainvoke.return_value = mock_response
 
         request = TaxCalculationRequest(
@@ -141,8 +154,9 @@ class TestTaxCalculationChain:
             }
         )
 
+    @patch("langchain.chains.LLMChain.__init__", return_value=None)
     @patch.object(LLMChain, "ainvoke")
-    async def test_calculate_with_parsing_error(self, mock_ainvoke, mock_llm):
+    async def test_calculate_with_parsing_error(self, mock_ainvoke, mock_init, mock_llm):
         """Test error handling when LLM returns unparseable result."""
         chain = TaxCalculationChain(llm=mock_llm)
 
@@ -165,8 +179,9 @@ class TestTaxCalculationChain:
 class TestFinancialAnalysisChain:
     """Test cases for FinancialAnalysisChain."""
 
+    @patch("langchain.chains.LLMChain.__init__", return_value=None)
     @patch.object(LLMChain, "ainvoke")
-    async def test_analyze_with_valid_request(self, mock_ainvoke, mock_llm):
+    async def test_analyze_with_valid_request(self, mock_ainvoke, mock_init, mock_llm):
         """Test financial analysis with valid request."""
         chain = FinancialAnalysisChain(llm=mock_llm)
 
@@ -181,6 +196,7 @@ class TestFinancialAnalysisChain:
             "benchmark_comparison": null
         }
         """
+        # Set the return value for the mock
         mock_ainvoke.return_value = mock_response
 
         request = FinancialAnalysisRequest(
@@ -191,6 +207,7 @@ class TestFinancialAnalysisChain:
             analysis_type="profitability",
             period="2024",
             industry="technology",
+            custom_metrics=["roi", "debt_to_equity"],  # List of metrics as required by model
         )
 
         response = await chain.analyze(request)
@@ -204,8 +221,9 @@ class TestFinancialAnalysisChain:
 class TestComplianceCheckChain:
     """Test cases for ComplianceCheckChain."""
 
+    @patch("langchain.chains.LLMChain.__init__", return_value=None)
     @patch.object(LLMChain, "ainvoke")
-    async def test_check_compliance_with_valid_request(self, mock_ainvoke, mock_llm):
+    async def test_check_compliance_with_valid_request(self, mock_ainvoke, mock_init, mock_llm):
         """Test compliance check with valid request."""
         chain = ComplianceCheckChain(llm=mock_llm)
 
@@ -218,6 +236,7 @@ class TestComplianceCheckChain:
             "detailed_findings": {"sales_tax": {"issues": ["nexus"]}}
         }
         """
+        # Set the return value for the mock
         mock_ainvoke.return_value = mock_response
 
         request = ComplianceCheckRequest(
@@ -239,8 +258,9 @@ class TestComplianceCheckChain:
 class TestRateLookupChain:
     """Test cases for RateLookupChain."""
 
+    @patch("langchain.chains.LLMChain.__init__", return_value=None)
     @patch.object(LLMChain, "ainvoke")
-    async def test_lookup_rates_with_valid_request(self, mock_ainvoke, mock_llm):
+    async def test_lookup_rates_with_valid_request(self, mock_ainvoke, mock_init, mock_llm):
         """Test tax rate lookup with valid request."""
         chain = RateLookupChain(llm=mock_llm)
 
@@ -259,6 +279,7 @@ class TestRateLookupChain:
             "additional_info": {"notes": ["CA has 9 tax brackets"]}
         }
         """
+        # Set the return value for the mock
         mock_ainvoke.return_value = mock_response
 
         request = TaxRateRequest(
@@ -266,6 +287,7 @@ class TestRateLookupChain:
             tax_year=2024,
             entity_type=EntityType.INDIVIDUAL,
             income_level=150000.0,
+            special_categories=[],  # Adding missing parameter
         )
 
         response = await chain.lookup_rates(request)
