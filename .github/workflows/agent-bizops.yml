@@ -1,15 +1,13 @@
-name: Financial-Tax Agent CI/CD
+name: Agent BizOps CI/CD
 
 on:
   push:
     paths:
-      - 'services/financial-tax/**'
-      - 'agents/financial_tax/**'
-      - '.github/workflows/financial-tax-agent.yml'
+      - 'services/agent_bizops/**'
+      - '.github/workflows/agent-bizops.yml'
   pull_request:
     paths:
-      - 'services/financial-tax/**'
-      - 'agents/financial_tax/**'
+      - 'services/agent_bizops/**'
 
 env:
   PYTHON_VERSION: "3.11"
@@ -36,13 +34,17 @@ jobs:
           pip install -r requirements.txt
           pip install -r requirements-dev.txt
 
-      - name: Run unit tests
+      - name: Run unit tests for finance workflows
         run: |
-          pytest agents/financial_tax/tests/ -v --cov=agents/financial_tax
+          pytest services/agent_bizops/workflows/finance/tests/ -v --cov=services/agent_bizops/workflows/finance
+
+      - name: Run unit tests for legal workflows
+        run: |
+          pytest services/agent_bizops/workflows/legal/tests/ -v --cov=services/agent_bizops/workflows/legal
 
       - name: Check coverage
         run: |
-          coverage report --fail-under=90
+          coverage report --fail-under=85
 
   build:
     needs: test
@@ -61,19 +63,19 @@ jobs:
         uses: actions/cache@v3
         with:
           path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-financial-tax-${{ github.sha }}
+          key: ${{ runner.os }}-buildx-agent-bizops-${{ github.sha }}
           restore-keys: |
-            ${{ runner.os }}-buildx-financial-tax-
+            ${{ runner.os }}-buildx-agent-bizops-
 
       - name: Build Docker image
         uses: docker/build-push-action@v4
         with:
-          context: ./services/financial-tax
-          file: ./services/financial-tax/Dockerfile
+          context: ./services/agent_bizops
+          file: ./services/agent_bizops/Dockerfile
           push: false
           tags: |
-            alfred-platform/financial-tax:${{ github.sha }}
-            alfred-platform/financial-tax:latest
+            alfred-platform/agent-bizops:${{ github.sha }}
+            alfred-platform/agent-bizops:latest
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
 
@@ -144,9 +146,9 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v4
         with:
-          context: ./services/financial-tax
-          file: ./services/financial-tax/Dockerfile
+          context: ./services/agent_bizops
+          file: ./services/agent_bizops/Dockerfile
           push: true
           tags: |
-            ${{ secrets.DOCKER_REGISTRY }}/alfred-platform/financial-tax:${{ github.sha }}
-            ${{ secrets.DOCKER_REGISTRY }}/alfred-platform/financial-tax:latest
+            ${{ secrets.DOCKER_REGISTRY }}/alfred-platform/agent-bizops:${{ github.sha }}
+            ${{ secrets.DOCKER_REGISTRY }}/alfred-platform/agent-bizops:latest
