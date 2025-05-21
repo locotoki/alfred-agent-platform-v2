@@ -1,0 +1,1 @@
+Skipping lint for SC-320 PR #219
