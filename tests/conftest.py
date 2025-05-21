@@ -72,14 +72,8 @@ def pytest_collection_modifyitems(config, items):
                 item.add_marker(pytest.mark.xfail(reason=reason, strict=False))
                 break
 
-        # Apply benchmark-specific xfail markers
-        if "benchmark" in item.name:
-            item.add_marker(
-                pytest.mark.xfail(
-                    reason="Benchmark tests need special dependencies, see issue #220",
-                    strict=False,
-                )
-            )
+        # Benchmark tests are now handled in tests/benchmark/conftest.py
+        # We no longer apply global xfail markers to benchmark tests
 
 
 @pytest.fixture(scope="session")

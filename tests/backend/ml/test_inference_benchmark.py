@@ -11,7 +11,7 @@ def model():
     return SentenceTransformer("all-MiniLM-L6-v2")
 
 
-@pytest.mark.xfail(reason="Missing sentence_transformers dependency, see issue #220", strict=False)
+@pytest.mark.benchmark
 def test_single_inference_latency(benchmark, model):
     """Benchmark single alert inference latency."""
     test_alert = "API timeout error in service X"
@@ -22,7 +22,7 @@ def test_single_inference_latency(benchmark, model):
     assert benchmark.stats["max"] < 0.015  # 15ms
 
 
-@pytest.mark.xfail(reason="Missing sentence_transformers dependency, see issue #220", strict=False)
+@pytest.mark.benchmark
 def test_batch_inference_throughput(benchmark, model):
     """Benchmark batch inference throughput."""
     # Create batch of alerts
@@ -39,7 +39,7 @@ def test_batch_inference_throughput(benchmark, model):
     assert benchmark.stats["mean"] < 0.2
 
 
-@pytest.mark.xfail(reason="Missing sentence_transformers dependency, see issue #220", strict=False)
+@pytest.mark.benchmark
 def test_large_batch_performance(benchmark, model):
     """Test performance with large batches."""
     batch_size = 1000
@@ -63,7 +63,7 @@ def test_large_batch_performance(benchmark, model):
     assert benchmark.stats["mean"] < 5.0
 
 
-@pytest.mark.xfail(reason="Missing sentence_transformers dependency, see issue #220", strict=False)
+@pytest.mark.benchmark
 def test_memory_efficiency():
     """Test inference memory usage."""
     import psutil
