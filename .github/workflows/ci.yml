@@ -239,18 +239,31 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Skip on inventory-only changes
+        run: |
+          CHANGED=$(git diff --name-only ${{ github.event.pull_request.base.sha }}...${{ github.event.pull_request.head.sha }} | grep -E '^(alfred|tests|docker|services|libs)/' || true)
+          if [ -z "$CHANGED" ]; then
+            echo "Inventory-only PR — skipping integration tests."
+            echo "SKIP=true" >> $GITHUB_ENV
+          fi
 
       - name: Set up Python
+        if: env.SKIP != 'true'
         uses: actions/setup-python@v4
         with:
           python-version: ${{ env.PYTHON_VERSION }}
 
       - name: Start services
+        if: env.SKIP != 'true'
         run: |
           docker-compose -f docker-compose.yml up -d
           sleep 30  # Wait for services to be ready
 
       - name: Run integration tests
+        if: env.SKIP != 'true'
         run: |
           # Special handling for cleanup PR #29
           if [[ "$GITHUB_HEAD_REF" == *"cleanup/remove-temporary-ci-files"* || "$GITHUB_REF" == *"cleanup/remove-temporary-ci-files"* ]]; then
@@ -265,5 +278,5 @@ jobs:
           pytest tests/integration/ -v -m integration
 
       - name: Stop services
-        if: always()
+        if: always() && env.SKIP != 'true'
         run: docker-compose down -v
