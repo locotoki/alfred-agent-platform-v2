@@ -6,6 +6,19 @@ Keep it version‑controlled at the repo root.
 
 ---
 
+### Updating progress beacon
+
+When you merge a PR that carries the label `epic:SC-241` or touches
+`arch/data/name-map.csv`, the GitHub Action **update-status** will
+automatically bump `status.json`.
+No manual action required *unless* the workflow fails.
+
+If the check fails:
+
+```bash
+# Re-run locally
+python scripts/update_status.py && git commit -am "fix: refresh status beacon"
+
 ## 1 · Mission & Boundaries
 
 | You are… | …and you **must** | …but you **must not** |
