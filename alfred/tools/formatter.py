@@ -1,7 +1,7 @@
 """Formatting tools for the Alfred platform."""
 
 import json
-from typing import Any, Dict, List, Union
+from typing import Any, Dict, List, Union, cast
 
 import yaml
 
@@ -38,9 +38,12 @@ class JsonFormatter:
             Parsed Python object.
         """
         result = json.loads(text)
-        if isinstance(result, (dict, list)):
-            return result
-        raise ValueError(f"Expected dict or list, got {type(result).__name__}")
+        if isinstance(result, dict):
+            return result  # Dict[str, Any]
+        elif isinstance(result, list):
+            return result  # List[Any]
+        else:
+            raise ValueError(f"Unexpected JSON type: {type(result)}")
 
 
 class YamlFormatter:
@@ -71,8 +74,12 @@ class YamlFormatter:
             Parsed Python object.
         """
         result = yaml.safe_load(text)
-        if isinstance(result, (dict, list)):
-            return result
-        if result is None:
-            return {}  # Empty YAML document returns None, convert to empty dict
-        raise ValueError(f"Expected dict or list, got {type(result).__name__}")
+        if isinstance(result, dict):
+            return result  # Dict[str, Any]
+        elif isinstance(result, list):
+            return result  # List[Any]
+        elif result is None:
+            # Empty YAML strings return None
+            return {}  # Return empty dict for empty YAML
+        else:
+            raise ValueError(f"Unexpected YAML type: {type(result)}")

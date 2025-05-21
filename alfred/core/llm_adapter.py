@@ -159,7 +159,7 @@ class OpenAIAdapter(LLMAdapter):
                         response.usage.total_tokens
                     )
 
-                return content  # type: ignore[no-any-return]
+                return str(content)
 
         except Exception as e:
             llm_requests_total.labels(model=self.model, status="error").inc()
@@ -270,7 +270,7 @@ class ClaudeAdapter(LLMAdapter):
                         response.usage.total_tokens
                     )
 
-                return content  # type: ignore[no-any-return]
+                return str(content)
 
         except Exception as e:
             llm_requests_total.labels(model=self.model, status="error").inc()

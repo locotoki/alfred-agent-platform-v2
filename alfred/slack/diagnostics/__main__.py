@@ -49,11 +49,12 @@ async def main() -> None:
             app_token=os.environ.get("SLACK_APP_TOKEN"),
         )
         logger.info("Starting bot in socket mode...")
+        # AsyncSocketModeHandler.start_async() returns None but type hints are missing
         await handler.start_async()  # type: ignore[no-untyped-call]
     else:
         # Web API mode
         logger.info("Starting bot in web API mode...")
-        # Note: app.start returns None but is typed incorrectly
+        # app.start() actually returns None despite type hints suggesting otherwise
         await app.start(port=8080)  # type: ignore[func-returns-value]
 
 
