@@ -77,6 +77,14 @@ def mock_llm():
     return MockLLM()
 
 
+@pytest.fixture
+def mock_chain():
+    """Create a mock chain that works with the actual implementation."""
+    chain_mock = MagicMock()
+    chain_mock.ainvoke = AsyncMock()
+    return chain_mock
+
+
 class TestTaxCalculationChain:
     """Test cases for TaxCalculationChain."""
 
@@ -89,10 +97,15 @@ class TestTaxCalculationChain:
         assert chain.prompt is not None
         assert chain.chain is not None
 
-    @patch.object(LLMChain, "ainvoke")
-    async def test_calculate_with_valid_request(self, mock_ainvoke, mock_llm):
+    async def test_calculate_with_valid_request(self, mock_llm):
         """Test tax calculation with valid request."""
+        # Create a chain with a mock LLMChain.ainvoke method
         chain = TaxCalculationChain(llm=mock_llm)
+
+        # Replace the chain.chain with a mock
+        mock_chain = MagicMock()
+        mock_chain.ainvoke = AsyncMock()
+        chain.chain = mock_chain
 
         # Mock the chain run method
         mock_response = """
@@ -109,7 +122,7 @@ class TestTaxCalculationChain:
             "calculation_details": ["Standard deduction applied", "Child tax credit applied"]
         }
         """
-        mock_ainvoke.return_value = mock_response
+        mock_chain.ainvoke.return_value = mock_response
 
         request = TaxCalculationRequest(
             income=150000.0,
@@ -129,7 +142,7 @@ class TestTaxCalculationChain:
         assert response.effective_tax_rate == 12.0
 
         # Verify chain was called with correct parameters
-        mock_ainvoke.assert_called_once_with(
+        mock_chain.ainvoke.assert_called_once_with(
             {
                 "income": 150000.0,
                 "deductions": {"standard": 27700.0},
@@ -141,13 +154,18 @@ class TestTaxCalculationChain:
             }
         )
 
-    @patch.object(LLMChain, "ainvoke")
-    async def test_calculate_with_parsing_error(self, mock_ainvoke, mock_llm):
+    async def test_calculate_with_parsing_error(self, mock_llm):
         """Test error handling when LLM returns unparseable result."""
+        # Create a chain with a mock LLMChain.ainvoke method
         chain = TaxCalculationChain(llm=mock_llm)
 
+        # Replace the chain.chain with a mock
+        mock_chain = MagicMock()
+        mock_chain.ainvoke = AsyncMock()
+        chain.chain = mock_chain
+
         # Mock invalid response
-        mock_ainvoke.return_value = "Invalid JSON response"
+        mock_chain.ainvoke.return_value = "Invalid JSON response"
 
         request = TaxCalculationRequest(
             income=100000.0,
@@ -165,10 +183,15 @@ class TestTaxCalculationChain:
 class TestFinancialAnalysisChain:
     """Test cases for FinancialAnalysisChain."""
 
-    @patch.object(LLMChain, "ainvoke")
-    async def test_analyze_with_valid_request(self, mock_ainvoke, mock_llm):
+    async def test_analyze_with_valid_request(self, mock_llm):
         """Test financial analysis with valid request."""
+        # Create a chain with a mock LLMChain.ainvoke method
         chain = FinancialAnalysisChain(llm=mock_llm)
+
+        # Replace the chain.chain with a mock
+        mock_chain = MagicMock()
+        mock_chain.ainvoke = AsyncMock()
+        chain.chain = mock_chain
 
         mock_response = """
         {
@@ -181,7 +204,7 @@ class TestFinancialAnalysisChain:
             "benchmark_comparison": null
         }
         """
-        mock_ainvoke.return_value = mock_response
+        mock_chain.ainvoke.return_value = mock_response
 
         request = FinancialAnalysisRequest(
             financial_statements={
@@ -204,10 +227,15 @@ class TestFinancialAnalysisChain:
 class TestComplianceCheckChain:
     """Test cases for ComplianceCheckChain."""
 
-    @patch.object(LLMChain, "ainvoke")
-    async def test_check_compliance_with_valid_request(self, mock_ainvoke, mock_llm):
+    async def test_check_compliance_with_valid_request(self, mock_llm):
         """Test compliance check with valid request."""
+        # Create a chain with a mock LLMChain.ainvoke method
         chain = ComplianceCheckChain(llm=mock_llm)
+
+        # Replace the chain.chain with a mock
+        mock_chain = MagicMock()
+        mock_chain.ainvoke = AsyncMock()
+        chain.chain = mock_chain
 
         mock_response = """
         {
@@ -218,7 +246,7 @@ class TestComplianceCheckChain:
             "detailed_findings": {"sales_tax": {"issues": ["nexus"]}}
         }
         """
-        mock_ainvoke.return_value = mock_response
+        mock_chain.ainvoke.return_value = mock_response
 
         request = ComplianceCheckRequest(
             entity_type=EntityType.CORPORATION,
@@ -239,10 +267,15 @@ class TestComplianceCheckChain:
 class TestRateLookupChain:
     """Test cases for RateLookupChain."""
 
-    @patch.object(LLMChain, "ainvoke")
-    async def test_lookup_rates_with_valid_request(self, mock_ainvoke, mock_llm):
+    async def test_lookup_rates_with_valid_request(self, mock_llm):
         """Test tax rate lookup with valid request."""
+        # Create a chain with a mock LLMChain.ainvoke method
         chain = RateLookupChain(llm=mock_llm)
+
+        # Replace the chain.chain with a mock
+        mock_chain = MagicMock()
+        mock_chain.ainvoke = AsyncMock()
+        chain.chain = mock_chain
 
         mock_response = """
         {
@@ -259,7 +292,7 @@ class TestRateLookupChain:
             "additional_info": {"notes": ["CA has 9 tax brackets"]}
         }
         """
-        mock_ainvoke.return_value = mock_response
+        mock_chain.ainvoke.return_value = mock_response
 
         request = TaxRateRequest(
             jurisdiction=TaxJurisdiction.US_CA,
