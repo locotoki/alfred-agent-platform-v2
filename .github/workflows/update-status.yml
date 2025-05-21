@@ -1,6 +1,7 @@
 name: Update Consolidation Progress Beacon
 
 on:
+  workflow_dispatch:  # Allow manual triggering
   push:
     branches:
       - ops/SC-241-agent-consolidation
@@ -11,10 +12,16 @@ on:
     types:
       - completed
 
+permissions:
+  contents: write   # Required for pushing changes
+  pull-requests: read
+  issues: read      # Required for reading issues
+
 jobs:
   update-status:
     runs-on: ubuntu-latest
     if: |
+      github.event_name == 'workflow_dispatch' ||
       (github.event_name == 'push' && github.ref == 'refs/heads/ops/SC-241-agent-consolidation') ||
       (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success')
 
@@ -33,11 +40,9 @@ jobs:
 
       - name: Install GitHub CLI
         run: |
-          # Make sure we have the latest version
-          sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-key C99B11DEB97541F0
-          sudo apt-add-repository https://cli.github.com/packages
-          sudo apt update
-          sudo apt install gh
+          # Direct download instead of using apt repository (more reliable across Ubuntu versions)
+          curl -fsSL https://github.com/cli/cli/releases/download/v2.44.1/gh_2.44.1_linux_amd64.tar.gz | sudo tar xz -C /usr/local --strip-components=1
+          gh --version
 
       - name: Authenticate GitHub CLI
         run: |
