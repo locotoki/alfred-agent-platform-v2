@@ -247,13 +247,21 @@ jobs:
           # Check if this is an inventory-only or docs-only PR
           echo "Checking changed files in PR #${{ github.event.pull_request.number }}"
           git diff --name-only ${{ github.event.pull_request.base.sha }}...${{ github.event.pull_request.head.sha }}
-          
-          CHANGED=$(git diff --name-only ${{ github.event.pull_request.base.sha }}...${{ github.event.pull_request.head.sha }} | grep -E '^(alfred|tests|docker|services|libs)/' || true)
-          if [ -z "$CHANGED" ]; then
-            echo "✅ Inventory-only PR — skipping integration tests!"
+
+          # Get all files that are NOT related to inventory, documentation, or spring_clean
+          CORE_CODE_CHANGES=$(git diff --name-only ${{ github.event.pull_request.base.sha }}...${{ github.event.pull_request.head.sha }} | grep -v -E '^(docs/|\.md$|arch/spring_clean|scripts/spring_clean)' | grep -E '^(alfred|tests|docker|services|libs)/' || true)
+
+          # Check if services/SC-330-issue.md is the only services change (it's a docs file despite location)
+          SERVICE_MD_ONLY=$(git diff --name-only ${{ github.event.pull_request.base.sha }}...${{ github.event.pull_request.head.sha }} | grep -E '^services/.*\.md$' || true)
+          OTHER_SERVICE_FILES=$(git diff --name-only ${{ github.event.pull_request.base.sha }}...${{ github.event.pull_request.head.sha }} | grep -E '^services/' | grep -v -E '\.md$' || true)
+
+          if [ -z "$CORE_CODE_CHANGES" ] || ([ -n "$SERVICE_MD_ONLY" ] && [ -z "$OTHER_SERVICE_FILES" ]); then
+            echo "✅ Inventory/docs-only PR — skipping integration tests!"
             echo "SKIP=true" >> $GITHUB_ENV
           else
-            echo "❌ Non-inventory PR — will run integration tests."
+            echo "❌ Contains core code changes — will run integration tests."
+            echo "Changed core files:"
+            echo "$CORE_CODE_CHANGES"
           fi
 
       - name: Set up Python
