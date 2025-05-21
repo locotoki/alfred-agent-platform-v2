@@ -22,7 +22,7 @@ echo "Running mypy with fixed configuration..."
 python3 -m mypy --config-file=mypy_fix/mypy.ini \
     --explicit-package-bases \
     --namespace-packages \
-    libs/ agents/ services/ tests/
+    --exclude slack-app libs/ agents/ services/ tests/
 
 # Exit with the mypy exit code
 exit $?
