@@ -7,7 +7,7 @@ import pytest
 from backend.alfred.ml.alert_dataset import load_alert_dataset
 
 
-@pytest.mark.xfail(reason="Missing faiss dependency, see issue #220", strict=False)
+@pytest.mark.benchmark
 def test_training_speed(benchmark):
     """Benchmark the full training pipeline speed."""
     # Note: This is a mock version that doesn't actually train
@@ -36,7 +36,7 @@ def test_training_speed(benchmark):
     assert result["total_time"] < 180, "Training must complete in under 3 minutes"
 
 
-@pytest.mark.xfail(reason="Missing faiss dependency, see issue #220", strict=False)
+@pytest.mark.benchmark
 def test_dataset_loading_performance(benchmark):
     """Benchmark dataset loading speed."""
     benchmark(load_alert_dataset, days=30)
@@ -45,7 +45,7 @@ def test_dataset_loading_performance(benchmark):
     assert benchmark.stats["mean"] < 10.0
 
 
-@pytest.mark.xfail(reason="Missing faiss dependency, see issue #220", strict=False)
+@pytest.mark.benchmark
 def test_memory_usage():
     """Test memory usage stays within limits."""
     import psutil
@@ -65,7 +65,7 @@ def test_memory_usage():
 
 
 @pytest.mark.benchmark(group="training", warmup=False)
-@pytest.mark.xfail(reason="Missing sentence_transformers dependency, see issue #220", strict=False)
+@pytest.mark.benchmark
 def test_model_save_speed(benchmark, tmp_path):
     """Benchmark model saving speed."""
     from sentence_transformers import SentenceTransformer
