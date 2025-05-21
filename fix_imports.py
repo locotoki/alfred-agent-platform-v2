@@ -177,7 +177,7 @@ def pytest_collection_modifyitems(config, items):
 }
 
 
-def main():
+def main() -> None:
     """Update all conftest files with import fixes."""
     for directory, content in conftests.items():
         # Use os.path.join for path construction
