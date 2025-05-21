@@ -1,10 +1,12 @@
-"""Agent BizOps Main Application"""
+"""Agent BizOps Main Application."""
 
 import os
 
 import structlog
 from fastapi import FastAPI
 from fastapi.responses import JSONResponse
+
+from ..middleware.metrics import setup_metrics_middleware
 
 # Set up structured logging
 structlog.configure(
@@ -32,13 +34,16 @@ app = FastAPI(
     version="1.0.0",
 )
 
+# Setup Prometheus metrics middleware
+setup_metrics_middleware(app)
+
 # Get enabled workflows from environment
 WORKFLOWS_ENABLED = os.getenv("WORKFLOWS_ENABLED", "finance,legal").split(",")
 
 
 @app.get("/health")
 async def health():
-    """Health check endpoint"""
+    """Health check endpoint."""
     return JSONResponse(
         {"status": "healthy", "service": "agent-bizops", "workflows_enabled": WORKFLOWS_ENABLED}
     )
@@ -46,7 +51,7 @@ async def health():
 
 @app.get("/")
 async def root():
-    """Root endpoint"""
+    """Root endpoint."""
     return {"message": "Agent BizOps Service", "workflows_enabled": WORKFLOWS_ENABLED}
 
 

@@ -1,0 +1,76 @@
+groups:
+  - name: bizops-sla
+    rules:
+      - alert: BizOpsHighErrorRate
+        expr: job:bizops_error_rate > 0.02
+        for: 5m
+        labels:
+          severity: warning
+          service: agent-bizops
+          team: devops
+        annotations:
+          summary: "High error rate detected in Agent BizOps {{ $labels.bizops_workflow }} workflow"
+          description: "Error rate for {{ $labels.bizops_workflow }} workflow is {{ $value | humanizePercentage }} which exceeds the 2% threshold"
+          runbook_url: "https://docs.company.com/runbooks/bizops#high-error-rate"
+
+      - alert: BizOpsVeryHighErrorRate
+        expr: job:bizops_error_rate > 0.10
+        for: 2m
+        labels:
+          severity: critical
+          service: agent-bizops
+          team: devops
+          pager: true
+        annotations:
+          summary: "Critical error rate in Agent BizOps {{ $labels.bizops_workflow }} workflow"
+          description: "Error rate for {{ $labels.bizops_workflow }} workflow is {{ $value | humanizePercentage }} which exceeds the 10% critical threshold"
+          runbook_url: "https://docs.company.com/runbooks/bizops#critical-error-rate"
+
+      - alert: BizOpsHighLatency
+        expr: job:bizops_latency_p95 > 5
+        for: 5m
+        labels:
+          severity: warning
+          service: agent-bizops
+          team: devops
+        annotations:
+          summary: "High latency detected in Agent BizOps {{ $labels.bizops_workflow }} workflow"
+          description: "P95 latency for {{ $labels.bizops_workflow }} workflow is {{ $value }}s which exceeds the 5s threshold"
+          runbook_url: "https://docs.company.com/runbooks/bizops#high-latency"
+
+      - alert: BizOpsServiceDown
+        expr: up{job="agent-bizops"} == 0
+        for: 1m
+        labels:
+          severity: critical
+          service: agent-bizops
+          team: devops
+          pager: true
+        annotations:
+          summary: "Agent BizOps service is down"
+          description: "Agent BizOps service has been down for more than 1 minute"
+          runbook_url: "https://docs.company.com/runbooks/bizops#service-down"
+
+      - alert: BizOpsLowWorkflowSuccessRate
+        expr: job:bizops_workflow_success_rate < 0.95
+        for: 10m
+        labels:
+          severity: warning
+          service: agent-bizops
+          team: "{{ if eq $labels.bizops_workflow \"legal\" }}legal{{ else if eq $labels.bizops_workflow \"finance\" }}finance{{ else }}devops{{ end }}"
+        annotations:
+          summary: "Low success rate for {{ $labels.bizops_workflow }} {{ $labels.operation_type }} operations"
+          description: "Success rate for {{ $labels.bizops_workflow }} {{ $labels.operation_type }} is {{ $value | humanizePercentage }} which is below the 95% SLA"
+          runbook_url: "https://docs.company.com/runbooks/bizops#low-success-rate"
+
+      - alert: BizOpsHealthScoreLow
+        expr: job:bizops_health_score < 0.8
+        for: 10m
+        labels:
+          severity: warning
+          service: agent-bizops
+          team: devops
+        annotations:
+          summary: "Agent BizOps overall health score is degraded"
+          description: "Overall health score for {{ $labels.bizops_workflow }} workflow is {{ $value | humanizePercentage }} which is below the 80% threshold"
+          runbook_url: "https://docs.company.com/runbooks/bizops#health-score-low"
