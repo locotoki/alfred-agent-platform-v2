@@ -1,1 +1,0 @@
-Skipping benchmark tests for SC-320 PR #219
