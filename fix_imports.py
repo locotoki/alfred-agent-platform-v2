@@ -1,9 +1,6 @@
 #!/usr/bin/env python3
 """Script to create specific conftest.py files to fix importing problems."""
 
-import os
-import sys
-
 # Dictionary mapping directory paths to module specific conftest content
 conftests = {
     "tests/backend/ml/": """\"\"\"Configuration for ML tests.\"\"\"
@@ -28,25 +25,25 @@ def pytest_collection_modifyitems(config, items):
     # Categorize ML tests by dependency issue
     faiss_dependent_tests = [
         "test_faiss_index",
-        "test_alert_dataset", 
+        "test_alert_dataset",
         "test_trainer_benchmark",
     ]
-    
+
     sentence_transformers_dependent_tests = [
         "test_inference_benchmark",
     ]
-    
+
     ml_model_tests = [
         "test_retrain_pipeline",
         "test_model_registry",
         "test_dataset_db",
     ]
-    
+
     for item in items:
         # Skip already marked tests
         if any(mark.name == "xfail" for mark in item.iter_markers()):
             continue
-            
+
         # Apply specific markers based on test dependencies
         if any(test_name in item.nodeid for test_name in faiss_dependent_tests):
             item.add_marker(
@@ -94,12 +91,12 @@ def pytest_collection_modifyitems(config, items):
         "test_hf_embedder",
         "test_thresholds",
     ]
-    
+
     for item in items:
         # Skip already marked tests
         if any(mark.name == "xfail" for mark in item.iter_markers()):
             continue
-            
+
         # Apply specific markers based on test dependencies
         if any(test_name in item.nodeid for test_name in sentence_transformers_dependent_tests):
             item.add_marker(
@@ -132,7 +129,7 @@ def pytest_collection_modifyitems(config, items):
         # Skip already marked tests
         if any(mark.name == "xfail" for mark in item.iter_markers()):
             continue
-            
+
         # Mark all slack app tests as xfail
         item.add_marker(
             pytest.mark.xfail(
@@ -164,7 +161,7 @@ def pytest_collection_modifyitems(config, items):
         # Skip already marked tests
         if any(mark.name == "xfail" for mark in item.iter_markers()):
             continue
-            
+
         # Look for specific YouTube-related test files
         if "test_youtube_workflows" in item.nodeid:
             item.add_marker(

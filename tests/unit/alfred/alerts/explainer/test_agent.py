@@ -2,11 +2,13 @@
 
 import json
 from pathlib import Path
+from typing import Any, AsyncIterator, Dict, Iterator, List, Optional, Union
 from unittest.mock import AsyncMock, Mock, patch
 
 import pytest
-
-pytestmark = pytest.mark.xfail(reason="SC-330 async bug", strict=False)
+from langchain.chains import LLMChain
+from langchain.schema import Generation, LLMResult
+from langchain.schema.runnable import Runnable
 
 from alfred.alerts.explainer.agent import ExplainerAgent
 
@@ -33,10 +35,50 @@ def stub_agent():
 
 @pytest.fixture
 def mock_llm():
-    """Create a mock LLM."""
-    mock = Mock(spec=["invoke", "predict"])
-    mock.invoke.return_value = "Mocked LLM response"
-    return mock
+    """Create a mock LLM that implements the Runnable interface."""
+
+    class MockLLM(Runnable):
+        def invoke(self, input: Any, config: Optional[Dict[str, Any]] = None, **kwargs: Any) -> Any:
+            return "test response"
+
+        async def ainvoke(
+            self, input: Any, config: Optional[Dict[str, Any]] = None, **kwargs: Any
+        ) -> Any:
+            return "test response"
+
+        def batch(
+            self, inputs: List[Any], config: Optional[Dict[str, Any]] = None, **kwargs: Any
+        ) -> List[Any]:
+            return ["test response"] * len(inputs)
+
+        async def abatch(
+            self, inputs: List[Any], config: Optional[Dict[str, Any]] = None, **kwargs: Any
+        ) -> List[Any]:
+            return ["test response"] * len(inputs)
+
+        def stream(
+            self, input: Any, config: Optional[Dict[str, Any]] = None, **kwargs: Any
+        ) -> Iterator[Any]:
+            yield "test response"
+
+        async def astream(
+            self, input: Any, config: Optional[Dict[str, Any]] = None, **kwargs: Any
+        ) -> AsyncIterator[Any]:
+            yield "test response"
+
+        def generate(self, *args: Any, **kwargs: Any) -> LLMResult:
+            return LLMResult(generations=[[Generation(text="test")]])
+
+        async def agenerate(self, *args: Any, **kwargs: Any) -> LLMResult:
+            return LLMResult(generations=[[Generation(text="test")]])
+
+        def predict(self, *args: Any, **kwargs: Any) -> str:
+            return "test response"
+
+        async def apredict(self, *args: Any, **kwargs: Any) -> str:
+            return "test response"
+
+    return MockLLM()
 
 
 def test_explainer_agent_initialization():
@@ -77,51 +119,41 @@ async def test_explain_alert_missing_fields(stub_agent):
     assert len(result["explanation"]) > 0
 
 
-async def test_explain_alert_with_llm_success(mock_llm, alert_payload):
+@patch.object(LLMChain, "arun")
+async def test_explain_alert_with_llm_success(mock_arun, mock_llm, alert_payload):
     """Test successful explanation with LLM."""
     expected_explanation = """Explanation: Service is down
 Potential Causes: Network issues, process crashed
 Remediation: Restart the service
 Runbook: https://runbooks.alfred.ai/service-down"""
 
-    with patch("alfred.alerts.explainer.agent.LLMChain") as mock_chain_cls:
-        # Create a mock chain that responds correctly
-        mock_chain = Mock()
-        mock_chain.run.return_value = expected_explanation
+    mock_arun.return_value = expected_explanation
 
-        # Don't set an error on arun, instead make it also return the value
-        mock_chain.arun = AsyncMock(return_value=expected_explanation)
+    agent = ExplainerAgent(llm=mock_llm)
+    result = await agent.explain_alert(alert_payload)
 
-        mock_chain_cls.return_value = mock_chain
+    assert result["success"] is True
+    assert result["alert_name"] == alert_payload["alert_name"]
+    assert result["explanation"] == expected_explanation
 
-        agent = ExplainerAgent(llm=mock_llm)
-        result = await agent.explain_alert(alert_payload)
-
-        assert result["success"] is True
-        assert result["alert_name"] == alert_payload["alert_name"]
-        assert result["explanation"] == expected_explanation
-
-        # Since our implementation prefers arun over run when available,
-        # we expect arun to be called
-        mock_chain.arun.assert_called_once_with(
-            alert_name=alert_payload["alert_name"],
-            alert_details=alert_payload["description"],
-            metric_value=alert_payload["value"],
-        )
+    # Since our implementation prefers arun over run when available,
+    # we expect arun to be called
+    mock_arun.assert_called_once_with(
+        alert_name=alert_payload["alert_name"],
+        alert_details=alert_payload["description"],
+        metric_value=alert_payload["value"],
+    )
 
 
-async def test_explain_alert_with_llm_failure(mock_llm, alert_payload):
+@patch.object(LLMChain, "arun")
+async def test_explain_alert_with_llm_failure(mock_arun, mock_llm, alert_payload):
     """Test explanation failure with LLM."""
-    with patch("alfred.alerts.explainer.agent.LLMChain") as mock_chain_cls:
-        mock_chain = Mock()
-        mock_chain.run.side_effect = Exception("LLM error")
-        mock_chain.arun.side_effect = Exception("LLM error")
-        mock_chain_cls.return_value = mock_chain
+    mock_arun.side_effect = Exception("LLM error")
 
-        agent = ExplainerAgent(llm=mock_llm)
-        result = await agent.explain_alert(alert_payload)
+    agent = ExplainerAgent(llm=mock_llm)
+    result = await agent.explain_alert(alert_payload)
 
-        assert result["success"] is False
-        assert result["alert_name"] == alert_payload["alert_name"]
-        assert "Failed to generate explanation" in result["explanation"]
-        assert "LLM error" in result["explanation"]
+    assert result["success"] is False
+    assert result["alert_name"] == alert_payload["alert_name"]
+    assert "Failed to generate explanation" in result["explanation"]
+    assert "LLM error" in result["explanation"]
