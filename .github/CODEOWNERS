@@ -18,8 +18,8 @@
 /scripts/bump-healthcheck.sh @SRE @DevOps
 
 # Agent implementations - Owned by corresponding teams
-/agents/financial_tax/ @FinanceTeam
-/agents/legal_compliance/ @LegalTeam
+/services/agent_bizops/workflows/finance/ @FinanceTeam
+/services/agent_bizops/workflows/legal/ @LegalTeam
 /agents/social_intel/ @SocialTeam
 
 # Documentation - TechWriters must review
@@ -33,8 +33,7 @@
 /scripts/ @DevOps
 
 # Services - Owned by corresponding teams with DevOps oversight
-/services/financial-tax/ @FinanceTeam @DevOps
-/services/legal-compliance/ @LegalTeam @DevOps
+/services/agent_bizops/ @FinanceTeam @LegalTeam @DevOps
 /services/social-intel/ @SocialTeam @DevOps
 /services/streamlit-chat/ @UITeam @DevOps
 /services/mission-control/ @UITeam @DevOps

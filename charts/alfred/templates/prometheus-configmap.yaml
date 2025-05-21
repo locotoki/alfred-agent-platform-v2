@@ -40,14 +40,9 @@ data:
           - targets: ['social-intel:9000']
         metrics_path: '/health/metrics'
 
-      - job_name: 'financial-tax'
+      - job_name: 'agent-bizops'
         static_configs:
-          - targets: ['financial-tax:9003']
-        metrics_path: '/health/metrics'
-
-      - job_name: 'legal-compliance'
-        static_configs:
-          - targets: ['legal-compliance:9002']
+          - targets: ['agent-bizops:8080']
         metrics_path: '/health/metrics'
 
       # Database metrics
@@ -87,15 +82,12 @@ data:
           - targets: [
               'alfred-bot:9091',
               'social-intel:9091',
-              'financial-tax:9091',
-              'legal-compliance:9091',
+              'agent-bizops:9091',
               'rag-service:9091',
               'mission-control:9091',
               'agent-rag:9091',
               'agent-atlas:9091',
               'agent-core:9091',
-              'agent-financial:9091',
-              'agent-legal:9091',
               'agent-social:9091',
               'model-registry:9091',
               'model-router:9091',
