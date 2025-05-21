@@ -3,7 +3,7 @@
 import pytest
 from pydantic import ValidationError
 
-from agents.financial_tax.models import (
+from services.agent_bizops.workflows.finance.models import (
     ComplianceCheckRequest,
     ComplianceCheckResponse,
     EntityType,

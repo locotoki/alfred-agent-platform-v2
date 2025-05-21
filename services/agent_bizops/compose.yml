@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  agent-bizops:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: agent-bizops
+    environment:
+      - WORKFLOWS_ENABLED=${WORKFLOWS_ENABLED:-finance,legal}
+      - PYTHONPATH=/app
+    ports:
+      - "${AGENT_BIZOPS_PORT:-8080}:8080"
+    volumes:
+      - ./workflows:/app/workflows
+    networks:
+      - alfred-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    profiles:
+      - agents
+      - core
+
+networks:
+  alfred-network:
+    external: true

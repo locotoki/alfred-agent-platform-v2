@@ -208,28 +208,6 @@ services:
     profiles:
     - core
     - full
-  financial-tax:
-    image: ${ALFRED_REGISTRY}/alfred-platform/financial-tax:${ALFRED_VERSION}
-    environment:
-    - ALFRED_ENVIRONMENT=${ALFRED_ENVIRONMENT}
-    - ALFRED_LOG_LEVEL=${ALFRED_LOG_LEVEL}
-    restart: unless-stopped
-    networks:
-    - alfred-network
-    profiles:
-    - core
-    - full
-  legal-compliance:
-    image: ${ALFRED_REGISTRY}/alfred-platform/legal-compliance:${ALFRED_VERSION}
-    environment:
-    - ALFRED_ENVIRONMENT=${ALFRED_ENVIRONMENT}
-    - ALFRED_LOG_LEVEL=${ALFRED_LOG_LEVEL}
-    restart: unless-stopped
-    networks:
-    - alfred-network
-    profiles:
-    - core
-    - full
   social-intel:
     image: ${ALFRED_REGISTRY}/alfred-platform/social-intel:${ALFRED_VERSION}
     environment:

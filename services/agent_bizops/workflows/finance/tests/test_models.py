@@ -1,8 +1,6 @@
 """Unit tests for Financial Tax Agent models"""
 
 import pytest
-from pydantic import ValidationError
-
 from agents.financial_tax.models import (
     ComplianceCheckRequest,
     ComplianceCheckResponse,
@@ -15,6 +13,7 @@ from agents.financial_tax.models import (
     TaxRateRequest,
     TaxRateResponse,
 )
+from pydantic import ValidationError
 
 
 class TestModels:
