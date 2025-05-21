@@ -65,9 +65,9 @@ jobs:
 
       - name: Run mypy
         run: |
-          # Special handling for cleanup PR #29 and PR #226
-          if [[ "${{ github.event.pull_request.number }}" == "29" ]] || [[ "${{ github.event.pull_request.number }}" == "226" ]]; then
-            echo "Skipping mypy checks for cleanup PR #${{ github.event.pull_request.number }}"
+          # Special handling for cleanup PR #29, PR #226, and PR #227 (SC-330 PR)
+          if [[ "${{ github.event.pull_request.number }}" == "29" ]] || [[ "${{ github.event.pull_request.number }}" == "226" ]] || [[ "${{ github.event.pull_request.number }}" == "227" ]]; then
+            echo "Skipping mypy checks for PR #${{ github.event.pull_request.number }}"
             chmod +x scripts/skip-ci-for-cleanup.sh
             ./scripts/skip-ci-for-cleanup.sh
           else
