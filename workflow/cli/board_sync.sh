@@ -222,6 +222,11 @@ find_project() {
         exit 1
     fi
 
+    # Extract projects array if wrapped in {"projects": [...]} format
+    if echo "$projects_json" | jq -e '.projects' >/dev/null 2>&1; then
+        projects_json=$(echo "$projects_json" | jq '.projects')
+    fi
+
     # Debug: show the actual JSON structure
     if [[ "$VERBOSE" == "true" ]]; then
         log_debug "Projects JSON structure:"
