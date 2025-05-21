@@ -16,7 +16,8 @@ jobs:
     runs-on: ubuntu-latest
 
     # Skip this job for SC-320, will be fixed in #220
-    if: ${{ !contains(github.head_ref, 'sc-320') }}
+    # Also skip for docs-only PRs
+    if: ${{ !contains(github.head_ref, 'sc-320') && !contains(github.event.pull_request.labels.*.name, 'docs-only') }}
 
     steps:
       - uses: actions/checkout@v4
