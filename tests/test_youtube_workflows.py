@@ -131,6 +131,7 @@ def mock_agent(
     return agent
 
 
+@pytest.mark.xfail(reason="Missing pytrends dependency, see issue #220", strict=False)
 @pytest.mark.asyncio
 async def test_youtube_niche_scout(mock_agent, mock_youtube_niche_scout_flow):
     """Test YOUTUBE_NICHE_SCOUT intent."""
@@ -158,6 +159,7 @@ async def test_youtube_niche_scout(mock_agent, mock_youtube_niche_scout_flow):
     )
 
 
+@pytest.mark.xfail(reason="Missing pytrends dependency, see issue #220", strict=False)
 @pytest.mark.asyncio
 async def test_youtube_blueprint(mock_agent, mock_youtube_blueprint_flow):
     """Test YOUTUBE_BLUEPRINT intent."""

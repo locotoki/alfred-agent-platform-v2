@@ -9,21 +9,21 @@ from typing import Any, Dict, Protocol
 
 
 class Service(Protocol):
-    """Protocol for services that have lifecycle methods"""
+    """Protocol for services that have lifecycle methods."""
 
     @abstractmethod
     async def start(self) -> None:
-        """Start the service"""
+        """Start the service."""
         ...
 
     @abstractmethod
     async def stop(self) -> None:
-        """Stop the service gracefully"""
+        """Stop the service gracefully."""
         ...
 
 
 class HealthCheckable(Protocol):
-    """Protocol for components that can report health status"""
+    """Protocol for components that can report health status."""
 
     @abstractmethod
     async def health_check(self) -> Dict[str, Any]:
@@ -36,7 +36,7 @@ class HealthCheckable(Protocol):
 
 
 class ConfigLoader(Protocol):
-    """Protocol for configuration loading"""
+    """Protocol for configuration loading."""
 
     @abstractmethod
     def load_config(self, config_path: str) -> Dict[str, Any]:
@@ -64,16 +64,16 @@ class ConfigLoader(Protocol):
 
 
 class CoreApplication(Protocol):
-    """Protocol for the main application interface"""
+    """Protocol for the main application interface."""
 
     @abstractmethod
     async def start(self) -> None:
-        """Start the application"""
+        """Start the application."""
         ...
 
     @abstractmethod
     async def stop(self) -> None:
-        """Stop the application gracefully"""
+        """Stop the application gracefully."""
         ...
 
     @abstractmethod
