@@ -222,11 +222,28 @@ find_project() {
         exit 1
     fi
 
+    # Debug: show the actual JSON structure
+    if [[ "$VERBOSE" == "true" ]]; then
+        log_debug "Projects JSON structure:"
+        echo "$projects_json" | jq . 2>/dev/null || echo "$projects_json"
+    fi
+
     # Look for common project names first
     local project_candidates=("Alfred-core Sprint Board" "Sprint" "Alfred Platform" "Main")
 
+    # Handle both array and object formats
     for candidate in "${project_candidates[@]}"; do
-        PROJECT_ID=$(echo "$projects_json" | jq -r ".[] | select(.title == \"$candidate\") | .number" | head -1)
+        if echo "$projects_json" | jq -e 'type == "array"' >/dev/null 2>&1; then
+            # Array format
+            PROJECT_ID=$(echo "$projects_json" | jq -r ".[] | select(.title == \"$candidate\") | .number" 2>/dev/null | head -1)
+        else
+            # Object format or different structure - try different field names
+            PROJECT_ID=$(echo "$projects_json" | jq -r "select(.title == \"$candidate\") | .number" 2>/dev/null | head -1)
+            if [[ -z "$PROJECT_ID" || "$PROJECT_ID" == "null" ]]; then
+                PROJECT_ID=$(echo "$projects_json" | jq -r "select(.name == \"$candidate\") | .number" 2>/dev/null | head -1)
+            fi
+        fi
+
         if [[ -n "$PROJECT_ID" && "$PROJECT_ID" != "null" ]]; then
             log_info "Found project: '$candidate' (ID: $PROJECT_ID)"
             break
@@ -235,13 +252,21 @@ find_project() {
 
     # If no common name found, use the first project
     if [[ -z "$PROJECT_ID" || "$PROJECT_ID" == "null" ]]; then
-        PROJECT_ID=$(echo "$projects_json" | jq -r '.[0].number')
-        local project_title=$(echo "$projects_json" | jq -r '.[0].title')
+        if echo "$projects_json" | jq -e 'type == "array"' >/dev/null 2>&1; then
+            # Array format
+            PROJECT_ID=$(echo "$projects_json" | jq -r '.[0].number' 2>/dev/null)
+            local project_title=$(echo "$projects_json" | jq -r '.[0].title // .[0].name' 2>/dev/null)
+        else
+            # Single object or different format
+            PROJECT_ID=$(echo "$projects_json" | jq -r '.number' 2>/dev/null)
+            local project_title=$(echo "$projects_json" | jq -r '.title // .name' 2>/dev/null)
+        fi
 
         if [[ -n "$PROJECT_ID" && "$PROJECT_ID" != "null" ]]; then
             log_warn "Using first available project: '$project_title' (ID: $PROJECT_ID)"
         else
             log_error "No projects found for $OWNER"
+            log_error "Available projects JSON: $projects_json"
             exit 1
         fi
     fi
