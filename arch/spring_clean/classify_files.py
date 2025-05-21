@@ -12,7 +12,7 @@ import re
 from pathlib import Path
 
 
-def classify_file(file_path):
+def classify_file(file_path: str) -> str:
     """
     Classify a file as USED or ORPHAN based on predefined rules.
 
@@ -136,7 +136,7 @@ def classify_file(file_path):
     return "USED"
 
 
-def main():
+def main() -> None:
     """Process raw_file_list.txt and generate inventory.csv with classifications."""
     # Get the directory of this script
     script_dir = Path(__file__).parent
