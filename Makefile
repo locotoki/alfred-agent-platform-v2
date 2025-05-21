@@ -3,7 +3,7 @@
 include .env
 export $(shell sed 's/=.*//' .env)
 
-.PHONY: help install start stop restart clean test test-unit test-integration test-e2e lint format dev deploy build update-dashboards setup-metrics compose-generate up down
+.PHONY: help install start stop restart clean test test-unit test-integration test-e2e lint format dev deploy build update-dashboards setup-metrics compose-generate up down board-sync
 
 help:
 	@echo "Alfred Agent Platform v2 Makefile"
@@ -27,6 +27,7 @@ help:
 	@echo "compose-generate     Generate docker-compose from service snippets"
 	@echo "up                   Start entire local stack (all services)"
 	@echo "down                 Stop entire local stack"
+	@echo "board-sync           Move GitHub issue to Done column (requires ISSUE_URL)"
 
 install:
 	pip install -r requirements.txt
@@ -101,3 +102,13 @@ run-slack-adapter:
 	@echo "Starting Slack Adapter service..."
 	@docker compose up -d slack-adapter
 	@echo "Slack Adapter running on http://localhost:3001"
+
+# Board sync automation
+board-sync:
+	@if [ -z "$(ISSUE_URL)" ]; then \
+		echo "Error: ISSUE_URL is required"; \
+		echo "Usage: make board-sync ISSUE_URL=<issue-number-or-url>"; \
+		echo "Example: make board-sync ISSUE_URL=174"; \
+		exit 1; \
+	fi
+	./workflow/cli/board_sync.sh $(ISSUE_URL)
