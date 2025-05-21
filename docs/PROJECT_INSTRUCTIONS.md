@@ -53,6 +53,7 @@ Each milestone consists of:
 | Health Checks | `/health` must return 200 (healthy), 503 (unhealthy), never 500 |
 | CI | GitHub Actions must run `mypy`, `pytest`, and Helm lint |
 | Alerting | All Prometheus alerts must link to a Slack summary by Phase 8.2 |
+| Progress | Track via `status.json` beacon with badge showing SC-241 consolidation |
 
 ## 📍 Branching Convention
 
