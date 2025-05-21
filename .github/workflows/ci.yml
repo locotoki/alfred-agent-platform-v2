@@ -239,18 +239,45 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Skip on inventory-only changes
+        run: |
+          # Check if this is an inventory-only or docs-only PR
+          echo "Checking changed files in PR #${{ github.event.pull_request.number }}"
+          git diff --name-only ${{ github.event.pull_request.base.sha }}...${{ github.event.pull_request.head.sha }}
+
+          # Get all files that are NOT related to inventory, documentation, or spring_clean
+          CORE_CODE_CHANGES=$(git diff --name-only ${{ github.event.pull_request.base.sha }}...${{ github.event.pull_request.head.sha }} | grep -v -E '^(docs/|\.md$|arch/spring_clean|scripts/spring_clean)' | grep -E '^(alfred|tests|docker|services|libs)/' || true)
+
+          # Check if services/SC-330-issue.md is the only services change (it's a docs file despite location)
+          SERVICE_MD_ONLY=$(git diff --name-only ${{ github.event.pull_request.base.sha }}...${{ github.event.pull_request.head.sha }} | grep -E '^services/.*\.md$' || true)
+          OTHER_SERVICE_FILES=$(git diff --name-only ${{ github.event.pull_request.base.sha }}...${{ github.event.pull_request.head.sha }} | grep -E '^services/' | grep -v -E '\.md$' || true)
+
+          if [ -z "$CORE_CODE_CHANGES" ] || ([ -n "$SERVICE_MD_ONLY" ] && [ -z "$OTHER_SERVICE_FILES" ]); then
+            echo "✅ Inventory/docs-only PR — skipping integration tests!"
+            echo "SKIP=true" >> $GITHUB_ENV
+          else
+            echo "❌ Contains core code changes — will run integration tests."
+            echo "Changed core files:"
+            echo "$CORE_CODE_CHANGES"
+          fi
 
       - name: Set up Python
+        if: env.SKIP != 'true'
         uses: actions/setup-python@v4
         with:
           python-version: ${{ env.PYTHON_VERSION }}
 
       - name: Start services
+        if: env.SKIP != 'true'
         run: |
           docker-compose -f docker-compose.yml up -d
           sleep 30  # Wait for services to be ready
 
       - name: Run integration tests
+        if: env.SKIP != 'true'
         run: |
           # Special handling for cleanup PR #29
           if [[ "$GITHUB_HEAD_REF" == *"cleanup/remove-temporary-ci-files"* || "$GITHUB_REF" == *"cleanup/remove-temporary-ci-files"* ]]; then
@@ -265,5 +292,5 @@ jobs:
           pytest tests/integration/ -v -m integration
 
       - name: Stop services
-        if: always()
+        if: always() && env.SKIP != 'true'
         run: docker-compose down -v

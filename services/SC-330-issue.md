@@ -9,7 +9,7 @@ TypeError: 'coroutine' object is not subscriptable
 
 ### Affected files:
 - tests/unit/agents/financial_tax/test_agent.py
-- tests/unit/agents/financial_tax/test_chains.py 
+- tests/unit/agents/financial_tax/test_chains.py
 - tests/unit/agents/financial_tax/test_models.py
 - tests/unit/alfred/alerts/explainer/test_agent.py
 - tests/unit/alfred/slack/diagnostics/test_explain_command.py

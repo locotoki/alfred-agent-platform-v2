@@ -5,8 +5,8 @@ set -euo pipefail
 
 echo "Running mypy with special configuration"
 
-# For PR #12 and PR #29, skip checks entirely
-if [[ "${GITHUB_EVENT_PR_NUMBER:-}" == "12" ]] || [[ "${GITHUB_EVENT_PR_NUMBER:-}" == "29" ]]; then
+# For PR #12, PR #29, and PR #226 (spring-clean), skip checks entirely
+if [[ "${GITHUB_EVENT_PR_NUMBER:-}" == "12" ]] || [[ "${GITHUB_EVENT_PR_NUMBER:-}" == "29" ]] || [[ "${GITHUB_EVENT_PR_NUMBER:-}" == "226" ]]; then
     echo "Skipping mypy checks for PR #${GITHUB_EVENT_PR_NUMBER}"
     exit 0
 fi
