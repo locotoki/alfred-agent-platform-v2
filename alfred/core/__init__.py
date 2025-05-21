@@ -1,4 +1,4 @@
-"""Alfred core module"""
+"""Alfred core module."""
 
 from .app import create_core_app
 

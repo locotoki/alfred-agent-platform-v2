@@ -21,7 +21,7 @@ logger = structlog.get_logger(__name__)
 
 @dataclass
 class Intent:
-    """Represents a classified intent"""
+    """Represent a classified intent."""
 
     type: str
     confidence: float
@@ -29,13 +29,15 @@ class Intent:
     raw_message: str
 
     def __str__(self) -> str:
+        """Return string representation of the intent."""
         return f"Intent(type={self.type}, confidence={self.confidence:.2f})"
 
 
 class IntentRouter:
-    """Routes messages to appropriate handlers based on intent"""
+    """Route messages to appropriate handlers based on intent."""
 
     def __init__(self) -> None:
+        """Initialize the router with empty handler and pattern dictionaries."""
         self._handlers: Dict[str, Callable[..., Any]] = {}
         self._patterns: Dict[str, re.Pattern[str]] = {}
 
@@ -43,13 +45,13 @@ class IntentRouter:
         self._register_default_handlers()
 
     def route(self, message: str) -> Intent:
-        """Route a message to determine its intent.
+        """Determine intent for a message and create an Intent object.
 
         Args:
             message: The incoming message text
 
         Returns:
-            Intent: The classified intent
+            The classified intent
         """
         # Default to unknown intent with zero confidence
         intent = Intent(
@@ -111,14 +113,14 @@ class IntentRouter:
         logger.info("pattern_registered", intent_type=intent_type, pattern=pattern)
 
     def handle(self, intent: Intent, **kwargs: Any) -> Optional[str]:
-        """Handle an intent by routing it to the appropriate handler.
+        """Route intent to appropriate handler and return response.
 
         Args:
             intent: The intent to handle
             **kwargs: Additional keyword arguments to pass to the handler
 
         Returns:
-            Optional[str]: The handler's response or None if no handler
+            The handler's response or None if no handler
         """
         handler = self._handlers.get(intent.type)
         if not handler:
@@ -140,7 +142,7 @@ class IntentRouter:
             return None
 
     def _register_default_handlers(self) -> None:
-        """Register default intent handlers"""
+        """Register default intent handlers."""
         # Register a help handler
         self.register_handler("help", self._help_handler)
 
@@ -155,17 +157,17 @@ class IntentRouter:
         self.register_handler("greeting", self._greeting_handler)
 
     def _help_handler(self, intent: Intent, **kwargs: Any) -> str:
-        """Handle help requests"""
+        """Return help information response."""
         return "I can assist with various tasks. What would you like to know?"
 
     def _gratitude_handler(self, intent: Intent, **kwargs: Any) -> str:
-        """Handle expressions of gratitude"""
+        """Return response to expressions of gratitude."""
         return "You're welcome! Is there anything else I can help with?"
 
     def _greeting_handler(self, intent: Intent, **kwargs: Any) -> str:
-        """Handle greeting intents"""
+        """Return response to greeting intents."""
         return "Hello! How can I assist you today?"
 
     def _unknown_handler(self, intent: Intent, **kwargs: Any) -> str:
-        """Handle unknown intents"""
+        """Return clarification response for unknown intents."""
         return "I'm not sure I understand. Could you please rephrase that?"

@@ -2,11 +2,12 @@
 max-line-length = 100
 exclude = .git,__pycache__,docs/source/conf.py,old,build,dist,venv,.venv,cleanup-temp,node_modules,docs/archive,youtube-test-env,docs/tools,services/social-intel/app
 extend-ignore = E203,W503,Q000,E501,E114,F821,F841,E402,E302,W291,W293,W292
+extend-select = D400,D401,D403
 per-file-ignores =
     # Allow unused imports in __init__.py files
     __init__.py:F401,F403
     # Allow unused imports and other issues in test files
-    tests/**:F401,F841,E501
+    tests/**:F401,F841,E501,D400,D401,D403
     # Social Intel specific ignores
     agents/social_intel/**:F401,F821,F841,E501,E114
     # Script-specific ignores
