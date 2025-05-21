@@ -244,10 +244,16 @@ jobs:
 
       - name: Skip on inventory-only changes
         run: |
+          # Check if this is an inventory-only or docs-only PR
+          echo "Checking changed files in PR #${{ github.event.pull_request.number }}"
+          git diff --name-only ${{ github.event.pull_request.base.sha }}...${{ github.event.pull_request.head.sha }}
+          
           CHANGED=$(git diff --name-only ${{ github.event.pull_request.base.sha }}...${{ github.event.pull_request.head.sha }} | grep -E '^(alfred|tests|docker|services|libs)/' || true)
           if [ -z "$CHANGED" ]; then
-            echo "Inventory-only PR — skipping integration tests."
+            echo "✅ Inventory-only PR — skipping integration tests!"
             echo "SKIP=true" >> $GITHUB_ENV
+          else
+            echo "❌ Non-inventory PR — will run integration tests."
           fi
 
       - name: Set up Python
