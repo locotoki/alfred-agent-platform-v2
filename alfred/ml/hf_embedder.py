@@ -2,7 +2,7 @@
 
 import logging
 import os
-from typing import Any, Dict, List, Union
+from typing import Any, Dict, List, Optional, Union
 
 import numpy as np
 from numpy.typing import NDArray
@@ -52,7 +52,7 @@ class HFEmbedder(Service):
             logger.info(f"Model loaded: {self.model_name} on {self.device}")
         return self._model
 
-    def embed(self, texts: Union[str, List[str]]) -> NDArray[Any]:
+    def embed(self, texts: Union[str, List[str]]) -> NDArray[np.float64]:
         """Generate embeddings for input text(s).
 
         Args:
@@ -80,10 +80,14 @@ class HFEmbedder(Service):
 
         # Return single embedding if single input
         if single_input:
-            return np.array(embeddings[0], dtype=np.float32)
-        return np.array(embeddings, dtype=np.float32)
+            # For single input, we return the first embedding which is a 1D array
+            return np.array(embeddings[0], dtype=np.float64)
+        # For multiple inputs, return the full 2D array
+        return np.array(embeddings, dtype=np.float64)
 
-    def cosine_similarity(self, embeddings1: NDArray[Any], embeddings2: NDArray[Any]) -> float:
+    def cosine_similarity(
+        self, embeddings1: NDArray[np.float64], embeddings2: NDArray[np.float64]
+    ) -> float:
         """Calculate cosine similarity between embeddings.
 
         Args:
@@ -108,8 +112,8 @@ class HFEmbedder(Service):
         return float(np.clip(similarity, 0.0, 1.0))
 
     def batch_similarity(
-        self, query_embedding: NDArray[Any], candidate_embeddings: NDArray[Any]
-    ) -> NDArray[Any]:
+        self, query_embedding: NDArray[np.float64], candidate_embeddings: NDArray[np.float64]
+    ) -> NDArray[np.float64]:
         """Calculate similarities between query and multiple candidates.
 
         Args:
@@ -129,7 +133,7 @@ class HFEmbedder(Service):
         # Calculate similarities
         similarities = np.dot(normalized_candidates, query_norm)
 
-        return np.array(np.clip(similarities, 0.0, 1.0), dtype=np.float32)
+        return np.array(np.clip(similarities, 0.0, 1.0), dtype=np.float64)
 
     def _clean_text(self, text: str) -> str:
         """Clean text for embedding.

@@ -5,7 +5,7 @@ probability, helping to reduce alert fatigue.
 """
 
 from dataclasses import dataclass
-from typing import Any, Dict, List, Optional, Tuple, Union  # noqa: F401
+from typing import Any, Dict, List, Optional, Tuple, Union, cast
 
 import joblib
 import numpy as np
@@ -44,7 +44,7 @@ class NoiseRankingModel:
 
     def extract_features(
         self, alert: AlertProtocol, historical_data: Dict[str, Any]
-    ) -> NDArray[Any]:
+    ) -> NDArray[np.float64]:
         """Extract features from an alert for ML prediction.
 
         Args:
