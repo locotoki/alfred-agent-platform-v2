@@ -1,4 +1,4 @@
-"""Data models for Financial Tax Agent"""
+"""Data models for Financial Tax Agent."""
 
 from enum import Enum
 from typing import Any, Dict, List, Optional
@@ -7,7 +7,11 @@ from pydantic import BaseModel, Field
 
 
 class TaxJurisdiction(str, Enum):
-    """Supported tax jurisdictions"""
+    """Supported tax jurisdictions.
+
+    This enum defines the tax jurisdictions supported by the Financial Tax Agent.
+    Each jurisdiction represents a different tax authority with unique rules.
+    """
 
     US_FEDERAL = "US-FED"
     US_CA = "US-CA"
@@ -24,7 +28,11 @@ class TaxJurisdiction(str, Enum):
 
 
 class EntityType(str, Enum):
-    """Entity types for tax calculations"""
+    """Entity types for tax calculations.
+
+    This enum represents the different legal entities that can file taxes,
+    each with different tax rules, rates, and requirements.
+    """
 
     INDIVIDUAL = "individual"
     CORPORATION = "corporation"
@@ -34,7 +42,7 @@ class EntityType(str, Enum):
 
 
 class TaxCalculationRequest(BaseModel):
-    """Request model for tax calculation"""
+    """Request model for tax calculation."""
 
     income: float = Field(..., description="Gross income amount")
     deductions: Dict[str, float] = Field(default_factory=dict, description="Itemized deductions")
@@ -48,7 +56,7 @@ class TaxCalculationRequest(BaseModel):
 
 
 class TaxCalculationResponse(BaseModel):
-    """Response model for tax calculation"""
+    """Response model for tax calculation."""
 
     gross_income: float
     total_deductions: float
@@ -63,7 +71,7 @@ class TaxCalculationResponse(BaseModel):
 
 
 class FinancialAnalysisRequest(BaseModel):
-    """Request model for financial analysis"""
+    """Request model for financial analysis."""
 
     financial_statements: Dict[str, Dict[str, float]] = Field(
         ..., description="Financial statements data"
@@ -75,7 +83,7 @@ class FinancialAnalysisRequest(BaseModel):
 
 
 class FinancialAnalysisResponse(BaseModel):
-    """Response model for financial analysis"""
+    """Response model for financial analysis."""
 
     summary: Dict[str, Any]
     key_metrics: Dict[str, float]
@@ -87,7 +95,7 @@ class FinancialAnalysisResponse(BaseModel):
 
 
 class ComplianceCheckRequest(BaseModel):
-    """Request model for tax compliance check"""
+    """Request model for tax compliance check."""
 
     entity_type: EntityType
     transactions: List[Dict[str, Any]]
@@ -99,7 +107,7 @@ class ComplianceCheckRequest(BaseModel):
 
 
 class ComplianceCheckResponse(BaseModel):
-    """Response model for compliance check"""
+    """Response model for compliance check."""
 
     compliance_status: str = Field(..., description="Overall compliance status")
     issues_found: List[Dict[str, Any]] = Field(
@@ -115,7 +123,7 @@ class ComplianceCheckResponse(BaseModel):
 
 
 class TaxRateRequest(BaseModel):
-    """Request model for tax rate lookup"""
+    """Request model for tax rate lookup."""
 
     jurisdiction: TaxJurisdiction
     tax_year: int
@@ -125,7 +133,7 @@ class TaxRateRequest(BaseModel):
 
 
 class TaxRateResponse(BaseModel):
-    """Response model for tax rate lookup"""
+    """Response model for tax rate lookup."""
 
     jurisdiction: TaxJurisdiction
     tax_year: int

@@ -1,9 +1,7 @@
 """Tests for Financial Tax Agent models."""
 
 import pytest
-from langchain.pydantic_v1 import ValidationError
-
-pytestmark = pytest.mark.xfail(reason="SC-330 async bug", strict=False)
+from pydantic import ValidationError
 
 from agents.financial_tax.models import (
     ComplianceCheckRequest,
@@ -17,6 +15,8 @@ from agents.financial_tax.models import (
     TaxRateRequest,
     TaxRateResponse,
 )
+
+# Removed xfail marker for SC-330 async bug
 
 
 class TestTaxCalculationModels:
@@ -205,9 +205,13 @@ class TestModelValidation:
         assert request.income == -5000
 
     def test_enum_validation(self):
-        """Test enum values are validated."""
+        """Test enum values are validated correctly.
+
+        This test verifies that Pydantic correctly validates enum fields,
+        rejecting values that are not valid enum members.
+        """
         # Test with invalid jurisdiction by using a string
-        with pytest.raises(ValidationError):
+        with pytest.raises(ValidationError) as exc_info:
             TaxCalculationRequest(
                 income=100000,
                 deductions={},
@@ -216,9 +220,14 @@ class TestModelValidation:
                 tax_year=2024,
                 entity_type=EntityType.INDIVIDUAL,
             )
+        # Verify the error message contains information about valid enum values
+        error_str = str(exc_info.value)
+        assert "jurisdiction" in error_str
+        assert "Input should be" in error_str
+        assert "INVALID_JURISDICTION" in error_str
 
         # Test with invalid entity type
-        with pytest.raises(ValidationError):
+        with pytest.raises(ValidationError) as exc_info:
             TaxCalculationRequest(
                 income=100000,
                 deductions={},
@@ -227,3 +236,20 @@ class TestModelValidation:
                 tax_year=2024,
                 entity_type="INVALID_ENTITY",
             )
+        # Verify the error message contains information about valid enum values
+        error_str = str(exc_info.value)
+        assert "entity_type" in error_str
+        assert "Input should be" in error_str
+        assert "INVALID_ENTITY" in error_str
+
+        # Test that using actual enum values works correctly
+        valid_request = TaxCalculationRequest(
+            income=100000,
+            deductions={},
+            credits={},
+            jurisdiction=TaxJurisdiction.US_FEDERAL,
+            tax_year=2024,
+            entity_type=EntityType.INDIVIDUAL,
+        )
+        assert valid_request.jurisdiction == TaxJurisdiction.US_FEDERAL
+        assert valid_request.entity_type == EntityType.INDIVIDUAL
