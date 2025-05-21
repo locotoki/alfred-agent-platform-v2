@@ -2,7 +2,7 @@ import logging
 import os
 import threading
 from datetime import datetime
-from typing import Any, Dict, List, Optional, cast
+from typing import Any, Dict, List, Optional
 
 import prometheus_client
 import uvicorn
@@ -11,7 +11,8 @@ from pydantic import BaseModel, Field
 from sqlalchemy import JSON, Column, DateTime, Integer, String, Text, select
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import declarative_base as typed_declarative_base
+
+# from sqlalchemy.orm import declarative_base as typed_declarative_base
 from sqlalchemy.orm import sessionmaker
 
 # Import Type annotations for SQLAlchemy

@@ -1,4 +1,4 @@
-"""Alfred Core Application Module"""
+"""Alfred Core Application Module."""
 
 from typing import Any, Dict, Optional
 

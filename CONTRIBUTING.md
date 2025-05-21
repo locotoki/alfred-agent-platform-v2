@@ -60,6 +60,8 @@ Each phase of development requires specific documentation:
 - Line length is 100 characters
 - We use [isort](https://pycqa.github.io/isort/) for import sorting
 - Type hints are required for all new code
+- Docstrings follow [Google style](https://google.github.io/styleguide/pyguide.html#38-comments-and-docstrings) with flake8-docstring rules D400, D401, and D403 enforced
+  - See [Docstring Templates](docs/dev/docstring_template.rst) for examples
 
 **Formatting Baseline**: As of [chore/black-24.4.2-standardise-formatting branch], the entire codebase has been formatted with Black v24.4.2 and isort to establish a consistent baseline. All future PRs must maintain this formatting standard.
 
