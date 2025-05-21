@@ -32,33 +32,46 @@ def mock_llm():
 
     from langchain.schema import Generation, LLMResult
     from langchain.schema.runnable import Runnable
+    from langchain.schema.runnable.config import RunnableConfig
 
     class MockLLM(Runnable):
-        def invoke(self, input: Any, config: Optional[Dict[str, Any]] = None, **kwargs: Any) -> Any:
+        def invoke(
+            self, input: Any, config: Optional["RunnableConfig"] = None, **kwargs: Any
+        ) -> Any:
             return "test response"
 
         async def ainvoke(
-            self, input: Any, config: Optional[Dict[str, Any]] = None, **kwargs: Any
+            self, input: Any, config: Optional["RunnableConfig"] = None, **kwargs: Any
         ) -> Any:
             return "test response"
 
         def batch(
-            self, inputs: List[Any], config: Optional[Dict[str, Any]] = None, **kwargs: Any
+            self,
+            inputs: List[Any],
+            config: Optional["RunnableConfig"] | Optional[List["RunnableConfig"]] = None,
+            *,
+            return_exceptions: bool = False,
+            **kwargs: Any,
         ) -> List[Any]:
             return ["test response"] * len(inputs)
 
         async def abatch(
-            self, inputs: List[Any], config: Optional[Dict[str, Any]] = None, **kwargs: Any
+            self,
+            inputs: List[Any],
+            config: Optional["RunnableConfig"] | Optional[List["RunnableConfig"]] = None,
+            *,
+            return_exceptions: bool = False,
+            **kwargs: Any,
         ) -> List[Any]:
             return ["test response"] * len(inputs)
 
         def stream(
-            self, input: Any, config: Optional[Dict[str, Any]] = None, **kwargs: Any
+            self, input: Any, config: Optional["RunnableConfig"] = None, **kwargs: Any
         ) -> Iterator[Any]:
             yield "test response"
 
         async def astream(
-            self, input: Any, config: Optional[Dict[str, Any]] = None, **kwargs: Any
+            self, input: Any, config: Optional["RunnableConfig"] = None, **kwargs: Any
         ) -> AsyncIterator[Any]:
             yield "test response"
 
