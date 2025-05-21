@@ -1,0 +1,83 @@
+name: Board Sync Automation
+
+on:
+  workflow_run:
+    workflows: ["CI"]
+    types:
+      - completed
+  workflow_dispatch:
+    inputs:
+      issue_url:
+        description: 'GitHub issue URL or number'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  issues: read
+  pull-requests: read
+
+jobs:
+  board-sync:
+    runs-on: ubuntu-latest
+    if: |
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success')
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Install GitHub CLI
+        run: |
+          # Direct download instead of using apt repository (more reliable across Ubuntu versions)
+          curl -fsSL https://github.com/cli/cli/releases/download/v2.44.1/gh_2.44.1_linux_amd64.tar.gz | sudo tar xz -C /usr/local --strip-components=1
+          gh --version
+
+      - name: Authenticate GitHub CLI
+        run: |
+          echo "${{ secrets.GH_AUTOMATION_PAT || secrets.GITHUB_TOKEN }}" | gh auth login --with-token
+
+      - name: Extract issue number from PR (for workflow_run)
+        if: github.event_name == 'workflow_run'
+        id: extract_issue
+        run: |
+          # Get the head SHA from the workflow run
+          HEAD_SHA="${{ github.event.workflow_run.head_sha }}"
+
+          # Find PRs that were merged with this SHA
+          MERGED_PRS=$(gh pr list --state merged --search "$HEAD_SHA" --json number,title,body --limit 5)
+
+          # Extract issue numbers from PR titles and bodies
+          ISSUE_NUMBERS=$(echo "$MERGED_PRS" | jq -r '.[].title + " " + (.body // "")' | grep -oE '#[0-9]+|[Cc]loses? #[0-9]+|[Ff]ixes? #[0-9]+|[Rr]esolves? #[0-9]+' | grep -oE '[0-9]+' | sort -u)
+
+          echo "Found potential issue numbers: $ISSUE_NUMBERS"
+
+          # Use the first valid issue number
+          for issue_num in $ISSUE_NUMBERS; do
+            if gh issue view "$issue_num" --repo ${{ github.repository }} &>/dev/null; then
+              echo "issue_number=$issue_num" >> $GITHUB_OUTPUT
+              echo "Found valid issue: #$issue_num"
+              break
+            fi
+          done
+
+      - name: Run board sync (manual trigger)
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          echo "Running board sync for issue: ${{ github.event.inputs.issue_url }}"
+          ./workflow/cli/board_sync.sh "${{ github.event.inputs.issue_url }}"
+
+      - name: Run board sync (automatic trigger)
+        if: github.event_name == 'workflow_run' && steps.extract_issue.outputs.issue_number
+        run: |
+          echo "Running board sync for issue: #${{ steps.extract_issue.outputs.issue_number }}"
+          ./workflow/cli/board_sync.sh "${{ steps.extract_issue.outputs.issue_number }}"
+
+      - name: No issues found (automatic trigger)
+        if: github.event_name == 'workflow_run' && !steps.extract_issue.outputs.issue_number
+        run: |
+          echo "No linked issues found in the merged PR"
+          echo "Board sync skipped"
