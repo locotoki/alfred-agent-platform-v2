@@ -17,49 +17,16 @@ def pytest_configure(config):
     )
 
 
-# Apply xfail to specific tests that are known to fail due to unresolved issues
+# Handle flaky tests with reruns
 def pytest_collection_modifyitems(config, items):
-    """Apply xfail marks to tests that need them."""
-    # Mark tests that are still failing after SC-300 as xfail
-    # We'll need to address these in subsequent tickets
-    known_issues = [
-        # Test exactly once processing tests - still need _pool attribute fix
-        ("test_duplicate_detection", "SupabaseTransport._pool attribute missing"),
-        ("test_concurrent_duplicate_checks", "SupabaseTransport._pool attribute missing"),
-        ("test_cleanup_expired_messages", "SupabaseTransport._pool attribute missing"),
-        ("test_message_expiration_timing", "SupabaseTransport._pool attribute missing"),
-        # Explainer smoke test - occasionally flaky due to service startup timing
-        ("test_explainer_smoke", "Explainer service integration needs update"),
-        # Financial Tax Agent integration tests - need deeper fixes
-        ("test_agent_lifecycle", "Financial Tax Agent integration test failures"),
-        ("test_tax_calculation_flow", "Financial Tax Agent integration test failures"),
-        ("test_financial_analysis_flow", "Financial Tax Agent integration test failures"),
-        ("test_compliance_check_flow", "Financial Tax Agent integration test failures"),
-        ("test_rate_lookup_flow", "Financial Tax Agent integration test failures"),
-        ("test_concurrent_task_processing", "Financial Tax Agent integration test failures"),
-        ("test_task_status_updates", "Financial Tax Agent integration test failures"),
-        # Financial Tax integration tests - need deeper fixes
-        ("test_end_to_end_tax_calculation", "Financial Tax end-to-end test failures"),
-        ("test_cross_agent_integration", "Financial Tax cross-agent integration failures"),
-        ("test_error_handling_flow", "Financial Tax error handling integration failures"),
-        ("test_rate_limiting_integration", "Financial Tax rate limiting integration failures"),
-        ("test_concurrent_task_processing", "Financial Tax concurrent task processing failures"),
-        ("test_agent_heartbeat", "Financial Tax agent heartbeat failures"),
-        ("test_message_deduplication", "Financial Tax message deduplication failures"),
-    ]
-
-    # The following tests may still be flaky, so we'll mark them for reruns
+    """Apply flaky marks to tests that need them."""
+    # The following tests may occasionally be flaky, so we'll mark them for reruns
     flaky_tests = [
         # Explainer smoke test - occasionally flaky due to service startup timing
         ("test_explainer_smoke", 3),
     ]
 
     for item in items:
-        for name, reason in known_issues:
-            if name in item.name:
-                item.add_marker(pytest.mark.xfail(reason=reason, strict=False))
-
         for name, reruns in flaky_tests:
             if name in item.name and "test_explainer_smoke" in item.name:
-                # Already marked as xfail, but also mark as flaky for when xfail is removed
                 item.add_marker(pytest.mark.flaky(reruns=reruns))

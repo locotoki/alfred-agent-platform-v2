@@ -1,8 +1,6 @@
-"""Marker file to skip failing legacy tests during CI."""
+"""Previously used to skip failing legacy tests during CI.
+Now fixed as part of issue #220."""
 
 import pytest
 
-# Mark legacy tests that are failing due to LangChain compatibility issues
-pytestmark = pytest.mark.xfail(
-    reason="legacy debt · DEBT-CI-004 - LangChain ainvoke compatibility issue"
-)
+# Tests are now fixed and enabled (LangChain ainvoke compatibility issues resolved)

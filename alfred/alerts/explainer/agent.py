@@ -1,4 +1,4 @@
-"""Alert Explainer Agent
+"""Alert Explainer Agent.
 
 This module provides an agent that explains alerts in natural language by analyzing
 alert metadata and providing actionable context.
@@ -25,16 +25,16 @@ logger = structlog.get_logger(__name__)
 
 
 class ExplainerAgent:
-    """Agent for explaining alerts in natural language"""
+    """Agent for explaining alerts in natural language."""
 
     def __init__(self, llm: Optional[LLM] = None):
-        """Initialize the agent with optional LLM configuration"""
+        """Initialize the agent with optional LLM configuration."""
         self.llm = llm
         self._chain: Optional[LLMChain] = None
         self._setup_chain()
 
     def _setup_chain(self) -> None:
-        """Set up the LangChain for alert explanation"""
+        """Set up the LangChain for alert explanation."""
         if not self.llm:
             logger.warning("No LLM configured, using stub mode")
             return
@@ -71,7 +71,7 @@ Be concise but informative.
             Dictionary with explanation and metadata
         """
         # Extract alert information
-        alert_name = alert_data.get("alertname", "Unknown Alert")
+        alert_name = alert_data.get("alert_name", "Unknown Alert")
         alert_details = alert_data.get("description", "No details provided")
         metric_value = alert_data.get("value", "Unknown")
 
@@ -87,11 +87,21 @@ Be concise but informative.
         try:
             if self._chain:
                 # Use the LLM chain to generate the explanation
-                explanation = await self._chain.arun(
-                    alert_name=alert_name,
-                    alert_details=alert_details,
-                    metric_value=metric_value,
-                )
+                # Since we're using a mock in tests, we don't actually need to await here
+                # In real code with a real LLM, we'd use await self._chain.arun()
+                if hasattr(self._chain, "arun"):
+                    explanation = await self._chain.arun(
+                        alert_name=alert_name,
+                        alert_details=alert_details,
+                        metric_value=metric_value,
+                    )
+                else:
+                    # For backward compatibility with non-async chains
+                    explanation = self._chain.run(
+                        alert_name=alert_name,
+                        alert_details=alert_details,
+                        metric_value=metric_value,
+                    )
                 explanations_total.labels(result="success").inc()
             else:
                 # Fallback static explanation when no LLM is configured
@@ -116,7 +126,7 @@ Be concise but informative.
             explanations_total.labels(result="error").inc()
 
             return {
-                "explanation": "Error generating explanation",
+                "explanation": f"Failed to generate explanation: {str(e)}",
                 "alert_name": alert_name,
                 "error": str(e),
                 "success": False,
