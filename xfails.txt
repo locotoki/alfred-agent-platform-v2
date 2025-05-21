@@ -1,0 +1,10 @@
+tests/unit/agents/financial_tax/test_xfail_markers.py:6:pytestmark = pytest.mark.xfail(
+tests/unit/agents/financial_tax/conftest.py:5:# Mark all financial_tax tests as xfail until Phase 9 debt sprint
+tests/unit/agents/financial_tax/conftest.py:6:pytestmark = pytest.mark.xfail(
+tests/integration/conftest.py:6:# Mark failing tests as xfail with appropriate issue references
+tests/integration/conftest.py:11:        "xfail_known_issue(reason, issue): mark test as xfail due to a known issue",
+tests/integration/conftest.py:20:# Apply xfail to specific tests that are known to fail due to unresolved issues
+tests/integration/conftest.py:22:    """Apply xfail marks to tests that need them."""
+tests/integration/conftest.py:23:    # Mark tests that are still failing after SC-300 as xfail
+tests/integration/conftest.py:60:                item.add_marker(pytest.mark.xfail(reason=reason, strict=False))
+tests/integration/conftest.py:64:                # Already marked as xfail, but also mark as flaky for when xfail is removed
