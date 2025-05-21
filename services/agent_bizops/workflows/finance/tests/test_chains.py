@@ -3,7 +3,6 @@
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
-
 from agents.financial_tax.chains import (
     ComplianceCheckChain,
     FinancialAnalysisChain,

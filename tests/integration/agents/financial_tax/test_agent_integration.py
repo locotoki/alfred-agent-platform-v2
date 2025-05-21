@@ -7,8 +7,8 @@ import pytest
 
 pytestmark = pytest.mark.xfail(reason="pre-existing async bug, see #220", strict=False)
 
-from agents.financial_tax.agent import FinancialTaxAgent
 from libs.a2a_adapter import A2AEnvelope, PolicyMiddleware, PubSubTransport, SupabaseTransport
+from services.agent_bizops.workflows.finance.agent import FinancialTaxAgent
 
 pytestmark = pytest.mark.integration
 
