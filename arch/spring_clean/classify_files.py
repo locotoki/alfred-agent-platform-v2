@@ -178,5 +178,5 @@ def main() -> None:
     print(f"Results written to {output_file}")
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     main()

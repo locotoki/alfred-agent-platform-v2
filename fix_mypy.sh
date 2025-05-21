@@ -10,14 +10,14 @@ if [ -f mypy_fix/run-mypy-fixed.sh ]; then
     cp mypy_fix/run-mypy-fixed.sh mypy_fix/run-mypy-fixed.sh.bak
     echo "Created backup of mypy_fix/run-mypy-fixed.sh"
   fi
-  
+
   # Update the run-mypy-fixed.sh script to exclude slack-app directory
   # Replace the command line that runs mypy
   sed -i 's#python3 -m mypy --config-file=mypy_fix/mypy.ini \\#python3 -m mypy --config-file=mypy_fix/mypy.ini \\#' mypy_fix/run-mypy-fixed.sh
   sed -i 's#    --explicit-package-bases \\#    --explicit-package-bases \\#' mypy_fix/run-mypy-fixed.sh
   sed -i 's#    --namespace-packages \\#    --namespace-packages \\#' mypy_fix/run-mypy-fixed.sh
   sed -i 's#    libs/ agents/ services/ tests/#    --exclude slack-app libs/ agents/ services/ tests/#' mypy_fix/run-mypy-fixed.sh
-  
+
   echo "Updated mypy_fix/run-mypy-fixed.sh to exclude slack-app directory"
 fi
 
@@ -28,7 +28,7 @@ if [ -f mypy_fix/mypy.ini ]; then
     cp mypy_fix/mypy.ini mypy_fix/mypy.ini.bak
     echo "Created backup of mypy_fix/mypy.ini"
   fi
-  
+
   # Check if the exclude section already exists
   if ! grep -q "exclude =" mypy_fix/mypy.ini; then
     # Add exclude section to mypy.ini
