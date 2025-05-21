@@ -1,5 +1,6 @@
 """Tests for Financial Tax Agent chains."""
 
+from typing import Any, Optional
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
@@ -26,25 +27,23 @@ from agents.financial_tax.models import (
 
 
 @pytest.fixture
-def mock_llm():
+def mock_llm() -> Any:
     """Mock LLM for chain tests."""
-    from typing import Any, Optional
-
+    # Imports moved to top-level
     from langchain.schema.runnable import Runnable
 
-    class MockLLM(Runnable):
+    class MockLLM(Runnable[Any, Any]):
         def invoke(self, input: Any, config: Optional[Any] = None, **kwargs: Any) -> Any:
             return "test response"
 
-        def _call(self, *args, **kwargs):
+        def _call(self, *args: Any, **kwargs: Any) -> str:
             return "test response"
 
-        def generate(self, *args, **kwargs):
-            from langchain.schema import Generation
-
+        def generate(self, *args: Any, **kwargs: Any) -> Any:
+            # Use the imported Generation from the top of the file
             return MagicMock(generations=[[Generation(text="test")]])
 
-        def predict(self, *args, **kwargs):
+        def predict(self, *args: Any, **kwargs: Any) -> str:
             return "test response"
 
     return MockLLM()
@@ -53,7 +52,7 @@ def mock_llm():
 class TestTaxCalculationChain:
     """Test cases for TaxCalculationChain."""
 
-    def test_chain_initialization(self, mock_llm):
+    def test_chain_initialization(self, mock_llm: Any) -> None:
         """Test chain initializes with proper configuration."""
         chain = TaxCalculationChain(llm=mock_llm)
 
@@ -62,7 +61,7 @@ class TestTaxCalculationChain:
         assert chain.prompt is not None
         assert chain.chain is not None
 
-    async def test_calculate_with_valid_request(self, mock_llm):
+    async def test_calculate_with_valid_request(self, mock_llm: Any) -> None:
         """Test tax calculation with valid request."""
         with patch.object(TaxCalculationChain, "calculate") as mock_calculate:
             # Create a mock response
@@ -105,7 +104,7 @@ class TestTaxCalculationChain:
             # Verify chain was called with correct parameters
             mock_calculate.assert_called_once_with(request)
 
-    async def test_calculate_with_parsing_error(self, mock_llm):
+    async def test_calculate_with_parsing_error(self, mock_llm: Any) -> None:
         """Test error handling when LLM returns unparseable result."""
         with patch("langchain.output_parsers.PydanticOutputParser.parse") as mock_parse:
             # Configure the parse method to raise an exception
@@ -132,7 +131,7 @@ class TestTaxCalculationChain:
 class TestFinancialAnalysisChain:
     """Test cases for FinancialAnalysisChain."""
 
-    async def test_analyze_with_valid_request(self, mock_llm):
+    async def test_analyze_with_valid_request(self, mock_llm: Any) -> None:
         """Test financial analysis with valid request."""
         with patch.object(FinancialAnalysisChain, "analyze") as mock_analyze:
             # Create a mock response
@@ -158,6 +157,7 @@ class TestFinancialAnalysisChain:
                 analysis_type="profitability",
                 period="2024",
                 industry="technology",
+                custom_metrics=["roi", "debt_ratio"],
             )
 
             # Process the request
@@ -176,7 +176,7 @@ class TestFinancialAnalysisChain:
 class TestComplianceCheckChain:
     """Test cases for ComplianceCheckChain."""
 
-    async def test_check_compliance_with_valid_request(self, mock_llm):
+    async def test_check_compliance_with_valid_request(self, mock_llm: Any) -> None:
         """Test compliance check with valid request."""
         with patch.object(ComplianceCheckChain, "check_compliance") as mock_check_compliance:
             # Create a mock response
@@ -216,7 +216,7 @@ class TestComplianceCheckChain:
 class TestRateLookupChain:
     """Test cases for RateLookupChain."""
 
-    async def test_lookup_rates_with_valid_request(self, mock_llm):
+    async def test_lookup_rates_with_valid_request(self, mock_llm: Any) -> None:
         """Test tax rate lookup with valid request."""
         with patch.object(RateLookupChain, "lookup_rates") as mock_lookup_rates:
             # Create a mock response
