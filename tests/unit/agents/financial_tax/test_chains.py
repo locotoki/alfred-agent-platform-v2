@@ -5,13 +5,13 @@ from unittest.mock import AsyncMock, MagicMock, patch
 import pytest
 from langchain.chains import LLMChain
 
-from agents.financial_tax.chains import (
+from services.agent_bizops.workflows.finance.chains import (
     ComplianceCheckChain,
     FinancialAnalysisChain,
     RateLookupChain,
     TaxCalculationChain,
 )
-from agents.financial_tax.models import (
+from services.agent_bizops.workflows.finance.models import (
     ComplianceCheckRequest,
     ComplianceCheckResponse,
     EntityType,
