@@ -1,4 +1,4 @@
-"""Tests for Intent Router"""
+"""Tests for Intent Router."""
 
 import pytest
 
@@ -6,9 +6,10 @@ from alfred.agents.intent_router import Intent, IntentRouter
 
 
 class TestIntent:
-    """Test Intent dataclass"""
+    """Test Intent dataclass."""
 
     def test_intent_creation(self):
+        """Test creation of Intent objects with attributes."""
         intent = Intent(
             type="greeting",
             confidence=0.95,
@@ -22,20 +23,22 @@ class TestIntent:
         assert intent.raw_message == "Hello John"
 
     def test_intent_string_representation(self):
+        """Test string representation of Intent objects."""
         intent = Intent(type="help", confidence=0.87, entities={}, raw_message="I need help")
 
         assert str(intent) == "Intent(type=help, confidence=0.87)"
 
 
 class TestIntentRouter:
-    """Test IntentRouter functionality"""
+    """Test IntentRouter functionality."""
 
     @pytest.fixture
     def router(self):
+        """Return a new IntentRouter instance for testing."""
         return IntentRouter()
 
     def test_route_greeting_intent(self, router):
-        """Test routing of greeting messages"""
+        """Test routing of greeting messages."""
         test_messages = ["Hello", "Hi there", "Hey!", "Good morning", "Greetings"]
 
         for message in test_messages:
@@ -45,7 +48,7 @@ class TestIntentRouter:
             assert intent.raw_message == message
 
     def test_route_help_intent(self, router):
-        """Test routing of help messages"""
+        """Test routing of help messages."""
         test_messages = [
             "Help",
             "I need assistance",
@@ -60,7 +63,7 @@ class TestIntentRouter:
             assert intent.confidence == 0.9
 
     def test_route_status_intent(self, router):
-        """Test routing of status check messages"""
+        """Test routing of status check messages."""
         test_messages = [
             "Status",
             "Health check",
@@ -75,7 +78,7 @@ class TestIntentRouter:
             assert intent.confidence == 0.9
 
     def test_route_unknown_intent(self, router):
-        """Test routing of unrecognized messages"""
+        """Test routing of unrecognized messages."""
         test_messages = [
             "Random gibberish",
             "Something completely different",
@@ -90,7 +93,7 @@ class TestIntentRouter:
             assert intent.confidence == 0.0
 
     def test_case_insensitive_routing(self, router):
-        """Test that routing is case-insensitive"""
+        """Test that routing is case-insensitive."""
         variations = ["HELLO", "Hello", "hello", "HeLLo"]
 
         for message in variations:
@@ -98,7 +101,7 @@ class TestIntentRouter:
             assert intent.type == "greeting"
 
     def test_register_custom_handler(self, router):
-        """Test registering a custom handler"""
+        """Test registering a custom handler."""
 
         def custom_handler(intent):
             return "Custom response"
@@ -112,7 +115,7 @@ class TestIntentRouter:
         assert intent.type == "custom_intent"
 
     def test_handler_access(self, router):
-        """Test handler access via handle method"""
+        """Test handler access via handle method."""
         # Create an intent
         intent = Intent(type="greeting", confidence=0.9, entities={}, raw_message="Hello")
 
@@ -121,7 +124,7 @@ class TestIntentRouter:
         assert response is not None
 
     def test_default_handlers_responses(self, router):
-        """Test responses from default handlers"""
+        """Test responses from default handlers."""
         # Test greeting response
         greeting_intent = router.route("Hello")
         response = router.handle(greeting_intent)
@@ -138,7 +141,7 @@ class TestIntentRouter:
         assert response is not None
 
     def test_error_handling_in_route(self, router, monkeypatch):
-        """Test error handling during routing"""
+        """Test error handling during routing."""
         # Create a test pattern that's deliberately invalid
         import re
 
@@ -150,7 +153,7 @@ class TestIntentRouter:
         assert intent.type == "unknown"
 
     def test_prometheus_metrics_increment(self, router):
-        """Test that Prometheus metrics are incremented correctly"""
+        """Test that Prometheus metrics are incremented correctly."""
         # Note: In a real test, you'd use prometheus_client.REGISTRY
         # to check actual metric values
 
@@ -177,7 +180,7 @@ class TestIntentRouter:
             assert metric_value == 1.0
 
     def test_three_sample_messages(self, router):
-        """Test the acceptance criteria: 3 sample messages → correct stub intents"""
+        """Test the acceptance criteria: 3 sample messages → correct stub intents."""
         test_cases = [
             ("Hello Alfred", "greeting"),
             ("I need help with something", "help"),

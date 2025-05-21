@@ -9,7 +9,7 @@ from typing import Any, Dict, List, Optional, Protocol
 
 
 class ChatInterface(Protocol):
-    """Protocol for chat interface implementations"""
+    """Protocol for chat interface implementations."""
 
     @abstractmethod
     async def send_message(self, message: str, user_id: str) -> Dict[str, Any]:
@@ -51,7 +51,7 @@ class ChatInterface(Protocol):
 
 
 class DashboardWidget(Protocol):
-    """Protocol for dashboard widget components"""
+    """Protocol for dashboard widget components."""
 
     @abstractmethod
     def render(self) -> str:
@@ -82,7 +82,7 @@ class DashboardWidget(Protocol):
 
 
 class UITheme(Protocol):
-    """Protocol for UI theming"""
+    """Protocol for UI theming."""
 
     @abstractmethod
     def get_colors(self) -> Dict[str, str]:
@@ -116,7 +116,7 @@ class UITheme(Protocol):
 
 
 class FormValidator(Protocol):
-    """Protocol for form validation"""
+    """Protocol for form validation."""
 
     @abstractmethod
     def validate_field(self, field_name: str, value: Any) -> tuple[bool, Optional[str]]:
@@ -145,7 +145,7 @@ class FormValidator(Protocol):
 
 
 class NotificationManager(Protocol):
-    """Protocol for UI notifications"""
+    """Protocol for UI notifications."""
 
     @abstractmethod
     def show_notification(self, message: str, type: str = "info", duration: int = 5000) -> str:
@@ -172,12 +172,12 @@ class NotificationManager(Protocol):
 
     @abstractmethod
     def clear_all_notifications(self) -> None:
-        """Clear all notifications"""
+        """Clear all notifications."""
         ...
 
 
 class SessionManager(Protocol):
-    """Protocol for user session management"""
+    """Protocol for user session management."""
 
     @abstractmethod
     def create_session(self, user_id: str, session_data: Dict[str, Any]) -> str:

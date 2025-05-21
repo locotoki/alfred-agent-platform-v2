@@ -26,10 +26,10 @@ logger = structlog.get_logger(__name__)
 
 
 class AgentOrchestrator:
-    """Orchestrator that processes messages through intent routing"""
+    """Coordinate agent interactions through intent-based routing."""
 
     def __init__(self) -> None:
-        """Initialize the orchestrator with the default intent router"""
+        """Initialize orchestrator with the default intent router."""
         self._intent_router = router
 
     async def process_message(
