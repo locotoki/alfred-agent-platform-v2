@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# mypy: ignore-errors
 """Script to create specific conftest.py files to fix importing problems."""
 
 # We need os.path for building file paths

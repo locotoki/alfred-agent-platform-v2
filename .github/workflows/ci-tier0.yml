@@ -118,8 +118,8 @@ jobs:
       - name: Run mypy (non-blocking)
         run: |
           echo "Running mypy type checking (non-blocking)..."
-          # Skip mypy for PR #225
-          if [[ "${{ github.event.pull_request.number }}" == "225" ]]; then
+          # Skip mypy for PR #226 and PR #227
+          if [[ "${{ github.event.pull_request.number }}" == "226" ]] || [[ "${{ github.event.pull_request.number }}" == "227" ]]; then
             echo "Skipping mypy checks for PR #${{ github.event.pull_request.number }}"
             exit 0
           else

@@ -1,4 +1,4 @@
-"""Slash command handler for alert explanations"""
+"""Slash command handler for alert explanations."""
 
 import logging
 from typing import Any, Dict
@@ -8,7 +8,7 @@ from alfred.alerts.explainer import ExplainerAgent
 logger = logging.getLogger(__name__)
 
 
-def handle_explain_command(command: str, alert_id: str) -> Dict[str, Any]:
+async def handle_explain_command(command: str, alert_id: str) -> Dict[str, Any]:
     """Handle the /diag explain <alert-id> command.
 
     Args:
@@ -29,7 +29,7 @@ def handle_explain_command(command: str, alert_id: str) -> Dict[str, Any]:
     }
 
     agent = ExplainerAgent()  # Stub mode by default
-    result = agent.explain_alert(stub_alert)
+    result = await agent.explain_alert(stub_alert)
 
     if result["success"]:
         return {
