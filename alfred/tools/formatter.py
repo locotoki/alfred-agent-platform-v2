@@ -1,7 +1,7 @@
 """Formatting tools for the Alfred platform."""
 
 import json
-from typing import Any, Dict, List, Union, cast
+from typing import Any, Dict, List, Union
 
 import yaml
 
