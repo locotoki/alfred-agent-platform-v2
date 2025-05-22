@@ -123,7 +123,7 @@ def classify_file(file_path: str) -> str:
         return "USED"
 
     # Root level temporary files
-    if file_path.endswith((".md", ".txt", ".sh")) and not file_path.lower() in [
+    if file_path.endswith((".md", ".txt", ".sh")) and file_path.lower() not in [
         "readme.md",
         "license",
         "contributing.md",

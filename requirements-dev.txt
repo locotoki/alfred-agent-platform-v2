@@ -22,3 +22,15 @@ mkdocs-material==9.5.3
 ipython==8.20.0
 jupyter==1.0.0
 jupyterlab==4.0.10
+
+# ML dependencies for testing (optional imports)
+# Note: torch is installed separately from CPU index in CI workflows
+faiss-cpu==1.7.4
+sentence-transformers==2.2.2
+transformers==4.37.0
+numpy>=1.24.0,<2.0.0
+scikit-learn>=1.3.0
+
+# Additional test dependencies
+playwright>=1.30.0
+pytrends==4.9.0

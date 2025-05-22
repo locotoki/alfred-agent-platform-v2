@@ -3,7 +3,7 @@
 include .env
 export $(shell sed 's/=.*//' .env)
 
-.PHONY: help install start stop restart clean test test-unit test-integration test-e2e lint format dev deploy build update-dashboards setup-metrics compose-generate up down board-sync scripts-inventory
+.PHONY: help install start stop restart clean test test-unit test-integration test-e2e lint format dev deploy build update-dashboards setup-metrics compose-generate up down board-sync scripts-inventory deps-inventory vuln-scan license-scan audit-dashboard cve-alert
 
 help:
 	@echo "Alfred Agent Platform v2 Makefile"
@@ -29,6 +29,11 @@ help:
 	@echo "down                 Stop entire local stack"
 	@echo "board-sync           Move GitHub issue to Done column (requires ISSUE_URL)"
 	@echo "scripts-inventory    Generate scripts inventory CSV"
+	@echo "deps-inventory       Generate dependency inventory CSV"
+	@echo "vuln-scan            Generate vulnerability report CSV"
+	@echo "license-scan         Generate license compliance report CSV"
+	@echo "audit-dashboard      Generate audit dashboard markdown"
+	@echo "cve-alert            Send CVE alerts to Slack for HIGH/CRITICAL vulnerabilities"
 
 install:
 	pip install -r requirements.txt
@@ -126,3 +131,24 @@ lint-pydead:
 
 debt-velocity:
 	python scripts/gen_debt_velocity.py
+
+# Dependencies inventory generation
+deps-inventory:
+	python3 scripts/gen_dependency_inventory.py
+
+# Vulnerability scanning
+vuln-scan:
+	python3 scripts/gen_vulnerability_report.py
+
+# License compliance scanning
+license-scan:
+	pip install -r dev-requirements.txt --quiet
+	python3 scripts/gen_license_report.py
+
+# Audit dashboard generation
+audit-dashboard:
+	python3 scripts/gen_audit_dashboard.py
+
+# CVE alert to Slack
+cve-alert:
+	python3 scripts/slack_cve_alert.py

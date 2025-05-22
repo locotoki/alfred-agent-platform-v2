@@ -8,7 +8,6 @@ despite previous fixes. These tests will be addressed in issue #220.
 
 import os
 import re
-import sys
 from pathlib import Path
 
 

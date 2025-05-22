@@ -723,7 +723,7 @@ def print_migration_report(result: Dict[str, Any]):
     print("=" * 80)
 
     if result.get("success", False):
-        print(f"Status: ✅ SUCCESS")
+        print("Status: ✅ SUCCESS")
     else:
         print(f"Status: ❌ FAILED - {result.get('error', 'Unknown error')}")
         return

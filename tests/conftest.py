@@ -84,6 +84,15 @@ def event_loop() -> Generator:
     loop.close()
 
 
+@pytest.fixture(autouse=True, scope="session")
+def _patch_slack_env():
+    """Set up Slack environment variables for testing."""
+    os.environ.setdefault("SLACK_WEBHOOK_URL", "https://example.com/hook")
+    os.environ.setdefault("SLACK_CVE_WEBHOOK", "https://example.com/cve-hook")
+    os.environ.setdefault("SLACK_BOT_TOKEN", "xoxb-test-token")
+    os.environ.setdefault("SLACK_SIGNING_SECRET", "test-signing-secret")
+
+
 @pytest.fixture(autouse=True)
 def setup_test_env():
     """Set up test environment variables."""

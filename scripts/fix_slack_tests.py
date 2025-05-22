@@ -7,9 +7,7 @@ that are known to fail due to authentication issues or environment issues.
 These tests will be fixed in a follow-up ticket (#220).
 """
 
-import os
 import re
-import sys
 from pathlib import Path
 
 

@@ -7,7 +7,6 @@ Part of Spring-Clean Initiative SC-250 Phase C-0.
 """
 
 import csv
-import os
 import sys
 from pathlib import Path
 from typing import Iterator, Tuple

@@ -1,6 +1,6 @@
 """Tests for Financial Tax Agent chains."""
 
-from unittest.mock import AsyncMock, MagicMock, patch
+from unittest.mock import patch
 
 import pytest
 from langchain.chains import LLMChain
@@ -28,7 +28,7 @@ from services.agent_bizops.workflows.finance.models import (
 @pytest.fixture
 def mock_llm():
     """Mock LLM for chain tests."""
-    from typing import Any, AsyncIterator, Dict, Iterator, List, Optional, Union
+    from typing import Any, AsyncIterator, Iterator, List, Optional
 
     from langchain.schema import Generation, LLMResult
     from langchain.schema.runnable import Runnable, RunnableConfig
