@@ -255,7 +255,7 @@ scripts/fix_youtube_tests.py,.py,2903,UNKNOWN
 scripts/format-codebase.sh,.sh,708,UNKNOWN
 scripts/format-with-black.sh,.sh,740,UNKNOWN
 scripts/format.sh,.sh,1375,UNKNOWN
-scripts/gen_scripts_inventory.py,.py,3588,UNKNOWN
+scripts/gen_scripts_inventory.py,.py,3696,UNKNOWN
 scripts/generate-storage-schema.sh,.sh,6850,UNKNOWN
 scripts/generate_compose.py,.py,4505,UNKNOWN
 scripts/generate_compose_fixed.py,.py,4505,UNKNOWN
