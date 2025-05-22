@@ -1,0 +1,50 @@
+# Workflow Automation Tools
+
+This directory contains automation tools and scripts for the alfred-agent-platform-v2 repository.
+
+## Scripts Inventory
+
+The repository maintains an automated inventory of all script files to support the Spring-Clean Initiative (SC-250).
+
+### Scripts Inventory System
+
+The scripts inventory system automatically tracks all script files (`.sh`, `.py`, `.ps1`, `.js`, `.ts`) across the repository and generates a CSV report with metadata.
+
+**Files:**
+- `scripts/gen_scripts_inventory.py` - Generator script that scans the repository
+- `metrics/scripts_inventory.csv` - Generated CSV with script metadata
+
+**Usage:**
+```bash
+# Generate fresh inventory
+make scripts-inventory
+
+# Manual generation
+python scripts/gen_scripts_inventory.py > metrics/scripts_inventory.csv
+```
+
+**CSV Format:**
+- `path` - Relative path from repository root
+- `ext` - File extension (e.g., `.py`, `.sh`)
+- `size_bytes` - File size in bytes
+
+**Excluded Directories:**
+- `.git/`, `node_modules/`, `__pycache__/`, `.venv/`, `.env/`
+- `.pytest_cache/`, `.mypy_cache/`, `.ruff_cache/`
+- Any directory starting with `backup`
+
+**Pre-commit Integration:**
+The inventory is automatically regenerated and validated during pre-commit hooks. If the inventory is out of date, the commit will fail with instructions to run `make scripts-inventory`.
+
+This ensures the inventory always reflects the current state of the repository and supports maintenance activities like identifying unused scripts, tracking script growth, and maintaining clean directory structures.
+
+## Board Sync Automation
+
+Automated GitHub project board synchronization tools.
+
+**Usage:**
+```bash
+make board-sync ISSUE_URL=<issue-number>
+```
+
+See `cli/board_sync.sh` for implementation details.

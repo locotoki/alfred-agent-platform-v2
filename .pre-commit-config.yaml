@@ -29,3 +29,12 @@ repos:
       - id: flake8
         additional_dependencies: [flake8-docstrings, flake8-quotes]
         exclude: "^(tests/|docs/|migrations/)"
+
+  - repo: local
+    hooks:
+      - id: scripts-inventory-freshness
+        name: Scripts inventory freshness check
+        entry: bash -c 'python3 scripts/gen_scripts_inventory.py > metrics/scripts_inventory.csv && git diff --exit-code metrics/scripts_inventory.csv'
+        language: system
+        always_run: true
+        pass_filenames: false
