@@ -3,7 +3,7 @@
 include .env
 export $(shell sed 's/=.*//' .env)
 
-.PHONY: help install start stop restart clean test test-unit test-integration test-e2e lint format dev deploy build update-dashboards setup-metrics compose-generate up down board-sync
+.PHONY: help install start stop restart clean test test-unit test-integration test-e2e lint format dev deploy build update-dashboards setup-metrics compose-generate up down board-sync scripts-inventory
 
 help:
 	@echo "Alfred Agent Platform v2 Makefile"
@@ -28,6 +28,7 @@ help:
 	@echo "up                   Start entire local stack (all services)"
 	@echo "down                 Stop entire local stack"
 	@echo "board-sync           Move GitHub issue to Done column (requires ISSUE_URL)"
+	@echo "scripts-inventory    Generate scripts inventory CSV"
 
 install:
 	pip install -r requirements.txt
@@ -112,3 +113,7 @@ board-sync:
 		exit 1; \
 	fi
 	./workflow/cli/board_sync.sh $(ISSUE_URL)
+
+# Scripts inventory generation
+scripts-inventory:
+	python3 scripts/gen_scripts_inventory.py > metrics/scripts_inventory.csv
