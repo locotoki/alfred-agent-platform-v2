@@ -57,3 +57,9 @@ See `cli/board_sync.sh` for implementation details.
   * **UNKNOWN** default; must be triaged in upcoming slices
 
 The pre-commit hook blocks new rows without a `status`.
+
+**Phase C-2 — Orphan tagging**
+
+*Mark rows whose scripts are no longer imported or called anywhere as **ORPHAN**.*
+Pre-commit will now block if an ORPHAN file is still referenced.
+Removal happens in Phase C-3 after one release cycle.
