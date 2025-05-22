@@ -63,3 +63,10 @@ The pre-commit hook blocks new rows without a `status`.
 *Mark rows whose scripts are no longer imported or called anywhere as **ORPHAN**.*
 Pre-commit will now block if an ORPHAN file is still referenced.
 Removal happens in Phase C-3 after one release cycle.
+
+**Phase C-3 — Prune ORPHAN scripts & static lint**
+
+* ORPHAN-tagged files are removed one release later.
+* New CI job **lint** runs `shellcheck` on all shell scripts and `vulture`
+  on Python code (excluding tests/migrations).
+* Build fails on any new ShellCheck error or vulture-detected dead code.

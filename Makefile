@@ -117,3 +117,9 @@ board-sync:
 # Scripts inventory generation
 scripts-inventory:
 	python3 scripts/gen_scripts_inventory.py > metrics/scripts_inventory.csv
+
+lint-shell:
+	shellcheck $(shell git ls-files "*.sh")
+
+lint-pydead:
+	vulture $(shell git ls-files "*.py" | tr "\n" " ") --min-confidence 80 --exclude "*/tests/*,*/migrations/*,*/ORPHAN/*"

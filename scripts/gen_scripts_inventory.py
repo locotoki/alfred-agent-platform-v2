@@ -119,8 +119,10 @@ def main() -> None:
     writer.writerow(["path", "ext", "size_bytes", "status"])
 
     for path, ext, size in script_files:
-        status = status_map.get(path, "UNKNOWN")
-        writer.writerow([path, ext, size, status])
+        p = repo_root / path
+        if p.exists():  # ignore files already deleted (ORPHAN pruned)
+            status = status_map.get(path, "UNKNOWN")
+            writer.writerow([path, ext, size, status])
 
 
 if __name__ == "__main__":
