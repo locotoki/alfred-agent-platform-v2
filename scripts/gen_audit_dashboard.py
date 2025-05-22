@@ -1,14 +1,5 @@
 #!/usr/bin/env python3
-"""
-Audit Dashboard Generator - DA-006.
-
-Reads dependency inventory, vulnerability report, and license report CSV files
-and generates a comprehensive audit dashboard in Markdown format with badges.
-
-Usage: python scripts/gen_audit_dashboard.py
-Output: docs/audit/dashboard.md
-"""
-
+"""Audit Dashboard Generator - DA-006."""
 import csv
 import sys
 from datetime import datetime
@@ -18,23 +9,19 @@ from typing import Dict, List
 
 def read_csv_file(file_path: Path) -> List[Dict[str, str]]:
     """Read a CSV file and return list of dictionaries."""
-    data = []
     if not file_path.exists():
         print(f"Warning: File not found: {file_path}", file=sys.stderr)
-        return data
-
+        return []
     try:
         with open(file_path, "r", encoding="utf-8") as f:
-            data = list(csv.DictReader(f))
+            return list(csv.DictReader(f))
     except Exception as e:
         print(f"Error reading {file_path}: {e}", file=sys.stderr)
-
-    return data
+        return []
 
 
 def compute_stats(deps_data, vuln_data, license_data):
     """Compute all statistics from the three data sources."""
-    # Dependency stats
     total_packages = len(deps_data)
     unique_packages = len(set(row.get("package", "") for row in deps_data if row.get("package")))
 
@@ -50,28 +37,22 @@ def compute_stats(deps_data, vuln_data, license_data):
         else:
             location_counts["other"] += 1
 
-    # Vulnerability stats
     total_vulns = len(vuln_data)
     severity_counts = {}
     package_vuln_counts = {}
-
     for row in vuln_data:
         severity = row.get("severity", "unknown").lower()
         severity_counts[severity] = severity_counts.get(severity, 0) + 1
-
         package = row.get("package", "")
         if package:
             package_vuln_counts[package] = package_vuln_counts.get(package, 0) + 1
-
     top_vulnerable = sorted(package_vuln_counts.items(), key=lambda x: x[1], reverse=True)[:10]
 
-    # License stats
     total_licenses = len(license_data)
     classification_counts = {}
     for row in license_data:
         classification = row.get("license_classification", "unknown")
         classification_counts[classification] = classification_counts.get(classification, 0) + 1
-
     unknown_count = classification_counts.get("unknown", 0) + classification_counts.get("other", 0)
     unknown_ratio = (unknown_count / total_licenses * 100) if total_licenses > 0 else 0
 
@@ -94,8 +75,6 @@ def compute_stats(deps_data, vuln_data, license_data):
 def generate_dashboard(stats):
     """Generate the audit dashboard markdown content."""
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M UTC")
-
-    # Status determination
     vuln_status = (
         "critical"
         if stats["vulns"]["severities"].get("critical", 0) > 0
@@ -108,6 +87,11 @@ def generate_dashboard(stats):
     )
 
     repo_base = "https://github.com/locotoki/alfred-agent-platform-v2"
+    badges = {
+        "Dependency Inventory": f"{repo_base}/actions/workflows/deps-inventory-cron.yml",
+        "Vulnerability Scan": f"{repo_base}/actions/workflows/vuln-scan-cron.yml",
+        "License Scan": f"{repo_base}/actions/workflows/license-scan-cron.yml",
+    }
 
     content = f"""# 📊 Dependency Audit Dashboard
 
@@ -115,10 +99,11 @@ def generate_dashboard(stats):
 
 ## 🛡️ Status Badges
 
-[![Dependency Inventory]({repo_base}/actions/workflows/deps-inventory-cron.yml/badge.svg)]({repo_base}/actions/workflows/deps-inventory-cron.yml)
-[![Vulnerability Scan]({repo_base}/actions/workflows/vuln-scan-cron.yml/badge.svg)]({repo_base}/actions/workflows/vuln-scan-cron.yml)
-[![License Scan]({repo_base}/actions/workflows/license-scan-cron.yml/badge.svg)]({repo_base}/actions/workflows/license-scan-cron.yml)
+"""
+    for name, url in badges.items():
+        content += f"[![{name}]({url}/badge.svg)]({url})\n"
 
+    content += f"""
 ![Vulnerability Status](https://img.shields.io/badge/Vulnerabilities-{stats["vulns"]["total"]}-{vuln_status})
 ![License Compliance](https://img.shields.io/badge/Unknown%20Licenses-{stats["licenses"]["unknown_ratio"]:.1f}%25-{license_status})
 
@@ -147,7 +132,6 @@ def generate_dashboard(stats):
 
 """
 
-    # Add vulnerable packages table if any exist
     if stats["vulns"]["top_packages"]:
         content += """## 🚨 Top 10 Vulnerable Packages
 
@@ -169,27 +153,21 @@ def generate_dashboard(stats):
 This dashboard is automatically updated every Monday at 08:25 UTC via GitHub Actions.
 Manual updates can be triggered by running `make audit-dashboard`.
 """
-
     return content
 
 
 def main():
     """Generate audit dashboard from CSV reports."""
     repo_root = Path(__file__).parent.parent
-
-    # Read data files
     deps_data = read_csv_file(repo_root / "metrics" / "dependency_inventory.csv")
     vuln_data = read_csv_file(repo_root / "metrics" / "vulnerability_report.csv")
     license_data = read_csv_file(repo_root / "metrics" / "license_report.csv")
 
-    # Compute statistics and generate dashboard
     stats = compute_stats(deps_data, vuln_data, license_data)
     dashboard_content = generate_dashboard(stats)
 
-    # Write dashboard
     output_file = repo_root / "docs" / "audit" / "dashboard.md"
     output_file.parent.mkdir(parents=True, exist_ok=True)
-
     with open(output_file, "w", encoding="utf-8") as f:
         f.write(dashboard_content)
 
