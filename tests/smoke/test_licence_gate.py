@@ -1,0 +1,72 @@
+"""Smoke tests for licence gate functionality."""
+
+import json
+import subprocess
+import tempfile
+from pathlib import Path
+from unittest.mock import Mock, patch
+
+import pytest
+
+from alfred.scripts.licence_gate import main, normalize_licence, validate_licences
+
+
+@pytest.mark.smoke_licence
+def test_normalize_licence():
+    """Test licence name normalization."""
+    assert normalize_licence("MIT License") == "MIT"
+    assert normalize_licence("Apache Software License") == "Apache-2.0"
+    assert normalize_licence("Unknown") == "Unknown"
+
+
+@pytest.mark.smoke_licence
+@patch("alfred.scripts.licence_gate.get_package_licences")
+@patch("alfred.scripts.licence_gate.load_licence_waivers")
+def test_validate_licences_allowed(mock_waivers, mock_packages):
+    """Test validation when all licences are allowed."""
+    mock_packages.return_value = [{"Name": "requests", "License": "Apache-2.0"}]
+    mock_waivers.return_value = set()
+
+    is_compliant, violations = validate_licences()
+    assert is_compliant is True
+    assert violations == []
+
+
+@pytest.mark.smoke_licence
+@patch("alfred.scripts.licence_gate.get_package_licences")
+@patch("alfred.scripts.licence_gate.load_licence_waivers")
+def test_validate_licences_violations(mock_waivers, mock_packages):
+    """Test validation with licence violations."""
+    mock_packages.return_value = [{"Name": "bad-package", "License": "GPL-3.0"}]
+    mock_waivers.return_value = set()
+
+    is_compliant, violations = validate_licences()
+    assert is_compliant is False
+    assert violations == [("bad-package", "GPL-3.0")]
+
+
+@pytest.mark.smoke_licence
+@pytest.mark.parametrize(
+    "packages,expected_exit",
+    [
+        # Clean environment - should pass
+        ([{"Name": "requests", "License": "Apache-2.0"}], 0),
+        # Disallowed licence - should fail
+        ([{"Name": "bad-package", "License": "GPL-3.0"}], 1),
+    ],
+)
+@patch("alfred.scripts.licence_gate.get_package_licences")
+@patch("alfred.scripts.licence_gate.load_licence_waivers")
+def test_main_exit_codes(mock_waivers, mock_packages, packages, expected_exit):
+    """Test main function exit codes for different scenarios."""
+    mock_packages.return_value = packages
+    mock_waivers.return_value = set()
+
+    if expected_exit == 0:
+        # Should not raise SystemExit for clean environment
+        main()
+    else:
+        # Should raise SystemExit for violations
+        with pytest.raises(SystemExit) as exc_info:
+            main()
+        assert exc_info.value.code == expected_exit

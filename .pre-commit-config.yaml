@@ -50,3 +50,9 @@ repos:
         language: system
         always_run: true
         pass_filenames: false
+      - id: licence-gate
+        name: Licence compliance gate
+        entry: python3 -m alfred.scripts.licence_gate
+        language: system
+        always_run: true
+        pass_filenames: false
