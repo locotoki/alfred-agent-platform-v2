@@ -1,3 +1,4 @@
+# isort: skip_file
 """Unit tests for Financial Tax Agent"""
 
 from unittest.mock import AsyncMock, MagicMock, patch
