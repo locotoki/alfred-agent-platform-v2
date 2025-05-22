@@ -36,6 +36,13 @@ docker compose -f docker-compose.yml -f docker-compose.dev.yml --profile dev up 
 docker compose -f docker-compose.yml -f docker-compose.dev.yml -f docker-compose.local.yml --profile dev up -d
 ```
 
+**Important**: After dependency bumps, developers must rebuild containers to ensure consistency:
+```bash
+alfred up --rebuild
+# or
+docker compose -f docker-compose.yml -f docker-compose.dev.yml build --no-cache
+```
+
 ### Branch Naming Convention
 
 All branches should follow this naming pattern:

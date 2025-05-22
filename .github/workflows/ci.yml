@@ -83,6 +83,33 @@ jobs:
           # Use configuration from pyproject.toml for consistency with local runs
           black --check .
 
+  # Check for system package contamination (ADR-010)
+  check-no-site-pkgs:
+    needs: security-scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build dev container
+        run: |
+          if [ -f dev/Dockerfile ]; then
+            docker build -f dev/Dockerfile -t dev-container-test .
+          else
+            echo "No dev/Dockerfile found, skipping container hardening check"
+            exit 0
+          fi
+
+      - name: Check for dist-packages contamination
+        run: |
+          if [ -f dev/Dockerfile ]; then
+            # Run the check inside the container
+            docker run --rm dev-container-test bash -c 'test -z "$(find /usr/lib/python*/dist-packages -type f)" || (echo "ERROR: System packages found in dist-packages!" && exit 1)'
+            echo "✓ No system packages found in dist-packages"
+          fi
+
   # Python linting and testing
   lint-and-test:
     needs: [black-check, detect-changes]

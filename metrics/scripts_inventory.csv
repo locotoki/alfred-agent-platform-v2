@@ -155,6 +155,7 @@ get_helm.sh,.sh,12260,UNKNOWN
 grafana_dashboard_check.sh,.sh,1309,UNKNOWN
 healthcheck.sh,.sh,702,UNKNOWN
 healthcheck/healthcheck.sh,.sh,1368,UNKNOWN
+hooks/no-site-pkgs.sh,.sh,914,UNKNOWN
 libs/a2a_adapter/__init__.py,.py,277,UNKNOWN
 libs/a2a_adapter/envelope.py,.py,1662,UNKNOWN
 libs/a2a_adapter/middleware.py,.py,1238,UNKNOWN
