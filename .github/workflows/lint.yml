@@ -13,7 +13,7 @@ jobs:
       - name: Poetry deps
         run: |
           pipx install poetry
-          poetry install --with dev
+          poetry install --no-root
       - name: ShellCheck
         run: make lint-shell
       - name: Vulture
