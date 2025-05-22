@@ -16,12 +16,18 @@ jobs:
     # Skip this job for SC-320, will be fixed in #220
     if: ${{ !contains(github.head_ref, 'sc-320') }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.11'
+
+      - name: Clean pip cache
+        run: rm -rf ~/.cache/pip
 
       - name: Install dependencies
         run: |
@@ -79,12 +85,18 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.11'
+
+      - name: Clean pip cache
+        run: rm -rf ~/.cache/pip
 
       - name: Install dependencies
         run: |
@@ -106,7 +118,10 @@ jobs:
   validate-health:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Validate health endpoint structure
         run: |
