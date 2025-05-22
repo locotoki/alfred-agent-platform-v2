@@ -92,10 +92,17 @@ graph TB
 - ✅ Create settings.py with legacy environment variable mapping
 - ✅ Add integration tests for workflow feature flags
 
-### Phase 3: Documentation and Runbooks
+### Phase 3: Observability Consolidation (Completed)
+- ✅ Implement Prometheus metrics middleware with per-workflow labels
+- ✅ Create Helm ServiceMonitor configuration for Kubernetes scraping
+- ✅ Build consolidated Grafana dashboard replacing separate agent dashboards
+- ✅ Add Prometheus recording rules and SLA-based alerting
+- ✅ Update runbook with metrics documentation and dashboard links
+
+### Phase 4: Documentation and Operational Readiness
 - ✅ Update architecture diagrams to show single BizOps pod
-- 🔄 Update deployment runbooks for consolidated service
-- 🔄 Create migration guide for operations teams
+- ✅ Update deployment runbooks for consolidated service
+- ✅ Create migration guide for operations teams
 
 ## Consequences
 
@@ -116,7 +123,13 @@ graph TB
    - Consistent patterns and standards
    - Easier testing of cross-workflow scenarios
 
-4. **Deployment Reliability**
+4. **Enhanced Observability**
+   - Unified metrics collection with per-workflow labels
+   - Single Grafana dashboard for all business operations
+   - Consolidated alerting rules and SLA monitoring
+   - Simplified troubleshooting with centralized logs and metrics
+
+5. **Deployment Reliability**
    - Fewer moving parts in deployment pipeline
    - Atomic deployments for related business functions
    - Simplified rollback procedures

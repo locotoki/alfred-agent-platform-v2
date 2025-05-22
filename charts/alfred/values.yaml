@@ -8,6 +8,30 @@ metrics:
   env:
     DEBUG_MODE: "false"
 
+# Agent BizOps configuration
+agentBizops:
+  enabled: true
+  image:
+    repository: agent-bizops
+    tag: latest
+    pullPolicy: IfNotPresent
+  metrics:
+    enabled: true
+    port: 9102
+  service:
+    type: ClusterIP
+    port: 8080
+    targetPort: 8080
+  resources:
+    requests:
+      cpu: 200m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+  env:
+    WORKFLOWS_ENABLED: "finance,legal"
+
 # DB Metrics service configuration
 dbMetrics:
   image:

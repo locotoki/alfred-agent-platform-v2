@@ -70,8 +70,28 @@ curl http://agent-bizops:8080/health
 ### Metrics Endpoint
 ```bash
 # Prometheus metrics
-curl http://agent-bizops:9091/metrics
+curl http://agent-bizops:9102/metrics
+
+# Key metrics to monitor:
+# - bizops_request_total: Total requests by workflow
+# - bizops_request_duration_seconds: Request latency histograms
+# - bizops_request_failures_total: Failed requests by workflow and error type
+# - bizops_workflow_operations_total: Business operations by type and status
+# - bizops_active_requests: Currently processing requests
 ```
+
+#### Key Metric Labels
+- `bizops_workflow`: Workflow type (legal, finance, system, unknown)
+- `operation_type`: Business operation (compliance_check, tax_calculation, etc.)
+- `status`: Operation result (success, failure)
+- `error_type`: Error classification (client_error, server_error)
+- `method`: HTTP method (GET, POST, etc.)
+- `endpoint`: Request path
+- `status_code`: HTTP response code
+
+#### Grafana Dashboard
+- **UID**: `bizops-dashboard`
+- **URL**: `http://grafana:3000/d/bizops-dashboard/agent-bizops-dashboard`
 
 ## Docker Compose Operations
 
