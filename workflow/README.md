@@ -76,3 +76,8 @@ Removal happens in Phase C-3 after one release cycle.
 * `lint` workflow is now **required**.
 * `vulture` runs at confidence ≥ 90; symbols used dynamically should be added to `vulture_whitelist.txt`.
 * Any file tagged **ORPHAN** must be deleted before the next release cycle.
+
+**Phase C-5 — Close-out**
+
+* tech-debt velocity CSV auto-updates weekly
+* badge shows SC-250 complete; milestone closed
