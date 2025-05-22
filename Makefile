@@ -140,4 +140,5 @@ vuln-scan:
 
 # License compliance scanning
 license-scan:
+	pip install -r dev-requirements.txt --quiet
 	python3 scripts/gen_license_report.py

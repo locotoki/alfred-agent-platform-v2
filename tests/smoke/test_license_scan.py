@@ -20,15 +20,12 @@ def test_license_report_exists():
     if not report_path.exists():
         import subprocess
 
-        try:
-            subprocess.run(
-                ["python", "scripts/gen_license_report.py"],
-                cwd=repo_root,
-                check=True,
-                capture_output=True,
-            )
-        except Exception:
-            pass  # Script may fail if pip-licenses not available
+        subprocess.run(
+            ["python", "scripts/gen_license_report.py"],
+            cwd=repo_root,
+            check=True,
+            capture_output=True,
+        )
 
     assert report_path.exists(), "license_report.csv should exist"
 
@@ -38,8 +35,7 @@ def test_license_report_format():
     repo_root = Path(__file__).parent.parent.parent
     report_path = repo_root / "metrics" / "license_report.csv"
 
-    if not report_path.exists():
-        pytest.skip("license_report.csv does not exist")
+    assert report_path.exists(), "license_report.csv should exist"
 
     with open(report_path, "r", encoding="utf-8") as f:
         reader = csv.DictReader(f)
@@ -54,8 +50,7 @@ def test_license_report_has_data():
     repo_root = Path(__file__).parent.parent.parent
     report_path = repo_root / "metrics" / "license_report.csv"
 
-    if not report_path.exists():
-        pytest.skip("license_report.csv does not exist")
+    assert report_path.exists(), "license_report.csv should exist"
 
     with open(report_path, "r", encoding="utf-8") as f:
         reader = csv.DictReader(f)
@@ -67,9 +62,7 @@ def test_license_report_has_data():
     has_license_data = any(
         row.get("license") and row["license"] not in ["", "unknown"] for row in rows
     )
-    if not has_license_data:
-        # This is acceptable if pip-licenses is not available or no packages found
-        pass  # Don't fail the test
+    assert has_license_data, "At least one package should have license data"
 
 
 def test_license_report_readable():
@@ -77,8 +70,7 @@ def test_license_report_readable():
     repo_root = Path(__file__).parent.parent.parent
     report_path = repo_root / "metrics" / "license_report.csv"
 
-    if not report_path.exists():
-        pytest.skip("license_report.csv does not exist")
+    assert report_path.exists(), "license_report.csv should exist"
 
     try:
         with open(report_path, "r", encoding="utf-8") as f:
@@ -112,8 +104,7 @@ def test_makefile_license_scan_target():
     repo_root = Path(__file__).parent.parent.parent
     makefile_path = repo_root / "Makefile"
 
-    if not makefile_path.exists():
-        pytest.skip("Makefile does not exist")
+    assert makefile_path.exists(), "Makefile should exist"
 
     with open(makefile_path, "r", encoding="utf-8") as f:
         makefile_content = f.read()
@@ -127,16 +118,52 @@ def test_license_classifications():
     repo_root = Path(__file__).parent.parent.parent
     report_path = repo_root / "metrics" / "license_report.csv"
 
-    if not report_path.exists():
-        pytest.skip("license_report.csv does not exist")
+    assert report_path.exists(), "license_report.csv should exist"
 
     with open(report_path, "r", encoding="utf-8") as f:
         reader = csv.DictReader(f)
         rows = list(reader)
 
     # Check that classifications are from expected set
-    valid_classifications = {"permissive", "copyleft", "public-domain", "other", "unknown"}
+    valid_classifications = {
+        "permissive",
+        "copyleft",
+        "weak-copyleft",
+        "public-domain",
+        "other",
+        "unknown",
+    }
 
     for row in rows:
         classification = row.get("license_classification", "")
         assert classification in valid_classifications, f"Invalid classification: {classification}"
+
+
+def test_unknown_other_ratio():
+    """Test that unknown/other licenses are less than 10% of all entries."""
+    repo_root = Path(__file__).parent.parent.parent
+    report_path = repo_root / "metrics" / "license_report.csv"
+
+    assert report_path.exists(), "license_report.csv should exist"
+
+    with open(report_path, "r", encoding="utf-8") as f:
+        reader = csv.DictReader(f)
+        rows = list(reader)
+
+    assert rows, "License report should have data"
+
+    # Count unknown and other classifications
+    unknown_other_count = 0
+    total_count = len(rows)
+
+    for row in rows:
+        classification = row.get("license_classification", "")
+        if classification in ["unknown", "other"]:
+            unknown_other_count += 1
+
+    unknown_other_ratio = unknown_other_count / total_count
+
+    # Strict requirement: unknown/other licenses should be ≤10%
+    assert (
+        unknown_other_ratio <= 0.10
+    ), f"Unknown/other licenses should be ≤10%, got {unknown_other_ratio:.1%} ({unknown_other_count}/{total_count})"
