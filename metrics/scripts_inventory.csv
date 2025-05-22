@@ -50,8 +50,8 @@ alfred/metrics/protocols.py,.py,2905,UNKNOWN
 alfred/metrics/pubsub_metrics.py,.py,3450,UNKNOWN
 alfred/metrics/schemas/__init__.py,.py,30,UNKNOWN
 alfred/metrics/utils/__init__.py,.py,32,UNKNOWN
-alfred/metrics/utils/schema.py,.py,1179,UNKNOWN
-alfred/metrics/utils/slack.py,.py,4132,UNKNOWN
+alfred/metrics/utils/schema.py,.py,1207,UNKNOWN
+alfred/metrics/utils/slack.py,.py,4137,UNKNOWN
 alfred/ml/__init__.py,.py,345,UNKNOWN
 alfred/ml/hf_embedder.py,.py,5681,UNKNOWN
 alfred/ml/noise_ranker.py,.py,5453,UNKNOWN
@@ -201,7 +201,7 @@ scripts/bump_version.sh,.sh,369,UNKNOWN
 scripts/canary-monitor.sh,.sh,6322,UNKNOWN
 scripts/check-branch-protection.sh,.sh,2098,UNKNOWN
 scripts/check-ci-pr.sh,.sh,524,UNKNOWN
-scripts/ci_vuln_gate.py,.py,6598,UNKNOWN
+scripts/ci_vuln_gate.py,.py,6633,UNKNOWN
 scripts/cleanup-ci-files.sh,.sh,1046,UNKNOWN
 scripts/cleanup-docker-compose.sh,.sh,5968,UNKNOWN
 scripts/cleanup-inactive-compose-files.sh,.sh,3487,UNKNOWN

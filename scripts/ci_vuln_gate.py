@@ -13,12 +13,12 @@ import csv
 import sys
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List
+from typing import Any, Dict, List
 
 
 def read_vulnerability_report(report_path: Path) -> List[Dict[str, str]]:
     """Read vulnerability report CSV and return list of vulnerabilities."""
-    vulnerabilities = []
+    vulnerabilities: List[Dict[str, str]] = []
     if not report_path.exists():
         print(f"Warning: Vulnerability report not found at {report_path}", file=sys.stderr)
         return vulnerabilities
@@ -66,7 +66,7 @@ def is_vulnerability_waivable(vuln: Dict[str, str], max_age_days: int) -> bool:
 
 def analyze_vulnerabilities(
     vulnerabilities: List[Dict[str, str]], max_age_days: int
-) -> Dict[str, any]:
+) -> Dict[str, Any]:
     """Analyze vulnerabilities by severity and age, return counts and blocking list."""
     severity_counts = {"critical": 0, "high": 0, "medium": 0, "low": 0, "unknown": 0}
     blocking_vulns = []
@@ -94,7 +94,7 @@ def analyze_vulnerabilities(
     }
 
 
-def print_vulnerability_summary(analysis: Dict[str, any], max_age_days: int):
+def print_vulnerability_summary(analysis: Dict[str, Any], max_age_days: int):
     """Print a formatted vulnerability summary."""
     print("🔍 Vulnerability Scan Results")
     print("=" * 40)
@@ -128,7 +128,7 @@ def print_vulnerability_summary(analysis: Dict[str, any], max_age_days: int):
             print(f"  • {package}: {vuln_id} ({severity}) - fix: {fixed_version}")
 
 
-def main():
+def main() -> None:
     """Run the CI vulnerability gate check."""
     parser = argparse.ArgumentParser(description="CI vulnerability gate with age-based waivers")
     parser.add_argument(

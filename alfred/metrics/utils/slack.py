@@ -7,11 +7,11 @@ Provides reusable functions for formatting and sending Slack messages.
 import json
 import sys
 import urllib.request
-from typing import Dict, List
+from typing import Any, Dict, List
 from urllib.error import URLError
 
 
-def format_vulnerability_message(vulnerabilities: List[Dict[str, str]]) -> Dict[str, any]:
+def format_vulnerability_message(vulnerabilities: List[Dict[str, str]]) -> Dict[str, Any]:
     """Format vulnerabilities into Slack message payload."""
     if not vulnerabilities:
         return {
@@ -94,7 +94,7 @@ def format_vulnerability_message(vulnerabilities: List[Dict[str, str]]) -> Dict[
     return {"text": f"Security Alert: {total_count} HIGH/CRITICAL CVEs found", "blocks": blocks}
 
 
-def send_webhook_message(message: Dict[str, any], webhook_url: str) -> bool:
+def send_webhook_message(message: Dict[str, Any], webhook_url: str) -> bool:
     """Send message to Slack webhook and return success status."""
     try:
         payload = json.dumps(message).encode("utf-8")
