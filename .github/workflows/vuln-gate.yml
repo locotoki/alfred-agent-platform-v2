@@ -1,0 +1,38 @@
+name: Vulnerability Gate
+
+on:
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'requirements*.txt'
+      - 'pyproject.toml'
+      - '**/requirements*.txt'
+      - '**/pyproject.toml'
+      - 'scripts/ci_vuln_gate.py'
+      - '.github/workflows/vuln-gate.yml'
+
+jobs:
+  vulnerability-gate:
+    runs-on: ubuntu-latest
+    name: Block Critical/High CVEs
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install -r dev-requirements.txt --quiet
+
+      - name: Run vulnerability scan
+        run: make vuln-scan
+
+      - name: Check for critical/high vulnerabilities
+        run: python scripts/ci_vuln_gate.py
