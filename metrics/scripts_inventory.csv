@@ -227,6 +227,7 @@ scripts/detect-deprecated-health-scripts.sh,.sh,1489,UNKNOWN
 scripts/enable-diagnostics-staging.sh,.sh,279,UNKNOWN
 scripts/ensure-metrics-exported.sh,.sh,2186,UNKNOWN
 scripts/env-audit.sh,.sh,9471,UNKNOWN
+scripts/find_orphan_candidates.py,.py,1353,UNKNOWN
 scripts/fix-agent-rag-only.sh,.sh,1300,UNKNOWN
 scripts/fix-agent-rag-service.sh,.sh,1910,UNKNOWN
 scripts/fix-auth-roles.sh,.sh,1993,UNKNOWN
