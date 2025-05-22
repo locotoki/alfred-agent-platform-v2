@@ -1,0 +1,24 @@
+{{- if and .Values.agentBizops.enabled .Values.agentBizops.metrics.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: agent-bizops
+  labels:
+    app: {{ template "alfred.name" . }}
+    chart: {{ template "alfred.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    component: agent-bizops
+spec:
+  jobLabel: bizops
+  selector:
+    matchLabels:
+      app: {{ template "alfred.name" . }}
+      component: agent-bizops
+  endpoints:
+    - port: metrics
+      path: /metrics
+      interval: 30s
+      scrapeTimeout: 10s
+      scheme: http
+{{- end }}

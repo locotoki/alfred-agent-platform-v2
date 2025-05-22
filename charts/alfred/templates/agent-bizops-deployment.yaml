@@ -1,0 +1,62 @@
+{{- if .Values.agentBizops.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: agent-bizops
+  labels:
+    app: {{ template "alfred.name" . }}
+    chart: {{ template "alfred.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    component: agent-bizops
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ template "alfred.name" . }}
+      component: agent-bizops
+  template:
+    metadata:
+      labels:
+        app: {{ template "alfred.name" . }}
+        component: agent-bizops
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "{{ .Values.agentBizops.metrics.port }}"
+        prometheus.io/path: "/metrics"
+    spec:
+      containers:
+        - name: agent-bizops
+          image: "{{ .Values.agentBizops.image.repository }}:{{ .Values.agentBizops.image.tag }}"
+          imagePullPolicy: {{ .Values.agentBizops.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.agentBizops.service.targetPort }}
+              protocol: TCP
+            - name: metrics
+              containerPort: {{ .Values.agentBizops.metrics.port }}
+              protocol: TCP
+          env:
+            - name: WORKFLOWS_ENABLED
+              value: "{{ .Values.agentBizops.env.WORKFLOWS_ENABLED }}"
+            - name: PORT
+              value: "{{ .Values.agentBizops.service.targetPort }}"
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          resources:
+            {{- toYaml .Values.agentBizops.resources | nindent 12 }}
+{{- end }}
