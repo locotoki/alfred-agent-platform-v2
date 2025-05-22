@@ -38,3 +38,9 @@ repos:
         language: system
         always_run: true
         pass_filenames: false
+      - id: orphan-scripts-check
+        name: Ensure ORPHAN scripts not referenced
+        entry: bash -c '! (grep ",ORPHAN" metrics/scripts_inventory.csv | cut -d, -f1 | xargs -I {} git grep -l {} 2>/dev/null | grep -v metrics/scripts_inventory.csv)'
+        language: system
+        always_run: true
+        pass_filenames: false
