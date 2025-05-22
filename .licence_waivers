@@ -1,14 +1,7 @@
-# Temporary licence waivers for Alfred platform
-# Format: package==licence (one per line)
-# TODO: Replace these GPL dependencies and remove waivers
-
-# Known GPL/LGPL dependencies (flagged in ADR 2025-06 audit)
-# These should be replaced with Apache-2.0/MIT alternatives
 cloud-init==Dual-licensed under GPLv3 or Apache 2.0
 python-apt==GNU GPL
 ssh-import-id==GPLv3
 ubuntu-pro-client==GPLv3
-ufw==GPL-3
 PyGObject==GNU Lesser General Public License v2 or later (LGPLv2+)
 chardet==GNU Library or Lesser General Public License (LGPL)
 launchpadlib==GNU Library or Lesser General Public License (LGPL)
@@ -18,7 +11,6 @@ psycopg2-binary==GNU Library or Lesser General Public License (LGPL)
 systemd-python==GNU Lesser General Public License v2 or later (LGPLv2+)
 wadllib==GNU Library or Lesser General Public License (LGPL)
 
-# Common licence variations that should be allowed but need normalization
 asttokens==Apache 2.0
 cryptography==Apache Software License; BSD License
 defusedxml==PSF-2.0
@@ -42,8 +34,6 @@ shellingham==ISC License (ISCL)
 sniffio==Apache Software License; MIT License
 structlog==Apache Software License; MIT License
 tqdm==MIT License; Mozilla Public License 2.0 (MPL 2.0)
-
-# Unknown licences pending investigation
 CacheControl==UNKNOWN
 Markdown==UNKNOWN
 RapidFuzz==UNKNOWN
@@ -62,11 +52,8 @@ types-requests==UNKNOWN
 typing_extensions==UNKNOWN
 unattended-upgrades==UNKNOWN
 urllib3==UNKNOWN
-
-# Temporarily allowed for development
 certifi==Mozilla Public License 2.0 (MPL 2.0)
 fqdn==Mozilla Public License 2.0 (MPL 2.0)
 zope.interface==Zope Public License
-
-# Additional packages with complex licence strings
 docformatter==MIT License; Other/Proprietary License
+ufw==GPL-3
