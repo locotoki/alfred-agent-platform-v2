@@ -45,6 +45,7 @@ alfred/infrastructure/protocols.py,.py,5914,UNKNOWN
 alfred/llm/__init__.py,.py,130,UNKNOWN
 alfred/llm/protocols.py,.py,5243,UNKNOWN
 alfred/metrics/__init__.py,.py,178,UNKNOWN
+alfred/metrics/compliance.py,.py,590,UNKNOWN
 alfred/metrics/db_metrics.py,.py,7041,UNKNOWN
 alfred/metrics/metrics_collector.py,.py,7041,UNKNOWN
 alfred/metrics/protocols.py,.py,3019,UNKNOWN
@@ -74,6 +75,8 @@ alfred/remediation/__init__.py,.py,213,UNKNOWN
 alfred/remediation/graphs.py,.py,8161,UNKNOWN
 alfred/remediation/protocols.py,.py,4823,UNKNOWN
 alfred/remediation/settings.py,.py,2359,UNKNOWN
+alfred/scripts/__init__.py,.py,29,UNKNOWN
+alfred/scripts/licence_gate.py,.py,4558,UNKNOWN
 alfred/slack/__init__.py,.py,247,UNKNOWN
 alfred/slack/app.py,.py,5682,UNKNOWN
 alfred/slack/diagnostics/__init__.py,.py,107,UNKNOWN
@@ -612,6 +615,7 @@ tests/slack_app/test_startup.py,.py,3781,UNKNOWN
 tests/smoke/test_audit_dashboard.py,.py,3661,UNKNOWN
 tests/smoke/test_dependency_inventory.py,.py,3078,UNKNOWN
 tests/smoke/test_dependency_inventory_cron.py,.py,2116,UNKNOWN
+tests/smoke/test_licence_gate.py,.py,2572,UNKNOWN
 tests/smoke/test_license_scan.py,.py,5932,UNKNOWN
 tests/smoke/test_orphan_pruned_A1.py,.py,556,UNKNOWN
 tests/smoke/test_orphan_pruned_A2.py,.py,556,UNKNOWN
@@ -620,7 +624,7 @@ tests/smoke/test_orphan_pruned_B2.py,.py,556,UNKNOWN
 tests/smoke/test_orphan_pruned_C1.py,.py,556,UNKNOWN
 tests/smoke/test_orphan_pruned_C2.py,.py,556,UNKNOWN
 tests/smoke/test_orphan_pruned_D1.py,.py,556,UNKNOWN
-tests/smoke/test_orphan_pruned_d2.py,.py,569,UNKNOWN
+tests/smoke/test_orphan_pruned_d2.py,.py,570,UNKNOWN
 tests/smoke/test_slack_alert.py,.py,5704,UNKNOWN
 tests/smoke/test_telegram_adapter.py,.py,2097,UNKNOWN
 tests/smoke/test_vuln_gate.py,.py,6591,UNKNOWN
