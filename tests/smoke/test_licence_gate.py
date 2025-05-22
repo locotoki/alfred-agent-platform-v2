@@ -8,7 +8,7 @@ from unittest.mock import Mock, patch
 
 import pytest
 
-from alfred.scripts.licence_gate import main, normalize_licence, validate_licences
+from alfred.scripts.licence_gate import _normalise, main, normalize_licence, validate_licences
 
 
 @pytest.mark.smoke_licence
@@ -17,6 +17,19 @@ def test_normalize_licence():
     assert normalize_licence("MIT License") == "MIT"
     assert normalize_licence("Apache Software License") == "Apache-2.0"
     assert normalize_licence("Unknown") == "Unknown"
+
+
+@pytest.mark.smoke_licence
+def test_normalise_composite_licences():
+    """Test _normalise function for composite licence strings."""
+    assert _normalise("Apache Software License; MIT License") == [
+        "Apache Software License",
+        "MIT License",
+    ]
+    assert _normalise("MIT, BSD") == ["MIT", "BSD"]
+    assert _normalise("UNKNOWN") == ["UNKNOWN"]
+    assert _normalise("unknown") == ["UNKNOWN"]
+    assert _normalise("") == []
 
 
 @pytest.mark.smoke_licence
@@ -51,8 +64,14 @@ def test_validate_licences_violations(mock_waivers, mock_packages):
     [
         # Clean environment - should pass
         ([{"Name": "requests", "License": "Apache-2.0"}], 0),
+        # Composite licence with allowed parts - should pass
+        ([{"Name": "structlog", "License": "Apache Software License; MIT License"}], 0),
+        # UNKNOWN licence for safe package - should pass
+        ([{"Name": "urllib3", "License": "UNKNOWN"}], 0),
         # Disallowed licence - should fail
-        ([{"Name": "bad-package", "License": "GPL-3.0"}], 1),
+        ([{"Name": "badlib", "License": "GPL-3.0"}], 1),
+        # UNKNOWN licence for unsafe package - should fail
+        ([{"Name": "unknown-pkg", "License": "UNKNOWN"}], 1),
     ],
 )
 @patch("alfred.scripts.licence_gate.get_package_licences")
