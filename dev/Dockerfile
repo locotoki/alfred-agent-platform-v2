@@ -25,6 +25,11 @@ RUN python -m venv .venv && \
     . .venv/bin/activate && \
     poetry install --no-root --no-interaction --no-ansi
 
+# Copy requirements.txt if it exists and install with pip (avoid layer bloat)
+COPY requirements.txt* ./
+RUN . .venv/bin/activate && \
+    if [ -f requirements.txt ]; then pip install --no-cache-dir -r requirements.txt; fi
+
 # Stage 2: Runtime
 FROM python:3.11-slim as runtime
 
@@ -40,8 +45,8 @@ WORKDIR /workspace
 COPY --from=builder /workspace/.venv /workspace/.venv
 COPY . /app
 
-# Set PYTHONPATH explicitly
-ENV PYTHONPATH=/workspace/.venv/lib/python3.11/site-packages
+# Set PYTHONPATH explicitly (preserving runtime additions)
+ENV PYTHONPATH=/workspace/.venv/lib/python3.11/site-packages:${PYTHONPATH}
 ENV PATH="/workspace/.venv/bin:$PATH"
 
 # Verify no system packages contamination

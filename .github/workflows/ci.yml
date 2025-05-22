@@ -87,27 +87,33 @@ jobs:
   check-no-site-pkgs:
     needs: security-scan
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        base-image: ['python:3.11-slim', 'python:3.11-alpine']
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build dev container
+      - name: Build dev container (${{ matrix.base-image }})
         run: |
           if [ -f dev/Dockerfile ]; then
-            docker build -f dev/Dockerfile -t dev-container-test .
+            # Create a temporary Dockerfile with the matrix base image
+            sed "s|FROM python:3.11-slim|FROM ${{ matrix.base-image }}|g" dev/Dockerfile > dev/Dockerfile.test
+            docker build -f dev/Dockerfile.test -t dev-container-test-${{ matrix.base-image }} .
+            rm dev/Dockerfile.test
           else
             echo "No dev/Dockerfile found, skipping container hardening check"
             exit 0
           fi
 
-      - name: Check for dist-packages contamination
+      - name: Check for dist-packages contamination (${{ matrix.base-image }})
         run: |
           if [ -f dev/Dockerfile ]; then
             # Run the check inside the container
-            docker run --rm dev-container-test bash -c 'test -z "$(find /usr/lib/python*/dist-packages -type f)" || (echo "ERROR: System packages found in dist-packages!" && exit 1)'
-            echo "✓ No system packages found in dist-packages"
+            docker run --rm dev-container-test-${{ matrix.base-image }} sh -c 'test -z "$(find /usr/lib/python*/dist-packages -type f 2>/dev/null)" || (echo "ERROR: System packages found in dist-packages!" && exit 1)'
+            echo "✓ No system packages found in dist-packages for ${{ matrix.base-image }}"
           fi
 
   # Python linting and testing

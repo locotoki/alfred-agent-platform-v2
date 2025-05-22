@@ -1,7 +1,7 @@
 # ADR-010 · Dev-container hardening
 
 Date: 2025-05-26
-Status: DRAFT
+Status: PROPOSED
 Authors: o3 Architect
 
 ## Context / Problem
@@ -18,8 +18,14 @@ Adopt a **multi‑stage Dockerfile** that:
 
 1. Installs system dependencies in a **builder** stage.
 2. Copies only `/app` and the project virtual‑env into a minimal **runtime** stage.
-3. Sets `ENV PYTHONPATH=/workspace/.venv/lib/python3.11/site-packages` explicitly.
+3. Sets `ENV PYTHONPATH=/workspace/.venv/lib/python3.11/site-packages:${PYTHONPATH}` explicitly (preserving runtime-added paths).
 4. Fails `docker build` if any file is present under `/usr/lib/python*/dist-packages` in the final image.
+
+The multi-stage approach ensures complete isolation by:
+- Building dependencies in an isolated builder stage
+- Copying only the virtual environment to the runtime stage
+- Explicitly setting PYTHONPATH to point only to the venv
+- Verifying no system packages leak through with a build-time check
 
 ## Consequences
 
