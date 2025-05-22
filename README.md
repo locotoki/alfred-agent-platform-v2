@@ -305,6 +305,8 @@ The platform maintains an automated inventory of all Python dependencies to supp
 - **Weekly Schedule**: Runs every Monday at 08:15 UTC (after inventory refresh)
 - **Security Reports**: Vulnerability details saved to `metrics/vulnerability_report.csv`
 - **CI Security Gate**: Pull requests are automatically blocked if critical or high severity vulnerabilities are detected
+- **Age-Based Waivers**: HIGH/CRITICAL CVEs older than 30 days with available fixes are automatically waived in CI
+- **Slack Alerts**: Real-time notifications for HIGH/CRITICAL CVEs that are young (≤30 days) or have no available fixes
 
 ### License Compliance
 

@@ -52,14 +52,14 @@ def test_vuln_gate_passes_with_no_vulnerabilities():
 def test_vuln_gate_fails_with_critical_vulnerability():
     """Test that vulnerability gate fails when critical vulnerabilities found."""
     _run_vuln_gate_test(
-        [["requests", "2.25.1", "CVE-2023-32681", "critical", "2.31.0"]], 1, "CI GATE FAILURE"
+        [["requests", "2.25.1", "CVE-2025-32681", "critical", "2.31.0"]], 1, "CI GATE FAILURE"
     )
 
 
 def test_vuln_gate_fails_with_high_vulnerability():
     """Test that vulnerability gate fails when high vulnerabilities found."""
     _run_vuln_gate_test(
-        [["urllib3", "1.26.5", "CVE-2023-43804", "high", "2.0.7"]], 1, "CI GATE FAILURE"
+        [["urllib3", "1.26.5", "CVE-2025-43804", "high", "2.0.7"]], 1, "CI GATE FAILURE"
     )
 
 
@@ -73,6 +73,97 @@ def test_vuln_gate_passes_with_medium_low_vulnerabilities():
         0,
         "CI GATE PASSED",
     )
+
+
+def test_vuln_gate_passes_with_old_critical_vulnerability_and_fix():
+    """Test that vulnerability gate passes with old CRITICAL CVE that has fix (age-based waiver)."""
+    # CVE-2020-12345 is >30 days old (2020) and has a fix available
+    _run_vuln_gate_test(
+        [["old-package", "1.0.0", "CVE-2020-12345", "critical", "1.0.1"]], 0, "CI GATE PASSED"
+    )
+
+
+def test_vuln_gate_fails_with_old_critical_vulnerability_no_fix():
+    """Test that vulnerability gate fails with old CRITICAL CVE that has no fix."""
+    # CVE-2020-12345 is old but no fix available - should still fail
+    _run_vuln_gate_test(
+        [["old-package", "1.0.0", "CVE-2020-12345", "critical", ""]], 1, "CI GATE FAILURE"
+    )
+
+
+def test_vuln_gate_max_age_days_flag():
+    """Test that vulnerability gate respects --max_age_days flag."""
+    repo_root = Path(__file__).parent.parent.parent
+
+    # Test with old CVE (2020) that has fix
+    with NamedTemporaryFile(mode="w", suffix=".csv", delete=False) as f:
+        writer = csv.writer(f)
+        writer.writerow(["package", "installed_version", "vuln_id", "severity", "fixed_version"])
+        writer.writerow(["test-package", "1.0.0", "CVE-2020-12345", "critical", "1.0.1"])
+        temp_report = f.name
+
+    try:
+        original_report = repo_root / "metrics" / "vulnerability_report.csv"
+        backup_exists = original_report.exists()
+        if backup_exists:
+            backup_content = original_report.read_text()
+
+        original_report.write_text(Path(temp_report).read_text())
+
+        # Test with --max_age_days 1000 (should waive 2020 CVE)
+        result = subprocess.run(
+            ["python3", "scripts/ci_vuln_gate.py", "--max_age_days", "1000"],
+            cwd=repo_root,
+            capture_output=True,
+            text=True,
+        )
+        assert result.returncode == 0
+        assert "CI GATE PASSED" in result.stdout
+
+        # Test with --max_age_days 1500 (should waive 2020 CVE since it's ~1786 days old)
+        result = subprocess.run(
+            ["python3", "scripts/ci_vuln_gate.py", "--max_age_days", "1500"],
+            cwd=repo_root,
+            capture_output=True,
+            text=True,
+        )
+        assert result.returncode == 0
+        assert "CI GATE PASSED" in result.stdout
+
+    finally:
+        if backup_exists:
+            original_report.write_text(backup_content)
+        Path(temp_report).unlink(missing_ok=True)
+
+    # Test with recent CVE (2025) that should NOT be waived
+    with NamedTemporaryFile(mode="w", suffix=".csv", delete=False) as f:
+        writer = csv.writer(f)
+        writer.writerow(["package", "installed_version", "vuln_id", "severity", "fixed_version"])
+        writer.writerow(["test-package", "1.0.0", "CVE-2025-12345", "critical", "1.0.1"])
+        temp_report = f.name
+
+    try:
+        original_report = repo_root / "metrics" / "vulnerability_report.csv"
+        backup_exists = original_report.exists()
+        if backup_exists:
+            backup_content = original_report.read_text()
+
+        original_report.write_text(Path(temp_report).read_text())
+
+        # Test with --max_age_days 1 (should not waive 2025 CVE)
+        result = subprocess.run(
+            ["python3", "scripts/ci_vuln_gate.py", "--max_age_days", "1"],
+            cwd=repo_root,
+            capture_output=True,
+            text=True,
+        )
+        assert result.returncode == 1
+        assert "CI GATE FAILURE" in result.stdout
+
+    finally:
+        if backup_exists:
+            original_report.write_text(backup_content)
+        Path(temp_report).unlink(missing_ok=True)
 
 
 def test_vuln_gate_workflow_exists():

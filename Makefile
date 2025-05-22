@@ -3,7 +3,7 @@
 include .env
 export $(shell sed 's/=.*//' .env)
 
-.PHONY: help install start stop restart clean test test-unit test-integration test-e2e lint format dev deploy build update-dashboards setup-metrics compose-generate up down board-sync scripts-inventory deps-inventory vuln-scan license-scan audit-dashboard
+.PHONY: help install start stop restart clean test test-unit test-integration test-e2e lint format dev deploy build update-dashboards setup-metrics compose-generate up down board-sync scripts-inventory deps-inventory vuln-scan license-scan audit-dashboard cve-alert
 
 help:
 	@echo "Alfred Agent Platform v2 Makefile"
@@ -33,6 +33,7 @@ help:
 	@echo "vuln-scan            Generate vulnerability report CSV"
 	@echo "license-scan         Generate license compliance report CSV"
 	@echo "audit-dashboard      Generate audit dashboard markdown"
+	@echo "cve-alert            Send CVE alerts to Slack for HIGH/CRITICAL vulnerabilities"
 
 install:
 	pip install -r requirements.txt
@@ -147,3 +148,7 @@ license-scan:
 # Audit dashboard generation
 audit-dashboard:
 	python3 scripts/gen_audit_dashboard.py
+
+# CVE alert to Slack
+cve-alert:
+	python3 scripts/slack_cve_alert.py
