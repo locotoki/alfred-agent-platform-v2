@@ -48,3 +48,12 @@ make board-sync ISSUE_URL=<issue-number>
 ```
 
 See `cli/board_sync.sh` for implementation details.
+
+**Phase C-1 — Script usage triage**
+
+* `status` column values
+  * **USED**   referenced by CI, Makefile, or imported by code
+  * **ORPHAN** not called anywhere & slated for deletion
+  * **UNKNOWN** default; must be triaged in upcoming slices
+
+The pre-commit hook blocks new rows without a `status`.
