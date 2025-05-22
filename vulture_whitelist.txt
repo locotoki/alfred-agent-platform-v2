@@ -1,0 +1,3 @@
+# symbols deliberately exported / dynamically used
+CLI
+main
