@@ -2,8 +2,8 @@
 
 import json
 from pathlib import Path
-from typing import Any, AsyncIterator, Dict, Iterator, List, Optional, Union
-from unittest.mock import AsyncMock, Mock, patch
+from typing import Any, AsyncIterator, Dict, Iterator, List, Optional
+from unittest.mock import Mock, patch
 
 import pytest
 from langchain.chains import LLMChain

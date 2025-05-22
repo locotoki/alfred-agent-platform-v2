@@ -4,7 +4,6 @@ import csv
 import datetime
 import pathlib
 import subprocess
-import sys
 
 csv_path = pathlib.Path("metrics/scripts_inventory.csv")
 removed = int(

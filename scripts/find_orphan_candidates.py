@@ -9,7 +9,6 @@ using git grep and marks them as potential orphans.
 import csv
 import pathlib
 import subprocess
-import sys
 
 EXT = {".sh", ".py", ".ps1"}
 

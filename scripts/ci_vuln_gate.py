@@ -11,7 +11,7 @@ Exit codes: 0 = no blocking CVEs, 1 = blocking vulnerabilities found
 import argparse
 import csv
 import sys
-from datetime import datetime, timedelta
+from datetime import datetime
 from pathlib import Path
 from typing import Dict, List
 

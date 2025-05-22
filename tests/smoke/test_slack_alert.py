@@ -1,12 +1,10 @@
 """Smoke tests for Slack CVE alert system - DA-008."""
 
 import csv
-import json
 import os
 import subprocess
 from pathlib import Path
 from tempfile import NamedTemporaryFile
-from unittest.mock import Mock, patch
 
 import pytest
 

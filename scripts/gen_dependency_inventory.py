@@ -10,9 +10,7 @@ Output: metrics/dependency_inventory.csv
 """
 
 import csv
-import os
 import re
-import subprocess
 import sys
 from pathlib import Path
 from typing import Dict, List, Set, Tuple
