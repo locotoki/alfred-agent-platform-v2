@@ -5,6 +5,8 @@ import subprocess
 from pathlib import Path
 from tempfile import NamedTemporaryFile
 
+import pytest
+
 
 def test_vuln_gate_script_exists():
     """Test that the CI vulnerability gate script exists."""
@@ -44,51 +46,48 @@ def _run_vuln_gate_test(vulnerability_data, expected_exit_code, expected_output)
         Path(temp_report).unlink(missing_ok=True)
 
 
-def test_vuln_gate_passes_with_no_vulnerabilities():
-    """Test that vulnerability gate passes when no vulnerabilities found."""
-    _run_vuln_gate_test([], 0, "CI GATE PASSED")
-
-
-def test_vuln_gate_fails_with_critical_vulnerability():
-    """Test that vulnerability gate fails when critical vulnerabilities found."""
-    _run_vuln_gate_test(
-        [["requests", "2.25.1", "CVE-2025-32681", "critical", "2.31.0"]], 1, "CI GATE FAILURE"
-    )
-
-
-def test_vuln_gate_fails_with_high_vulnerability():
-    """Test that vulnerability gate fails when high vulnerabilities found."""
-    _run_vuln_gate_test(
-        [["urllib3", "1.26.5", "CVE-2025-43804", "high", "2.0.7"]], 1, "CI GATE FAILURE"
-    )
-
-
-def test_vuln_gate_passes_with_medium_low_vulnerabilities():
-    """Test that vulnerability gate passes with only medium/low vulnerabilities."""
-    _run_vuln_gate_test(
-        [
-            ["setuptools", "65.5.0", "CVE-2022-40897", "medium", "65.5.1"],
-            ["pip", "22.3", "CVE-2023-5752", "low", "23.3"],
-        ],
-        0,
-        "CI GATE PASSED",
-    )
-
-
-def test_vuln_gate_passes_with_old_critical_vulnerability_and_fix():
-    """Test that vulnerability gate passes with old CRITICAL CVE that has fix (age-based waiver)."""
-    # CVE-2020-12345 is >30 days old (2020) and has a fix available
-    _run_vuln_gate_test(
-        [["old-package", "1.0.0", "CVE-2020-12345", "critical", "1.0.1"]], 0, "CI GATE PASSED"
-    )
-
-
-def test_vuln_gate_fails_with_old_critical_vulnerability_no_fix():
-    """Test that vulnerability gate fails with old CRITICAL CVE that has no fix."""
-    # CVE-2020-12345 is old but no fix available - should still fail
-    _run_vuln_gate_test(
-        [["old-package", "1.0.0", "CVE-2020-12345", "critical", ""]], 1, "CI GATE FAILURE"
-    )
+@pytest.mark.parametrize(
+    "vulnerability_data,expected_exit_code,expected_output,description",
+    [
+        ([], 0, "CI GATE PASSED", "no vulnerabilities"),
+        (
+            [["requests", "2.25.1", "CVE-2025-32681", "critical", "2.31.0"]],
+            1,
+            "CI GATE FAILURE",
+            "critical vulnerability",
+        ),
+        (
+            [["urllib3", "1.26.5", "CVE-2025-43804", "high", "2.0.7"]],
+            1,
+            "CI GATE FAILURE",
+            "high vulnerability",
+        ),
+        (
+            [
+                ["setuptools", "65.5.0", "CVE-2022-40897", "medium", "65.5.1"],
+                ["pip", "22.3", "CVE-2023-5752", "low", "23.3"],
+            ],
+            0,
+            "CI GATE PASSED",
+            "medium/low vulnerabilities",
+        ),
+        (
+            [["old-package", "1.0.0", "CVE-2020-12345", "critical", "1.0.1"]],
+            0,
+            "CI GATE PASSED",
+            "old critical vulnerability with fix",
+        ),
+        (
+            [["old-package", "1.0.0", "CVE-2020-12345", "critical", ""]],
+            1,
+            "CI GATE FAILURE",
+            "old critical vulnerability no fix",
+        ),
+    ],
+)
+def test_vuln_gate_scenarios(vulnerability_data, expected_exit_code, expected_output, description):
+    """Test vulnerability gate behavior with various scenarios."""
+    _run_vuln_gate_test(vulnerability_data, expected_exit_code, expected_output)
 
 
 def test_vuln_gate_max_age_days_flag():

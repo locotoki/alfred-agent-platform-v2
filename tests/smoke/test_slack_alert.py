@@ -8,11 +8,20 @@ from pathlib import Path
 from tempfile import NamedTemporaryFile
 from unittest.mock import Mock, patch
 
+import pytest
 
-def test_slack_alert_script_exists():
-    """Test that the Slack CVE alert script exists."""
+
+@pytest.mark.parametrize(
+    "file_path,description",
+    [
+        ("scripts/slack_cve_alert.py", "Slack CVE alert script"),
+        (".github/workflows/cve-alert-weekly.yml", "CVE alert weekly workflow"),
+    ],
+)
+def test_required_files_exist(file_path, description):
+    """Test that required files exist."""
     repo_root = Path(__file__).parent.parent.parent
-    assert (repo_root / "scripts" / "slack_cve_alert.py").exists()
+    assert (repo_root / file_path).exists(), f"{description} should exist"
 
 
 def test_slack_alert_can_import():
@@ -116,22 +125,27 @@ def test_slack_alert_filters_low_medium_vulnerabilities():
         Path(temp_report).unlink(missing_ok=True)
 
 
-def test_slack_alert_workflow_exists():
-    """Test that the CVE alert weekly workflow exists."""
+@pytest.mark.parametrize(
+    "expected_content",
+    [
+        "name: CVE Alert Weekly",
+        "schedule:",
+        "cron: '30 8 * * 1'",  # Monday 08:30 UTC
+        "workflow_dispatch:",
+        "make vuln-scan",
+        "python scripts/slack_cve_alert.py",
+        "SLACK_CVE_WEBHOOK",
+    ],
+)
+def test_slack_alert_workflow_content(expected_content):
+    """Test that CVE alert workflow contains expected content."""
     repo_root = Path(__file__).parent.parent.parent
     workflow_path = repo_root / ".github" / "workflows" / "cve-alert-weekly.yml"
-    assert workflow_path.exists()
 
     with open(workflow_path, "r", encoding="utf-8") as f:
         content = f.read()
 
-    assert "name: CVE Alert Weekly" in content
-    assert "schedule:" in content
-    assert "cron: '30 8 * * 1'" in content  # Monday 08:30 UTC
-    assert "workflow_dispatch:" in content
-    assert "make vuln-scan" in content
-    assert "python scripts/slack_cve_alert.py" in content
-    assert "SLACK_CVE_WEBHOOK" in content
+    assert expected_content in content
 
 
 def test_makefile_cve_alert_target():
