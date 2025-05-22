@@ -641,6 +641,8 @@ tests/integration/test_exactly_once_processing.py,.py,4924,UNKNOWN
 tests/integration/test_explainer_smoke.py,.py,2048,UNKNOWN
 tests/kind/conftest.py,.py,487,UNKNOWN
 tests/kind/test_kind_marker.py,.py,279,UNKNOWN
+tests/metrics/__init__.py,.py,38,UNKNOWN
+tests/metrics/test_cve_waiver.py,.py,7432,UNKNOWN
 tests/remediation/__init__.py,.py,41,UNKNOWN
 tests/remediation/test_graphs.py,.py,10536,UNKNOWN
 tests/scripts/test_kpis.py,.py,941,UNKNOWN
@@ -651,7 +653,7 @@ tests/slack_app/test_command_handler.py,.py,5316,UNKNOWN
 tests/slack_app/test_startup.py,.py,3651,UNKNOWN
 tests/smoke/test_dependency_inventory.py,.py,2998,UNKNOWN
 tests/smoke/test_dependency_inventory_cron.py,.py,2060,UNKNOWN
-tests/smoke/test_license_scan.py,.py,4968,UNKNOWN
+tests/smoke/test_license_scan.py,.py,5763,UNKNOWN
 tests/smoke/test_telegram_adapter.py,.py,2032,UNKNOWN
 tests/smoke/test_vulnerability_scan.py,.py,3271,UNKNOWN
 tests/test_cpu.py,.py,1067,UNKNOWN

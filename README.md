@@ -308,8 +308,9 @@ The platform maintains an automated inventory of all Python dependencies to supp
 ### License Compliance
 
 - **Automated License Detection**: Weekly license compliance scanning using `pip-licenses`
-- **License Classification**: Automatically categorizes licenses as permissive, copyleft, public-domain, or other
-- **Compliance Monitoring**: Tracks license obligations and potential conflicts
+- **SPDX-Based Classification**: Uses SPDX license identifiers for precise categorization as permissive, copyleft, weak-copyleft, public-domain, or other
+- **Enhanced Pattern Matching**: Intelligent fallback classification for non-SPDX license names
+- **Compliance Monitoring**: Tracks license obligations and potential conflicts with <10% unknown/other ratio target
 - **Weekly Schedule**: Runs every Monday at 08:20 UTC (after vulnerability scan)
 - **Compliance Reports**: License details and classifications saved to `metrics/license_report.csv`
 
