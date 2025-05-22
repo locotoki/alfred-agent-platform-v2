@@ -36,6 +36,7 @@ alfred/alerts/tests/__init__.py,.py,41,UNKNOWN
 alfred/alerts/tests/test_dispatcher.py,.py,8730,UNKNOWN
 alfred/core/__init__.py,.py,96,UNKNOWN
 alfred/core/app/__init__.py,.py,707,UNKNOWN
+alfred/core/entrypoint.py,.py,240,UNKNOWN
 alfred/core/llm_adapter.py,.py,10407,UNKNOWN
 alfred/core/protocols.py,.py,2207,UNKNOWN
 alfred/core/tests/test_llm_adapter.py,.py,7608,UNKNOWN
@@ -66,6 +67,7 @@ alfred/model/router/__init__.py,.py,125,UNKNOWN
 alfred/model/router/main.py,.py,5595,UNKNOWN
 alfred/model/router/models/__init__.py,.py,0,UNKNOWN
 alfred/model/router/models/models.py,.py,5524,UNKNOWN
+alfred/protocols.py,.py,191,UNKNOWN
 alfred/rag/__init__.py,.py,118,UNKNOWN
 alfred/rag/protocols.py,.py,4499,UNKNOWN
 alfred/remediation/__init__.py,.py,213,UNKNOWN
@@ -656,6 +658,7 @@ tests/smoke/test_audit_dashboard.py,.py,3661,UNKNOWN
 tests/smoke/test_dependency_inventory.py,.py,3078,UNKNOWN
 tests/smoke/test_dependency_inventory_cron.py,.py,2116,UNKNOWN
 tests/smoke/test_license_scan.py,.py,5932,UNKNOWN
+tests/smoke/test_orphan_pruned_A1.py,.py,555,UNKNOWN
 tests/smoke/test_slack_alert.py,.py,5704,UNKNOWN
 tests/smoke/test_telegram_adapter.py,.py,2097,UNKNOWN
 tests/smoke/test_vuln_gate.py,.py,6591,UNKNOWN
