@@ -526,6 +526,7 @@ scripts/bump_version.sh,.sh,369,UNKNOWN
 scripts/canary-monitor.sh,.sh,6322,UNKNOWN
 scripts/check-branch-protection.sh,.sh,2098,UNKNOWN
 scripts/check-ci-pr.sh,.sh,524,UNKNOWN
+scripts/ci_vuln_gate.py,.py,3973,UNKNOWN
 scripts/cleanup-ci-files.sh,.sh,1046,UNKNOWN
 scripts/cleanup-docker-compose.sh,.sh,5968,UNKNOWN
 scripts/cleanup-inactive-compose-files.sh,.sh,3487,UNKNOWN
@@ -982,6 +983,7 @@ tests/smoke/test_dependency_inventory.py,.py,2998,UNKNOWN
 tests/smoke/test_dependency_inventory_cron.py,.py,2060,UNKNOWN
 tests/smoke/test_license_scan.py,.py,5763,UNKNOWN
 tests/smoke/test_telegram_adapter.py,.py,2032,UNKNOWN
+tests/smoke/test_vuln_gate.py,.py,3157,UNKNOWN
 tests/smoke/test_vulnerability_scan.py,.py,3271,UNKNOWN
 tests/test_cpu.py,.py,1067,UNKNOWN
 tests/test_youtube_workflows.py,.py,6433,UNKNOWN

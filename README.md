@@ -304,6 +304,7 @@ The platform maintains an automated inventory of all Python dependencies to supp
 - **Comprehensive Coverage**: Scans all packages in the dependency inventory
 - **Weekly Schedule**: Runs every Monday at 08:15 UTC (after inventory refresh)
 - **Security Reports**: Vulnerability details saved to `metrics/vulnerability_report.csv`
+- **CI Security Gate**: Pull requests are automatically blocked if critical or high severity vulnerabilities are detected
 
 ### License Compliance
 
