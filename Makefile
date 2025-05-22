@@ -3,7 +3,7 @@
 include .env
 export $(shell sed 's/=.*//' .env)
 
-.PHONY: help install start stop restart clean test test-unit test-integration test-e2e lint format dev deploy build update-dashboards setup-metrics compose-generate up down board-sync scripts-inventory
+.PHONY: help install start stop restart clean test test-unit test-integration test-e2e lint format dev deploy build update-dashboards setup-metrics compose-generate up down board-sync scripts-inventory deps-inventory
 
 help:
 	@echo "Alfred Agent Platform v2 Makefile"
@@ -29,6 +29,7 @@ help:
 	@echo "down                 Stop entire local stack"
 	@echo "board-sync           Move GitHub issue to Done column (requires ISSUE_URL)"
 	@echo "scripts-inventory    Generate scripts inventory CSV"
+	@echo "deps-inventory       Generate dependency inventory CSV"
 
 install:
 	pip install -r requirements.txt
@@ -126,3 +127,7 @@ lint-pydead:
 
 debt-velocity:
 	python scripts/gen_debt_velocity.py
+
+# Dependencies inventory generation
+deps-inventory:
+	python3 scripts/gen_dependency_inventory.py
