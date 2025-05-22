@@ -1,7 +1,5 @@
 """Agent BizOps Main Application."""
 
-import os
-
 import structlog
 from fastapi import FastAPI
 from fastapi.responses import JSONResponse
@@ -31,14 +29,14 @@ logger = structlog.get_logger(__name__)
 app = FastAPI(
     title="Agent BizOps",
     description="Business Operations Agent - handles legal and financial workflows",
-    version="1.0.0",
+    version="2.0.0",
 )
 
 # Setup Prometheus metrics middleware
 setup_metrics_middleware(app)
 
-# Get enabled workflows from environment
-WORKFLOWS_ENABLED = os.getenv("WORKFLOWS_ENABLED", "finance,legal").split(",")
+# Static workflows configuration - no longer environment-driven
+WORKFLOWS_ENABLED = ["finance", "legal"]
 
 
 @app.get("/health")
