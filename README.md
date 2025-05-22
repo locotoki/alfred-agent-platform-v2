@@ -4,6 +4,9 @@ A scalable, modular AI agent platform built with Docker, Supabase, and Pub/Sub m
 
 [![Black Code Style](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![Black Format Check](https://github.com/locotoki/alfred-agent-platform-v2/actions/workflows/black-check.yml/badge.svg?branch=main)](https://github.com/locotoki/alfred-agent-platform-v2/actions/workflows/black-check.yml)
+[![Dependency Inventory](https://github.com/locotoki/alfred-agent-platform-v2/actions/workflows/deps-inventory-cron.yml/badge.svg)](https://github.com/locotoki/alfred-agent-platform-v2/actions/workflows/deps-inventory-cron.yml)
+[![Vulnerability Scan](https://github.com/locotoki/alfred-agent-platform-v2/actions/workflows/vuln-scan-cron.yml/badge.svg)](https://github.com/locotoki/alfred-agent-platform-v2/actions/workflows/vuln-scan-cron.yml)
+[![License Compliance](https://github.com/locotoki/alfred-agent-platform-v2/actions/workflows/license-scan-cron.yml/badge.svg)](https://github.com/locotoki/alfred-agent-platform-v2/actions/workflows/license-scan-cron.yml)
 ![Consolidation Progress](https://img.shields.io/badge/SC--250--complete-brightgreen?logo=github)
 <sub>☝︎ Auto-updated by CI</sub>
 
@@ -283,6 +286,34 @@ healthcheck --db-type postgres --db-dsn "user:pass@host:port/db"
 ```
 
 See [TRACING.md](docs/TRACING.md) for full documentation.
+
+## Dependency Management
+
+The platform maintains an automated inventory of all Python dependencies to support vulnerability scanning, license compliance, and dependency management.
+
+### Dependency Inventory
+
+- **Automated Tracking**: All `requirements*.txt` and `pyproject.toml` files are scanned
+- **Import Analysis**: Python imports are analyzed to discover undeclared dependencies
+- **Weekly Refresh**: The dependency inventory is automatically updated every Monday at 08:00 UTC
+- **CSV Output**: Complete inventory available at `metrics/dependency_inventory.csv`
+
+### Vulnerability Scanning
+
+- **Automated CVE Detection**: Weekly security vulnerability scanning using `pip-audit`
+- **Comprehensive Coverage**: Scans all packages in the dependency inventory
+- **Weekly Schedule**: Runs every Monday at 08:15 UTC (after inventory refresh)
+- **Security Reports**: Vulnerability details saved to `metrics/vulnerability_report.csv`
+
+### License Compliance
+
+- **Automated License Detection**: Weekly license compliance scanning using `pip-licenses`
+- **License Classification**: Automatically categorizes licenses as permissive, copyleft, public-domain, or other
+- **Compliance Monitoring**: Tracks license obligations and potential conflicts
+- **Weekly Schedule**: Runs every Monday at 08:20 UTC (after vulnerability scan)
+- **Compliance Reports**: License details and classifications saved to `metrics/license_report.csv`
+
+The dependency inventory, vulnerability scanning, and license compliance workflows run automatically and commit any changes to maintain comprehensive security and compliance awareness across all Python dependencies.
 
 ## Contributing
 
