@@ -3,6 +3,7 @@
 
 import json
 import os
+import re
 import subprocess
 import sys
 from pathlib import Path
@@ -32,6 +33,16 @@ LICENCE_ALIASES = {
     "ISC License": "ISC",
     "Python Software Foundation License": "PSF-2.0",
 }
+
+SAFE_UNKNOWN = {"urllib3"}  # allowed packages with UNKNOWN licence
+
+
+def _normalise(lic: str) -> List[str]:
+    """Split composite licence strings and normalize."""
+    # split on common delimiters ';' ',' and strip
+    parts = [p.strip() for p in re.split(r"[;,]", lic)]
+    # map UNKNOWN to placeholder
+    return ["UNKNOWN" if p.upper() == "UNKNOWN" else p for p in parts if p]
 
 
 def normalize_licence(licence: str) -> str:
@@ -100,12 +111,29 @@ def validate_licences() -> Tuple[bool, List[Tuple[str, str]]]:
 
     for pkg in packages:
         name = pkg.get("Name", "unknown")
-        licence = normalize_licence(pkg.get("License", "unknown"))
-        waiver_key = f"{name}=={licence}"
+        raw_licence = pkg.get("License", "unknown")
 
-        if licence not in ALLOWED_LICENCES and waiver_key not in waivers:
-            violations.append((name, licence))
-            logger.warning("Disallowed licence", package=name, licence=licence)
+        # Use new normalise function to handle composite licences
+        licence_parts = _normalise(raw_licence)
+
+        # Check each part of composite licence
+        is_allowed = True
+        for lic_part in licence_parts:
+            normalized = normalize_licence(lic_part)
+
+            # Special handling for UNKNOWN packages in safe list
+            if normalized == "UNKNOWN" and name in SAFE_UNKNOWN:
+                continue
+
+            if normalized not in ALLOWED_LICENCES:
+                waiver_key = f"{name}=={raw_licence}"
+                if waiver_key not in waivers:
+                    is_allowed = False
+                    break
+
+        if not is_allowed:
+            violations.append((name, raw_licence))
+            logger.warning("Disallowed licence", package=name, licence=raw_licence)
 
     logger.info("Validation complete", violations=len(violations))
     emit_compliance_metrics(violations)
