@@ -314,6 +314,8 @@ The platform maintains an automated inventory of all Python dependencies to supp
 - **Weekly Schedule**: Runs every Monday at 08:20 UTC (after vulnerability scan)
 - **Compliance Reports**: License details and classifications saved to `metrics/license_report.csv`
 
+📊 **[Audit Dashboard](docs/audit/dashboard.md)** - Comprehensive overview of dependencies, vulnerabilities, and license compliance with automated weekly updates.
+
 The dependency inventory, vulnerability scanning, and license compliance workflows run automatically and commit any changes to maintain comprehensive security and compliance awareness across all Python dependencies.
 
 ## Contributing

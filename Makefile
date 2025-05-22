@@ -3,7 +3,7 @@
 include .env
 export $(shell sed 's/=.*//' .env)
 
-.PHONY: help install start stop restart clean test test-unit test-integration test-e2e lint format dev deploy build update-dashboards setup-metrics compose-generate up down board-sync scripts-inventory deps-inventory vuln-scan license-scan
+.PHONY: help install start stop restart clean test test-unit test-integration test-e2e lint format dev deploy build update-dashboards setup-metrics compose-generate up down board-sync scripts-inventory deps-inventory vuln-scan license-scan audit-dashboard
 
 help:
 	@echo "Alfred Agent Platform v2 Makefile"
@@ -32,6 +32,7 @@ help:
 	@echo "deps-inventory       Generate dependency inventory CSV"
 	@echo "vuln-scan            Generate vulnerability report CSV"
 	@echo "license-scan         Generate license compliance report CSV"
+	@echo "audit-dashboard      Generate audit dashboard markdown"
 
 install:
 	pip install -r requirements.txt
@@ -142,3 +143,7 @@ vuln-scan:
 license-scan:
 	pip install -r dev-requirements.txt --quiet
 	python3 scripts/gen_license_report.py
+
+# Audit dashboard generation
+audit-dashboard:
+	python3 scripts/gen_audit_dashboard.py
