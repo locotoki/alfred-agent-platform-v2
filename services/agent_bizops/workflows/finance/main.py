@@ -1,3 +1,4 @@
+# isort: skip_file
 """Financial Tax Service FastAPI Application"""
 
 # type: ignore
