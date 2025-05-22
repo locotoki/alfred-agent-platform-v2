@@ -245,6 +245,7 @@ scripts/format-codebase.sh,.sh,708,UNKNOWN
 scripts/format-with-black.sh,.sh,740,UNKNOWN
 scripts/format.sh,.sh,1375,UNKNOWN
 scripts/gen_debt_velocity.py,.py,833,UNKNOWN
+scripts/gen_dependency_inventory.py,.py,8485,UNKNOWN
 scripts/gen_scripts_inventory.py,.py,3696,UNKNOWN
 scripts/generate-storage-schema.sh,.sh,6850,UNKNOWN
 scripts/generate_compose.py,.py,4505,UNKNOWN
@@ -642,6 +643,8 @@ tests/slack_app/__init__.py,.py,26,UNKNOWN
 tests/slack_app/conftest.py,.py,937,UNKNOWN
 tests/slack_app/test_command_handler.py,.py,5316,UNKNOWN
 tests/slack_app/test_startup.py,.py,3651,UNKNOWN
+tests/smoke/test_dependency_inventory.py,.py,2998,UNKNOWN
+tests/smoke/test_dependency_inventory_cron.py,.py,2060,UNKNOWN
 tests/smoke/test_telegram_adapter.py,.py,2032,UNKNOWN
 tests/test_cpu.py,.py,1067,UNKNOWN
 tests/test_youtube_workflows.py,.py,6433,UNKNOWN

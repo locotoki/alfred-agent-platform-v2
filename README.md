@@ -4,6 +4,7 @@ A scalable, modular AI agent platform built with Docker, Supabase, and Pub/Sub m
 
 [![Black Code Style](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![Black Format Check](https://github.com/locotoki/alfred-agent-platform-v2/actions/workflows/black-check.yml/badge.svg?branch=main)](https://github.com/locotoki/alfred-agent-platform-v2/actions/workflows/black-check.yml)
+[![Dependency Inventory](https://github.com/locotoki/alfred-agent-platform-v2/actions/workflows/deps-inventory-cron.yml/badge.svg)](https://github.com/locotoki/alfred-agent-platform-v2/actions/workflows/deps-inventory-cron.yml)
 ![Consolidation Progress](https://img.shields.io/badge/SC--250--complete-brightgreen?logo=github)
 <sub>☝︎ Auto-updated by CI</sub>
 
@@ -283,6 +284,19 @@ healthcheck --db-type postgres --db-dsn "user:pass@host:port/db"
 ```
 
 See [TRACING.md](docs/TRACING.md) for full documentation.
+
+## Dependency Management
+
+The platform maintains an automated inventory of all Python dependencies to support vulnerability scanning, license compliance, and dependency management.
+
+### Dependency Inventory
+
+- **Automated Tracking**: All `requirements*.txt` and `pyproject.toml` files are scanned
+- **Import Analysis**: Python imports are analyzed to discover undeclared dependencies
+- **Weekly Refresh**: The dependency inventory is automatically updated every Monday at 08:00 UTC
+- **CSV Output**: Complete inventory available at `metrics/dependency_inventory.csv`
+
+The dependency inventory workflow runs automatically and commits any changes to keep the inventory current with the latest package versions and usage patterns.
 
 ## Contributing
 
