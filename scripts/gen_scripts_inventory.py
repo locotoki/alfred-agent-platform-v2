@@ -99,6 +99,15 @@ def main() -> None:
         print(f"Error: Repository root not found at {repo_root}", file=sys.stderr)
         sys.exit(1)
 
+    # Load existing CSV if present to preserve manual annotations
+    status_map = {}
+    existing = repo_root / "metrics" / "scripts_inventory.csv"
+    if existing.exists():
+        with existing.open() as f:
+            reader = csv.DictReader(f)
+            for row in reader:
+                status_map[row["path"]] = row.get("status", "UNKNOWN")
+
     # Collect script files
     script_files = list(find_script_files(repo_root))
 
@@ -107,10 +116,11 @@ def main() -> None:
 
     # Output CSV to stdout
     writer = csv.writer(sys.stdout)
-    writer.writerow(["path", "ext", "size_bytes"])
+    writer.writerow(["path", "ext", "size_bytes", "status"])
 
     for path, ext, size in script_files:
-        writer.writerow([path, ext, size])
+        status = status_map.get(path, "UNKNOWN")
+        writer.writerow([path, ext, size, status])
 
 
 if __name__ == "__main__":
