@@ -1,7 +1,6 @@
 path,ext,size_bytes,status
 adapters/telegram/__init__.py,.py,52,UNKNOWN
 adapters/telegram/app.py,.py,6237,UNKNOWN
-adapters/telegram/start.sh,.sh,774,UNKNOWN
 agents/social_intel/__init__.py,.py,102,UNKNOWN
 agents/social_intel/adapters/__init__.py,.py,250,UNKNOWN
 agents/social_intel/adapters/a2a_adapter.py,.py,2614,UNKNOWN
@@ -90,7 +89,6 @@ alfred/utils/string_utils.py,.py,1823,UNKNOWN
 api/routes/__init__.py,.py,206,UNKNOWN
 api/routes/alert_snooze.py,.py,5308,UNKNOWN
 api/routes/thresholds.py,.py,3013,UNKNOWN
-apply-black.sh,.sh,310,UNKNOWN
 arch/spring_clean/classify_files.py,.py,5042,UNKNOWN
 backend/alfred/alerts/ranker.py,.py,13824,UNKNOWN
 backend/alfred/alerts/rules.py,.py,10253,UNKNOWN
@@ -102,20 +100,11 @@ backend/alfred/ml/alert_dataset.py,.py,8430,UNKNOWN
 backend/alfred/ml/faiss_index.py,.py,15057,UNKNOWN
 backend/alfred/ml/model_registry.py,.py,12232,UNKNOWN
 backend/alfred/ml/retrain_pipeline.py,.py,10853,UNKNOWN
-bootstrap/init-storage-schema.sh,.sh,1634,UNKNOWN
-check-db-ready.sh,.sh,1435,UNKNOWN
-clean-storage-schema.sh,.sh,642,UNKNOWN
 clean-youtube-service.ts,.ts,16421,UNKNOWN
-cleanup-temp/cleanup.sh,.sh,513,UNKNOWN
-complete-storage-reset.sh,.sh,1805,UNKNOWN
 create-niche-scout-results.js,.js,2574,UNKNOWN
 diagnostics/rca/app.py,.py,5832,UNKNOWN
 diagnostics/rca/fix_app.py,.py,6833,UNKNOWN
-docker-compose-env.sh,.sh,286,UNKNOWN
-docs/archive/root-cleanup-20250513/check-db-ready.sh,.sh,1435,UNKNOWN
-docs/archive/root-cleanup-20250513/clean-storage-schema.sh,.sh,642,UNKNOWN
 docs/archive/root-cleanup-20250513/clean-youtube-service.ts,.ts,16421,UNKNOWN
-docs/archive/root-cleanup-20250513/complete-storage-reset.sh,.sh,1805,UNKNOWN
 docs/archive/root-cleanup-20250513/create-niche-scout-results.js,.js,2574,UNKNOWN
 docs/archive/root-cleanup-20250513/direct-youtube-api-test.js,.js,8741,UNKNOWN
 docs/archive/root-cleanup-20250513/fix-port-issue.js,.js,7362,UNKNOWN

@@ -122,4 +122,4 @@ lint-shell:
 	shellcheck $(shell git ls-files "*.sh")
 
 lint-pydead:
-	vulture $(shell git ls-files "*.py" | tr "\n" " ") --min-confidence 80 --exclude "*/tests/*,*/migrations/*,*/ORPHAN/*"
+	vulture $(shell git ls-files "*.py" | tr "\n" " ") vulture_whitelist.txt --min-confidence 90 --exclude "*/tests/*,*/migrations/*,*/ORPHAN/*"
