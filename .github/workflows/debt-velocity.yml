@@ -1,0 +1,18 @@
+name: debt-velocity
+on:
+  schedule:
+    - cron: '0 8 * * MON'
+jobs:
+  velocity:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: make debt-velocity
+      - run: |
+          if git diff --quiet metrics/tech_debt_velocity.csv; then
+            echo "No change"
+          else
+            git config user.name "bot"; git config user.email "bot@example.com"
+            git commit -am "chore: weekly debt velocity update"
+            git push
+          fi
