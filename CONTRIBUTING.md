@@ -36,6 +36,15 @@ docker compose -f docker-compose.yml -f docker-compose.dev.yml --profile dev up 
 docker compose -f docker-compose.yml -f docker-compose.dev.yml -f docker-compose.local.yml --profile dev up -d
 ```
 
+**Important**: After dependency bumps, developers must rebuild containers to ensure consistency:
+```bash
+alfred up --rebuild --detach
+# or
+docker compose -f docker-compose.yml -f docker-compose.dev.yml build --no-cache
+```
+
+**Note**: If you encounter failing *dist-packages* guard errors, it usually means your container is stale and needs rebuilding. This check ensures development and CI environments use identical package sets (ADR-010).
+
 ### Branch Naming Convention
 
 All branches should follow this naming pattern:
