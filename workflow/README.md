@@ -70,3 +70,9 @@ Removal happens in Phase C-3 after one release cycle.
 * New CI job **lint** runs `shellcheck` on all shell scripts and `vulture`
   on Python code (excluding tests/migrations).
 * Build fails on any new ShellCheck error or vulture-detected dead code.
+
+**Phase C-4 — Tier-0 lint & dead-code gating**
+
+* `lint` workflow is now **required**.
+* `vulture` runs at confidence ≥ 90; symbols used dynamically should be added to `vulture_whitelist.txt`.
+* Any file tagged **ORPHAN** must be deleted before the next release cycle.
