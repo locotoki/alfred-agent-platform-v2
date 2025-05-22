@@ -3,6 +3,8 @@
 import subprocess
 from pathlib import Path
 
+import pytest
+
 
 def test_audit_dashboard_generator_exists():
     """Test that the audit dashboard generator script exists."""
@@ -26,41 +28,37 @@ def test_audit_dashboard_can_be_generated():
     assert dashboard_path.exists()
 
 
-def test_audit_dashboard_contains_badges():
-    """Test that the audit dashboard contains the required workflow badges."""
-    repo_root = Path(__file__).parent.parent.parent
-    dashboard_path = repo_root / "docs" / "audit" / "dashboard.md"
-    assert dashboard_path.exists()
-
-    with open(dashboard_path, "r", encoding="utf-8") as f:
-        content = f.read()
-
-    expected_badges = [
+@pytest.mark.parametrize(
+    "badge",
+    [
         "deps-inventory-cron.yml/badge.svg",
         "vuln-scan-cron.yml/badge.svg",
         "license-scan-cron.yml/badge.svg",
-    ]
-    for badge in expected_badges:
-        assert badge in content
-
-
-def test_audit_dashboard_format():
-    """Test that the audit dashboard has proper markdown format."""
+    ],
+)
+def test_audit_dashboard_contains_badges(badge):
+    """Test that the audit dashboard contains the required workflow badges."""
     repo_root = Path(__file__).parent.parent.parent
-    dashboard_path = repo_root / "docs" / "audit" / "dashboard.md"
-    assert dashboard_path.exists()
-
-    with open(dashboard_path, "r", encoding="utf-8") as f:
+    with open(repo_root / "docs" / "audit" / "dashboard.md", "r", encoding="utf-8") as f:
         content = f.read()
+    assert badge in content
 
-    required_sections = [
+
+@pytest.mark.parametrize(
+    "section",
+    [
         "# 📊 Dependency Audit Dashboard",
         "## 🛡️ Status Badges",
         "## 📈 Summary Statistics",
         "## 📋 Data Sources",
-    ]
-    for section in required_sections:
-        assert section in content
+    ],
+)
+def test_audit_dashboard_format(section):
+    """Test that the audit dashboard has proper markdown format."""
+    repo_root = Path(__file__).parent.parent.parent
+    with open(repo_root / "docs" / "audit" / "dashboard.md", "r", encoding="utf-8") as f:
+        content = f.read()
+    assert section in content
 
 
 def test_makefile_audit_dashboard_target():
@@ -71,42 +69,36 @@ def test_makefile_audit_dashboard_target():
     assert "audit-dashboard:" in content and "gen_audit_dashboard.py" in content
 
 
-def test_workflow_file_exists():
+@pytest.mark.parametrize(
+    "element", ["name: Audit Dashboard Update", "cron: '25 8 * * 1'", "make audit-dashboard"]
+)
+def test_workflow_file_exists(element):
     """Test that the audit dashboard cron workflow exists."""
     repo_root = Path(__file__).parent.parent.parent
-    workflow_path = repo_root / ".github" / "workflows" / "audit-dashboard-cron.yml"
-    assert workflow_path.exists()
-
-    with open(workflow_path, "r", encoding="utf-8") as f:
+    with open(
+        repo_root / ".github" / "workflows" / "audit-dashboard-cron.yml", "r", encoding="utf-8"
+    ) as f:
         content = f.read()
-
-    assert "name: Audit Dashboard Update" in content
-    assert "cron: '25 8 * * 1'" in content
-    assert "make audit-dashboard" in content
+    assert element in content
 
 
-def test_dashboard_contains_statistics():
+@pytest.mark.parametrize(
+    "section", ["### Dependencies", "### Security", "### License Compliance", "**Total Packages**"]
+)
+def test_dashboard_contains_statistics(section):
     """Test that the dashboard contains basic statistics sections."""
     repo_root = Path(__file__).parent.parent.parent
     with open(repo_root / "docs" / "audit" / "dashboard.md", "r", encoding="utf-8") as f:
         content = f.read()
-
-    stats_sections = [
-        "### Dependencies",
-        "### Security",
-        "### License Compliance",
-        "**Total Packages**",
-    ]
-    for section in stats_sections:
-        assert section in content
+    assert section in content
 
 
-def test_dashboard_links_to_data_sources():
+@pytest.mark.parametrize(
+    "link", ["dependency_inventory.csv", "vulnerability_report.csv", "license_report.csv"]
+)
+def test_dashboard_links_to_data_sources(link):
     """Test that the dashboard contains links to the CSV data sources."""
     repo_root = Path(__file__).parent.parent.parent
     with open(repo_root / "docs" / "audit" / "dashboard.md", "r", encoding="utf-8") as f:
         content = f.read()
-
-    data_links = ["dependency_inventory.csv", "vulnerability_report.csv", "license_report.csv"]
-    for link in data_links:
-        assert link in content
+    assert link in content
