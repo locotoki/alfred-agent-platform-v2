@@ -1,0 +1,10 @@
+# ML dependencies with Ubuntu 22.04 compatibility
+# Use CPU-only torch with pinned version for stable builds
+torch==2.2.*; platform_machine != "arm64"
+faiss-cpu==1.7.4
+sentence-transformers==2.2.2
+transformers==4.37.0
+
+# Additional ML testing dependencies
+numpy>=1.24.0
+scikit-learn>=1.3.0

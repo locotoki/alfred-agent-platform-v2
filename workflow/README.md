@@ -81,3 +81,47 @@ Removal happens in Phase C-3 after one release cycle.
 
 * tech-debt velocity CSV auto-updates weekly
 * badge shows SC-250 complete; milestone closed
+
+## Dependency-Audit Initiative
+
+The repository maintains an automated inventory of all Python dependencies to support vulnerability scanning, license compliance, and dependency management.
+
+### Dependency Inventory System
+
+The dependency inventory system automatically scans all `requirements*.txt` and `pyproject.toml` files across the repository, analyzes import usage patterns, and generates a comprehensive CSV report.
+
+**Files:**
+- `scripts/gen_dependency_inventory.py` - Generator script that scans dependency files and imports
+- `metrics/dependency_inventory.csv` - Generated CSV with dependency metadata
+
+**Usage:**
+```bash
+# Generate fresh inventory
+make deps-inventory
+
+# Manual generation
+python scripts/gen_dependency_inventory.py
+```
+
+**CSV Format:**
+- `package` - Package name as declared or imported
+- `declared_version` - Version constraint from requirements files (if any)
+- `latest_pinned` - Latest available version from PyPI (when accessible)
+- `location` - Source file path or 'import-only' for undeclared imports
+
+**Features:**
+- Scans all `requirements*.txt` and `pyproject.toml` files
+- Analyzes Python imports to find undeclared dependencies
+- Queries PyPI for latest version information
+- Excludes backup directories and temporary files
+- Supports multiple dependency declaration formats (pip, Poetry, PEP 621)
+
+**Pre-commit Integration:**
+The inventory is automatically regenerated and validated during pre-commit hooks. If the inventory is out of date, the commit will fail with instructions to run `make deps-inventory`.
+
+**Weekly Badge Plan:**
+A weekly automation will update project badges to reflect:
+- Total dependencies tracked
+- Percentage with version constraints
+- Number of outdated dependencies
+- Security vulnerability status

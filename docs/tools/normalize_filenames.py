@@ -287,7 +287,7 @@ def main():
 
     if args.dry_run:
         print("\nThis was a dry run. No files were actually modified.")
-        print(f"To actually rename files, run without the --dry-run option.")
+        print("To actually rename files, run without the --dry-run option.")
     else:
         print(f"\nMapping file written to: {args.output_mapping}")
         print(f"Successfully normalized filenames in {args.staging_dir}")

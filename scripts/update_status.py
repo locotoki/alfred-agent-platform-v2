@@ -6,7 +6,6 @@ epic:SC-241 and updates status.json in the repo root with current progress.
 """
 
 import json
-import os
 import subprocess
 import sys
 from datetime import datetime

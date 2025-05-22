@@ -5,7 +5,6 @@ channel strategy with competitor analysis and content gaps.
 """
 
 # type: ignore
-import asyncio
 import json
 import os
 import time
