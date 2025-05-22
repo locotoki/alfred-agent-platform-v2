@@ -39,11 +39,10 @@ class BizOpsSettings:
             "AGENT_LEGAL_API_KEY": "BIZOPS_LEGAL_API_KEY",
             "FINANCIAL_TAX_API_KEY": "BIZOPS_FINANCE_API_KEY",
             "AGENT_FINANCIAL_API_KEY": "BIZOPS_FINANCE_API_KEY",
-            # Legacy database URLs
+            # Legacy database URLs (agent-specific only)
             "ALFRED_DATABASE_URL": "BIZOPS_DATABASE_URL",
-            "DATABASE_URL": "BIZOPS_DATABASE_URL",
             "ALFRED_REDIS_URL": "BIZOPS_REDIS_URL",
-            "REDIS_URL": "BIZOPS_REDIS_URL",
+            # Removed global DATABASE_URL and REDIS_URL to avoid CI conflicts
             # Legacy service URLs
             "ALFRED_RAG_URL": "BIZOPS_RAG_URL",
             "ALFRED_RAG_LEGAL_KEY": "BIZOPS_RAG_LEGAL_KEY",
@@ -52,7 +51,7 @@ class BizOpsSettings:
             "FINANCIAL_RAG_KEY": "BIZOPS_RAG_FINANCE_KEY",
             "ALFRED_MODEL_ROUTER_URL": "BIZOPS_MODEL_ROUTER_URL",
             "ALFRED_OPENAI_API_KEY": "BIZOPS_OPENAI_API_KEY",
-            "OPENAI_API_KEY": "BIZOPS_OPENAI_API_KEY",
+            # Removed global OPENAI_API_KEY check to avoid CI conflicts
         }
 
         found_legacy = []
