@@ -69,6 +69,7 @@ The licence gate emits Prometheus metrics:
 alfred_licence_disallowed_total{package="pkg", licence="GPL-3.0"} 1
 ```
 
+**Dashboard**: View the "Disallowed OSS licences" panel in the [Tech-Debt: Dependency Freshness](../../metrics/grafana/tech_debt_dependency_freshness.json) Grafana dashboard.
 Alert fires when `alfred_licence_disallowed_total > 0` (Slack: `#alfred-alerts`).
 
 ## Troubleshooting

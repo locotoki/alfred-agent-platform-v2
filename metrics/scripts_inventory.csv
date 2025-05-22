@@ -45,7 +45,7 @@ alfred/infrastructure/protocols.py,.py,5914,UNKNOWN
 alfred/llm/__init__.py,.py,130,UNKNOWN
 alfred/llm/protocols.py,.py,5243,UNKNOWN
 alfred/metrics/__init__.py,.py,178,UNKNOWN
-alfred/metrics/compliance.py,.py,590,UNKNOWN
+alfred/metrics/compliance.py,.py,591,UNKNOWN
 alfred/metrics/db_metrics.py,.py,7041,UNKNOWN
 alfred/metrics/metrics_collector.py,.py,7041,UNKNOWN
 alfred/metrics/protocols.py,.py,3019,UNKNOWN
@@ -75,7 +75,7 @@ alfred/remediation/__init__.py,.py,213,UNKNOWN
 alfred/remediation/graphs.py,.py,8161,UNKNOWN
 alfred/remediation/protocols.py,.py,4823,UNKNOWN
 alfred/remediation/settings.py,.py,2359,UNKNOWN
-alfred/scripts/__init__.py,.py,29,UNKNOWN
+alfred/scripts/__init__.py,.py,30,UNKNOWN
 alfred/scripts/licence_gate.py,.py,4558,UNKNOWN
 alfred/slack/__init__.py,.py,247,UNKNOWN
 alfred/slack/app.py,.py,5682,UNKNOWN
