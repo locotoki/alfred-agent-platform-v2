@@ -123,3 +123,6 @@ lint-shell:
 
 lint-pydead:
 	vulture $(shell git ls-files "*.py" | tr "\n" " ") vulture_whitelist.txt --min-confidence 90 --exclude "*/tests/*,*/migrations/*,*/ORPHAN/*"
+
+debt-velocity:
+	python scripts/gen_debt_velocity.py

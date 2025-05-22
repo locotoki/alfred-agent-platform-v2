@@ -1,10 +1,10 @@
 {
-  "branch": "main",
+  "branch": "ops/SC-250-finish",
   "last_green_sha": "73d19eb2dcac1639f7a010a840ddc827ae8ab555",
   "phase_complete": false,
   "tasks_done": 0,
   "tasks_total": 0,
-  "updated": "2025-05-22T08:52:52.493979",
-  "milestone": "SC-250 C-4 complete",
-  "description": "Tier-0 lint gating with vulture dead-code detection and orphan pruning complete"
+  "updated": "2025-05-22T09:34:59.880365",
+  "milestone": "SC-250 COMPLETE",
+  "description": "Spring-Clean initiative complete with debt velocity tracking and final orphan sweep"
 }
