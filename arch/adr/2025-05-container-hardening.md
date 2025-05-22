@@ -1,7 +1,8 @@
 # ADR-010 · Dev-container hardening
 
 Date: 2025-05-26
-Status: PROPOSED
+Status: ACCEPTED
+Accepted-on: 2025-05-26
 Authors: o3 Architect
 
 ## Context / Problem
