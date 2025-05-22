@@ -7,6 +7,7 @@ authors = ["Alfred Team <team@alfred.ai>"]
 [tool.poetry.dependencies]
 python = "^3.11"
 urllib3 = "^2.0.7"
+PyQt5 = "^5.15.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
