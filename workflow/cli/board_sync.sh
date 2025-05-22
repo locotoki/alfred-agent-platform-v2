@@ -216,7 +216,19 @@ find_project() {
 
     # List projects and find the one containing our issue
     local projects_json
-    if ! projects_json=$(gh project list --owner "$OWNER" --format json 2>/dev/null); then
+    local gh_error
+    if ! projects_json=$(gh project list --owner "$OWNER" --format json 2>&1); then
+        gh_error="$projects_json"
+        if [[ "$gh_error" =~ "403" ]] || [[ "$gh_error" =~ "HTTP 403" ]]; then
+            log_error "GitHub API returned 403 Forbidden - insufficient token permissions"
+            log_error "Add PAT with scopes: repo, project, workflow"
+            log_error "Steps to fix:"
+            log_error "  1. Create PAT at https://github.com/settings/tokens/new"
+            log_error "  2. Select scopes: repo (full), project (full), workflow"
+            log_error "  3. Run: gh auth login --with-token < token.txt"
+            log_error "  4. For CI: Add PAT as secret BOARD_SYNC_PAT"
+            exit 1
+        fi
         log_error "Failed to list projects. Missing project permissions?"
         log_error "Try: gh auth refresh -s read:project"
         exit 1
