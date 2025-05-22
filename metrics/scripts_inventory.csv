@@ -660,7 +660,8 @@ tests/smoke/test_dependency_inventory_cron.py,.py,2116,UNKNOWN
 tests/smoke/test_license_scan.py,.py,5932,UNKNOWN
 tests/smoke/test_orphan_pruned_A1.py,.py,556,UNKNOWN
 tests/smoke/test_orphan_pruned_A2.py,.py,556,UNKNOWN
-tests/smoke/test_orphan_pruned_B1.py,.py,555,UNKNOWN
+tests/smoke/test_orphan_pruned_B1.py,.py,556,UNKNOWN
+tests/smoke/test_orphan_pruned_B2.py,.py,555,UNKNOWN
 tests/smoke/test_slack_alert.py,.py,5704,UNKNOWN
 tests/smoke/test_telegram_adapter.py,.py,2097,UNKNOWN
 tests/smoke/test_vuln_gate.py,.py,6591,UNKNOWN
