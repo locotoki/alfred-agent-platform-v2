@@ -1,9 +1,0 @@
-# Use the official Supabase storage image as base
-FROM supabase/storage-api:v0.40.4
-
-# Add our custom startup script that bypasses migrations
-COPY bypass-migrations.js /app/bypass-migrations.js
-
-# Start with our custom entry point that bypasses migrations
-ENTRYPOINT []
-CMD ["node", "/app/bypass-migrations.js"]
