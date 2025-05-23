@@ -76,7 +76,7 @@ alfred/remediation/graphs.py,.py,7921,UNKNOWN
 alfred/remediation/protocols.py,.py,4639,UNKNOWN
 alfred/remediation/settings.py,.py,2289,UNKNOWN
 alfred/scripts/__init__.py,.py,29,UNKNOWN
-alfred/scripts/licence_gate.py,.py,5368,UNKNOWN
+alfred/scripts/licence_gate.py,.py,5519,UNKNOWN
 alfred/slack/__init__.py,.py,237,UNKNOWN
 alfred/slack/app.py,.py,5520,UNKNOWN
 alfred/slack/diagnostics/__init__.py,.py,102,UNKNOWN
