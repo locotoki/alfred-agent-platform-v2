@@ -6,7 +6,8 @@ set -euo pipefail
 # Usage: ./board_sync.sh <ISSUE_URL_OR_NUMBER> [--dry-run]
 
 # Configuration
-readonly SCRIPT_NAME="$(basename "$0")"
+readonly SCRIPT_NAME
+SCRIPT_NAME="$(basename "$0")"
 readonly OWNER="locotoki"
 readonly REPO="alfred-agent-platform-v2"
 
@@ -272,11 +273,13 @@ find_project() {
         if echo "$projects_json" | jq -e 'type == "array"' >/dev/null 2>&1; then
             # Array format
             PROJECT_ID=$(echo "$projects_json" | jq -r '.[0].number' 2>/dev/null)
-            local project_title=$(echo "$projects_json" | jq -r '.[0].title // .[0].name' 2>/dev/null)
+            local project_title
+            project_title=$(echo "$projects_json" | jq -r '.[0].title // .[0].name' 2>/dev/null)
         else
             # Single object or different format
             PROJECT_ID=$(echo "$projects_json" | jq -r '.number' 2>/dev/null)
-            local project_title=$(echo "$projects_json" | jq -r '.title // .name' 2>/dev/null)
+            local project_title
+            project_title=$(echo "$projects_json" | jq -r '.title // .name' 2>/dev/null)
         fi
 
         if [[ -n "$PROJECT_ID" && "$PROJECT_ID" != "null" ]]; then
