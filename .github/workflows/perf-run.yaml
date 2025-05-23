@@ -1,0 +1,31 @@
+name: perf-run
+on:
+  issue_comment:
+    types: [created]
+jobs:
+  perf:
+    if: contains(github.event.comment.body, '/perf-run')
+    runs-on: ubuntu-latest
+    env:
+      QPS: 10
+      DURATION: 60
+    steps:
+      - uses: actions/checkout@v4
+      - name: Parse comment for overrides
+        id: parse
+        run: |
+          echo "::set-output name=ARGS::${{ github.event.comment.body }}"
+      - name: Compose stack
+        run: docker compose -f docker-compose.yml up -d pg redis minio server
+      - name: Wait for server
+        run: sleep 25
+      - name: Ingest docs
+        run: docker compose exec server alfred ingest ./docs/**/*.md --batch 64
+      - name: Run harness
+        run: |
+          python perf/harness_scaffold.py ${{ steps.parse.outputs.ARGS }} | tee harness.out
+      - name: Upload artefact
+        uses: actions/upload-artifact@v4
+        with:
+          name: harness-out
+          path: harness.out
