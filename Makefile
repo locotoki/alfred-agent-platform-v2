@@ -1,7 +1,7 @@
 # Makefile for Alfred Agent Platform v2
 
-include .env
-export $(shell sed 's/=.*//' .env)
+-include .env
+export $(shell [ -f .env ] && sed 's/=.*//' .env)
 
 .PHONY: help install start stop restart clean test test-unit test-integration test-e2e lint format fmt dev deploy build update-dashboards setup-metrics compose-generate up down board-sync scripts-inventory deps-inventory vuln-scan license-scan audit-dashboard cve-alert
 
