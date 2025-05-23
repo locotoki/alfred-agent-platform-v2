@@ -324,7 +324,7 @@ The dependency inventory, vulnerability scanning, and license compliance workflo
 ## Roadmap & GA Board
 
 - [GA v3.0.0 Checklist](./docs/GA_SCOPE_CHECKLIST.md) - Core slice deliverables for General Availability
-- Track progress on our [GitHub Project Board](https://github.com/locotoki/alfred-agent-platform-v2/projects)
+- [▶️ GA v3.0.0 Checklist](https://github.com/users/locotoki/projects/3) - Live tracking board
 
 ## Contributing
 
