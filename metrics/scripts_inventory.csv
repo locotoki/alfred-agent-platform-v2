@@ -651,8 +651,8 @@ tests/unit/test_health_module.py,.py,3496,UNKNOWN
 tests/validation/conftest.py,.py,520,UNKNOWN
 tests/validation/test_validation_marker.py,.py,294,UNKNOWN
 update-health-endpoints.sh,.sh,1419,UNKNOWN
-validate-orchestration.sh,.sh,2200,UNKNOWN
-verify-port-config.sh,.sh,8011,UNKNOWN
+validate-orchestration.sh,.sh,2242,UNKNOWN
+verify-port-config.sh,.sh,8060,UNKNOWN
 whatsapp-adapter/src/app.py,.py,1318,UNKNOWN
 workflow/cli/board_sync.sh,.sh,13287,UNKNOWN
 workflow/cli/scripts_inventory.sh,.sh,1269,UNKNOWN
