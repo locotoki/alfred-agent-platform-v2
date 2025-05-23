@@ -7,10 +7,10 @@ agents/social_intel/adapters/a2a_adapter.py,.py,2688,UNKNOWN
 agents/social_intel/agent.py,.py,1573,UNKNOWN
 agents/social_intel/flows/__init__.py,.py,190,UNKNOWN
 agents/social_intel/flows/youtube_flows.py,.py,23710,UNKNOWN
-agents/social_intel/models/__init__.py,.py,518,UNKNOWN
-agents/social_intel/models/youtube_api.py,.py,6330,UNKNOWN
-agents/social_intel/models/youtube_models.py,.py,4574,UNKNOWN
-agents/social_intel/models/youtube_vectors.py,.py,10356,UNKNOWN
+agents/social_intel/models/__init__.py,.py,586,UNKNOWN
+agents/social_intel/models/youtube_api.py,.py,6436,UNKNOWN
+agents/social_intel/models/youtube_models.py,.py,4723,UNKNOWN
+agents/social_intel/models/youtube_vectors.py,.py,10478,UNKNOWN
 alfred/__init__.py,.py,62,UNKNOWN
 alfred/adapters/__init__.py,.py,94,UNKNOWN
 alfred/adapters/slack/tests/test_webhook.py,.py,9276,UNKNOWN
@@ -30,7 +30,7 @@ alfred/alerts/explainer/service.py,.py,5853,UNKNOWN
 alfred/alerts/feature_flags.py,.py,2498,UNKNOWN
 alfred/alerts/grouping.py,.py,1787,UNKNOWN
 alfred/alerts/models.py,.py,384,UNKNOWN
-alfred/alerts/models/alert_group.py,.py,1814,UNKNOWN
+alfred/alerts/models/alert_group.py,.py,2023,UNKNOWN
 alfred/alerts/protocols.py,.py,1483,UNKNOWN
 alfred/alerts/tests/__init__.py,.py,41,UNKNOWN
 alfred/alerts/tests/test_dispatcher.py,.py,8730,UNKNOWN
@@ -63,11 +63,11 @@ alfred/model/protocols.py,.py,4156,UNKNOWN
 alfred/model/registry/__init__.py,.py,26,UNKNOWN
 alfred/model/registry/health.py,.py,910,UNKNOWN
 alfred/model/registry/main.py,.py,6335,UNKNOWN
-alfred/model/registry/models/models.py,.py,9637,UNKNOWN
+alfred/model/registry/models/models.py,.py,9755,UNKNOWN
 alfred/model/router/__init__.py,.py,125,UNKNOWN
 alfred/model/router/main.py,.py,5595,UNKNOWN
 alfred/model/router/models/__init__.py,.py,0,UNKNOWN
-alfred/model/router/models/models.py,.py,5524,UNKNOWN
+alfred/model/router/models/models.py,.py,5688,UNKNOWN
 alfred/protocols.py,.py,191,UNKNOWN
 alfred/rag/__init__.py,.py,118,UNKNOWN
 alfred/rag/protocols.py,.py,4499,UNKNOWN
@@ -650,5 +650,5 @@ update-health-endpoints.sh,.sh,1462,UNKNOWN
 validate-orchestration.sh,.sh,2265,UNKNOWN
 verify-port-config.sh,.sh,8194,UNKNOWN
 whatsapp-adapter/src/app.py,.py,1368,UNKNOWN
-workflow/cli/board_sync.sh,.sh,13259,UNKNOWN
+workflow/cli/board_sync.sh,.sh,13684,UNKNOWN
 workflow/cli/scripts_inventory.sh,.sh,1309,UNKNOWN
