@@ -1,6 +1,6 @@
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.5.0
+    rev: v5.0.0
     hooks:
       - id: check-added-large-files
       - id: check-yaml
@@ -9,23 +9,25 @@ repos:
       - id: trailing-whitespace
       - id: check-case-conflict
       - id: check-merge-conflict
+      - id: mixed-line-ending
+        args: [--fix=lf]
 
   - repo: https://github.com/psf/black
-    rev: 24.4.2
+    rev: 25.1.0
     hooks:
       - id: black
         language_version: python3.11
         exclude: "(youtube-test-env/|migrations/|node_modules/|\\.git/|\\.mypy_cache/|\\.env/|\\.venv/|env/|venv/|\\.ipynb/|cleanup-temp/|docs/archive/|docs/tools/)"
 
   - repo: https://github.com/pycqa/isort
-    rev: 5.13.2
+    rev: 5.13.0
     hooks:
       - id: isort
         name: isort (python)
         args: ["--check", "--profile", "black", "--line-ending", "LF", "--filter-files"]
 
   - repo: https://github.com/pycqa/flake8
-    rev: 7.0.0
+    rev: 7.2.0
     hooks:
       - id: flake8
         additional_dependencies: [flake8-docstrings, flake8-quotes]
