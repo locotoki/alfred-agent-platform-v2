@@ -1,0 +1,85 @@
+{
+  "title": "Agent Core Latency",
+  "uid": "agent-core-latency",
+  "version": 1,
+  "templating": {
+    "list": [
+      {
+        "name": "job",
+        "type": "query",
+        "datasource": "Prometheus",
+        "hide": 0,
+        "query": "label_values(up, job)",
+        "refresh": 2,
+        "sort": 1,
+        "definition": ""
+      },
+      {
+        "name": "instance",
+        "type": "query",
+        "datasource": "Prometheus",
+        "hide": 0,
+        "query": "label_values(up{job=~\"$job\"}, instance)",
+        "refresh": 2,
+        "sort": 1,
+        "definition": ""
+      }
+    ]
+  },
+  "panels": [
+    {
+      "id": 2,
+      "type": "timeseries",
+      "title": "p95 latency (ms)",
+      "datasource": "Prometheus",
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.95, rate(agent_core_request_duration_seconds_bucket{job=~\"$job\",instance=~\"$instance\"}[5m])) * 1000",
+          "legendFormat": "p95",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "ms",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 300
+              }
+            ]
+          }
+        }
+      },
+      "options": {
+        "legend": {
+          "showLegend": false
+        },
+        "tooltip": {
+          "mode": "single"
+        },
+        "sparkline": {
+          "show": true
+        }
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 0
+      }
+    }
+  ],
+  "time": {
+    "from": "now-6h",
+    "to": "now"
+  },
+  "refresh": "30s",
+  "schemaVersion": 36
+}
