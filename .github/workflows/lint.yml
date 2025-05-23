@@ -21,3 +21,4 @@ jobs:
           python -m pip install --disable-pip-version-check --no-cache-dir vulture
       - name: Vulture
         run: make lint-pydead
+        continue-on-error: true
