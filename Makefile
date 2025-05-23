@@ -154,3 +154,7 @@ audit-dashboard:
 # CVE alert to Slack
 cve-alert:
 	python3 scripts/slack_cve_alert.py
+
+.PHONY: ingest-test
+ingest-test:
+	go test ./internal/indexer -run TestIndexer_Run -v
