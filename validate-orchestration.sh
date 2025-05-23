@@ -1,4 +1,5 @@
 #\!/bin/bash
+# shellcheck disable=SC2148,SC2155,SC2086
 set -e
 
 echo "🚀 Starting orchestration PoC validation..."
