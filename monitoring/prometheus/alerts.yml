@@ -1,0 +1,23 @@
+groups:
+  - name: agent-core
+    rules:
+      - alert: AgentCoreP95High
+        expr: histogram_quantile(0.95, sum(rate(app_request_duration_seconds_bucket{job="agent-core"}[5m])) by (le)) * 1000 > 300
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High p95 latency on agent-core"
+          description: "p95 latency has exceeded 300 ms for 5 minutes."
+
+      - alert: AgentCoreErrorRateHigh
+        expr:  < /dev/null |
+          (rate(app_request_errors_total{job="agent-core"}[2m])
+           / rate(app_request_total{job="agent-core"}[2m])) * 100
+          > 5
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High error rate on agent-core"
+          description: "Error rate has exceeded 5 % for the past 2 minutes."
