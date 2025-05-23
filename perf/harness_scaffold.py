@@ -1,19 +1,20 @@
 #!/usr/bin/env python3
-"""
-Agent-core Performance Test Harness Scaffold
+"""Agent-core Performance Test Harness Scaffold.
+
 Target: 10 RPS for 60s, p95 < 300ms, error rate < 1%
 """
 
-import time
-import json
+import os
 import statistics
+import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
+
 import requests
 
 # Configuration
-BASE_URL = "http://localhost:8080"
-TARGET_RPS = 10
-DURATION_SECONDS = 60
+BASE_URL = os.getenv("TARGET_URL", "http://localhost:8080")
+TARGET_RPS = int(os.getenv("QPS", "10"))
+DURATION_SECONDS = int(os.getenv("DURATION", "60"))
 MAX_WORKERS = 20
 
 # Sample queries (≈150 chars each)
@@ -27,7 +28,7 @@ SAMPLE_QUERIES = [
 
 
 def make_request(query_text):
-    """Make a single request to the retrieval endpoint"""
+    """Make a single request to the retrieval endpoint."""
     start_time = time.time()
     try:
         response = requests.post(
@@ -47,7 +48,7 @@ def make_request(query_text):
 
 
 def run_load_test():
-    """Run the performance test"""
+    """Run the performance test."""
     print(f"🚀 Starting performance test: {TARGET_RPS} RPS for {DURATION_SECONDS}s")
     print(f"Target: p95 < 300ms, error rate < 1%\n")
 
@@ -83,8 +84,8 @@ def run_load_test():
         p99 = statistics.quantiles(latencies, n=100)[98]  # 99th percentile
         error_rate = (len(results) - len(successful_requests)) / len(results) * 100
 
-        print(f"\n📊 Performance Test Results")
-        print(f"{'='*40}")
+        print("\n📊 Performance Test Results")
+        print("=" * 40)
         print(f"Total requests: {len(results)}")
         print(f"Successful: {len(successful_requests)}")
         print(f"Error rate: {error_rate:.2f}%")
