@@ -200,6 +200,7 @@ scripts/canary-monitor.sh,.sh,6322,UNKNOWN
 scripts/check-branch-protection.sh,.sh,2098,UNKNOWN
 scripts/check-ci-pr.sh,.sh,524,UNKNOWN
 scripts/ci_vuln_gate.py,.py,6633,UNKNOWN
+scripts/claude-screenshot.sh,.sh,3303,UNKNOWN
 scripts/cleanup-ci-files.sh,.sh,1046,UNKNOWN
 scripts/cleanup-docker-compose.sh,.sh,5968,UNKNOWN
 scripts/cleanup-inactive-compose-files.sh,.sh,3487,UNKNOWN
@@ -300,6 +301,7 @@ scripts/run_quick_health_check.sh,.sh,765,UNKNOWN
 scripts/run_synthetic_load.sh,.sh,890,UNKNOWN
 scripts/safe-sync.sh,.sh,5190,UNKNOWN
 scripts/scaffold_compose_snippets.py,.py,3055,UNKNOWN
+scripts/screenshot.py,.py,4999,UNKNOWN
 scripts/setup-db-metrics.sh,.sh,4089,UNKNOWN
 scripts/setup-deployment-tools.sh,.sh,1870,UNKNOWN
 scripts/skip-ci-for-cleanup.sh,.sh,478,UNKNOWN
@@ -315,6 +317,10 @@ scripts/standardize-service-health.sh,.sh,4456,UNKNOWN
 scripts/start-all-dev.sh,.sh,2809,UNKNOWN
 scripts/tag-healthcheck-release.sh,.sh,951,UNKNOWN
 scripts/tag-release.sh,.sh,552,UNKNOWN
+<<<<<<< HEAD
+=======
+scripts/take-screenshot.js,.js,3014,UNKNOWN
+>>>>>>> 619b0a3e (feat(observability): GA panels only - p95 latency, error-rate & alert)
 scripts/test_dashboards.py,.py,6879,UNKNOWN
 scripts/update-alert-labels.py,.py,3120,UNKNOWN
 scripts/update-ci-command.sh,.sh,912,UNKNOWN
