@@ -17,6 +17,19 @@ scrape_configs:
     static_configs:
       - targets: ['localhost:9090']
 
+  # Agent-core specific metrics with 5s scrape interval
+  - job_name: 'agent-core'
+    scrape_interval: 5s
+    static_configs:
+      - targets: ['agent-core:8001']
+    metrics_path: '/metrics'
+
+  # Agent-bizdev metrics
+  - job_name: 'agent-bizdev'
+    static_configs:
+      - targets: ['agent-bizdev:8002']
+    metrics_path: '/metrics'
+
   # Agent services metrics
   - job_name: 'alfred-bot'
     static_configs:
