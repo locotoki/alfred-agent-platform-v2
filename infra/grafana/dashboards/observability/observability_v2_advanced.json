@@ -1,0 +1,333 @@
+{
+  "dashboard": {
+    "id": null,
+    "uid": "obs-v2-advanced",
+    "title": "Observability v2 - Advanced Panels",
+    "tags": ["observability", "performance", "slo", "tech-debt", "advanced"],
+    "timezone": "browser",
+    "schemaVersion": 38,
+    "version": 1,
+    "refresh": "30s",
+    "time": {
+      "from": "now-24h",
+      "to": "now"
+    },
+    "templating": {
+      "list": [
+        {
+          "name": "datasource",
+          "type": "datasource",
+          "query": "prometheus",
+          "current": {
+            "selected": false,
+            "text": "Prometheus",
+            "value": "prometheus"
+          },
+          "hide": 0,
+          "includeAll": false,
+          "multi": false,
+          "refresh": 1,
+          "regex": "",
+          "skipUrlSync": false
+        },
+        {
+          "name": "environment",
+          "type": "query",
+          "query": "label_values(up, env)",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "$datasource"
+          },
+          "current": {
+            "selected": true,
+            "text": "All",
+            "value": "$__all"
+          },
+          "includeAll": true,
+          "multi": false,
+          "refresh": 1,
+          "sort": 1
+        },
+        {
+          "name": "service",
+          "type": "query",
+          "query": "label_values(up{env=~\"$environment\"}, job)",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "$datasource"
+          },
+          "current": {
+            "selected": true,
+            "text": "All",
+            "value": "$__all"
+          },
+          "includeAll": true,
+          "multi": true,
+          "refresh": 1,
+          "sort": 1
+        }
+      ]
+    },
+    "annotations": {
+      "list": [
+        {
+          "builtIn": 1,
+          "datasource": {
+            "type": "prometheus",
+            "uid": "$datasource"
+          },
+          "enable": true,
+          "hide": false,
+          "iconColor": "rgba(0, 211, 255, 1)",
+          "name": "Annotations & Alerts",
+          "type": "dashboard"
+        }
+      ]
+    },
+    "panels": [
+      {
+        "id": 1,
+        "title": "7-Day Burn Rate Sparkline",
+        "type": "stat",
+        "gridPos": {
+          "x": 0,
+          "y": 0,
+          "w": 12,
+          "h": 8
+        },
+        "datasource": {
+          "type": "prometheus",
+          "uid": "$datasource"
+        },
+        "targets": [
+          {
+            "expr": "(sum(rate(http_requests_total{status!~\"2..\",env=~\"$environment\",job=~\"$service\"}[7d])) / sum(rate(http_requests_total{env=~\"$environment\",job=~\"$service\"}[7d]))) / 0.01",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "none",
+            "decimals": 2,
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "yellow",
+                  "value": 1
+                },
+                {
+                  "color": "red",
+                  "value": 2
+                }
+              ]
+            }
+          }
+        },
+        "options": {
+          "colorMode": "background",
+          "graphMode": "area",
+          "orientation": "horizontal",
+          "reduceOptions": {
+            "values": false,
+            "calcs": ["lastNotNull"]
+          },
+          "text": {
+            "titleSize": 14,
+            "valueSize": 20
+          },
+          "sparkline": {
+            "fillColor": "rgba(31, 118, 189, 0.18)",
+            "full": false,
+            "lineColor": "rgb(31, 120, 193)",
+            "show": true
+          }
+        }
+      },
+      {
+        "id": 2,
+        "title": "Service Availability Heatmap",
+        "type": "heatmap",
+        "gridPos": {
+          "x": 12,
+          "y": 0,
+          "w": 12,
+          "h": 8
+        },
+        "datasource": {
+          "type": "prometheus",
+          "uid": "$datasource"
+        },
+        "targets": [
+          {
+            "expr": "avg_over_time(up{env=~\"$environment\",job=~\"$service\"}[5m])",
+            "format": "time_series",
+            "legendFormat": "{{job}}",
+            "refId": "A"
+          }
+        ],
+        "options": {
+          "calculate": false,
+          "cellGap": 1,
+          "color": {
+            "scheme": "RdYlGn",
+            "steps": 128,
+            "reverse": false,
+            "min": 0,
+            "max": 1
+          },
+          "exemplars": {
+            "color": "rgba(255,0,255,0.7)"
+          },
+          "tooltip": {
+            "show": true,
+            "yHistogram": false
+          },
+          "yAxis": {
+            "axisLabel": "Service",
+            "axisPlacement": "left",
+            "reverse": false
+          },
+          "legend": {
+            "show": true
+          }
+        }
+      },
+      {
+        "id": 3,
+        "title": "Request Latency Histogram",
+        "type": "histogram",
+        "gridPos": {
+          "x": 0,
+          "y": 8,
+          "w": 12,
+          "h": 8
+        },
+        "datasource": {
+          "type": "prometheus",
+          "uid": "$datasource"
+        },
+        "targets": [
+          {
+            "expr": "sum(increase(http_request_duration_seconds_bucket{env=~\"$environment\",job=~\"$service\"}[5m])) by (le)",
+            "format": "heatmap",
+            "refId": "A"
+          }
+        ],
+        "options": {
+          "legend": {
+            "calcs": [],
+            "displayMode": "list",
+            "placement": "bottom"
+          }
+        }
+      },
+      {
+        "id": 4,
+        "title": "Error Budget Burn-Down Chart",
+        "type": "gauge",
+        "gridPos": {
+          "x": 12,
+          "y": 8,
+          "w": 6,
+          "h": 4
+        },
+        "datasource": {
+          "type": "prometheus",
+          "uid": "$datasource"
+        },
+        "targets": [
+          {
+            "expr": "1 - (sum(rate(http_requests_total{status!~\"2..\",env=~\"$environment\",job=~\"$service\"}[24h])) / sum(rate(http_requests_total{env=~\"$environment\",job=~\"$service\"}[24h])))",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "percentunit",
+            "min": 0,
+            "max": 1,
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "red",
+                  "value": null
+                },
+                {
+                  "color": "yellow",
+                  "value": 0.95
+                },
+                {
+                  "color": "green",
+                  "value": 0.99
+                }
+              ]
+            }
+          }
+        },
+        "options": {
+          "showThresholdLabels": true,
+          "showThresholdMarkers": true
+        }
+      },
+      {
+        "id": 5,
+        "title": "Alert Fatigue Ratio",
+        "type": "stat",
+        "gridPos": {
+          "x": 18,
+          "y": 8,
+          "w": 6,
+          "h": 4
+        },
+        "datasource": {
+          "type": "prometheus",
+          "uid": "$datasource"
+        },
+        "targets": [
+          {
+            "expr": "sum(increase(alerts_resolved_total{resolution=\"non_actionable\"}[24h])) / sum(increase(alerts_resolved_total[24h]))",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "percentunit",
+            "decimals": 2,
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "yellow",
+                  "value": 0.3
+                },
+                {
+                  "color": "red",
+                  "value": 0.5
+                }
+              ]
+            }
+          }
+        },
+        "options": {
+          "colorMode": "background",
+          "graphMode": "none",
+          "orientation": "horizontal",
+          "reduceOptions": {
+            "values": false,
+            "calcs": ["lastNotNull"]
+          }
+        }
+      }
+    ]
+  }
+}
