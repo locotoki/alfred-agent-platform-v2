@@ -278,6 +278,9 @@
       },
       "id": 12,
       "options": {
+        "orientation": "vertical",
+        "heatmapMode": "spectrum",
+        "bucketSize": 50,
         "calculate": false,
         "cellGap": 1,
         "cellValues": {},
@@ -294,7 +297,7 @@
           "color": "rgba(255,0,255,0.7)"
         },
         "filterValues": {
-          "le": 1e-9
+          "le": 1e-09
         },
         "legend": {
           "show": true
@@ -330,8 +333,15 @@
         }
       ],
       "timeFrom": "1h",
-      "title": "Latency Histogram (1 h)",
-      "type": "heatmap"
+      "title": "Latency Heat-map (50 ms buckets, 1 h)",
+      "type": "heatmap",
+      "links": [
+        {
+          "title": "View logs",
+          "url": "/explore?left=%5B%22now-1h%22,%22now%22,%22Loki%22,%7B%22expr%22%3A%22%7Bjob%3D%5C%22$job%5C%22%2Cinstance%3D%5C%22$instance%5C%22%7D%22%7D%5D",
+          "targetBlank": false
+        }
+      ]
     }
   ],
   "refresh": "5s",
