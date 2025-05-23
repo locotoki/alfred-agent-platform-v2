@@ -1,4 +1,4 @@
-# Agent-core Integration Surface  
+# Agent-core Integration Surface
 *Single source of truth for all cross-track interfaces* (generated 23 May 2025).
 
 ## 1 · Vector-store schema (`documents`)
@@ -9,8 +9,8 @@
 | `embedding` | `vector(1536)` | cosine distance – OpenAI `text-embedding-3-small` |
 | `metadata` | `jsonb`        | arbitrary key-value pairs                         |
 
-**Indexes**  
-* `IVFFLAT` on **embedding** (`lists=200`)  
+**Indexes**
+* `IVFFLAT` on **embedding** (`lists=200`)
 * `GIN` on full-text column `ts`
 
 ---
@@ -69,4 +69,3 @@ Footnote numbers in `answer` map to the `citations` array.
 | UI chat panel | Pending |  |
 
 **Update this table whenever a PR merges or an interface changes.**
-
