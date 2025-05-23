@@ -1,17 +1,11 @@
-name: Licence Gate
-
+name: weekly-licence-lint
 on:
-  pull_request:
-    branches: [main]
-    paths:
-      - "poetry.lock"
-      - "pyproject.toml"
-      - "requirements*.txt"
-      - ".licence_waivers"
-      - "alfred/scripts/licence_gate.py"
+  schedule:
+    - cron: '0 8 * * 1'   # Monday 08:00 UTC
+  workflow_dispatch:      # Allow manual trigger
 
 jobs:
-  licence-gate:
+  lint:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -46,4 +40,13 @@ jobs:
 
       - name: Run licence gate
         run: poetry run python -m alfred.scripts.licence_gate
-        continue-on-error: true  # TODO: remove on 2025-07-04
+
+      - name: Open issue if violations
+        if: failure()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh issue create \
+            --title "Licence gate failed on main (weekly lint)" \
+            --body "Automated weekly scan detected licence violations on \`$(date -u +%F)\`.\n\nPlease run \`python -m alfred.scripts.licence_gate\` locally and patch the allow-list or dependencies." \
+            --label "tech-debt"
