@@ -177,9 +177,11 @@ metrics_fix.py,.py,875,UNKNOWN
 migrations/versions/20250520_add_alert_group_table.py,.py,1658,UNKNOWN
 mission-control/src/index.js,.js,1098,UNKNOWN
 mission-control/src/streamlit_app.py,.py,5770,UNKNOWN
+mock_agent_core_metrics.sh,.sh,1015,UNKNOWN
 monitoring/scripts/docker_stats.py,.py,0,UNKNOWN
 mypy_fix/run-mypy-fixed.sh,.sh,964,UNKNOWN
 perf/__init__.py,.py,60,UNKNOWN
+perf/harness_scaffold.py,.py,3971,UNKNOWN
 perf/locustfile.py,.py,433,UNKNOWN
 perf/parse_results.py,.py,719,UNKNOWN
 perf/run.sh,.sh,157,UNKNOWN
@@ -574,6 +576,10 @@ start-platform-dryrun.sh,.sh,5795,UNKNOWN
 start-platform.sh,.sh,3962,UNKNOWN
 start-slack-commands.sh,.sh,1640,UNKNOWN
 start-slack.sh,.sh,865,UNKNOWN
+test_agent_core_e2e.sh,.sh,2522,UNKNOWN
+test_prometheus_agent_core.sh,.sh,2634,UNKNOWN
+test_prometheus_host.sh,.sh,1362,UNKNOWN
+test_prometheus_simple.sh,.sh,1172,UNKNOWN
 tests/__init__.py,.py,42,UNKNOWN
 tests/alfred/__init__.py,.py,33,UNKNOWN
 tests/alfred/ml/__init__.py,.py,36,UNKNOWN
@@ -614,7 +620,12 @@ tests/kind/conftest.py,.py,487,UNKNOWN
 tests/kind/test_kind_marker.py,.py,264,UNKNOWN
 tests/remediation/__init__.py,.py,41,UNKNOWN
 tests/remediation/test_graphs.py,.py,10536,UNKNOWN
+tests/scripts/mock_agent_core_metrics.sh,.sh,1015,UNKNOWN
+tests/scripts/test_agent_core_e2e.sh,.sh,2522,UNKNOWN
 tests/scripts/test_kpis.py,.py,941,UNKNOWN
+tests/scripts/test_prometheus_agent_core.sh,.sh,2634,UNKNOWN
+tests/scripts/test_prometheus_host.sh,.sh,1362,UNKNOWN
+tests/scripts/test_prometheus_simple.sh,.sh,1172,UNKNOWN
 tests/slack/test_basic.py,.py,1958,UNKNOWN
 tests/slack_app/__init__.py,.py,26,UNKNOWN
 tests/slack_app/conftest.py,.py,937,UNKNOWN
