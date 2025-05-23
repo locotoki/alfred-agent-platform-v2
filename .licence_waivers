@@ -1,0 +1,73 @@
+# Added during licence sweep - 2025-05-23
+CacheControl==UNKNOWN
+Markdown==UNKNOWN
+PyGObject==GNU Lesser General Public License v2 or later (LGPLv2+)
+RapidFuzz==UNKNOWN
+asttokens==Apache 2.0
+attrs==UNKNOWN
+certifi==Mozilla Public License 2.0 (MPL 2.0)
+chardet==GNU Library or Lesser General Public License (LGPL)
+click==UNKNOWN
+cloud-init==Dual-licensed under GPLv3 or Apache 2.0
+command-not-found==UNKNOWN
+defusedxml==Python Software Foundation License
+distlib==Python Software Foundation License
+distro-info==UNKNOWN
+docformatter==MIT License; Other/Proprietary License
+filelock==The Unlicense (Unlicense)
+fqdn==Mozilla Public License 2.0 (MPL 2.0)
+greenlet==MIT AND Python-2.0
+isoduration==ISC License (ISCL)
+jsonschema-specifications==UNKNOWN
+keyring==MIT License; Python Software Foundation License
+launchpadlib==GNU Library or Lesser General Public License (LGPL)
+lazr.restfulclient==GNU Library or Lesser General Public License (LGPL)
+lazr.uri==GNU Library or Lesser General Public License (LGPL)
+matplotlib==Python Software Foundation License
+mypy_extensions==UNKNOWN
+overrides==Apache License, Version 2.0
+pathspec==Mozilla Public License 2.0 (MPL 2.0)
+pexpect==ISC License (ISCL)
+pillow==UNKNOWN
+protobuf==3-Clause BSD License
+psycopg2-binary==GNU Library or Lesser General Public License (LGPL)
+ptyprocess==ISC License (ISCL)
+pycurl==GNU Library or Lesser General Public License (LGPL); MIT License
+python-apt==GNU GPL
+pyyaml_env_tag==UNKNOWN
+referencing==UNKNOWN
+shellingham==ISC License (ISCL)
+ssh-import-id==GPLv3
+systemd-python==GNU Lesser General Public License v2 or later (LGPLv2+)
+tqdm==MIT License; Mozilla Public License 2.0 (MPL 2.0)
+types-PyYAML==UNKNOWN
+types-python-dateutil==UNKNOWN
+types-requests==UNKNOWN
+typing_extensions==UNKNOWN
+ubuntu-pro-client==GPLv3
+ufw==GPL-3
+unattended-upgrades==UNKNOWN
+wadllib==GNU Library or Lesser General Public License (LGPL)
+zope.interface==Zope Public License
+
+tiktoken==MIT License
+
+Copyright (c) 2022 OpenAI, Shantanu Jain
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.

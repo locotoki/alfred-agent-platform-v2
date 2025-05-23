@@ -39,6 +39,9 @@ SAFE_UNKNOWN = {"urllib3"}  # allowed packages with UNKNOWN licence
 
 def _normalise(lic: str) -> List[str]:
     """Split composite licence strings and normalize."""
+    # Handle licences with embedded copyright text first
+    if lic.startswith("MIT License\n") and "Copyright" in lic:
+        return ["MIT License"]
     # split on common delimiters ';' ',' and strip
     parts = [p.strip() for p in re.split(r"[;,]", lic)]
     # map UNKNOWN to placeholder
