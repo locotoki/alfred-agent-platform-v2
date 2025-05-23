@@ -315,6 +315,7 @@ scripts/standardize-service-health.sh,.sh,4456,UNKNOWN
 scripts/start-all-dev.sh,.sh,2809,UNKNOWN
 scripts/tag-healthcheck-release.sh,.sh,951,UNKNOWN
 scripts/tag-release.sh,.sh,552,UNKNOWN
+scripts/test_dashboards.py,.py,6879,UNKNOWN
 scripts/update-alert-labels.py,.py,3120,UNKNOWN
 scripts/update-ci-command.sh,.sh,912,UNKNOWN
 scripts/update-healthcheck-binary.sh,.sh,1919,UNKNOWN
