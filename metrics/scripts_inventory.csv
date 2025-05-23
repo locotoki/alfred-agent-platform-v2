@@ -109,7 +109,7 @@ backend/alfred/ml/alert_dataset.py,.py,8430,UNKNOWN
 backend/alfred/ml/faiss_index.py,.py,15057,UNKNOWN
 backend/alfred/ml/model_registry.py,.py,12232,UNKNOWN
 backend/alfred/ml/retrain_pipeline.py,.py,10853,UNKNOWN
-bench/cold_start.sh,.sh,327,UNKNOWN
+bench/cold_start.sh,.sh,354,UNKNOWN
 clean-youtube-service.ts,.ts,16421,UNKNOWN
 create-niche-scout-results.js,.js,2574,UNKNOWN
 diagnostics/rca/app.py,.py,5832,UNKNOWN
