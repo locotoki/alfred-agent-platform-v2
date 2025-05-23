@@ -22,7 +22,7 @@ repos:
     hooks:
       - id: isort
         name: isort (python)
-        args: ["--check", "--profile", "black", "--line-ending", "LF"]
+        args: ["--check", "--profile", "black", "--line-ending", "LF", "--filter-files"]
 
   - repo: https://github.com/pycqa/flake8
     rev: 7.0.0
