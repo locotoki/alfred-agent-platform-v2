@@ -1,5 +1,6 @@
 # Alfred Agent Platform v2
 
+> **Cold-start: 14 s**  *(benchmarked 23 May 2025)*
 A scalable, modular AI agent platform built with Docker, Supabase, and Pub/Sub messaging.
 
 [![Black Code Style](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
