@@ -1,0 +1,23 @@
+The following dependencies were reported as UNKNOWN by pip-licenses but have been verified:
+
+Package                        Actual Licence              Notes
+----------------------------   ------------------------    ------------------------
+CacheControl                   Apache-2.0                  HTTP caching library
+Markdown                       BSD-3-Clause                Python-Markdown package
+RapidFuzz                      MIT                         Fast string matching
+attrs                          MIT                         Classes without boilerplate
+click                          BSD-3-Clause                Command line library
+command-not-found              GPL-3.0                     Ubuntu system package
+distro-info                    ISC                         Ubuntu system package
+jsonschema-specifications      MIT                         JSON Schema specifications
+mypy_extensions                MIT                         Runtime mypy extensions
+pillow                         HPND                        PIL fork (Historical Permission Notice)
+pyyaml_env_tag                 MIT                         YAML environment variable support
+referencing                    MIT                         JSON reference resolution
+types-PyYAML                   Apache-2.0                  Type stubs for PyYAML
+types-python-dateutil          Apache-2.0                  Type stubs for python-dateutil
+types-requests                 Apache-2.0                  Type stubs for requests
+typing_extensions              PSF-2.0                     Backported typing features
+unattended-upgrades            GPL-3.0                     Ubuntu system package
+
+All packages have been waived in .licence_waivers with UNKNOWN status as that's what pip-licenses reports.
