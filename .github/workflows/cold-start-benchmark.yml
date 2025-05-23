@@ -1,0 +1,18 @@
+# SPDX-License-Identifier: MIT
+name: cold-start-benchmark
+on: [pull_request]
+jobs:
+  bench:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install hyperfine
+        run: sudo apt-get update && sudo apt-get install -y hyperfine jq
+      - name: Run cold-start benchmark (info only)
+        run: |
+          ./bench/cold_start.sh
+      - name: Upload result
+        uses: actions/upload-artifact@v4
+        with:
+          name: cold_start
+          path: bench/cold_start.json
