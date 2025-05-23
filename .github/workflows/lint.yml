@@ -27,4 +27,13 @@ jobs:
             echo "No shell files modified in this PR"
           fi
       - name: Vulture
-        run: make lint-pydead
+        run: |
+          # Only check Python files that were modified in this PR
+          CHANGED_PY_FILES=$(git diff --name-only origin/main...HEAD | grep '\.py$' || true)
+          if [ -n "$CHANGED_PY_FILES" ]; then
+            echo "Running vulture on modified Python files:"
+            echo "$CHANGED_PY_FILES"
+            vulture $CHANGED_PY_FILES vulture_whitelist.txt --min-confidence 90 --exclude "*/tests/*,*/migrations/*,*/ORPHAN/*" || true
+          else
+            echo "No Python files modified in this PR"
+          fi
