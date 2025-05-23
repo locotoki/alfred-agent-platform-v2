@@ -16,5 +16,8 @@ jobs:
         run: |
           docker run --rm -v "$PWD:/mnt" koalaman/shellcheck-alpine:latest \
             find /mnt/workflow/cli -type f -name '*.sh' -exec shellcheck -x {} +
+      - name: Install Vulture
+        run: |
+          python -m pip install --disable-pip-version-check --no-cache-dir vulture
       - name: Vulture
         run: make lint-pydead
