@@ -310,7 +310,8 @@ find_issue_in_project() {
         return 1
     fi
 
-    local current_status=$(echo "$items_json" | jq -r ".[] | select(.id == \"$ITEM_ID\") | .status")
+    local current_status
+    current_status=$(echo "$items_json" | jq -r ".[] | select(.id == \"$ITEM_ID\") | .status")
     log_info "Found issue #$ISSUE_NUMBER in project (Item ID: $ITEM_ID, Status: $current_status)"
 
     # Check if already in Done
@@ -370,7 +371,8 @@ find_done_column() {
         exit 1
     fi
 
-    local done_name=$(echo "$field_options" | jq -r ".data.node.options[] | select(.id == \"$DONE_COLUMN_ID\") | .name")
+    local done_name
+    done_name=$(echo "$field_options" | jq -r ".data.node.options[] | select(.id == \"$DONE_COLUMN_ID\") | .name")
     log_info "Found Done status: '$done_name' (ID: $DONE_COLUMN_ID)"
 
     log_debug "Done column discovery completed"
