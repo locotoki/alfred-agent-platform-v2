@@ -8,13 +8,13 @@
 
 Testing a Poetry-only environment (isolated via `poetry run`) reveals:
 - **Poetry environment**: 2 packages total (structlog, urllib3) - **NO GPL packages**
-- **Full system**: 58 GPL/LGPL packages in current waivers  
+- **Full system**: 58 GPL/LGPL packages in current waivers
 - **Key insight**: Poetry completely eliminates GPL dependencies in isolated environment
 
 ## Poetry-Only Environment Packages (2 total)
 
 ```
-structlog==Apache Software License; MIT License  
+structlog==Apache Software License; MIT License
 urllib3==UNKNOWN
 ```
 
@@ -65,6 +65,6 @@ python3 -m alfred.scripts.licence_gate  # uses system Python
 ## Next Steps
 
 1. **Immediate**: Poetry environment achieves 100% GPL-free application dependencies
-2. **Production**: Containerized deployments can run with zero GPL waivers  
+2. **Production**: Containerized deployments can run with zero GPL waivers
 3. **Development**: Continue using system-wide waivers for Ubuntu compatibility
 4. **Future**: No psycopg3 migration needed - already GPL-free in Poetry environment
