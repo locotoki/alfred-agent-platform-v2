@@ -1,13 +1,13 @@
 # SPDX-License-Identifier: MIT
 # Uncomment the "on:" block when you're ready to push nightly images
-# on:
-#   schedule:
-#     - cron:  '0 2 * * *'
+on:
+  schedule:
+    - cron:  '0 2 * * *'
 #   workflow_dispatch:
 name: nightly-images
 jobs:
   build-push:
-    if: false   # flip to true when you uncomment the trigger
+    if: true   # flip to true when you uncomment the trigger
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4

@@ -11,6 +11,11 @@ jobs:
       - name: Run cold-start benchmark (info only)
         run: |
           ./bench/cold_start.sh
+      - name: Fail if mean > 25 s
+        run: |
+          MEAN=$(jq '.results[0].mean' bench/cold_start.json)
+          (( $(echo "$MEAN > 25" | bc -l) )) && { echo "❌ Slow: ${MEAN}s"; exit 1; }
+          echo "✅ Fast: ${MEAN}s"
       - name: Upload result
         uses: actions/upload-artifact@v4
         with:
