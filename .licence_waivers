@@ -1,4 +1,22 @@
 # Added during licence sweep - 2025-05-23
+# Note: The following packages report UNKNOWN but have known licences:
+# - CacheControl: Apache-2.0
+# - Markdown: BSD-3-Clause
+# - RapidFuzz: MIT
+# - attrs: MIT
+# - click: BSD-3-Clause
+# - command-not-found: GPL-3.0 (Ubuntu package)
+# - distro-info: ISC (Ubuntu package)
+# - jsonschema-specifications: MIT
+# - mypy_extensions: MIT
+# - pillow: HPND (Historical Permission Notice and Disclaimer)
+# - pyyaml_env_tag: MIT
+# - referencing: MIT
+# - types-PyYAML: Apache-2.0 (type stubs)
+# - types-python-dateutil: Apache-2.0 (type stubs)
+# - types-requests: Apache-2.0 (type stubs)
+# - typing_extensions: PSF-2.0
+# - unattended-upgrades: GPL-3.0 (Ubuntu package)
 CacheControl==UNKNOWN
 Markdown==UNKNOWN
 PyGObject==GNU Lesser General Public License v2 or later (LGPLv2+)
