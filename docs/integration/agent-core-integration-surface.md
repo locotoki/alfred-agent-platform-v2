@@ -55,6 +55,10 @@ Footnote numbers in `answer` map to the `citations` array.
 |--------|------|--------|
 | `embedding_repo_latency_seconds` | Histogram | `op` = `search` \\| `upsert` |
 | `http_server_request_duration_seconds` | Histogram | `route`, `status` |
+| `retrieval_requests_total` | Counter | - |
+| `retrieval_errors_total` | Counter | `kind` = `embedding` \\| `search` |
+| `retrieval_latency_ms` | Histogram | - |
+| `openai_tokens_total` | Counter | - |
 
 ---
 
@@ -62,8 +66,8 @@ Footnote numbers in `answer` map to the `citations` array.
 | Component | Status | PR / Branch |
 |-----------|--------|-------------|
 | Vector schema migration | Merged | #336 |
-| Ingest CLI & indexer | CI-red (fixing) | #339 |
-| Retrieval API & RAG loop | PR to open | `feat/retrieval-endpoint` |
+| Ingest CLI & indexer | Merged | #339 |
+| Retrieval API & RAG loop | In Review | #343 |
 | Perf harness (Locust) | Scaffolding | `perf/harness-t1` |
 | Observability dashboard | Pending |  |
 | UI chat panel | Pending |  |
