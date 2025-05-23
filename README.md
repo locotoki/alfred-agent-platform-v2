@@ -321,6 +321,11 @@ The platform maintains an automated inventory of all Python dependencies to supp
 
 The dependency inventory, vulnerability scanning, and license compliance workflows run automatically and commit any changes to maintain comprehensive security and compliance awareness across all Python dependencies.
 
+## Roadmap & GA Board
+
+- [GA v3.0.0 Checklist](./docs/GA_SCOPE_CHECKLIST.md) - Core slice deliverables for General Availability
+- Track progress on our [GitHub Project Board](https://github.com/locotoki/alfred-agent-platform-v2/projects)
+
 ## Contributing
 
 1. Fork the repository
