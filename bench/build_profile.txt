@@ -1,0 +1,20 @@
+# Service Build Times (seconds)
+slack-adapter: 38s
+ui-chat: 70s
+telegram-adapter: ~60s (estimated)
+
+# Image Sizes
+alfred-agent-platform-v2-ui-chat:latest 756MB
+alfred-slack-adapter:latest 406MB
+ghcr.io/locotoki/alfred-agent-platform-v2/slack_mcp_gateway:latest 302MB
+ghcr.io/locotoki/alfred-platform/slack_mcp_gateway:0.1.0-rc3 302MB
+ghcr.io/locotoki/alfred-platform/slack_mcp_gateway:de1a0b3 302MB
+ghcr.io/locotoki/alfred-platform/slack_mcp_gateway:latest 302MB
+ghcr.io/locotoki/slack-mcp-gateway:0.1.0-rc3 253MB
+localhost/alfred-platform/telegram-adapter:latest 257MB
+slack-adapter:test 669MB
+slack-mcp-gateway:0.1.0-rc3 626MB
+slack-mcp-gateway:latest 302MB
+slack_mcp_gateway-slack-mcp-gateway:latest 302MB
+test-slack-mcp-gateway:latest 302MB
+ui-chat:latest 760MB

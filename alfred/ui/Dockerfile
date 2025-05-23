@@ -10,7 +10,7 @@ WORKDIR /app
 RUN pip install --no-cache-dir streamlit requests
 
 # Copy application code
-COPY streamlit_chat_ui.py .
+COPY streamlit_chat.py .
 
 # Expose Streamlit port
 EXPOSE 8501
@@ -22,4 +22,4 @@ ENV ALFRED_MODEL_ROUTER_URL=http://model-router:8080
 ENV ENABLE_DIRECT_INFERENCE=true
 
 # Run the application with healthcheck wrapper
-CMD ["healthcheck", "--export-prom", ":9091", "--", "streamlit", "run", "streamlit_chat_ui.py", "--server.address=0.0.0.0"]
+CMD ["healthcheck", "--export-prom", ":9091", "--", "streamlit", "run", "streamlit_chat.py", "--server.address=0.0.0.0"]

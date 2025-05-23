@@ -12,5 +12,9 @@ if [[ ! -f "docker-compose.yml" ]] && [[ "${CI:-false}" == "true" ]]; then
 fi
 
 echo "⏱️  Measuring cold start…"
+# First ensure images are built
+echo "🐋 Building images if needed..."
+docker compose build >/dev/null 2>&1 || true
+
 hyperfine --warmup 1 --export-json "$RESULTS" 'docker compose down -v >/dev/null 2>&1 || true && time docker compose up -d'
 jq '.results[0].mean' "$RESULTS" | awk '{printf "⏱️  mean cold-start: %.2f s\n",$1}'
