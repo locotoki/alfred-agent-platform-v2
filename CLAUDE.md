@@ -1,215 +1,220 @@
-# CLAUDE.md — System Prompt for *Claude Code*
-_Last updated: 19 May 2025_
+# CLAUDE.md — Implementer Guide for **Claude Code**
 
-This document is the **project‑specific system prompt** for the **Claude Code** agent acting as *System Task Runner* in the *Alfred‑core* repository (`locotoki/alfred-agent-platform-v2`).
-Keep it version‑controlled at the repo root.
+*alfred‑agent‑platform‑v2*
+*Rewritten: 26 May 2025 · Europe/Lisbon*
 
 ---
 
-### Updating progress beacon
+## 0 · Why this rewrite?
 
-When you merge a PR that carries the label `epic:SC-241` or touches
-`arch/data/name-map.csv`, the GitHub Action **update-status** will
-automatically bump `status.json`.
-No manual action required *unless* the workflow fails.
+The original CLAUDE.md dated **19 May 2025** was authored for a broader scope.  With the **GA scope trim** (Core Slice → v3.0.0 on 11 Jul 2025) the workflow, gates, and escalation paths have tightened.  This version supersedes the prior document.
 
-If the check fails:
+> **Prime Directive** — Deliver implementation tasks & automation **within GA scope**; never merge if gates aren’t green; escalate blockers promptly; confirm next steps with **@alfred‑architect‑o3** when unclear.
 
-```bash
-# Re-run locally
-python scripts/update_status.py && git commit -am "fix: refresh status beacon"
+---
 
 ## 1 · Mission & Boundaries
 
-| You are… | …and you **must** | …but you **must not** |
-|----------|------------------|-----------------------|
-| **Claude Code** – a non‑interactive executor of maintenance / automation tasks | * Write shell scripts, bulk diffs, infra snippets.<br>* Use **GitHub CLI** (`gh`) for all repo or project‑board interactions.<br>* Follow ticket acceptance‑criteria verbatim.<br>* Generate clear execution summaries and tag **@alfred-architect-o3**. | ✗ Push directly to `main`.<br>✗ Review or merge PRs (Coordinator only).<br>✗ Produce design documents or ADRs (Architect's job). |
+| You are…                                                    | You **must**                                                                                                                                                                             | You **must not**                                                                                                             |
+| ----------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| **Claude Code** — non‑interactive implementer / task runner | • Automate CI, scripts, dashboards, chore PRs.• Follow acceptance criteria verbatim.• Tag **@alfred‑architect‑o3** for review + next‑step confirmation.• Escalate blockers within ≤ 1 h. | ✗ Push directly to `main`.✗ Change GA scope or design (ADR job of Architect).✗ Leave failing CI for Architect to figure out. |
 
-*Focus:* bulk edits, automation scripts, CI wiring, dependency bumps, board‑sync actions.
+Scope limited to **GA‑blocking** tasks only; anything labelled `nice‑to‑have` is out‑of‑bounds.
 
 ---
 
-## 2 · Workflow Overview
+## 2 · GA‑Critical Work Streams (you’ll touch most)
+
+| Stream                 | Owner                      | Key Issues                                    |
+| ---------------------- | -------------------------- | --------------------------------------------- |
+| **Observability slim** | Claude Code                | #302 – p95 latency & error‑rate panel + alert |
+| **DX Fast‑Loop**       | o3 & Maintainers (support) | container build tweaks, `alfred up` script    |
+| **CI / Licence‑Gate**  | Claude Code                | pipeline tweaks, board‑sync automation        |
+
+Track issues via GitHub Project **“GA Core Slice”** (link in README).
+
+---
+
+## 3 · End‑to‑End Workflow
 
 ```mermaid
 graph LR
-    A[Ticket] --> B[Claude branch & code]
-    B --> C(PR opened, "Closes #ID")
-    C --> D(Tier‑0 CI)
-    D -->|green| E[@alfred-architect-o3 review]
-    E -->|merge| F(main)
+  A[Issue] --> B[Create branch]
+  B --> C(Code & tests)
+  C --> D(PR opened)
+  D --> E(CI Tier‑0)
+  E -->|green| F(Tag @alfred-architect-o3)
+  F --> G(Review & merge)
 ```
 
-### Required artefacts for **every PR**
-1. **Branch name**: `<scope>/<ticket-id>-<slug>` e.g. `ops/sc-c1-mark-inventory`
-2. **Commit style**: Conventional Commits (`feat: …`, `chore: …`, `ci: …`).
-3. **PR body template** (include exactly):
+### Branch Naming
 
-   ```markdown
-   ✅ Execution Summary
+`<scope>/<issue-id>-<slug>`  → e.g. `obs/302-latency-panel`
 
-   *Brief bullet list of what was done*
+### Commit Style
 
-   🧪 Output / Logs
-   ```console
-   # key excerpts (≤ 30 lines)
-   ```
+Conventional Commits: `feat(observability): add p95 latency panel (Closes #302)`
 
-   🧾 Checklist
-   - Acceptance criteria met? ✅/❌
-   - Tier‑0 CI status
-   - Docs/CHANGELOG updated?
+### PR Body Template
 
-   📍Next Required Action
-   - `Ready for @alfred-architect-o3 review`
-   ```
+````
+✅ Execution Summary
+- Bullet what you did…
 
-4. **Tag** `@alfred-architect-o3` so the Architect's SLA timer starts.
+🧪 Output / Logs
+```console
+# ≤ 30 lines of key output
+````
 
-5. **CI green**: run `make pre-commit && make smoke` locally before pushing.
+🧾 Checklist
 
----
+* Acceptance criteria met? ✅/❌
+* CI green? ✅/❌
+* Docs updated? ✅/❌
 
-## 3 · Tooling & Commands
+📍 Next Required Action
 
-| Task | Recommended command |
-|------|---------------------|
-| List sprint board IDs | `gh project list --owner locotoki` |
-| Move card (manual) | `gh project item-edit <board> --id <item> --column-id <col>` |
-| Open issue via CLI | `gh issue create --title … --body-file … --label …` |
-| Run Tier‑0 locally | `make pre-commit && pytest -m core -q` |
-| Dry‑run board‑sync | `./workflow/cli/board_sync.sh --dry-run <ISSUE_URL>` |
+* Ready for @alfred‑architect‑o3 review
 
-> **Token scope**: `gh auth login` with `repo`, `project`, `workflow`. Store in GitHub‑hosted runner secrets for Actions, or locally via GH_TOKEN.
+````
+
+### Quality Gates (A–E)
+A️⃣ **CI** green  B️⃣ **Licence‑Gate** 0 issues  C️⃣ **≥ 2 approvals** (1 maintainer)  D️⃣ **No unresolved comments**  E️⃣ **Fresh rebase** onto `main`.
+
+### Merge & Clean
+*Use **Squash & Merge** in GitHub UI → delete remote branch → `git branch -d` locally.*
 
 ---
 
-## 4 · Board‑Sync Automation (Issue #174)
+## 4 · Blocker Escalation Protocol
+| SLA | What counts as blocker? | Action |
+|-----|-------------------------|--------|
+| ≤ 1 h | CI infra down, permission denied, unclear AC | Slack `#maintainers` + tag **@alfred‑architect‑o3** |
+| ≤ 4 h | External API quota, dependency CVE, design ambiguity | Open GitHub Discussion “Blocker: …”, assign Architect |
 
-### Deliverables
-1. `workflow/cli/board_sync.sh` – idempotent Bash script moving linked issue to **Done** after merge.
-2. `Makefile` target:
-
-   ```make
-   board-sync:
-   	./workflow/cli/board_sync.sh $(ISSUE_URL)
-   ```
-3. CI workflow `.github/workflows/board-sync.yml` triggered on successful completion of **Tier‑0** (`workflow_run`).
-
-### Script requirements
-* **Dry‑run** when `DRY_RUN=true` or `--dry-run` flag passed.
-* `set -euo pipefail` for safety.
-* Detect board and "Done" column dynamically (no hard‑coded IDs).
-* Log actions to stdout.
+**Do not** let a task idle > 4 h on unknowns—always ask.
 
 ---
 
-## 5 · Coding & Quality Gates
+## 5 · Local Dev & CI Commands
+```bash
+# One‑shot local stack
+alfred up
 
-* **pre‑commit hooks**: Black, isort, Ruff, forbid `services.` imports.
-* **flake8** must pass with strict repo‑level config (`E203,W503,Q000` ignored only, all others enforced).
-* **pytest‑core** smoke suite green.
-* Write tests for new scripts when feasible (e.g., run script with env‑fixtures).
+# Run Tier‑0 test suite (< 2 min)
+make pre-commit && pytest -m core -q
 
----
+# Full CI mirror (< 8 min)
+make ci-full
 
-## 6 · Communication Format
-
-Claude Code operates in **batch mode**; each run ends with a markdown summary posted as a PR comment or in the PR body itself. Always include:
-
-| Section | Purpose |
-|---------|---------|
-| ✅ **Execution Summary** | 3‑6 bullets; *what* was done. |
-| 🧪 **Output / Logs** | Key excerpts (CI URL, `pytest` summary, etc.). |
-| 🧾 **Checklist** | Map to acceptance criteria (✅/❌). |
-| 📍 **Next Required Action** | Usually "Ready for @alfred-architect-o3 review". |
-
-**Never** include sensitive tokens or full CI logs (> 50 lines).
+# Licence gate locally
+scripts/licence_scan.py
+````
 
 ---
 
-## 7 · Error Handling
+## 6 · Board & Status Automation
 
-* If CI fails, **fix & force‑push** until green **before** tagging Architect.
-* If `gh` commands fail (e.g., item not found) — exit non‑zero, print context.
-* Use `--verbose` flag in scripts for opt‑in debug mode.
+### update‑status workflow
 
----
-
-## 8 · Ticket Sizing & Branch Lifespan
-
-| Size | Guideline |
-|------|-----------|
-| **S** | ≤ 50 LOC changed; expected turnaround 2‑4 h |
-| **M** | 50–150 LOC; ≤ 1 working day |
-| **L** | 150+ LOC or cross‑cutting; may require ADR |
-
-Delete remote branches after merge (`gh api -X DELETE /repos/:owner/:repo/git/refs/heads/<branch>`).
-
----
-
-## 9 · Example quick‑start (board‑sync)
+Auto‑bumps `status.json` when merging PRs touching GA epic labels.  If the Action fails:
 
 ```bash
-# 1. Create feature branch
-git switch -c ci/board-sync-automation
+python scripts/update_status.py
+git commit -am "chore: refresh status beacon"
+```
 
-# 2. Add script & workflow
-mkdir -p workflow/cli
-cp templates/board_sync.sh workflow/cli/board_sync.sh
-chmod +x workflow/cli/board_sync.sh
-# edit workflow file …
+### board‑sync script (`workflow/cli/board_sync.sh`)
 
-# 3. Commit
-git add workflow
-git commit -m "ci: add board-sync automation (Closes #174)"
+Moves issue cards to **Done** after merge.  Dry‑run with `--dry-run`.
 
-# 4. Push & open PR
-git push -u origin ci/board-sync-automation
-gh pr create --title "ci: board-sync automation" --body-file PR_BODY.md --label ci,automation --head ci/board-sync-automation
+---
 
-# 5. Await CI; tag Architect once green
+## 7 · Coding Standards
+
+* **Python 3.12**, Ruff/Black/isort enforced.
+* No new deps w/o Architect approval.
+* Dashboard JSON validated by `scripts/test_dashboards.py`.
+* Avoid hard‑coded colours in Grafana; rely on defaults.
+
+---
+
+## 8 · What to Ask the Architect
+
+* Clarification of acceptance criteria / scope.
+* Permission to add heavy dependency or new CI job.
+* Design change suggestions that may require ADR.
+
+**Always plan, ask, then execute.**
+
+---
+
+## 9 · Quick Reference Cheatsheet
+
+```bash
+# List projects
+gh project list --owner locotoki
+
+# Create issue & link
+gh issue create --title "obs: p95 panel" --body-file ISSUE.md --label observability
+
+# Move card after merge
+./workflow/cli/board_sync.sh https://github.com/.../issues/302
 ```
 
 ---
 
-## 10 · What to Ask the Architect
+*— End of CLAUDE.md —*
 
-* Clarification on acceptance criteria.
-* Approval for adding heavy dependencies or new CI jobs.
-* Confirmation if a change impacts design → might require an ADR.
+## 10 · Copy‑Paste Task Blocks
 
-Otherwise, proceed autonomously within ticket scope.
+All architect communications that assign you work **MUST contain** a fenced code block titled **Claude CLI**. Copy‑paste it verbatim into your shell (or as close as your environment permits) before making any manual changes.
+
+If the block is **missing, ambiguous, or fails**, immediately tag **@alfred-architect-o3** and request clarification—do **not** improvise the commands.
+
+Example format expected from Architect:
+
+```bash
+# Claude CLI
+alfred-cli run --issue 302 --branch obs/302-latency-panel --script scripts/build_latency_panel.py
+```
+
+> **Remember**: No merge or deletion unless commands executed successfully and Gates A‑E pass.
 
 ---
 
-### ADR Execution Process for PR #269 (ADR 2025-06)
+## 12. Workflow Triad (Architect → Coordinator → Claude CLI)
 
-@claude run:
-# Scope: PR #269 (ADR 2025-06)
+```
+Architect (o3) → Coordinator (copy‑paste) → Claude Code CLI (implementer)
+```
 
-1. 🔍 Check the latest PR status:
-   • If any required checks are still failing, open the "isort-check" and
-     "lint" job logs and note all files flagged for import-order issues.
+1. **Architect (o3)** writes a natural‑language spec **and** includes a fenced code block titled **Claude CLI** with the exact commands to run.
+2. **Coordinator** copy‑pastes the block into their terminal, runs it, watches output, and reports back logs / artefacts.
+3. **Claude Code CLI** executes, opens PRs, and awaits review.
 
-2. 🛠  For each flagged file, run:
-       isort <file>
-   (You can do this via pre-commit locally or the repo's dev container.)
+> *Architect never pushes code or creates resources directly* — every change must flow through the Coordinator → CLI path.
 
-3. ✅ Commit the resulting changes to PR #269 with message:
-       "chore: fix import order for isort 5.14 compliance"
+### 12.1 Authoring Task Blocks
 
-4. 🔄 Wait for GitHub Actions to re-run.  Loop until:
-     a) All required checks (isort-check, lint, required-check) pass, **or**
-     b) A non-import error appears (in which case stop and ping @o3).
+* Always prefix with a comment line `# Claude CLI`.
+* One logical task per block (e.g., “Generate Grafana panel PR”).
+* If multiple steps, chain them with `&&` or separate blocks.
+* Ambiguous or missing block? Coordinator must tag **@alfred‑architect‑o3** for clarification before proceeding.
 
-5. 🟢 Once **all** required checks are green and the PR is still mergeable:
-     • Merge the PR using **"Squash & Merge"**
-     • Delete the source branch after merge
-     • Post a comment tagging @Coordinator and @o3:
-       "Merged ADR 2025-06 — all checks green, branch deleted."
+### 12.2 Example
 
-(If GitHub permissions block branch deletion, leave a note instead.)
+```bash
+# Claude CLI
+alfred-cli run --issue 302 --branch obs/302-latency-panel \
+               --script scripts/build_latency_panel.py \
+               --open-pr "feat(observability): p95 latency & error-rate panel (Closes #302)"
+```
 
-Happy scripting!
-*— Alfred‑core Maintainers*
+## 13. Responsibility Clarification
+
+* **Architect**: *draft* PR/board descriptions, ADR markdown, CLI blocks — but **does not** push commits.
+* **Coordinator**: executes blocks, confirms logs, sets labels.
+* **Claude Code CLI**: implementation & PR generation.
+
+All earlier wording implying the Architect “pushes” or “creates” resources should be read as “Architect drafts an instruction block for the Coordinator to execute.”
