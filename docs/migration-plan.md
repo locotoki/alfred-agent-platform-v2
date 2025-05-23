@@ -406,10 +406,10 @@ The new documentation structure will significantly improve developer productivit
 
 ### Appendix B: Documentation Templates
 
-- [Agent Template](/home/locotoki/projects/alfred-agent-platform-v2/docs/templates/agent-template.md)
-- [Workflow Template](/home/locotoki/projects/alfred-agent-platform-v2/docs/templates/workflow-template.md)
-- [Project Template](/home/locotoki/projects/alfred-agent-platform-v2/docs/templates/project-template.md)
-- [Archive Template](/home/locotoki/projects/alfred-agent-platform-v2/docs/templates/archive-template.md)
+- [Agent Template](./templates/agent-template.md)
+- [Workflow Template](./templates/workflow-template.md)
+- [Project Template](./templates/project-template.md)
+- [Archive Template](./templates/archive-template.md)
 
 ### Appendix C: Migration Tracking Sheet
 
