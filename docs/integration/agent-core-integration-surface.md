@@ -68,7 +68,7 @@ Footnote numbers in `answer` map to the `citations` array.
 | Vector schema migration | **Merged** | #336 |
 | Ingest CLI & indexer | **Merged** | #339 |
 | Retrieval API & RAG loop | **Merged** | #343 |
-| Perf harness (Locust) | Scaffolding | `perf/harness-t1` |
+| Test & Perf harness | **Merged** | #345 |
 | Observability dashboard | Pending |  |
 | UI chat panel | Pending |  |
 
