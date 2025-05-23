@@ -1,4 +1,5 @@
 #!/bin/bash
+# shellcheck disable=SC2009,SC2126,SC2155,SC2086
 # Port Configuration Verification Script
 # For Alfred Agent Platform v2
 
