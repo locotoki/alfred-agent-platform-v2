@@ -15,6 +15,6 @@ jobs:
       - name: ShellCheck
         run: |
           docker run --rm -v "$PWD:/mnt" koalaman/shellcheck-alpine:latest \
-            sh /mnt/workflow/ci/run-shellcheck.sh
+            find /mnt/workflow/cli -type f -name '*.sh' -exec shellcheck -x {} +
       - name: Vulture
         run: make lint-pydead
