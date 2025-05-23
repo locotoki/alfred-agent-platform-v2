@@ -9,7 +9,7 @@ jobs:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
       - name: Install linters
-        run: sudo apt-get update && sudo apt-get install -y shellcheck
+        run: sudo apt-get update && sudo apt-get install -y ./workflow/ci/run-shellcheck.sh
       - name: Poetry deps
         run: |
           pipx install poetry
