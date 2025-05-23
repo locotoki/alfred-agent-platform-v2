@@ -40,6 +40,13 @@ func NewQueryHandler(repo repo.EmbeddingRepo, client OpenAIClient) *QueryHandler
 }
 
 func (h *QueryHandler) Handle(w http.ResponseWriter, r *http.Request) {
+    start := time.Now()
+    retrievalRequestsTotal.Inc()
+
+    defer func() {
+        retrievalLatencyMs.Observe(float64(time.Since(start).Milliseconds()))
+    }()
+
     if r.Method != http.MethodPost {
         http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
         return
@@ -51,15 +58,27 @@ func (h *QueryHandler) Handle(w http.ResponseWriter, r *http.Request) {
         return
     }
 
+    // Validate query
     if req.Query == "" {
         http.Error(w, "Query is required", http.StatusBadRequest)
         return
     }
 
+    // Enforce query length limit
+    if len(req.Query) > 300 {
+        http.Error(w, "Query exceeds 300 character limit", http.StatusBadRequest)
+        return
+    }
+
+    // Set default and enforce limits
     if req.TopK == 0 {
         req.TopK = 4 // default
     }
+    if req.TopK > 20 {
+        req.TopK = 20 // enforce max
+    }
 
+    // Enforce 3 second timeout
     ctx, cancel := context.WithTimeout(r.Context(), 3*time.Second)
     defer cancel()
 
@@ -69,6 +88,7 @@ func (h *QueryHandler) Handle(w http.ResponseWriter, r *http.Request) {
         Input: []string{req.Query},
     })
     if err != nil {
+        retrievalErrorsTotal.WithLabelValues("embedding").Inc()
         http.Error(w, "Failed to generate query embedding", http.StatusInternalServerError)
         return
     }
@@ -82,6 +102,7 @@ func (h *QueryHandler) Handle(w http.ResponseWriter, r *http.Request) {
     // Search for similar documents
     hits, err := h.repo.Search(ctx, queryEmb, req.TopK)
     if err != nil {
+        retrievalErrorsTotal.WithLabelValues("search").Inc()
         http.Error(w, "Failed to search documents", http.StatusInternalServerError)
         return
     }

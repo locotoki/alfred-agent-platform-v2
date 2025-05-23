@@ -10,6 +10,7 @@ import (
     "alfred/internal/repo"
     "github.com/jackc/pgx/v5/pgxpool"
     openai "github.com/sashabaranov/go-openai"
+    "github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
 func main() {
@@ -37,6 +38,7 @@ func main() {
         w.WriteHeader(http.StatusOK)
         w.Write([]byte("OK"))
     })
+    http.Handle("/metrics", promhttp.Handler())
 
     // Start server
     port := os.Getenv("PORT")

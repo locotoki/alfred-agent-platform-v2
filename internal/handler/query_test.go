@@ -6,6 +6,7 @@ import (
     "encoding/json"
     "net/http"
     "net/http/httptest"
+    "strings"
     "testing"
 
     "alfred/internal/repo"
@@ -69,8 +70,18 @@ func TestQueryHandler(t *testing.T) {
             wantStatus: http.StatusBadRequest,
         },
         {
+            name:       "query too long",
+            request:    QueryRequest{Query: strings.Repeat("a", 301), TopK: 2},
+            wantStatus: http.StatusBadRequest,
+        },
+        {
             name:       "default top_k",
             request:    QueryRequest{Query: "test query"},
+            wantStatus: http.StatusOK,
+        },
+        {
+            name:       "top_k enforced max",
+            request:    QueryRequest{Query: "test query", TopK: 25},
             wantStatus: http.StatusOK,
         },
     }

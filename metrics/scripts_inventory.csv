@@ -574,7 +574,6 @@ start-platform-dryrun.sh,.sh,5795,UNKNOWN
 start-platform.sh,.sh,3962,UNKNOWN
 start-slack-commands.sh,.sh,1640,UNKNOWN
 start-slack.sh,.sh,865,UNKNOWN
-test_prometheus_agent_core.sh,.sh,2640,UNKNOWN
 tests/__init__.py,.py,42,UNKNOWN
 tests/alfred/__init__.py,.py,33,UNKNOWN
 tests/alfred/ml/__init__.py,.py,36,UNKNOWN
