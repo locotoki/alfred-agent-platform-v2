@@ -69,6 +69,13 @@ scrape_configs:
     static_configs:
       - targets: ['postgres-exporter:9187']
 
+  # Agent-core specific metrics with 5s scrape interval
+  - job_name: 'agent-core'
+    scrape_interval: 5s
+    static_configs:
+      - targets: ['agent-core:8001']
+    metrics_path: '/metrics'
+
   # Service health metrics from v0.4.0 healthcheck binary
   - job_name: 'service_health'
     static_configs:
