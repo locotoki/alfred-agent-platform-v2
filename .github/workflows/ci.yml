@@ -172,7 +172,7 @@ jobs:
 
       - name: Run formatters check
         run: |
-          isort --check-only .
+          isort --check-only --profile black --line-ending LF --diff .
 
       - name: Run linters
         run: |
