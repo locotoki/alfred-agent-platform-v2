@@ -178,6 +178,10 @@ mission-control/src/index.js,.js,1098,UNKNOWN
 mission-control/src/streamlit_app.py,.py,5770,UNKNOWN
 monitoring/scripts/docker_stats.py,.py,0,UNKNOWN
 mypy_fix/run-mypy-fixed.sh,.sh,964,UNKNOWN
+perf/__init__.py,.py,61,UNKNOWN
+perf/locustfile.py,.py,434,UNKNOWN
+perf/parse_results.py,.py,720,UNKNOWN
+perf/run.sh,.sh,158,UNKNOWN
 port-fix-inject.js,.js,0,UNKNOWN
 rag-gateway/src/app.py,.py,1148,UNKNOWN
 remediation/__init__.py,.py,228,UNKNOWN
