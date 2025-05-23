@@ -181,7 +181,9 @@ monitoring/scripts/docker_stats.py,.py,0,UNKNOWN
 mypy_fix/run-mypy-fixed.sh,.sh,964,UNKNOWN
 perf/__init__.py,.py,61,UNKNOWN
 perf/harness_scaffold.py,.py,4049,UNKNOWN
+perf/k6-script.js,.js,2071,UNKNOWN
 perf/locustfile.py,.py,434,UNKNOWN
+perf/mock_performance_results.py,.py,4122,UNKNOWN
 perf/parse_results.py,.py,720,UNKNOWN
 perf/run.sh,.sh,157,UNKNOWN
 port-fix-inject.js,.js,0,UNKNOWN
@@ -320,6 +322,7 @@ scripts/spring_clean/validate_inventory.py,.py,4439,UNKNOWN
 scripts/sprint4-automation.sh,.sh,2549,UNKNOWN
 scripts/standardize-service-health.sh,.sh,4456,UNKNOWN
 scripts/start-all-dev.sh,.sh,2809,UNKNOWN
+scripts/tag-agent-core-release.sh,.sh,2685,UNKNOWN
 scripts/tag-healthcheck-release.sh,.sh,951,UNKNOWN
 scripts/tag-release.sh,.sh,552,UNKNOWN
 scripts/test_dashboards.py,.py,6879,UNKNOWN
