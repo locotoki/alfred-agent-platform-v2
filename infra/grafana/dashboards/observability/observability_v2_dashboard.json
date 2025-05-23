@@ -1,0 +1,423 @@
+{
+  "dashboard": {
+    "id": null,
+    "uid": "obs-v2-main",
+    "title": "Observability v2 - Enhanced Metrics",
+    "tags": ["observability", "performance", "slo", "tech-debt"],
+    "timezone": "browser",
+    "schemaVersion": 38,
+    "version": 1,
+    "refresh": "30s",
+    "time": {
+      "from": "now-24h",
+      "to": "now"
+    },
+    "templating": {
+      "list": [
+        {
+          "name": "datasource",
+          "type": "datasource",
+          "query": "prometheus",
+          "current": {
+            "selected": false,
+            "text": "Prometheus",
+            "value": "prometheus"
+          },
+          "hide": 0,
+          "includeAll": false,
+          "multi": false,
+          "refresh": 1,
+          "regex": "",
+          "skipUrlSync": false
+        },
+        {
+          "name": "environment",
+          "type": "query",
+          "query": "label_values(up, env)",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "$datasource"
+          },
+          "current": {
+            "selected": true,
+            "text": "All",
+            "value": "$__all"
+          },
+          "includeAll": true,
+          "multi": false,
+          "refresh": 1,
+          "sort": 1
+        },
+        {
+          "name": "service",
+          "type": "query",
+          "query": "label_values(up{env=~\"$environment\"}, job)",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "$datasource"
+          },
+          "current": {
+            "selected": true,
+            "text": "All",
+            "value": "$__all"
+          },
+          "includeAll": true,
+          "multi": true,
+          "refresh": 1,
+          "sort": 1
+        }
+      ]
+    },
+    "annotations": {
+      "list": [
+        {
+          "builtIn": 1,
+          "datasource": {
+            "type": "prometheus",
+            "uid": "$datasource"
+          },
+          "enable": true,
+          "hide": false,
+          "iconColor": "rgba(0, 211, 255, 1)",
+          "name": "Annotations & Alerts",
+          "type": "dashboard"
+        }
+      ]
+    },
+    "panels": [
+      {
+        "id": 1,
+        "title": "Request Latency Percentiles (P50/P95/P99)",
+        "type": "timeseries",
+        "gridPos": {
+          "x": 0,
+          "y": 0,
+          "w": 12,
+          "h": 8
+        },
+        "datasource": {
+          "type": "prometheus",
+          "uid": "$datasource"
+        },
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.50, sum by (le) (rate(http_request_duration_seconds_bucket{env=~\"$environment\",job=~\"$service\"}[5m])))",
+            "legendFormat": "P50",
+            "refId": "A"
+          },
+          {
+            "expr": "histogram_quantile(0.95, sum by (le) (rate(http_request_duration_seconds_bucket{env=~\"$environment\",job=~\"$service\"}[5m])))",
+            "legendFormat": "P95",
+            "refId": "B"
+          },
+          {
+            "expr": "histogram_quantile(0.99, sum by (le) (rate(http_request_duration_seconds_bucket{env=~\"$environment\",job=~\"$service\"}[5m])))",
+            "legendFormat": "P99",
+            "refId": "C"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "custom": {
+              "drawStyle": "line",
+              "lineInterpolation": "smooth",
+              "lineWidth": 2,
+              "fillOpacity": 10,
+              "gradientMode": "opacity",
+              "spanNulls": false,
+              "showPoints": "never"
+            },
+            "unit": "s",
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "yellow",
+                  "value": 0.5
+                },
+                {
+                  "color": "red",
+                  "value": 1
+                }
+              ]
+            },
+            "links": [
+              {
+                "title": "View logs in Loki",
+                "url": "/explore?orgId=1&left=%5B%22now-1h%22,%22now%22,%22loki%22,%7B%22expr%22:%22%7Bapp%3D%5C%22$service%5C%22,env%3D%5C%22$environment%5C%22%7D%22%7D%5D",
+                "targetBlank": true
+              }
+            ]
+          }
+        },
+        "options": {
+          "tooltip": {
+            "mode": "multi",
+            "sort": "desc"
+          },
+          "legend": {
+            "displayMode": "list",
+            "placement": "bottom",
+            "showLegend": true,
+            "calcs": ["mean", "lastNotNull"]
+          }
+        }
+      },
+      {
+        "id": 2,
+        "title": "Error Budget Burn-Down",
+        "type": "timeseries",
+        "gridPos": {
+          "x": 12,
+          "y": 0,
+          "w": 12,
+          "h": 8
+        },
+        "datasource": {
+          "type": "prometheus",
+          "uid": "$datasource"
+        },
+        "targets": [
+          {
+            "expr": "1 - (sum(rate(http_requests_total{status!~\"2..\",env=~\"$environment\",job=~\"$service\"}[1m])) / sum(rate(http_requests_total{env=~\"$environment\",job=~\"$service\"}[1m])))",
+            "legendFormat": "Budget Remaining",
+            "refId": "A"
+          },
+          {
+            "expr": "sum(rate(http_requests_total{status!~\"2..\",env=~\"$environment\",job=~\"$service\"}[1m])) / sum(rate(http_requests_total{env=~\"$environment\",job=~\"$service\"}[1m]))",
+            "legendFormat": "Error Rate",
+            "refId": "B"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "custom": {
+              "drawStyle": "line",
+              "lineInterpolation": "smooth",
+              "lineWidth": 2,
+              "fillOpacity": 20,
+              "gradientMode": "opacity",
+              "spanNulls": false,
+              "showPoints": "never",
+              "stacking": {
+                "mode": "normal",
+                "group": "A"
+              }
+            },
+            "unit": "percentunit",
+            "min": 0,
+            "max": 1,
+            "links": [
+              {
+                "title": "View error logs",
+                "url": "/explore?orgId=1&left=%5B%22now-1h%22,%22now%22,%22loki%22,%7B%22expr%22:%22%7Bapp%3D%5C%22$service%5C%22,env%3D%5C%22$environment%5C%22,level%3D%5C%22error%5C%22%7D%22%7D%5D",
+                "targetBlank": true
+              }
+            ]
+          },
+          "overrides": [
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "Error Rate"
+              },
+              "properties": [
+                {
+                  "id": "color",
+                  "value": {
+                    "mode": "fixed",
+                    "fixedColor": "red"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "options": {
+          "tooltip": {
+            "mode": "multi",
+            "sort": "desc"
+          },
+          "legend": {
+            "displayMode": "list",
+            "placement": "bottom",
+            "showLegend": true,
+            "calcs": ["lastNotNull"]
+          }
+        }
+      },
+      {
+        "id": 3,
+        "title": "7-Day Burn Rate Sparkline",
+        "type": "stat",
+        "gridPos": {
+          "x": 18,
+          "y": 8,
+          "w": 6,
+          "h": 4
+        },
+        "datasource": {
+          "type": "prometheus",
+          "uid": "$datasource"
+        },
+        "targets": [
+          {
+            "expr": "(sum(rate(http_requests_total{status!~\"2..\",env=~\"$environment\",job=~\"$service\"}[7d])) / sum(rate(http_requests_total{env=~\"$environment\",job=~\"$service\"}[7d]))) / 0.01",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "none",
+            "decimals": 2,
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "yellow",
+                  "value": 1
+                },
+                {
+                  "color": "red",
+                  "value": 2
+                }
+              ]
+            }
+          }
+        },
+        "options": {
+          "colorMode": "background",
+          "graphMode": "area",
+          "orientation": "horizontal",
+          "reduceOptions": {
+            "values": false,
+            "calcs": ["lastNotNull"]
+          },
+          "text": {
+            "titleSize": 14,
+            "valueSize": 20
+          },
+          "sparkline": {
+            "fillColor": "rgba(31, 118, 189, 0.18)",
+            "full": false,
+            "lineColor": "rgb(31, 120, 193)",
+            "show": true
+          }
+        }
+      },
+      {
+        "id": 4,
+        "title": "Service Availability Heatmap",
+        "type": "heatmap",
+        "gridPos": {
+          "x": 0,
+          "y": 8,
+          "w": 18,
+          "h": 8
+        },
+        "datasource": {
+          "type": "prometheus",
+          "uid": "$datasource"
+        },
+        "targets": [
+          {
+            "expr": "avg_over_time(up{env=~\"$environment\",job=~\"$service\"}[5m])",
+            "format": "time_series",
+            "legendFormat": "{{job}}",
+            "refId": "A"
+          }
+        ],
+        "options": {
+          "calculate": false,
+          "cellGap": 1,
+          "color": {
+            "scheme": "RdYlGn",
+            "steps": 128,
+            "reverse": false,
+            "min": 0,
+            "max": 1
+          },
+          "exemplars": {
+            "color": "rgba(255,0,255,0.7)"
+          },
+          "tooltip": {
+            "show": true,
+            "yHistogram": false
+          },
+          "yAxis": {
+            "axisLabel": "Service",
+            "axisPlacement": "left",
+            "reverse": false
+          },
+          "legend": {
+            "show": true
+          }
+        }
+      },
+      {
+        "id": 5,
+        "title": "Alert Effectiveness",
+        "type": "piechart",
+        "gridPos": {
+          "x": 18,
+          "y": 12,
+          "w": 6,
+          "h": 4
+        },
+        "datasource": {
+          "type": "prometheus",
+          "uid": "$datasource"
+        },
+        "targets": [
+          {
+            "expr": "sum(increase(alerts_resolved_total{resolution=\"actionable\"}[24h]))",
+            "legendFormat": "Actionable",
+            "refId": "A"
+          },
+          {
+            "expr": "sum(increase(alerts_resolved_total{resolution=\"non_actionable\"}[24h]))",
+            "legendFormat": "Non-Actionable",
+            "refId": "B"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "short",
+            "custom": {
+              "hideFrom": {
+                "tooltip": false,
+                "viz": false,
+                "legend": false
+              }
+            }
+          }
+        },
+        "options": {
+          "pieType": "donut",
+          "tooltip": {
+            "mode": "single",
+            "sort": "none"
+          },
+          "legend": {
+            "displayMode": "list",
+            "placement": "right",
+            "showLegend": true,
+            "values": ["value", "percent"]
+          },
+          "reduceOptions": {
+            "values": false,
+            "calcs": ["lastNotNull"]
+          }
+        }
+      }
+    ]
+  }
+}
