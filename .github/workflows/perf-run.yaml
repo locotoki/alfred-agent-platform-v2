@@ -14,7 +14,20 @@ jobs:
       - name: Parse comment for overrides
         id: parse
         run: |
-          echo "::set-output name=ARGS::${{ github.event.comment.body }}"
+          COMMENT="${{ github.event.comment.body }}"
+          # Extract parameters from comment
+          if [[ "$COMMENT" =~ TARGET_URL=([^ ]+) ]]; then
+            echo "TARGET_URL=${BASH_REMATCH[1]}" >> $GITHUB_ENV
+          fi
+          if [[ "$COMMENT" =~ QPS=([0-9]+) ]]; then
+            echo "QPS=${BASH_REMATCH[1]}" >> $GITHUB_ENV
+          fi
+          if [[ "$COMMENT" =~ DURATION=([0-9]+) ]]; then
+            echo "DURATION=${BASH_REMATCH[1]}" >> $GITHUB_ENV
+          fi
+          if [[ "$COMMENT" =~ QUERY_FILE=([^ ]+) ]]; then
+            echo "QUERY_FILE=${BASH_REMATCH[1]}" >> $GITHUB_ENV
+          fi
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
@@ -25,9 +38,28 @@ jobs:
       - name: Pull pre-built image
         run: |
           docker pull ghcr.io/locotoki/agent-core:main || true
-      - name: Run mock performance test
+      - name: Start agent-core container
         run: |
-          python perf/mock_performance_results.py | tee harness.out
+          docker run -d --name agent-core -p 8080:8080 ghcr.io/locotoki/agent-core:main
+          sleep 5  # Wait for container to be ready
+      - name: Run real performance test
+        run: |
+          TARGET_URL="${TARGET_URL:-http://localhost:8080/v1/query}"
+          QPS="${QPS:-10}"
+          DURATION="${DURATION:-60}"
+          QUERY_FILE="${QUERY_FILE:-perf/queryset.txt}"
+
+          echo "Running perf test against $TARGET_URL with QPS=$QPS for ${DURATION}s"
+          python perf/harness_scaffold.py \
+            --target-url "$TARGET_URL" \
+            --qps "$QPS" \
+            --duration "$DURATION" \
+            --query-file "$QUERY_FILE" | tee harness.out
+      - name: Stop agent-core container
+        if: always()
+        run: |
+          docker stop agent-core || true
+          docker rm agent-core || true
       - name: Upload artefact
         uses: actions/upload-artifact@v4
         with:
