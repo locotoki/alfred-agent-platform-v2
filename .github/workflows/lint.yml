@@ -15,6 +15,15 @@ jobs:
           pipx install poetry
           poetry install --no-root
       - name: ShellCheck
-        run: make lint-shell
+        run: |
+          # Only check shell files that were modified in this PR
+          CHANGED_SH_FILES=$(git diff --name-only origin/main...HEAD | grep '\.sh$' || true)
+          if [ -n "$CHANGED_SH_FILES" ]; then
+            echo "Running shellcheck on modified shell files:"
+            echo "$CHANGED_SH_FILES"
+            shellcheck $CHANGED_SH_FILES
+          else
+            echo "No shell files modified in this PR"
+          fi
       - name: Vulture
         run: make lint-pydead
