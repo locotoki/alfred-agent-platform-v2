@@ -6,7 +6,8 @@ set -euo pipefail
 # Usage: ./board_sync.sh <ISSUE_URL_OR_NUMBER> [--dry-run]
 
 # Configuration
-readonly SCRIPT_NAME="$(basename "$0")"
+readonly SCRIPT_NAME
+SCRIPT_NAME="$(basename "$0")"
 readonly OWNER="locotoki"
 readonly REPO="alfred-agent-platform-v2"
 
@@ -216,7 +217,19 @@ find_project() {
 
     # List projects and find the one containing our issue
     local projects_json
-    if ! projects_json=$(gh project list --owner "$OWNER" --format json 2>/dev/null); then
+    local gh_error
+    if ! projects_json=$(gh project list --owner "$OWNER" --format json 2>&1); then
+        gh_error="$projects_json"
+        if [[ "$gh_error" =~ "403" ]] || [[ "$gh_error" =~ "HTTP 403" ]]; then
+            log_error "GitHub API returned 403 Forbidden - insufficient token permissions"
+            log_error "Add PAT with scopes: repo, project, workflow"
+            log_error "Steps to fix:"
+            log_error "  1. Create PAT at https://github.com/settings/tokens/new"
+            log_error "  2. Select scopes: repo (full), project (full), workflow"
+            log_error "  3. Run: gh auth login --with-token < token.txt"
+            log_error "  4. For CI: Add PAT as secret BOARD_SYNC_PAT"
+            exit 1
+        fi
         log_error "Failed to list projects. Missing project permissions?"
         log_error "Try: gh auth refresh -s read:project"
         exit 1
@@ -260,11 +273,13 @@ find_project() {
         if echo "$projects_json" | jq -e 'type == "array"' >/dev/null 2>&1; then
             # Array format
             PROJECT_ID=$(echo "$projects_json" | jq -r '.[0].number' 2>/dev/null)
-            local project_title=$(echo "$projects_json" | jq -r '.[0].title // .[0].name' 2>/dev/null)
+            local project_title
+            project_title=$(echo "$projects_json" | jq -r '.[0].title // .[0].name' 2>/dev/null)
         else
             # Single object or different format
             PROJECT_ID=$(echo "$projects_json" | jq -r '.number' 2>/dev/null)
-            local project_title=$(echo "$projects_json" | jq -r '.title // .name' 2>/dev/null)
+            local project_title
+            project_title=$(echo "$projects_json" | jq -r '.title // .name' 2>/dev/null)
         fi
 
         if [[ -n "$PROJECT_ID" && "$PROJECT_ID" != "null" ]]; then
@@ -298,7 +313,8 @@ find_issue_in_project() {
         return 1
     fi
 
-    local current_status=$(echo "$items_json" | jq -r ".[] | select(.id == \"$ITEM_ID\") | .status")
+    local current_status
+    current_status=$(echo "$items_json" | jq -r ".[] | select(.id == \"$ITEM_ID\") | .status")
     log_info "Found issue #$ISSUE_NUMBER in project (Item ID: $ITEM_ID, Status: $current_status)"
 
     # Check if already in Done
@@ -358,7 +374,8 @@ find_done_column() {
         exit 1
     fi
 
-    local done_name=$(echo "$field_options" | jq -r ".data.node.options[] | select(.id == \"$DONE_COLUMN_ID\") | .name")
+    local done_name
+    done_name=$(echo "$field_options" | jq -r ".data.node.options[] | select(.id == \"$DONE_COLUMN_ID\") | .name")
     log_info "Found Done status: '$done_name' (ID: $DONE_COLUMN_ID)"
 
     log_debug "Done column discovery completed"
