@@ -126,7 +126,7 @@ scripts-inventory:
 	python3 scripts/gen_scripts_inventory.py > metrics/scripts_inventory.csv
 
 lint-shell:
-	shellcheck $(shell git ls-files "*.sh")
+	./workflow/ci/run-shellcheck.sh
 
 lint-pydead:
 	vulture $(shell git ls-files "*.py" | tr "\n" " ") vulture_whitelist.txt --min-confidence 90 --exclude "*/tests/*,*/migrations/*,*/ORPHAN/*"

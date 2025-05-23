@@ -1,4 +1,4 @@
-#\!/usr/bin/env bash
+#!/usr/bin/env bash
 # Runs ShellCheck on maintained automation scripts only.
 set -eo pipefail
 DIRS=( "workflow/cli" "scripts" )   # extend when new dirs are lint-ready
