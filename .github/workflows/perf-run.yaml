@@ -16,11 +16,15 @@ jobs:
         run: |
           echo "::set-output name=ARGS::${{ github.event.comment.body }}"
       - name: Compose stack
-        run: docker compose -f docker-compose.yml up -d pg redis minio server
-      - name: Wait for server
-        run: sleep 25
+        run: |
+          docker compose -f .devcontainer/docker-compose.yml up -d db-postgres redis minio agent-core
+      - name: Wait for retrieval endpoint (max 60 s)
+        run: |
+          for i in {1..60}; do
+            if curl -s http://agent-core:8080/v1/healthz | grep -q '"ok":true'; then
+              echo "server healthy"; break; fi; sleep 1; done
       - name: Ingest docs
-        run: docker compose exec server alfred ingest ./docs/**/*.md --batch 64
+        run: docker compose exec agent-core alfred ingest ./docs/**/*.md --batch 64
       - name: Run harness
         run: |
           python perf/harness_scaffold.py ${{ steps.parse.outputs.ARGS }} | tee harness.out
