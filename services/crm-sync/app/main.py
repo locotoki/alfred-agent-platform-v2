@@ -1,4 +1,5 @@
 """CRM sync service for syncing contacts to HubSpot."""
+
 import os
 from datetime import datetime, timezone
 

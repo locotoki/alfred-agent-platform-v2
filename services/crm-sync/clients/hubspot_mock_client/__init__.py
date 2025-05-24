@@ -1,4 +1,4 @@
-"""A client library for accessing HubSpot Mock API"""
+"""A client library for accessing HubSpot Mock API."""
 
 from .client import AuthenticatedClient, Client
 

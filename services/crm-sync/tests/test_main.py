@@ -1,4 +1,5 @@
 """Tests for CRM sync service."""
+
 from datetime import datetime, timezone
 from unittest.mock import AsyncMock, Mock, patch
 
