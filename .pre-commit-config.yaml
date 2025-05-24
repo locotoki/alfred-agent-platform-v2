@@ -19,7 +19,7 @@ repos:
         exclude: "(youtube-test-env/|migrations/|node_modules/|\\.git/|\\.mypy_cache/|\\.env/|\\.venv/|env/|venv/|\\.ipynb/|cleanup-temp/|docs/archive/|docs/tools/)"
 
   - repo: https://github.com/pycqa/isort
-    rev: 5.12.0
+    rev: 5.13.2
     hooks:
       - id: isort
         name: isort (python)
