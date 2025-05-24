@@ -1,0 +1,25 @@
+{
+  "__inputs": [],
+  "title": "Alfred – Core Slice",
+  "time": { "from": "now-6h", "to": "now" },
+  "panels": [
+    {
+      "type": "stat",
+      "title": "p95 Latency (ms)",
+      "targets": [
+        { "expr": "histogram_quantile(0.95, rate(request_latency_bucket[5m]))" }
+      ],
+      "id": 1
+    },
+    {
+      "type": "stat",
+      "title": "Error Rate (%)",
+      "targets": [
+        { "expr": "rate(request_errors_total[5m]) * 100" }
+      ],
+      "id": 2
+    }
+  ],
+  "schemaVersion": 38,
+  "version": 1
+}
