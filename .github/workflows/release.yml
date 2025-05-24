@@ -1,42 +1,36 @@
-name: Announce Release
-
+name: Release images to GHCR
 on:
-  workflow_dispatch:
-    inputs:
-      ref:
-        description: 'Git ref to announce (tag or branch)'
-        required: true
-        default: 'main'
-  release:
-    types: [published]
-
+  push:
+    tags:
+      - 'v*'
 jobs:
-  announce:
+  build-and-push:
     runs-on: ubuntu-latest
-
+    permissions:
+      packages: write
+      contents: read
     steps:
       - uses: actions/checkout@v4
+
+      - uses: docker/setup-qemu-action@v3
+      - uses: docker/setup-buildx-action@v3
+
+      - uses: docker/login-action@v3
         with:
-          ref: ${{ github.event.inputs.ref || github.ref }}
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Get version
-        id: version
-        run: |
-          if [[ "${{ github.event_name }}" == "release" ]]; then
-            VERSION="${{ github.event.release.tag_name }}"
-          else
-            VERSION="${{ github.event.inputs.ref }}"
-          fi
-          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+      - name: Build & push agent-core
+        uses: docker/build-push-action@v5
+        with:
+          context: ./alfred/core
+          tags: ghcr.io/locotoki/agent-core:${{ github.ref_name }}
+          push: true
 
-      - name: Announce deploy
-        env:
-          SLACK_RELEASE_WEBHOOK: ${{ secrets.SLACK_RELEASE_WEBHOOK }}
-        run: |
-          MESSAGE=":rocket: Released ${{ steps.version.outputs.VERSION }}"
-
-          if [[ "${{ github.event_name }}" == "release" ]]; then
-            MESSAGE="$MESSAGE - ${{ github.event.release.name }}"
-          fi
-
-          ./scripts/slack/announce-deploy.sh "$MESSAGE"
+      - name: Build & push agent-bizdev (edge tag)
+        uses: docker/build-push-action@v5
+        with:
+          context: ./agent-bizdev
+          tags: ghcr.io/locotoki/agent-bizdev:edge
+          push: true
