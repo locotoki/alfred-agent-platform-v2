@@ -6,6 +6,12 @@ on:
   pull_request:
     branches: [ main ]
   workflow_dispatch:
+    inputs:
+      skip_bizdev:
+        description: 'Skip BizDev tests'
+        required: false
+        type: boolean
+        default: false
 
 env:
   PYTHON_VERSION: "3.11"
@@ -190,6 +196,7 @@ jobs:
         env:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/test_db
           PUBSUB_EMULATOR_HOST: localhost:8085
+          BIZDEV_SKIP: ${{ inputs.skip_bizdev || false }}
 
       - name: Run alert dispatcher tests
         run: |
