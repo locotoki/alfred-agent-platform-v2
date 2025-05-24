@@ -347,7 +347,7 @@ scripts/utils/setup_cron_jobs.sh,.sh,778,UNKNOWN
 scripts/validate-env.sh,.sh,26987,UNKNOWN
 scripts/validate-health-templates.sh,.sh,3214,UNKNOWN
 scripts/validate-secrets.sh,.sh,1159,UNKNOWN
-scripts/wait_healthy.sh,.sh,550,UNKNOWN
+scripts/wait_healthy.sh,.sh,624,UNKNOWN
 services/__init__.py,.py,23,UNKNOWN
 services/_template/app/main.py,.py,2963,UNKNOWN
 services/agent-orchestrator/__init__.py,.py,34,UNKNOWN
