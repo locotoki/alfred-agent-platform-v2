@@ -1,0 +1,30 @@
+name: contact-ingest image
+
+on:
+  push:
+    paths:
+      - 'services/contact-ingest/**'
+      - '.github/workflows/contact-ingest.yml'
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build-push:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build & push
+        uses: docker/build-push-action@v5
+        with:
+          context: ./services/contact-ingest
+          push: true
+          tags: ghcr.io/${{ github.repository_owner }}/contact-ingest:latest

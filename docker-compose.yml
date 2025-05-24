@@ -1167,6 +1167,51 @@ services:
       <<: *mail-service-labels
       com.docker.compose.service: "mail-server"
 
+  # HubSpot Mock Service - Mock HubSpot API for development
+  hubspot-mock:
+    build:
+      context: ./services/hubspot-mock
+      dockerfile: Dockerfile
+    image: ghcr.io/locotoki/hubspot-mock:latest
+    container_name: hubspot-mock
+    ports:
+      - "8095:8095"
+    environment:
+      - PORT=8095
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8095/ping"]
+      <<: *basic-health-check
+    restart: unless-stopped
+    networks:
+      - alfred-network
+    labels:
+      <<: *common-labels
+      com.docker.compose.service: "hubspot-mock"
+
+  # Contact Ingest Service - Lead capture and processing
+  contact-ingest:
+    build:
+      context: ./services/contact-ingest
+      dockerfile: Dockerfile
+    image: ghcr.io/locotoki/contact-ingest:latest
+    container_name: contact-ingest
+    ports:
+      - "8082:8080"
+    environment:
+      - PORT=8080
+      - HUBSPOT_URL=http://hubspot-mock:8095
+    depends_on:
+      - hubspot-mock
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/docs"]
+      <<: *basic-health-check
+    restart: unless-stopped
+    networks:
+      - alfred-network
+    labels:
+      <<: *common-labels
+      com.docker.compose.service: "contact-ingest"
+
 # Volumes
 volumes:
   # Infrastructure volumes
