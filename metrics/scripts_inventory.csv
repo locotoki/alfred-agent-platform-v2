@@ -196,7 +196,7 @@ perf/k6-script.js,.js,2071,UNKNOWN
 perf/locustfile.py,.py,434,UNKNOWN
 perf/mock_performance_results.py,.py,4122,UNKNOWN
 perf/parse_results.py,.py,720,UNKNOWN
-perf/run.sh,.sh,157,UNKNOWN
+perf/run.sh,.sh,158,UNKNOWN
 port-fix-inject.js,.js,0,UNKNOWN
 rag-gateway/src/app.py,.py,1148,UNKNOWN
 remediation/__init__.py,.py,228,UNKNOWN
@@ -693,6 +693,6 @@ update-health-endpoints.sh,.sh,1419,UNKNOWN
 validate-orchestration.sh,.sh,2242,UNKNOWN
 verify-port-config.sh,.sh,8060,UNKNOWN
 whatsapp-adapter/src/app.py,.py,1318,UNKNOWN
-workflow/ci/run-shellcheck.sh,.sh,577,UNKNOWN
+workflow/ci/run-shellcheck.sh,.sh,576,UNKNOWN
 workflow/cli/board_sync.sh,.sh,13287,UNKNOWN
 workflow/cli/scripts_inventory.sh,.sh,1269,UNKNOWN
