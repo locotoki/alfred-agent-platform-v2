@@ -1,4 +1,5 @@
 path,ext,size_bytes,status
+.docs/graphql-script-ready.sh,.sh,3524,UNKNOWN
 .github/workflow_helpers/build-size.sh,.sh,176,UNKNOWN
 adapters/telegram/__init__.py,.py,52,UNKNOWN
 adapters/telegram/app.py,.py,6237,UNKNOWN
