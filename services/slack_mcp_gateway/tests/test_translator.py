@@ -1,17 +1,6 @@
 """Tests for the translator module"""
 
-import re
-import uuid
-from datetime import datetime
-
-import jsonschema
-import pytest
-from slack_mcp_gateway import translator
-
-
-# Mock Slack command payload
-@pytest.fixture
-def slack_command_payload():
+import reLFimport uuidLFfrom datetime import datetimeLFLFimport jsonschemaLFimport pytestLFfrom slack_mcp_gateway import translatorLFLFLF# Mock Slack command payloadLF@pytest.fixtureLFdef slack_command_payload():
     return {
         "token": "gIkuvaNzQIHg97ATvDxqgjtO",  # This would be a verification token in real usage
         "team_id": "T0001",
