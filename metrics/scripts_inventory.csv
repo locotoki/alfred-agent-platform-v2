@@ -321,6 +321,7 @@ scripts/run_quick_health_check.sh,.sh,765,UNKNOWN
 scripts/run_synthetic_load.sh,.sh,890,UNKNOWN
 scripts/safe-sync.sh,.sh,5190,UNKNOWN
 scripts/scaffold_compose_snippets.py,.py,3055,UNKNOWN
+scripts/security/rotate_secret.sh,.sh,310,UNKNOWN
 scripts/setup-db-metrics.sh,.sh,4089,UNKNOWN
 scripts/setup-deployment-tools.sh,.sh,1870,UNKNOWN
 scripts/skip-ci-for-cleanup.sh,.sh,478,UNKNOWN
