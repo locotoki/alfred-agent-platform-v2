@@ -1,5 +1,8 @@
 path,ext,size_bytes,status
-.docs/graphql-script-ready.sh,.sh,3524,UNKNOWN
+.docs/add-bizdev-backlog-option.sh,.sh,1649,UNKNOWN
+.docs/board-sync-cli.sh,.sh,2582,UNKNOWN
+.docs/graphql-board-sync-fixed.sh,.sh,4217,UNKNOWN
+.docs/graphql-script-ready.sh,.sh,3580,UNKNOWN
 .github/workflow_helpers/build-size.sh,.sh,176,UNKNOWN
 adapters/telegram/__init__.py,.py,52,UNKNOWN
 adapters/telegram/app.py,.py,6237,UNKNOWN

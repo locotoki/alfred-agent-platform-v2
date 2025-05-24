@@ -31,8 +31,10 @@ OPTION_EXISTS=$(gh api graphql -F projectId=$PROJECT_ID -f query='
       ... on ProjectV2 {
         fields(first: 50) {
           nodes {
-            name
-            ... on ProjectV2SingleSelectField { options { name } }
+            ... on ProjectV2SingleSelectField {
+              name
+              options { name }
+            }
           }
         }
       }
@@ -62,8 +64,10 @@ BACKLOG_OPTION_ID=$(gh api graphql -F projectId=$PROJECT_ID -f query='
       ... on ProjectV2 {
         fields(first: 50) {
           nodes {
-            name
-            ... on ProjectV2SingleSelectField { options { id name } }
+            ... on ProjectV2SingleSelectField {
+              name
+              options { id name }
+            }
           }
         }
       }
