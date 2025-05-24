@@ -9,7 +9,12 @@ RUN apt-get update && apt-get install -y \
     build-essential \
     git \
     curl \
+    wget \
     && rm -rf /var/lib/apt/lists/*
+
+# Install yq
+RUN wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 && \
+    chmod +x /usr/local/bin/yq
 
 # Install Poetry
 RUN pip install --no-cache-dir poetry==1.8.3

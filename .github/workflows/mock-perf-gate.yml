@@ -37,15 +37,15 @@ jobs:
         run: |
           echo "⚠️ Running mock performance test (GO_ENABLED=0)"
           python perf/mock_performance_results.py | tee perf_results.txt
-          
+
           # Extract metrics
           P95=$(grep -oE 'p95_latency_ms: ([0-9.]+)' perf_results.txt | awk '{print $2}')
           ERR=$(grep -oE 'error_rate: ([0-9.]+)' perf_results.txt | awk '{print $2}')
-          
+
           echo "📊 Performance Results:"
           echo "  p95 latency: ${P95}ms"
           echo "  error rate: ${ERR}%"
-          
+
           # Check pass criteria
           if (( $(echo "$P95 < 300" | bc -l) )) && (( $(echo "$ERR < 1" | bc -l) )); then
             echo "✅ Performance gate PASSED"
@@ -62,21 +62,21 @@ jobs:
           go build -o alfred ./cmd/alfred/main.go
           ./alfred up -d pg redis minio server
           sleep 20
-          
+
           # Run harness
           export TARGET_URL=http://localhost:8080/v1/query
           export QPS=10
           export DURATION=60
           python perf/harness_scaffold.py | tee perf_results.txt
-          
+
           # Extract and check metrics (same as mock)
           P95=$(grep -oE 'p95.*([0-9.]+)ms' perf_results.txt | grep -oE '[0-9.]+' | tail -1)
           ERR=$(grep -oE 'error_rate.*([0-9.]+)' perf_results.txt | grep -oE '[0-9.]+' | tail -1)
-          
+
           echo "📊 Performance Results:"
           echo "  p95 latency: ${P95}ms"
           echo "  error rate: ${ERR}%"
-          
+
           if [ "$P95" -lt "300" ] && [ "$ERR" -lt "1" ]; then
             echo "✅ Performance gate PASSED"
           else

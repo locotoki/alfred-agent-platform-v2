@@ -1,6 +1,6 @@
 # Agent-core MVP Summary
 
-**Date**: 26 May 2025  
+**Date**: 26 May 2025
 **Status**: ✅ Ready for BizDev hand-off
 
 ## Completed Tasks

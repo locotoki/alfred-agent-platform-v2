@@ -1,7 +1,7 @@
 # Agent-core MVP Status Report
 
-**Date**: 23 May 2025  
-**Time**: 21:00 UTC  
+**Date**: 23 May 2025
+**Time**: 21:00 UTC
 **Phase**: Ready for Performance Validation
 
 ## ✅ Completed Today
@@ -11,7 +11,7 @@
   - Fixed CI issues (torch version constraints)
   - Added env var support to perf harness
   - Merged at 20:43:59Z
-  
+
 - **PR #347** - Documentation update ✅
   - Updated integration surface
   - Marked Test & Perf harness as **Merged**
