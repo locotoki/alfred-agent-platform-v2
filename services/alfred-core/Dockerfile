@@ -5,6 +5,8 @@ WORKDIR /app
 # Install system dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
+    wget \
+    curl \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Python dependencies
@@ -17,9 +19,6 @@ COPY ./healthcheck.sh /usr/local/bin/healthcheck.sh
 
 # Make healthcheck script executable
 RUN chmod +x /usr/local/bin/healthcheck.sh
-
-# Copy shared libraries
-COPY ./libs /app/libs
 
 # Set environment variables
 ENV PYTHONPATH=/app
