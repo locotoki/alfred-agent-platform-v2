@@ -1,7 +1,14 @@
 """Simple report generation without HTML templates"""
 
 # type: ignore
-import jsonLFimport osLFfrom datetime import datetimeLFfrom typing import Any, DictLFLFLFdef generate_niche_scout_report(LF    data: Dict[str, Any], output_dir: str = "/app/data/niche_scout"
+import json
+import os
+from datetime import datetime
+from typing import Any, Dict
+
+
+def generate_niche_scout_report(
+    data: Dict[str, Any], output_dir: str = "/app/data/niche_scout"
 ) -> str:
     """Generate a simplified JSON report for Niche Scout results.
 

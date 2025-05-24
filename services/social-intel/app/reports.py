@@ -1,7 +1,15 @@
 """Report generation utilities for Social Intelligence Agent"""
 
 # type: ignore
-import osLFfrom datetime import datetimeLFfrom typing import Any, DictLFLFfrom jinja2 import Environment, FileSystemLoaderLFLF# Setup Jinja2 environmentLFenv = Environment(loader=FileSystemLoader("app/templates"))LF
+import os
+from datetime import datetime
+from typing import Any, Dict
+
+from jinja2 import Environment, FileSystemLoader
+
+# Setup Jinja2 environment
+env = Environment(loader=FileSystemLoader("app/templates"))
+
 
 # Add custom filters
 def format_number(value):

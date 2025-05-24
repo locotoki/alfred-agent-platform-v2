@@ -4,7 +4,20 @@ This simple echo agent processes the /alfred ping command and replies with the p
 text. It listens to the MCP request stream and publishes to the response stream.
 """
 
-# type: ignoreLFimport jsonLFimport loggingLFimport osLFimport sysLFimport timeLFimport uuidLFfrom typing import Any, DictLFLFimport redisLFLF# Configure loggingLFlogging.basicConfig(level=logging.INFO)LFlogger = logging.getLogger(__name__)
+# type: ignore
+import json
+import logging
+import os
+import sys
+import time
+import uuid
+from typing import Any, Dict
+
+import redis
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 # Redis connection
 REDIS_HOST = os.environ.get("REDIS_HOST", "localhost")

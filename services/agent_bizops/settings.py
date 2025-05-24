@@ -1,6 +1,11 @@
 """Agent BizOps Settings - Consolidated Configuration."""
 
-import osLFfrom typing import OptionalLFLFLFclass BizOpsSettings:LF    """Centralized settings for Agent BizOps service."""
+import os
+from typing import Optional
+
+
+class BizOpsSettings:
+    """Centralized settings for Agent BizOps service."""
 
     def __init__(self) -> None:
         """Initialize BizOps settings."""

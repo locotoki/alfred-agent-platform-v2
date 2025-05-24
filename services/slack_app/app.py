@@ -6,7 +6,12 @@ and user interactions via Slack.
 
 # Import as needed, removing unused imports
 
-from slack_bolt import AppLFLF# ConfigurationLFCOMMAND_PREFIX = "/alfred"LF
+from slack_bolt import App
+
+# Configuration
+COMMAND_PREFIX = "/alfred"
+
+
 # Initialize the app with environment variables
 app = App(
     token="xoxb-dummy-token-for-testing",  # Will be replaced by environment var in production

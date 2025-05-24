@@ -1,7 +1,32 @@
 """Social Intelligence Service Main Application"""
 
 # type: ignore
-import asyncioLFimport osLFfrom contextlib import asynccontextmanagerLFfrom datetime import datetimeLFfrom typing import Any, DictLFLFimport redisLFimport structlogLFimport yamlLFfrom app.blueprint import SeedToBlueprintLFfrom app.niche_scout import NicheScoutLFfrom app.workflow_endpoints import (LF    LF,LF    get_scheduled_workflows,LF    get_workflow_history,LF    get_workflow_result,LF    schedule_workflow,LF)LFfrom fastapi import Body, FastAPI, HTTPException, Query, RequestLFfrom fastapi.responses import HTMLResponse, JSONResponseLFLFfrom agents.social_intel.agent import SocialIntelAgentLFfrom libs.a2a_adapter import PolicyMiddleware, PubSubTransport, SupabaseTransportLFfrom libs.agent_core.health import create_health_appLFLFlogger = structlog.get_logger(__name__)LF
+import asyncio
+import os
+from contextlib import asynccontextmanager
+from datetime import datetime
+from typing import Any, Dict
+
+import redis
+import structlog
+import yaml
+from app.blueprint import SeedToBlueprint
+from app.niche_scout import NicheScout
+from app.workflow_endpoints import (
+    get_scheduled_workflows,
+    get_workflow_history,
+    get_workflow_result,
+    schedule_workflow,
+)
+from fastapi import Body, FastAPI, HTTPException, Query, Request
+from fastapi.responses import HTMLResponse, JSONResponse
+
+from agents.social_intel.agent import SocialIntelAgent
+from libs.a2a_adapter import PolicyMiddleware, PubSubTransport, SupabaseTransport
+from libs.agent_core.health import create_health_app
+
+logger = structlog.get_logger(__name__)
+
 # Initialize services
 pubsub_transport = PubSubTransport(project_id=os.getenv("GCP_PROJECT_ID", "alfred-agent-platform"))
 
@@ -21,8 +46,12 @@ social_agent = SocialIntelAgent(
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Manage application lifecycle"""
-    # Import database module here to avoid circular importsLF
-    from app.database import close_pool, get_poolLFLF# StartupLF
+    # Import database module here to avoid circular imports
+
+    from app.database import close_pool, get_pool
+
+    # Startup
+
     await supabase_transportconnect()
 
     # Initialize database connection pool
