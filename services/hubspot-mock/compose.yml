@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  hubspot-mock:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: alfred/hubspot-mock:latest
+    container_name: hubspot-mock
+    ports:
+      - "8095:8095"
+    environment:
+      - PORT=8095
+      - LOG_LEVEL=info
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8095/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - alfred-network
+
+networks:
+  alfred-network:
+    external: true

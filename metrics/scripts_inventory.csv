@@ -439,6 +439,7 @@ services/db-storage/patch-migrations.js,.js,2433,UNKNOWN
 services/db-storage/patched-entrypoint.sh,.sh,402,UNKNOWN
 services/db-storage/skip-migrations.js,.js,1123,UNKNOWN
 services/health/cpu.py,.py,769,UNKNOWN
+services/hubspot-mock/main.py,.py,3277,UNKNOWN
 services/mission-control-simplified/analysis-export/check-port.js,.js,3899,UNKNOWN
 services/mission-control-simplified/analysis-export/find-port-process.js,.js,1284,UNKNOWN
 services/mission-control-simplified/analysis-export/integrate-with-social-intel.js,.js,12757,UNKNOWN
