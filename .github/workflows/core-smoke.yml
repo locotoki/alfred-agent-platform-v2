@@ -1,0 +1,25 @@
+name: core-coldstart-smoke
+on:
+  pull_request:
+    paths:
+      - cold-start-core.yml
+      - .github/workflows/core-smoke.yml
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: GHCR login
+        run: echo "${{ secrets.GHCR_PAT }}" | docker login ghcr.io -u locotoki --password-stdin
+      - name: Pull & start core profile
+        run: |
+          docker compose -f cold-start-core.yml pull
+          docker compose -f cold-start-core.yml up -d
+          sleep 25
+          unhealthy=$(docker compose ps --services --filter "status=running" \
+                       | xargs -I{} sh -c 'hs=$(docker inspect -f "{{.State.Health.Status}}" $(docker compose ps -q {} 2>/dev/null||true) 2>/dev/null||echo n/a); [ "$hs" = "unhealthy" ] && echo {}')
+          if [ -n "$unhealthy" ]; then
+            echo "Unhealthy containers: $unhealthy"; docker compose ps; exit 1; fi
+      - name: Teardown
+        if: always()
+        run: docker compose -f cold-start-core.yml down -v
