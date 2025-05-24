@@ -43,6 +43,8 @@ ui:
 monitoring:
   - prometheus
   - grafana
+  - db-exporter
+  - redis-exporter
 
 other:
   - api
