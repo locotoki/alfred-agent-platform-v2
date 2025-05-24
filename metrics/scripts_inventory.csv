@@ -444,8 +444,8 @@ services/db-storage/patched-entrypoint.sh,.sh,402,UNKNOWN
 services/db-storage/skip-migrations.js,.js,1123,UNKNOWN
 services/health/cpu.py,.py,769,UNKNOWN
 services/hubspot-mock/src/__init__.py,.py,36,UNKNOWN
-services/hubspot-mock/src/__main__.py,.py,163,UNKNOWN
-services/hubspot-mock/src/hubspot_mock.py,.py,319,UNKNOWN
+services/hubspot-mock/src/__main__.py,.py,162,UNKNOWN
+services/hubspot-mock/src/hubspot_mock.py,.py,318,UNKNOWN
 services/mission-control-simplified/analysis-export/check-port.js,.js,3899,UNKNOWN
 services/mission-control-simplified/analysis-export/find-port-process.js,.js,1284,UNKNOWN
 services/mission-control-simplified/analysis-export/integrate-with-social-intel.js,.js,12757,UNKNOWN
