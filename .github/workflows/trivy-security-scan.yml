@@ -7,11 +7,14 @@ on:
 jobs:
   scan:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        image: ['postgres:15.5-alpine', 'redis:7-alpine']
     steps:
       - uses: actions/checkout@v4
       - uses: aquasecurity/trivy-action@0.20.0
         with:
-          image-ref: 'postgres:15.5-alpine redis:7-alpine'
+          image-ref: ${{ matrix.image }}
           severity: 'CRITICAL,HIGH'
           format: 'table'
   scan-failed-notify:
