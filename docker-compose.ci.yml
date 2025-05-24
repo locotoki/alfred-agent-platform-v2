@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  # Only services with public images for CI cold-start testing
+
+  db-postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: alfred
+      POSTGRES_PASSWORD: testpass
+      POSTGRES_DB: alfred
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "alfred"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  agent-core:
+    image: ghcr.io/locotoki/agent-core:v0.9.6
+    depends_on:
+      - db-postgres
+      - redis
+    environment:
+      - DATABASE_URL=postgresql://alfred:testpass@db-postgres:5432/alfred
+      - REDIS_URL=redis://redis:6379
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8011/health"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  agent-bizdev:
+    image: ghcr.io/locotoki/agent-bizdev:edge
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
