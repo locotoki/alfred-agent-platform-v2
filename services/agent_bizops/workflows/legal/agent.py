@@ -1,6 +1,30 @@
 """Legal Compliance Agent Implementation"""
 
-from datetime import datetimeLFfrom typing import Any, DictLFfrom uuid import uuid4LFLFimport structlogLFLFfrom libs.a2a_adapter import (LF    LF,LF    A2AEnvelope,LF    PolicyMiddleware,LF    PubSubTransport,LF    SupabaseTransport,LF)LFfrom libs.agent_core.base_agent import BaseAgentLFLF# Import chains module but explicitly use each chain by module reference laterLFfrom . import chainsLFfrom .models import (LF    LF,LF    ComplianceAuditRequest,LF    ContractReviewRequest,LF    DocumentAnalysisRequest,LF    RegulationCheckRequest,LF)LFLFlogger = structlog.get_logger(__name__)LF
+from datetime import datetime
+from typing import Any, Dict
+from uuid import uuid4
+
+import structlog
+
+from libs.a2a_adapter import (
+    A2AEnvelope,
+    PolicyMiddleware,
+    PubSubTransport,
+    SupabaseTransport,
+)
+from libs.agent_core.base_agent import BaseAgent
+
+# Import chains module but explicitly use each chain by module reference later
+from . import chains
+from .models import (
+    ComplianceAuditRequest,
+    ContractReviewRequest,
+    DocumentAnalysisRequest,
+    RegulationCheckRequest,
+)
+
+logger = structlog.get_logger(__name__)
+
 
 class LegalComplianceAgent(BaseAgent):
     def __init__(

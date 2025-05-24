@@ -4,7 +4,13 @@
 This script updates the main.py file to add JSON body handling to the endpoints.
 """
 
-import osLFimport reLFimport sysLFLF# Define the file pathLFMAIN_PY_PATH = "/app/main.py"LF
+import os
+import re
+import sys
+
+# Define the file path
+MAIN_PY_PATH = "/app/main.py"
+
 
 def modify_endpoint(content, endpoint_pattern, new_param_pattern):
     """Modify an endpoint definition to handle JSON payloads"""

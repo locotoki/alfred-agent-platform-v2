@@ -4,7 +4,20 @@ This module provides functionality to transform a seed video into a comprehensiv
 channel strategy with competitor analysis and content gaps.
 """
 
-# type: ignoreLFimport jsonLFimport osLFimport timeLFfrom datetime import datetimeLFfrom typing import Any, Dict, Optional, TupleLFLFimport structlogLFLF# Use simple reports instead of HTML templatesLFfrom app.simple_reports import generate_blueprint_reportLFLFlogger = structlog.get_logger(__name__)LF
+# type: ignore
+import json
+import os
+import time
+from datetime import datetime
+from typing import Any, Dict, Optional, Tuple
+
+import structlog
+
+# Use simple reports instead of HTML templates
+from app.simple_reports import generate_blueprint_report
+
+logger = structlog.get_logger(__name__)
+
 
 class SeedToBlueprint:
     """Implements the Seed-to-Blueprint workflow for YouTube channel strategy"""

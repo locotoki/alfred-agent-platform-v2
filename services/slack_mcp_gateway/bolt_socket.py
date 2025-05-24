@@ -4,7 +4,19 @@ This module handles interactions with the Slack API using Socket Mode, acknowled
 slash commands, and forwards requests to Redis via the translator.
 """
 
-# type: ignoreLFimport loggingLFimport osLFfrom typing import Any, Callable, DictLFLFfrom slack_bolt import AppLFfrom slack_bolt.adapter.socket_mode import SocketModeHandlerLFLFfrom . import redis_bus, responder, translatorLFLF# Configure loggingLFlogging.basicConfig(LF    level=logging.INFO,
+# type: ignore
+import logging
+import os
+from typing import Any, Callable, Dict
+
+from slack_bolt import App
+from slack_bolt.adapter.socket_mode import SocketModeHandler
+
+from . import redis_bus, responder, translator
+
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
     format="%(asctime).s - %(name)s - %(levelname)s - %(message)s",
 )
 logger = logging.getLogger(__name__)
