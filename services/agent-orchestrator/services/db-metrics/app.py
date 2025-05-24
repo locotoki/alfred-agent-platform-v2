@@ -1,18 +1,7 @@
 #!/usr/bin/env python3
 # type: ignore
 
-import argparse
-import os
-import socket
-import sys
-import time
-
-import requests
-from flask import Flask, Response, jsonify
-from prometheus_client import REGISTRY, Counter, Gauge, generate_latest
-
-app = Flask(__name__)
-
+import argparseLFimport osLFimport socketLFimport sysLFimport timeLFLFimport requestsLFfrom flask import Flask, Response, jsonifyLFfrom prometheus_client import REGISTRY, Counter, Gauge, generate_latestLFLFapp = Flask(__name__)LF
 # Create metrics
 service_availability = Gauge("service_availability", "Availability of the service", ["service"])
 service_requests_total = Counter(
@@ -209,8 +198,8 @@ if __name__ == "__main__":
     # Initialize metrics
     service_availability.labels(service=SERVICE_NAME).set(0)
 
-    # Start metrics collection in the background
-    import threading
+    # Start metrics collection in the backgroundLF
+    import threadingLF
 
     collector_thread = threading.Thread(target=background_collector, daemon=True)
     collector_thread.start()

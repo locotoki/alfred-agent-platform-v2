@@ -1,31 +1,9 @@
 """Unit tests for Financial Tax Agent chains"""
 
-from unittest.mock import AsyncMock, MagicMock, patch
-
-import pytest
-from agents.financial_tax.chains import (
-    ComplianceCheckChain,
-    FinancialAnalysisChain,
-    RateLookupChain,
-    TaxCalculationChain,
-)
-from agents.financial_tax.models import (
-    ComplianceCheckRequest,
-    EntityType,
-    FinancialAnalysisRequest,
-    TaxCalculationRequest,
-    TaxJurisdiction,
-    TaxRateRequest,
-)
-
-
-@pytest.fixture
-def mock_llm():
+from unittest.mock import AsyncMock, MagicMock, patchLFLFimport pytestLFfrom agents.financial_tax.chains import (LF    LF,LF    ComplianceCheckChain,LF    FinancialAnalysisChain,LF    RateLookupChain,LF    TaxCalculationChain,LF)LFfrom agents.financial_tax.models import (LF    LF,LF    ComplianceCheckRequest,LF    EntityType,LF    FinancialAnalysisRequest,LF    TaxCalculationRequest,LF    TaxJurisdiction,LF    TaxRateRequest,LF)LFLFLF@pytest.fixtureLFdef mock_llm():
     """Mock LLM for testing chains"""
     with patch("agents.financial_tax.chains.ChatOpenAI") as mock:
-        from typing import Any, Optional
-
-        from langchain.schema.runnable import Runnable
+        from typing import Any, OptionalLFLFfrom langchain.schema.runnable import RunnableLF
 
         class MockLLM(Runnable):
             def invoke(self, input: Any, config: Optional[Any] = None, **kwargs: Any) -> Any:
@@ -38,7 +16,7 @@ def mock_llm():
                 return "test response"
 
             def generate(self, *args, **kwargs):
-                from langchain.schema import Generation
+                from langchain.schema import GenerationLF
 
                 return MagicMock(generations=[[Generation(text="test")]])
 

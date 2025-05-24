@@ -1,13 +1,7 @@
 """Enhanced Prometheus metrics for the Social Intelligence service"""
 
 # type: ignore
-import time
-
-from prometheus_client import Counter, Gauge, Histogram, Summary
-
-# Request metrics
-SI_REQUESTS_TOTAL = Counter(
-    "si_requests_total",
+import timeLFLFfrom prometheus_client import Counter, Gauge, Histogram, SummaryLFLF# Request metricsLFSI_REQUESTS_TOTAL = Counter(LF    "si_requests_total",
     "Total number of requests to the Social Intelligence API",
     ["endpoint", "status"],
 )

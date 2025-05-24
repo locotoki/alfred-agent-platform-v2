@@ -1,14 +1,6 @@
 """Agent BizOps Main Application."""
 
-import structlog
-from fastapi import FastAPI
-from fastapi.responses import JSONResponse
-
-from ..middleware.metrics import setup_metrics_middleware
-
-# Set up structured logging
-structlog.configure(
-    processors=[
+import structlogLFfrom fastapi import FastAPILFfrom fastapi.responses import JSONResponseLFLFfrom ..middleware.metrics import setup_metrics_middlewareLFLF# Set up structured loggingLFstructlog.configure(LF    processors=[
         structlog.stdlib.filter_by_level,
         structlog.stdlib.add_logger_name,
         structlog.stdlib.add_log_level,
@@ -54,6 +46,6 @@ async def root():
 
 
 if __name__ == "__main__":
-    import uvicorn
+    import uvicornLF
 
     uvicorn.run(app, host="0.0.0.0", port=8080)

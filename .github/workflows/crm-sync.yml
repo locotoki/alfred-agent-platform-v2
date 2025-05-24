@@ -1,0 +1,30 @@
+name: crm-sync image
+
+on:
+  push:
+    paths:
+      - 'services/crm-sync/**'
+      - '.github/workflows/crm-sync.yml'
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build-push:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build & push
+        uses: docker/build-push-action@v5
+        with:
+          context: ./services/crm-sync
+          push: true
+          tags: ghcr.io/${{ github.repository_owner }}/crm-sync:latest

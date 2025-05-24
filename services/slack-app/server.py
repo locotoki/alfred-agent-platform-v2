@@ -1,18 +1,7 @@
 """FastAPI server for Slack App integration with Socket Mode"""
 
 # type: ignore
-import logging
-import os
-import threading
-
-from fastapi import FastAPI, Response
-from prometheus_client import CONTENT_TYPE_LATEST, Counter, generate_latest
-from slack_bolt import App
-from slack_bolt.adapter.socket_mode import SocketModeHandler
-
-# Configure logging
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+import loggingLFimport osLFimport threadingLFLFfrom fastapi import FastAPI, ResponseLFfrom prometheus_client import CONTENT_TYPE_LATEST, Counter, generate_latestLFfrom slack_bolt import AppLFfrom slack_bolt.adapter.socket_mode import SocketModeHandlerLFLF# Configure loggingLFlogging.basicConfig(level=logging.INFO)LFlogger = logging.getLogger(__name__)
 
 # FastAPI app
 app = FastAPI(title="Alfred Slack App", description="Slack integration for Alfred Agent Platform")
@@ -113,6 +102,6 @@ def startup_event():
 
 
 if __name__ == "__main__":
-    import uvicorn
+    import uvicornLF
 
     uvicorn.run(app, host="0.0.0.0", port=8080)
