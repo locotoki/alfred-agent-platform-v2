@@ -17,12 +17,14 @@ def _stack_up():
     import tempfile
 
     proc = subprocess.Popen(
-        ["docker-compose", "-f", COMPOSE_FILE, "up", "-d"],
+        ["docker", "compose", "-f", COMPOSE_FILE, "up", "-d"],
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
     )
     proc.wait()
-    atexit.register(lambda: subprocess.call(["docker-compose", "-f", COMPOSE_FILE, "down", "-v"]))
+    atexit.register(
+        lambda: subprocess.call(["docker", "compose", "-f", COMPOSE_FILE, "down", "-v"])
+    )
     time.sleep(10)  # allow services to warm
     yield
 
