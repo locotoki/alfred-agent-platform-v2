@@ -13,3 +13,17 @@ jobs:
           image-ref: 'postgres:15.5-alpine redis:7-alpine'
           severity: 'CRITICAL,HIGH'
           format: 'table'
+  scan-failed-notify:
+    needs: scan
+    runs-on: ubuntu-latest
+    if: failure()
+    steps:
+      - name: Slack alert
+        uses: slackapi/slack-github-action@v1.24.0
+        with:
+          channel-id: ${{ secrets.SLACK_SEC_CHANNEL }}
+          slack-message: |
+            :rotating_light: Trivy scan *failed* on ${{ github.repository }}@${{ github.ref_name }}
+            » ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
