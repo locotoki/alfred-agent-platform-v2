@@ -1167,8 +1167,35 @@ services:
       <<: *mail-service-labels
       com.docker.compose.service: "mail-server"
 
+
+  # pgvector - Vector database for embeddings
+  pgvector:
+    image: pgvector/pgvector:pg15
+    container_name: pgvector
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_DB: agent_core
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - pgvector_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - alfred-network
+    labels:
+      <<: *database-service-labels
+      com.docker.compose.service: "pgvector"
+
 # Volumes
 volumes:
+  pgvector_data:
+    name: alfred-pgvector-data
   # Infrastructure volumes
   redis-data:
     name: alfred-redis-data
@@ -1200,3 +1227,19 @@ volumes:
 networks:
   alfred-network:
     external: true
+
+  pgvector:
+    image: pgvector/pgvector:pg15
+    environment:
+      POSTGRES_DB: agent_core
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5433:5432"
+    volumes:
+      - pgvector_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5

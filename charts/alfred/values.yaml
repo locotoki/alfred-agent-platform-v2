@@ -2,3 +2,20 @@ agentCore:
   image: ghcr.io/locotoki/agent-core:v0.9.6
 agentBizdev:
   image: ghcr.io/locotoki/agent-bizdev:edge
+
+# pgvector database for embeddings
+pgvector:
+  enabled: true
+  image:
+    repository: pgvector/pgvector
+    tag: pg15
+  persistence:
+    enabled: true
+    size: 10Gi
+  resources:
+    requests:
+      memory: "256Mi"
+      cpu: "100m"
+    limits:
+      memory: "1Gi"
+      cpu: "500m"
