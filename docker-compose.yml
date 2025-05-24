@@ -1212,6 +1212,29 @@ services:
       <<: *common-labels
       com.docker.compose.service: "contact-ingest"
 
+  # CRM Sync Service - Syncs contacts with CRM systems
+  crm-sync:
+    build:
+      context: ./services/crm-sync
+      dockerfile: Dockerfile
+    image: ghcr.io/locotoki/crm-sync:latest
+    container_name: crm-sync
+    environment:
+      - HUBSPOT_MOCK_URL=http://hubspot-mock:8095
+      - CONTACT_INGEST_URL=http://contact-ingest:8080
+    depends_on:
+      - contact-ingest
+      - hubspot-mock
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/docs"]
+      <<: *basic-health-check
+    restart: unless-stopped
+    networks:
+      - alfred-network
+    labels:
+      <<: *common-labels
+      com.docker.compose.service: "crm-sync"
+
 # Volumes
 volumes:
   # Infrastructure volumes

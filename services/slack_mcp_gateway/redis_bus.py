@@ -4,17 +4,7 @@ This module handles publishing task requests to Redis streams and subscribing to
 response streams for consumption by the responder.
 """
 
-# type: ignore
-import json
-import logging
-import os
-from typing import Any, Dict, Iterator, Tuple
-
-import redis
-
-# Configure logging
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+# type: ignoreLFimport jsonLFimport loggingLFimport osLFfrom typing import Any, Dict, Iterator, TupleLFLFimport redisLFLF# Configure loggingLFlogging.basicConfig(level=logging.INFO)LFlogger = logging.getLogger(__name__)
 
 # Redis connection
 REDIS_HOST = os.environ.get("REDIS_HOST", "localhost")

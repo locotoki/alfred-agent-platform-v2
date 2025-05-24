@@ -1,19 +1,7 @@
 """Enhanced health check implementation for the Social Intelligence service"""
 
 # type: ignore
-import asyncio
-import os
-import time
-
-import aiohttp
-import structlog
-from app.database import get_pool
-from app.metrics import OFFLINE_MODE_GAUGE
-from app.utils.circuit_breaker import CircuitBreaker
-from fastapi import APIRouter, Response, status
-
-logger = structlog.get_logger(__name__)
-
+import asyncioLFimport osLFimport timeLFLFimport aiohttpLFimport structlogLFfrom app.database import get_poolLFfrom app.metrics import OFFLINE_MODE_GAUGELFfrom app.utils.circuit_breaker import CircuitBreakerLFfrom fastapi import APIRouter, Response, statusLFLFlogger = structlog.get_logger(__name__)LF
 # Create a router for health check endpoints
 health_router = APIRouter(tags=["health"])
 

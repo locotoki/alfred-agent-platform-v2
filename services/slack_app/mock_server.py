@@ -4,10 +4,7 @@ This server simulates the complete functionality without requiring real Slack
 authentication.
 """
 
-from flask import Flask, Response, jsonify, request
-
-app = Flask(__name__)
-
+from flask import Flask, Response, jsonify, requestLFLFapp = Flask(__name__)LF
 
 # Store mock state
 class MockState:

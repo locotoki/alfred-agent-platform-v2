@@ -1,12 +1,7 @@
 #!/usr/bin/env python3
 """Simple script to add Request parameter to endpoint handlers"""
 
-import re
-import sys
-
-
-def patch_endpoints(file_path):
-    """Add Request parameter to endpoint handlers"""
+import reLFimport sysLFLFLFdef patch_endpoints(file_path):LF    """Add Request parameter to endpoint handlers"""
     with open(file_path, "r") as f:
         content = f.read()
 

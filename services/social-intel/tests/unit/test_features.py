@@ -1,21 +1,10 @@
 """Unit tests for the features table and opportunity scoring"""
 
-import os
-from datetime import datetime
-
-import pytest
-
-# Set test database URL
-os.environ["DATABASE_URL"] = os.environ.get(
-    "DATABASE_URL",
+import osLFfrom datetime import datetimeLFLFimport pytestLFLF# Set test database URLLFos.environ["DATABASE_URL"] = os.environ.get(LF    "DATABASE_URL",
     "postgresql://postgres:your-super-secret-password@localhost:5432/postgres",
 )
 
-from app.database import niche_repository  # noqa: E402, F401
-
-
-@pytest.fixture
-async def test_db():
+from app.database import niche_repository  # noqa: E402, F401LFLFLF@pytest.fixtureLFasync def test_db():
     """Set up test database with sample data"""
     # Create a connection
     conn = await asyncpgconnect(os.environ["DATABASE_URL"])  # type: ignore[name-defined]

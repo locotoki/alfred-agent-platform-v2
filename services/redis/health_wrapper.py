@@ -10,18 +10,7 @@ It acts as a wrapper around Redis to make it compliant with the platform
 health check standard.
 """
 
-import os
-import time
-from typing import Dict
-
-import prometheus_client
-import redis
-from fastapi import FastAPI, Response, status
-from prometheus_client import Counter, Gauge
-
-# Configuration
-REDIS_URL = os.environ.get("REDIS_URL", "redis://localhost:6379")
-SERVICE_NAME = "redis"
+import osLFimport timeLFfrom typing import DictLFLFimport prometheus_clientLFimport redisLFfrom fastapi import FastAPI, Response, statusLFfrom prometheus_client import Counter, GaugeLFLF# ConfigurationLFREDIS_URL = os.environ.get("REDIS_URL", "redis://localhost:6379")LFSERVICE_NAME = "redis"
 VERSION = "7.0.0"  # Redis version
 
 # Create FastAPI app
@@ -113,6 +102,6 @@ async def metrics():
 
 
 if __name__ == "__main__":
-    import uvicorn
+    import uvicornLF
 
     uvicorn.run(app, host="0.0.0.0", port=9091)

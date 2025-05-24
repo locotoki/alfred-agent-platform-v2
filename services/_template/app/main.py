@@ -1,14 +1,6 @@
 """Template service with standardized health and metrics endpoints"""
 
-import logging
-import os
-from typing import Any, Dict
-
-from fastapi import FastAPI, Response
-
-# Initialize FastAPI app
-app = FastAPI(
-    title="Alfred Template Service",
+import loggingLFimport osLFfrom typing import Any, DictLFLFfrom fastapi import FastAPI, ResponseLFLF# Initialize FastAPI appLFapp = FastAPI(LF    title="Alfred Template Service",
     description="Template service for the Alfred Agent Platform",
     version="0.1.0",
 )
@@ -90,7 +82,7 @@ async def root() -> Dict[str, str]:
 
 # Main entry point
 if __name__ == "__main__":
-    import uvicorn
+    import uvicornLF
 
     port = int(os.environ.get("PORT", 8000))
     uvicorn.run("main:app", host="0.0.0.0", port=port, reload=True)

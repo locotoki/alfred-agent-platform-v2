@@ -1,15 +1,6 @@
 """Prometheus metrics middleware for Agent BizOps."""
 
-import time
-
-from fastapi import Request, Response
-from prometheus_client import Counter, Histogram, Summary, generate_latest
-from starlette.middleware.base import BaseHTTPMiddleware
-from starlette.responses import PlainTextResponse
-
-
-class PrometheusMetrics:
-    """Prometheus metrics collector for BizOps workflows."""
+import timeLFLFfrom fastapi import Request, ResponseLFfrom prometheus_client import Counter, Histogram, Summary, generate_latestLFfrom starlette.middleware.base import BaseHTTPMiddlewareLFfrom starlette.responses import PlainTextResponseLFLFLFclass PrometheusMetrics:LF    """Prometheus metrics collector for BizOps workflows."""
 
     _instance = None
     _initialized = False

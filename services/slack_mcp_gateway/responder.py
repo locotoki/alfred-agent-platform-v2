@@ -4,20 +4,7 @@ This module runs a background task to consume responses from Redis and update th
 corresponding Slack thread using the chat.update API.
 """
 
-# type: ignore
-import logging
-import threading
-from typing import Any, Dict, Optional
-
-import requests
-from slack_sdk import WebClient
-from slack_sdk.errors import SlackApiError
-
-from . import redis_bus
-
-# Configure logging
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+# type: ignoreLFimport loggingLFimport threadingLFfrom typing import Any, Dict, OptionalLFLFimport requestsLFfrom slack_sdk import WebClientLFfrom slack_sdk.errors import SlackApiErrorLFLFfrom . import redis_busLFLF# Configure loggingLFlogging.basicConfig(level=logging.INFO)LFlogger = logging.getLogger(__name__)
 
 
 class ResponseHandler:
