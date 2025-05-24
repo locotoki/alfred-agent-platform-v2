@@ -2,6 +2,7 @@ path,ext,size_bytes,status
 .github/workflow_helpers/build-size.sh,.sh,176,UNKNOWN
 adapters/telegram/__init__.py,.py,52,UNKNOWN
 adapters/telegram/app.py,.py,6237,UNKNOWN
+adapters/telegram/start.sh,.sh,221,UNKNOWN
 agents/social_intel/__init__.py,.py,102,UNKNOWN
 agents/social_intel/adapters/__init__.py,.py,250,UNKNOWN
 agents/social_intel/adapters/a2a_adapter.py,.py,2614,UNKNOWN
@@ -14,6 +15,7 @@ agents/social_intel/models/youtube_models.py,.py,4723,UNKNOWN
 agents/social_intel/models/youtube_vectors.py,.py,10478,UNKNOWN
 alfred/__init__.py,.py,59,UNKNOWN
 alfred/adapters/__init__.py,.py,89,UNKNOWN
+alfred/adapters/slack/__init__.py,.py,22,UNKNOWN
 alfred/adapters/slack/tests/test_webhook.py,.py,9028,UNKNOWN
 alfred/adapters/slack/webhook.py,.py,6815,UNKNOWN
 alfred/agents/__init__.py,.py,419,UNKNOWN
