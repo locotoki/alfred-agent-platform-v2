@@ -153,6 +153,7 @@ docs/tools/migrate_document.py,.py,25427,UNKNOWN
 docs/tools/normalize_filenames.py,.py,10386,UNKNOWN
 docs/tools/normalize_staging_files.sh,.sh,2905,UNKNOWN
 docs/tools/update_metadata.py,.py,10857,UNKNOWN
+eval/test_eval_loop.py,.py,322,UNKNOWN
 fix-formatting.sh,.sh,219,UNKNOWN
 fix-port-issue.js,.js,7362,UNKNOWN
 fix_class_methods.py,.py,1379,UNKNOWN
