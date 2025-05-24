@@ -623,6 +623,7 @@ tests/benchmark/conftest.py,.py,1281,UNKNOWN
 tests/benchmark/test_benchmark_marker.py,.py,712,UNKNOWN
 tests/bizdev/conftest.py,.py,117,UNKNOWN
 tests/bizdev/test_roundtrip.py,.py,1075,UNKNOWN
+tests/bizdev/test_roundtrip_standalone.py,.py,2040,UNKNOWN
 tests/conftest.py,.py,5218,UNKNOWN
 tests/db/test_connection.py,.py,184,UNKNOWN
 tests/e2e/__init__.py,.py,48,UNKNOWN
