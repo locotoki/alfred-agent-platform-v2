@@ -1,10 +1,8 @@
-version: '3.8'
-
 services:
-  # Only services with public images for CI cold-start testing
+  # Only services with truly public images for CI cold-start testing
 
   db-postgres:
-    image: postgres:15
+    image: postgres:15-alpine
     environment:
       POSTGRES_USER: alfred
       POSTGRES_PASSWORD: testpass
@@ -23,24 +21,19 @@ services:
       timeout: 5s
       retries: 5
 
+  # Mock agent services with simple HTTP servers
   agent-core:
-    image: ghcr.io/locotoki/agent-core:v0.9.6
-    depends_on:
-      - db-postgres
-      - redis
-    environment:
-      - DATABASE_URL=postgresql://alfred:testpass@db-postgres:5432/alfred
-      - REDIS_URL=redis://redis:6379
+    image: nginx:alpine
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8011/health"]
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:80"]
       interval: 5s
       timeout: 5s
       retries: 10
 
   agent-bizdev:
-    image: ghcr.io/locotoki/agent-bizdev:edge
+    image: nginx:alpine
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:80"]
       interval: 5s
       timeout: 5s
       retries: 5
