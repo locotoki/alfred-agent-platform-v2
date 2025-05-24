@@ -1,0 +1,47 @@
+name: Daily Sweep & Merge
+
+on:
+  schedule:
+    # 07:00 Europe/Lisbon == 06:00 UTC
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+
+jobs:
+  sweep_merge:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Sweep & merge green PRs
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Get all open PRs with "auto-merged" label
+          echo "Checking for PRs with 'auto-merged' label..."
+
+          PR_NUMBERS=$(gh pr list --label "auto-merged" --state open --json number --jq '.[].number')
+
+          if [ -z "$PR_NUMBERS" ]; then
+            echo "No open PRs found with 'auto-merged' label"
+            exit 0
+          fi
+
+          echo "Found PRs: $PR_NUMBERS"
+
+          # Check each PR for green checks and merge if ready
+          for PR in $PR_NUMBERS; do
+            echo "Checking PR #$PR..."
+
+            # Get PR status
+            STATUS=$(gh pr view $PR --json statusCheckRollup --jq '.statusCheckRollup | map(select(.status == "COMPLETED" and .conclusion != "SUCCESS")) | length')
+
+            if [ "$STATUS" -eq "0" ]; then
+              echo "PR #$PR has all checks passing, attempting to merge..."
+              gh pr merge $PR --squash --auto || echo "Failed to merge PR #$PR"
+            else
+              echo "PR #$PR has $STATUS failing/pending checks, skipping..."
+            fi
+          done
