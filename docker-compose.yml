@@ -633,10 +633,8 @@ services:
 
   # Core Agent Service
   agent-core:
-    build:
-      context: ./alfred/core
-      dockerfile: Dockerfile
-    image: agent-core:latest
+    image: ghcr.io/locotoki/agent-core:v0.9.6
+    pull_policy: always
     container_name: agent-core
     ports:
       - "8011:8011"
