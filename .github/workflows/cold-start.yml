@@ -1,0 +1,27 @@
+name: Cold-start gate
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+jobs:
+  cold-start:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Docker Compose
+        run:  < /dev/null |
+          sudo apt-get update
+          sudo apt-get install -y jq
+      - name: Measure cold-start
+        id: measure
+        run: |
+          export CI=true
+          scripts/measure_start.sh
+      - name: Fail if over 60 s
+        run: |
+          secs=$(echo "${{ steps.measure.outputs.cold_start_seconds }}")
+          echo "Cold-start seconds: $secs"
+          if [ "$secs" -gt 60 ]; then
+            echo "❌ Cold-start exceeds SLO (60 s)" >&2
+            exit 1
+          fi
