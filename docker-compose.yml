@@ -152,7 +152,7 @@ services:
       - PROJECT_ID=${ALFRED_PROJECT_ID:-alfred-agent-platform}
       - PORT=9103
     healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:9103/health"]
+      test: ["CMD", "curl", "-fs", "http://localhost:9103/health"]
       <<: *basic-health-check
     depends_on:
       pubsub-emulator:
@@ -634,10 +634,17 @@ services:
   # Core Agent Service
   agent-core:
     image: ghcr.io/locotoki/agent-core:v0.9.6
+    build:
+      context: ./services/alfred-core
     pull_policy: always
     container_name: agent-core
     ports:
       - "8011:8011"
+    healthcheck:
+      test: ["CMD","wget","-qO-","http://localhost:8011/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
     environment:
       - ALFRED_ENVIRONMENT=development
       - ALFRED_DEBUG=true
@@ -653,9 +660,6 @@ services:
       - ALFRED_MODEL_ROUTER_URL=http://model-router:8080
     volumes:
       - ./libs:/app/libs
-    healthcheck:
-      test: ["CMD", "healthcheck.sh"]
-      <<: *basic-health-check
     depends_on:
       db-postgres:
         condition: service_healthy
@@ -1175,11 +1179,11 @@ services:
     image: ghcr.io/locotoki/hubspot-mock:latest
     container_name: hubspot-mock
     ports:
-      - "8095:8095"
+      - "8000:8000"
     environment:
-      - PORT=8095
+      - PORT=8000
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8095/ping"]
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
       <<: *basic-health-check
     restart: unless-stopped
     networks:
