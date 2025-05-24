@@ -1192,6 +1192,29 @@ services:
       <<: *common-labels
       com.docker.compose.service: "hubspot-mock"
 
+  # CRM Sync Service - Syncs contacts to HubSpot
+  crm-sync:
+    build:
+      context: ./services/crm-sync
+      dockerfile: Dockerfile
+    image: ghcr.io/locotoki/crm-sync:latest
+    container_name: crm-sync
+    ports:
+      - "8096:8000"
+    environment:
+      - HUBSPOT_URL=http://hubspot-mock:8000
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/healthz"]
+      <<: *basic-health-check
+    restart: unless-stopped
+    networks:
+      - alfred-network
+    depends_on:
+      - hubspot-mock
+    labels:
+      <<: *common-labels
+      com.docker.compose.service: "crm-sync"
+
   # Contact Ingest Service - Lead capture and processing
   contact-ingest:
     build:
@@ -1217,20 +1240,6 @@ services:
       com.docker.compose.service: "contact-ingest"
 
   # CRM Sync Service - Syncs contacts with CRM systems
-  crm-sync:
-    build:
-      context: ./services/crm-sync
-      dockerfile: Dockerfile
-    image: ghcr.io/locotoki/crm-sync:latest
-    container_name: crm-sync
-    environment:
-      - HUBSPOT_MOCK_URL=http://hubspot-mock:8095
-      - CONTACT_INGEST_URL=http://contact-ingest:8080
-    depends_on:
-      - contact-ingest
-      - hubspot-mock
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/docs"]
       <<: *basic-health-check
     restart: unless-stopped
     networks:

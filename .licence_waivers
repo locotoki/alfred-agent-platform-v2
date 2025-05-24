@@ -93,3 +93,7 @@ SOFTWARE.
 # pgvector dependencies
 psycopg==GNU Lesser General Public License v3 (LGPLv3)
 psycopg-binary==GNU Lesser General Public License v3 (LGPLv3)
+
+# CRM sync dependencies
+dnspython==ISC License (ISCL)
+email_validator==The Unlicense (Unlicense)

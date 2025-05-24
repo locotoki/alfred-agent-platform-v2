@@ -49,3 +49,6 @@ monitoring:
 other:
   - api
   - whatsapp-adapter
+  - hubspot-mock
+  - contact-ingest
+  - crm-sync
