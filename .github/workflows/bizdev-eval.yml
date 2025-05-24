@@ -23,4 +23,4 @@ jobs:
 
       - name: Run BizDev eval harness
         run: |
-          pytest tests/bizdev -q
+          cd tests/bizdev && pytest -q --no-header --tb=short
