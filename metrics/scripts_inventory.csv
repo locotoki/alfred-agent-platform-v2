@@ -1,4 +1,8 @@
 path,ext,size_bytes,status
+.docs/add-bizdev-backlog-option.sh,.sh,1649,UNKNOWN
+.docs/board-sync-cli.sh,.sh,2582,UNKNOWN
+.docs/graphql-board-sync-fixed.sh,.sh,4217,UNKNOWN
+.docs/graphql-script-ready.sh,.sh,3580,UNKNOWN
 .github/workflow_helpers/build-size.sh,.sh,176,UNKNOWN
 adapters/telegram/__init__.py,.py,52,UNKNOWN
 adapters/telegram/app.py,.py,6237,UNKNOWN
@@ -430,6 +434,9 @@ services/alfred-core/entrypoint.sh,.sh,1219,UNKNOWN
 services/alfred-core/healthcheck.sh,.sh,387,UNKNOWN
 services/atlas-worker/atlas/__init__.py,.py,23,UNKNOWN
 services/atlas-worker/atlas/main.py,.py,819,UNKNOWN
+services/contact-ingest/src/__init__.py,.py,30,UNKNOWN
+services/contact-ingest/src/__main__.py,.py,167,UNKNOWN
+services/contact-ingest/src/contact_ingest.py,.py,502,UNKNOWN
 services/db-storage/bypass-migrations.js,.js,808,UNKNOWN
 services/db-storage/entrypoint.sh,.sh,1614,UNKNOWN
 services/db-storage/fix-migrations-entrypoint.sh,.sh,2052,UNKNOWN
@@ -439,6 +446,9 @@ services/db-storage/patch-migrations.js,.js,2433,UNKNOWN
 services/db-storage/patched-entrypoint.sh,.sh,402,UNKNOWN
 services/db-storage/skip-migrations.js,.js,1123,UNKNOWN
 services/health/cpu.py,.py,769,UNKNOWN
+services/hubspot-mock/src/__init__.py,.py,36,UNKNOWN
+services/hubspot-mock/src/__main__.py,.py,162,UNKNOWN
+services/hubspot-mock/src/hubspot_mock.py,.py,318,UNKNOWN
 services/mission-control-simplified/analysis-export/check-port.js,.js,3899,UNKNOWN
 services/mission-control-simplified/analysis-export/find-port-process.js,.js,1284,UNKNOWN
 services/mission-control-simplified/analysis-export/integrate-with-social-intel.js,.js,12757,UNKNOWN
