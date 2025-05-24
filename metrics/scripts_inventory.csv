@@ -434,6 +434,9 @@ services/alfred-core/entrypoint.sh,.sh,1219,UNKNOWN
 services/alfred-core/healthcheck.sh,.sh,387,UNKNOWN
 services/atlas-worker/atlas/__init__.py,.py,23,UNKNOWN
 services/atlas-worker/atlas/main.py,.py,819,UNKNOWN
+services/contact-ingest/src/__init__.py,.py,30,UNKNOWN
+services/contact-ingest/src/__main__.py,.py,167,UNKNOWN
+services/contact-ingest/src/contact_ingest.py,.py,502,UNKNOWN
 services/db-storage/bypass-migrations.js,.js,808,UNKNOWN
 services/db-storage/entrypoint.sh,.sh,1614,UNKNOWN
 services/db-storage/fix-migrations-entrypoint.sh,.sh,2052,UNKNOWN
