@@ -23,4 +23,4 @@ jobs:
 
       - name: Run BizDev eval harness
         run: |
-          cd tests/bizdev && python -m pytest test_roundtrip.py -q --no-header --tb=short
+          cd tests/bizdev && python test_roundtrip_standalone.py
