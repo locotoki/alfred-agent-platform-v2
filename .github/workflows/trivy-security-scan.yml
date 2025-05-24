@@ -1,0 +1,15 @@
+name: "Trivy container scan"
+on:
+  schedule:
+    - cron: '0 3 * * 1'      # Mondays 03:00 UTC
+  pull_request:
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: aquasecurity/trivy-action@0.20.0
+        with:
+          image-ref: 'postgres:15.5-alpine redis:7-alpine'
+          severity: 'CRITICAL,HIGH'
+          format: 'table'

@@ -1,42 +1,10 @@
 version: 2
 updates:
-  # Docker dependency updates
   - package-ecosystem: "docker"
     directory: "/"
     schedule:
       interval: "weekly"
-    versioning-strategy: "lockfile-only"
-    target-branch: "develop"
-    labels:
-      - "docker"
-      - "dependencies"
-    allow:
-      - dependency-name: "alfred/healthcheck"
-
-  # Python dependency updates
-  - package-ecosystem: "pip"
-    directory: "/"
-    schedule:
-      interval: "weekly"
-    versioning-strategy: "lockfile-only"
-    target-branch: "develop"
-    labels:
-      - "python"
-      - "dependencies"
-    allow:
-      # Allow only specific dependencies to reduce noise
-      - dependency-name: "black"
-      - dependency-name: "isort"
-      - dependency-name: "flake8"
-      - dependency-name: "mypy"
-      - dependency-name: "pytest"
-
-  # GitHub Actions dependency updates
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: "weekly"
-    target-branch: "develop"
-    labels:
-      - "ci-cd"
-      - "dependencies"
