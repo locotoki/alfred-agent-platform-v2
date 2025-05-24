@@ -9,7 +9,20 @@ This script provides standardized health check endpoints for the PubSub emulator
 It acts as a wrapper around the PubSub emulator to make it compliant with the platform
 health check standard.
 """
-# type: ignoreLFimport jsonLFimport osLFimport timeLFimport urllib.requestLFfrom typing import DictLFLFimport prometheus_clientLFfrom fastapi import FastAPI, Response, statusLFfrom prometheus_client import Counter, GaugeLFLF# ConfigurationLFPUBSUB_HOST = os.environ.get("PUBSUB_HOST", "localhost:8085")LFPROJECT_ID = os.environ.get("ALFRED_PROJECT_ID", "alfred-agent-platform")
+# type: ignore
+import json
+import os
+import time
+import urllib.request
+from typing import Dict
+
+import prometheus_client
+from fastapi import FastAPI, Response, status
+from prometheus_client import Counter, Gauge
+
+# Configuration
+PUBSUB_HOST = os.environ.get("PUBSUB_HOST", "localhost:8085")
+PROJECT_ID = os.environ.get("ALFRED_PROJECT_ID", "alfred-agent-platform")
 SERVICE_NAME = "pubsub-emulator"
 VERSION = "1.0.0"
 
@@ -111,6 +124,6 @@ async def metrics():
 
 
 if __name__ == "__main__":
-    import uvicornLF
+    import uvicorn
 
     uvicorn.run(app, host="0.0.0.0", port=9091)

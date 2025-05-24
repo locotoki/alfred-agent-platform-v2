@@ -1,6 +1,24 @@
 """LangChain implementations for Financial Tax Agent"""
 
-from langchain.chains import LLMChainLFfrom langchain.output_parsers import PydanticOutputParserLFfrom langchain.prompts import PromptTemplateLFfrom langchain_openai import ChatOpenAILFLFfrom .models import (LF    LF,LF    ComplianceCheckRequest,LF    ComplianceCheckResponse,LF    FinancialAnalysisRequest,LF    FinancialAnalysisResponse,LF    TaxCalculationRequest,LF    TaxCalculationResponse,LF    TaxRateRequest,LF    TaxRateResponse,LF)LFLFLFclass TaxCalculationChain:LF    """Chain for tax calculation processing"""
+from langchain.chains import LLMChain
+from langchain.output_parsers import PydanticOutputParser
+from langchain.prompts import PromptTemplate
+from langchain_openai import ChatOpenAI
+
+from .models import (
+    ComplianceCheckRequest,
+    ComplianceCheckResponse,
+    FinancialAnalysisRequest,
+    FinancialAnalysisResponse,
+    TaxCalculationRequest,
+    TaxCalculationResponse,
+    TaxRateRequest,
+    TaxRateResponse,
+)
+
+
+class TaxCalculationChain:
+    """Chain for tax calculation processing"""
 
     def __init__(self, llm: ChatOpenAI = None):
         """Initialize the tax calculation chain with an optional LLM"""

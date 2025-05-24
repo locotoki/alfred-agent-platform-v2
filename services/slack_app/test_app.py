@@ -3,7 +3,13 @@
 This allows us to test basic functionality without real tokens.
 """
 
-from unittest.mock import MagicMock, patchLFLFfrom dotenv import load_dotenvLFLF# Load environment variablesLFload_dotenv()LF
+from unittest.mock import MagicMock, patch
+
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
+
 # Apply patches to avoid real network calls
 with (
     patch("slack_bolt.App") as mock_app,
@@ -18,8 +24,12 @@ with (
     mock_handler_instance = MagicMock()
     mock_handler.return_value = mock_handler_instance
 
-    # Import the app after patchingLF
-    from app import app, flask_appLFLF# Print success messageLF
+    # Import the app after patching
+
+    from app import app, flask_app
+
+    # Print success message
+
     print("⚡️ Bolt app is running! Connected to Slack.")
 
     # Test a sample command

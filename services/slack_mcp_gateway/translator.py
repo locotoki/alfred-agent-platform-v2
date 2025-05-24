@@ -4,7 +4,14 @@ This module handles the transformation of Slack command payloads into standardiz
 requests that can be processed by the Mission Control Platform.
 """
 
-# type: ignoreLFimport uuidLFfrom datetime import datetimeLFfrom typing import Any, DictLFLFLFdef build_task_request(payload: Dict[str, Any]) -> Dict[str, Any]:LF    """Convert a Slack command payload to an MCP task request.
+# type: ignore
+import uuid
+from datetime import datetime
+from typing import Any, Dict
+
+
+def build_task_request(payload: Dict[str, Any]) -> Dict[str, Any]:
+    """Convert a Slack command payload to an MCP task request.
 
     Args:
         payload: The Slack command payload

@@ -3,7 +3,19 @@
 This version is designed to run when we don't have a valid App Token for Socket Mode.
 """
 
-# type: ignoreLFimport loggingLFimport osLFimport socketLFLFfrom dotenv import load_dotenvLFfrom flask import Flask, jsonify, requestLFfrom slack_bolt import AppLFfrom slack_bolt.adapter.flask import SlackRequestHandlerLFLF# Load environment variablesLFload_dotenv()LF
+# type: ignore
+import logging
+import os
+import socket
+
+from dotenv import load_dotenv
+from flask import Flask, jsonify, request
+from slack_bolt import App
+from slack_bolt.adapter.flask import SlackRequestHandler
+
+# Load environment variables
+load_dotenv()
+
 # Configure logging
 logging.basicConfig(level=os.getenv("LOG_LEVEL", "INFO").upper())
 logger = logging.getLogger(__name__)

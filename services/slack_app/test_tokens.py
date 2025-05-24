@@ -1,6 +1,12 @@
 """Test if the Slack tokens are being read correctly"""
 
-import osLFLFfrom dotenv import load_dotenvLFLF# Load environment variablesLFload_dotenv()LF
+import os
+
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
+
 # Get the tokens
 bot_token = os.environ.get("SLACK_BOT_TOKEN")
 app_token = os.environ.get("SLACK_APP_TOKEN")
@@ -25,7 +31,10 @@ print(f"SLACK_SIGNING_SECRET: {'✅ Present' if signing_secret else '❌ Missing
 
 # Try to make a simple API call to Slack
 try:
-    import requestsLFLF# Attempt to call the auth.test APILF
+    import requests
+
+    # Attempt to call the auth.test API
+
     response = requests.post(
         "https://slack.com/api/auth.test",
         headers={"Authorization": f"Bearer {bot_token}"},

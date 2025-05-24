@@ -1,6 +1,13 @@
 """Test models for Financial Tax Agent"""
 
-from enum import EnumLFfrom typing import Any, Dict, List, OptionalLFLFfrom langchain.pydantic_v1 import BaseModel, FieldLFLFLFclass FilingStatus(str, Enum):LF    """Tax filing status"""
+from enum import Enum
+from typing import Any, Dict, List, Optional
+
+from langchain.pydantic_v1 import BaseModel, Field
+
+
+class FilingStatus(str, Enum):
+    """Tax filing status"""
 
     SINGLE = "single"
     MARRIED_JOINT = "married_joint"

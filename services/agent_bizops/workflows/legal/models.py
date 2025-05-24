@@ -1,6 +1,15 @@
 """Legal Compliance Agent Models"""
 
-from datetime import datetimeLFfrom enum import EnumLFfrom typing import Any, Dict, List, OptionalLFLF# Use LangChain's Pydantic v1 for compatibilityLFfrom langchain.pydantic_v1 import BaseModel, FieldLFLFLFclass ComplianceCategory(str, Enum):LF    GDPR = "gdpr"
+from datetime import datetime
+from enum import Enum
+from typing import Any, Dict, List, Optional
+
+# Use LangChain's Pydantic v1 for compatibility
+from langchain.pydantic_v1 import BaseModel, Field
+
+
+class ComplianceCategory(str, Enum):
+    GDPR = "gdpr"
     CCPA = "ccpa"
     HIPAA = "hipaa"
     SOX = "sox"

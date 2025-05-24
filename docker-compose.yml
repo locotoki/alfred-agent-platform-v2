@@ -1239,6 +1239,20 @@ services:
       <<: *common-labels
       com.docker.compose.service: "crm-sync"
 
+  # Database exporter for Prometheus
+  db-exporter:
+    image: quay.io/prometheuscommunity/postgres-exporter:latest
+    depends_on:
+      - db-postgres
+    environment:
+      DATA_SOURCE_NAME: "postgresql://postgres:postgres@db-postgres:5432/postgres?sslmode=disable"
+    restart: unless-stopped
+    networks:
+      - alfred-network
+    labels:
+      <<: *monitoring-service-labels
+      com.docker.compose.service: "db-exporter"
+
 # Volumes
 volumes:
   # Infrastructure volumes
