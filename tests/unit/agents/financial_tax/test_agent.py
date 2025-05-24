@@ -4,7 +4,12 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-from libs.a2a_adapter import A2AEnvelope, PolicyMiddleware, PubSubTransport, SupabaseTransport
+from libs.a2a_adapter import (
+    A2AEnvelope,
+    PolicyMiddleware,
+    PubSubTransport,
+    SupabaseTransport,
+)
 from services.agent_bizops.workflows.finance.agent import FinancialTaxAgent
 
 

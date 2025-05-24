@@ -8,7 +8,12 @@ This test simulates a slash command payload and verifies the handler works corre
 from unittest.mock import MagicMock
 
 # Import the application module
-from services.slack_app.app import COMMAND_PREFIX, app, handle_alfred_command, handle_help_command
+from services.slack_app.app import (
+    COMMAND_PREFIX,
+    app,
+    handle_alfred_command,
+    handle_help_command,
+)
 
 
 @pytest.mark.xfail(

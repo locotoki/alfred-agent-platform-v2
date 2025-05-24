@@ -34,3 +34,11 @@ scikit-learn>=1.3.0
 # Additional test dependencies
 playwright>=1.30.0
 pytrends==4.9.0
+tiktoken
+openai
+backoff
+pytest
+sqlmodel
+psycopg[binary]
+pgvector
+alembic

@@ -17,7 +17,10 @@ from typing import Dict, List
 
 # Import Alfred utilities
 sys.path.insert(0, str(Path(__file__).parent.parent))
-from alfred.metrics.utils.slack import format_vulnerability_message, send_webhook_message
+from alfred.metrics.utils.slack import (
+    format_vulnerability_message,
+    send_webhook_message,
+)
 
 
 def read_vulnerability_report(report_path: Path) -> List[Dict[str, str]]:
