@@ -1167,6 +1167,27 @@ services:
       <<: *mail-service-labels
       com.docker.compose.service: "mail-server"
 
+  # HubSpot Mock Service - Mock HubSpot API for development
+  hubspot-mock:
+    build:
+      context: ./services/hubspot-mock
+      dockerfile: Dockerfile
+    image: ghcr.io/locotoki/hubspot-mock:latest
+    container_name: hubspot-mock
+    ports:
+      - "8095:8095"
+    environment:
+      - PORT=8095
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8095/ping"]
+      <<: *basic-health-check
+    restart: unless-stopped
+    networks:
+      - alfred-network
+    labels:
+      <<: *common-labels
+      com.docker.compose.service: "hubspot-mock"
+
 # Volumes
 volumes:
   # Infrastructure volumes
