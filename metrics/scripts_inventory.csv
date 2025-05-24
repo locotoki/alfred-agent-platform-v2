@@ -126,6 +126,7 @@ bootstrap/init-storage-schema.sh,.sh,446,UNKNOWN
 build-push-all.sh,.sh,3807,UNKNOWN
 build-push-start.sh,.sh,1859,UNKNOWN
 clean-youtube-service.ts,.ts,16421,UNKNOWN
+core-polish-pack.sh,.sh,3010,UNKNOWN
 create-niche-scout-results.js,.js,2574,UNKNOWN
 diagnostics/rca/app.py,.py,5832,UNKNOWN
 diagnostics/rca/fix_app.py,.py,6833,UNKNOWN
@@ -613,6 +614,7 @@ simplified-youtube-service.ts,.ts,16413,UNKNOWN
 skip_ci_sc320.sh,.sh,653,UNKNOWN
 slack-bot/src/app.py,.py,1087,UNKNOWN
 start-all-services.sh,.sh,1499,UNKNOWN
+start-core-services.sh,.sh,1140,UNKNOWN
 start-platform-dryrun.sh,.sh,5795,UNKNOWN
 start-platform.sh,.sh,3962,UNKNOWN
 start-slack-commands.sh,.sh,1640,UNKNOWN
