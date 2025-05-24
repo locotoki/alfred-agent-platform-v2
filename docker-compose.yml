@@ -906,6 +906,37 @@ services:
       com.docker.compose.service: "agent-social"
       prometheus.metrics.port: "9091"
 
+  # BizDev Agent Service
+  agent-bizdev:
+    image: ghcr.io/locotoki/agent-bizdev:edge
+    pull_policy: always
+    container_name: agent-bizdev
+    ports:
+      - "8012:8080"
+      - "9112:9091"
+    environment:
+      - ALFRED_ENVIRONMENT=development
+      - ALFRED_DEBUG=true
+      - ALFRED_LOG_LEVEL=${ALFRED_LOG_LEVEL:-INFO}
+    healthcheck:
+      test: ["CMD", "healthcheck", "--http", "http://localhost:8080/health"]
+      <<: *basic-health-check
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+        reservations:
+          cpus: '0.1'
+          memory: 128M
+    networks:
+      - alfred-network
+    labels:
+      <<: *agent-service-labels
+      com.docker.compose.service: "agent-bizdev"
+      prometheus.metrics.port: "9091"
+
 
   #############################################################################
   # UI SERVICES
