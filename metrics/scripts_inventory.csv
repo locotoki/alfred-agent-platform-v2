@@ -5,6 +5,8 @@ adapters/telegram/app.py,.py,6237,UNKNOWN
 adapters/telegram/start.sh,.sh,222,UNKNOWN
 agent-bizdev/health.sh,.sh,26,UNKNOWN
 agent_core/__init__.py,.py,26,UNKNOWN
+agent_core/answer/__init__.py,.py,47,UNKNOWN
+agent_core/answer/formatter.py,.py,863,UNKNOWN
 agent_core/db/__init__.py,.py,46,UNKNOWN
 agent_core/db/models.py,.py,725,UNKNOWN
 agent_core/db/session.py,.py,520,UNKNOWN
@@ -184,7 +186,7 @@ libs/observability/metrics.py,.py,5629,UNKNOWN
 libs/observability/tracing.py,.py,3684,UNKNOWN
 local-analysis/generate_compose_fixed.py,.py,4545,UNKNOWN
 metrics_fix.py,.py,875,UNKNOWN
-migrations/env.py,.py,2213,UNKNOWN
+migrations/env.py,.py,2191,UNKNOWN
 mission-control/src/index.js,.js,1098,UNKNOWN
 mission-control/src/streamlit_app.py,.py,5770,UNKNOWN
 monitoring/scripts/docker_stats.py,.py,0,UNKNOWN
@@ -599,6 +601,7 @@ tests/alfred/ml/test_thresholds.py,.py,9077,UNKNOWN
 tests/alfred/slack/__init__.py,.py,37,UNKNOWN
 tests/alfred/tools/test_formatter.py,.py,2610,UNKNOWN
 tests/alfred/utils/test_string_utils.py,.py,1962,UNKNOWN
+tests/answer/test_formatter.py,.py,399,UNKNOWN
 tests/backend/ml/__init__.py,.py,16,UNKNOWN
 tests/backend/ml/conftest.py,.py,2034,UNKNOWN
 tests/backend/ml/test_alert_dataset.py,.py,805,UNKNOWN
@@ -611,7 +614,7 @@ tests/backend/ml/test_trainer_benchmark.py,.py,2366,UNKNOWN
 tests/benchmark/conftest.py,.py,1281,UNKNOWN
 tests/benchmark/test_benchmark_marker.py,.py,712,UNKNOWN
 tests/conftest.py,.py,5218,UNKNOWN
-tests/db/test_connection.py,.py,183,UNKNOWN
+tests/db/test_connection.py,.py,184,UNKNOWN
 tests/e2e/__init__.py,.py,48,UNKNOWN
 tests/e2e/run-tests.sh,.sh,4889,UNKNOWN
 tests/e2e/test_review_contract.py,.py,1002,UNKNOWN

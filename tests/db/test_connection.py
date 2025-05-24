@@ -1,5 +1,6 @@
-from agent_core.db.session import engine
 from sqlalchemy import inspect
+
+from agent_core.db.session import engine
 
 
 def test_tables_present():
