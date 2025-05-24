@@ -12,4 +12,3 @@ To keep GA scope tight we will …
 ## Consequences
 * (+) Swappable store implementations post-GA.
 * (–) Slightly higher initial latency due to abstraction layer.
-

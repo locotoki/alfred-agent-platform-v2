@@ -8,7 +8,7 @@ DIRS=( "workflow/cli" )   # Add more dirs when they're shellcheck-clean
 files=()
 for d in "${DIRS[@]}"; do
   if [ -d "$d" ]; then
-    while IFS= read -r -d '' f; do 
+    while IFS= read -r -d '' f; do
       files+=("$f")
     done < <(find "$d" -type f -name '*.sh' -print0)
   fi

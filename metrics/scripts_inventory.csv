@@ -10,7 +10,7 @@ adapters/telegram/start.sh,.sh,222,UNKNOWN
 agent-bizdev/health.sh,.sh,26,UNKNOWN
 agent_core/__init__.py,.py,26,UNKNOWN
 agent_core/answer/__init__.py,.py,47,UNKNOWN
-agent_core/answer/formatter.py,.py,863,UNKNOWN
+agent_core/answer/formatter.py,.py,864,UNKNOWN
 agent_core/db/__init__.py,.py,46,UNKNOWN
 agent_core/db/models.py,.py,725,UNKNOWN
 agent_core/db/session.py,.py,520,UNKNOWN
@@ -22,10 +22,7 @@ agents/social_intel/adapters/a2a_adapter.py,.py,2614,UNKNOWN
 agents/social_intel/agent.py,.py,1527,UNKNOWN
 agents/social_intel/flows/__init__.py,.py,185,UNKNOWN
 agents/social_intel/flows/youtube_flows.py,.py,23014,UNKNOWN
-agents/social_intel/models/__init__.py,.py,567,UNKNOWN
-agents/social_intel/models/youtube_api.py,.py,6608,UNKNOWN
-agents/social_intel/models/youtube_models.py,.py,4730,UNKNOWN
-agents/social_intel/models/youtube_vectors.py,.py,10644,UNKNOWN
+agents/social_intel/models/__init__.py,.py,345,UNKNOWN
 alfred/__init__.py,.py,59,UNKNOWN
 alfred/adapters/__init__.py,.py,89,UNKNOWN
 alfred/adapters/slack/__init__.py,.py,29,UNKNOWN
@@ -46,7 +43,6 @@ alfred/alerts/explainer/service.py,.py,5668,UNKNOWN
 alfred/alerts/feature_flags.py,.py,2412,UNKNOWN
 alfred/alerts/grouping.py,.py,1730,UNKNOWN
 alfred/alerts/models.py,.py,365,UNKNOWN
-alfred/alerts/models/alert_group.py,.py,2032,UNKNOWN
 alfred/alerts/protocols.py,.py,1417,UNKNOWN
 alfred/alerts/tests/__init__.py,.py,40,UNKNOWN
 alfred/alerts/tests/test_dispatcher.py,.py,8485,UNKNOWN
@@ -79,11 +75,9 @@ alfred/model/protocols.py,.py,3995,UNKNOWN
 alfred/model/registry/__init__.py,.py,25,UNKNOWN
 alfred/model/registry/health.py,.py,877,UNKNOWN
 alfred/model/registry/main.py,.py,6139,UNKNOWN
-alfred/model/registry/models/models.py,.py,9793,UNKNOWN
 alfred/model/router/__init__.py,.py,122,UNKNOWN
 alfred/model/router/main.py,.py,5418,UNKNOWN
 alfred/model/router/models/__init__.py,.py,0,UNKNOWN
-alfred/model/router/models/models.py,.py,5868,UNKNOWN
 alfred/protocols.py,.py,180,UNKNOWN
 alfred/rag/__init__.py,.py,111,UNKNOWN
 alfred/rag/protocols.py,.py,4324,UNKNOWN
@@ -202,7 +196,7 @@ perf/k6-script.js,.js,2071,UNKNOWN
 perf/locustfile.py,.py,434,UNKNOWN
 perf/mock_performance_results.py,.py,4122,UNKNOWN
 perf/parse_results.py,.py,720,UNKNOWN
-perf/run.sh,.sh,157,UNKNOWN
+perf/run.sh,.sh,158,UNKNOWN
 port-fix-inject.js,.js,0,UNKNOWN
 rag-gateway/src/app.py,.py,1148,UNKNOWN
 remediation/__init__.py,.py,228,UNKNOWN
@@ -627,6 +621,7 @@ tests/backend/ml/test_retrain_pipeline.py,.py,1436,UNKNOWN
 tests/backend/ml/test_trainer_benchmark.py,.py,2366,UNKNOWN
 tests/benchmark/conftest.py,.py,1281,UNKNOWN
 tests/benchmark/test_benchmark_marker.py,.py,712,UNKNOWN
+tests/bizdev/test_roundtrip.py,.py,1055,UNKNOWN
 tests/conftest.py,.py,5218,UNKNOWN
 tests/db/test_connection.py,.py,184,UNKNOWN
 tests/e2e/__init__.py,.py,48,UNKNOWN
@@ -698,6 +693,6 @@ update-health-endpoints.sh,.sh,1419,UNKNOWN
 validate-orchestration.sh,.sh,2242,UNKNOWN
 verify-port-config.sh,.sh,8060,UNKNOWN
 whatsapp-adapter/src/app.py,.py,1318,UNKNOWN
-workflow/ci/run-shellcheck.sh,.sh,577,UNKNOWN
+workflow/ci/run-shellcheck.sh,.sh,576,UNKNOWN
 workflow/cli/board_sync.sh,.sh,13287,UNKNOWN
 workflow/cli/scripts_inventory.sh,.sh,1269,UNKNOWN

@@ -20,6 +20,20 @@ env:
   COMPOSE_DOCKER_CLI_BUILD: 1
 
 jobs:
+  # Check for literal LF bytes in Python files
+  lf-guard:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check for literal LF bytes
+        run: |
+          # Check if any Python files contain literal 'LF' characters
+          if find . -name "*.py" -type f -exec grep -l $'LF' {} + 2>/dev/null | grep -E -v "(ALFRED|SELF)"; then
+            echo "Error: Found Python files containing literal 'LF' characters"
+            echo "This usually indicates isort corruption"
+            exit 1
+          fi
+
   # Detect if code has changed
   detect-changes:
     if: github.event_name == 'pull_request'
