@@ -7,17 +7,18 @@ on:
 
 jobs:
   eval:
-    if: github.event.inputs.skip_bizdev \!= 'true'
+    if: github.event.inputs.skip_bizdev != 'true'
     runs-on: ubuntu-latest
-    services:
-      docker:
-        image: docker:24-dind
-        privileged: true
     steps:
       - uses: actions/checkout@v4
 
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
       - name: Install Python deps
-        run:  < /dev/null |
+        run: |
           pip install -r tests/bizdev/requirements.txt
 
       - name: Run BizDev eval harness
