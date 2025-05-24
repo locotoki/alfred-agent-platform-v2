@@ -317,3 +317,6 @@ docker-compose up -d agent-bizops
 - **Incidents**: #platform-incidents Slack channel
 - **Planned Maintenance**: #platform-announcements
 - **Team Coordination**: #bizops-team
+
+## Exporters
+DB and Redis metrics are now scraped by Prometheus and visible in Grafana (dashboard: *Exporters / Basic*).
