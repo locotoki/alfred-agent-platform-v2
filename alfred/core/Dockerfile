@@ -15,4 +15,3 @@ HEALTHCHECK --interval=30s --timeout=3s --start-period=40s --retries=3 \
 
 # Default command
 CMD ["python", "-m", "alfred.core.entrypoint"]
-EOF < /dev/null
