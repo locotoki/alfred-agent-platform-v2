@@ -103,6 +103,7 @@ alfred/tools/__init__.py,.py,187,UNKNOWN
 alfred/tools/formatter.py,.py,2281,UNKNOWN
 alfred/tools/protocols.py,.py,519,UNKNOWN
 alfred/ui/__init__.py,.py,211,UNKNOWN
+alfred/ui/healthcheck-wrapper.sh,.sh,228,UNKNOWN
 alfred/ui/protocols.py,.py,5310,UNKNOWN
 alfred/ui/streamlit_chat.py,.py,309,UNKNOWN
 alfred/utils/__init__.py,.py,183,UNKNOWN
