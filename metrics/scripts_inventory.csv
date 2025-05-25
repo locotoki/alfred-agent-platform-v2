@@ -320,7 +320,7 @@ scripts/run-mypy.sh,.sh,2054,UNKNOWN
 scripts/run-validations.sh,.sh,2625,UNKNOWN
 scripts/run_python_tests.py,.py,1228,UNKNOWN
 scripts/run_quick_health_check.sh,.sh,765,UNKNOWN
-scripts/run_synthetic_load.sh,.sh,890,UNKNOWN
+scripts/run_synthetic_load.sh,.sh,1101,UNKNOWN
 scripts/safe-sync.sh,.sh,5190,UNKNOWN
 scripts/scaffold_compose_snippets.py,.py,3055,UNKNOWN
 scripts/security/rotate_secret.sh,.sh,310,UNKNOWN
@@ -712,6 +712,7 @@ tests/unit/alfred/slack/diagnostics/test_explain_command.py,.py,1383,UNKNOWN
 tests/unit/test_health_module.py,.py,3496,UNKNOWN
 tests/validation/conftest.py,.py,520,UNKNOWN
 tests/validation/test_validation_marker.py,.py,294,UNKNOWN
+tests/workload/test_cli.py,.py,4166,UNKNOWN
 update-health-endpoints.sh,.sh,1419,UNKNOWN
 validate-orchestration.sh,.sh,2242,UNKNOWN
 verify-port-config.sh,.sh,8060,UNKNOWN
