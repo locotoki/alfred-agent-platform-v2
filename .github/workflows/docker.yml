@@ -1,0 +1,124 @@
+name: Docker Build with CVE Scanning
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+env:
+  DOCKER_BUILDKIT: 1
+  COMPOSE_DOCKER_CLI_BUILD: 1
+
+jobs:
+  build-and-scan:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service:
+          - slack_mcp_gateway
+          - agent_bizops
+          - alfred-bot
+          - alfred-core
+          - db-metrics
+          - grafana
+          - prometheus
+          - redis
+          - pubsub
+          - model-registry
+          - model-router
+          - slack_app
+          - social-intel
+          - contact-ingest
+          - crm-sync
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: true
+          fetch-depth: 0
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Cache Docker layers
+        uses: actions/cache@v3
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ matrix.service }}-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-${{ matrix.service }}-
+            ${{ runner.os }}-buildx-
+
+      - name: Check if service directory exists
+        id: check_dir
+        run: |
+          if [ -d "./services/${{ matrix.service }}" ]; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Build ${{ matrix.service }} image
+        if: steps.check_dir.outputs.exists == 'true'
+        uses: docker/build-push-action@v4
+        with:
+          context: ./services/${{ matrix.service }}
+          load: true
+          tags: |
+            ${{ matrix.service }}:latest
+            ${{ matrix.service }}:${{ github.sha }}
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
+
+      - name: Run Trivy vulnerability scanner
+        if: steps.check_dir.outputs.exists == 'true'
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: '${{ matrix.service }}:latest'
+          format: 'table'
+          exit-code: '1'
+          ignore-unfixed: true
+          vuln-type: 'os,library'
+          severity: 'CRITICAL,HIGH'
+          timeout: 10m
+
+      - name: Run Trivy vulnerability scanner (SARIF)
+        if: steps.check_dir.outputs.exists == 'true' && always()
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: '${{ matrix.service }}:latest'
+          format: 'sarif'
+          output: 'trivy-results-${{ matrix.service }}.sarif'
+          ignore-unfixed: true
+          vuln-type: 'os,library'
+          severity: 'CRITICAL,HIGH'
+          timeout: 10m
+
+      - name: Upload Trivy scan results to GitHub Security tab
+        if: steps.check_dir.outputs.exists == 'true' && always()
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: 'trivy-results-${{ matrix.service }}.sarif'
+          category: '${{ matrix.service }}'
+
+      - name: Move cache
+        if: steps.check_dir.outputs.exists == 'true'
+        run: |
+          rm -rf /tmp/.buildx-cache
+          mv /tmp/.buildx-cache-new /tmp/.buildx-cache || true
+
+  # Summary job to ensure all scans passed
+  cve-gate:
+    needs: build-and-scan
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: Check CVE scan results
+        run: |
+          if [ "${{ needs.build-and-scan.result }}" != "success" ]; then
+            echo "❌ CVE scan failed! Critical or High vulnerabilities found in one or more images."
+            exit 1
+          fi
+          echo "✅ All images passed CVE scanning"
