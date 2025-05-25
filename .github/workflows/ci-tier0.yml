@@ -88,6 +88,8 @@ jobs:
           echo "Running core unit tests (fast)..."
           # Run a subset of fast unit tests that don't require external dependencies
           pytest tests/unit/test_health_module.py tests/workload/test_cli.py -v || true
+          # Run slack adapter tests
+          pytest alfred/adapters/slack/tests/test_health.py -v || true
           # TODO: Enable full test suite once dependencies are fixed
           # pytest -m "not slow and not integration and not e2e" -v
 
