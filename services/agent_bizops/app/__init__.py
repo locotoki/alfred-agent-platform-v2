@@ -1,1 +1,2 @@
-"""Agent BizOps Application Package"""
+# agent_bizops main application
+print('agent_bizops service starting...')
