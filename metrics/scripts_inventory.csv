@@ -506,12 +506,6 @@ services/mission-control-simplified/server.js,.js,5678,UNKNOWN
 services/mission-control-simplified/standalone.js,.js,3943,UNKNOWN
 services/mission-control-simplified/start.sh,.sh,1306,UNKNOWN
 services/mission-control-simplified/tests/test-social-intel-direct.js,.js,2071,UNKNOWN
-services/mission-control.old/.next/server/middleware-build-manifest.js,.js,257,UNKNOWN
-services/mission-control.old/.next/server/middleware-react-loadable-manifest.js,.js,35,UNKNOWN
-services/mission-control.old/.next/server/next-font-manifest.js,.js,113,UNKNOWN
-services/mission-control.old/.next/static/chunks/polyfills.js,.js,91460,UNKNOWN
-services/mission-control.old/.next/static/development/_buildManifest.js,.js,243,UNKNOWN
-services/mission-control.old/.next/static/development/_ssgManifest.js,.js,76,UNKNOWN
 services/mission-control/deploy-improved-ui.sh,.sh,2500,UNKNOWN
 services/mission-control/improved-server.js,.js,20065,UNKNOWN
 services/mission-control/next-env.d.ts,.ts,201,UNKNOWN
