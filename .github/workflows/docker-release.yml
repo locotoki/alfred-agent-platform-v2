@@ -4,15 +4,59 @@ on:
   push:
     tags:
       - 'v*'
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: 'Git ref to build (tag or branch)'
+        required: true
+        type: string
 
 jobs:
   build:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        svc: [alfred-core, alfred-bot, agent_bizops, contact-ingest, crm-sync, slack_app, social-intel, db-metrics]
+        include:
+          - name: alfred-core
+            dockerfile: ./services/alfred-core/Dockerfile
+            context: ./services/alfred-core
+          - name: alfred-bot
+            dockerfile: ./services/alfred-bot/Dockerfile
+            context: ./services/alfred-bot
+          - name: agent-bizops
+            dockerfile: ./services/agent_bizops/Dockerfile
+            context: ./services/agent_bizops
+          - name: contact-ingest
+            dockerfile: ./services/contact-ingest/Dockerfile
+            context: ./services/contact-ingest
+          - name: crm-sync
+            dockerfile: ./services/crm-sync/Dockerfile
+            context: ./services/crm-sync
+          - name: slack-app
+            dockerfile: ./services/slack_app/Dockerfile
+            context: ./services/slack_app
+          - name: social-intel
+            dockerfile: ./services/social-intel/Dockerfile
+            context: ./services/social-intel
+          - name: db-metrics
+            dockerfile: ./services/db-metrics/Dockerfile
+            context: ./services/db-metrics
+          - name: slack-adapter
+            dockerfile: ./alfred/adapters/slack/Dockerfile
+            context: .
+          - name: mission-control
+            dockerfile: ./services/mission-control/Dockerfile
+            context: ./services/mission-control
+          - name: pubsub
+            dockerfile: ./services/pubsub/Dockerfile
+            context: ./services/pubsub
+          - name: rag-gateway
+            dockerfile: ./rag-gateway/Dockerfile
+            context: ./rag-gateway
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref || github.ref }}
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
@@ -27,10 +71,19 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build & push ${{ matrix.svc }}
+      - name: Determine tag
+        id: tag
+        run: |
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            echo "tag=${{ inputs.ref }}" >> $GITHUB_OUTPUT
+          else
+            echo "tag=${{ github.ref_name }}" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Build & push ${{ matrix.name }}
         uses: docker/build-push-action@v5
         with:
           push: true
-          tags: ghcr.io/${{ github.repository }}/${{ matrix.svc }}:${{ github.ref_name }}
-          file: services/${{ matrix.svc }}/Dockerfile
-          context: services/${{ matrix.svc }}
+          tags: ghcr.io/${{ github.repository }}/${{ matrix.name }}:${{ steps.tag.outputs.tag }}
+          file: ${{ matrix.dockerfile }}
+          context: ${{ matrix.context }}
