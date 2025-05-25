@@ -11,18 +11,18 @@ RUN python3 -m venv /app/venv
 ENV PATH="/app/venv/bin:$PATH"
 
 # Install dependencies
-COPY requirements.txt /app/
+COPY services/pubsub/requirements.txt /app/
 RUN pip install --no-cache-dir -r /app/requirements.txt
 
 # Copy the health check wrapper
-COPY health_wrapper.py /app/
+COPY services/pubsub/health_wrapper.py /app/
 
 # Expose ports for PubSub emulator and metrics
 EXPOSE 8085
 EXPOSE 9091
 
 # Set entrypoint script
-COPY entrypoint.sh /
+COPY services/pubsub/entrypoint.sh /
 RUN chmod +x /entrypoint.sh
 
 # Set healthcheck

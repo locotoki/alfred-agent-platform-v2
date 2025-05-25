@@ -8,7 +8,7 @@ COPY --from=healthcheck /healthcheck /usr/local/bin/healthcheck
 WORKDIR /app
 
 # Install dependencies first (for better layer caching)
-COPY requirements.txt /app/
+COPY services/db-metrics/requirements.txt /app/
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Install curl for health check
@@ -16,7 +16,7 @@ RUN apt-get update && apt-get install -y curl && \
     rm -rf /var/lib/apt/lists/*
 
 # Copy application code
-COPY app.py /app/
+COPY services/db-metrics/app.py /app/
 
 # Set environment variables
 ENV PYTHONUNBUFFERED=1
