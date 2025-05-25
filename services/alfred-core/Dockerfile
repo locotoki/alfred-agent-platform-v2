@@ -1,6 +1,10 @@
 ARG ASSETS=/assets
 FROM python:3.11-slim
 
+# Make ASSETS available as environment variable
+ARG ASSETS
+ENV ASSETS=${ASSETS}
+
 WORKDIR /app
 
 # Install system dependencies
