@@ -50,6 +50,8 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
+          provenance: false
+          sbom: false
           context: .
           file: ./docker/diagnostics-bot/Dockerfile
           push: true
