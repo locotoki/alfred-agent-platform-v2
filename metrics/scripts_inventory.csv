@@ -547,6 +547,7 @@ services/mission-control/start-server.sh,.sh,133,UNKNOWN
 services/mission-control/tailwind.config.js,.js,1699,UNKNOWN
 services/model-registry/entrypoint.sh,.sh,1382,UNKNOWN
 services/model-router/entrypoint.sh,.sh,1222,UNKNOWN
+services/pubsub/entrypoint.init.sh,.sh,25,UNKNOWN
 services/pubsub/entrypoint.sh,.sh,859,UNKNOWN
 services/pubsub/health_wrapper.py,.py,4180,UNKNOWN
 services/redis/entrypoint.sh,.sh,1953,UNKNOWN

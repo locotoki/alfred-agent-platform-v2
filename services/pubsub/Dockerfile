@@ -30,5 +30,5 @@ HEALTHCHECK --interval=30s --timeout=20s --retries=5 --start-period=45s \
   CMD curl -f http://localhost:9091/health || exit 1
 
 # Run both PubSub emulator and the health check wrapper
-ENTRYPOINT ["/entrypoint.sh"]
-# The healthcheck metrics are started in the entrypoint.sh script
+COPY services/pubsub/entrypoint.init.sh /entrypoint.init.sh
+CMD ["sh","/entrypoint.init.sh"]
