@@ -446,7 +446,7 @@ services/alfred-core/entrypoint.sh,.sh,1219,UNKNOWN
 services/alfred-core/healthcheck.sh,.sh,387,UNKNOWN
 services/atlas-worker/atlas/__init__.py,.py,23,UNKNOWN
 services/atlas-worker/atlas/main.py,.py,819,UNKNOWN
-services/contact-ingest/app/main.py,.py,1400,UNKNOWN
+services/contact-ingest/app/main.py,.py,1615,UNKNOWN
 services/contact-ingest/src/__init__.py,.py,30,UNKNOWN
 services/contact-ingest/src/__main__.py,.py,167,UNKNOWN
 services/contact-ingest/src/app.py,.py,391,UNKNOWN
