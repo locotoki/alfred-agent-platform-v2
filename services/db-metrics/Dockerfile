@@ -31,5 +31,5 @@ EXPOSE 9091
 HEALTHCHECK --interval=30s --timeout=20s --start-period=45s --retries=5 \
   CMD curl -f http://localhost:8000/healthz || exit 1
 
-# Run the application with healthcheck wrapper
-CMD ["bash", "-c", "healthcheck --export-prom :9091 -- python app.py"]
+# Run the application
+CMD ["python", "app.py"]
