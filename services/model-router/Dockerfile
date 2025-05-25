@@ -1,7 +1,7 @@
 # First stage: Get the healthcheck binary
 FROM gcr.io/distroless/static-debian12:nonroot AS healthcheck
 WORKDIR /app
-COPY --from=ghcr.io/alfred-health/healthcheck:latest /usr/local/bin/healthcheck /usr/local/bin/healthcheck
+COPY --from=ghcr.io/locotoki/alfred-agent-platform-v2/healthcheck:latest /usr/local/bin/healthcheck /usr/local/bin/healthcheck
 
 # Main application stage
 FROM python:3.11-slim AS app
