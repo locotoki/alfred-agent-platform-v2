@@ -19,40 +19,40 @@ jobs:
         include:
           - name: alfred-core
             dockerfile: ./services/alfred-core/Dockerfile
-            context: ./services/alfred-core
+            context: .
           - name: alfred-bot
             dockerfile: ./services/alfred-bot/Dockerfile
-            context: ./services/alfred-bot
+            context: .
           - name: agent-bizops
             dockerfile: ./services/agent_bizops/Dockerfile
-            context: ./services/agent_bizops
+            context: .
           - name: contact-ingest
             dockerfile: ./services/contact-ingest/Dockerfile
-            context: ./services/contact-ingest
+            context: .
           - name: crm-sync
             dockerfile: ./services/crm-sync/Dockerfile
-            context: ./services/crm-sync
+            context: .
           - name: slack-app
             dockerfile: ./services/slack_app/Dockerfile
-            context: ./services/slack_app
+            context: .
           - name: social-intel
             dockerfile: ./services/social-intel/Dockerfile
-            context: ./services/social-intel
+            context: .
           - name: db-metrics
             dockerfile: ./services/db-metrics/Dockerfile
-            context: ./services/db-metrics
+            context: .
           - name: slack-adapter
             dockerfile: ./alfred/adapters/slack/Dockerfile
             context: .
           - name: mission-control
             dockerfile: ./services/mission-control/Dockerfile
-            context: ./services/mission-control
+            context: .
           - name: pubsub
             dockerfile: ./services/pubsub/Dockerfile
-            context: ./services/pubsub
+            context: .
           - name: rag-gateway
             dockerfile: ./rag-gateway/Dockerfile
-            context: ./rag-gateway
+            context: .
     steps:
       - uses: actions/checkout@v4
         with:
