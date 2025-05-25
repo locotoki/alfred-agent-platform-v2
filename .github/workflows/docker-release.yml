@@ -33,4 +33,4 @@ jobs:
           push: true
           tags: ghcr.io/${{ github.repository }}/${{ matrix.svc }}:${{ github.ref_name }}
           file: services/${{ matrix.svc }}/Dockerfile
-          context: services/${{ matrix.svc }}
+          context: .
