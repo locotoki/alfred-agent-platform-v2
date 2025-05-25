@@ -1,3 +1,6 @@
+env:
+  BUILDX_NO_DEFAULT_ATTESTATIONS: 1
+
 name: Build & Publish Docker images (tag)
 
 on:
@@ -83,8 +86,9 @@ jobs:
       - name: Build & push ${{ matrix.name }}
         uses: docker/build-push-action@v5
         with:
+          provenance: false
+          sbom: false
           push: true
           tags: ghcr.io/${{ github.repository }}/${{ matrix.name }}:${{ steps.tag.outputs.tag }}
           file: ${{ matrix.dockerfile }}
           context: ${{ matrix.context }}
-          provenance: false
