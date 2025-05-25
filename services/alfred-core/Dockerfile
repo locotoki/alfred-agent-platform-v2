@@ -13,9 +13,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN pip install --no-cache-dir fastapi uvicorn structlog prometheus_client
 
 # Copy service code
-COPY ./app /app/app
-COPY ./health.json /app/health.json
-COPY ./healthcheck.sh /usr/local/bin/healthcheck.sh
+COPY services/alfred-core/app /app/app
+COPY services/alfred-core/docker-assets/health.json /app/health.json
+COPY healthcheck/healthcheck.sh /usr/local/bin/healthcheck.sh
 
 # Make healthcheck script executable
 RUN chmod +x /usr/local/bin/healthcheck.sh

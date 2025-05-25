@@ -8,11 +8,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
     && rm -rf /var/lib/apt/lists/*
 
-COPY requirements.txt .
+COPY services/crm-sync/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY app/ app/
-COPY clients/ clients/
+COPY services/crm-sync/app/ app/
+COPY services/crm-sync/docker-assets/clients clients/
 
 # Set environment variables
 ENV PYTHONPATH=/app
