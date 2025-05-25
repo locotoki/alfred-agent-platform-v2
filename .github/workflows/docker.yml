@@ -22,8 +22,6 @@ jobs:
           - alfred-bot
           - alfred-core
           - db-metrics
-          - grafana
-          - prometheus
           - redis
           - pubsub
           - model-registry
@@ -51,13 +49,14 @@ jobs:
             ${{ runner.os }}-buildx-${{ matrix.service }}-
             ${{ runner.os }}-buildx-
 
-      - name: Check if service directory exists
+      - name: Check if service directory and Dockerfile exist
         id: check_dir
         run: |
-          if [ -d "./services/${{ matrix.service }}" ]; then
+          if [ -d "./services/${{ matrix.service }}" ] && [ -f "./services/${{ matrix.service }}/Dockerfile" ]; then
             echo "exists=true" >> $GITHUB_OUTPUT
           else
             echo "exists=false" >> $GITHUB_OUTPUT
+            echo "Service ${{ matrix.service }} does not have a Dockerfile"
           fi
 
       - name: Build ${{ matrix.service }} image
