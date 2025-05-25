@@ -1,4 +1,5 @@
 """Contact ingest service with ETL background worker."""
+
 import asyncio
 import glob
 import json
@@ -19,6 +20,7 @@ app = FastAPI(title="contact-ingest")
 
 class IngestSummary(BaseModel):
     """Summary of ingested contacts."""
+
     processed: int
 
 
