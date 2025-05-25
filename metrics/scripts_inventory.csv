@@ -407,7 +407,7 @@ services/agent-orchestrator/start-prod.sh,.sh,1651,UNKNOWN
 services/agent-orchestrator/tailwind.config.ts,.ts,2290,UNKNOWN
 services/agent-orchestrator/vite.config.ts,.ts,526,UNKNOWN
 services/agent_bizops/__init__.py,.py,55,UNKNOWN
-services/agent_bizops/app/__init__.py,.py,39,UNKNOWN
+services/agent_bizops/app/__init__.py,.py,74,UNKNOWN
 services/agent_bizops/app/main.py,.py,1608,UNKNOWN
 services/agent_bizops/docker-assets/app.py,.py,73,UNKNOWN
 services/agent_bizops/middleware/__init__.py,.py,39,UNKNOWN
@@ -432,7 +432,7 @@ services/agent_bizops/workflows/legal/main.py,.py,8913,UNKNOWN
 services/agent_bizops/workflows/legal/models.py,.py,3413,UNKNOWN
 services/alfred-bot/app/__init__.py,.py,0,UNKNOWN
 services/alfred-bot/app/main.py,.py,5135,UNKNOWN
-services/alfred-core/app/__init__.py,.py,22,UNKNOWN
+services/alfred-core/app/__init__.py,.py,72,UNKNOWN
 services/alfred-core/app/main.py,.py,2257,UNKNOWN
 services/alfred-core/docker-assets/app.py,.py,71,UNKNOWN
 services/alfred-core/entrypoint.sh,.sh,1219,UNKNOWN
@@ -462,7 +462,7 @@ services/crm-sync/src/__init__.py,.py,24,UNKNOWN
 services/crm-sync/src/__main__.py,.py,155,UNKNOWN
 services/crm-sync/src/crm_sync.py,.py,1100,UNKNOWN
 services/crm-sync/tests/test_main.py,.py,1752,UNKNOWN
-services/db-metrics/app.py,.py,1295,UNKNOWN
+services/db-metrics/app.py,.py,61,UNKNOWN
 services/db-metrics/docker-assets/app.py,.py,69,UNKNOWN
 services/db-storage/bypass-migrations.js,.js,808,UNKNOWN
 services/db-storage/entrypoint.sh,.sh,1614,UNKNOWN
