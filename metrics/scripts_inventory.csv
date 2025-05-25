@@ -446,6 +446,7 @@ services/alfred-core/entrypoint.sh,.sh,1219,UNKNOWN
 services/alfred-core/healthcheck.sh,.sh,387,UNKNOWN
 services/atlas-worker/atlas/__init__.py,.py,23,UNKNOWN
 services/atlas-worker/atlas/main.py,.py,819,UNKNOWN
+services/contact-ingest/app/main.py,.py,1615,UNKNOWN
 services/contact-ingest/src/__init__.py,.py,30,UNKNOWN
 services/contact-ingest/src/__main__.py,.py,167,UNKNOWN
 services/contact-ingest/src/app.py,.py,391,UNKNOWN
@@ -458,7 +459,7 @@ services/crm-sync/clients/hubspot_mock_client/api/default/post_contacts.py,.py,2
 services/crm-sync/clients/hubspot_mock_client/client.py,.py,12511,UNKNOWN
 services/crm-sync/clients/hubspot_mock_client/errors.py,.py,546,UNKNOWN
 services/crm-sync/clients/hubspot_mock_client/models/__init__.py,.py,112,UNKNOWN
-services/crm-sync/clients/hubspot_mock_client/models/contact.py,.py,2126,UNKNOWN
+services/crm-sync/clients/hubspot_mock_client/models/contact.py,.py,2073,UNKNOWN
 services/crm-sync/clients/hubspot_mock_client/types.py,.py,1005,UNKNOWN
 services/crm-sync/src/__init__.py,.py,24,UNKNOWN
 services/crm-sync/src/__main__.py,.py,155,UNKNOWN
@@ -707,7 +708,9 @@ tests/smoke/test_slack_alert.py,.py,5544,UNKNOWN
 tests/smoke/test_telegram_adapter.py,.py,2032,UNKNOWN
 tests/smoke/test_vuln_gate.py,.py,6411,UNKNOWN
 tests/smoke/test_vulnerability_scan.py,.py,3271,UNKNOWN
+tests/test_contact_ingest_unit.py,.py,805,UNKNOWN
 tests/test_cpu.py,.py,1067,UNKNOWN
+tests/test_e2e_bizdev.py,.py,1136,UNKNOWN
 tests/unit/__init__.py,.py,42,UNKNOWN
 tests/unit/agents/__init__.py,.py,44,UNKNOWN
 tests/unit/agents/financial_tax/__init__.py,.py,42,UNKNOWN

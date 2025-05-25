@@ -320,3 +320,6 @@ docker-compose up -d agent-bizops
 
 ## Exporters
 DB and Redis metrics are now scraped by Prometheus and visible in Grafana (dashboard: *Exporters / Basic*).
+
+### BizDev profile
+`docker compose --profile bizdev up -d` starts crm-sync and contact-ingest.
