@@ -1223,14 +1223,16 @@ services:
     image: ghcr.io/locotoki/contact-ingest:latest
     container_name: contact-ingest
     ports:
-      - "8082:8080"
+      - "8082:8081"
     environment:
-      - PORT=8080
-      - HUBSPOT_URL=http://hubspot-mock:8095
+      - CRM_SYNC_URL=http://crm-sync:8000/sync
+      - INGEST_DIR=/app/data
     depends_on:
-      - hubspot-mock
+      - crm-sync
+    profiles:
+      - bizdev
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/docs"]
+      test: ["CMD", "curl", "-f", "http://localhost:8081/healthz"]
       <<: *basic-health-check
     restart: unless-stopped
     networks:
@@ -1239,14 +1241,6 @@ services:
       <<: *common-labels
       com.docker.compose.service: "contact-ingest"
 
-  # CRM Sync Service - Syncs contacts with CRM systems
-      <<: *basic-health-check
-    restart: unless-stopped
-    networks:
-      - alfred-network
-    labels:
-      <<: *common-labels
-      com.docker.compose.service: "crm-sync"
 
   # Database exporter for Prometheus
   db-exporter:

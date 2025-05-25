@@ -1,0 +1,6 @@
+fastapi
+uvicorn[standard]
+httpx
+prometheus-client
+pydantic>=2.6
+aiofiles
