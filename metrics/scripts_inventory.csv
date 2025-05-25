@@ -27,6 +27,7 @@ agents/social_intel/models/__init__.py,.py,345,UNKNOWN
 alfred/__init__.py,.py,59,UNKNOWN
 alfred/adapters/__init__.py,.py,89,UNKNOWN
 alfred/adapters/slack/__init__.py,.py,29,UNKNOWN
+alfred/adapters/slack/tests/test_health.py,.py,1382,UNKNOWN
 alfred/adapters/slack/tests/test_webhook.py,.py,9028,UNKNOWN
 alfred/adapters/slack/webhook.py,.py,6815,UNKNOWN
 alfred/agents/__init__.py,.py,419,UNKNOWN

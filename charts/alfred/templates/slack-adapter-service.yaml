@@ -1,0 +1,23 @@
+{{- if .Values.slackAdapter.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "alfred.fullname" . }}-slack-adapter
+  labels:
+    {{- include "alfred.labels" . | nindent 4 }}
+    app.kubernetes.io/component: slack-adapter
+spec:
+  type: {{ .Values.slackAdapter.service.type | default "ClusterIP" }}
+  ports:
+    - port: {{ .Values.slackAdapter.service.port | default 8000 }}
+      targetPort: http
+      protocol: TCP
+      name: http
+    - port: {{ .Values.slackAdapter.service.metricsPort | default 9091 }}
+      targetPort: metrics
+      protocol: TCP
+      name: metrics
+  selector:
+    {{- include "alfred.selectorLabels" . | nindent 4 }}
+    app.kubernetes.io/component: slack-adapter
+{{- end }}

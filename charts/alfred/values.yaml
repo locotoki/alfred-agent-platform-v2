@@ -57,3 +57,26 @@ crmSync:
     limits:
       memory: "256Mi"
       cpu: "200m"
+
+slackAdapter:
+  enabled: true
+  replicas: 1
+  image:
+    repository: ghcr.io/locotoki/alfred-slack-adapter
+    tag: latest
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+    port: 8000
+    metricsPort: 9091
+  env:
+    ALFRED_LOG_LEVEL: "INFO"
+  slack:
+    signingSecret: ""  # Set via environment or secrets
+  resources:
+    requests:
+      memory: "128Mi"
+      cpu: "50m"
+    limits:
+      memory: "256Mi"
+      cpu: "100m"
