@@ -85,6 +85,10 @@ services:
 
   # Services that need environment fixes
   db-auth:
+    build:
+      context: ./services/db-auth
+      dockerfile: Dockerfile
+    image: alfred-platform/db-auth:fixed
     environment:
       POSTGRES_DB: auth_db
       POSTGRES_USER: postgres
@@ -95,7 +99,11 @@ services:
       GOTRUE_SITE_URL: http://localhost:9999
       GOTRUE_JWT_SECRET: super-secret-jwt-token-for-dev
     healthcheck:
-      disable: true
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:9999/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
 
   db-storage:
     healthcheck:

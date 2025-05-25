@@ -478,6 +478,7 @@ services/crm-sync/src/__init__.py,.py,24,UNKNOWN
 services/crm-sync/src/__main__.py,.py,155,UNKNOWN
 services/crm-sync/src/crm_sync.py,.py,1100,UNKNOWN
 services/crm-sync/tests/test_main.py,.py,1752,UNKNOWN
+services/db-auth/auth-wrapper.sh,.sh,776,UNKNOWN
 services/db-metrics/app.py,.py,107,UNKNOWN
 services/db-metrics/docker-assets/app.py,.py,72,UNKNOWN
 services/db-storage/bypass-migrations.js,.js,808,UNKNOWN

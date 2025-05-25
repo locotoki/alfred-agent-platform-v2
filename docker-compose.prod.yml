@@ -1,0 +1,210 @@
+# Production Docker Compose Overrides
+# Generated: 2025-05-27
+# Purpose: Production-specific configurations including resource limits, secrets, and TLS
+
+version: '3.8'
+
+services:
+  # Core services with resource limits
+  agent-core:
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 2G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+    environment:
+      - LOG_LEVEL=info
+      - ENVIRONMENT=production
+    secrets:
+      - db_password
+      - jwt_secret
+
+  db-postgres:
+    deploy:
+      resources:
+        limits:
+          cpus: '4.0'
+          memory: 4G
+        reservations:
+          cpus: '1.0'
+          memory: 1G
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD_FILE=/run/secrets/db_password
+
+  redis:
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 2G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+    command: redis-server --maxmemory 1gb --maxmemory-policy allkeys-lru
+
+  # Monitoring services
+  prometheus:
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1G
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+
+  grafana:
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1G
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD_FILE=/run/secrets/grafana_password
+    secrets:
+      - grafana_password
+
+  # UI services
+  ui-chat:
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1G
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+    environment:
+      - STREAMLIT_SERVER_ADDRESS=0.0.0.0
+      - STREAMLIT_SERVER_PORT=8501
+      - STREAMLIT_SERVER_ENABLE_CORS=false
+      - STREAMLIT_SERVER_ENABLE_XSRF_PROTECTION=true
+
+  # Slack services
+  slack_app:
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1G
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+    environment:
+      - SLACK_APP_TOKEN_FILE=/run/secrets/slack_app_token
+      - SLACK_BOT_TOKEN_FILE=/run/secrets/slack_bot_token
+      - SLACK_SIGNING_SECRET_FILE=/run/secrets/slack_signing_secret
+    secrets:
+      - slack_app_token
+      - slack_bot_token
+      - slack_signing_secret
+
+  slack_mcp_gateway:
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1G
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+    environment:
+      - SLACK_SIGNING_SECRET_FILE=/run/secrets/slack_signing_secret
+    secrets:
+      - slack_signing_secret
+
+  # Metrics services with adjusted resource limits
+  db-admin-metrics:
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+        reservations:
+          cpus: '0.1'
+          memory: 128M
+
+  db-api-metrics:
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+        reservations:
+          cpus: '0.1'
+          memory: 128M
+
+  db-auth-metrics:
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+        reservations:
+          cpus: '0.1'
+          memory: 128M
+
+  db-realtime-metrics:
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+        reservations:
+          cpus: '0.1'
+          memory: 128M
+
+  db-storage-metrics:
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+        reservations:
+          cpus: '0.1'
+          memory: 128M
+
+# Production secrets definition
+secrets:
+  db_password:
+    external: true
+    name: alfred_db_password
+  jwt_secret:
+    external: true
+    name: alfred_jwt_secret
+  grafana_password:
+    external: true
+    name: alfred_grafana_password
+  slack_app_token:
+    external: true
+    name: alfred_slack_app_token
+  slack_bot_token:
+    external: true
+    name: alfred_slack_bot_token
+  slack_signing_secret:
+    external: true
+    name: alfred_slack_signing_secret
+
+# Production volumes
+volumes:
+  postgres_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /var/lib/alfred/postgres
+
+# Production networks with encryption
+networks:
+  default:
+    driver: overlay
+    driver_opts:
+      encrypted: "true"
