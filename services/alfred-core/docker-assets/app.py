@@ -1,2 +1,3 @@
-# Stub app.py for alfred-core
-print('Service alfred-core starting...')
+"""Stub application module."""
+
+print("Service alfred-core starting...")

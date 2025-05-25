@@ -1,2 +1,3 @@
-# Stub app.py for contact-ingest
-print('Service contact-ingest starting...')
+"""Stub application module."""
+
+print("Service contact-ingest starting...")

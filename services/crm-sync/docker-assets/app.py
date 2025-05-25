@@ -1,2 +1,3 @@
-# Stub app.py for crm-sync
-print('Service crm-sync starting...')
+"""Stub application module."""
+
+print("Service crm-sync starting...")

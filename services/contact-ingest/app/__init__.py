@@ -1,2 +1,3 @@
-# contact-ingest main application
-print('contact-ingest service starting...')
+"""Package initialization."""
+
+print("contact-ingest service starting...")

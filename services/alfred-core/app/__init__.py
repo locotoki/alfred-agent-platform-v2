@@ -1,2 +1,3 @@
-# alfred-core main application
-print('alfred-core service starting...')
+"""Package initialization."""
+
+print("alfred-core service starting...")

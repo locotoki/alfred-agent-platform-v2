@@ -1,2 +1,3 @@
-# agent_bizops main application
-print('agent_bizops service starting...')
+"""Package initialization."""
+
+print("agent_bizops service starting...")

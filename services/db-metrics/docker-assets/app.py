@@ -1,2 +1,3 @@
-# Stub app.py for db-metrics
-print('Service db-metrics starting...')
+"""Stub application module."""
+
+print("Service db-metrics starting...")

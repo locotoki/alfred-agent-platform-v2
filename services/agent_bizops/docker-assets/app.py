@@ -1,2 +1,3 @@
-# Stub app.py for agent_bizops
-print('Service agent_bizops starting...')
+"""Stub application module."""
+
+print("Service agent_bizops starting...")
