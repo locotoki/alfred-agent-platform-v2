@@ -1,0 +1,10 @@
+apiVersion: v2
+name: keycloak
+description: Hardened Keycloak for AI-Agency platform
+type: application
+version: 0.1.0
+appVersion: 24.0.1
+dependencies:
+  - name: keycloak
+    version: 24.0.1
+    repository: "oci://registry-1.docker.io/bitnamicharts"

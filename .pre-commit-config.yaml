@@ -4,7 +4,7 @@ repos:
     hooks:
       - id: check-added-large-files
       - id: check-yaml
-        exclude: ^charts/alfred/templates/
+        exclude: ^charts/(alfred|keycloak)/templates/
       - id: check-json
       - id: end-of-file-fixer
       - id: trailing-whitespace
