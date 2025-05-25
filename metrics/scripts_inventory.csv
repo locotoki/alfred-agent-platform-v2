@@ -257,7 +257,7 @@ scripts/fix-clean-healthchecks.sh,.sh,1875,UNKNOWN
 scripts/fix-db-storage.sh,.sh,5164,UNKNOWN
 scripts/fix-dockerfile-healthcheck.sh,.sh,3053,UNKNOWN
 scripts/fix-healthcheck-binary.sh,.sh,7136,UNKNOWN
-scripts/fix-port-assignments.py,.py,2611,UNKNOWN
+scripts/fix-port-assignments.py,.py,2612,UNKNOWN
 scripts/fix-storage-migration.sh,.sh,1579,UNKNOWN
 scripts/fix-storage-migrations.sh,.sh,1288,UNKNOWN
 scripts/fix-syntax-errors.py,.py,3020,UNKNOWN
@@ -561,10 +561,10 @@ services/mission-control/start-dev.js,.js,892,UNKNOWN
 services/mission-control/start-server.sh,.sh,133,UNKNOWN
 services/mission-control/tailwind.config.js,.js,1699,UNKNOWN
 services/model-registry/app/__init__.py,.py,81,UNKNOWN
-services/model-registry/app/main.py,.py,664,UNKNOWN
+services/model-registry/app/main.py,.py,665,UNKNOWN
 services/model-registry/entrypoint.sh,.sh,1382,UNKNOWN
 services/model-router/app/__init__.py,.py,77,UNKNOWN
-services/model-router/app/main.py,.py,656,UNKNOWN
+services/model-router/app/main.py,.py,657,UNKNOWN
 services/model-router/entrypoint.sh,.sh,1222,UNKNOWN
 services/pubsub/entrypoint.init.sh,.sh,25,UNKNOWN
 services/pubsub/entrypoint.sh,.sh,859,UNKNOWN
