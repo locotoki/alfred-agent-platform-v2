@@ -13,7 +13,7 @@ jobs:
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          password: ${{ secrets.GHCR_PAT }}
       - run: |
           TAG=${GITHUB_REF_NAME}
           for svc in crm-sync contact-ingest hubspot-mock; do
