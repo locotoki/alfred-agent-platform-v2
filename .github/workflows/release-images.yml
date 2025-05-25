@@ -1,0 +1,22 @@
+name: release-images
+on:
+  push:
+    tags: ["v*"]
+jobs:
+  push:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-qemu-action@v3
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - run: |
+          TAG=${GITHUB_REF_NAME}
+          for svc in crm-sync contact-ingest hubspot-mock; do
+            docker build -t ghcr.io/${{ github.repository_owner }}/$svc:$TAG -t ghcr.io/${{ github.repository_owner }}/$svc:latest ./services/$svc
+            docker push ghcr.io/${{ github.repository_owner }}/$svc --all-tags
+          done
