@@ -1,0 +1,20 @@
+keycloak:
+  proxy: edge
+  ingress:
+    enabled: true
+    tls: true
+    hostname: keycloak.localtest.me      # change in higher envs
+  extraEnvVars:
+    - name: KC_SPI_CONSOLE_ENABLED
+      value: "false"
+  readinessProbe:
+    enabled: true
+    path: /health/ready
+  livenessProbe:
+    enabled: true
+    path: /health/ready
+
+realmExport:
+  enabled: true
+  existingSecret: keycloak-realm-export
+  command: ["/opt/bitnami/scripts/keycloak/run.sh", "export"]
