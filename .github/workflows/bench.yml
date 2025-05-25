@@ -1,0 +1,34 @@
+name: bench
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 3 * * *'   # nightly @ 03:00 UTC
+jobs:
+  bench:
+    runs-on: ubuntu-latest   # switch to self-hosted runner when available
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Pre-pull release images
+        run: docker compose -f bench.compose.yml pull
+
+      - name: Measure cold-start
+        id: bench
+        run:  < /dev/null |
+          START=$(date +%s)
+          docker compose -f bench.compose.yml up -d --no-ansi --no-log-prefix
+          END=$(date +%s)
+          echo "duration=$((END-START))" >> $GITHUB_OUTPUT
+
+      - name: Upload duration artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: cold-start-seconds
+          path: ${{ github.workspace }}
+          retention-days: 14
+
+      - name: Fail if >75 s
+        if: ${{ steps.bench.outputs.duration > 75 }}
+        run: |
+          echo "Cold-start ${steps.bench.outputs.duration}s exceeds 75 s SLA"
+          exit 1
