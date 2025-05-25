@@ -1,3 +1,7 @@
+permissions:
+  contents: read
+  packages: write
+
 name: Docker Build with CVE Scanning
 
 on:
@@ -13,6 +17,8 @@ jobs:
   build-and-scan:
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
+      max-parallel: 1
       matrix:
         service:
           - slack_mcp_gateway
