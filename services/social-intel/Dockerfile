@@ -1,8 +1,4 @@
-FROM ghcr.io/locotoki/alfred-agent-platform-v2/healthcheck:0.4.0 AS healthcheck
-
 FROM python:3.11-slim
-COPY --from=healthcheck /usr/local/bin/healthcheck /usr/local/bin/healthcheck
-RUN chmod +x /usr/local/bin/healthcheck
 
 WORKDIR /app
 
