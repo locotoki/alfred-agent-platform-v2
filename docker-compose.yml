@@ -5,6 +5,7 @@
 #   - docker-compose.prod.yml - For production environments
 #   - docker-compose.local.yml - For local development
 #   - docker-compose.test.yml - For testing environments
+#   - docker-compose.override.health-fixes.yml - Comprehensive health check fixes
 
 # Common service label templates
 x-common-labels: &common-labels

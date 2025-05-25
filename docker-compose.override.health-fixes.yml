@@ -1,0 +1,190 @@
+# Comprehensive health check fixes for all services
+# Generated: 2025-05-27
+
+version: '3.8'
+
+services:
+  # Fix all db-*-metrics services - use port 9103 instead of 9091
+  db-admin-metrics:
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:9103/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  db-agent-core-metrics:
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:9103/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  db-alfred-metrics:
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:9103/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  db-analytics-metrics:
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:9103/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  db-auth-metrics:
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:9103/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  db-bizdev-metrics:
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:9103/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  db-bizops-metrics:
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:9103/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  db-cache-metrics:
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:9103/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  db-core-metrics:
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:9103/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  db-keycloak-metrics:
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:9103/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  db-storage-metrics:
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:9103/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  db-vector-metrics:
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:9103/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  # Fix services missing curl - use wget or nc
+  keycloak:
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:8080/health/ready"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+
+  slack-adapter:
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:3011/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  slack_mcp_gateway:
+    healthcheck:
+      test: ["CMD", "nc", "-z", "localhost", "3010"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  # Fix slow-start services with increased timeouts
+  llm-service:
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:11434/api/tags"]
+      interval: 60s
+      timeout: 30s
+      retries: 10
+      start_period: 300s
+
+  vector-db:
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:6333/healthz"]
+      interval: 45s
+      timeout: 20s
+      retries: 6
+      start_period: 180s
+
+  crm-sync:
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 15s
+      retries: 5
+      start_period: 120s
+
+  # Services that need environment fixes
+  db-auth:
+    environment:
+      POSTGRES_DB: auth_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres", "-d", "auth_db"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+
+  db-storage:
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres", "-d", "storage_db"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+
+  # Services needing basic TCP checks (no HTTP endpoint)
+  prometheus:
+    healthcheck:
+      test: ["CMD", "nc", "-z", "localhost", "9090"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  grafana:
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
