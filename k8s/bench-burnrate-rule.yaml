@@ -1,0 +1,42 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: bench-burnrate
+  namespace: observability
+spec:
+  groups:
+    - name: bench.rules
+      interval: 30s
+      rules:
+        - alert: BenchLatencyBurnRate
+          expr: |
+            (
+              histogram_quantile(0.95,
+                sum(rate(http_request_duration_seconds_bucket{job="bench"}[5m])) by (le)
+              )
+            ) > 0.075
+          for: 10m
+          labels:
+            severity: page
+            component: bench
+            team: platform
+          annotations:
+            summary: "Bench p95 latency burn-rate high"
+            description: "Bench p95 latency {{ $value }}s is breaching the 75ms SLA for 10 min."
+            runbook_url: "https://docs.alfred.platform/runbooks/bench-latency"
+
+        - alert: BenchLatencySLABreach
+          expr: |
+            (
+              histogram_quantile(0.95,
+                sum(rate(http_request_duration_seconds_bucket{job="bench"}[1m])) by (le)
+              )
+            ) > 0.075
+          for: 2m
+          labels:
+            severity: warning
+            component: bench
+            team: platform
+          annotations:
+            summary: "Bench p95 latency SLA breach"
+            description: "Bench p95 latency {{ $value }}s exceeded 75ms SLA for 2 minutes."
