@@ -1,6 +1,4 @@
-FROM ghcr.io/locotoki/alfred-agent-platform-v2/healthcheck:0.4.0 AS healthcheck
 FROM gcr.io/google.com/cloudsdktool/cloud-sdk:latest
-COPY --from=healthcheck /usr/local/bin/healthcheck /usr/local/bin/healthcheck
 
 
 # Install Python and pip for the health check wrapper

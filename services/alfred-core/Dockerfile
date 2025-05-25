@@ -1,4 +1,3 @@
-ARG ASSETS=./docker-assets
 FROM python:3.11-slim
 
 WORKDIR /app
@@ -15,7 +14,7 @@ RUN pip install --no-cache-dir fastapi uvicorn structlog prometheus_client
 
 # Copy service code
 COPY services/alfred-core/app /app/app
-COPY services/alfred-core/$ASSETS/health.json /app/health.json
+COPY services/alfred-core/docker-assets/health.json /app/health.json
 COPY healthcheck/healthcheck.sh /usr/local/bin/healthcheck.sh
 
 # Make healthcheck script executable
