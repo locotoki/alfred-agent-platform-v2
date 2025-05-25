@@ -89,7 +89,7 @@ createMetricsServer(9091);
 All services should use the healthcheck binary wrapper:
 
 ```dockerfile
-FROM ghcr.io/alfred/healthcheck:0.4.0 AS healthcheck
+FROM ghcr.io/locotoki/alfred-agent-platform-v2/healthcheck:0.4.0 AS healthcheck
 
 FROM python:3.11-slim
 # ... other instructions
