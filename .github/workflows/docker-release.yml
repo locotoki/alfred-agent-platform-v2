@@ -1,0 +1,126 @@
+name: Docker Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Tag to build and push (e.g., v0.9.14-beta)'
+        required: true
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_PREFIX: locotoki
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    strategy:
+      matrix:
+        include:
+          - name: alfred-core
+            context: .
+            dockerfile: ./alfred/core/Dockerfile
+          - name: alfred-slack-adapter
+            context: .
+            dockerfile: ./alfred/adapters/slack/Dockerfile
+          - name: agent-bizops
+            context: ./services/agent_bizops
+            dockerfile: ./services/agent_bizops/Dockerfile
+          - name: contact-ingest
+            context: ./services/contact-ingest
+            dockerfile: ./services/contact-ingest/Dockerfile
+          - name: crm-sync
+            context: ./services/crm-sync
+            dockerfile: ./services/crm-sync/Dockerfile
+          - name: model-registry
+            context: ./services/model-registry
+            dockerfile: ./services/model-registry/Dockerfile
+          - name: model-router
+            context: ./services/model-router
+            dockerfile: ./services/model-router/Dockerfile
+          - name: social-intel
+            context: ./services/social-intel
+            dockerfile: ./services/social-intel/Dockerfile
+          - name: pubsub
+            context: ./services/pubsub
+            dockerfile: ./services/pubsub/Dockerfile
+          - name: redis
+            context: ./services/redis
+            dockerfile: ./services/redis/Dockerfile
+          - name: hubspot-mock
+            context: ./services/hubspot-mock
+            dockerfile: ./services/hubspot-mock/Dockerfile
+          - name: db-metrics
+            context: ./services/db-metrics
+            dockerfile: ./services/db-metrics/Dockerfile
+          - name: rag-service
+            context: ./services/rag-service
+            dockerfile: ./services/rag-service/Dockerfile
+          - name: slack-app
+            context: ./services/slack_app
+            dockerfile: ./services/slack_app/Dockerfile
+          - name: slack-mcp-gateway
+            context: ./services/slack_mcp_gateway
+            dockerfile: ./services/slack_mcp_gateway/Dockerfile
+          - name: diagnostics-bot
+            context: .
+            dockerfile: ./docker/diagnostics-bot/Dockerfile
+          - name: explainer-bot
+            context: .
+            dockerfile: ./docker/explainer-bot/Dockerfile
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract tag
+        id: tag
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            TAG="${{ github.event.inputs.tag }}"
+          else
+            TAG="${GITHUB_REF#refs/tags/}"
+          fi
+          echo "TAG=${TAG}" >> $GITHUB_OUTPUT
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: ${{ matrix.context }}
+          file: ${{ matrix.dockerfile }}
+          push: true
+          tags: |
+            ${{ env.REGISTRY }}/${{ env.IMAGE_PREFIX }}/${{ matrix.name }}:${{ steps.tag.outputs.TAG }}
+            ${{ env.REGISTRY }}/${{ env.IMAGE_PREFIX }}/${{ matrix.name }}:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  build-summary:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: Summary
+        run: |
+          echo "## Docker Release Summary" >> $GITHUB_STEP_SUMMARY
+          echo "Tag: ${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "Status: ${{ needs.build-and-push.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Images Published" >> $GITHUB_STEP_SUMMARY
+          echo "All images have been pushed to \`ghcr.io/${{ env.IMAGE_PREFIX }}/\`" >> $GITHUB_STEP_SUMMARY

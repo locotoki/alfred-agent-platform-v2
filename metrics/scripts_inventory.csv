@@ -213,6 +213,7 @@ scripts/audit-health-binary.sh,.sh,265,UNKNOWN
 scripts/auto_add_mypy_ignores.py,.py,3948,UNKNOWN
 scripts/backup-dashboards.sh,.sh,1196,UNKNOWN
 scripts/benchmark_ranker.py,.py,18733,UNKNOWN
+scripts/build_and_push_all_images.sh,.sh,2435,UNKNOWN
 scripts/build_and_push_images.sh,.sh,900,UNKNOWN
 scripts/bulk-update-health-binary.sh,.sh,2087,UNKNOWN
 scripts/bump-healthcheck.sh,.sh,3093,UNKNOWN
