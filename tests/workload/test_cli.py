@@ -117,7 +117,7 @@ class TestWorkloadIntegration:
             response = requests.get("http://localhost:8080/health", timeout=1)
             if response.status_code != 200:
                 pytest.skip("No local service available")
-        except:
+        except Exception:
             pytest.skip("No local service available")
 
         cmd = [

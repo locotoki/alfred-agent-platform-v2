@@ -712,7 +712,7 @@ tests/unit/alfred/slack/diagnostics/test_explain_command.py,.py,1383,UNKNOWN
 tests/unit/test_health_module.py,.py,3496,UNKNOWN
 tests/validation/conftest.py,.py,520,UNKNOWN
 tests/validation/test_validation_marker.py,.py,294,UNKNOWN
-tests/workload/test_cli.py,.py,4156,UNKNOWN
+tests/workload/test_cli.py,.py,4166,UNKNOWN
 update-health-endpoints.sh,.sh,1419,UNKNOWN
 validate-orchestration.sh,.sh,2242,UNKNOWN
 verify-port-config.sh,.sh,8060,UNKNOWN
