@@ -194,6 +194,17 @@ jobs:
         run: |
           isort --check-only --profile black --line-ending LF --diff .
 
+      - name: Check healthcheck base image prefix
+        run: |
+          echo "Checking for consistent healthcheck base image references..."
+          CANON="ghcr.io/locotoki/alfred-agent-platform-v2/healthcheck:0.4.0"
+          if grep -r "healthcheck:0.4.0" . --include="Dockerfile*" | grep -v "$CANON"; then
+            echo "Error: Found Dockerfiles with non-canonical healthcheck references"
+            echo "All healthcheck base images must use: $CANON"
+            exit 1
+          fi
+          echo "✓ All healthcheck references are consistent"
+
       - name: Run linters
         run: |
           flake8 --config=.flake8 .
