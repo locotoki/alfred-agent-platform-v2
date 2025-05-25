@@ -710,6 +710,7 @@ tests/smoke/test_vuln_gate.py,.py,6411,UNKNOWN
 tests/smoke/test_vulnerability_scan.py,.py,3271,UNKNOWN
 tests/test_contact_ingest_unit.py,.py,805,UNKNOWN
 tests/test_cpu.py,.py,1067,UNKNOWN
+tests/test_crm_sync.py,.py,152,UNKNOWN
 tests/test_e2e_bizdev.py,.py,1136,UNKNOWN
 tests/unit/__init__.py,.py,42,UNKNOWN
 tests/unit/agents/__init__.py,.py,44,UNKNOWN
