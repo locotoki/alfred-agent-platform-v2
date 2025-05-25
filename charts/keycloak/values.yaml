@@ -1,4 +1,7 @@
 keycloak:
+  # admin creds now supplied via k8s secret "keycloak-admin"
+  auth:
+    existingSecret: keycloak-admin
   proxy: edge
   ingress:
     enabled: true
