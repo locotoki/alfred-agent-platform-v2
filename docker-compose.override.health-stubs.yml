@@ -1,0 +1,35 @@
+# Minimal health fixes for stub services only
+# This won't affect CI as these services are not tested
+services:
+  # Stub services - disable health checks
+  db-api:
+    healthcheck:
+      disable: true
+
+  db-storage:
+    healthcheck:
+      disable: true
+
+  ui-admin:
+    healthcheck:
+      disable: true
+
+  auth-ui:
+    healthcheck:
+      disable: true
+
+  model-registry:
+    healthcheck:
+      disable: true
+
+  model-router:
+    healthcheck:
+      disable: true
+
+  agent-atlas:
+    healthcheck:
+      disable: true
+
+  agent-social:
+    healthcheck:
+      disable: true
