@@ -112,8 +112,8 @@ api/routes/__init__.py,.py,206,UNKNOWN
 api/routes/alert_snooze.py,.py,5308,UNKNOWN
 api/routes/thresholds.py,.py,3013,UNKNOWN
 app/__init__.py,.py,0,UNKNOWN
-app/agent_bizdev_health.py,.py,1234,UNKNOWN
-app/health_server.sh,.sh,820,UNKNOWN
+app/agent_bizdev_health.py,.py,1173,UNKNOWN
+app/health_server.sh,.sh,821,UNKNOWN
 arch/spring_clean/classify_files.py,.py,5042,UNKNOWN
 backend/alfred/alerts/ranker.py,.py,13824,UNKNOWN
 backend/alfred/alerts/rules.py,.py,10253,UNKNOWN
@@ -129,7 +129,6 @@ base-images/healthcheck/healthcheck.sh,.sh,1317,UNKNOWN
 bench/cold_start.sh,.sh,805,UNKNOWN
 bootstrap/init-storage-schema.sh,.sh,446,UNKNOWN
 clean-youtube-service.ts,.ts,16421,UNKNOWN
-create-health-fix-pr.sh,.sh,1769,UNKNOWN
 create-niche-scout-results.js,.js,2574,UNKNOWN
 diagnostics/rca/app.py,.py,5832,UNKNOWN
 diagnostics/rca/fix_app.py,.py,6833,UNKNOWN
@@ -161,7 +160,6 @@ docs/tools/normalize_staging_files.sh,.sh,2905,UNKNOWN
 docs/tools/update_metadata.py,.py,10857,UNKNOWN
 eval/test_eval_loop.py,.py,322,UNKNOWN
 fix-formatting.sh,.sh,219,UNKNOWN
-fix-port-conflicts.sh,.sh,1259,UNKNOWN
 fix-port-issue.js,.js,7362,UNKNOWN
 fix_class_methods.py,.py,1379,UNKNOWN
 fix_docstrings.py,.py,1827,UNKNOWN
@@ -207,7 +205,7 @@ perf/mock_performance_results.py,.py,4122,UNKNOWN
 perf/parse_results.py,.py,720,UNKNOWN
 perf/run.sh,.sh,158,UNKNOWN
 port-fix-inject.js,.js,0,UNKNOWN
-pre_freeze_tests.sh,.sh,7539,UNKNOWN
+pre_freeze_tests.sh,.sh,7540,UNKNOWN
 rag-gateway/src/app.py,.py,1148,UNKNOWN
 remediation/__init__.py,.py,228,UNKNOWN
 run-black-format.py,.py,2439,UNKNOWN
@@ -215,6 +213,7 @@ run-simplified-mc.sh,.sh,2005,UNKNOWN
 scripts/add_mypy_ignores.py,.py,2879,UNKNOWN
 scripts/add_noqa_ignore.py,.py,3716,UNKNOWN
 scripts/apply-black-formatting.sh,.sh,2961,UNKNOWN
+scripts/apply-health-fixes.sh,.sh,1127,UNKNOWN
 scripts/apply-healthcheck-fix.sh,.sh,1534,UNKNOWN
 scripts/apply-template-standard.sh,.sh,5772,UNKNOWN
 scripts/audit-health-binary.sh,.sh,265,UNKNOWN
@@ -258,7 +257,7 @@ scripts/fix-clean-healthchecks.sh,.sh,1875,UNKNOWN
 scripts/fix-db-storage.sh,.sh,5164,UNKNOWN
 scripts/fix-dockerfile-healthcheck.sh,.sh,3053,UNKNOWN
 scripts/fix-healthcheck-binary.sh,.sh,7136,UNKNOWN
-scripts/fix-port-assignments.py,.py,2712,UNKNOWN
+scripts/fix-port-assignments.py,.py,2611,UNKNOWN
 scripts/fix-storage-migration.sh,.sh,1579,UNKNOWN
 scripts/fix-storage-migrations.sh,.sh,1288,UNKNOWN
 scripts/fix-syntax-errors.py,.py,3020,UNKNOWN
@@ -561,7 +560,11 @@ services/mission-control/start-dev-server.sh,.sh,461,UNKNOWN
 services/mission-control/start-dev.js,.js,892,UNKNOWN
 services/mission-control/start-server.sh,.sh,133,UNKNOWN
 services/mission-control/tailwind.config.js,.js,1699,UNKNOWN
+services/model-registry/app/__init__.py,.py,81,UNKNOWN
+services/model-registry/app/main.py,.py,664,UNKNOWN
 services/model-registry/entrypoint.sh,.sh,1382,UNKNOWN
+services/model-router/app/__init__.py,.py,77,UNKNOWN
+services/model-router/app/main.py,.py,656,UNKNOWN
 services/model-router/entrypoint.sh,.sh,1222,UNKNOWN
 services/pubsub/entrypoint.init.sh,.sh,25,UNKNOWN
 services/pubsub/entrypoint.sh,.sh,859,UNKNOWN
@@ -637,10 +640,7 @@ shared/styles/design-tokens.js,.js,7015,UNKNOWN
 simplified-youtube-service.ts,.ts,16413,UNKNOWN
 skip_ci_sc320.sh,.sh,653,UNKNOWN
 slack-bot/src/app.py,.py,1087,UNKNOWN
-start-all-fixed.sh,.sh,3021,UNKNOWN
 start-all-services.sh,.sh,1499,UNKNOWN
-start-clean.sh,.sh,1961,UNKNOWN
-start-fixed.sh,.sh,1282,UNKNOWN
 start-platform-dryrun.sh,.sh,5795,UNKNOWN
 start-platform.sh,.sh,3962,UNKNOWN
 start-slack-commands.sh,.sh,1640,UNKNOWN
