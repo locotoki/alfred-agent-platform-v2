@@ -66,6 +66,12 @@ jobs:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.22'
+          cache: true
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
@@ -81,7 +87,7 @@ jobs:
         run: |
           echo "Running core unit tests (fast)..."
           # Run a subset of fast unit tests that don't require external dependencies
-          pytest tests/unit/test_health_module.py -v || true
+          pytest tests/unit/test_health_module.py tests/workload/test_cli.py -v || true
           # TODO: Enable full test suite once dependencies are fixed
           # pytest -m "not slow and not integration and not e2e" -v
 
