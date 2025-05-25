@@ -205,6 +205,7 @@ rag-gateway/src/app.py,.py,1148,UNKNOWN
 remediation/__init__.py,.py,228,UNKNOWN
 run-black-format.py,.py,2439,UNKNOWN
 run-simplified-mc.sh,.sh,2005,UNKNOWN
+scripts/add_mypy_ignores.py,.py,2879,UNKNOWN
 scripts/add_noqa_ignore.py,.py,3716,UNKNOWN
 scripts/apply-black-formatting.sh,.sh,2961,UNKNOWN
 scripts/apply-healthcheck-fix.sh,.sh,1534,UNKNOWN
@@ -301,6 +302,7 @@ scripts/measure_start.sh,.sh,549,UNKNOWN
 scripts/monitor-social-intel.sh,.sh,1215,UNKNOWN
 scripts/monitoring/rollout_manager.sh,.sh,4090,UNKNOWN
 scripts/monitoring/telemetry_watch.sh,.sh,2735,UNKNOWN
+scripts/mypy_with_baseline.py,.py,1752,UNKNOWN
 scripts/observe_after_deploy.sh,.sh,403,UNKNOWN
 scripts/phase8.2-final-checks.sh,.sh,1632,UNKNOWN
 scripts/phase8.2-pre-merge.sh,.sh,3815,UNKNOWN
