@@ -27,6 +27,47 @@ jobs:
           path: ${{ github.workspace }}
           retention-days: 14
 
+      - name: Create P0 issue if >75 s
+        if: ${{ steps.bench.outputs.duration > 75 }}
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const duration = ${{ steps.bench.outputs.duration }};
+            const date = new Date().toISOString().split('T')[0];
+
+            // Create P0 issue
+            const issue = await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `🚨 P0: Cold-start SLA breach - ${duration}s on ${date}`,
+              body: `## Cold-Start Performance SLA Breach
+
+            **Severity**: P0 (Critical)
+            **Date**: ${date}
+            **Duration**: ${duration}s (SLA: 75s)
+            **Workflow Run**: [${context.runId}](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})
+
+            ### Impact
+            Cold-start time exceeded the 75-second SLA, impacting platform availability and user experience.
+
+            ### Action Required
+            1. Investigate recent changes that may have increased startup time
+            2. Review container image sizes and dependencies
+            3. Check for new initialization bottlenecks
+            4. Consider performance optimizations or rollback if needed
+
+            ### Metrics
+            - **Actual**: ${duration}s
+            - **Target**: ≤75s
+            - **Breach**: +${duration - 75}s
+
+            cc: @locotoki/platform-team`,
+              labels: ['P0', 'performance', 'sla-breach', 'cold-start'],
+              assignees: []
+            });
+
+            console.log(`Created P0 issue #${issue.data.number}`);
+
       - name: Fail if >75 s
         if: ${{ steps.bench.outputs.duration > 75 }}
         run: |
