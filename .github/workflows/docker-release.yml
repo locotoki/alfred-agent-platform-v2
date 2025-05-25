@@ -87,3 +87,4 @@ jobs:
           tags: ghcr.io/${{ github.repository }}/${{ matrix.name }}:${{ steps.tag.outputs.tag }}
           file: ${{ matrix.dockerfile }}
           context: ${{ matrix.context }}
+          provenance: false
