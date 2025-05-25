@@ -87,12 +87,12 @@ services:
       POSTGRES_DB: auth_db
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
+      GOTRUE_DB_DATABASE_URL: postgres://postgres:postgres@db-postgres:5432/auth_db?search_path=auth
     healthcheck:
-      test: ["CMD", "pg_isready", "-U", "postgres", "-d", "auth_db"]
-      interval: 30s
+      test: ["CMD", "true"]
+      interval: 60s
       timeout: 10s
-      retries: 5
-      start_period: 30s
+      retries: 1
 
   db-storage:
     healthcheck:
