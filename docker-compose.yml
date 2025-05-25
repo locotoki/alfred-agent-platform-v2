@@ -685,7 +685,7 @@ services:
     image: slack-mcp-gateway:latest
     container_name: slack_mcp_gateway
     ports:
-      - "3000:3000"
+      - "3010:3000"  # Changed from 3000 to avoid conflict with db-api
       - "9127:9091"  # Map metrics port to host
     environment:
       - NODE_ENV=production
@@ -716,7 +716,7 @@ services:
     image: alfred-slack-adapter:latest
     container_name: slack-adapter
     ports:
-      - "3001:8000"  # Map host port 3001 to container port 8000
+      - "3011:8000"  # Changed from 3001 to avoid conflict with db-admin
       - "9128:9091"  # Metrics port
     environment:
       - SLACK_SIGNING_SECRET=${SLACK_SIGNING_SECRET}
@@ -1179,7 +1179,7 @@ services:
     image: ghcr.io/locotoki/hubspot-mock:latest
     container_name: hubspot-mock
     ports:
-      - "8000:8000"
+      - "8088:8000"  # Changed from 8000 to avoid conflict with agent-atlas
     environment:
       - PORT=8000
     healthcheck:
