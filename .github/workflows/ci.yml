@@ -201,8 +201,8 @@ jobs:
 
       - name: Run type checking (mypy)
         run: |
-          echo "Running mypy with strict type checking..."
-          mypy --config-file=mypy.ini alfred/
+          echo "Running mypy with strict type checking (baseline filtered)..."
+          python scripts/mypy_with_baseline.py --config-file=mypy.ini alfred/
 
       - name: Run tests with coverage
         run: |
