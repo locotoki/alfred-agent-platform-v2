@@ -8,16 +8,11 @@ agents/social_intel/adapters/a2a_adapter.py,.py,2614,UNKNOWN
 agents/social_intel/agent.py,.py,1527,UNKNOWN
 agents/social_intel/flows/__init__.py,.py,185,UNKNOWN
 agents/social_intel/flows/youtube_flows.py,.py,23014,UNKNOWN
-agents/social_intel/models/__init__.py,.py,586,UNKNOWN
-agents/social_intel/models/youtube_api.py,.py,6436,UNKNOWN
-agents/social_intel/models/youtube_models.py,.py,4723,UNKNOWN
-agents/social_intel/models/youtube_vectors.py,.py,10478,UNKNOWN
 alfred/__init__.py,.py,59,UNKNOWN
 alfred/adapters/__init__.py,.py,89,UNKNOWN
 alfred/adapters/slack/tests/test_webhook.py,.py,9028,UNKNOWN
 alfred/adapters/slack/webhook.py,.py,6815,UNKNOWN
 alfred/agents/__init__.py,.py,419,UNKNOWN
-alfred/agents/agent_orchestrator/src/data/reports.ts,.ts,2842,UNKNOWN
 alfred/agents/intent_router.py,.py,6209,UNKNOWN
 alfred/agents/orchestrator.py,.py,4007,UNKNOWN
 alfred/agents/tests/__init__.py,.py,37,UNKNOWN
@@ -31,7 +26,6 @@ alfred/alerts/explainer/service.py,.py,5668,UNKNOWN
 alfred/alerts/feature_flags.py,.py,2412,UNKNOWN
 alfred/alerts/grouping.py,.py,1730,UNKNOWN
 alfred/alerts/models.py,.py,365,UNKNOWN
-alfred/alerts/models/alert_group.py,.py,2023,UNKNOWN
 alfred/alerts/protocols.py,.py,1417,UNKNOWN
 alfred/alerts/tests/__init__.py,.py,40,UNKNOWN
 alfred/alerts/tests/test_dispatcher.py,.py,8485,UNKNOWN
@@ -64,11 +58,8 @@ alfred/model/protocols.py,.py,3995,UNKNOWN
 alfred/model/registry/__init__.py,.py,25,UNKNOWN
 alfred/model/registry/health.py,.py,877,UNKNOWN
 alfred/model/registry/main.py,.py,6139,UNKNOWN
-alfred/model/registry/models/models.py,.py,9755,UNKNOWN
 alfred/model/router/__init__.py,.py,122,UNKNOWN
 alfred/model/router/main.py,.py,5418,UNKNOWN
-alfred/model/router/models/__init__.py,.py,0,UNKNOWN
-alfred/model/router/models/models.py,.py,5688,UNKNOWN
 alfred/protocols.py,.py,180,UNKNOWN
 alfred/rag/__init__.py,.py,111,UNKNOWN
 alfred/rag/protocols.py,.py,4324,UNKNOWN
@@ -181,7 +172,9 @@ monitoring/scripts/docker_stats.py,.py,0,UNKNOWN
 mypy_fix/run-mypy-fixed.sh,.sh,964,UNKNOWN
 perf/__init__.py,.py,61,UNKNOWN
 perf/harness_scaffold.py,.py,4049,UNKNOWN
+perf/k6-script.js,.js,2071,UNKNOWN
 perf/locustfile.py,.py,434,UNKNOWN
+perf/mock_performance_results.py,.py,4122,UNKNOWN
 perf/parse_results.py,.py,720,UNKNOWN
 perf/run.sh,.sh,157,UNKNOWN
 port-fix-inject.js,.js,0,UNKNOWN
@@ -320,6 +313,7 @@ scripts/spring_clean/validate_inventory.py,.py,4439,UNKNOWN
 scripts/sprint4-automation.sh,.sh,2549,UNKNOWN
 scripts/standardize-service-health.sh,.sh,4456,UNKNOWN
 scripts/start-all-dev.sh,.sh,2809,UNKNOWN
+scripts/tag-agent-core-release.sh,.sh,2685,UNKNOWN
 scripts/tag-healthcheck-release.sh,.sh,951,UNKNOWN
 scripts/tag-release.sh,.sh,552,UNKNOWN
 scripts/test_dashboards.py,.py,6879,UNKNOWN
@@ -344,7 +338,6 @@ services/_template/app/main.py,.py,2963,UNKNOWN
 services/agent-orchestrator/__init__.py,.py,34,UNKNOWN
 services/agent-orchestrator/add-demo-results.js,.js,1672,UNKNOWN
 services/agent-orchestrator/check-social-intel.js,.js,884,UNKNOWN
-services/agent-orchestrator/dist/assets/index-DNmO18pE.js,.js,1374355,UNKNOWN
 services/agent-orchestrator/eslint.config.js,.js,789,UNKNOWN
 services/agent-orchestrator/postcss.config.js,.js,80,UNKNOWN
 services/agent-orchestrator/scripts/setup-db-metrics.sh,.sh,4089,UNKNOWN
@@ -451,12 +444,6 @@ services/mission-control-simplified/server.js,.js,5678,UNKNOWN
 services/mission-control-simplified/standalone.js,.js,3943,UNKNOWN
 services/mission-control-simplified/start.sh,.sh,1306,UNKNOWN
 services/mission-control-simplified/tests/test-social-intel-direct.js,.js,2071,UNKNOWN
-services/mission-control.old/.next/server/middleware-build-manifest.js,.js,257,UNKNOWN
-services/mission-control.old/.next/server/middleware-react-loadable-manifest.js,.js,35,UNKNOWN
-services/mission-control.old/.next/server/next-font-manifest.js,.js,113,UNKNOWN
-services/mission-control.old/.next/static/chunks/polyfills.js,.js,91460,UNKNOWN
-services/mission-control.old/.next/static/development/_buildManifest.js,.js,243,UNKNOWN
-services/mission-control.old/.next/static/development/_ssgManifest.js,.js,76,UNKNOWN
 services/mission-control/deploy-improved-ui.sh,.sh,2500,UNKNOWN
 services/mission-control/improved-server.js,.js,20065,UNKNOWN
 services/mission-control/next-env.d.ts,.ts,201,UNKNOWN
