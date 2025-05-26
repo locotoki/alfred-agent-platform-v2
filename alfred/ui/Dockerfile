@@ -1,12 +1,13 @@
-FROM alfred/healthcheck:0.4.0 AS healthcheck
-
 FROM python:3.11-slim
-COPY --from=healthcheck /usr/local/bin/healthcheck /usr/local/bin/healthcheck
-RUN chmod +x /usr/local/bin/healthcheck
 
 WORKDIR /app
 
-# Install dependencies
+# Install system dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Python dependencies
 RUN pip install --no-cache-dir streamlit requests
 
 # Copy application code
@@ -21,5 +22,9 @@ ENV ALFRED_API_URL=http://agent-core:8011
 ENV ALFRED_MODEL_ROUTER_URL=http://model-router:8080
 ENV ENABLE_DIRECT_INFERENCE=true
 
-# Run the application with healthcheck wrapper
-CMD ["healthcheck", "--export-prom", ":9091", "--", "streamlit", "run", "streamlit_chat.py", "--server.address=0.0.0.0"]
+# Simple health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
+  CMD curl -f http://localhost:8501 || exit 1
+
+# Run the application directly
+CMD ["streamlit", "run", "streamlit_chat.py", "--server.address=0.0.0.0"]

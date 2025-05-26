@@ -1,0 +1,8 @@
+version: '3.8'
+
+services:
+  # Production overrides would go here
+  agent-core:
+    environment:
+      - LOG_LEVEL=info
+      - ENVIRONMENT=production

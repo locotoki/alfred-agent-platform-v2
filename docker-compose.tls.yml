@@ -1,0 +1,4 @@
+version: '3.8'
+
+# TLS/SSL configurations would go here
+services: {}

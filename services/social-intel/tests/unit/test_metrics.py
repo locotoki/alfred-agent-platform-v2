@@ -1,7 +1,8 @@
 """Unit tests for the metrics module"""
 
-from app.metrics import SI_LATENCY_SECONDS, LatencyTimer
 from prometheus_client import REGISTRY
+
+from app.metrics import SI_LATENCY_SECONDS, LatencyTimer
 
 
 def test_si_latency_seconds_buckets():

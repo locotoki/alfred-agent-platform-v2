@@ -49,8 +49,8 @@ def make_request(query_text):
 
 def run_load_test():
     """Run the performance test."""
-    print(f"🚀 Starting performance test: {TARGET_RPS} RPS for {DURATION_SECONDS}s")
-    print(f"Target: p95 < 300ms, error rate < 1%\n")
+    print("🚀 Starting performance test: {} RPS for {}s".format(TARGET_RPS, DURATION_SECONDS))
+    print("Target: p95 < 300ms, error rate < 1%\n")
 
     results = []
     start_time = time.time()
@@ -89,7 +89,7 @@ def run_load_test():
         print(f"Total requests: {len(results)}")
         print(f"Successful: {len(successful_requests)}")
         print(f"Error rate: {error_rate:.2f}%")
-        print(f"\nLatency percentiles:")
+        print("\nLatency percentiles:")
         print(f"  p50: {p50:.2f}ms")
         print(f"  p95: {p95:.2f}ms {'✅' if p95 < 300 else '❌'}")
         print(f"  p99: {p99:.2f}ms")

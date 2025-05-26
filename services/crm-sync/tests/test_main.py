@@ -3,8 +3,9 @@
 from datetime import datetime, timezone
 from unittest.mock import AsyncMock, Mock, patch
 
-from app.main import app
 from fastapi.testclient import TestClient
+
+from app.main import app
 
 client = TestClient(app)
 
