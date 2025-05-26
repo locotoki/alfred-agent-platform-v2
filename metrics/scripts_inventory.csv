@@ -311,7 +311,9 @@ scripts/healthcheck/verify-health-commands.sh,.sh,3806,UNKNOWN
 scripts/healthcheck/verify-health-endpoints.sh,.sh,2862,UNKNOWN
 scripts/helm-diff.sh,.sh,795,UNKNOWN
 scripts/infrastructure-validation.sh,.sh,2143,UNKNOWN
+scripts/install-fail2ban.sh,.sh,2595,UNKNOWN
 scripts/install-hooks.sh,.sh,2989,UNKNOWN
+scripts/install-pg-monitor-service.sh,.sh,1043,UNKNOWN
 scripts/install-taxonomy-integration.sh,.sh,16193,UNKNOWN
 scripts/lint-metrics-format.sh,.sh,2008,UNKNOWN
 scripts/measure_start.sh,.sh,549,UNKNOWN
