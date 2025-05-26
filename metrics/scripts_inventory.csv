@@ -218,7 +218,6 @@ remediation/__init__.py,.py,228,UNKNOWN
 run-black-format.py,.py,2439,UNKNOWN
 run-simplified-mc.sh,.sh,2005,UNKNOWN
 scripts/24h-review.sh,.sh,3922,UNKNOWN
-scripts/24h-security-monitor.sh,.sh,5508,UNKNOWN
 scripts/add_mypy_ignores.py,.py,2879,UNKNOWN
 scripts/add_noqa_ignore.py,.py,3716,UNKNOWN
 scripts/apply-black-formatting.sh,.sh,2961,UNKNOWN
@@ -318,7 +317,6 @@ scripts/install-pg-monitor-service.sh,.sh,1043,UNKNOWN
 scripts/install-taxonomy-integration.sh,.sh,16193,UNKNOWN
 scripts/lint-metrics-format.sh,.sh,2008,UNKNOWN
 scripts/measure_start.sh,.sh,549,UNKNOWN
-scripts/monitor-postgres-security.sh,.sh,2062,UNKNOWN
 scripts/monitor-social-intel.sh,.sh,1215,UNKNOWN
 scripts/monitoring/rollout_manager.sh,.sh,4090,UNKNOWN
 scripts/monitoring/telemetry_watch.sh,.sh,2735,UNKNOWN
@@ -348,8 +346,6 @@ scripts/run_quick_health_check.sh,.sh,765,UNKNOWN
 scripts/run_synthetic_load.sh,.sh,1101,UNKNOWN
 scripts/safe-sync.sh,.sh,5190,UNKNOWN
 scripts/scaffold_compose_snippets.py,.py,3055,UNKNOWN
-scripts/secure-postgres-recovery.sh,.sh,4152,UNKNOWN
-scripts/secure-postgres-setup.sh,.sh,6068,UNKNOWN
 scripts/security/rotate_secret.sh,.sh,310,UNKNOWN
 scripts/setup-db-metrics.sh,.sh,4089,UNKNOWN
 scripts/setup-deployment-tools.sh,.sh,1870,UNKNOWN
