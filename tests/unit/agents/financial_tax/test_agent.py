@@ -48,7 +48,7 @@ def mock_policy():
 @pytest.fixture
 def financial_tax_agent(mock_pubsub, mock_supabase, mock_policy):
     """Create Financial Tax Agent with mocks."""
-    with patch("agents.financial_tax.agent.ChatOpenAI") as mock_openai:
+    with patch("services.agent_bizops.workflows.finance.agent.ChatOpenAI") as mock_openai:
         # Create a mock that actually inherits from the base class structure expected
         from typing import Any, Optional
 
