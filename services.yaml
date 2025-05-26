@@ -11,6 +11,8 @@ infrastructure:
   - vector-db
   - mail-server
   - n8n
+  - nginx-proxy
+  - traefik
 
 database:
   - db-postgres

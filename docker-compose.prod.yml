@@ -160,7 +160,7 @@ services:
       - slack_app_token
     restart: unless-stopped
 
-  slack-mcp-gateway:
+  slack_mcp_gateway:
     <<: [*small-limits, *common-logging]
     environment:
       - NODE_ENV=production
