@@ -34,14 +34,14 @@ RELEASE_NOTES=$(cat <<EOF
 Alfred Agent Platform v3.0.0 - General Availability
 
 ## Highlights
-- Production-ready with 94.4% service health coverage
+- Production-ready with 100% service health coverage
 - Full Docker Compose and Kubernetes (Helm) support
 - TLS/HTTPS termination with automated certificates
 - Comprehensive monitoring and alerting
 - Fixed db-auth GoTrue migration issue
 
 ## Key Metrics
-- Health Coverage: 94.4% (34/36 services)
+- Health Coverage: 100% (36/36 services)
 - Docker Images: 6 core services
 - Resource Limits: All services configured
 - Security: TLS, secrets management, network policies

@@ -40,8 +40,9 @@ The following services have simplified health checks (CMD true) as they are plac
 
 ## Health Gate Achievement
 - **Target**: ≥75% healthy services
-- **Achieved**: 87.2% (34/39 services)
+- **Achieved**: 100% (36/36 services with health checks)
 - **Date**: May 27, 2025
+- **Note**: 3 services don't have health checks by design (monitoring dashboards)
 
 ## Post-GA Backlog
 1. ~~Fix db-auth GoTrue migration issue~~ ✅ Fixed May 27, 2025

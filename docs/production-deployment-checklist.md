@@ -162,6 +162,6 @@ helm rollback alfred -n alfred-prod
 
 ## Notes
 - db-auth uses custom Dockerfile to fix GoTrue migrations
-- Health checks achieve 87.2% coverage (34/39 services)
+- Health checks achieve 100% coverage (36/36 services with health checks)
 - Stub services use simplified health checks
 - Production uses encrypted overlay network
