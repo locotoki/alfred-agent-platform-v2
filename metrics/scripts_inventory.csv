@@ -360,7 +360,7 @@ scripts/spring_clean/validate_inventory.py,.py,4439,UNKNOWN
 scripts/sprint4-automation.sh,.sh,2549,UNKNOWN
 scripts/standardize-service-health.sh,.sh,4456,UNKNOWN
 scripts/start-all-dev.sh,.sh,2809,UNKNOWN
-scripts/start-pg-monitor.sh,.sh,920,UNKNOWN
+scripts/start-pg-monitor.sh,.sh,921,UNKNOWN
 scripts/tag-agent-core-release.sh,.sh,2685,UNKNOWN
 scripts/tag-ga-release.sh,.sh,6742,UNKNOWN
 scripts/tag-healthcheck-release.sh,.sh,951,UNKNOWN
