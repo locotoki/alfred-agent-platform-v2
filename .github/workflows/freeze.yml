@@ -10,8 +10,15 @@ jobs:
       - name: Count open PRs
         id: count
         run: echo "count=$(gh pr list --state open | wc -l)" >> $GITHUB_ENV
+
+      - name: Detect doc-only change
+        id: docs
+        run: |
+          gh pr diff ${{ github.event.pull_request.number }} --name-only | \
+            grep -Ev '\.(md|rst|adoc)$' >/dev/null && echo "non_docs=true" >> $GITHUB_ENV || echo "non_docs=false" >> $GITHUB_ENV
+
       - name: Block if frozen
-        if: ${{ env.count < 5 }}
+        if: ${{ env.count < 5 && env.non_docs == 'true' && ! contains(github.event.pull_request.labels.*.name, 'freeze-exception') }}
         run: |
           gh pr comment ${{ github.event.pull_request.number }} \
             --body "🔒  Main is frozen for GA hardening (<5 open PRs). \

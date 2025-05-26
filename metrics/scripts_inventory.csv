@@ -217,7 +217,7 @@ rag-gateway/src/app.py,.py,1148,UNKNOWN
 remediation/__init__.py,.py,228,UNKNOWN
 run-black-format.py,.py,2439,UNKNOWN
 run-simplified-mc.sh,.sh,2005,UNKNOWN
-scripts/24h-security-monitor.sh,.sh,5509,UNKNOWN
+scripts/24h-security-monitor.sh,.sh,5508,UNKNOWN
 scripts/add_mypy_ignores.py,.py,2879,UNKNOWN
 scripts/add_noqa_ignore.py,.py,3716,UNKNOWN
 scripts/apply-black-formatting.sh,.sh,2961,UNKNOWN
