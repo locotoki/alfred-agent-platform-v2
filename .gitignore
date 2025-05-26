@@ -108,3 +108,41 @@ terraform.tfvars
 bin/
 cleanup-temp/
 docker-compose.override.dev.yml
+
+# Additional IDE and local files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Local environment files
+.env.local
+.env.*.local
+.env.backup*
+*.env.backup
+.env.working
+.env.simple
+
+# Test and cache directories
+.benchmarks/
+.claude/
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+tmp/
+temp/
+
+# Docker local volumes
+models/
+volumes/
+
+# Act (GitHub Actions local runner)
+bin/act
+
+# Local build artifacts
+services/*/docker-assets/health.json
+docker-assets/health.json
+health.json
