@@ -140,6 +140,9 @@ services:
 
   # Model Registry - Manages available LLM models
   model-registry:
+    build:
+      context: ./alfred/model/registry
+      dockerfile: Dockerfile
     image: model-registry:latest
     container_name: model-registry
     ports:
@@ -172,6 +175,9 @@ services:
 
   # Model Router - Routes LLM requests to appropriate backend
   model-router:
+    build:
+      context: ./alfred/model/router
+      dockerfile: Dockerfile
     image: model-router:latest
     container_name: model-router
     ports:
@@ -380,6 +386,9 @@ services:
 
   # Database Storage (Using simplified HTTP server as stub)
   db-storage:
+    build:
+      context: ./services/db-storage
+      dockerfile: Dockerfile
     image: storage-proxy-simple:latest
     container_name: db-storage
     ports:

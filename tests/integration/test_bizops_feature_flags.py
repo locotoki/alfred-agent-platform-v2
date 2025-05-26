@@ -32,7 +32,7 @@ def test_workflow_registration_with_feature_flags(workflows_enabled, expected_wo
         # Test individual workflow checks
         assert settings.is_workflow_enabled("legal") == ("legal" in expected_workflows)
         assert settings.is_workflow_enabled("finance") == ("finance" in expected_workflows)
-        assert settings.is_workflow_enabled("unknown") == False
+        assert settings.is_workflow_enabled("unknown") is False
 
 
 @pytest.mark.integration
@@ -137,12 +137,12 @@ def test_workflow_case_insensitive():
         settings = BizOpsSettings()
 
         # Case-insensitive checks should work
-        assert settings.is_workflow_enabled("legal") == True
-        assert settings.is_workflow_enabled("LEGAL") == True
-        assert settings.is_workflow_enabled("Legal") == True
-        assert settings.is_workflow_enabled("finance") == True
-        assert settings.is_workflow_enabled("FINANCE") == True
-        assert settings.is_workflow_enabled("Finance") == True
+        assert settings.is_workflow_enabled("legal") is True
+        assert settings.is_workflow_enabled("LEGAL") is True
+        assert settings.is_workflow_enabled("Legal") is True
+        assert settings.is_workflow_enabled("finance") is True
+        assert settings.is_workflow_enabled("FINANCE") is True
+        assert settings.is_workflow_enabled("Finance") is True
 
 
 @pytest.mark.integration

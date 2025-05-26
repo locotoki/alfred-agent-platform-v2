@@ -88,7 +88,7 @@ def print_harness_style_output(results):
         f"Successful: {results['test_info']['total_requests'] - results['error_metrics']['total_errors']}"
     )
     print(f"Error rate: {results['error_metrics']['error_rate_percent']:.2f}%")
-    print(f"\nLatency percentiles:")
+    print("\nLatency percentiles:")
     print(f"  p50: {results['latency_metrics']['p50']:.2f}ms")
 
     p95 = results["latency_metrics"]["p95"]
@@ -96,9 +96,9 @@ def print_harness_style_output(results):
     print(f"  p99: {results['latency_metrics']['p99']:.2f}ms")
 
     if results["overall_result"] == "PASS":
-        print(f"\n✅ PASS")
+        print("\n✅ PASS")
     else:
-        print(f"\n❌ FAIL")
+        print("\n❌ FAIL")
 
 
 if __name__ == "__main__":
@@ -116,7 +116,7 @@ if __name__ == "__main__":
     # Print summary
     print_harness_style_output(results)
 
-    print(f"\nDetailed results saved to: /tmp/mock_perf_results.json")
+    print("\nDetailed results saved to: /tmp/mock_perf_results.json")
 
     # Output for parsing (matches real harness format)
     print(f"\np95_latency_ms: {results['latency_metrics']['p95']}")

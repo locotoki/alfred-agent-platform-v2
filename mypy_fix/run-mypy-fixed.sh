@@ -19,10 +19,20 @@ python3 -m pip install setuptools typing-extensions
 echo "Running mypy with fixed configuration..."
 
 # Run mypy with the fixed configuration
-python3 -m mypy --config-file=mypy_fix/mypy.ini \
-    --explicit-package-bases \
-    --namespace-packages \
-    --exclude slack-app libs/ agents/ services/ tests/
+# If arguments are provided, use them as directories to check
+if [ $# -gt 0 ]; then
+    python3 -m mypy --config-file=mypy_fix/mypy.ini \
+        --explicit-package-bases \
+        --namespace-packages \
+        --exclude 'slack-app|agent-bizdev|agent-orchestrator|youtube-test-env' \
+        "$@"
+else
+    python3 -m mypy --config-file=mypy_fix/mypy.ini \
+        --explicit-package-bases \
+        --namespace-packages \
+        --exclude 'slack-app|agent-bizdev|agent-orchestrator|youtube-test-env' \
+        .
+fi
 
 # Exit with the mypy exit code
 exit $?

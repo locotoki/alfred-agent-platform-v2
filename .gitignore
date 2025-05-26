@@ -107,3 +107,4 @@ terraform.tfvars
 .ipynb_checkpoints/
 bin/
 cleanup-temp/
+docker-compose.override.dev.yml
