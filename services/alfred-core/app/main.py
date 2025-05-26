@@ -1,11 +1,9 @@
-"""
-Alfred Core Service - Main application entry point
-"""
+"""Alfred Core Service - Main application entry point."""
 
 import time
 
 import structlog
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI
 from fastapi.responses import PlainTextResponse
 from prometheus_client import Counter, Histogram, generate_latest
 
@@ -26,7 +24,7 @@ request_duration = Histogram(
 
 @app.get("/health")
 async def health_check():
-    """Health check endpoint"""
+    """Health check endpoint."""
     return {
         "status": "healthy",
         "service": "alfred-core",
@@ -37,13 +35,13 @@ async def health_check():
 
 @app.get("/metrics", response_class=PlainTextResponse)
 async def metrics():
-    """Prometheus metrics endpoint"""
+    """Prometheus metrics endpoint."""
     return generate_latest()
 
 
 @app.get("/")
 async def root():
-    """Root endpoint"""
+    """Root endpoint."""
     request_count.labels(method="GET", endpoint="/", status="200").inc()
     return {
         "service": "alfred-core",
@@ -54,7 +52,7 @@ async def root():
 
 @app.get("/api/v1/status")
 async def api_status():
-    """API status endpoint"""
+    """Return API status."""
     with request_duration.labels(method="GET", endpoint="/api/v1/status").time():
         request_count.labels(method="GET", endpoint="/api/v1/status", status="200").inc()
         logger.info("Status check requested")
@@ -67,7 +65,7 @@ async def api_status():
 
 @app.post("/api/v1/tasks")
 async def create_task(task: dict):
-    """Create a new task (placeholder)"""
+    """Create a new task (placeholder)."""
     request_count.labels(method="POST", endpoint="/api/v1/tasks", status="201").inc()
     logger.info("Task created", task_id=task.get("id", "unknown"))
     return {"task_id": "task-123", "status": "queued", "message": "Task queued for processing"}

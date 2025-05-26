@@ -2,7 +2,6 @@
 
 import pathlib
 
-import pytest
 import yaml
 
 DATASET = pathlib.Path(__file__).parent / "sample_dataset.yml"

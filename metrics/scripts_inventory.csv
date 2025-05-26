@@ -159,7 +159,7 @@ docs/tools/migrate_document.py,.py,25427,UNKNOWN
 docs/tools/normalize_filenames.py,.py,10386,UNKNOWN
 docs/tools/normalize_staging_files.sh,.sh,2905,UNKNOWN
 docs/tools/update_metadata.py,.py,10857,UNKNOWN
-eval/test_eval_loop.py,.py,322,UNKNOWN
+eval/test_eval_loop.py,.py,308,UNKNOWN
 fix-formatting.sh,.sh,219,UNKNOWN
 fix-port-issue.js,.js,7362,UNKNOWN
 fix_class_methods.py,.py,1379,UNKNOWN
@@ -199,10 +199,10 @@ mission-control/src/streamlit_app.py,.py,5770,UNKNOWN
 monitoring/scripts/docker_stats.py,.py,0,UNKNOWN
 mypy_fix/run-mypy-fixed.sh,.sh,964,UNKNOWN
 perf/__init__.py,.py,61,UNKNOWN
-perf/harness_scaffold.py,.py,4049,UNKNOWN
+perf/harness_scaffold.py,.py,4057,UNKNOWN
 perf/k6-script.js,.js,2071,UNKNOWN
 perf/locustfile.py,.py,434,UNKNOWN
-perf/mock_performance_results.py,.py,4122,UNKNOWN
+perf/mock_performance_results.py,.py,4118,UNKNOWN
 perf/parse_results.py,.py,720,UNKNOWN
 perf/run.sh,.sh,158,UNKNOWN
 port-fix-inject.js,.js,0,UNKNOWN
@@ -441,7 +441,7 @@ services/agent_bizops/workflows/legal/models.py,.py,3413,UNKNOWN
 services/alfred-bot/app/__init__.py,.py,0,UNKNOWN
 services/alfred-bot/app/main.py,.py,5135,UNKNOWN
 services/alfred-core/app/__init__.py,.py,72,UNKNOWN
-services/alfred-core/app/main.py,.py,2257,UNKNOWN
+services/alfred-core/app/main.py,.py,2242,UNKNOWN
 services/alfred-core/docker-assets/app.py,.py,73,UNKNOWN
 services/alfred-core/entrypoint.sh,.sh,1219,UNKNOWN
 services/alfred-core/healthcheck.sh,.sh,387,UNKNOWN
