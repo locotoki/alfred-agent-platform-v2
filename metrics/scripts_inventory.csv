@@ -217,6 +217,7 @@ rag-gateway/src/app.py,.py,1148,UNKNOWN
 remediation/__init__.py,.py,228,UNKNOWN
 run-black-format.py,.py,2439,UNKNOWN
 run-simplified-mc.sh,.sh,2005,UNKNOWN
+scripts/24h-review.sh,.sh,3922,UNKNOWN
 scripts/24h-security-monitor.sh,.sh,5508,UNKNOWN
 scripts/add_mypy_ignores.py,.py,2879,UNKNOWN
 scripts/add_noqa_ignore.py,.py,3716,UNKNOWN
@@ -311,7 +312,9 @@ scripts/healthcheck/verify-health-commands.sh,.sh,3806,UNKNOWN
 scripts/healthcheck/verify-health-endpoints.sh,.sh,2862,UNKNOWN
 scripts/helm-diff.sh,.sh,795,UNKNOWN
 scripts/infrastructure-validation.sh,.sh,2143,UNKNOWN
+scripts/install-fail2ban.sh,.sh,2595,UNKNOWN
 scripts/install-hooks.sh,.sh,2989,UNKNOWN
+scripts/install-pg-monitor-service.sh,.sh,1043,UNKNOWN
 scripts/install-taxonomy-integration.sh,.sh,16193,UNKNOWN
 scripts/lint-metrics-format.sh,.sh,2008,UNKNOWN
 scripts/measure_start.sh,.sh,549,UNKNOWN
@@ -361,6 +364,7 @@ scripts/spring_clean/validate_inventory.py,.py,4439,UNKNOWN
 scripts/sprint4-automation.sh,.sh,2549,UNKNOWN
 scripts/standardize-service-health.sh,.sh,4456,UNKNOWN
 scripts/start-all-dev.sh,.sh,2809,UNKNOWN
+scripts/start-pg-monitor.sh,.sh,920,UNKNOWN
 scripts/tag-agent-core-release.sh,.sh,2685,UNKNOWN
 scripts/tag-ga-release.sh,.sh,6742,UNKNOWN
 scripts/tag-healthcheck-release.sh,.sh,951,UNKNOWN
