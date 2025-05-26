@@ -228,6 +228,7 @@ scripts/auto_add_mypy_ignores.py,.py,3948,UNKNOWN
 scripts/backup-dashboards.sh,.sh,1196,UNKNOWN
 scripts/benchmark_ranker.py,.py,18733,UNKNOWN
 scripts/build_and_push_images.sh,.sh,900,UNKNOWN
+scripts/bulk-pr-rebase.sh,.sh,5162,UNKNOWN
 scripts/bulk-update-health-binary.sh,.sh,2087,UNKNOWN
 scripts/bump-healthcheck.sh,.sh,3093,UNKNOWN
 scripts/bump-helm-chart.sh,.sh,312,UNKNOWN
@@ -331,6 +332,7 @@ scripts/promote-to-ga-simple.sh,.sh,638,UNKNOWN
 scripts/promote-to-ga.sh,.sh,1320,UNKNOWN
 scripts/remove_type_ignores.py,.py,3772,UNKNOWN
 scripts/remove_unused_type_ignores.py,.py,3836,UNKNOWN
+scripts/resolve-pr-conflicts.sh,.sh,2780,UNKNOWN
 scripts/rollback-canary.sh,.sh,1044,UNKNOWN
 scripts/rotate-secrets.sh,.sh,2128,UNKNOWN
 scripts/run-e2e-health-test.sh,.sh,5410,UNKNOWN
