@@ -307,7 +307,7 @@ jobs:
           cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
 
       - name: Push ${{ matrix.service }} image to GHCR
-        if: ${{ secrets.GHCR_PAT != '' }}
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         uses: docker/build-push-action@v4
         with:
           context: ./services/${{ matrix.service }}
