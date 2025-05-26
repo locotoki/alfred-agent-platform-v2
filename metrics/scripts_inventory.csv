@@ -349,6 +349,7 @@ scripts/sprint4-automation.sh,.sh,2549,UNKNOWN
 scripts/standardize-service-health.sh,.sh,4456,UNKNOWN
 scripts/start-all-dev.sh,.sh,2809,UNKNOWN
 scripts/tag-agent-core-release.sh,.sh,2685,UNKNOWN
+scripts/tag-ga-release.sh,.sh,2332,UNKNOWN
 scripts/tag-healthcheck-release.sh,.sh,951,UNKNOWN
 scripts/tag-release.sh,.sh,552,UNKNOWN
 scripts/test_dashboards.py,.py,6879,UNKNOWN

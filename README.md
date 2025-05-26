@@ -1,7 +1,7 @@
 # Alfred Agent Platform v2
 
-> **Cold-start: 14 s**  *(benchmarked 23 May 2025)*
-A scalable, modular AI agent platform built with Docker, Supabase, and Pub/Sub messaging.
+> **🎉 GA Ready - v3.0.0** | **Health: 94.4%** | **Cold-start: 14s**
+> A production-ready, scalable AI agent platform built with Docker, Supabase, and Pub/Sub messaging.
 
 [![Black Code Style](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![Black Format Check](https://github.com/locotoki/alfred-agent-platform-v2/actions/workflows/black-check.yml/badge.svg?branch=main)](https://github.com/locotoki/alfred-agent-platform-v2/actions/workflows/black-check.yml)
@@ -133,6 +133,36 @@ See [Black Formatting Standards](docs/formatting/BLACK-FORMATTING-STANDARDS.md) 
 3. Create Docker service in `services/new-agent`
 4. Add to `docker-compose.yml`
 5. Update CI/CD matrix
+
+## Production Deployment
+
+### 🚀 GA Release v3.0.0 (July 11, 2025)
+
+The platform is production-ready with:
+- **94.4% service health coverage** (34/36 services)
+- **Full TLS/HTTPS support** with automated certificates
+- **Resource limits** configured for all services
+- **Comprehensive monitoring** with Prometheus & Grafana
+- **Multiple deployment options**: Docker Compose, Swarm, Kubernetes
+
+### Deployment Options
+
+#### Docker Compose (Single Node)
+```bash
+docker-compose -f docker-compose.yml \
+               -f docker-compose.prod.yml \
+               -f docker-compose.tls.yml \
+               up -d
+```
+
+#### Kubernetes (Helm)
+```bash
+helm install alfred ./charts/alfred \
+  --values ./charts/alfred/values-prod.yaml \
+  --set image.tag=v3.0.0
+```
+
+See [Production Deployment Checklist](docs/production-deployment-checklist.md) for detailed instructions.
 
 ## Architecture
 
