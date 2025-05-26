@@ -1,0 +1,76 @@
+name: daily-health
+on:
+  schedule:
+    # Run at 08:00 UTC daily
+    - cron: '0 8 * * *'
+  workflow_dispatch:
+
+jobs:
+  health-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feature/core-infra
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements-dev.txt
+
+      - name: Run make bench
+        id: bench
+        continue-on-error: true
+        run: |
+          make bench 2>&1 | tee bench-output.log
+          echo "exit_code=$?" >> $GITHUB_OUTPUT
+
+      - name: Extract metrics
+        if: always()
+        run: |
+          # Extract key metrics from bench output
+          TOTAL_TESTS=$(grep -E "collected [0-9]+ items" bench-output.log | grep -oE "[0-9]+" | head -1 || echo "0")
+          PASSED=$(grep -E "[0-9]+ passed" bench-output.log | grep -oE "[0-9]+ passed" | grep -oE "[0-9]+" || echo "0")
+          FAILED=$(grep -E "[0-9]+ failed" bench-output.log | grep -oE "[0-9]+ failed" | grep -oE "[0-9]+" || echo "0")
+          SKIPPED=$(grep -E "[0-9]+ skipped" bench-output.log | grep -oE "[0-9]+ skipped" | grep -oE "[0-9]+" || echo "0")
+          DURATION=$(grep -E "in [0-9]+\.[0-9]+s" bench-output.log | grep -oE "[0-9]+\.[0-9]+" | tail -1 || echo "N/A")
+
+          echo "TOTAL_TESTS=$TOTAL_TESTS" >> $GITHUB_ENV
+          echo "PASSED=$PASSED" >> $GITHUB_ENV
+          echo "FAILED=$FAILED" >> $GITHUB_ENV
+          echo "SKIPPED=$SKIPPED" >> $GITHUB_ENV
+          echo "DURATION=$DURATION" >> $GITHUB_ENV
+
+      - name: Post to epic
+        if: always()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          STATUS="✅"
+          if [ "${{ steps.bench.outputs.exit_code }}" != "0" ]; then
+            STATUS="❌"
+          fi
+
+          COMMENT="## Daily Health Check Report ${STATUS}
+          **Date**: $(date -u '+%Y-%m-%d %H:%M UTC')
+          **Branch**: \`feature/core-infra\`
+
+          ### Test Results
+          - **Total Tests**: $TOTAL_TESTS
+          - **Passed**: $PASSED ✅
+          - **Failed**: $FAILED ❌
+          - **Skipped**: $SKIPPED ⏭️
+          - **Duration**: ${DURATION}s
+
+          ### Action Link
+          [View Full Results](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
+
+          ---
+          *Automated daily health check via \`make bench\`*"
+
+          gh issue comment 505 --body "$COMMENT"
