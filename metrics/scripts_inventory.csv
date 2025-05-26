@@ -217,6 +217,7 @@ rag-gateway/src/app.py,.py,1148,UNKNOWN
 remediation/__init__.py,.py,228,UNKNOWN
 run-black-format.py,.py,2439,UNKNOWN
 run-simplified-mc.sh,.sh,2005,UNKNOWN
+scripts/24h-security-monitor.sh,.sh,5509,UNKNOWN
 scripts/add_mypy_ignores.py,.py,2879,UNKNOWN
 scripts/add_noqa_ignore.py,.py,3716,UNKNOWN
 scripts/apply-black-formatting.sh,.sh,2961,UNKNOWN
@@ -228,7 +229,7 @@ scripts/auto_add_mypy_ignores.py,.py,3948,UNKNOWN
 scripts/backup-dashboards.sh,.sh,1196,UNKNOWN
 scripts/benchmark_ranker.py,.py,18733,UNKNOWN
 scripts/build_and_push_images.sh,.sh,900,UNKNOWN
-scripts/bulk-pr-rebase.sh,.sh,5162,UNKNOWN
+scripts/bulk-pr-rebase.sh,.sh,5055,UNKNOWN
 scripts/bulk-update-health-binary.sh,.sh,2087,UNKNOWN
 scripts/bump-healthcheck.sh,.sh,3093,UNKNOWN
 scripts/bump-helm-chart.sh,.sh,312,UNKNOWN
@@ -314,6 +315,7 @@ scripts/install-hooks.sh,.sh,2989,UNKNOWN
 scripts/install-taxonomy-integration.sh,.sh,16193,UNKNOWN
 scripts/lint-metrics-format.sh,.sh,2008,UNKNOWN
 scripts/measure_start.sh,.sh,549,UNKNOWN
+scripts/monitor-postgres-security.sh,.sh,2062,UNKNOWN
 scripts/monitor-social-intel.sh,.sh,1215,UNKNOWN
 scripts/monitoring/rollout_manager.sh,.sh,4090,UNKNOWN
 scripts/monitoring/telemetry_watch.sh,.sh,2735,UNKNOWN
@@ -332,7 +334,7 @@ scripts/promote-to-ga-simple.sh,.sh,638,UNKNOWN
 scripts/promote-to-ga.sh,.sh,1320,UNKNOWN
 scripts/remove_type_ignores.py,.py,3772,UNKNOWN
 scripts/remove_unused_type_ignores.py,.py,3836,UNKNOWN
-scripts/resolve-pr-conflicts.sh,.sh,2780,UNKNOWN
+scripts/resolve-pr-conflicts.sh,.sh,2749,UNKNOWN
 scripts/rollback-canary.sh,.sh,1044,UNKNOWN
 scripts/rotate-secrets.sh,.sh,2128,UNKNOWN
 scripts/run-e2e-health-test.sh,.sh,5410,UNKNOWN
@@ -343,6 +345,8 @@ scripts/run_quick_health_check.sh,.sh,765,UNKNOWN
 scripts/run_synthetic_load.sh,.sh,1101,UNKNOWN
 scripts/safe-sync.sh,.sh,5190,UNKNOWN
 scripts/scaffold_compose_snippets.py,.py,3055,UNKNOWN
+scripts/secure-postgres-recovery.sh,.sh,4152,UNKNOWN
+scripts/secure-postgres-setup.sh,.sh,6068,UNKNOWN
 scripts/security/rotate_secret.sh,.sh,310,UNKNOWN
 scripts/setup-db-metrics.sh,.sh,4089,UNKNOWN
 scripts/setup-deployment-tools.sh,.sh,1870,UNKNOWN

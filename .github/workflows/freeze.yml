@@ -1,0 +1,19 @@
+name: freeze-gate
+on:
+  pull_request_target:
+    branches: [main]
+    types: [opened, reopened]
+jobs:
+  freeze:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Count open PRs
+        id: count
+        run: echo "count=$(gh pr list --state open | wc -l)" >> $GITHUB_ENV
+      - name: Block if frozen
+        if: ${{ env.count < 5 }}
+        run: |
+          gh pr comment ${{ github.event.pull_request.number }} \
+            --body "🔒  Main is frozen for GA hardening (<5 open PRs). \
+                    Retarget **feature/core-infra** or add \`freeze-exception\`."
+          exit 1
