@@ -1,4 +1,23 @@
 * text=auto eol=lf
+
+# LFS tracking for large binary files
+*.tar.gz filter=lfs diff=lfs merge=lfs -text
+*.tgz filter=lfs diff=lfs merge=lfs -text
+*.zip filter=lfs diff=lfs merge=lfs -text
+*.jpg filter=lfs diff=lfs merge=lfs -text
+*.png filter=lfs diff=lfs merge=lfs -text
+*.jpeg filter=lfs diff=lfs merge=lfs -text
+# Exclude common text files from LFS
+*.md -filter=lfs
+*.txt -filter=lfs
+*.py -filter=lfs
+*.js -filter=lfs
+*.ts -filter=lfs
+*.json -filter=lfs
+*.yaml -filter=lfs
+*.yml -filter=lfs
+*.sh -filter=lfs
+*.go -filter=lfs
 *.zip !text !filter !merge !diff
 *.jpg !text !filter !merge !diff
 *.png !text !filter !merge !diff
