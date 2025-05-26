@@ -197,7 +197,7 @@ migrations/env.py,.py,2191,UNKNOWN
 mission-control/src/index.js,.js,1098,UNKNOWN
 mission-control/src/streamlit_app.py,.py,5770,UNKNOWN
 monitoring/scripts/docker_stats.py,.py,0,UNKNOWN
-mypy_fix/run-mypy-fixed.sh,.sh,964,UNKNOWN
+mypy_fix/run-mypy-fixed.sh,.sh,1318,UNKNOWN
 perf/__init__.py,.py,61,UNKNOWN
 perf/harness_scaffold.py,.py,4057,UNKNOWN
 perf/k6-script.js,.js,2071,UNKNOWN
@@ -441,7 +441,7 @@ services/agent_bizops/workflows/legal/models.py,.py,3413,UNKNOWN
 services/alfred-bot/app/__init__.py,.py,0,UNKNOWN
 services/alfred-bot/app/main.py,.py,5135,UNKNOWN
 services/alfred-core/app/__init__.py,.py,72,UNKNOWN
-services/alfred-core/app/main.py,.py,2242,UNKNOWN
+services/alfred-core/app/main.py,.py,2244,UNKNOWN
 services/alfred-core/docker-assets/app.py,.py,73,UNKNOWN
 services/alfred-core/entrypoint.sh,.sh,1219,UNKNOWN
 services/alfred-core/healthcheck.sh,.sh,387,UNKNOWN
