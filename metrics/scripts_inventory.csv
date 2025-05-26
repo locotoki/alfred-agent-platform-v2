@@ -17,6 +17,15 @@ agent_core/db/models.py,.py,725,UNKNOWN
 agent_core/db/session.py,.py,520,UNKNOWN
 agent_core/ingest/chunker.py,.py,925,UNKNOWN
 agent_core/ingest/embedder.py,.py,674,UNKNOWN
+agents/__init__.py,.py,37,UNKNOWN
+agents/financial_tax/__init__.py,.py,1430,UNKNOWN
+agents/financial_tax/agent.py,.py,165,UNKNOWN
+agents/financial_tax/chains.py,.py,168,UNKNOWN
+agents/financial_tax/models.py,.py,168,UNKNOWN
+agents/legal_compliance/__init__.py,.py,1171,UNKNOWN
+agents/legal_compliance/agent.py,.py,164,UNKNOWN
+agents/legal_compliance/chains.py,.py,167,UNKNOWN
+agents/legal_compliance/models.py,.py,167,UNKNOWN
 agents/social_intel/__init__.py,.py,102,UNKNOWN
 agents/social_intel/adapters/__init__.py,.py,267,UNKNOWN
 agents/social_intel/adapters/a2a_adapter.py,.py,2614,UNKNOWN
@@ -724,7 +733,7 @@ tests/unit/__init__.py,.py,42,UNKNOWN
 tests/unit/agents/__init__.py,.py,44,UNKNOWN
 tests/unit/agents/financial_tax/__init__.py,.py,42,UNKNOWN
 tests/unit/agents/financial_tax/conftest.py,.py,123,UNKNOWN
-tests/unit/agents/financial_tax/test_agent.py,.py,12475,UNKNOWN
+tests/unit/agents/financial_tax/test_agent.py,.py,12494,UNKNOWN
 tests/unit/agents/financial_tax/test_chains.py,.py,10762,UNKNOWN
 tests/unit/agents/financial_tax/test_models.py,.py,9294,UNKNOWN
 tests/unit/agents/financial_tax/test_xfail_markers.py,.py,180,UNKNOWN
