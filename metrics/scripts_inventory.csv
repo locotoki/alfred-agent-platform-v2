@@ -23,7 +23,6 @@ agents/social_intel/adapters/a2a_adapter.py,.py,2614,UNKNOWN
 agents/social_intel/agent.py,.py,1527,UNKNOWN
 agents/social_intel/flows/__init__.py,.py,185,UNKNOWN
 agents/social_intel/flows/youtube_flows.py,.py,23014,UNKNOWN
-agents/social_intel/models/__init__.py,.py,345,UNKNOWN
 alfred/__init__.py,.py,59,UNKNOWN
 alfred/adapters/__init__.py,.py,89,UNKNOWN
 alfred/adapters/slack/__init__.py,.py,29,UNKNOWN
@@ -31,7 +30,6 @@ alfred/adapters/slack/tests/test_health.py,.py,1382,UNKNOWN
 alfred/adapters/slack/tests/test_webhook.py,.py,9028,UNKNOWN
 alfred/adapters/slack/webhook.py,.py,6815,UNKNOWN
 alfred/agents/__init__.py,.py,419,UNKNOWN
-alfred/agents/agent_orchestrator/src/data/reports.ts,.ts,2842,UNKNOWN
 alfred/agents/intent_router.py,.py,6209,UNKNOWN
 alfred/agents/orchestrator.py,.py,4007,UNKNOWN
 alfred/agents/tests/__init__.py,.py,37,UNKNOWN
@@ -80,7 +78,6 @@ alfred/model/registry/health.py,.py,877,UNKNOWN
 alfred/model/registry/main.py,.py,6139,UNKNOWN
 alfred/model/router/__init__.py,.py,122,UNKNOWN
 alfred/model/router/main.py,.py,5418,UNKNOWN
-alfred/model/router/models/__init__.py,.py,0,UNKNOWN
 alfred/protocols.py,.py,180,UNKNOWN
 alfred/rag/__init__.py,.py,111,UNKNOWN
 alfred/rag/protocols.py,.py,4324,UNKNOWN
@@ -375,7 +372,6 @@ services/_template/app/main.py,.py,2963,UNKNOWN
 services/agent-orchestrator/__init__.py,.py,34,UNKNOWN
 services/agent-orchestrator/add-demo-results.js,.js,1672,UNKNOWN
 services/agent-orchestrator/check-social-intel.js,.js,884,UNKNOWN
-services/agent-orchestrator/dist/assets/index-DNmO18pE.js,.js,1374355,UNKNOWN
 services/agent-orchestrator/eslint.config.js,.js,789,UNKNOWN
 services/agent-orchestrator/postcss.config.js,.js,80,UNKNOWN
 services/agent-orchestrator/scripts/setup-db-metrics.sh,.sh,4089,UNKNOWN
@@ -462,8 +458,6 @@ services/crm-sync/clients/hubspot_mock_client/api/default/__init__.py,.py,56,UNK
 services/crm-sync/clients/hubspot_mock_client/api/default/post_contacts.py,.py,2518,UNKNOWN
 services/crm-sync/clients/hubspot_mock_client/client.py,.py,12511,UNKNOWN
 services/crm-sync/clients/hubspot_mock_client/errors.py,.py,546,UNKNOWN
-services/crm-sync/clients/hubspot_mock_client/models/__init__.py,.py,112,UNKNOWN
-services/crm-sync/clients/hubspot_mock_client/models/contact.py,.py,2073,UNKNOWN
 services/crm-sync/clients/hubspot_mock_client/types.py,.py,1005,UNKNOWN
 services/crm-sync/docker-assets/app.py,.py,70,UNKNOWN
 services/crm-sync/docker-assets/clients/hubspot_mock_client/__init__.py,.py,195,UNKNOWN
@@ -472,8 +466,6 @@ services/crm-sync/docker-assets/clients/hubspot_mock_client/api/default/__init__
 services/crm-sync/docker-assets/clients/hubspot_mock_client/api/default/post_contacts.py,.py,2518,UNKNOWN
 services/crm-sync/docker-assets/clients/hubspot_mock_client/client.py,.py,12511,UNKNOWN
 services/crm-sync/docker-assets/clients/hubspot_mock_client/errors.py,.py,546,UNKNOWN
-services/crm-sync/docker-assets/clients/hubspot_mock_client/models/__init__.py,.py,112,UNKNOWN
-services/crm-sync/docker-assets/clients/hubspot_mock_client/models/contact.py,.py,2073,UNKNOWN
 services/crm-sync/docker-assets/clients/hubspot_mock_client/types.py,.py,1005,UNKNOWN
 services/crm-sync/src/__init__.py,.py,24,UNKNOWN
 services/crm-sync/src/__main__.py,.py,155,UNKNOWN
