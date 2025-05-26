@@ -1,17 +1,32 @@
 # Canonical list of services for Alfred Agent Platform v2
 # Used by CI to ensure docker-compose.yml parity
+# Auto-generated from docker-compose files
 
 infrastructure:
   - redis
+  - redis-exporter
   - pubsub
+  - pubsub-emulator
   - pubsub-metrics
-  - db-storage
   - vector-db
+  - mail-server
   - n8n
 
 database:
   - db-postgres
   - db-metrics
+  - db-exporter
+  - db-auth
+  - db-auth-metrics
+  - db-api
+  - db-api-metrics
+  - db-admin
+  - db-admin-metrics
+  - db-realtime
+  - db-realtime-metrics
+  - db-storage
+  - db-storage-metrics
+  - supabase
   - supabase-rest
   - supabase-realtime
   - supabase-auth
@@ -19,6 +34,7 @@ database:
   - supabase-imgproxy
 
 llm:
+  - llm-service
   - model-registry
   - model-router
   - openllm
@@ -26,29 +42,45 @@ llm:
 
 core:
   - alfred-core
+  - alfred-bot
+  - alfred-orchestrator
+  - agent-core
   - agent-orchestrator
   - agent-rag
-  - financial-tax
-  - legal-compliance
+  - agent-atlas
+  - agent-bizdev
+  - agent-financial
+  - agent-legal
+  - agent-social
   - social-intel
+  - rag-gateway
+  - api
+
+adapters:
+  - slack-adapter
   - slack_app
   - slack_mcp_gateway
+  - telegram-adapter
+  - whatsapp-adapter
+
+integrations:
+  - contact-ingest
+  - crm-sync
+  - hubspot-mock
 
 ui:
+  - ui-admin
+  - ui-chat
+  - auth-ui
   - mission-control
   - mission-control-simplified
   - streamlit-chat
-  - auth-ui
 
 monitoring:
   - prometheus
   - grafana
-  - db-exporter
-  - redis-exporter
-
-other:
-  - api
-  - whatsapp-adapter
-  - hubspot-mock
-  - contact-ingest
-  - crm-sync
+  - monitoring-dashboard
+  - monitoring-db
+  - monitoring-metrics
+  - monitoring-node
+  - monitoring-redis
