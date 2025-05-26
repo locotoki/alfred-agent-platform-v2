@@ -208,3 +208,6 @@ networks:
     driver: overlay
     driver_opts:
       encrypted: "true"
+    ipam:
+      config:
+        - subnet: 10.20.0.0/16

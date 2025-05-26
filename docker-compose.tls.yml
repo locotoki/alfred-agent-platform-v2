@@ -1,0 +1,109 @@
+# TLS Termination Configuration
+# Generated: 2025-05-27
+# Purpose: HTTPS/TLS configuration for production deployments
+
+version: '3.8'
+
+services:
+  # Traefik reverse proxy for TLS termination
+  traefik:
+    image: traefik:v3.0
+    container_name: traefik
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8080:8080" # Traefik dashboard
+    command:
+      # API and dashboard
+      - "--api.dashboard=true"
+      - "--api.insecure=false"
+      # Docker provider
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--providers.docker.network=alfred-network"
+      # Entrypoints
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
+      # HTTP to HTTPS redirect
+      - "--entrypoints.web.http.redirections.entrypoint.to=websecure"
+      - "--entrypoints.web.http.redirections.entrypoint.scheme=https"
+      # Certificate resolvers
+      - "--certificatesresolvers.letsencrypt.acme.email=ops@alfred.ai"
+      - "--certificatesresolvers.letsencrypt.acme.storage=/letsencrypt/acme.json"
+      - "--certificatesresolvers.letsencrypt.acme.httpchallenge=true"
+      - "--certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=web"
+      # Logging
+      - "--log.level=INFO"
+      - "--accesslog=true"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - traefik-certificates:/letsencrypt
+    labels:
+      - "traefik.enable=true"
+      # Dashboard
+      - "traefik.http.routers.dashboard.rule=Host(`traefik.${DOMAIN}`)"
+      - "traefik.http.routers.dashboard.service=api@internal"
+      - "traefik.http.routers.dashboard.tls=true"
+      - "traefik.http.routers.dashboard.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.dashboard.middlewares=auth"
+      - "traefik.http.middlewares.auth.basicauth.users=${TRAEFIK_AUTH}"
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 128M
+
+  # Update services to use Traefik labels
+  agent-core:
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.agent-core.rule=Host(`api.${DOMAIN}`)"
+      - "traefik.http.routers.agent-core.tls=true"
+      - "traefik.http.routers.agent-core.tls.certresolver=letsencrypt"
+      - "traefik.http.services.agent-core.loadbalancer.server.port=8011"
+      # Rate limiting
+      - "traefik.http.middlewares.agent-core-ratelimit.ratelimit.average=100"
+      - "traefik.http.middlewares.agent-core-ratelimit.ratelimit.burst=200"
+      - "traefik.http.routers.agent-core.middlewares=agent-core-ratelimit"
+
+  ui-chat:
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.ui-chat.rule=Host(`chat.${DOMAIN}`)"
+      - "traefik.http.routers.ui-chat.tls=true"
+      - "traefik.http.routers.ui-chat.tls.certresolver=letsencrypt"
+      - "traefik.http.services.ui-chat.loadbalancer.server.port=8501"
+
+  grafana:
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.grafana.rule=Host(`metrics.${DOMAIN}`)"
+      - "traefik.http.routers.grafana.tls=true"
+      - "traefik.http.routers.grafana.tls.certresolver=letsencrypt"
+      - "traefik.http.services.grafana.loadbalancer.server.port=3000"
+
+  prometheus:
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.prometheus.rule=Host(`prometheus.${DOMAIN}`)"
+      - "traefik.http.routers.prometheus.tls=true"
+      - "traefik.http.routers.prometheus.tls.certresolver=letsencrypt"
+      - "traefik.http.services.prometheus.loadbalancer.server.port=9090"
+      - "traefik.http.routers.prometheus.middlewares=auth"
+
+  slack_app:
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.slack.rule=Host(`slack.${DOMAIN}`)"
+      - "traefik.http.routers.slack.tls=true"
+      - "traefik.http.routers.slack.tls.certresolver=letsencrypt"
+      - "traefik.http.services.slack.loadbalancer.server.port=3000"
+
+# Volumes for certificates
+volumes:
+  traefik-certificates:
+    driver: local
