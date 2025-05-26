@@ -16,7 +16,6 @@ on:
 jobs:
   check-parity:
     runs-on: ubuntu-latest
-    continue-on-error: true  # Temporarily allow failures due to yq comment parsing bug (issue #492)
     steps:
       - uses: actions/checkout@v4
 
@@ -30,7 +29,8 @@ jobs:
           echo "=== Services in docker-compose files ==="
           for file in docker-compose*.yml; do
             echo "File: $file"
-            yq '.services | keys' "$file" | sort -u >> compose-services.txt
+            # Extract service names and filter out comments/non-service entries
+            yq eval '.services | keys | .[]' "$file" 2>/dev/null | grep -v '^#' | grep -v '^\s*$' >> compose-services.txt || true
           done
           sort -u compose-services.txt -o compose-services.txt
           cat compose-services.txt
