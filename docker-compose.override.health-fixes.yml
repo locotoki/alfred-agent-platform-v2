@@ -230,14 +230,16 @@ services:
 
   monitoring-redis:
     healthcheck:
-      test: ["CMD", "true"]
+      test: ["CMD", "/redis_exporter", "--help"]
       interval: 60s
       timeout: 10s
-      retries: 1
+      retries: 3
+      start_period: 10s
 
   redis-exporter:
     healthcheck:
-      test: ["CMD", "true"]
+      test: ["CMD", "/redis_exporter", "--help"]
       interval: 60s
       timeout: 10s
-      retries: 1
+      retries: 3
+      start_period: 10s
