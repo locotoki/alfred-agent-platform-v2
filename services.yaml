@@ -10,6 +10,7 @@ infrastructure:
   - pubsub-metrics
   - vector-db
   - mail-server
+  - n8n
 
 database:
   - db-postgres
@@ -57,6 +58,8 @@ core:
 
 adapters:
   - slack-adapter
+  - slack_app
+  - slack_mcp_gateway
   - telegram-adapter
   - whatsapp-adapter
 
