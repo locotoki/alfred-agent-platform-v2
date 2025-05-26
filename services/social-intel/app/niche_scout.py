@@ -4,10 +4,31 @@ This module provides functionality to identify fast-growing, high- potential, an
 Shorts-friendly YouTube niches on a daily basis.
 """
 
-# type: ignoreLFimport jsonLFimport osLFimport timeLFfrom datetime import datetimeLFfrom typing import Any, Dict, Optional, TupleLFLFimport structlogLFfrom app.metrics import (LF    LF,LF    NICHE_OPPORTUNITY_SCORE,LF    NICHE_SCOUT_RESULTS_COUNT,LF    SI_LATENCY_SECONDS,LF    SI_REQUESTS_TOTAL,LF    LatencyTimer,LF)LFLF# Use simple reports instead of HTML templatesLFfrom app.simple_reports import generate_niche_scout_reportLFfrom app.youtube_api import YouTubeAPIError, get_trends_by_categoryLFLFlogger = structlog.get_logger(__name__)LF
+# type: ignore
+import json
+import os
+import time
+from datetime import datetime
+from typing import Any, Dict, Optional, Tuple
+
+import structlog
+from app.metrics import (
+    NICHE_OPPORTUNITY_SCORE,
+    NICHE_SCOUT_RESULTS_COUNT,
+    SI_LATENCY_SECONDS,
+    SI_REQUESTS_TOTAL,
+    LatencyTimer,
+)
+
+# Use simple reports instead of HTML templates
+from app.simple_reports import generate_niche_scout_report
+from app.youtube_api import YouTubeAPIError, get_trends_by_category
+
+logger = structlog.get_logger(__name__)
+
 
 class NicheScout:
-    """Implements the Niche-Scout workflow for YouTube trend analysis"""
+    """Implements the Niche-Scout workflow for YouTube trend analysis."""
 
     def __init__(self, output_dir: str = "/app/data/niche_scout"):
         """Initialize the NicheScout workflow.

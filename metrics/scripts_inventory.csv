@@ -430,8 +430,8 @@ services/contact-ingest/src/__init__.py,.py,30,UNKNOWN
 services/contact-ingest/src/__main__.py,.py,167,UNKNOWN
 services/contact-ingest/src/contact_ingest.py,.py,502,UNKNOWN
 services/crm-sync/src/__init__.py,.py,24,UNKNOWN
-services/crm-sync/src/__main__.py,.py,154,UNKNOWN
-services/crm-sync/src/crm_sync.py,.py,1099,UNKNOWN
+services/crm-sync/src/__main__.py,.py,155,UNKNOWN
+services/crm-sync/src/crm_sync.py,.py,1100,UNKNOWN
 services/db-storage/bypass-migrations.js,.js,808,UNKNOWN
 services/db-storage/entrypoint.sh,.sh,1614,UNKNOWN
 services/db-storage/fix-migrations-entrypoint.sh,.sh,2052,UNKNOWN
@@ -525,7 +525,7 @@ services/slack-app/server.py,.py,3784,UNKNOWN
 services/slack-mcp-gateway/src/app.js,.js,3055,UNKNOWN
 services/slack_adapter/http_app.py,.py,957,UNKNOWN
 services/slack_app/__init__.py,.py,28,UNKNOWN
-services/slack_app/app.py,.py,1784,UNKNOWN
+services/slack_app/app.py,.py,1780,UNKNOWN
 services/slack_app/dev.py,.py,2594,UNKNOWN
 services/slack_app/http_app.py,.py,6114,UNKNOWN
 services/slack_app/mock_server.py,.py,9757,UNKNOWN
@@ -546,7 +546,7 @@ services/slack_mcp_gateway/tests/test_translator.py,.py,4906,UNKNOWN
 services/slack_mcp_gateway/translator.py,.py,1825,UNKNOWN
 services/social-intel/app/__init__.py,.py,34,UNKNOWN
 services/social-intel/app/add_request_fix.py,.py,3201,UNKNOWN
-services/social-intel/app/blueprint.py,.py,16188,UNKNOWN
+services/social-intel/app/blueprint.py,.py,16176,UNKNOWN
 services/social-intel/app/database/__init__.py,.py,2578,UNKNOWN
 services/social-intel/app/database/niche_repository.py,.py,0,UNKNOWN
 services/social-intel/app/database/niche_repository_fix.py,.py,0,UNKNOWN
@@ -556,7 +556,7 @@ services/social-intel/app/health_check.py,.py,6528,UNKNOWN
 services/social-intel/app/main.py,.py,16648,UNKNOWN
 services/social-intel/app/metrics.py,.py,4303,UNKNOWN
 services/social-intel/app/metrics_enhanced.py,.py,4303,UNKNOWN
-services/social-intel/app/niche_scout.py,.py,28800,UNKNOWN
+services/social-intel/app/niche_scout.py,.py,28771,UNKNOWN
 services/social-intel/app/reports.py,.py,2084,UNKNOWN
 services/social-intel/app/simple_reports.py,.py,1844,UNKNOWN
 services/social-intel/app/utils/__init__.py,.py,210,UNKNOWN
