@@ -91,13 +91,13 @@ alfred/remediation/settings.py,.py,2289,UNKNOWN
 alfred/scripts/__init__.py,.py,29,UNKNOWN
 alfred/scripts/licence_gate.py,.py,5519,UNKNOWN
 alfred/slack/__init__.py,.py,237,UNKNOWN
-alfred/slack/app.py,.py,5520,UNKNOWN
+alfred/slack/app.py,.py,5547,UNKNOWN
 alfred/slack/diagnostics/__init__.py,.py,102,UNKNOWN
 alfred/slack/diagnostics/__main__.py,.py,1977,UNKNOWN
 alfred/slack/diagnostics/bot.py,.py,7833,UNKNOWN
 alfred/slack/diagnostics/explain_command.py,.py,1323,UNKNOWN
 alfred/slack/protocols.py,.py,3715,UNKNOWN
-alfred/slack/run.py,.py,2463,UNKNOWN
+alfred/slack/run.py,.py,2460,UNKNOWN
 alfred/slack/tests/test_diagnostics.py,.py,6096,UNKNOWN
 alfred/tools/__init__.py,.py,187,UNKNOWN
 alfred/tools/formatter.py,.py,2281,UNKNOWN

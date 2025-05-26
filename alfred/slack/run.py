@@ -11,7 +11,7 @@ from threading import Thread
 from dotenv import load_dotenv
 from slack_bolt.adapter.socket_mode import SocketModeHandler
 
-from app import app, flask_app
+from alfred.slack.app import app, flask_app
 
 # Load environment variables from .env file
 load_dotenv()
@@ -46,7 +46,7 @@ if __name__ == "__main__":
             # Initialize and start the socket mode handler
             handler = SocketModeHandler(app, app_token)
             # Using type ignore for start method since Bolt typing is incomplete
-            handler.start()  # type: ignore
+            handler.start()
             print("⚡️ Bolt app is running! Connected to Slack via Socket Mode.")
             print(f"COMMAND_PREFIX: {os.environ.get('COMMAND_PREFIX', '/alfred')}")
             print(f"ALLOWED_COMMANDS: {os.environ.get('ALLOWED_COMMANDS', 'help,status')}")

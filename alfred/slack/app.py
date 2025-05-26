@@ -1,3 +1,5 @@
+"""Slack bot application module."""
+
 import logging
 import os
 
@@ -29,20 +31,20 @@ flask_app = Flask(__name__)
 
 @flask_app.route("/healthz")
 def health():
-    """Health check endpoint"""
+    """Health check endpoint."""
     return jsonify({"status": "ok", "service": "slack-app"})
 
 
 @flask_app.route("/readyz")
 def ready():
-    """Readiness check endpoint"""
+    """Readiness check endpoint."""
     return jsonify({"status": "ready", "service": "slack-app"})
 
 
 # Command handler for /alfred - register WITHOUT the slash prefix
 @app.command("alfred")
 def handle_alfred_command(ack, command, say):
-    """Handle the /alfred slash command"""
+    """Handle the /alfred slash command."""
     # Immediately acknowledge the command to prevent timeout
     ack()
 
@@ -86,7 +88,7 @@ def handle_alfred_command(ack, command, say):
 
 
 def handle_help_command(say):
-    """Handle the help command"""
+    """Handle the help command."""
     help_text = (
         "*Alfred Slack Bot Commands*\n\n"
         "• `/alfred help` - Show this help message\n"
@@ -100,7 +102,7 @@ def handle_help_command(say):
 
 
 def handle_status_command(say):
-    """Handle the status command"""
+    """Handle the status command."""
     status_text = (
         "*Alfred Platform Status*\n\n"
         "• Platform Version: v0.8.1\n"
@@ -112,7 +114,7 @@ def handle_status_command(say):
 
 
 def handle_health_command(say):
-    """Handle the health command"""
+    """Handle the health command."""
     health_text = (
         "*Alfred Health Status*\n\n"
         "```\n"
@@ -142,7 +144,7 @@ if __name__ == "__main__":
     if os.environ.get("SOCKET_MODE", "true").lower() == "true":
         handler = SocketModeHandler(app, os.environ.get("SLACK_APP_TOKEN"))
         # Using type ignore for start method since Bolt typing is incomplete
-        handler.start()  # type: ignore
+        handler.start()
         print("⚡️ Bolt app is running! Connected to Slack.")
     else:
         # HTTP mode - for production with events API
