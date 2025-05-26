@@ -1,0 +1,16 @@
+name: Security Full Scan
+on:
+  workflow_dispatch:
+jobs:
+  full-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Syft SBOM + Grype CVE Scan
+        uses: anchore/scan-action@v3
+        with:
+          fail-build: false          # warn-only
+      - name: Secrets Scan (Gitleaks)
+        uses: zricethezav/gitleaks-action@v2
+        with:
+          fail: false
