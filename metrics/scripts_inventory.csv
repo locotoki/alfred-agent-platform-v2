@@ -437,8 +437,8 @@ services/agent_bizops/workflows/finance/test_models.py,.py,5094,UNKNOWN
 services/agent_bizops/workflows/finance/tests/__init__.py,.py,36,UNKNOWN
 services/agent_bizops/workflows/finance/tests/conftest.py,.py,245,UNKNOWN
 services/agent_bizops/workflows/finance/tests/test_agent.py,.py,12151,UNKNOWN
-services/agent_bizops/workflows/finance/tests/test_chains.py,.py,10927,UNKNOWN
-services/agent_bizops/workflows/finance/tests/test_models.py,.py,8014,UNKNOWN
+services/agent_bizops/workflows/finance/tests/test_chains.py,.py,10944,UNKNOWN
+services/agent_bizops/workflows/finance/tests/test_models.py,.py,8028,UNKNOWN
 services/agent_bizops/workflows/legal/__init__.py,.py,601,UNKNOWN
 services/agent_bizops/workflows/legal/agent.py,.py,6310,UNKNOWN
 services/agent_bizops/workflows/legal/chains.py,.py,4233,UNKNOWN
