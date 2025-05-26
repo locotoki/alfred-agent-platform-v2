@@ -10,7 +10,6 @@ jobs:
       - name: Count open PRs
         id: count
         run: echo "count=$(gh pr list --state open | wc -l)" >> $GITHUB_ENV
-
       - name: Detect doc-only change
         id: docs
         run: |
