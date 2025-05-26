@@ -8,9 +8,10 @@ import sys
 import traceback
 from threading import Thread
 
-from app import app, flask_app
 from dotenv import load_dotenv
 from slack_bolt.adapter.socket_mode import SocketModeHandler
+
+from app import app, flask_app
 
 # Load environment variables from .env file
 load_dotenv()

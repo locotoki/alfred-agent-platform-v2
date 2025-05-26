@@ -97,7 +97,7 @@ alfred/slack/diagnostics/__main__.py,.py,1977,UNKNOWN
 alfred/slack/diagnostics/bot.py,.py,7833,UNKNOWN
 alfred/slack/diagnostics/explain_command.py,.py,1323,UNKNOWN
 alfred/slack/protocols.py,.py,3715,UNKNOWN
-alfred/slack/run.py,.py,2462,UNKNOWN
+alfred/slack/run.py,.py,2463,UNKNOWN
 alfred/slack/tests/test_diagnostics.py,.py,6096,UNKNOWN
 alfred/tools/__init__.py,.py,187,UNKNOWN
 alfred/tools/formatter.py,.py,2281,UNKNOWN
@@ -478,7 +478,7 @@ services/crm-sync/docker-assets/clients/hubspot_mock_client/types.py,.py,1005,UN
 services/crm-sync/src/__init__.py,.py,24,UNKNOWN
 services/crm-sync/src/__main__.py,.py,155,UNKNOWN
 services/crm-sync/src/crm_sync.py,.py,1100,UNKNOWN
-services/crm-sync/tests/test_main.py,.py,1752,UNKNOWN
+services/crm-sync/tests/test_main.py,.py,1753,UNKNOWN
 services/db-auth/auth-wrapper.sh,.sh,776,UNKNOWN
 services/db-metrics/app.py,.py,107,UNKNOWN
 services/db-metrics/docker-assets/app.py,.py,72,UNKNOWN
