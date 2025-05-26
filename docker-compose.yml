@@ -260,43 +260,70 @@ services:
   # DATABASE SERVICES (SUPABASE)
   #############################################################################
 
-  # PostgreSQL Database with Storage Schema Bootstrap
+  # PostgreSQL Database - Hardened Configuration
   db-postgres:
     build:
       context: ./bootstrap
-      dockerfile: Dockerfile.postgres-init
-    image: postgres:15-alpine-storage-bootstrap
+      dockerfile: Dockerfile.postgres-hardened
+    image: postgres:15-alpine-hardened
     container_name: db-postgres
     ports:
-      - "5432:5432"
+      - "127.0.0.1:5432:5432"  # Bind to localhost only
     environment:
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
       POSTGRES_DB: postgres
+      POSTGRES_HOST_AUTH_METHOD: scram-sha-256
+      POSTGRES_INITDB_ARGS: "--auth-host=scram-sha-256 --auth-local=scram-sha-256"
     volumes:
       - db-postgres-data:/var/lib/postgresql/data
-      - ./migrations/supabase:/docker-entrypoint-initdb.d
-      - ./bootstrap:/bootstrap
+      - ./migrations/supabase:/docker-entrypoint-initdb.d:ro
+      - ./bootstrap:/bootstrap:ro
     command:
       - postgres
       - -c
       - wal_level=logical
       - -c
-      - max_connections=1000
+      - max_connections=200  # Reduced from 1000
       - -c
       - listen_addresses=*
+      - -c
+      - shared_preload_libraries=pg_stat_statements
+      - -c
+      - log_statement=ddl
+      - -c
+      - log_connections=on
+      - -c
+      - log_disconnections=on
+      - -c
+      - password_encryption=scram-sha-256
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 2G
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    cap_add:
+      - CHOWN
+      - SETUID
+      - SETGID
+      - FOWNER
+      - DAC_OVERRIDE
     healthcheck:
       test: ["CMD", "pg_isready", "-U", "postgres"]
-      interval: 5s
+      interval: 10s
       timeout: 5s
-      retries: 10
+      retries: 5
     restart: unless-stopped
-    deploy:
     networks:
       - alfred-network
     labels:
       <<: *database-service-labels
       com.docker.compose.service: "db-postgres"
+      com.docker.compose.security: "hardened"
 
   # Database Auth Service
   db-auth:

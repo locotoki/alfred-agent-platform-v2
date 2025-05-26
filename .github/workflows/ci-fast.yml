@@ -1,0 +1,76 @@
+name: ci-fast
+on:
+  push:
+    branches: [feature/core-infra]
+  pull_request:
+    branches: [feature/core-infra]
+  schedule:
+    # Full bench nightly at 02:00 UTC
+    - cron: '0 2 * * *'
+
+jobs:
+  fast-checks:
+    if: github.event_name != 'schedule'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Cache dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt', '**/pyproject.toml') }}
+
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements-dev.txt
+
+      - name: Run linting
+        run: |
+          make lint
+
+      - name: Run unit tests
+        run: |
+          pytest -m unit -v --tb=short
+
+  full-bench:
+    if: github.event_name == 'schedule'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feature/core-infra
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements-dev.txt
+
+      - name: Run full test suite
+        run: |
+          make bench
+
+      - name: Post results to epic
+        if: always()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          STATUS="✅ Passed"
+          if [ "${{ job.status }}" != "success" ]; then
+            STATUS="❌ Failed"
+          fi
+
+          gh issue comment 505 --body "**Nightly Bench Results** ($(date -u '+%Y-%m-%d %H:%M UTC'))
+          Status: $STATUS
+          Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"

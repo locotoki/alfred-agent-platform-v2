@@ -1,0 +1,70 @@
+name: freeze-monitor
+on:
+  schedule:
+    # Check every 4 hours
+    - cron: '0 */4 * * *'
+  workflow_dispatch:
+
+jobs:
+  monitor:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check for freeze violations
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Get all open PRs targeting main
+          VIOLATIONS=""
+
+          while IFS= read -r pr_data; do
+            PR_NUM=$(echo "$pr_data" | cut -f1)
+            PR_TITLE=$(echo "$pr_data" | cut -f2)
+
+            # Check if PR has freeze-exception label
+            HAS_EXCEPTION=$(gh pr view $PR_NUM --json labels --jq '.labels[].name' | grep -c "freeze-exception" || true)
+
+            # Check if PR is docs-only
+            NON_DOCS=$(gh pr diff $PR_NUM --name-only | grep -Ev '\.(md|rst|adoc)$' | wc -l || true)
+
+            # If no exception and has non-doc files, it's a violation
+            if [ "$HAS_EXCEPTION" -eq 0 ] && [ "$NON_DOCS" -gt 0 ]; then
+              VIOLATIONS="${VIOLATIONS}\n- PR #${PR_NUM}: ${PR_TITLE}"
+            fi
+          done < <(gh pr list --base main --state open --json number,title --jq '.[] | [.number, .title] | @tsv')
+
+          if [ -n "$VIOLATIONS" ]; then
+            echo "⚠️ Freeze gate violations detected!"
+            echo -e "$VIOLATIONS"
+
+            # Create issue if violations found
+            cat > /tmp/issue-body.md << 'EOF'
+## 🚨 Freeze Gate Violations Detected
+
+The following PRs are targeting main without proper exemption:
+VIOLATIONS_PLACEHOLDER
+
+### Required Actions:
+1. Add `freeze-exception` label if critical
+2. Retarget to `feature/core-infra` branch
+3. Convert to docs-only if applicable
+
+**Freeze Policy**: Main branch is frozen for GA hardening. Only docs-only changes or PRs with `freeze-exception` label are allowed.
+
+---
+*This is an automated check. Contact @alfred-architect-o3 if you believe this is an error.*
+EOF
+
+            # Replace placeholder with actual violations
+            echo -e "$VIOLATIONS" > /tmp/violations.txt
+            sed -i "s|VIOLATIONS_PLACEHOLDER|$(cat /tmp/violations.txt)|" /tmp/issue-body.md
+
+            gh issue create --title "Freeze Gate Violations Detected" \
+              --body-file /tmp/issue-body.md \
+              --label "freeze-violation" || true
+
+            exit 1
+          else
+            echo "✅ No freeze gate violations found"
+          fi
