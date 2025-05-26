@@ -17,6 +17,6 @@ jobs:
       - run: |
           TAG=${GITHUB_REF_NAME}
           for svc in crm-sync contact-ingest hubspot-mock; do
-            docker build -t ghcr.io/${{ github.repository_owner }}/$svc:$TAG -t ghcr.io/${{ github.repository_owner }}/$svc:latest ./services/$svc
+            docker build --no-cache -t ghcr.io/${{ github.repository_owner }}/$svc:$TAG -t ghcr.io/${{ github.repository_owner }}/$svc:latest ./services/$svc
             docker push ghcr.io/${{ github.repository_owner }}/$svc --all-tags
           done
