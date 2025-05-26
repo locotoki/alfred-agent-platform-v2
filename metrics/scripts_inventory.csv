@@ -608,11 +608,11 @@ services/social-intel/app/database/niche_repository.py,.py,0,UNKNOWN
 services/social-intel/app/database/niche_repository_fix.py,.py,0,UNKNOWN
 services/social-intel/app/fix_api.py,.py,4871,UNKNOWN
 services/social-intel/app/fixed_route.py,.py,4267,UNKNOWN
-services/social-intel/app/health_check.py,.py,6516,UNKNOWN
+services/social-intel/app/health_check.py,.py,6517,UNKNOWN
 services/social-intel/app/main.py,.py,16614,UNKNOWN
 services/social-intel/app/metrics.py,.py,4297,UNKNOWN
 services/social-intel/app/metrics_enhanced.py,.py,4297,UNKNOWN
-services/social-intel/app/niche_scout.py,.py,28770,UNKNOWN
+services/social-intel/app/niche_scout.py,.py,28771,UNKNOWN
 services/social-intel/app/reports.py,.py,2076,UNKNOWN
 services/social-intel/app/simple_reports.py,.py,1837,UNKNOWN
 services/social-intel/app/utils/__init__.py,.py,207,UNKNOWN
@@ -636,7 +636,7 @@ services/social-intel/scripts/validate_openapi.sh,.sh,280,UNKNOWN
 services/social-intel/test_youtube.sh,.sh,6752,UNKNOWN
 services/social-intel/tests/check_metrics.sh,.sh,554,UNKNOWN
 services/social-intel/tests/unit/test_features.py,.py,4903,UNKNOWN
-services/social-intel/tests/unit/test_metrics.py,.py,1589,UNKNOWN
+services/social-intel/tests/unit/test_metrics.py,.py,1590,UNKNOWN
 services/streamlit-chat/streamlit_chat_ui.py,.py,309,UNKNOWN
 setup-dev-env.sh,.sh,3993,UNKNOWN
 shared/styles/design-tokens.js,.js,7015,UNKNOWN
