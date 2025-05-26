@@ -1,8 +1,284 @@
 version: '3.8'
 
+# Production overrides for Alfred Agent Platform
+# This file configures resource limits, secrets, and production settings
+# Usage: docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+
+x-common-resource-limits: &common-limits
+  deploy:
+    resources:
+      limits:
+        memory: 512M
+        cpus: '1.0'
+      reservations:
+        memory: 256M
+        cpus: '0.5'
+
+x-small-resource-limits: &small-limits
+  deploy:
+    resources:
+      limits:
+        memory: 256M
+        cpus: '0.5'
+      reservations:
+        memory: 128M
+        cpus: '0.25'
+
+x-large-resource-limits: &large-limits
+  deploy:
+    resources:
+      limits:
+        memory: 2G
+        cpus: '2.0'
+      reservations:
+        memory: 1G
+        cpus: '1.0'
+
+x-common-logging: &common-logging
+  logging:
+    driver: json-file
+    options:
+      max-size: "10m"
+      max-file: "3"
+
 services:
-  # Production overrides would go here
-  agent-core:
+  # Core Services
+  alfred-core:
+    <<: [*common-limits, *common-logging]
     environment:
       - LOG_LEVEL=info
       - ENVIRONMENT=production
+      - OPENAI_API_KEY=${OPENAI_API_KEY:?OpenAI API key required}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:?Anthropic API key required}
+      - SLACK_TOKEN=${SLACK_TOKEN:?Slack token required}
+      - CREWAI_API_KEY=${CREWAI_API_KEY:?CrewAI API key required}
+      - A2A_AUTH_TOKEN=${A2A_AUTH_TOKEN:?A2A auth token required}
+    secrets:
+      - openai_api_key
+      - anthropic_api_key
+      - slack_token
+      - crewai_api_key
+      - a2a_auth_token
+    restart: unless-stopped
+
+  # Model Services
+  model-registry:
+    <<: [*common-limits, *common-logging]
+    environment:
+      - LOG_LEVEL=info
+      - ENVIRONMENT=production
+      - DATABASE_URL=${MODEL_REGISTRY_DATABASE_URL:?Model registry database URL required}
+    secrets:
+      - model_registry_db_url
+    restart: unless-stopped
+
+  model-router:
+    <<: [*common-limits, *common-logging]
+    environment:
+      - LOG_LEVEL=info
+      - ENVIRONMENT=production
+      - REGISTRY_URL=http://model-registry:8080
+    restart: unless-stopped
+
+  # Database Services
+  db-postgres:
+    <<: [*large-limits, *common-logging]
+    environment:
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:?PostgreSQL password required}
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=alfred_prod
+    volumes:
+      - postgres_data_prod:/var/lib/postgresql/data
+    secrets:
+      - postgres_password
+    restart: unless-stopped
+
+  db-storage:
+    <<: [*common-limits, *common-logging]
+    environment:
+      - DATABASE_URL=${STORAGE_DATABASE_URL:?Storage database URL required}
+      - NODE_ENV=production
+    secrets:
+      - storage_db_url
+    restart: unless-stopped
+
+  db-auth:
+    <<: [*common-limits, *common-logging]
+    environment:
+      - GOTRUE_DATABASE_URL=${AUTH_DATABASE_URL:?Auth database URL required}
+      - GOTRUE_JWT_SECRET=${JWT_SECRET:?JWT secret required}
+      - GOTRUE_LOG_LEVEL=info
+      - GOTRUE_OPERATOR_TOKEN=${OPERATOR_TOKEN:?Operator token required}
+    secrets:
+      - auth_db_url
+      - jwt_secret
+      - operator_token
+    restart: unless-stopped
+
+  # Redis Services
+  redis:
+    <<: [*common-limits, *common-logging]
+    command: redis-server --requirepass ${REDIS_PASSWORD:?Redis password required}
+    environment:
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+    secrets:
+      - redis_password
+    restart: unless-stopped
+
+  # Monitoring Services
+  prometheus:
+    <<: [*common-limits, *common-logging]
+    environment:
+      - ENVIRONMENT=production
+    volumes:
+      - prometheus_data_prod:/prometheus
+    restart: unless-stopped
+
+  grafana:
+    <<: [*common-limits, *common-logging]
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD:?Grafana password required}
+      - GF_SERVER_ROOT_URL=https://grafana.alfred.example.com
+      - GF_SERVER_PROTOCOL=https
+      - GF_SECURITY_COOKIE_SECURE=true
+    volumes:
+      - grafana_data_prod:/var/lib/grafana
+    secrets:
+      - grafana_password
+    restart: unless-stopped
+
+  # Slack Services
+  slack-adapter:
+    <<: [*small-limits, *common-logging]
+    environment:
+      - LOG_LEVEL=info
+      - ENVIRONMENT=production
+      - SLACK_TOKEN=${SLACK_TOKEN}
+      - SLACK_APP_TOKEN=${SLACK_APP_TOKEN:?Slack app token required}
+    secrets:
+      - slack_token
+      - slack_app_token
+    restart: unless-stopped
+
+  slack-mcp-gateway:
+    <<: [*small-limits, *common-logging]
+    environment:
+      - NODE_ENV=production
+      - SLACK_TOKEN=${SLACK_TOKEN}
+      - REDIS_URL=redis://:${REDIS_PASSWORD}@redis:6379
+    secrets:
+      - slack_token
+      - redis_password
+    restart: unless-stopped
+
+  # Agent Services
+  agent-orchestrator:
+    <<: [*common-limits, *common-logging]
+    environment:
+      - NODE_ENV=production
+      - LOG_LEVEL=info
+      - REDIS_URL=redis://:${REDIS_PASSWORD}@redis:6379
+    secrets:
+      - redis_password
+    restart: unless-stopped
+
+  social-intel:
+    <<: [*common-limits, *common-logging]
+    environment:
+      - LOG_LEVEL=info
+      - ENVIRONMENT=production
+      - REDIS_URL=redis://:${REDIS_PASSWORD}@redis:6379
+      - YOUTUBE_API_KEY=${YOUTUBE_API_KEY:?YouTube API key required}
+    secrets:
+      - redis_password
+      - youtube_api_key
+    restart: unless-stopped
+
+  # UI Services
+  ui-chat:
+    <<: [*small-limits, *common-logging]
+    environment:
+      - ENVIRONMENT=production
+      - API_URL=https://api.alfred.example.com
+    restart: unless-stopped
+
+  # Mission Control Services
+  mission-control:
+    <<: [*common-limits, *common-logging]
+    environment:
+      - NODE_ENV=production
+      - NEXT_PUBLIC_API_URL=https://api.alfred.example.com
+    restart: unless-stopped
+
+  mission-control-simplified:
+    <<: [*small-limits, *common-logging]
+    environment:
+      - NODE_ENV=production
+      - PORT=3001
+    restart: unless-stopped
+
+  # Ingress Proxy (new service)
+  nginx-proxy:
+    image: nginx:alpine
+    <<: [*small-limits, *common-logging]
+    ports:
+      - "443:443"
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.prod.conf:/etc/nginx/nginx.conf:ro
+      - ./certs:/etc/nginx/certs:ro
+    depends_on:
+      - alfred-core
+      - grafana
+      - ui-chat
+    restart: unless-stopped
+
+# Docker Secrets
+secrets:
+  openai_api_key:
+    external: true
+  anthropic_api_key:
+    external: true
+  slack_token:
+    external: true
+  slack_app_token:
+    external: true
+  crewai_api_key:
+    external: true
+  a2a_auth_token:
+    external: true
+  postgres_password:
+    external: true
+  redis_password:
+    external: true
+  model_registry_db_url:
+    external: true
+  storage_db_url:
+    external: true
+  auth_db_url:
+    external: true
+  jwt_secret:
+    external: true
+  operator_token:
+    external: true
+  grafana_password:
+    external: true
+  youtube_api_key:
+    external: true
+
+# Production Volumes
+volumes:
+  postgres_data_prod:
+    driver: local
+  prometheus_data_prod:
+    driver: local
+  grafana_data_prod:
+    driver: local
+
+# Production Networks
+networks:
+  default:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16

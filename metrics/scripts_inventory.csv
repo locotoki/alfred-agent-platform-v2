@@ -315,6 +315,7 @@ scripts/platform-init-hooks/db-storage-fix.sh,.sh,896,UNKNOWN
 scripts/post-ga-housekeeping.sh,.sh,1101,UNKNOWN
 scripts/post-merge-checklist.sh,.sh,1759,UNKNOWN
 scripts/post-pr71-merge.sh,.sh,2438,UNKNOWN
+scripts/pre-release-checklist.sh,.sh,7381,UNKNOWN
 scripts/promote-social-intel.sh,.sh,1450,UNKNOWN
 scripts/promote-to-ga-from-branch.sh,.sh,1747,UNKNOWN
 scripts/promote-to-ga-simple.sh,.sh,638,UNKNOWN
@@ -346,7 +347,7 @@ scripts/sprint4-automation.sh,.sh,2549,UNKNOWN
 scripts/standardize-service-health.sh,.sh,4456,UNKNOWN
 scripts/start-all-dev.sh,.sh,2809,UNKNOWN
 scripts/tag-agent-core-release.sh,.sh,2685,UNKNOWN
-scripts/tag-ga-release.sh,.sh,2330,UNKNOWN
+scripts/tag-ga-release.sh,.sh,6742,UNKNOWN
 scripts/tag-healthcheck-release.sh,.sh,951,UNKNOWN
 scripts/tag-release.sh,.sh,552,UNKNOWN
 scripts/test_dashboards.py,.py,6879,UNKNOWN
