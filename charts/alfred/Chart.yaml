@@ -2,5 +2,7 @@ apiVersion: v2
 name: alfred
 description: Core-slice stack for AI Agency Platform
 type: application
-version: 0.1.0
+version: 0.1.1
 appVersion: "0.9.6"
+# Note: Subcharts diagnostics-bot and explainer-bot are managed separately
+# They are disabled by default in values.yaml
