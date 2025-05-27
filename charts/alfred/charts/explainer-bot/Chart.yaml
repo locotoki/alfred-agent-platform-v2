@@ -1,5 +1,0 @@
-apiVersion: v2
-name: explainer-bot
-description: Alert Explanation Agent for Alfred Platform
-type: application
-version: 0.1.0
