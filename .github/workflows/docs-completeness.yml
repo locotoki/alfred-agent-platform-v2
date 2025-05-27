@@ -1,0 +1,338 @@
+name: Docs Completeness
+
+on:
+  schedule:
+    - cron: '0 7 * * *'  # Daily at 7 AM UTC
+  workflow_dispatch:
+    inputs:
+      check_mode:
+        description: 'Check mode'
+        required: false
+        type: choice
+        options:
+          - full
+          - structure
+          - content
+        default: 'full'
+      create_issues:
+        description: 'Create GitHub issues for problems'
+        required: false
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  docs-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install documentation tools
+        run: |
+          # Python tools
+          pip install --upgrade pip
+          pip install doc8==1.1.0
+          pip install sphinx-lint
+          pip install markdown
+          pip install beautifulsoup4
+
+          # Node tools
+          npm install -g markdownlint-cli@0.39.0
+          npm install -g markdown-link-check
+
+      - name: Structural lint - reStructuredText
+        if: inputs.check_mode == 'full' || inputs.check_mode == 'structure'
+        continue-on-error: true
+        run: |
+          echo "=== reStructuredText Linting ==="
+          doc8 docs/ --ignore docs/changelog/** --config setup.cfg 2>&1 | tee rst-lint.log || true
+
+          # Count issues
+          RST_ISSUES=$(grep -c "^[A-Z][0-9]" rst-lint.log || echo "0")
+          echo "rst_issues=$RST_ISSUES" >> $GITHUB_ENV
+          echo "Found $RST_ISSUES RST issues"
+
+      - name: Structural lint - Markdown
+        if: inputs.check_mode == 'full' || inputs.check_mode == 'structure'
+        continue-on-error: true
+        run: |
+          echo "=== Markdown Linting ==="
+
+          # Create config if not exists
+          if [ ! -f .markdownlint.json ]; then
+            cat > .markdownlint.json << 'EOF'
+          {
+            "default": true,
+            "MD013": false,
+            "MD033": false,
+            "MD041": false
+          }
+          EOF
+          fi
+
+          markdownlint "**/*.md" --ignore "CHANGELOG.md" --ignore "node_modules/**" 2>&1 | tee markdown-lint.log || true
+
+          # Count issues
+          MD_ISSUES=$(wc -l < markdown-lint.log || echo "0")
+          echo "markdown_issues=$MD_ISSUES" >> $GITHUB_ENV
+          echo "Found $MD_ISSUES Markdown issues"
+
+      - name: Check broken links
+        if: inputs.check_mode == 'full' || inputs.check_mode == 'content'
+        continue-on-error: true
+        run: |
+          echo "=== Checking for Broken Links ==="
+
+          # Create config for markdown-link-check
+          cat > .markdown-link-check.json << 'EOF'
+          {
+            "ignorePatterns": [
+              {
+                "pattern": "^https?://localhost"
+              },
+              {
+                "pattern": "^https?://127\\.0\\.0\\.1"
+              }
+            ],
+            "timeout": "10s",
+            "retryOn429": true,
+            "retryCount": 3
+          }
+          EOF
+
+          find . -name "*.md" -not -path "./node_modules/*" -exec markdown-link-check {} \; 2>&1 | tee link-check.log || true
+
+          # Count broken links
+          BROKEN_LINKS=$(grep -c "✖" link-check.log || echo "0")
+          echo "broken_links=$BROKEN_LINKS" >> $GITHUB_ENV
+          echo "Found $BROKEN_LINKS broken links"
+
+      - name: Verify mandatory documentation
+        id: mandatory_docs
+        run: |
+          echo "=== Checking Mandatory Documentation ==="
+
+          # Define required documentation with descriptions
+          declare -A REQUIRED_DOCS=(
+            ["README.md"]="Project overview and quick start"
+            ["CONTRIBUTING.md"]="Contribution guidelines"
+            ["SECURITY.md"]="Security policy and reporting"
+            ["LICENSE"]="License information"
+            ["CHANGELOG.md"]="Version history"
+            ["docs/architecture/system-architecture.md"]="System architecture overview"
+            ["docs/api/"]="API documentation directory"
+            ["docs/deployment/deployment-guide.md"]="Deployment instructions"
+            ["docs/run-book.md"]="Operational runbook"
+            ["docs/troubleshooting/"]="Troubleshooting guides"
+          )
+
+          MISSING_DOCS=""
+          MISSING_COUNT=0
+
+          for doc in "${!REQUIRED_DOCS[@]}"; do
+            if [[ "$doc" == */ ]]; then
+              # It's a directory
+              if [ ! -d "$doc" ]; then
+                MISSING_DOCS="${MISSING_DOCS}\n- $doc (${REQUIRED_DOCS[$doc]})"
+                ((MISSING_COUNT++))
+              fi
+            else
+              # It's a file
+              if [ ! -f "$doc" ]; then
+                MISSING_DOCS="${MISSING_DOCS}\n- $doc (${REQUIRED_DOCS[$doc]})"
+                ((MISSING_COUNT++))
+              fi
+            fi
+          done
+
+          echo "missing_count=$MISSING_COUNT" >> $GITHUB_OUTPUT
+          echo "missing_docs<<EOF" >> $GITHUB_OUTPUT
+          echo -e "$MISSING_DOCS" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+          if [ $MISSING_COUNT -gt 0 ]; then
+            echo "❌ Missing $MISSING_COUNT required documents:"
+            echo -e "$MISSING_DOCS"
+          else
+            echo "✅ All mandatory documentation present"
+          fi
+
+      - name: Check documentation coverage
+        if: inputs.check_mode == 'full' || inputs.check_mode == 'content'
+        run: |
+          echo "=== Documentation Coverage Analysis ==="
+
+          # Count Python modules
+          PY_MODULES=$(find . -name "*.py" -not -path "./venv/*" -not -path "./.venv/*" -not -path "./tests/*" | wc -l)
+
+          # Count documented modules (have docstrings)
+          PY_DOCUMENTED=$(find . -name "*.py" -not -path "./venv/*" -not -path "./.venv/*" -not -path "./tests/*" -exec grep -l '"""' {} \; | wc -l)
+
+          # Calculate coverage percentage
+          if [ $PY_MODULES -gt 0 ]; then
+            COVERAGE=$((PY_DOCUMENTED * 100 / PY_MODULES))
+          else
+            COVERAGE=0
+          fi
+
+          echo "Total Python modules: $PY_MODULES"
+          echo "Documented modules: $PY_DOCUMENTED"
+          echo "Documentation coverage: $COVERAGE%"
+
+          echo "py_modules=$PY_MODULES" >> $GITHUB_ENV
+          echo "py_documented=$PY_DOCUMENTED" >> $GITHUB_ENV
+          echo "doc_coverage=$COVERAGE" >> $GITHUB_ENV
+
+      - name: Generate documentation report
+        id: report
+        run: |
+          REPORT_FILE="docs-report-$(date +%Y%m%d-%H%M%S).md"
+
+          cat > $REPORT_FILE << EOF
+          # Documentation Completeness Report
+
+          **Date**: $(date -u +"%Y-%m-%d %H:%M:%S UTC")
+          **Check Mode**: ${{ inputs.check_mode || 'full' }}
+          **Repository**: ${{ github.repository }}
+
+          ## Summary
+
+          - Mandatory Docs: ${{ steps.mandatory_docs.outputs.missing_count }} missing
+          - RST Issues: ${RST_ISSUES:-0}
+          - Markdown Issues: ${MARKDOWN_ISSUES:-0}
+          - Broken Links: ${BROKEN_LINKS:-0}
+          - Python Documentation Coverage: ${DOC_COVERAGE:-0}%
+
+          ## Mandatory Documentation Status
+
+          EOF
+
+          if [ "${{ steps.mandatory_docs.outputs.missing_count }}" -gt 0 ]; then
+            echo "### ❌ Missing Documents" >> $REPORT_FILE
+            echo "${{ steps.mandatory_docs.outputs.missing_docs }}" >> $REPORT_FILE
+          else
+            echo "✅ All mandatory documentation is present" >> $REPORT_FILE
+          fi
+
+          cat >> $REPORT_FILE << EOF
+
+          ## Linting Results
+
+          ### reStructuredText
+          - Issues found: ${RST_ISSUES:-0}
+
+          ### Markdown
+          - Issues found: ${MARKDOWN_ISSUES:-0}
+
+          ### Link Checking
+          - Broken links: ${BROKEN_LINKS:-0}
+
+          ## Documentation Coverage
+
+          - Total Python modules: ${PY_MODULES:-0}
+          - Documented modules: ${PY_DOCUMENTED:-0}
+          - Coverage percentage: ${DOC_COVERAGE:-0}%
+
+          ## Recommendations
+
+          1. Address all missing mandatory documentation
+          2. Fix linting issues in documentation files
+          3. Update or remove broken links
+          4. Add docstrings to undocumented Python modules
+          5. Consider adding ADR (Architecture Decision Records) for major decisions
+
+          EOF
+
+          echo "report_file=$REPORT_FILE" >> $GITHUB_OUTPUT
+          cat $REPORT_FILE
+
+      - name: Upload documentation artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: docs-audit-reports
+          path: |
+            rst-lint.log
+            markdown-lint.log
+            link-check.log
+            docs-report-*.md
+            .markdownlint.json
+            .markdown-link-check.json
+          retention-days: 7
+
+      - name: Create issue if problems found
+        if: (steps.mandatory_docs.outputs.missing_count != '0' || env.RST_ISSUES != '0' || env.MARKDOWN_ISSUES != '0' || env.BROKEN_LINKS != '0') && inputs.create_issues == true
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const title = `Documentation Completeness: Issues Found`;
+            const body = `## Documentation Audit Results
+
+            The automated documentation completeness check has found issues that need attention.
+
+            ### Summary
+            - Mandatory Documents Missing: ${{ steps.mandatory_docs.outputs.missing_count }}
+            - RST Linting Issues: ${process.env.RST_ISSUES || '0'}
+            - Markdown Linting Issues: ${process.env.MARKDOWN_ISSUES || '0'}
+            - Broken Links: ${process.env.BROKEN_LINKS || '0'}
+            - Documentation Coverage: ${process.env.DOC_COVERAGE || '0'}%
+
+            ### Missing Mandatory Documentation
+            ${{ steps.mandatory_docs.outputs.missing_docs || 'None' }}
+
+            ### Required Actions
+            1. Create missing mandatory documentation files
+            2. Fix linting issues in existing documentation
+            3. Update or remove broken links
+            4. Improve documentation coverage by adding docstrings
+
+            ### Documentation Standards
+            - All public APIs must be documented
+            - Architecture decisions should be recorded as ADRs
+            - Deployment and operational procedures must be documented
+            - Security policies and procedures must be clearly defined
+
+            ### Workflow Run
+            [View Details](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
+            `;
+
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: title,
+              body: body,
+              labels: ['documentation', 'ga-readiness']
+            });
+
+      - name: Fail if critical issues
+        if: steps.mandatory_docs.outputs.missing_count != '0'
+        run: |
+          echo "❌ Documentation audit failed - missing mandatory documents"
+          exit 1
+
+      - name: Summary
+        run: |
+          echo "## Documentation Completeness Check" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- Mandatory Docs Missing: ${{ steps.mandatory_docs.outputs.missing_count }}" >> $GITHUB_STEP_SUMMARY
+          echo "- RST Issues: ${RST_ISSUES:-0}" >> $GITHUB_STEP_SUMMARY
+          echo "- Markdown Issues: ${MARKDOWN_ISSUES:-0}" >> $GITHUB_STEP_SUMMARY
+          echo "- Broken Links: ${BROKEN_LINKS:-0}" >> $GITHUB_STEP_SUMMARY
+          echo "- Documentation Coverage: ${DOC_COVERAGE:-0}%" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Report saved to: ${{ steps.report.outputs.report_file }}" >> $GITHUB_STEP_SUMMARY
