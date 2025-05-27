@@ -1,0 +1,298 @@
+name: License Gate
+
+on:
+  schedule:
+    - cron: '0 6 * * *'  # Daily at 6 AM UTC
+  workflow_dispatch:
+    inputs:
+      scan_mode:
+        description: 'Scan mode'
+        required: false
+        type: choice
+        options:
+          - full
+          - production
+          - dev
+        default: 'full'
+      fail_on_unknown:
+        description: 'Fail on unknown licenses'
+        required: false
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  license-scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pip-licenses
+
+      - name: Install Node license tools
+        run: |
+          npm install -g license-checker
+          npm install -g @cyclonedx/cdxgen
+
+      - name: Python license scan
+        id: python_scan
+        run: |
+          echo "=== Python License Scan ==="
+
+          # Generate license report
+          pip-licenses --format=json --with-urls --with-license-file > python-licenses.json
+
+          # Extract unique licenses
+          pip-licenses --format=csv | tail -n +2 | cut -d',' -f2 | sort -u > python-unique-licenses.txt
+
+          # Count packages
+          PYTHON_PKG_COUNT=$(pip-licenses --format=csv | tail -n +2 | wc -l)
+          echo "python_package_count=$PYTHON_PKG_COUNT" >> $GITHUB_OUTPUT
+
+          echo "Found $PYTHON_PKG_COUNT Python packages"
+          cat python-unique-licenses.txt
+
+      - name: Node.js license scan (if package.json exists)
+        id: node_scan
+        run: |
+          echo "=== Node.js License Scan ==="
+
+          if [ -f package.json ]; then
+            # Generate license report
+            license-checker --production --json > node-licenses.json || true
+
+            # Extract unique licenses
+            if [ -f node-licenses.json ]; then
+              jq -r '.[].licenses' node-licenses.json | sort -u > node-unique-licenses.txt
+              NODE_PKG_COUNT=$(jq '. | length' node-licenses.json)
+              echo "node_package_count=$NODE_PKG_COUNT" >> $GITHUB_OUTPUT
+              echo "Found $NODE_PKG_COUNT Node.js packages"
+              cat node-unique-licenses.txt
+            fi
+          else
+            echo "No package.json found, skipping Node.js scan"
+            echo "node_package_count=0" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Generate SBOM
+        run: |
+          echo "=== Generating Software Bill of Materials ==="
+
+          # Generate CycloneDX SBOM
+          cdxgen -o sbom.json --spec-version 1.4 || true
+
+          # Convert to human-readable format
+          if [ -f sbom.json ]; then
+            jq '.components[] | {name: .name, version: .version, licenses: .licenses}' sbom.json > sbom-summary.json
+          fi
+
+      - name: Validate licenses against allow-list
+        id: validate
+        run: |
+          echo "=== License Validation ==="
+
+          # Define allowed licenses (add more as needed)
+          ALLOWED_LICENSES=(
+            "MIT"
+            "MIT License"
+            "BSD"
+            "BSD-2-Clause"
+            "BSD-3-Clause"
+            "BSD License"
+            "Apache-2.0"
+            "Apache License 2.0"
+            "Apache Software License"
+            "ISC"
+            "Python Software Foundation License"
+            "PSF"
+            "LGPL-2.1"
+            "LGPL-3.0"
+            "GPL-2.0"
+            "GPL-3.0"
+            "CC0-1.0"
+            "Unlicense"
+          )
+
+          # Create regex pattern
+          ALLOWED_PATTERN=$(IFS='|'; echo "${ALLOWED_LICENSES[*]}")
+
+          # Check Python licenses
+          PYTHON_VIOLATIONS=""
+          if [ -f python-unique-licenses.txt ]; then
+            while IFS= read -r license; do
+              if ! echo "$license" | grep -qE "^($ALLOWED_PATTERN)$"; then
+                PYTHON_VIOLATIONS="${PYTHON_VIOLATIONS}Python: $license\n"
+              fi
+            done < python-unique-licenses.txt
+          fi
+
+          # Check Node licenses
+          NODE_VIOLATIONS=""
+          if [ -f node-unique-licenses.txt ]; then
+            while IFS= read -r license; do
+              if ! echo "$license" | grep -qE "^($ALLOWED_PATTERN)$"; then
+                NODE_VIOLATIONS="${NODE_VIOLATIONS}Node.js: $license\n"
+              fi
+            done < node-unique-licenses.txt
+          fi
+
+          # Report results
+          if [ -n "$PYTHON_VIOLATIONS" ] || [ -n "$NODE_VIOLATIONS" ]; then
+            echo "❌ Found potentially problematic licenses:"
+            echo -e "$PYTHON_VIOLATIONS$NODE_VIOLATIONS"
+
+            if [ "${{ inputs.fail_on_unknown }}" == "true" ]; then
+              echo "VALIDATION_FAILED=true" >> $GITHUB_ENV
+            else
+              echo "⚠️ Continuing despite unknown licenses (fail_on_unknown=false)"
+            fi
+          else
+            echo "✅ All licenses validated successfully"
+          fi
+
+      - name: Generate license report
+        id: report
+        run: |
+          REPORT_FILE="license-report-$(date +%Y%m%d-%H%M%S).md"
+
+          cat > $REPORT_FILE << EOF
+          # License Compliance Report
+
+          **Date**: $(date -u +"%Y-%m-%d %H:%M:%S UTC")
+          **Scan Mode**: ${{ inputs.scan_mode || 'full' }}
+          **Repository**: ${{ github.repository }}
+
+          ## Summary
+
+          - Python Packages: ${{ steps.python_scan.outputs.python_package_count }}
+          - Node.js Packages: ${{ steps.node_scan.outputs.node_package_count }}
+          - Validation: $([[ "$VALIDATION_FAILED" == "true" ]] && echo "❌ Failed" || echo "✅ Passed")
+
+          ## Python Licenses
+
+          EOF
+
+          if [ -f python-unique-licenses.txt ]; then
+            echo '```' >> $REPORT_FILE
+            cat python-unique-licenses.txt >> $REPORT_FILE
+            echo '```' >> $REPORT_FILE
+          else
+            echo "No Python packages found" >> $REPORT_FILE
+          fi
+
+          cat >> $REPORT_FILE << EOF
+
+          ## Node.js Licenses
+
+          EOF
+
+          if [ -f node-unique-licenses.txt ]; then
+            echo '```' >> $REPORT_FILE
+            cat node-unique-licenses.txt >> $REPORT_FILE
+            echo '```' >> $REPORT_FILE
+          else
+            echo "No Node.js packages found" >> $REPORT_FILE
+          fi
+
+          # Add problematic packages if any
+          if [ -n "$PYTHON_VIOLATIONS" ] || [ -n "$NODE_VIOLATIONS" ]; then
+            cat >> $REPORT_FILE << EOF
+
+          ## ⚠️ Licenses Requiring Review
+
+          The following licenses were not found in the approved list:
+
+          EOF
+            echo -e "$PYTHON_VIOLATIONS$NODE_VIOLATIONS" >> $REPORT_FILE
+          fi
+
+          echo "report_file=$REPORT_FILE" >> $GITHUB_OUTPUT
+          cat $REPORT_FILE
+
+      - name: Upload license artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: license-reports
+          path: |
+            *-licenses.json
+            *-unique-licenses.txt
+            license-report-*.md
+            sbom.json
+            sbom-summary.json
+          retention-days: 30
+
+      - name: Create issue if violations found
+        if: env.VALIDATION_FAILED == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const title = `License Gate: Unapproved Licenses Detected`;
+            const body = `## License Compliance Check Failed
+
+            The automated license scan has detected packages using licenses not on the approved list.
+
+            ### Details
+            - Scan Time: ${new Date().toISOString()}
+            - Scan Mode: ${{ inputs.scan_mode || 'full' }}
+            - Python Packages: ${{ steps.python_scan.outputs.python_package_count }}
+            - Node.js Packages: ${{ steps.node_scan.outputs.node_package_count }}
+
+            ### Required Actions
+            1. Review the license report in the workflow artifacts
+            2. For each flagged license:
+               - Verify if it's compatible with our licensing
+               - Add to approved list if acceptable
+               - Replace the dependency if not acceptable
+            3. Update the license allow-list in the workflow if needed
+
+            ### Common Resolutions
+            - **UNKNOWN**: Usually indicates a missing license field - investigate the package
+            - **Custom License**: Review the actual license text in the package
+            - **Dual License**: Ensure we're using under the acceptable license option
+
+            ### Workflow Run
+            [View Details](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
+            `;
+
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: title,
+              body: body,
+              labels: ['license', 'compliance', 'ga-readiness']
+            });
+
+      - name: Fail if validation failed
+        if: env.VALIDATION_FAILED == 'true'
+        run: |
+          echo "❌ License validation failed - see report for details"
+          exit 1
+
+      - name: Summary
+        run: |
+          echo "## License Gate Check Complete" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- Python Packages: ${{ steps.python_scan.outputs.python_package_count }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Node.js Packages: ${{ steps.node_scan.outputs.node_package_count }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Validation: $([[ "$VALIDATION_FAILED" == "true" ]] && echo "Failed ❌" || echo "Passed ✅")" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Report saved to: ${{ steps.report.outputs.report_file }}" >> $GITHUB_STEP_SUMMARY
