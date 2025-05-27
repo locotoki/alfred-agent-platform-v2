@@ -195,7 +195,7 @@ metadata:
   name: component-secrets
 type: Opaque
 data:
-  api-key: YXBpLWtleS12YWx1ZQ==  # base64 encoded
+  api-key: <BASE64_ENCODED_API_KEY>  # Replace with actual base64 encoded value
 ```
 
 ## Troubleshooting

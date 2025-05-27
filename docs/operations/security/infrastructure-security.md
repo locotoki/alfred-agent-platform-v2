@@ -331,9 +331,9 @@ metadata:
   namespace: alfred-platform
 type: Opaque
 data:
-  db-user: cG9zdGdyZXM=  # base64 encoded "postgres"
-  db-password: eW91ci1zdXBlci1zZWNyZXQtcGFzc3dvcmQ=  # base64 encoded
-  jwt-secret: eW91ci1zdXBlci1zZWNyZXQtand0LXRva2Vu  # base64 encoded
+  db-user: <BASE64_ENCODED_DB_USER>  # base64 encoded username
+  db-password: <BASE64_ENCODED_DB_PASSWORD>  # base64 encoded password
+  jwt-secret: <BASE64_ENCODED_JWT_SECRET>  # base64 encoded JWT secret
 ```
 
 ### Mounted Secrets

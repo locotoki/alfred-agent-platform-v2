@@ -1,0 +1,38 @@
+# Gitleaks ignore file for alfred-agent-platform-v2
+# Last updated: 2025-05-27
+
+# JWT tokens in development/test scripts
+scripts/generate-storage-schema.sh:90
+scripts/generate-storage-schema.sh:91
+
+# Test fixtures and mock data
+services/slack_mcp_gateway/tests/test_translator.py:16
+
+# Documentation examples and templates
+docs/templates/infrastructure_component_template.md:198
+docs/operations/security/infrastructure-security.md:336
+
+# Base64 encoded examples in documentation
+docs/**/*.md
+
+# Test files often contain mock secrets
+**/tests/**/*.py
+**/test_*.py
+**/*_test.py
+
+# Example and template files
+**/*example*
+**/*template*
+**/*.example
+**/*.template
+
+# Development configuration files
+.env.example
+.env.sample
+.env.local
+.env.development
+
+# CI/CD files that may reference example secrets
+.github/workflows/*.yml
+
+# Known false positives - add specific files/lines here as needed
