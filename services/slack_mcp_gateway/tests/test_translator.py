@@ -13,7 +13,7 @@ from slack_mcp_gateway import translator
 @pytest.fixture
 def slack_command_payload():
     return {
-        "token": "gIkuvaNzQIHg97ATvDxqgjtO",  # This would be a verification token in real usage
+        "token": "TEST-SLACK-TOKEN-PLACEHOLDER",  # This would be a verification token in real usage
         "team_id": "T0001",
         "team_domain": "example",
         "channel_id": "C123456",

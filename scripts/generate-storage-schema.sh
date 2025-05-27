@@ -87,8 +87,8 @@ STORAGE_CONTAINER="temp-storage-api"
 docker run --rm -d \
   --name "$STORAGE_CONTAINER" \
   --network "$NETWORK_NAME" \
-  -e ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImV4cCI6MTc0OTUzNjEzMH0.zcPCLGlqF3YHBP-gTlXOQ2zjV-h3VmxbThiYEg2I5io \
-  -e SERVICE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoic2VydmljZV9yb2xlIiwiZXhwIjoxNzQ5NTM2MTMwfQ.EDf3DT0Zl6qQbrLIQLwAXRWAN5kaJ5mvlAh1jm0CY-o \
+  -e ANON_KEY="${SUPABASE_ANON_KEY:-development-anon-key-placeholder}" \
+  -e SERVICE_KEY="${SUPABASE_SERVICE_KEY:-development-service-key-placeholder}" \
   -e PGRST_URL=http://localhost:3000 \
   -e PGRST_JWT_SECRET=jwt-secret-for-development-only \
   -e DATABASE_URL=postgresql://postgres:postgres@"$PG_CONTAINER":5432/postgres \

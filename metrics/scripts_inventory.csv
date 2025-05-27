@@ -292,7 +292,7 @@ scripts/gen_dependency_inventory.py,.py,8457,UNKNOWN
 scripts/gen_license_report.py,.py,9092,UNKNOWN
 scripts/gen_scripts_inventory.py,.py,3686,UNKNOWN
 scripts/gen_vulnerability_report.py,.py,6493,UNKNOWN
-scripts/generate-storage-schema.sh,.sh,6850,UNKNOWN
+scripts/generate-storage-schema.sh,.sh,6709,UNKNOWN
 scripts/generate_compose.py,.py,4505,UNKNOWN
 scripts/generate_compose_fixed.py,.py,4505,UNKNOWN
 scripts/healthcheck.sh,.sh,1817,UNKNOWN
@@ -602,7 +602,7 @@ services/slack_mcp_gateway/responder.py,.py,4813,UNKNOWN
 services/slack_mcp_gateway/run-echo-agent.sh,.sh,824,UNKNOWN
 services/slack_mcp_gateway/server.js,.js,7902,UNKNOWN
 services/slack_mcp_gateway/tests/__init__.py,.py,0,UNKNOWN
-services/slack_mcp_gateway/tests/test_translator.py,.py,4895,UNKNOWN
+services/slack_mcp_gateway/tests/test_translator.py,.py,4899,UNKNOWN
 services/slack_mcp_gateway/translator.py,.py,1818,UNKNOWN
 services/social-intel/app/__init__.py,.py,34,UNKNOWN
 services/social-intel/app/add_request_fix.py,.py,3196,UNKNOWN
