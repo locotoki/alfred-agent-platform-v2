@@ -122,6 +122,7 @@ app/__init__.py,.py,0,UNKNOWN
 app/agent_bizdev_health.py,.py,1173,UNKNOWN
 app/health_server.sh,.sh,821,UNKNOWN
 arch/spring_clean/classify_files.py,.py,5042,UNKNOWN
+auto-merge-ga-blockers.sh,.sh,2734,UNKNOWN
 backend/alfred/alerts/ranker.py,.py,13824,UNKNOWN
 backend/alfred/alerts/rules.py,.py,10253,UNKNOWN
 backend/alfred/alerts/snooze.py,.py,12333,UNKNOWN
@@ -205,6 +206,7 @@ mission-control/src/streamlit_app.py,.py,5770,UNKNOWN
 monitoring/scripts/docker_stats.py,.py,0,UNKNOWN
 mypy_fix/run-mypy-fixed.sh,.sh,1318,UNKNOWN
 ops/bench/run-bench.sh,.sh,377,UNKNOWN
+ops/bfg/run-bfg.sh,.sh,384,UNKNOWN
 perf/__init__.py,.py,61,UNKNOWN
 perf/harness_scaffold.py,.py,4057,UNKNOWN
 perf/k6-script.js,.js,2071,UNKNOWN
