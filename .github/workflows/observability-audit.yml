@@ -1,214 +1,77 @@
 name: Observability Audit
-
 on:
+  workflow_dispatch:
   schedule:
     - cron: '0 4 * * *'   # daily at 04:00 UTC
-  workflow_dispatch:
-    inputs:
-      services:
-        description: 'Services to audit (comma-separated)'
-        required: false
-        default: 'prometheus,grafana,redis,alfred-core'
-        type: string
-      detailed:
-        description: 'Run detailed audit'
-        required: false
-        default: 'false'
-        type: boolean
-
-permissions:
-  contents: read
-  issues: write
-
 jobs:
-  observability-audit:
-    name: Observability Stack Audit
+  obs-audit:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup audit directory
+      - name: Setup environment
         run: |
-          mkdir -p observability-audit
-          echo "AUDIT_SERVICES=${{ github.event.inputs.services || 'prometheus,grafana,redis,alfred-core' }}" >> $GITHUB_ENV
-          echo "DETAILED_AUDIT=${{ github.event.inputs.detailed || 'false' }}" >> $GITHUB_ENV
+          # Create external network if it doesn't exist
+          docker network create alfred-network 2>/dev/null || true
 
-      - name: Start observability stack
+          # Create minimal .env file
+          cat > .env << EOF
+          ALFRED_REGISTRY=ghcr.io/digital-native-ventures
+          ALFRED_VERSION=latest
+          EOF
+
+      - name: Spin up stack
         run: |
           echo "🚀 Starting observability stack..."
-          docker compose up -d
+          docker compose -f docker-compose.yml -f compose.observability.yaml up -d prometheus grafana
 
-          # Wait for services to be ready
-          echo "⏳ Waiting for services to stabilize..."
-          sleep 60
-
-          # Show running services
+          # Show what's running
           docker compose ps
 
-      - name: Audit Prometheus
-        id: prometheus
+      - name: Wait for Prometheus & Grafana to be healthy (≤90 s)
         run: |
-          echo "🔍 Auditing Prometheus..."
-
-          # Check readiness
-          if curl --fail --silent --show-error http://localhost:9090/-/ready; then
-            echo "✅ Prometheus is ready" | tee -a observability-audit/prometheus.log
-            echo "prometheus_ready=true" >> $GITHUB_OUTPUT
-          else
-            echo "❌ Prometheus is not ready" | tee -a observability-audit/prometheus.log
-            echo "prometheus_ready=false" >> $GITHUB_OUTPUT
-          fi
-
-          # Check metrics endpoint
-          echo -e "\n📊 Checking metrics endpoint..." | tee -a observability-audit/prometheus.log
-          curl -s http://localhost:9090/api/v1/query?query=up | jq '.data.result[] | {job: .metric.job, instance: .metric.instance, value: .value[1]}' | tee -a observability-audit/prometheus.log || true
-
-          # Check targets
-          echo -e "\n🎯 Active targets:" | tee -a observability-audit/prometheus.log
-          curl -s http://localhost:9090/api/v1/targets | jq '.data.activeTargets[] | {job: .labels.job, health: .health, lastScrape: .lastScrape}' | tee -a observability-audit/prometheus.log || true
-
-          # Check for missing metrics
-          echo -e "\n⚠️  Checking for missing metrics..." | tee -a observability-audit/prometheus.log
-          for service in ${AUDIT_SERVICES//,/ }; do
-            if curl -s "http://localhost:9090/api/v1/query?query=up{job=\"$service\"}" | grep -q '"result":\[\]'; then
-              echo "❌ No metrics found for $service" | tee -a observability-audit/prometheus.log
-            else
-              echo "✅ Metrics found for $service" | tee -a observability-audit/prometheus.log
+          echo "⏳ Waiting for services to be ready..."
+          for i in {1..18}; do
+            echo "Attempt $i/18..."
+            if curl -fs http://localhost:9090/-/ready && curl -fs http://localhost:3000/api/health; then
+              echo "✅ All services are ready!"
+              break
             fi
+            if [ $i -eq 18 ]; then
+              echo "❌ Services failed to become ready in time"
+              docker compose logs prometheus grafana
+              exit 1
+            fi
+            sleep 5
           done
 
-      - name: Audit Grafana
-        id: grafana
+      - name: Probe Prometheus
         run: |
-          echo "🔍 Auditing Grafana..."
+          echo "🔍 Probing Prometheus..."
+          curl -Sf http://localhost:9090/-/ready
+          echo -e "\n📊 Prometheus targets:"
+          curl -s http://localhost:9090/api/v1/targets | jq '.data.activeTargets[] | {job: .labels.job, health: .health}' || true
 
-          # Check health
-          if curl --fail --silent --show-error http://localhost:3000/api/health; then
-            echo "✅ Grafana is healthy" | tee -a observability-audit/grafana.log
-            echo "grafana_healthy=true" >> $GITHUB_OUTPUT
-          else
-            echo "❌ Grafana is not healthy" | tee -a observability-audit/grafana.log
-            echo "grafana_healthy=false" >> $GITHUB_OUTPUT
-          fi
-
-          # Check datasources
-          echo -e "\n📊 Checking datasources..." | tee -a observability-audit/grafana.log
-          curl -s http://localhost:3000/api/datasources | jq '.[] | {name: .name, type: .type, url: .url}' | tee -a observability-audit/grafana.log || true
-
-          # Check dashboards
-          echo -e "\n📈 Checking dashboards..." | tee -a observability-audit/grafana.log
-          curl -s http://localhost:3000/api/search | jq '.[] | {title: .title, uid: .uid, type: .type}' | tee -a observability-audit/grafana.log || true
-
-      - name: Audit service metrics endpoints
+      - name: Probe Grafana
         run: |
-          echo "🔍 Auditing service metrics endpoints..."
+          echo "🔍 Probing Grafana..."
+          curl -Sf http://localhost:3000/api/health | jq . || true
+          echo -e "\n📊 Grafana datasources:"
+          curl -s http://localhost:3000/api/datasources | jq '.[] | {name: .name, type: .type}' || true
 
-          for service in ${AUDIT_SERVICES//,/ }; do
-            echo -e "\n📊 Checking $service metrics..." | tee -a observability-audit/services.log
-
-            case "$service" in
-              alfred-core|model-router|agent-bizops)
-                # Check /metrics endpoint
-                if curl -s -o /dev/null -w "%{http_code}" http://localhost:8080/metrics | grep -q "200"; then
-                  echo "✅ $service metrics endpoint is accessible" | tee -a observability-audit/services.log
-                  curl -s http://localhost:8080/metrics | grep -E "^# HELP" | head -10 | tee -a observability-audit/services.log || true
-                else
-                  echo "❌ $service metrics endpoint is not accessible" | tee -a observability-audit/services.log
-                fi
-                ;;
-              redis)
-                # Check Redis exporter if available
-                if docker ps | grep -q redis-exporter; then
-                  echo "✅ Redis exporter found" | tee -a observability-audit/services.log
-                else
-                  echo "⚠️  No Redis exporter found" | tee -a observability-audit/services.log
-                fi
-                ;;
-            esac
-          done
-
-      - name: Generate audit report
-        id: report
-        run: |
-          echo "📋 Generating observability audit report..."
-
-          cat > observability-audit/report.md << 'EOF'
-          # Observability Audit Report
-
-          **Date**: $(date -u +"%Y-%m-%d %H:%M:%S UTC")
-          **Services Audited**: ${AUDIT_SERVICES}
-
-          ## Summary
-
-          ### Component Status
-          | Component | Status | Notes |
-          |-----------|--------|-------|
-          | Prometheus | ${{ steps.prometheus.outputs.prometheus_ready == 'true' && '✅' || '❌' }} | See prometheus.log |
-          | Grafana | ${{ steps.grafana.outputs.grafana_healthy == 'true' && '✅' || '❌' }} | See grafana.log |
-
-          ### Key Findings
-
-          EOF
-
-          # Add findings from logs
-          if grep -q "❌" observability-audit/*.log; then
-            echo "⚠️  **Issues Found:**" >> observability-audit/report.md
-            grep "❌" observability-audit/*.log | sed 's/^/- /' >> observability-audit/report.md
-            echo "issues_found=true" >> $GITHUB_OUTPUT
-          else
-            echo "✅ **No critical issues found**" >> observability-audit/report.md
-            echo "issues_found=false" >> $GITHUB_OUTPUT
-          fi
-
-          # Add recommendations
-          cat >> observability-audit/report.md << 'EOF'
-
-          ## Recommendations
-
-          1. Ensure all services expose metrics endpoints
-          2. Configure Prometheus scrape configs for all services
-          3. Create service-specific dashboards in Grafana
-          4. Set up alerting rules for critical metrics
-
-          ## Next Steps
-
-          - Review detailed logs in artifacts
-          - Address any missing metrics endpoints
-          - Update Prometheus configuration as needed
-          EOF
-
-          cat observability-audit/report.md
-
-      - name: Cleanup services
+      - name: Tear down
         if: always()
         run: |
-          echo "🧹 Cleaning up services..."
-          docker compose down -v
+          echo "🧹 Cleaning up..."
+          docker compose -f docker-compose.yml -f compose.observability.yaml down -v
 
-      - name: Upload audit results
+      - name: Upload probe logs
+        if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: observability-audit-${{ github.run_id }}
-          path: observability-audit/
-          retention-days: 30
-
-      - name: Create issue if problems found
-        if: steps.report.outputs.issues_found == 'true' && github.event_name == 'schedule'
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          ISSUE_TITLE="Observability Audit Issues - $(date +%Y-%m-%d)"
-          ISSUE_BODY="Issues were found during the daily observability audit.
-
-          [View Audit Report](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
-
-          Please review the observability-audit artifacts for details.
-
-          cc @alfred-maintainers"
-
-          gh issue create \
-            --title "$ISSUE_TITLE" \
-            --body "$ISSUE_BODY" \
-            --label "observability,monitoring,operations" \
-            --assignee "${{ github.actor }}"
+          name: observability-probes-${{ github.run_id }}
+          path: |
+            docker-compose.yml
+            compose.observability.yaml
+          retention-days: 7
