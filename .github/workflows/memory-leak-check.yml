@@ -41,6 +41,9 @@ jobs:
         run: |
           echo "🚀 Starting services for memory monitoring..."
 
+          # Create external network if it doesn't exist
+          docker network create alfred-network 2>/dev/null || true
+
           # Create minimal .env file
           cat > .env << EOF
           ALFRED_REGISTRY=ghcr.io/digital-native-ventures
