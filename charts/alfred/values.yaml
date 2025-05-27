@@ -97,6 +97,20 @@ slackMcpGateway:
     limits:
       memory: "256Mi"
       cpu: "100m"
+  env:
+    LOG_LEVEL: "INFO"
+    REDIS_HOST: "redis"
+    REDIS_PORT: "6379"
+    REDIS_DB: "0"
+  config:
+    SLACK_APP_ENV: "production"
+    MCP_REQUEST_STREAM: "mcp-requests"
+    MCP_RESPONSE_STREAM: "mcp-responses"
+  secrets:
+    SLACK_BOT_TOKEN: ""
+    SLACK_APP_TOKEN: ""
+    SLACK_SIGNING_SECRET: ""
+    REDIS_PASSWORD: ""
 
 slackApp:
   enabled: false
@@ -114,6 +128,17 @@ slackApp:
     limits:
       memory: "256Mi"
       cpu: "100m"
+  secrets:
+    SLACK_BOT_TOKEN: ""
+    SLACK_APP_TOKEN: ""
+    SLACK_SIGNING_SECRET: ""
+  env:
+    SOCKET_MODE: "true"
+    LOG_LEVEL: "INFO"
+  config:
+    COMMAND_PREFIX: "!"
+    DEFAULT_CHANNEL: "#general"
+    ALLOWED_COMMANDS: "help,status,version"
 
 diagnostics-bot:
   enabled: false
