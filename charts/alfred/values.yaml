@@ -111,6 +111,8 @@ slackMcpGateway:
     SLACK_APP_TOKEN: ""
     SLACK_SIGNING_SECRET: ""
     REDIS_PASSWORD: ""
+  echoAgent:
+    enabled: false
 
 slackApp:
   enabled: false
