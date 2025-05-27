@@ -207,6 +207,7 @@ monitoring/scripts/docker_stats.py,.py,0,UNKNOWN
 mypy_fix/run-mypy-fixed.sh,.sh,1318,UNKNOWN
 ops/bench/run-bench.sh,.sh,377,UNKNOWN
 ops/bfg/run-bfg.sh,.sh,384,UNKNOWN
+ops/health/ui-chat.sh,.sh,71,UNKNOWN
 perf/__init__.py,.py,61,UNKNOWN
 perf/harness_scaffold.py,.py,4057,UNKNOWN
 perf/k6-script.js,.js,2071,UNKNOWN
