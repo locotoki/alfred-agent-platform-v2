@@ -148,9 +148,14 @@ explainer-bot:
 
 prometheus:
   enabled: false
+  server:
+    configMapOverrideName: ""
 
 grafana:
   enabled: false
+  sidecar:
+    dashboards:
+      enabled: false
 
 global:
   registry: ghcr.io/locotoki
@@ -164,16 +169,50 @@ agentBizops:
   image:
     repository: ghcr.io/locotoki/agent-bizops
     tag: latest
+    pullPolicy: IfNotPresent
   service:
+    type: ClusterIP
     port: 8000
+    targetPort: 8000
+  resources:
+    requests:
+      memory: "128Mi"
+      cpu: "50m"
+    limits:
+      memory: "256Mi"
+      cpu: "100m"
+  env:
+    WORKFLOWS_ENABLED: "false"
+  metrics:
+    enabled: false
+    port: 9090
 
 dbMetrics:
   enabled: false
   image:
     repository: ghcr.io/locotoki/db-metrics
     tag: latest
+    pullPolicy: IfNotPresent
   service:
     port: 8000
+    metricsPort: 9090
+  resources:
+    requests:
+      memory: "128Mi"
+      cpu: "50m"
+    limits:
+      memory: "256Mi"
+      cpu: "100m"
+  environment:
+    DB_NAME: "alfred"
+    DB_USER: "postgres"
 
 metrics:
   enabled: false
+
+nameOverride: ""
+fullnameOverride: ""
+
+nodeSelector: {}
+tolerations: []
+affinity: {}
