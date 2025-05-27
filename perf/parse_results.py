@@ -19,4 +19,4 @@ def extract_p95(csv_path):
 
 
 if __name__ == "__main__":
-    extract_p95(sys.argv[1])
+    extract_p95(sys.argv[1])  # type: ignore

@@ -2,13 +2,13 @@
 
 | Date (2025) | Day | Triage Lead | Backup | 09:00 UTC Stand-up | P0 Fix Window† |
 | ----------- | --- | ----------- | ------ | ------------------ | ------------- |
-| Jul 04 | Fri | **TODO** | TODO | 15 min | 00:00 → 23:59 |
-| Jul 05 | Sat | **TODO** | TODO | 15 min | 00:00 → 23:59 |
-| Jul 06 | Sun | **TODO** | TODO | 15 min | 00:00 → 23:59 |
-| Jul 07 | Mon | **TODO** | TODO | 15 min | 00:00 → 23:59 |
-| Jul 08 | Tue | **TODO** | TODO | 15 min | 00:00 → 23:59 |
-| Jul 09 | Wed | **TODO** | TODO | 15 min | 00:00 → 23:59 |
-| Jul 10 | Thu | **TODO** | TODO | 15 min | 00:00 → 23:59 |
+| Jul 04 | Fri | @admin | @admin | 15 min | 00:00 → 23:59 |
+| Jul 05 | Sat | @admin | @admin | 15 min | 00:00 → 23:59 |
+| Jul 06 | Sun | @admin | @admin | 15 min | 00:00 → 23:59 |
+| Jul 07 | Mon | @admin | @admin | 15 min | 00:00 → 23:59 |
+| Jul 08 | Tue | @admin | @admin | 15 min | 00:00 → 23:59 |
+| Jul 09 | Wed | @admin | @admin | 15 min | 00:00 → 23:59 |
+| Jul 10 | Thu | @admin | @admin | 15 min | 00:00 → 23:59 |
 
 † Only PRs labelled `P0-fix` merge during freeze (enforced by `freeze-guard.yml`).
 

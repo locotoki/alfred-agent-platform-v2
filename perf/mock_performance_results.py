@@ -107,14 +107,14 @@ if __name__ == "__main__":
     print("⚠️  NOTE: This is simulated data for demonstration")
     print("Run actual tests with: python perf/harness_scaffold.py\n")
 
-    results = generate_mock_results()
+    results = generate_mock_results()  # type: ignore
 
     # Save detailed results
     with open("/tmp/mock_perf_results.json", "w") as f:
         json.dump(results, f, indent=2)
 
     # Print summary
-    print_harness_style_output(results)
+    print_harness_style_output(results)  # type: ignore
 
     print("\nDetailed results saved to: /tmp/mock_perf_results.json")
 

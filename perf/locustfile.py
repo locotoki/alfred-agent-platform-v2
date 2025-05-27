@@ -3,7 +3,7 @@
 from locust import HttpUser, between, task
 
 
-class RAGUser(HttpUser):
+class RAGUser(HttpUser):  # type: ignore
     """User class for RAG API performance testing."""
 
     wait_time = between(0.1, 0.1)
