@@ -13,7 +13,7 @@ on:
       services:
         description: 'Services to monitor (comma-separated)'
         required: false
-        default: 'alfred-core,model-router,agent-bizops,redis'
+        default: 'agent-core,model-router,agent-bizdev,redis'
         type: string
 
 permissions:
@@ -32,7 +32,7 @@ jobs:
         run: |
           mkdir -p memory-monitoring
           echo "MONITOR_DURATION=${{ github.event.inputs.duration || 10 }}" >> $GITHUB_ENV
-          echo "MONITOR_SERVICES=${{ github.event.inputs.services || 'alfred-core,model-router,agent-bizops,redis' }}" >> $GITHUB_ENV
+          echo "MONITOR_SERVICES=${{ github.event.inputs.services || 'agent-core,model-router,agent-bizdev,redis' }}" >> $GITHUB_ENV
 
       - name: Start services
         env:
@@ -48,7 +48,9 @@ jobs:
           EOF
 
           # Start only the services we're monitoring
-          docker compose up -d ${{ env.MONITOR_SERVICES }}
+          # Convert comma-separated list to space-separated
+          SERVICES=$(echo "${{ env.MONITOR_SERVICES }}" | tr ',' ' ')
+          docker compose up -d $SERVICES
 
           # Wait for services to be ready
           echo "⏳ Waiting for services to stabilize..."
@@ -82,7 +84,7 @@ jobs:
           echo "Simulating API load..."
           for service in ${MONITOR_SERVICES//,/ }; do
             case "$service" in
-              alfred-core|model-router|agent-bizops)
+              agent-core|model-router|agent-bizdev)
                 # Simulate API requests
                 for i in {1..100}; do
                   curl -s -o /dev/null http://localhost:8080/health || true
