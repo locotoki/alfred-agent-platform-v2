@@ -23,20 +23,20 @@ jobs:
           fail-build: false  # warn-only mode
 
       # --- Gitleaks secret scan --------------------------------------------
-      # If a licence is present, install gitleaks-pro; otherwise fall back to
-      # OSS v8.18.1 and keep the build GREEN.
+      # Install latest Gitleaks and use license if available
       - name: Install & run Gitleaks
         run: |
           set -e
+          echo "📥 Installing Gitleaks..."
+          curl -sSL https://github.com/gitleaks/gitleaks/releases/download/v8.18.1/gitleaks_8.18.1_linux_x64.tar.gz \
+            | sudo tar -xz -C /usr/local/bin gitleaks
+
           if [ -n "${GITLEAKS_LICENSE}" ]; then
-            echo "🔐 Using gitleaks-pro with licence."
-            curl -sSfL https://raw.githubusercontent.com/gitleaks/gitleaks-pro/main/install.sh \
-              | sudo bash -s -- -b /usr/local/bin
-            gitleaks-pro detect --source . --report-format sarif --report-path gitleaks.sarif
+            echo "🔐 Running Gitleaks with license key..."
+            export GITLEAKS_LICENSE_KEY="${GITLEAKS_LICENSE}"
+            gitleaks detect --source . --report-format sarif --report-path gitleaks.sarif --license-key "${GITLEAKS_LICENSE}"
           else
-            echo "⚠️  No licence found; falling back to OSS gitleaks."
-            curl -sSL https://github.com/gitleaks/gitleaks/releases/download/v8.18.1/gitleaks_8.18.1_linux_x64.tar.gz \
-              | sudo tar -xz -C /usr/local/bin gitleaks
+            echo "⚠️  Running Gitleaks in OSS mode..."
             gitleaks detect --source . --report-format sarif --report-path gitleaks.sarif || true
           fi
 
