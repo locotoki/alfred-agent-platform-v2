@@ -46,7 +46,7 @@ if __name__ == "__main__":
             # Initialize and start the socket mode handler
             handler = SocketModeHandler(app, app_token)
             # Using type ignore for start method since Bolt typing is incomplete
-            handler.start()
+            handler.start()  # type: ignore
             print("⚡️ Bolt app is running! Connected to Slack via Socket Mode.")
             print(f"COMMAND_PREFIX: {os.environ.get('COMMAND_PREFIX', '/alfred')}")
             print(f"ALLOWED_COMMANDS: {os.environ.get('ALLOWED_COMMANDS', 'help,status')}")

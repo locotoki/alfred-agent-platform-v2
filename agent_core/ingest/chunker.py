@@ -13,7 +13,7 @@ from typing import List
 try:
     import tiktoken
 except ImportError:  # soft-dep for local dev
-    tiktoken = None
+    tiktoken = None  # type: ignore
 
 MAX_TOKENS = 1024
 OVERLAP = 128

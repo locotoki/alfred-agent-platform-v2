@@ -4,7 +4,7 @@ from datetime import datetime
 from typing import List, Optional
 
 from sqlalchemy import Column, DateTime, String
-from sqlalchemy.dialects.postgresql import VECTOR
+from sqlalchemy.dialects.postgresql import VECTOR  # type: ignore
 from sqlmodel import Field, SQLModel
 
 

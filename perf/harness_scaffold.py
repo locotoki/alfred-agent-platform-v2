@@ -104,7 +104,7 @@ if __name__ == "__main__":
         health = requests.get(f"{BASE_URL}/health", timeout=2)
         if health.status_code == 200:
             print("✅ Health check passed\n")
-            run_load_test()
+            run_load_test()  # type: ignore
         else:
             print(f"❌ Health check failed: {health.status_code}")
     except Exception as e:
