@@ -1,0 +1,193 @@
+name: Memory Leak Check
+
+on:
+  schedule:
+    - cron: '0 3 * * *'      # daily at 03:00 UTC
+  workflow_dispatch:
+    inputs:
+      duration:
+        description: 'Test duration in minutes'
+        required: false
+        default: '10'
+        type: number
+      services:
+        description: 'Services to monitor (comma-separated)'
+        required: false
+        default: 'alfred-core,model-router,agent-bizops,redis'
+        type: string
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  memory-leak-check:
+    name: Memory Leak Detection
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup monitoring directory
+        run: |
+          mkdir -p memory-monitoring
+          echo "MONITOR_DURATION=${{ github.event.inputs.duration || 10 }}" >> $GITHUB_ENV
+          echo "MONITOR_SERVICES=${{ github.event.inputs.services || 'alfred-core,model-router,agent-bizops,redis' }}" >> $GITHUB_ENV
+
+      - name: Start services
+        run: |
+          echo "🚀 Starting services for memory monitoring..."
+          docker compose up -d
+
+          # Wait for services to be ready
+          echo "⏳ Waiting for services to stabilize..."
+          sleep 60
+
+          # Check service health
+          docker compose ps
+
+      - name: Baseline memory capture
+        run: |
+          echo "📊 Capturing baseline memory usage..."
+          docker stats --no-stream --format "table {{.Container}}\t{{.Name}}\t{{.MemUsage}}\t{{.MemPerc}}" > memory-monitoring/baseline.txt
+          cat memory-monitoring/baseline.txt
+
+      - name: Run memory stress test
+        run: |
+          echo "🔥 Running memory stress test for ${MONITOR_DURATION} minutes..."
+
+          # Start continuous monitoring in background
+          (
+            for i in $(seq 1 $((MONITOR_DURATION * 6))); do
+              timestamp=$(date -u +"%Y-%m-%d %H:%M:%S")
+              echo "=== Memory snapshot at $timestamp ===" >> memory-monitoring/continuous.log
+              docker stats --no-stream --format "{{.Name}},{{.MemUsage}},{{.MemPerc}},{{.PIDs}}" >> memory-monitoring/continuous.log
+              sleep 10
+            done
+          ) &
+          MONITOR_PID=$!
+
+          # Simulate load (adjust based on your services)
+          echo "Simulating API load..."
+          for service in ${MONITOR_SERVICES//,/ }; do
+            case "$service" in
+              alfred-core|model-router|agent-bizops)
+                # Simulate API requests
+                for i in {1..100}; do
+                  curl -s -o /dev/null http://localhost:8080/health || true
+                  sleep 0.1
+                done
+                ;;
+              redis)
+                # Redis operations would go here
+                echo "Skipping Redis load test"
+                ;;
+            esac
+          done
+
+          # Wait for monitoring to complete
+          wait $MONITOR_PID
+
+      - name: Final memory capture
+        run: |
+          echo "📊 Capturing final memory usage..."
+          docker stats --no-stream --format "table {{.Container}}\t{{.Name}}\t{{.MemUsage}}\t{{.MemPerc}}" > memory-monitoring/final.txt
+          cat memory-monitoring/final.txt
+
+      - name: Analyze memory trends
+        id: analyze
+        run: |
+          echo "🔍 Analyzing memory trends..."
+
+          # Create analysis report
+          cat > memory-monitoring/analysis.md << 'EOF'
+          # Memory Leak Analysis Report
+
+          **Date**: $(date -u +"%Y-%m-%d %H:%M:%S UTC")
+          **Duration**: ${MONITOR_DURATION} minutes
+          **Services**: ${MONITOR_SERVICES}
+
+          ## Summary
+
+          ### Baseline Memory Usage
+          ```
+          $(cat memory-monitoring/baseline.txt)
+          ```
+
+          ### Final Memory Usage
+          ```
+          $(cat memory-monitoring/final.txt)
+          ```
+
+          ## Memory Growth Analysis
+
+          EOF
+
+          # Simple leak detection (you can make this more sophisticated)
+          echo "Checking for potential memory leaks..."
+
+          LEAK_DETECTED=false
+          while IFS=',' read -r name mem_usage mem_perc pids; do
+            # Extract memory value (remove unit)
+            mem_value=$(echo "$mem_usage" | grep -o '[0-9.]*' | head -1)
+
+            # Check if memory increased significantly (>50%)
+            baseline_mem=$(grep "$name" memory-monitoring/baseline.txt | grep -o '[0-9.]*MiB' | grep -o '[0-9.]*' | head -1)
+            if [ -n "$baseline_mem" ] && [ -n "$mem_value" ]; then
+              growth=$(echo "scale=2; ($mem_value - $baseline_mem) / $baseline_mem * 100" | bc -l 2>/dev/null || echo "0")
+              if (( $(echo "$growth > 50" | bc -l 2>/dev/null || echo 0) )); then
+                echo "⚠️  Potential leak in $name: ${growth}% growth" | tee -a memory-monitoring/analysis.md
+                LEAK_DETECTED=true
+              fi
+            fi
+          done < <(tail -n +2 memory-monitoring/continuous.log | tail -10)
+
+          if [ "$LEAK_DETECTED" = "true" ]; then
+            echo "leak_detected=true" >> $GITHUB_OUTPUT
+          else
+            echo "✅ No significant memory leaks detected" | tee -a memory-monitoring/analysis.md
+            echo "leak_detected=false" >> $GITHUB_OUTPUT
+          fi
+
+          # Add continuous log summary
+          echo -e "\n## Detailed Memory Trends\n" >> memory-monitoring/analysis.md
+          echo "See continuous.log artifact for full details." >> memory-monitoring/analysis.md
+
+      - name: Generate memory usage graph (optional)
+        run: |
+          # This is a placeholder for actual graphing
+          # In a real implementation, you might use gnuplot or python matplotlib
+          echo "📈 Memory usage trends would be graphed here"
+
+      - name: Cleanup services
+        if: always()
+        run: |
+          echo "🧹 Cleaning up services..."
+          docker compose down -v
+
+      - name: Upload memory analysis
+        uses: actions/upload-artifact@v4
+        with:
+          name: memory-leak-analysis-${{ github.run_id }}
+          path: memory-monitoring/
+          retention-days: 30
+
+      - name: Create issue if leak detected
+        if: steps.analyze.outputs.leak_detected == 'true' && github.event_name == 'schedule'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          ISSUE_TITLE="Memory Leak Detected - $(date +%Y-%m-%d)"
+          ISSUE_BODY="A potential memory leak has been detected during the daily memory check.
+
+          [View Analysis Report](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
+
+          Please investigate the memory-monitoring artifacts for details.
+
+          cc @alfred-maintainers"
+
+          gh issue create \
+            --title "$ISSUE_TITLE" \
+            --body "$ISSUE_BODY" \
+            --label "bug,memory-leak,performance" \
+            --assignee "${{ github.actor }}"
