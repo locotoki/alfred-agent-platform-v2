@@ -204,6 +204,7 @@ mission-control/src/index.js,.js,1098,UNKNOWN
 mission-control/src/streamlit_app.py,.py,5770,UNKNOWN
 monitoring/scripts/docker_stats.py,.py,0,UNKNOWN
 mypy_fix/run-mypy-fixed.sh,.sh,1318,UNKNOWN
+ops/health/ui-chat.sh,.sh,71,UNKNOWN
 perf/__init__.py,.py,61,UNKNOWN
 perf/harness_scaffold.py,.py,4057,UNKNOWN
 perf/k6-script.js,.js,2071,UNKNOWN
