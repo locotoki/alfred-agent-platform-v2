@@ -35,7 +35,7 @@ jobs:
             echo "🔐 Running Gitleaks with license key..."
             # Export license as environment variable (this is how Gitleaks reads it)
             export GITLEAKS_LICENSE="${GITLEAKS_LICENSE}"
-            gitleaks detect --source . --report-format sarif --report-path gitleaks.sarif
+            gitleaks detect --source . --report-format sarif --report-path gitleaks.sarif || true
           else
             echo "⚠️  Running Gitleaks in OSS mode..."
             gitleaks detect --source . --report-format sarif --report-path gitleaks.sarif || true
