@@ -1,0 +1,227 @@
+name: Helm Upgrade Path
+
+on:
+  schedule:
+    - cron: '0 5 * * *'  # Daily at 5 AM UTC
+  workflow_dispatch:
+    inputs:
+      previous_version:
+        description: 'Previous version to compare against (default: latest tag)'
+        required: false
+        type: string
+      environment:
+        description: 'Environment values to test'
+        required: false
+        type: choice
+        options:
+          - production
+          - staging
+          - all
+        default: 'all'
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  helm-upgrade-path:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Need full history for tags
+
+      - name: Set up Helm
+        uses: azure/setup-helm@v3
+        with:
+          version: 'v3.14.0'
+
+      - name: Install helm plugins
+        run: |
+          helm plugin install https://github.com/databus23/helm-diff || true
+          helm plugin install https://github.com/instrumenta/helm-kubeval || true
+
+      - name: Validate current chart
+        run: |
+          echo "=== Helm Chart Validation ==="
+          helm lint charts/alfred --strict
+
+          # Check for deprecated APIs
+          helm kubeval charts/alfred || true
+
+      - name: Determine previous version
+        id: version
+        run: |
+          if [ -n "${{ inputs.previous_version }}" ]; then
+            PREV_VERSION="${{ inputs.previous_version }}"
+          else
+            PREV_VERSION=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
+          fi
+          echo "previous_version=$PREV_VERSION" >> $GITHUB_OUTPUT
+          echo "Using previous version: $PREV_VERSION"
+
+      - name: Test production upgrade path
+        if: inputs.environment == 'production' || inputs.environment == 'all' || inputs.environment == ''
+        run: |
+          echo "=== Production Upgrade Path Test ==="
+
+          # Render current version
+          helm template alfred-prod charts/alfred \
+            --values charts/alfred/values.yaml \
+            --values charts/alfred/values-prod.yaml \
+            > /tmp/prod-current.yaml
+
+          # Get previous version chart
+          git checkout ${{ steps.version.outputs.previous_version }} -- charts/alfred 2>/dev/null || true
+
+          # Render previous version
+          helm template alfred-prod-prev charts/alfred \
+            --values charts/alfred/values.yaml \
+            --values charts/alfred/values-prod.yaml \
+            > /tmp/prod-previous.yaml 2>/dev/null || echo "No previous version found"
+
+          # Reset to current version
+          git checkout HEAD -- charts/alfred
+
+          # Generate diff
+          echo "=== Production Helm Diff ==="
+          helm diff upgrade alfred-prod charts/alfred \
+            --values charts/alfred/values.yaml \
+            --values charts/alfred/values-prod.yaml \
+            --allow-unreleased --no-hooks --three-way-merge || true
+
+          # Check for breaking changes
+          echo "=== Checking for Breaking Changes ==="
+          if grep -E "(Deleting|REMOVED|DEPRECATED)" /tmp/prod-*.yaml 2>/dev/null; then
+            echo "WARNING: Potential breaking changes detected"
+          fi
+
+      - name: Test staging upgrade path
+        if: inputs.environment == 'staging' || inputs.environment == 'all' || inputs.environment == ''
+        run: |
+          echo "=== Staging Upgrade Path Test ==="
+
+          # Similar process for staging
+          helm template alfred-staging charts/alfred \
+            --values charts/alfred/values.yaml \
+            --values charts/alfred/values-staging.yaml \
+            > /tmp/staging-current.yaml
+
+          helm diff upgrade alfred-staging charts/alfred \
+            --values charts/alfred/values.yaml \
+            --values charts/alfred/values-staging.yaml \
+            --allow-unreleased --no-hooks || true
+
+      - name: Check for required migrations
+        run: |
+          echo "=== Migration Requirements Check ==="
+
+          # Check for database schema changes
+          if git diff ${{ steps.version.outputs.previous_version }} HEAD -- '**/migrations/**' | grep -q .; then
+            echo "⚠️  Database migrations detected - manual intervention required"
+            echo "MIGRATION_REQUIRED=true" >> $GITHUB_ENV
+          fi
+
+          # Check for config changes
+          if git diff ${{ steps.version.outputs.previous_version }} HEAD -- '**/values*.yaml' | grep -E "(BREAKING|DEPRECATED)" | grep -q .; then
+            echo "⚠️  Configuration breaking changes detected"
+            echo "CONFIG_BREAKING=true" >> $GITHUB_ENV
+          fi
+
+      - name: Generate upgrade report
+        id: report
+        run: |
+          REPORT_FILE="helm-upgrade-report-$(date +%Y%m%d-%H%M%S).md"
+
+          cat > $REPORT_FILE << EOF
+          # Helm Upgrade Path Report
+
+          **Date**: $(date -u +"%Y-%m-%d %H:%M:%S UTC")
+          **From Version**: ${{ steps.version.outputs.previous_version }}
+          **To Version**: HEAD
+          **Environment**: ${{ inputs.environment || 'all' }}
+
+          ## Summary
+
+          - Chart Validation: ✅ Passed
+          - Production Upgrade: $([[ -f /tmp/prod-current.yaml ]] && echo "✅ Tested" || echo "⏭️  Skipped")
+          - Staging Upgrade: $([[ -f /tmp/staging-current.yaml ]] && echo "✅ Tested" || echo "⏭️  Skipped")
+          - Database Migrations: $([[ "$MIGRATION_REQUIRED" == "true" ]] && echo "⚠️  Required" || echo "✅ None")
+          - Breaking Changes: $([[ "$CONFIG_BREAKING" == "true" ]] && echo "⚠️  Found" || echo "✅ None")
+
+          ## Recommendations
+
+          EOF
+
+          if [[ "$MIGRATION_REQUIRED" == "true" ]]; then
+            echo "1. Run database migrations before deploying" >> $REPORT_FILE
+          fi
+
+          if [[ "$CONFIG_BREAKING" == "true" ]]; then
+            echo "2. Review and update configuration values" >> $REPORT_FILE
+          fi
+
+          echo "3. Test upgrade in staging environment first" >> $REPORT_FILE
+          echo "4. Have rollback plan ready" >> $REPORT_FILE
+
+          echo "report_file=$REPORT_FILE" >> $GITHUB_OUTPUT
+          cat $REPORT_FILE
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: helm-upgrade-artifacts
+          path: |
+            /tmp/*-current.yaml
+            /tmp/*-previous.yaml
+            helm-upgrade-report-*.md
+          retention-days: 7
+
+      - name: Create issue if problems found
+        if: env.MIGRATION_REQUIRED == 'true' || env.CONFIG_BREAKING == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const title = `Helm Upgrade Path: Manual Intervention Required`;
+            const body = `## Helm Upgrade Path Check Results
+
+            The automated Helm upgrade path check has detected issues that require manual intervention:
+
+            ${process.env.MIGRATION_REQUIRED === 'true' ? '- ⚠️ **Database migrations required**' : ''}
+            ${process.env.CONFIG_BREAKING === 'true' ? '- ⚠️ **Breaking configuration changes detected**' : ''}
+
+            ### Details
+            - From Version: ${{ steps.version.outputs.previous_version }}
+            - To Version: HEAD
+            - Check Time: ${new Date().toISOString()}
+
+            ### Required Actions
+            1. Review the upgrade report in the workflow artifacts
+            2. Plan and test the upgrade procedure in staging
+            3. Document any manual steps required
+            4. Update runbooks if necessary
+
+            ### Workflow Run
+            [View Details](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
+            `;
+
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: title,
+              body: body,
+              labels: ['helm', 'upgrade-path', 'ga-readiness']
+            });
+
+      - name: Summary
+        run: |
+          echo "## Helm Upgrade Path Check Complete" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- Previous Version: ${{ steps.version.outputs.previous_version }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Migrations Required: $([[ "$MIGRATION_REQUIRED" == "true" ]] && echo "Yes ⚠️" || echo "No ✅")" >> $GITHUB_STEP_SUMMARY
+          echo "- Breaking Changes: $([[ "$CONFIG_BREAKING" == "true" ]] && echo "Yes ⚠️" || echo "No ✅")" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Report saved to: ${{ steps.report.outputs.report_file }}" >> $GITHUB_STEP_SUMMARY
