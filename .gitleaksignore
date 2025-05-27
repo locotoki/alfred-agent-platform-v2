@@ -36,3 +36,26 @@ docs/**/*.md
 .github/workflows/*.yml
 
 # Known false positives - add specific files/lines here as needed
+
+# Backup files (contain old configurations)
+backup/**
+
+# Deploy message with placeholder webhook
+deploy_msg.txt:slack-webhook-url:27
+
+# Keycloak admin secret (base64 encoded "admin" and "change-me")
+k8s/keycloak-admin-secret.yaml:kubernetes-secret-yaml:2
+
+# Documentation with example secrets
+docs/api/schemas/a2a-envelope-schema.md:generic-api-key
+docs/operations/containerization/kubernetes-deployment.md:generic-api-key
+docs/operations/database/database-infrastructure.md:generic-api-key
+docs/operations/monitoring/monitoring-infrastructure.md:generic-api-key
+docs/operations/infrastructure/terraform-configuration.md:generic-api-key
+
+# Archive files with old API keys
+docs/archive/**
+
+# Docker compose files with JWT placeholders
+docker-compose.yml:jwt
+docker-compose/profiles/docker-compose.storage.yml:jwt
