@@ -1,0 +1,11 @@
+groups:
+  - name: bench-nightly
+    rules:
+      - alert: ColdStartSLAExceeded
+        expr: bench_cold_start_p95_ms > 75000
+        for: 15m
+        labels:
+          severity: page
+        annotations:
+          summary: "Cold-start p95 over 75 s"
+          description: "Bench nightly detected p95 of {{ $value }} ms."
