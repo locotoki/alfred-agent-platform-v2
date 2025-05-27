@@ -1,0 +1,23 @@
+name: Stability Freeze Guard
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened, labeled, unlabeled]
+
+jobs:
+  enforce-freeze:
+    if: github.event.pull_request.base.ref == 'main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check freeze window & labels
+        run: |
+          FREEZE_START=$(date -d '2025-07-04 00:00 UTC' +%s)
+          FREEZE_END=$(date -d '2025-07-10 23:59 UTC' +%s)
+          NOW=$(date +%s)
+          if [[ $NOW -ge $FREEZE_START && $NOW -le $FREEZE_END ]]; then
+            echo "🔒  Stability Freeze active"
+            # jq check for P0-fix label
+            if ! echo '${{ toJson(github.event.pull_request.labels) }}' | grep -q '"name":"P0-fix"'; then
+              echo "❌  PR lacks P0-fix label during freeze"; exit 1
+            fi
+          fi
+          echo "✅  Freeze guard passed"

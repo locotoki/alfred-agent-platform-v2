@@ -5,7 +5,6 @@ Ensures dashboards are valid JSON and meet our standards.
 """
 
 import json
-import os
 import sys
 from pathlib import Path
 from typing import Any, Dict, List
