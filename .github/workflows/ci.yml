@@ -159,7 +159,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          lfs: true
+          lfs: false  # Skip LFS due to quota exceeded
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
 
@@ -273,7 +273,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          lfs: true
+          lfs: false  # Skip LFS due to quota exceeded
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
 
