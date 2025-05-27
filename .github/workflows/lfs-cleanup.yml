@@ -1,0 +1,27 @@
+name: LFS Cleanup
+on:
+  workflow_dispatch:
+  schedule:
+    # Run weekly on Sundays at 00:00 UTC
+    - cron: '0 0 * * 0'
+
+jobs:
+  lfs-check:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          lfs: false  # Don't fetch LFS files
+          
+      - name: Check LFS usage
+        run: |
+          echo "=== Current LFS files ==="
+          git lfs ls-files || echo "No LFS files found"
+          
+          echo "=== LFS Storage Info ==="
+          gh api repos/${{ github.repository }} | jq '.size'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
