@@ -35,9 +35,20 @@ jobs:
           echo "MONITOR_SERVICES=${{ github.event.inputs.services || 'alfred-core,model-router,agent-bizops,redis' }}" >> $GITHUB_ENV
 
       - name: Start services
+        env:
+          ALFRED_REGISTRY: ghcr.io/digital-native-ventures
+          ALFRED_VERSION: latest
         run: |
           echo "🚀 Starting services for memory monitoring..."
-          docker compose up -d
+
+          # Create minimal .env file
+          cat > .env << EOF
+          ALFRED_REGISTRY=ghcr.io/digital-native-ventures
+          ALFRED_VERSION=latest
+          EOF
+
+          # Start only the services we're monitoring
+          docker compose up -d ${{ env.MONITOR_SERVICES }}
 
           # Wait for services to be ready
           echo "⏳ Waiting for services to stabilize..."
@@ -161,6 +172,9 @@ jobs:
 
       - name: Cleanup services
         if: always()
+        env:
+          ALFRED_REGISTRY: ghcr.io/digital-native-ventures
+          ALFRED_VERSION: latest
         run: |
           echo "🧹 Cleaning up services..."
           docker compose down -v
