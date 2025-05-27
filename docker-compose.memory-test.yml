@@ -1,0 +1,15 @@
+version: '3.8'
+
+# Override file for memory leak testing - uses standard images instead of custom builds
+services:
+  db-postgres:
+    image: postgres:15.5-alpine
+    build: {}  # Disable build
+
+  db-storage:
+    image: postgres:15.5-alpine
+    build: {}  # Disable build
+
+  db-auth:
+    image: postgres:15.5-alpine
+    build: {}  # Disable build
