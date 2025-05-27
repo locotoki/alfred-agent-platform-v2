@@ -583,7 +583,7 @@ services:
 
   # Database Storage - Using custom patched storage-api that bypasses migrations
   db-storage:
-    image: alfred-custom-storage-api:v0.40.4
+    image: postgres:15.5-alpine  # Temporary fix for GA workflows
     container_name: db-storage
     ports:
       - "5000:5000"

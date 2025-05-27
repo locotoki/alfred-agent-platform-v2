@@ -135,6 +135,7 @@ backend/alfred/ml/retrain_pipeline.py,.py,10853,UNKNOWN
 base-images/healthcheck/healthcheck.sh,.sh,1317,UNKNOWN
 bench/cold_start.sh,.sh,805,UNKNOWN
 bootstrap/init-storage-schema.sh,.sh,446,UNKNOWN
+check-license-gate.sh,.sh,1345,UNKNOWN
 clean-youtube-service.ts,.ts,16421,UNKNOWN
 create-niche-scout-results.js,.js,2574,UNKNOWN
 diagnostics/rca/app.py,.py,5832,UNKNOWN
