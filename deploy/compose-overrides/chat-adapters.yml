@@ -1,0 +1,18 @@
+services:
+  slack-adapter:
+    build: ./adapters/slack
+    env_file: adapters/slack/env.example
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4080/health"]   # stub
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  telegram-adapter:
+    build: ./adapters/telegram
+    env_file: adapters/telegram/env.example
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4090/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
