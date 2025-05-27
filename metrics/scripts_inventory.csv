@@ -35,7 +35,7 @@ agents/social_intel/flows/youtube_flows.py,.py,23014,UNKNOWN
 alfred/__init__.py,.py,59,UNKNOWN
 alfred/adapters/__init__.py,.py,89,UNKNOWN
 alfred/adapters/slack/__init__.py,.py,29,UNKNOWN
-alfred/adapters/slack/tests/test_health.py,.py,1382,UNKNOWN
+alfred/adapters/slack/tests/test_health.py,.py,1368,UNKNOWN
 alfred/adapters/slack/tests/test_webhook.py,.py,9028,UNKNOWN
 alfred/adapters/slack/webhook.py,.py,6815,UNKNOWN
 alfred/agents/__init__.py,.py,419,UNKNOWN
@@ -365,7 +365,7 @@ scripts/tag-agent-core-release.sh,.sh,2685,UNKNOWN
 scripts/tag-ga-release.sh,.sh,6742,UNKNOWN
 scripts/tag-healthcheck-release.sh,.sh,951,UNKNOWN
 scripts/tag-release.sh,.sh,552,UNKNOWN
-scripts/test_dashboards.py,.py,6879,UNKNOWN
+scripts/test_dashboards.py,.py,6869,UNKNOWN
 scripts/update-alert-labels.py,.py,3120,UNKNOWN
 scripts/update-ci-command.sh,.sh,912,UNKNOWN
 scripts/update-healthcheck-binary.sh,.sh,1919,UNKNOWN
@@ -678,8 +678,8 @@ tests/backend/ml/test_trainer_benchmark.py,.py,2366,UNKNOWN
 tests/benchmark/conftest.py,.py,1281,UNKNOWN
 tests/benchmark/test_benchmark_marker.py,.py,712,UNKNOWN
 tests/bizdev/conftest.py,.py,117,UNKNOWN
-tests/bizdev/test_roundtrip.py,.py,1075,UNKNOWN
-tests/bizdev/test_roundtrip_standalone.py,.py,2040,UNKNOWN
+tests/bizdev/test_roundtrip.py,.py,1037,UNKNOWN
+tests/bizdev/test_roundtrip_standalone.py,.py,2026,UNKNOWN
 tests/conftest.py,.py,5218,UNKNOWN
 tests/db/test_connection.py,.py,184,UNKNOWN
 tests/e2e/__init__.py,.py,48,UNKNOWN
@@ -717,7 +717,7 @@ tests/slack_app/test_startup.py,.py,3651,UNKNOWN
 tests/smoke/test_audit_dashboard.py,.py,3557,UNKNOWN
 tests/smoke/test_dependency_inventory.py,.py,2998,UNKNOWN
 tests/smoke/test_dependency_inventory_cron.py,.py,2060,UNKNOWN
-tests/smoke/test_licence_gate.py,.py,3361,UNKNOWN
+tests/smoke/test_licence_gate.py,.py,3284,UNKNOWN
 tests/smoke/test_license_scan.py,.py,5763,UNKNOWN
 tests/smoke/test_orphan_pruned_A1.py,.py,539,UNKNOWN
 tests/smoke/test_orphan_pruned_A2.py,.py,539,UNKNOWN
@@ -731,10 +731,10 @@ tests/smoke/test_slack_alert.py,.py,5544,UNKNOWN
 tests/smoke/test_telegram_adapter.py,.py,2032,UNKNOWN
 tests/smoke/test_vuln_gate.py,.py,6411,UNKNOWN
 tests/smoke/test_vulnerability_scan.py,.py,3271,UNKNOWN
-tests/test_contact_ingest_unit.py,.py,805,UNKNOWN
+tests/test_contact_ingest_unit.py,.py,775,UNKNOWN
 tests/test_cpu.py,.py,1067,UNKNOWN
 tests/test_crm_sync.py,.py,152,UNKNOWN
-tests/test_e2e_bizdev.py,.py,1136,UNKNOWN
+tests/test_e2e_bizdev.py,.py,1122,UNKNOWN
 tests/unit/__init__.py,.py,42,UNKNOWN
 tests/unit/agents/__init__.py,.py,44,UNKNOWN
 tests/unit/agents/financial_tax/__init__.py,.py,42,UNKNOWN

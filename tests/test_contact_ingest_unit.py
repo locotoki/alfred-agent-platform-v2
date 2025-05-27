@@ -1,8 +1,6 @@
 import asyncio
 import json
 import os
-import shutil
-import tempfile
 
 import httpx
 import respx

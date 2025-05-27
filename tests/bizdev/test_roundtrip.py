@@ -12,9 +12,7 @@ BASE_TIMEOUT = int(os.getenv("HARNESS_TIMEOUT", 30))
 def _stack_up():
     """Spin up the BizDev stack for the duration of the session."""
     import atexit
-    import signal
     import subprocess
-    import tempfile
 
     proc = subprocess.Popen(
         ["docker", "compose", "-f", COMPOSE_FILE, "up", "-d"],

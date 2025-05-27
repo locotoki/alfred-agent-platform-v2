@@ -1,6 +1,5 @@
 """Test health endpoints for Slack adapter."""
 
-import pytest
 from fastapi.testclient import TestClient
 
 from alfred.adapters.slack.webhook import app
