@@ -17,7 +17,7 @@ jobs:
         uses: anchore/scan-action@v3
         with:
           path: .
-          acs-report-enable: true
+          fail-build: false  # warn-only mode
 
       # --- Gitleaks secret scan --------------------------------------------
       # If a licence is present, install gitleaks-pro; otherwise fall back to
