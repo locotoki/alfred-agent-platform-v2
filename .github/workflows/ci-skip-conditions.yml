@@ -1,0 +1,49 @@
+name: CI Skip Conditions
+
+on:
+  workflow_call:
+    outputs:
+      skip_heavy_ci:
+        description: "Whether to skip heavy CI jobs"
+        value: ${{ jobs.check-skip.outputs.skip_heavy_ci }}
+
+jobs:
+  check-skip:
+    runs-on: ubuntu-latest
+    outputs:
+      skip_heavy_ci: ${{ steps.check.outputs.skip_heavy_ci }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          
+      - name: Check skip conditions
+        id: check
+        run: |
+          # Check for docs-only label
+          if [[ "${{ contains(github.event.pull_request.labels.*.name, 'docs-only') }}" == "true" ]]; then
+            echo "skip_heavy_ci=true" >> $GITHUB_OUTPUT
+            echo "✅ Docs-only PR detected - will skip heavy CI"
+            exit 0
+          fi
+          
+          # Check if all files are documentation
+          CHANGED_FILES=$(git diff --name-only origin/${{ github.base_ref }}...HEAD || true)
+          SKIP=true
+          
+          for file in $CHANGED_FILES; do
+            # Skip if it's docs, markdown, or GitHub config
+            if [[ ! "$file" =~ ^docs/ ]] && \
+               [[ ! "$file" =~ \.md$ ]] && \
+               [[ ! "$file" =~ ^\.github/ ]]; then
+              SKIP=false
+              break
+            fi
+          done
+          
+          echo "skip_heavy_ci=$SKIP" >> $GITHUB_OUTPUT
+          if [[ "$SKIP" == "true" ]]; then
+            echo "✅ Only documentation/config changes - will skip heavy CI"
+          else
+            echo "❌ Contains code changes - will run full CI"
+          fi

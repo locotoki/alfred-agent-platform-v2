@@ -18,10 +18,13 @@ jobs:
           # Get list of changed files
           CHANGED_FILES=$(git diff --name-only origin/${{ github.base_ref }}...HEAD)
 
-          # Check if all changes are docs or markdown
+          # Check if all changes are docs, markdown, or CI-related
           DOCS_ONLY=true
           for file in $CHANGED_FILES; do
-            if [[ ! "$file" =~ ^docs/ ]] && [[ ! "$file" =~ \.md$ ]]; then
+            if [[ ! "$file" =~ ^docs/ ]] && \
+               [[ ! "$file" =~ \.md$ ]] && \
+               [[ ! "$file" =~ ^\.github/workflows/ ]] && \
+               [[ ! "$file" =~ ^\.github/.*\.yml$ ]]; then
               DOCS_ONLY=false
               break
             fi

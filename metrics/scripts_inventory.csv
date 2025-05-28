@@ -327,6 +327,7 @@ scripts/monitoring/rollout_manager.sh,.sh,4090,UNKNOWN
 scripts/monitoring/telemetry_watch.sh,.sh,2735,UNKNOWN
 scripts/mypy_with_baseline.py,.py,1752,UNKNOWN
 scripts/observe_after_deploy.sh,.sh,403,UNKNOWN
+scripts/patch-ci-for-docs.sh,.sh,2050,UNKNOWN
 scripts/phase8.2-final-checks.sh,.sh,1632,UNKNOWN
 scripts/phase8.2-pre-merge.sh,.sh,3815,UNKNOWN
 scripts/platform-init-hooks/db-storage-fix.sh,.sh,896,UNKNOWN
@@ -338,6 +339,8 @@ scripts/promote-social-intel.sh,.sh,1450,UNKNOWN
 scripts/promote-to-ga-from-branch.sh,.sh,1747,UNKNOWN
 scripts/promote-to-ga-simple.sh,.sh,638,UNKNOWN
 scripts/promote-to-ga.sh,.sh,1320,UNKNOWN
+scripts/recover-services-simple.sh,.sh,1684,UNKNOWN
+scripts/recover-services.sh,.sh,1715,UNKNOWN
 scripts/remove_type_ignores.py,.py,3772,UNKNOWN
 scripts/remove_unused_type_ignores.py,.py,3836,UNKNOWN
 scripts/rollback-canary.sh,.sh,1044,UNKNOWN
@@ -365,6 +368,7 @@ scripts/spring_clean/validate_inventory.py,.py,4439,UNKNOWN
 scripts/sprint4-automation.sh,.sh,2549,UNKNOWN
 scripts/standardize-service-health.sh,.sh,4456,UNKNOWN
 scripts/start-all-dev.sh,.sh,2809,UNKNOWN
+scripts/start-local-services.sh,.sh,1156,UNKNOWN
 scripts/tag-agent-core-release.sh,.sh,2685,UNKNOWN
 scripts/tag-ga-release.sh,.sh,6742,UNKNOWN
 scripts/tag-healthcheck-release.sh,.sh,951,UNKNOWN
