@@ -1,0 +1,19 @@
+name: CI Optimizations
+
+on:
+  pull_request:
+    paths:
+      - 'docs/**'
+      - '*.md'
+      - '.github/workflows/ci-optimizations.yml'
+
+jobs:
+  # For docs-only PRs, create a simple pass status
+  docs-only-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Documentation PR - Skip Heavy CI
+        run: |
+          echo "This is a documentation-only PR"
+          echo "Skipping irrelevant CI checks"
+          echo "✅ Documentation changes don't require full CI suite"
