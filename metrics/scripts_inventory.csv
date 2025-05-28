@@ -122,6 +122,7 @@ app/__init__.py,.py,0,UNKNOWN
 app/agent_bizdev_health.py,.py,1173,UNKNOWN
 app/health_server.sh,.sh,821,UNKNOWN
 arch/spring_clean/classify_files.py,.py,5042,UNKNOWN
+authenticate-ghcr.sh,.sh,899,UNKNOWN
 backend/alfred/alerts/ranker.py,.py,13824,UNKNOWN
 backend/alfred/alerts/rules.py,.py,10253,UNKNOWN
 backend/alfred/alerts/snooze.py,.py,12333,UNKNOWN
@@ -139,6 +140,7 @@ clean-youtube-service.ts,.ts,16421,UNKNOWN
 create-niche-scout-results.js,.js,2574,UNKNOWN
 diagnostics/rca/app.py,.py,5832,UNKNOWN
 diagnostics/rca/fix_app.py,.py,6833,UNKNOWN
+docker-login-ghcr.sh,.sh,841,UNKNOWN
 docs/archive/root-cleanup-20250513/clean-youtube-service.ts,.ts,16421,UNKNOWN
 docs/archive/root-cleanup-20250513/create-niche-scout-results.js,.js,2574,UNKNOWN
 docs/archive/root-cleanup-20250513/direct-youtube-api-test.js,.js,8741,UNKNOWN
@@ -168,6 +170,7 @@ docs/tools/update_metadata.py,.py,10857,UNKNOWN
 eval/test_eval_loop.py,.py,308,UNKNOWN
 fix-formatting.sh,.sh,219,UNKNOWN
 fix-port-issue.js,.js,7362,UNKNOWN
+fix-slack-gateway.js,.js,462,UNKNOWN
 fix_class_methods.py,.py,1379,UNKNOWN
 fix_docstrings.py,.py,1827,UNKNOWN
 fix_e501.py,.py,1981,UNKNOWN
@@ -217,12 +220,15 @@ perf/locustfile.py,.py,450,UNKNOWN
 perf/mock_performance_results.py,.py,4150,UNKNOWN
 perf/parse_results.py,.py,736,UNKNOWN
 perf/run.sh,.sh,158,UNKNOWN
+phase2-rotate-redeploy.sh,.sh,3207,UNKNOWN
 port-fix-inject.js,.js,0,UNKNOWN
 pre_freeze_tests.sh,.sh,7540,UNKNOWN
 promote-ga-simple.sh,.sh,2336,UNKNOWN
 promote-rc-to-ga.sh,.sh,2697,UNKNOWN
 rag-gateway/src/app.py,.py,1148,UNKNOWN
 remediation/__init__.py,.py,228,UNKNOWN
+restart-after-env-update.sh,.sh,540,UNKNOWN
+rotate-slack-creds.sh,.sh,2676,UNKNOWN
 run-black-format.py,.py,2439,UNKNOWN
 run-simplified-mc.sh,.sh,2005,UNKNOWN
 scripts/add_mypy_ignores.py,.py,2879,UNKNOWN
@@ -651,6 +657,7 @@ services/social-intel/tests/unit/test_features.py,.py,4903,UNKNOWN
 services/social-intel/tests/unit/test_metrics.py,.py,1590,UNKNOWN
 services/streamlit-chat/streamlit_chat_ui.py,.py,309,UNKNOWN
 setup-dev-env.sh,.sh,3993,UNKNOWN
+setup-ghcr-auth.sh,.sh,1169,UNKNOWN
 shared/styles/design-tokens.js,.js,7015,UNKNOWN
 simplified-youtube-service.ts,.ts,16413,UNKNOWN
 skip_ci_sc320.sh,.sh,653,UNKNOWN
@@ -758,6 +765,8 @@ tests/validation/conftest.py,.py,520,UNKNOWN
 tests/validation/test_validation_marker.py,.py,294,UNKNOWN
 tests/workload/test_cli.py,.py,4166,UNKNOWN
 update-health-endpoints.sh,.sh,1419,UNKNOWN
+update-keycloak-secret.sh,.sh,451,UNKNOWN
+update-slack-tokens.sh,.sh,715,UNKNOWN
 validate-orchestration.sh,.sh,2242,UNKNOWN
 verify-port-config.sh,.sh,8060,UNKNOWN
 whatsapp-adapter/src/app.py,.py,1318,UNKNOWN
