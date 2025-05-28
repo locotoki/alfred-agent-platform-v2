@@ -14,9 +14,9 @@ jobs:
 
       - name: Measure cold-start
         id: bench
-        run:  < /dev/null |
+        run: |
           START=$(date +%s)
-          docker compose -f bench.compose.yml up -d --no-ansi --no-log-prefix
+          docker compose -f bench.compose.yml up -d
           END=$(date +%s)
           echo "duration=$((END-START))" >> $GITHUB_OUTPUT
 
