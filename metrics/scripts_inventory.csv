@@ -269,6 +269,7 @@ scripts/find_orphan_candidates.py,.py,1342,UNKNOWN
 scripts/fix-agent-rag-only.sh,.sh,1300,UNKNOWN
 scripts/fix-agent-rag-service.sh,.sh,1910,UNKNOWN
 scripts/fix-auth-roles.sh,.sh,1993,UNKNOWN
+scripts/fix-ci-failures.sh,.sh,1505,UNKNOWN
 scripts/fix-clean-healthchecks.sh,.sh,1875,UNKNOWN
 scripts/fix-db-storage.sh,.sh,5164,UNKNOWN
 scripts/fix-dockerfile-healthcheck.sh,.sh,3053,UNKNOWN
