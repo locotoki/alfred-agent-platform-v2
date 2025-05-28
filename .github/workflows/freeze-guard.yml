@@ -2,22 +2,49 @@ name: Stability Freeze Guard
 on:
   pull_request_target:
     types: [opened, synchronize, reopened, labeled, unlabeled]
+  workflow_dispatch:        # 👈 manual trigger for dry-runs
+    inputs:
+      simulate_date:
+        description: "YYYY-MM-DD for test only (defaults to today)"
+        required: false
+        type: string
 
 jobs:
   enforce-freeze:
-    if: github.event.pull_request.base.ref == 'main'
+    if: github.event_name == 'pull_request_target' && github.event.pull_request.base.ref == 'main' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     steps:
       - name: Check freeze window & labels
         run: |
+          # Get current date or use simulation date
+          NOW=$(date -u +%Y-%m-%d)
+          if [[ -n "${{ inputs.simulate_date }}" ]]; then
+            echo "🔬  Simulation mode for ${{ inputs.simulate_date }}"
+            NOW="${{ inputs.simulate_date }}"
+          fi
+
+          # Convert NOW to timestamp for comparison
+          NOW_TS=$(date -d "$NOW 12:00 UTC" +%s)
           FREEZE_START=$(date -d '2025-07-04 00:00 UTC' +%s)
           FREEZE_END=$(date -d '2025-07-10 23:59 UTC' +%s)
-          NOW=$(date +%s)
-          if [[ $NOW -ge $FREEZE_START && $NOW -le $FREEZE_END ]]; then
-            echo "🔒  Stability Freeze active"
-            # jq check for P0-fix label
-            if ! echo '${{ toJson(github.event.pull_request.labels) }}' | grep -q '"name":"P0-fix"'; then
-              echo "❌  PR lacks P0-fix label during freeze"; exit 1
+
+          # Check if we're in the freeze window
+          if [[ $NOW_TS -ge $FREEZE_START && $NOW_TS -le $FREEZE_END ]]; then
+            echo "🔒  Stability Freeze active (date: $NOW)"
+
+            # For workflow_dispatch, just show status
+            if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+              echo "📋  Simulation: Would block PRs without P0-fix label"
+              exit 0
             fi
+
+            # For PRs, check for P0-fix label
+            if ! echo '${{ toJson(github.event.pull_request.labels) }}' | grep -q '"name":"P0-fix"'; then
+              echo "❌  PR lacks P0-fix label during freeze"
+              echo "    Add the P0-fix label to allow merge during freeze period"
+              exit 1
+            fi
+            echo "✅  PR has P0-fix label - allowed during freeze"
+          else
+            echo "✅  Outside freeze window (date: $NOW) – guard passed"
           fi
-          echo "✅  Freeze guard passed"
