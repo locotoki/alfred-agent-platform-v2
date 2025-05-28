@@ -1,0 +1,17 @@
+groups:
+- name: ga-hardening
+  rules:
+    - alert: HighLatencyP95
+      expr: histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m])) > 0.75
+      for: 10m
+      labels: {severity: critical}
+      annotations:
+        summary: "p95 API latency > 750 ms"
+    - alert: ContainerRestarts
+      expr: increase(container_restart_count_total[10m]) > 3
+      for: 5m
+      labels: {severity: warning}
+    - alert: Disk80Percent
+      expr: (node_filesystem_avail_bytes / node_filesystem_size_bytes) < 0.20
+      for: 15m
+      labels: {severity: warning}
