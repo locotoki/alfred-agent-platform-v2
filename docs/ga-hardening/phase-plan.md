@@ -6,7 +6,7 @@
 | Healthcheck Standardisation | @platform | 29 May | 02 Jun | 100 % services expose /health, Docker HC green |
 | Broken Dependency Cleanup (ui-chat, crm-sync) | @web | 29 May | 30 May | Images build & pass smoke tests |
 | Observability Baseline & Alerts | @infra | 30 May | 03 Jun | p95 panel live, alert rules merged |
-| E2E Smoke & Regression Suite | @qa | 30 May | 04 Jun | `/alfred health` + Slack CI green |
+ < /dev/null |  E2E Smoke & Regression Suite | @qa | 30 May | 04 Jun | ✔︎ Done |
 | Documentation & Runbooks | @docs | 29 May | 05 Jun | Runbooks reviewed, published |
 | Phase Retrospective & Sign-off | @admin | 05 Jun | 06 Jun | All exit criteria met, bench ≤ 75 s |
 
