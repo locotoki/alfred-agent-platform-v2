@@ -708,6 +708,9 @@ tests/e2e/test_review_contract.py,.py,1002,UNKNOWN
 tests/e2e/test_slack_integration.py,.py,3099,UNKNOWN
 tests/e2e/test_smoke.py,.py,3161,UNKNOWN
 tests/e2e/tests/utils.ts,.ts,8081,UNKNOWN
+tests/imports/__init__.py,.py,60,UNKNOWN
+tests/imports/test_crm_sync_import.py,.py,497,UNKNOWN
+tests/imports/test_ui_chat_import.py,.py,574,UNKNOWN
 tests/ingest/test_chunker.py,.py,171,UNKNOWN
 tests/ingest/test_embedder.py,.py,263,UNKNOWN
 tests/integration/__init__.py,.py,49,UNKNOWN
