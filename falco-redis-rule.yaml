@@ -1,0 +1,7 @@
+- rule: Redis Dangerous Commands
+  desc: Detect CONFIG / SLAVEOF / MODULE commands against redis-server
+  condition: evt.type=execve and proc.name="redis-server" and
+             (args contains "CONFIG" or args contains "SLAVEOF" or args contains "MODULE")
+  output: "⚠️  Redis dangerous command: %proc.cmdline (user=%user.name container=%container.id)"
+  priority: WARNING
+  tags: [security, redis]
