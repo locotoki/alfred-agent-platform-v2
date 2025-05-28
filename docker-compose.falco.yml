@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  falco:
+    image: falcosecurity/falco:latest
+    container_name: falco
+    privileged: true
+    volumes:
+      - /var/run/docker.sock:/host/var/run/docker.sock:ro
+      - /proc:/host/proc:ro
+      - /boot:/host/boot:ro
+      - /lib/modules:/host/lib/modules:ro
+      - /usr:/host/usr:ro
+      - ./falco-redis-rule.yaml:/etc/falco/rules.d/redis-security.yaml:ro
+    environment:
+      - FALCO_BPF_PROBE=""
+    command: ["/usr/bin/falco", "-o", "log_stderr=true", "-o", "log_syslog=false", "-o", "log_level=info", "-r", "/etc/falco/rules.d/redis-security.yaml"]
+    networks:
+      - alfred-network
+    restart: unless-stopped

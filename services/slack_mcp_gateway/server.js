@@ -128,7 +128,7 @@ slack.command('/alfred', async ({ command, ack, say }) => {
     // Send initial acknowledgment to user
     await say({
       text: `Processing your request "${command.text}"...`,
-      thread_ts: timestamp.toString()
+      // thread_ts: timestamp.toString() // Disabled - causes invalid_thread_ts error
     });
 
   } catch (error) {
@@ -198,7 +198,21 @@ async function handleRedisResponses() {
 // Process individual response
 async function processResponse(message) {
   try {
-    const { id: messageId, message: data } = message;
+    const { id: messageId, message: fields } = message;
+
+    // Parse the data field if it exists
+    let data;
+    if (fields.data) {
+      try {
+        data = JSON.parse(fields.data);
+      } catch (e) {
+        logger.error('Failed to parse response data', { error: e.message, data: fields.data });
+        return;
+      }
+    } else {
+      data = fields;
+    }
+
     const requestId = data.request_id;
 
     logger.info('Processing response', { messageId, requestId });
@@ -215,7 +229,7 @@ async function processResponse(message) {
     await slack.client.chat.postMessage({
       channel: metadata.channel_id,
       text: data.text || 'Response received',
-      thread_ts: metadata.timestamp,
+      // thread_ts: metadata.timestamp, // Disabled - not using threading for now
       blocks: data.blocks ? JSON.parse(data.blocks) : undefined
     });
 

@@ -1,0 +1,32 @@
+- rule: Redis Dangerous Commands
+  desc: Detect dangerous Redis commands that could indicate compromise
+  condition: >
+    container.name = "redis" and
+    spawned_process and
+    (
+      proc.cmdline contains "SLAVEOF" or
+      proc.cmdline contains "REPLICAOF" or
+      proc.cmdline contains "CONFIG" or
+      proc.cmdline contains "MODULE" or
+      proc.cmdline contains "FLUSHDB" or
+      proc.cmdline contains "FLUSHALL"
+    )
+  output: >
+    Dangerous Redis command detected (container=%container.name command=%proc.cmdline user=%user.name)
+  priority: CRITICAL
+  tags: [redis, security, persistence]
+
+- rule: Redis Unauthorized Connection
+  desc: Detect connections to Redis from unexpected sources
+  condition: >
+    container.name = "redis" and
+    inbound and
+    fd.sport = 6379 and
+    not fd.cip in (container_redis_allowed_ips)
+  output: >
+    Unauthorized Redis connection attempt (container=%container.name connection=%fd.cip:%fd.cport->%fd.sip:%fd.sport)
+  priority: WARNING
+  tags: [redis, network, security]
+
+- list: container_redis_allowed_ips
+  items: ["172.18.0.0/16", "127.0.0.1"]

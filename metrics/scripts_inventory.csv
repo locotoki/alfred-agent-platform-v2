@@ -604,11 +604,11 @@ services/slack_app/test_tokens.py,.py,1456,UNKNOWN
 services/slack_app/verify.py,.py,3360,UNKNOWN
 services/slack_mcp_gateway/__init__.py,.py,225,UNKNOWN
 services/slack_mcp_gateway/bolt_socket.py,.py,3096,UNKNOWN
-services/slack_mcp_gateway/echo_agent.py,.py,7503,UNKNOWN
+services/slack_mcp_gateway/echo_agent.py,.py,5199,UNKNOWN
 services/slack_mcp_gateway/redis_bus.py,.py,4469,UNKNOWN
 services/slack_mcp_gateway/responder.py,.py,4813,UNKNOWN
 services/slack_mcp_gateway/run-echo-agent.sh,.sh,824,UNKNOWN
-services/slack_mcp_gateway/server.js,.js,7902,UNKNOWN
+services/slack_mcp_gateway/server.js,.js,8309,UNKNOWN
 services/slack_mcp_gateway/tests/__init__.py,.py,0,UNKNOWN
 services/slack_mcp_gateway/tests/test_translator.py,.py,4899,UNKNOWN
 services/slack_mcp_gateway/translator.py,.py,1818,UNKNOWN
