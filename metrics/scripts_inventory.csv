@@ -261,6 +261,7 @@ scripts/compose-health-check.sh,.sh,1559,UNKNOWN
 scripts/consolidate-docker-compose.sh,.sh,4070,UNKNOWN
 scripts/create-guardrail-pr.sh,.sh,2838,UNKNOWN
 scripts/create-metrics-exporter-pr.sh,.sh,3031,UNKNOWN
+scripts/create-runbook-workflow.sh,.sh,3905,UNKNOWN
 scripts/cross-compile.sh,.sh,907,UNKNOWN
 scripts/deploy-diagnostics-staging.sh,.sh,1354,UNKNOWN
 scripts/deploy-slack-mcp-staging.sh,.sh,2279,UNKNOWN
@@ -273,6 +274,7 @@ scripts/find_orphan_candidates.py,.py,1342,UNKNOWN
 scripts/fix-agent-rag-only.sh,.sh,1300,UNKNOWN
 scripts/fix-agent-rag-service.sh,.sh,1910,UNKNOWN
 scripts/fix-auth-roles.sh,.sh,1993,UNKNOWN
+scripts/fix-bench-compose.sh,.sh,1951,UNKNOWN
 scripts/fix-ci-failures.sh,.sh,1505,UNKNOWN
 scripts/fix-clean-healthchecks.sh,.sh,1875,UNKNOWN
 scripts/fix-db-storage.sh,.sh,5164,UNKNOWN
@@ -299,6 +301,7 @@ scripts/fix_youtube_tests.py,.py,2882,UNKNOWN
 scripts/format-codebase.sh,.sh,708,UNKNOWN
 scripts/format-with-black.sh,.sh,740,UNKNOWN
 scripts/format.sh,.sh,1375,UNKNOWN
+scripts/ga-hardening-retrospective.sh,.sh,1850,UNKNOWN
 scripts/gen_audit_dashboard.py,.py,7018,UNKNOWN
 scripts/gen_debt_velocity.py,.py,822,UNKNOWN
 scripts/gen_dependency_inventory.py,.py,8457,UNKNOWN
