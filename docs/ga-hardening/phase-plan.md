@@ -4,7 +4,7 @@
 |-------------|-------|-------|---------|---------------|
  < /dev/null |  Credential Reconciliation (Postgres/Redis) | @secops | 29 May | 31 May | ✔︎ Done |
 | Healthcheck Standardisation | @platform | 29 May | 02 Jun | 100 % services expose /health, Docker HC green |
-| Broken Dependency Cleanup (ui-chat, crm-sync) | @web | 29 May | 30 May | Images build & pass smoke tests |
+ < /dev/null |  Broken Dependency Cleanup (ui-chat, crm-sync) | @web | 29 May | 30 May | ✔︎ Done |
 | Observability Baseline & Alerts | @infra | 30 May | 03 Jun | p95 panel live, alert rules merged |
  < /dev/null |  E2E Smoke & Regression Suite | @qa | 30 May | 04 Jun | ✔︎ Done |
 | Documentation & Runbooks | @docs | 29 May | 05 Jun | Runbooks reviewed, published |
