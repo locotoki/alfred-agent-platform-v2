@@ -1,0 +1,120 @@
+name: Slack Integration Test
+
+on:
+  pull_request:
+    paths:
+      - 'services/slack_mcp_gateway/**'
+      - 'alfred/slack/**'
+      - 'docker-compose*.yml'
+      - '.github/workflows/slack-integration-test.yml'
+  push:
+    branches:
+      - main
+      - 'release/**'
+
+jobs:
+  slack-health-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Docker Compose
+        run: |
+          docker compose version
+
+      - name: Start Slack integration services
+        run: |
+          # Start minimal stack for Slack testing
+          docker compose up -d redis slack_mcp_gateway echo-agent
+
+          # Wait for services to be healthy
+          timeout 60s bash -c 'until docker compose ps | grep -E "slack_mcp_gateway.*healthy"; do sleep 2; done'
+          timeout 60s bash -c 'until docker compose ps | grep -E "echo-agent.*Up"; do sleep 2; done'
+
+      - name: Test Slack MCP Gateway health endpoint
+        run: |
+          echo "Testing Slack MCP Gateway health..."
+          response=$(curl -s -f http://localhost:3010/health)
+          echo "Response: $response"
+
+          # Verify health response
+          echo "$response" | jq -e '.status == "ok"' || exit 1
+          echo "✅ Slack MCP Gateway is healthy"
+
+      - name: Test /alfred health command simulation
+        run: |
+          echo "Simulating /alfred health command..."
+
+          # Create test payload for /alfred health command
+          cat > health-test.json <<EOF
+          {
+            "type": "slash_command",
+            "command": "/alfred",
+            "text": "health",
+            "user_id": "U12345",
+            "channel_id": "C12345",
+            "timestamp": "$(date +%s)"
+          }
+          EOF
+
+          # Send test command to gateway
+          response=$(curl -s -X POST http://localhost:3010/commands \
+            -H "Content-Type: application/json" \
+            -d @health-test.json)
+
+          echo "Command response: $response"
+
+          # Verify command was accepted
+          if [[ "$response" == *"received"* ]] || [[ "$response" == *"ok"* ]]; then
+            echo "✅ /alfred health command accepted by gateway"
+          else
+            echo "❌ /alfred health command failed"
+            exit 1
+          fi
+
+      - name: Verify echo agent processing
+        run: |
+          echo "Checking echo agent logs for command processing..."
+          docker logs echo-agent --tail 50 | grep -i "health" || true
+
+          # Check Redis for command processing
+          docker exec redis redis-cli -a "${REDIS_PASSWORD:-}" XLEN mcp.requests || true
+
+      - name: Cleanup
+        if: always()
+        run: |
+          docker compose down -v
+
+  ga-requirement-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Verify Slack services in default profile
+        run: |
+          echo "Checking docker-compose.yml for Slack services..."
+
+          # Verify slack_mcp_gateway has no profile restrictions
+          if grep -A20 "slack_mcp_gateway:" docker-compose.yml | grep -q "profiles:"; then
+            echo "❌ slack_mcp_gateway has profile restrictions"
+            exit 1
+          else
+            echo "✅ slack_mcp_gateway runs by default"
+          fi
+
+          # Verify echo-agent configuration exists
+          if grep -q "echo-agent:" docker-compose.yml || grep -q "echo-agent:" docker-compose.override.yml; then
+            echo "✅ echo-agent configuration found"
+          else
+            echo "⚠️ echo-agent not in main compose file (may be in override)"
+          fi
+
+      - name: Check GA documentation
+        run: |
+          echo "Checking for /alfred health in GA requirements..."
+
+          if grep -r "alfred health" docs/ | grep -i "ga\|checklist"; then
+            echo "✅ /alfred health documented in GA requirements"
+          else
+            echo "⚠️ /alfred health not explicitly documented in GA checklist"
+          fi

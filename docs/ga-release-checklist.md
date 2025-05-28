@@ -11,6 +11,12 @@ Target Date: **July 11, 2025**
 - [ ] All P0/P1 bugs resolved
 - [ ] Code freeze declared
 
+### Integration Requirements
+- [ ] `/alfred health` command returns success within 5 seconds
+- [ ] Slack MCP Gateway health endpoint responds with `{"status":"ok"}`
+- [ ] Echo agent processes commands from Redis stream
+- [ ] All Slack integration tests passing in CI
+
 ### Documentation
 - [ ] Production deployment guide complete
 - [ ] API documentation up to date
