@@ -140,6 +140,7 @@ base-images/healthcheck/healthcheck.sh,.sh,1317,UNKNOWN
 bench/cold_start.sh,.sh,805,UNKNOWN
 bootstrap/init-storage-schema.sh,.sh,446,UNKNOWN
 clean-youtube-service.ts,.ts,16421,UNKNOWN
+complete-runbooks.sh,.sh,6510,UNKNOWN
 create-niche-scout-results.js,.js,2574,UNKNOWN
 diagnostics/rca/app.py,.py,5832,UNKNOWN
 diagnostics/rca/fix_app.py,.py,6833,UNKNOWN
