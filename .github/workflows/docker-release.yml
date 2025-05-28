@@ -95,6 +95,8 @@ jobs:
           else
             echo "tag=${{ github.ref_name }}" >> $GITHUB_OUTPUT
           fi
+          # Convert repository name to lowercase for Docker registry
+          echo "repository=$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')" >> $GITHUB_OUTPUT
 
       - name: Build & push ${{ matrix.name }}
         uses: docker/build-push-action@v5
@@ -102,7 +104,7 @@ jobs:
           provenance: false
           sbom: false
           push: true
-          tags: ghcr.io/${{ github.repository }}/${{ matrix.name }}:${{ steps.tag.outputs.tag }}
+          tags: ghcr.io/${{ steps.tag.outputs.repository }}/${{ matrix.name }}:${{ steps.tag.outputs.tag }}
           file: ${{ matrix.dockerfile }}
           context: ${{ matrix.context }}
           platforms: linux/amd64
