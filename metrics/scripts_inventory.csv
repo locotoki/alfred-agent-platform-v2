@@ -340,6 +340,7 @@ scripts/promote-social-intel.sh,.sh,1450,UNKNOWN
 scripts/promote-to-ga-from-branch.sh,.sh,1747,UNKNOWN
 scripts/promote-to-ga-simple.sh,.sh,638,UNKNOWN
 scripts/promote-to-ga.sh,.sh,1320,UNKNOWN
+scripts/reconcile-credentials.sh,.sh,8206,UNKNOWN
 scripts/recover-services-simple.sh,.sh,1684,UNKNOWN
 scripts/recover-services.sh,.sh,1715,UNKNOWN
 scripts/remove_type_ignores.py,.py,3772,UNKNOWN
@@ -391,6 +392,7 @@ scripts/utils/setup_cron_jobs.sh,.sh,778,UNKNOWN
 scripts/validate-env.sh,.sh,26987,UNKNOWN
 scripts/validate-health-templates.sh,.sh,3214,UNKNOWN
 scripts/validate-secrets.sh,.sh,1159,UNKNOWN
+scripts/verify-no-auth-failures.sh,.sh,4069,UNKNOWN
 scripts/wait_healthy.sh,.sh,624,UNKNOWN
 services/__init__.py,.py,23,UNKNOWN
 services/_template/app/main.py,.py,2963,UNKNOWN
