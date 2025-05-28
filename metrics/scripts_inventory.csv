@@ -302,6 +302,7 @@ scripts/format-codebase.sh,.sh,708,UNKNOWN
 scripts/format-with-black.sh,.sh,740,UNKNOWN
 scripts/format.sh,.sh,1375,UNKNOWN
 scripts/ga-hardening-retrospective.sh,.sh,1850,UNKNOWN
+scripts/ga-release-v3.sh,.sh,1454,UNKNOWN
 scripts/gen_audit_dashboard.py,.py,7018,UNKNOWN
 scripts/gen_debt_velocity.py,.py,822,UNKNOWN
 scripts/gen_dependency_inventory.py,.py,8457,UNKNOWN
