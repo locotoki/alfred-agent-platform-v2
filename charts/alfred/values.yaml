@@ -82,7 +82,7 @@ slackAdapter:
       cpu: "100m"
 
 slackMcpGateway:
-  enabled: false
+  enabled: true  # Required for GA - /alfred health command support
   image:
     repository: ghcr.io/locotoki/slack-mcp-gateway
     tag: latest
@@ -112,7 +112,7 @@ slackMcpGateway:
     SLACK_SIGNING_SECRET: ""
     REDIS_PASSWORD: ""
   echoAgent:
-    enabled: false
+    enabled: true  # Required for GA - processes /alfred commands
 
 slackApp:
   enabled: false
