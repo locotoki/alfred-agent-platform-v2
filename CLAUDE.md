@@ -1,15 +1,19 @@
 # CLAUDE.md — Implementer Guide for **Claude Code**
 
 *alfred‑agent‑platform‑v2*
-*Rewritten: 26 May 2025 · Europe/Lisbon*
+*Last Updated: 28 May 2025 · Security Hardening Complete*
 
 ---
 
-## 0 · Why this rewrite?
+## 0 · Session Persistence & Context
 
-The original CLAUDE.md dated **19 May 2025** was authored for a broader scope.  With the **GA scope trim** (Core Slice → v3.0.0 on 11 Jul 2025) the workflow, gates, and escalation paths have tightened.  This version supersedes the prior document.
+**IMPORTANT**: This file is the source of truth for Claude Code sessions. Always check this file at session start for:
+- Recent incidents and fixes
+- Current branch and PR status
+- Pending tasks and blockers
+- Security requirements
 
-> **Prime Directive** — Deliver implementation tasks & automation **within GA scope**; never merge if gates aren’t green; escalate blockers promptly; confirm next steps with **@alfred‑architect‑o3** when unclear.
+> **Prime Directive** — Deliver implementation tasks & automation **within GA scope**; never merge if gates aren't green; escalate blockers promptly; confirm next steps with **@alfred‑architect‑o3** when unclear.
 
 ---
 
@@ -17,25 +21,57 @@ The original CLAUDE.md dated **19 May 2025** was authored for a broader scop
 
 | You are…                                                    | You **must**                                                                                                                                                                             | You **must not**                                                                                                             |
 | ----------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
-| **Claude Code** — non‑interactive implementer / task runner | • Automate CI, scripts, dashboards, chore PRs.• Follow acceptance criteria verbatim.• Tag **@alfred‑architect‑o3** for review + next‑step confirmation.• Escalate blockers within ≤ 1 h. | ✗ Push directly to `main`.✗ Change GA scope or design (ADR job of Architect).✗ Leave failing CI for Architect to figure out. |
+| **Claude Code** — non‑interactive implementer / task runner | • Automate CI, scripts, dashboards, chore PRs.• Follow acceptance criteria verbatim.• Tag **@alfred‑architect‑o3** for review + next‑step confirmation.• Escalate blockers within ≤ 1 h. | ✗ Push directly to `main`.✗ Change GA scope or design (ADR job of Architect).✗ Leave failing CI for Architect to figure out. |
 
-Scope limited to **GA‑blocking** tasks only; anything labelled `nice‑to‑have` is out‑of‑bounds.
-
----
-
-## 2 · GA‑Critical Work Streams (you’ll touch most)
-
-| Stream                 | Owner                      | Key Issues                                    |
-| ---------------------- | -------------------------- | --------------------------------------------- |
-| **Observability slim** | Claude Code                | #302 – p95 latency & error‑rate panel + alert |
-| **DX Fast‑Loop**       | o3 & Maintainers (support) | container build tweaks, `alfred up` script    |
-| **CI / Licence‑Gate**  | Claude Code                | pipeline tweaks, board‑sync automation        |
-
-Track issues via GitHub Project **“GA Core Slice”** (link in README).
+Scope limited to **GA‑blocking** tasks only; anything labelled `nice‑to‑have` is out‑of‑bounds.
 
 ---
 
-## 3 · End‑to‑End Workflow
+## 2 · Recent Critical Updates (May 2025)
+
+### 🚨 Security Incident Response Complete
+- **Redis Compromise** (2025-05-28): External slave connection blocked
+- **Fixes Applied**:
+  - ✅ Redis authentication enabled (`requirepass`)
+  - ✅ Dangerous commands disabled (SLAVEOF, CONFIG, MODULE, FLUSH*)
+  - ✅ All credentials rotated (Redis, Slack, JWT, Keycloak)
+  - ✅ Falco monitoring rules deployed
+  - ✅ Nightly Trivy scans configured
+- **PR #550**: Security hardening merged to main
+
+### 🔧 Slack Integration Fixed
+- **Components**:
+  - `slack_mcp_gateway`: Bridges Slack ↔ Redis streams
+  - `echo-agent`: Processes `/alfred` commands
+  - Redis Streams: `mcp.requests` → `mcp.responses`
+- **Documentation**: Complete guides in `docs/slack-integration-*.md`
+
+### 📋 Current Environment Requirements
+```bash
+# Required in .env
+REDIS_PASSWORD=<secure-password>  # No default!
+SLACK_APP_TOKEN=xapp-...
+SLACK_BOT_TOKEN=xoxb-...
+GHCR_PAT=ghp_...  # For ghcr.io pulls
+```
+
+---
+
+## 3 · GA‑Critical Work Streams
+
+| Stream                 | Owner                      | Status | Key Issues |
+| ---------------------- | -------------------------- | ------ | ---------- |
+| **Security Hardening** | Claude Code                | ✅ Complete | #550 merged |
+| **Slack Integration**  | Claude Code                | ✅ Fixed | Echo agent operational |
+| **Observability slim** | Claude Code                | 🔄 Active | #302 – p95 latency panel |
+| **DX Fast‑Loop**       | o3 & Maintainers          | 📋 Planned | `alfred up` script |
+| **CI / Licence‑Gate**  | Claude Code                | ✅ Pass | All gates green |
+
+Track issues via GitHub Project **"GA Core Slice"** (link in README).
+
+---
+
+## 4 · Standard Workflow
 
 ```mermaid
 graph LR
@@ -48,173 +84,181 @@ graph LR
 ```
 
 ### Branch Naming
-
-`<scope>/<issue-id>-<slug>`  → e.g. `obs/302-latency-panel`
+- Security: `sec/<issue>-<description>` (e.g., `sec/redis-incident-hardening`)
+- Features: `<scope>/<issue-id>-<slug>` (e.g., `obs/302-latency-panel`)
 
 ### Commit Style
-
 Conventional Commits: `feat(observability): add p95 latency panel (Closes #302)`
 
 ### PR Body Template
-
 ````
 ✅ Execution Summary
-- Bullet what you did…
+- <What was done>
 
 🧪 Output / Logs
 ```console
-# ≤ 30 lines of key output
-````
+# Key output (≤ 30 lines)
+```
 
 🧾 Checklist
-
-* Acceptance criteria met? ✅/❌
-* CI green? ✅/❌
-* Docs updated? ✅/❌
+- [ ] Acceptance criteria met
+- [ ] CI green
+- [ ] Docs updated
+- [ ] Security scan passed
 
 📍 Next Required Action
-
-* Ready for @alfred‑architect‑o3 review
-
+- Ready for @alfred‑architect‑o3 review
 ````
 
 ### Quality Gates (A–E)
-A️⃣ **CI** green  B️⃣ **Licence‑Gate** 0 issues  C️⃣ **≥ 2 approvals** (1 maintainer)  D️⃣ **No unresolved comments**  E️⃣ **Fresh rebase** onto `main`.
-
-### Merge & Clean
-*Use **Squash & Merge** in GitHub UI → delete remote branch → `git branch -d` locally.*
-
----
-
-## 4 · Blocker Escalation Protocol
-| SLA | What counts as blocker? | Action |
-|-----|-------------------------|--------|
-| ≤ 1 h | CI infra down, permission denied, unclear AC | Slack `#maintainers` + tag **@alfred‑architect‑o3** |
-| ≤ 4 h | External API quota, dependency CVE, design ambiguity | Open GitHub Discussion “Blocker: …”, assign Architect |
-
-**Do not** let a task idle > 4 h on unknowns—always ask.
+A️⃣ **CI** green
+B️⃣ **Licence‑Gate** 0 issues
+C️⃣ **Security scan** passed
+D️⃣ **≥ 2 approvals** (1 maintainer)
+E️⃣ **Fresh rebase** onto `main`
 
 ---
 
-## 5 · Local Dev & CI Commands
-```bash
-# One‑shot local stack
-alfred up
-
-# Run Tier‑0 test suite (< 2 min)
-make pre-commit && pytest -m core -q
-
-# Full CI mirror (< 8 min)
-make ci-full
-
-# Licence gate locally
-scripts/licence_scan.py
-````
-
----
-
-## 6 · Board & Status Automation
-
-### update‑status workflow
-
-Auto‑bumps `status.json` when merging PRs touching GA epic labels.  If the Action fails:
+## 5 · Essential Commands
 
 ```bash
-python scripts/update_status.py
-git commit -am "chore: refresh status beacon"
-```
+# Session start checklist
+git status                          # Check current branch
+docker-compose ps                   # Verify services running
+env | grep -E "REDIS|SLACK|GHCR"  # Check required env vars
 
-### board‑sync script (`workflow/cli/board_sync.sh`)
+# Development
+alfred up                           # Start local stack
+make pre-commit                     # Run pre-commit checks
+pytest -m core -q                   # Quick tests
+make ci-full                        # Full CI simulation
 
-Moves issue cards to **Done** after merge.  Dry‑run with `--dry-run`.
+# Slack integration
+docker-compose up -d redis slack_mcp_gateway echo-agent
+docker logs echo-agent --tail 20    # Check agent status
 
----
-
-## 7 · Coding Standards
-
-* **Python 3.12**, Ruff/Black/isort enforced.
-* No new deps w/o Architect approval.
-* Dashboard JSON validated by `scripts/test_dashboards.py`.
-* Avoid hard‑coded colours in Grafana; rely on defaults.
-
----
-
-## 8 · What to Ask the Architect
-
-* Clarification of acceptance criteria / scope.
-* Permission to add heavy dependency or new CI job.
-* Design change suggestions that may require ADR.
-
-**Always plan, ask, then execute.**
-
----
-
-## 9 · Quick Reference Cheatsheet
-
-```bash
-# List projects
-gh project list --owner locotoki
-
-# Create issue & link
-gh issue create --title "obs: p95 panel" --body-file ISSUE.md --label observability
-
-# Move card after merge
-./workflow/cli/board_sync.sh https://github.com/.../issues/302
+# Security checks
+docker exec redis redis-cli -a $REDIS_PASSWORD ping
+scripts/licence_scan.py             # License compliance
 ```
 
 ---
 
-*— End of CLAUDE.md —*
+## 6 · Critical Services & Ports
 
-## 10 · Copy‑Paste Task Blocks
-
-All architect communications that assign you work **MUST contain** a fenced code block titled **Claude CLI**. Copy‑paste it verbatim into your shell (or as close as your environment permits) before making any manual changes.
-
-If the block is **missing, ambiguous, or fails**, immediately tag **@alfred-architect-o3** and request clarification—do **not** improvise the commands.
-
-Example format expected from Architect:
-
-```bash
-# Claude CLI
-alfred-cli run --issue 302 --branch obs/302-latency-panel --script scripts/build_latency_panel.py
-```
-
-> **Remember**: No merge or deletion unless commands executed successfully and Gates A‑E pass.
+| Service | Port | Health Check | Purpose |
+|---------|------|--------------|---------|
+| redis | 6379 | `redis-cli ping` | Message broker (SECURED) |
+| slack_mcp_gateway | 3010 | `/health` | Slack bridge |
+| echo-agent | - | Logs only | Command processor |
+| agent-core | 8011 | `/health` | Core API |
+| db-postgres | 5432 | `pg_isready` | Main database |
 
 ---
 
-## 12. Workflow Triad (Architect → Coordinator → Claude CLI)
+## 7 · Security Requirements
 
-```
-Architect (o3) → Coordinator (copy‑paste) → Claude Code CLI (implementer)
-```
+### Redis Security (MANDATORY)
+- ✅ Authentication required: `REDIS_PASSWORD` env var
+- ✅ Dangerous commands disabled in `config/redis.conf`
+- ✅ Bind to internal network only
+- ✅ Monitor with Falco rules
 
-1. **Architect (o3)** writes a natural‑language spec **and** includes a fenced code block titled **Claude CLI** with the exact commands to run.
-2. **Coordinator** copy‑pastes the block into their terminal, runs it, watches output, and reports back logs / artefacts.
-3. **Claude Code CLI** executes, opens PRs, and awaits review.
+### Credential Management
+- 🔐 Never commit secrets
+- 🔐 Use `.env` file (gitignored)
+- 🔐 Rotate on any exposure
+- 🔐 Access via env vars only
 
-> *Architect never pushes code or creates resources directly* — every change must flow through the Coordinator → CLI path.
+---
 
-### 12.1 Authoring Task Blocks
+## 8 · Incident Response
 
-* Always prefix with a comment line `# Claude CLI`.
-* One logical task per block (e.g., “Generate Grafana panel PR”).
-* If multiple steps, chain them with `&&` or separate blocks.
-* Ambiguous or missing block? Coordinator must tag **@alfred‑architect‑o3** for clarification before proceeding.
+### If Redis Compromise Detected
+1. **Immediate**: Block external connections
+2. **Check**: `docker exec redis redis-cli -a $REDIS_PASSWORD CLIENT LIST`
+3. **Fix**: Apply `docker-compose.override.yml` security config
+4. **Rotate**: All credentials
+5. **Document**: Update `docs/security/`
 
-### 12.2 Example
+### If Slack Integration Fails
+1. **Check Gateway**: `docker logs slack_mcp_gateway --tail 50`
+2. **Verify Tokens**: Ensure `SLACK_APP_TOKEN` and `SLACK_BOT_TOKEN` valid
+3. **Test Redis**: `docker exec redis redis-cli -a $REDIS_PASSWORD XLEN mcp.requests`
+4. **Restart**: `docker-compose restart slack_mcp_gateway echo-agent`
 
+---
+
+## 9 · Documentation Map
+
+| Topic | Location | Purpose |
+|-------|----------|---------|
+| Slack Integration | `docs/slack-integration-*.md` | Architecture, ops, dev guides |
+| Security Incidents | `docs/security/*.md` | RCAs and fixes |
+| Phase Documentation | `docs/phase*/` | Milestone tracking |
+| ADRs | `docs/adr/` | Architecture decisions |
+
+---
+
+## 10 · Session Handoff Protocol
+
+Before ending a Claude Code session:
+
+1. **Commit all changes**:
+   ```bash
+   git add -A && git commit -m "wip: session handoff"
+   ```
+
+2. **Update this file** with:
+   - Current task status
+   - Any blockers
+   - Next steps
+
+3. **Push to branch**:
+   ```bash
+   git push
+   ```
+
+4. **Document in PR** if one exists:
+   - What was completed
+   - What remains
+   - Any decisions needed
+
+---
+
+## 11 · Copy‑Paste Task Blocks
+
+All architect communications that assign you work **MUST contain** a fenced code block titled **Claude CLI**. Copy‑paste it verbatim into your shell.
+
+Example:
 ```bash
 # Claude CLI
 alfred-cli run --issue 302 --branch obs/302-latency-panel \
                --script scripts/build_latency_panel.py \
-               --open-pr "feat(observability): p95 latency & error-rate panel (Closes #302)"
+               --open-pr "feat(observability): p95 latency panel (Closes #302)"
 ```
 
-## 13. Responsibility Clarification
+If the block is **missing, ambiguous, or fails**, immediately tag **@alfred-architect-o3** for clarification.
 
-* **Architect**: *draft* PR/board descriptions, ADR markdown, CLI blocks — but **does not** push commits.
-* **Coordinator**: executes blocks, confirms logs, sets labels.
-* **Claude Code CLI**: implementation & PR generation.
+---
 
-All earlier wording implying the Architect “pushes” or “creates” resources should be read as “Architect drafts an instruction block for the Coordinator to execute.”
+## 12. Recent Session Notes
+
+### Last Updated: 28 May 2025
+- ✅ Redis security incident resolved (PR #550)
+- ✅ Slack integration fully operational
+- ✅ Comprehensive documentation added
+- 🔄 Next: Observability panels (#302)
+
+### Active Branches
+- `main`: Latest stable with security fixes
+- `sec-hotfix-redis-20250528`: Can be deleted after merge
+
+### Environment Status
+- Redis: Secured with auth
+- Slack: Connected and processing commands
+- All services: Healthy
+
+---
+
+*— End of CLAUDE.md —*
