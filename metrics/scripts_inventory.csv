@@ -55,6 +55,9 @@ alfred/alerts/models.py,.py,365,UNKNOWN
 alfred/alerts/protocols.py,.py,1417,UNKNOWN
 alfred/alerts/tests/__init__.py,.py,40,UNKNOWN
 alfred/alerts/tests/test_dispatcher.py,.py,8485,UNKNOWN
+alfred/cli/__init__.py,.py,25,UNKNOWN
+alfred/cli/health.py,.py,5167,UNKNOWN
+alfred/cli/main.py,.py,289,UNKNOWN
 alfred/core/__init__.py,.py,91,UNKNOWN
 alfred/core/app/__init__.py,.py,676,UNKNOWN
 alfred/core/entrypoint.py,.py,243,UNKNOWN
@@ -349,6 +352,7 @@ scripts/remove_unused_type_ignores.py,.py,3836,UNKNOWN
 scripts/rollback-canary.sh,.sh,1044,UNKNOWN
 scripts/rotate-secrets.sh,.sh,2128,UNKNOWN
 scripts/run-e2e-health-test.sh,.sh,5410,UNKNOWN
+scripts/run-e2e-tests.sh,.sh,3904,UNKNOWN
 scripts/run-mypy.sh,.sh,2054,UNKNOWN
 scripts/run-validations.sh,.sh,2625,UNKNOWN
 scripts/run_python_tests.py,.py,1228,UNKNOWN
@@ -697,8 +701,12 @@ tests/bizdev/test_roundtrip_standalone.py,.py,2026,UNKNOWN
 tests/conftest.py,.py,5218,UNKNOWN
 tests/db/test_connection.py,.py,184,UNKNOWN
 tests/e2e/__init__.py,.py,48,UNKNOWN
+tests/e2e/conftest.py,.py,1918,UNKNOWN
 tests/e2e/run-tests.sh,.sh,4889,UNKNOWN
+tests/e2e/test_regression.py,.py,4374,UNKNOWN
 tests/e2e/test_review_contract.py,.py,1002,UNKNOWN
+tests/e2e/test_slack_integration.py,.py,3099,UNKNOWN
+tests/e2e/test_smoke.py,.py,3161,UNKNOWN
 tests/e2e/tests/utils.ts,.ts,8081,UNKNOWN
 tests/ingest/test_chunker.py,.py,171,UNKNOWN
 tests/ingest/test_embedder.py,.py,263,UNKNOWN
