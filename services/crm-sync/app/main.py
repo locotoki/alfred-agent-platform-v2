@@ -26,6 +26,12 @@ async def health():
     return {"status": "ok", "ts": datetime.now(tz=timezone.utc).isoformat()}
 
 
+@app.get("/health")
+async def health_standard():
+    """Return health status for GA-Hardening standardization."""
+    return {"status": "ok"}
+
+
 @app.post("/sync", status_code=200)
 async def sync(event: ContactSyncEvent):
     """Sync contact to HubSpot."""

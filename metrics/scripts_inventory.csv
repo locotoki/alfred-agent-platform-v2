@@ -109,6 +109,7 @@ alfred/tools/__init__.py,.py,187,UNKNOWN
 alfred/tools/formatter.py,.py,2281,UNKNOWN
 alfred/tools/protocols.py,.py,519,UNKNOWN
 alfred/ui/__init__.py,.py,211,UNKNOWN
+alfred/ui/health_server.py,.py,275,UNKNOWN
 alfred/ui/healthcheck-wrapper.sh,.sh,228,UNKNOWN
 alfred/ui/protocols.py,.py,5310,UNKNOWN
 alfred/ui/streamlit_chat.py,.py,309,UNKNOWN
@@ -478,7 +479,7 @@ services/contact-ingest/src/__main__.py,.py,167,UNKNOWN
 services/contact-ingest/src/app.py,.py,391,UNKNOWN
 services/contact-ingest/src/contact_ingest.py,.py,502,UNKNOWN
 services/crm-sync/app/__init__.py,.py,69,UNKNOWN
-services/crm-sync/app/main.py,.py,1144,UNKNOWN
+services/crm-sync/app/main.py,.py,1288,UNKNOWN
 services/crm-sync/clients/hubspot_mock_client/__init__.py,.py,160,UNKNOWN
 services/crm-sync/clients/hubspot_mock_client/api/__init__.py,.py,45,UNKNOWN
 services/crm-sync/clients/hubspot_mock_client/api/default/__init__.py,.py,56,UNKNOWN
