@@ -1,16 +1,19 @@
-# Bench Fail Runbook
+# Nightly Bench Failures
+
+> **Status**: Draft
+> **Linked issue**: #575
 
 ## Purpose
-_TODO_ concise description.
+_TODO_
 
-## Signals
-* Alert name / log line
-* Dashboard panel
+## Prerequisites
+_TODO_
 
-## Quick-Fix Checklist
-1. Verify service health.
-2. Consult logs `docker compose logs <svc>`.
-3. Apply remediation steps.
+## Procedure
+1. _TODO_
 
-## Escalation
-* PagerDuty: **P0** if unresolved 15 min.
+## Validation
+_TODO_
+
+## Rollback
+_TODO_
