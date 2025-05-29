@@ -16,6 +16,7 @@ repos:
     hooks:
       - id: black
         language_version: python3.11
+        files: '\.py$'
         exclude: "(youtube-test-env/|migrations/|node_modules/|\\.git/|\\.mypy_cache/|\\.env/|\\.venv/|env/|venv/|\\.ipynb/|cleanup-temp/|docs/archive/|docs/tools/)"
 
   - repo: https://github.com/pycqa/isort
@@ -23,6 +24,7 @@ repos:
     hooks:
       - id: isort
         name: isort (python)
+        files: '\.py$'
         args: ["--check", "--profile", "black", "--filter-files"]
 
   - repo: https://github.com/pycqa/flake8
