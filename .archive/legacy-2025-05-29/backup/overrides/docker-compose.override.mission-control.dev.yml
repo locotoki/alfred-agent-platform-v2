@@ -1,0 +1,17 @@
+services:
+  mission-control:
+    build:
+      context: ./services/mission-control
+      dockerfile: Dockerfile.dev
+    environment:
+      - NODE_ENV=development
+      - NODE_OPTIONS=--inspect
+    volumes:
+      - ./services/mission-control/public:/app/public
+      - ./services/mission-control/src:/app/src
+      - mission-control-node-modules:/app/node_modules
+    command: ["npm", "run", "dev"]
+
+volumes:
+  mission-control-node-modules:
+    driver: local

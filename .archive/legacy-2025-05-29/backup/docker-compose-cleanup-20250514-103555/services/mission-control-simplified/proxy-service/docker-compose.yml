@@ -1,0 +1,84 @@
+version: '3.8'
+
+services:
+  proxy-service:
+    build: .
+    image: niche-scout-proxy-service
+    container_name: niche-scout-proxy
+    restart: unless-stopped
+    ports:
+      - "3020:3020"
+    environment:
+      - NODE_ENV=production
+      - PORT=3020
+      - SOCIAL_INTEL_HOST=http://social-intelligence
+      - SOCIAL_INTEL_PORT=9000
+      - API_TIMEOUT=5000
+      - SIMILARITY_THRESHOLD=0.55
+      - DEFAULT_NICHE_COUNT=5
+      - WEIGHT_LEVENSHTEIN=0.5
+      - WEIGHT_JACCARD=0.3
+      - WEIGHT_JARO_WINKLER=0.2
+      - CACHE_ENABLED=true
+      - CACHE_TTL=3600
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - LOG_LEVEL=info
+    networks:
+      - niche-scout-network
+    depends_on:
+      - redis
+
+  redis:
+    image: redis:alpine
+    container_name: niche-scout-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    networks:
+      - niche-scout-network
+
+  prometheus:
+    image: prom/prometheus
+    container_name: niche-scout-prometheus
+    restart: unless-stopped
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus:/etc/prometheus
+      - prometheus-data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+      - '--web.console.templates=/usr/share/prometheus/consoles'
+    networks:
+      - niche-scout-network
+
+  grafana:
+    image: grafana/grafana
+    container_name: niche-scout-grafana
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./grafana/provisioning:/etc/grafana/provisioning
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_USERS_ALLOW_SIGN_UP=false
+    networks:
+      - niche-scout-network
+    depends_on:
+      - prometheus
+
+networks:
+  niche-scout-network:
+    driver: bridge
+
+volumes:
+  redis-data:
+  prometheus-data:
+  grafana-data:
