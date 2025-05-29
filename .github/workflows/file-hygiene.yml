@@ -1,0 +1,92 @@
+name: File Hygiene Check
+
+on:
+  pull_request:
+    paths:
+      - '**'
+  push:
+    branches:
+      - main
+
+jobs:
+  check-file-sprawl:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Check root directory files
+        run: |
+          # Count markdown files in root (should be minimal)
+          ROOT_MD_COUNT=$(find . -maxdepth 1 -name "*.md" -type f | wc -l)
+          echo "Found $ROOT_MD_COUNT markdown files in root"
+          if [ $ROOT_MD_COUNT -gt 5 ]; then
+            echo "❌ Too many markdown files in root: $ROOT_MD_COUNT (max: 5)"
+            echo "Move documentation to docs/ directory"
+            exit 1
+          fi
+          
+      - name: Check for temporary files
+        run: |
+          # Find common temporary files
+          TEMP_FILES=$(find . -name "*.tmp" -o -name "*.temp" -o -name "*.bak" \
+                              -o -name "*.log" -o -name "*~" -o -name ".DS_Store" \
+                              -not -path "./.git/*" -not -path "./node_modules/*" | head -20)
+          if [ -n "$TEMP_FILES" ]; then
+            echo "❌ Temporary files found:"
+            echo "$TEMP_FILES"
+            exit 1
+          fi
+          
+      - name: Check for build artifacts
+        run: |
+          # Check for Python caches
+          PYCACHE=$(find . -name "__pycache__" -type d -not -path "./.git/*" | head -10)
+          if [ -n "$PYCACHE" ]; then
+            echo "❌ Python cache directories found:"
+            echo "$PYCACHE"
+            echo "Run: find . -name '__pycache__' -type d -exec rm -rf {} +"
+            exit 1
+          fi
+          
+          # Check for .pyc files
+          PYC_FILES=$(find . -name "*.pyc" -not -path "./.git/*" | head -10)
+          if [ -n "$PYC_FILES" ]; then
+            echo "❌ Python bytecode files found"
+            exit 1
+          fi
+          
+      - name: Check documentation organization
+        run: |
+          # Find misplaced status/summary docs
+          for pattern in "*-STATUS.md" "*-COMPLETE.md" "*-SUMMARY.md" "*-REPORT.md"; do
+            MISPLACED=$(find . -maxdepth 1 -name "$pattern" -type f)
+            if [ -n "$MISPLACED" ]; then
+              echo "❌ Status/summary files should be in docs/operational/"
+              echo "Found: $MISPLACED"
+              exit 1
+            fi
+          done
+          
+      - name: Check for large files
+        run: |
+          # Find files larger than 5MB not in git-lfs
+          LARGE_FILES=$(find . -type f -size +5M -not -path "./.git/*" \
+                            -not -path "./node_modules/*" \
+                            -not -path "./.archive/*" \
+                            -not -name "*.png" -not -name "*.jpg" | head -10)
+          if [ -n "$LARGE_FILES" ]; then
+            echo "⚠️  Large files detected (>5MB):"
+            ls -lh $LARGE_FILES
+            echo "Consider using Git LFS for these files"
+          fi
+          
+      - name: Validate file patterns
+        run: |
+          # Check for sprawling test files in root
+          TEST_FILES=$(find . -maxdepth 1 -name "test*.py" -o -name "*test.py" \
+                           -o -name "test*.sh" -o -name "*test.sh" | head -10)
+          if [ -n "$TEST_FILES" ]; then
+            echo "❌ Test files found in root. Move to tests/ directory"
+            echo "$TEST_FILES"
+            exit 1
+          fi
