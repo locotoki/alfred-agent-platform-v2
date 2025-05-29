@@ -47,7 +47,21 @@
    cd alfred-agent-platform-v2
    ```
 
-2. Initialize the environment:
+2. Set up environment variables:
+   ```bash
+   # First time setup - creates .env from template
+   make setup-env
+   
+   # Edit .env with your secrets (Slack tokens, Redis password, etc.)
+   vi .env
+   
+   # Validate your environment
+   make validate-env
+   ```
+   
+   > 📚 See [ENV-QUICKSTART.md](ENV-QUICKSTART.md) for detailed environment setup
+
+3. Initialize the environment:
    ```bash
    make init
    ```
