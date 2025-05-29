@@ -12,7 +12,7 @@ COPY services/crm-sync/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY services/crm-sync/app/ app/
-COPY services/crm-sync/docker-assets/clients clients/
+COPY services/crm-sync/clients clients/
 
 # Set environment variables
 ENV PYTHONPATH=/app
