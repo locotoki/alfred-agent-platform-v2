@@ -14,6 +14,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy application code
 COPY workflows/ ./workflows/
 COPY services/agent_bizops/app/ ./app/
+COPY services/agent_bizops/middleware/ ./middleware/
 
 # Expose port
 EXPOSE 8080
