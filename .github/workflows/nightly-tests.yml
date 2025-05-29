@@ -1,0 +1,183 @@
+name: Nightly Test Suite
+
+on:
+  schedule:
+    - cron: '0 3 * * *'  # 3 AM UTC daily
+  workflow_dispatch:
+    inputs:
+      test_scope:
+        description: 'Test scope to run'
+        required: false
+        default: 'all'
+        type: choice
+        options:
+          - all
+          - integration
+          - e2e
+          - performance
+          - security
+
+jobs:
+  integration-tests:
+    name: Integration Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+      
+      - name: Install dependencies
+        run: |
+          pip install -r requirements-dev.txt
+          pip install -r requirements.txt
+      
+      - name: Run integration tests
+        run: |
+          pytest -v -m integration --cov=alfred --cov-report=xml
+      
+      - name: Upload coverage
+        uses: codecov/codecov-action@v4
+        with:
+          files: ./coverage.xml
+          flags: integration
+          name: nightly-integration
+
+  e2e-tests:
+    name: End-to-End Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Start services
+        run: |
+          docker-compose -f docker-compose.yml -f docker-compose.ci.yml up -d
+          ./scripts/wait_healthy.sh
+      
+      - name: Run E2E tests
+        run: |
+          docker-compose -f docker-compose.yml -f docker-compose.ci.yml \
+            run --rm test-runner pytest -v -m e2e
+      
+      - name: Collect logs
+        if: failure()
+        run: |
+          docker-compose -f docker-compose.yml -f docker-compose.ci.yml logs > docker-logs.txt
+      
+      - name: Upload logs
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-logs-${{ github.run_id }}
+          path: docker-logs.txt
+      
+      - name: Cleanup
+        if: always()
+        run: |
+          docker-compose -f docker-compose.yml -f docker-compose.ci.yml down -v
+
+  performance-tests:
+    name: Performance Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    if: github.event.inputs.test_scope == 'all' || github.event.inputs.test_scope == 'performance'
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup k6
+        run: |
+          sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys C5AD17C747E3415A3642D57D77C6C491D6AC1D69
+          echo "deb https://dl.k6.io/deb stable main" | sudo tee /etc/apt/sources.list.d/k6.list
+          sudo apt-get update
+          sudo apt-get install k6
+      
+      - name: Start services
+        run: |
+          docker-compose -f docker-compose.yml up -d
+          ./scripts/wait_healthy.sh
+      
+      - name: Run performance tests
+        run: |
+          k6 run perf/k6-script.js --out json=perf-results.json
+      
+      - name: Upload results
+        uses: actions/upload-artifact@v4
+        with:
+          name: performance-results-${{ github.run_id }}
+          path: perf-results.json
+
+  security-scan:
+    name: Security Scan
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Run Trivy security scan
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'
+          format: 'json'
+          output: 'security-results.json'
+      
+      - name: Check for critical vulnerabilities
+        run: |
+          CRITICAL_COUNT=$(jq '[.Results[].Vulnerabilities[]? | select(.Severity == "CRITICAL")] | length' security-results.json)
+          if [ "$CRITICAL_COUNT" -gt 0 ]; then
+            echo "❌ Found $CRITICAL_COUNT critical vulnerabilities"
+            jq '.Results[].Vulnerabilities[]? | select(.Severity == "CRITICAL")' security-results.json
+            exit 1
+          fi
+          echo "✅ No critical vulnerabilities found"
+      
+      - name: Upload scan results
+        uses: actions/upload-artifact@v4
+        with:
+          name: security-scan-${{ github.run_id }}
+          path: security-results.json
+
+  notify:
+    name: Notify Results
+    runs-on: ubuntu-latest
+    needs: [integration-tests, e2e-tests, performance-tests, security-scan]
+    if: always()
+    steps:
+      - name: Determine status
+        id: status
+        run: |
+          if [ "${{ needs.integration-tests.result }}" == "failure" ] || \
+             [ "${{ needs.e2e-tests.result }}" == "failure" ] || \
+             [ "${{ needs.performance-tests.result }}" == "failure" ] || \
+             [ "${{ needs.security-scan.result }}" == "failure" ]; then
+            echo "status=failure" >> $GITHUB_OUTPUT
+          else
+            echo "status=success" >> $GITHUB_OUTPUT
+          fi
+      
+      - name: Create issue on failure
+        if: steps.status.outputs.status == 'failure'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const date = new Date().toISOString().split('T')[0];
+            const issue = await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `Nightly tests failed - ${date}`,
+              body: `## Nightly Test Failure Report
+              
+              The nightly test suite failed on ${date}.
+              
+              ### Results:
+              - Integration Tests: ${{ needs.integration-tests.result }}
+              - E2E Tests: ${{ needs.e2e-tests.result }}
+              - Performance Tests: ${{ needs.performance-tests.result }}
+              - Security Scan: ${{ needs.security-scan.result }}
+              
+              [View workflow run](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})`,
+              labels: ['bug', 'nightly-failure', 'automated']
+            });
