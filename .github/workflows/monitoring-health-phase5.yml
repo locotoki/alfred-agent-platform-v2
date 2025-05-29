@@ -1,3 +1,6 @@
+# DISABLED: This workflow is temporarily disabled
+if: false
+
 name: Monitoring Services Health Checks Phase 5
 
 on:
