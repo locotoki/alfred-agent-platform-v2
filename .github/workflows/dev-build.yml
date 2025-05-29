@@ -1,0 +1,55 @@
+name: Fast Dev Build
+
+on:
+  pull_request:
+    branches: [ main ]
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    name: Quick Build & Boot Check
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Build representative image (agent-core)
+        run: |
+          echo "🔨 Building agent-core image..."
+          docker build -t ghcr.io/${{ github.repository }}/alfred-core:${{ github.sha }} \
+            -f services/agent-core/Dockerfile \
+            services/agent-core
+      
+      - name: Start minimal services
+        run: |
+          echo "🚀 Starting minimal services..."
+          export TAG=${{ github.sha }}
+          docker-compose -f docker-compose.slim.yml up -d
+      
+      - name: Wait for services to be healthy
+        run: |
+          echo "⏳ Waiting 30s for services to stabilize..."
+          sleep 30
+      
+      - name: Health check critical services
+        run: |
+          echo "🏥 Checking health endpoints..."
+          
+          # Check agent-core
+          curl -f http://localhost:8011/health || (echo "❌ agent-core health check failed" && exit 1)
+          echo "✅ agent-core is healthy"
+          
+          # Check Redis
+          docker exec $(docker ps -qf "name=redis") redis-cli ping || (echo "❌ Redis health check failed" && exit 1)
+          echo "✅ Redis is healthy"
+          
+          # Check Postgres
+          docker exec $(docker ps -qf "name=postgres") pg_isready || (echo "❌ Postgres health check failed" && exit 1)
+          echo "✅ Postgres is healthy"
+      
+      - name: Cleanup
+        if: always()
+        run: |
+          docker-compose -f docker-compose.slim.yml down -v
+          docker image prune -f

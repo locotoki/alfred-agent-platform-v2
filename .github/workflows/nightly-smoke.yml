@@ -1,0 +1,99 @@
+name: Nightly Smoke Test
+
+on:
+  schedule:
+    - cron: '0 3 * * *'  # 3 AM UTC daily
+  workflow_dispatch:
+
+jobs:
+  smoke:
+    name: Full Stack Smoke Test
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Build all images
+        run: |
+          echo "🔨 Building all service images..."
+          export TAG=${{ github.sha }}
+          docker-compose build --parallel
+      
+      - name: Start all services
+        run: |
+          echo "🚀 Starting full stack..."
+          export TAG=${{ github.sha }}
+          docker-compose up -d
+      
+      - name: Wait for services
+        run: |
+          echo "⏳ Waiting for services to stabilize..."
+          sleep 60
+          
+          # More sophisticated wait
+          for i in {1..30}; do
+            if docker-compose ps | grep -v "Up" | grep -v "NAME"; then
+              echo "Services still starting..."
+              sleep 10
+            else
+              echo "✅ All services are up"
+              break
+            fi
+          done
+      
+      - name: Run basic API checks
+        run: |
+          echo "🧪 Running smoke tests..."
+          
+          # Health checks
+          ENDPOINTS=(
+            "http://localhost:8011/health"  # agent-core
+            "http://localhost:8000/health"  # ui
+            "http://localhost:9090/-/healthy"  # prometheus
+            "http://localhost:3000/api/health"  # grafana
+          )
+          
+          for endpoint in "${ENDPOINTS[@]}"; do
+            if curl -f -s "$endpoint" > /dev/null; then
+              echo "✅ $endpoint is healthy"
+            else
+              echo "❌ $endpoint failed"
+              FAILED=true
+            fi
+          done
+          
+          # Basic functionality tests
+          echo "Testing Redis connectivity..."
+          docker exec $(docker ps -qf "name=redis") redis-cli SET test:key "smoke-test"
+          docker exec $(docker ps -qf "name=redis") redis-cli GET test:key | grep "smoke-test"
+          
+          echo "Testing Postgres connectivity..."
+          docker exec $(docker ps -qf "name=postgres") psql -U postgres -c "SELECT 1"
+          
+          if [ "$FAILED" = "true" ]; then
+            echo "❌ Some smoke tests failed"
+            exit 1
+          fi
+          
+          echo "✅ All smoke tests passed"
+      
+      - name: Collect logs on failure
+        if: failure()
+        run: |
+          docker-compose logs > docker-logs.txt
+          docker ps -a > docker-ps.txt
+      
+      - name: Upload logs
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: smoke-test-logs-${{ github.run_id }}
+          path: |
+            docker-logs.txt
+            docker-ps.txt
+      
+      - name: Cleanup
+        if: always()
+        run: |
+          docker-compose down -v
+          docker system prune -f
