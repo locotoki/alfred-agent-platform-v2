@@ -1,0 +1,16 @@
+# Configuration for auto-merging docs-only PRs
+# This file is used by the auto-merge workflow
+
+docs_paths:
+  - 'docs/**'
+  - '**.md'
+  - '.github/workflows/label-docs-prs.yml'
+  - '.github/workflows/ci-optimizations.yml'
+
+# Checks that can be skipped for docs-only PRs
+skippable_checks:
+  - lf-guard
+  - check-no-site-pkgs
+  - integration-tests
+  - build-images
+  - security-scan

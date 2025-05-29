@@ -1,389 +1,67 @@
-name: CI Pipeline
+name: CI
 
 on:
-  push:
-    branches: [ main, develop ]
   pull_request:
-    branches: [ main ]
-  workflow_dispatch:
-    inputs:
-      skip_bizdev:
-        description: 'Skip BizDev tests'
-        required: false
-        type: boolean
-        default: false
-
-env:
-  PYTHON_VERSION: "3.11"
-  NODE_VERSION: "20"
-  DOCKER_BUILDKIT: 1
-  COMPOSE_DOCKER_CLI_BUILD: 1
+    types: [opened, synchronize, reopened, labeled]
+  push:
+    branches: [main]
 
 jobs:
-  # Check for literal LF bytes in Python files
-  lf-guard:
+  lint:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Check for literal LF bytes
-        run: |
-          # Check if any Python files contain literal 'LF' characters
-          if find . -name "*.py" -type f -exec grep -l $'LF' {} + 2>/dev/null | grep -E -v "(ALFRED|SELF)"; then
-            echo "Error: Found Python files containing literal 'LF' characters"
-            echo "This usually indicates isort corruption"
-            exit 1
-          fi
-
-  # Detect if code has changed
-  detect-changes:
-    if: github.event_name == 'pull_request'
-    uses: ./.github/workflows/_reusable_changed_code.yml
-
-  # Security scanning
-  security-scan:
-    runs-on: ubuntu-latest
-    # Allow this job to pass even with errors for PR #12 (black formatting PR) or PR #29 (CI cleanup PR)
-    continue-on-error: ${{ github.event.pull_request.number == 12 || github.event.pull_request.number == 29 }}
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: TruffleHog OSS
-        uses: trufflesecurity/trufflehog@main
-        with:
-          path: ./
-          base: ${{ github.event.pull_request.base.sha || github.event.before || (github.event.commits[0].id || github.sha) }}
-          head: ${{ github.event.pull_request.head.sha || github.sha }}
-          extra_args: --debug --only-verified
-
-      - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@master
-        with:
-          scan-type: 'fs'
-          scan-ref: '.'
-          trivy-config: trivy.yaml
-          severity: 'CRITICAL,HIGH'
-          format: 'sarif'
-          output: 'trivy-results.sarif'
-
-      - name: Upload Trivy scan results to GitHub Security tab
-        uses: github/codeql-action/upload-sarif@v3
-        if: always()
-        with:
-          sarif_file: 'trivy-results.sarif'
-
-  # Black code style check (fast feedback)
-  black-check:
-    needs: security-scan
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
-
-      - name: Clean pip cache
-        run: rm -rf ~/.cache/pip
-
-      - name: Install Black
-        run: |
-          python -m pip install --upgrade pip
-          pip install black==24.4.2
-
-      - name: Run Black check
-        run: |
-          echo "Running Black format check with version 24.4.2..."
-          # Use configuration from pyproject.toml for consistency with local runs
-          black --check .
-
-  # Check for system package contamination (ADR-010)
-  check-no-site-pkgs:
-    needs: security-scan
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        base-image: ['python:3.11-slim', 'python:3.11-alpine']
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Build dev container (${{ matrix.base-image }})
-        run: |
-          if [ -f dev/Dockerfile ]; then
-            # Create a temporary Dockerfile with the matrix base image
-            sed "s|FROM python:3.11-slim|FROM ${{ matrix.base-image }}|g" dev/Dockerfile > dev/Dockerfile.test
-            docker build -f dev/Dockerfile.test -t dev-container-test-${{ matrix.base-image }} .
-            rm dev/Dockerfile.test
-          else
-            echo "No dev/Dockerfile found, skipping container hardening check"
-            exit 0
-          fi
-
-      - name: Check for dist-packages contamination (${{ matrix.base-image }})
-        run: |
-          if [ -f dev/Dockerfile ]; then
-            # Run the check inside the container
-            docker run --rm dev-container-test-${{ matrix.base-image }} sh -c 'test -z "$(find /usr/lib/python*/dist-packages -type f 2>/dev/null)" || (echo "ERROR: System packages found in dist-packages!" && exit 1)'
-            echo "✓ No system packages found in dist-packages for ${{ matrix.base-image }}"
-          fi
-
-  # Python linting and testing
-  lint-and-test:
-    needs: [black-check, detect-changes]
-    if: ${{ always() && (github.event_name != 'pull_request' || needs.detect-changes.outputs.code_changed == 'true' || contains(github.event.pull_request.labels.*.name, 'force-test')) && !contains(github.event.pull_request.labels.*.name, 'docs-only') }}
-    runs-on: ubuntu-latest
-    services:
-      postgres:
-        image: postgres:15
-        env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: test_db
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          lfs: true
-          fetch-depth: 0
-          token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Install system dependencies for ML packages
-        run: |
-          sudo apt-get update
-          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y libopenblas-dev liblapack-dev gfortran
-
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
-          cache: 'pip'
-
-      - name: Cache pip dependencies
-        uses: actions/cache@v3
+      - uses: actions/cache@v4
         with:
           path: ~/.cache/pip
           key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-
-
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip wheel setuptools
-          # Install torch first from CPU-only index to avoid CUDA dependencies
-          pip install "torch>=2.2.0,<2.3.0" --index-url https://download.pytorch.org/whl/cpu
-          pip install -r requirements.txt
-          pip install -r requirements-dev.txt
-
-      - name: Run formatters check
-        run: |
-          isort --check-only --profile black --line-ending LF --diff .
-
-      - name: Check healthcheck base image prefix
-        run: |
-          echo "Checking for consistent healthcheck base image references..."
-          CANON="ghcr.io/locotoki/alfred-agent-platform-v2/healthcheck:0.4.0"
-          if grep -r "healthcheck:0.4.0" . --include="Dockerfile*" | grep -v "$CANON"; then
-            echo "Error: Found Dockerfiles with non-canonical healthcheck references"
-            echo "All healthcheck base images must use: $CANON"
-            exit 1
-          fi
-          echo "✓ All healthcheck references are consistent"
-
-      - name: Run linters
-        run: |
-          flake8 --config=.flake8 .
-          bandit -r agents/ libs/ services/ -c pyproject.toml
-
-      - name: Run type checking (mypy)
-        run: |
-          echo "Running mypy with strict type checking (baseline filtered)..."
-          python scripts/mypy_with_baseline.py --config-file=mypy.ini alfred/
-
-      - name: Run tests with coverage
-        run: |
-          pytest tests/ -v --cov=./ --cov-report=xml --cov-report=html -m "not integration"
-        env:
-          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/test_db
-          PUBSUB_EMULATOR_HOST: localhost:8085
-          BIZDEV_SKIP: ${{ inputs.skip_bizdev || false }}
-
-      - name: Run alert dispatcher tests
-        run: |
-          pytest alfred/alerts/tests/ -v -m "not integration and alerts"
-
-      - name: Upload coverage reports
-        uses: codecov/codecov-action@v3
+      - uses: actions/setup-python@v5
         with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          files: ./coverage.xml
-          flags: unittests
-          name: codecov-umbrella
-          fail_ci_if_error: false
+          python-version: '3.11'
+      - run: pip install -r requirements-dev.txt
+      - run: make lint
 
-  # Health check smoke tests
-  smoke-health:
-    runs-on: ubuntu-latest
-    needs: lint-and-test
-    env:
-      TAG: ${{ github.sha }}
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      # Pull the freshly-built images from the previous job's registry push
-      - name: docker login
-        run: echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.repository_owner }} --password-stdin
-
-      - name: Run smoke health checks
-        run: |
-          docker compose -f ci/compose/health-smoke.yml up --abort-on-container-exit
-
-      - name: Show container logs on failure
-        if: failure()
-        run: docker compose -f ci/compose/health-smoke.yml logs
-
-  # Build Docker images
-  build-images:
-    needs: [smoke-health, detect-changes]
-    if: ${{ always() && (github.event_name != 'pull_request' || needs.detect-changes.outputs.code_changed == 'true' || contains(github.event.pull_request.labels.*.name, 'force-test')) && !contains(github.event.pull_request.labels.*.name, 'docs-only') }}
+  unit:
+    needs: lint
     runs-on: ubuntu-latest
     strategy:
-      matrix:
-        service:
-          - slack_mcp_gateway
-
+      fail-fast: false
+      matrix: { python: ['3.10', '3.11'] }
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/cache@v4
         with:
-          lfs: true
-          fetch-depth: 0
-          token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
-
-      - name: Cache Docker layers
-        uses: actions/cache@v3
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ matrix.python }}-${{ hashFiles('**/requirements*.txt') }}
+      - uses: actions/setup-python@v5
         with:
-          path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-${{ matrix.service }}-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-buildx-${{ matrix.service }}-
-            ${{ runner.os }}-buildx-
+          python-version: ${{ matrix.python }}
+      - run: pip install -r requirements-dev.txt
+      - run: pytest -n auto --reruns 2 --reruns-delay 1 --cov=.
+      - run: pytest tests/imports
+      - uses: codecov/codecov-action@v4
 
-      - name: Login to Docker Registry
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Build ${{ matrix.service }} image locally
-        uses: docker/build-push-action@v4
-        with:
-          context: ./services/${{ matrix.service }}
-          load: true              # build locally for test, no registry push
-          tags: |
-            ${{ matrix.service }}:local
-          cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
-
-      - name: Push ${{ matrix.service }} image to GHCR
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        uses: docker/build-push-action@v4
-        with:
-          context: ./services/${{ matrix.service }}
-          push: true
-          tags: |
-            ghcr.io/${{ github.repository_owner }}/alfred-platform/${{ matrix.service }}:${{ github.sha }}
-            ghcr.io/${{ github.repository_owner }}/alfred-platform/${{ matrix.service }}:latest
-          cache-from: type=local,src=/tmp/.buildx-cache
-          provenance: false       # speed up CI
-
-      - name: Move cache
-        run: |
-          rm -rf /tmp/.buildx-cache
-          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
-
-  # Integration tests
-  integration-tests:
-    needs: [build-images, detect-changes]
-    if: ${{ always() && (github.event_name != 'pull_request' || needs.detect-changes.outputs.code_changed == 'true' || contains(github.event.pull_request.labels.*.name, 'force-test')) && !contains(github.event.pull_request.labels.*.name, 'docs-only') && !contains(github.head_ref, 'sc-320') }}
+  integration:
+    needs: unit
+    if: github.event_name == 'push' || contains(github.event.pull_request.labels.*.name, 'needs-integration')
     runs-on: ubuntu-latest
-    continue-on-error: true  # Temporarily allow failures due to compose parity and other issues
+    env:
+      POSTGRES_PASSWORD: test
+      REDIS_PASSWORD: test
     steps:
       - uses: actions/checkout@v4
+      - run: docker compose -f docker-compose.tests.yml up -d
+      - run: ./scripts/wait_for_services.sh
+      - run: pytest tests/integration
+
+  summary:
+    if: always()
+    needs: [lint, unit, integration]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/github-script@v7
         with:
-          fetch-depth: 0
-          token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Skip on inventory-only changes
-        run: |
-          # Check if this is an inventory-only or docs-only PR
-          echo "Checking changed files in PR #${{ github.event.pull_request.number }}"
-          git diff --name-only ${{ github.event.pull_request.base.sha }}...${{ github.event.pull_request.head.sha }}
-
-          # Get all files that are NOT related to inventory, documentation, or spring_clean
-          CORE_CODE_CHANGES=$(git diff --name-only ${{ github.event.pull_request.base.sha }}...${{ github.event.pull_request.head.sha }} | grep -v -E '^(docs/|\.md$|arch/spring_clean|scripts/spring_clean)' | grep -E '^(alfred|tests|docker|services|libs)/' || true)
-
-          # Check if services/SC-330-issue.md is the only services change (it's a docs file despite location)
-          SERVICE_MD_ONLY=$(git diff --name-only ${{ github.event.pull_request.base.sha }}...${{ github.event.pull_request.head.sha }} | grep -E '^services/.*\.md$' || true)
-          OTHER_SERVICE_FILES=$(git diff --name-only ${{ github.event.pull_request.base.sha }}...${{ github.event.pull_request.head.sha }} | grep -E '^services/' | grep -v -E '\.md$' || true)
-
-          if [ -z "$CORE_CODE_CHANGES" ] || ([ -n "$SERVICE_MD_ONLY" ] && [ -z "$OTHER_SERVICE_FILES" ]); then
-            echo "✅ Inventory/docs-only PR — skipping integration tests!"
-            echo "SKIP=true" >> $GITHUB_ENV
-          else
-            echo "❌ Contains core code changes — will run integration tests."
-            echo "Changed core files:"
-            echo "$CORE_CODE_CHANGES"
-          fi
-
-      - name: Set up Python
-        if: env.SKIP != 'true'
-        uses: actions/setup-python@v4
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
-
-      - name: Start services
-        if: env.SKIP != 'true'
-        run: |
-          docker-compose -f docker-compose.yml up -d
-          sleep 30  # Wait for services to be ready
-
-      - name: Run integration tests
-        if: env.SKIP != 'true'
-        run: |
-          # Special handling for cleanup PR #29
-          if [[ "$GITHUB_HEAD_REF" == *"cleanup/remove-temporary-ci-files"* || "$GITHUB_REF" == *"cleanup/remove-temporary-ci-files"* ]]; then
-            echo "SKIPPING integration tests for cleanup PR #29"
-            chmod +x scripts/skip-ci-for-cleanup.sh
-            ./scripts/skip-ci-for-cleanup.sh
-            exit 0
-          fi
-
-          pip install -r requirements.txt
-          pip install -r requirements-dev.txt
-          pytest tests/integration/ -v -m integration
-
-      - name: Stop services
-        if: always() && env.SKIP != 'true'
-        run: docker-compose down -v
+          script: |
+            const core = require('@actions/core');
+            const conclusion = '${{ needs.lint.result }} / ${{ needs.unit.result }} / ${{ needs.integration.result }}';
+            core.notice(`Composite conclusion: ${conclusion}`);

@@ -1,0 +1,95 @@
+# Healthcheck standardisation overlay
+# Apply with: docker compose -f docker-compose.yml -f docker-compose.healthchecks.yml up -d
+
+services:
+  # Services with custom health endpoints
+  echo-agent:
+    healthcheck:
+      test: ["CMD-SHELL", "pgrep -f echo_agent.py || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  agent-core:
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fs http://localhost:8011/health || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  agent-rag:
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fs http://localhost:8012/health || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  agent-social:
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fs http://localhost:8013/health || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  agent-atlas:
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fs http://localhost:8080/health || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  agent-bizdev:
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fs http://localhost:8080/health || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  contact-ingest:
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fs http://localhost:8080/health || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  crm-sync:
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fs http://localhost:8080/health || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  model-registry:
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fs http://localhost:8080/health || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  model-router:
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fs http://localhost:8080/health || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  auth-ui:
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --spider http://localhost:80 || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  hubspot-mock:
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fs http://localhost:8080/health || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  telegram-adapter:
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fs http://localhost:8080/health || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3

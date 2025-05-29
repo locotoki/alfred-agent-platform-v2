@@ -1,0 +1,9 @@
+pull_request_rules:
+  - name: auto-merge GA docs or trivial when CI green
+    conditions:
+      - "label~=^(docs-only|trivial)$"
+      - "status-success=CI"
+      - "author!=dependabot[bot]"
+    actions:
+      merge:
+        method: squash
