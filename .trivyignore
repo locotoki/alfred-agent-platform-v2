@@ -1,0 +1,25 @@
+# Trivy ignore file
+# https://aquasecurity.github.io/trivy/latest/docs/vulnerability/examples/filter/
+
+# Known false positives
+CVE-2023-12345
+
+# Accepted risks (document why)
+# CVE-2023-XXXXX # Low risk, no fix available
+
+# Test dependencies only
+test/
+tests/
+*_test.py
+*_test.go
+testdata/
+
+# Documentation
+docs/
+*.md
+
+# Build artifacts
+dist/
+build/
+*.egg-info/
+__pycache__/
