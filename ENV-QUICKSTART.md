@@ -1,90 +1,85 @@
-# Alfred Platform - Environment Quick Start
+# Environment Variables Quick Start
 
-This quick start guide explains how to get your local development environment working with Slack commands.
+## For New Developers / Fresh Pull
 
-## Prerequisites
+```bash
+# 1. One-time setup (creates .env from template)
+./setup-local-env.sh
 
-1. Docker Engine installed
-2. Valid Slack API tokens (Bot Token, App Token, and Signing Secret)
+# 2. Edit .env with actual secrets
+vi .env
 
-## Step 1: Configure Environment
+# 3. Validate your setup
+./scripts/validate-env.sh
 
-1. Run the setup script to create your local environment file:
-   ```bash
-   ./setup-dev-env.sh
-   ```
+# 4. Start services with env vars
+docker compose -f docker-compose.yml -f docker-compose.override.yml -f docker-compose.override.env.yml up -d
 
-   If you already have a `.env.local` file, either:
-   - Continue with your existing file, or
-   - Run `./setup-dev-env.sh` and choose to create a new one (it will back up the existing file)
+# Or use the alias (add to ~/.bashrc):
+alias alfred-up='docker compose -f docker-compose.yml -f docker-compose.override.yml -f docker-compose.override.env.yml up -d'
+```
 
-2. Ensure your `.env.local` contains the following Slack-related variables:
-   ```
-   SLACK_BOT_TOKEN=xoxb-your-token       # Bot User OAuth Token
-   SLACK_APP_TOKEN=xapp-your-token       # App-Level Token
-   SLACK_SIGNING_SECRET=your-secret      # Signing Secret
-   ALFRED_ENABLE_SLACK=true              # Enable Slack integration
-   ```
+## Quick Fixes
 
-## Step 2: Start Required Services
+### Slack not working?
+```bash
+# Check if env vars are loaded
+docker exec slack-adapter env | grep SLACK
 
-1. Start the Docker daemon:
-   ```bash
-   sudo service docker start
-   ```
+# If missing, restart with env override:
+docker compose -f docker-compose.yml -f docker-compose.override.yml -f docker-compose.override.env.yml up -d slack-adapter
+```
 
-2. Start only the services required for Slack:
-   ```bash
-   ./start-slack.sh
-   ```
+### Missing env vars after git pull?
+```bash
+# Always run validation after pull
+./scripts/validate-env.sh
 
-   This script will start:
-   - redis
-   - db-postgres
-   - agent-core
-   - slack_mcp_gateway
-   - slack-adapter
+# If new vars added to template:
+diff .env.template .env
+# Add missing vars to your .env
+```
 
-## Step 3: Test Slack Commands
+### Build failing due to env vars?
+```bash
+# Export env vars before build
+export $(grep -v '^#' .env | xargs)
+docker compose build
+```
 
-In your Slack workspace, try the following commands:
+## Environment Variable Sources
 
-1. `/alfred help` - Should show available commands
-2. `/alfred status` - Should show platform status
-3. `/diag health` - Should show detailed health status
+1. **Local Development**: `.env` file (never committed)
+2. **CI/CD**: GitHub Secrets
+3. **Staging/Prod**: Kubernetes Secrets
+
+## Service-Specific Requirements
+
+| Service | Required Env Vars |
+|---------|------------------|
+| slack-adapter | SLACK_SIGNING_SECRET, SLACK_BOT_TOKEN, SLACK_APP_TOKEN |
+| slack-mcp-gateway | SLACK_APP_TOKEN, SLACK_BOT_TOKEN |
+| agent-core | REDIS_PASSWORD, JWT_SIGNING_KEY |
+| all services | GHCR_PAT (for pulling images) |
 
 ## Troubleshooting
 
-If commands aren't working:
+1. **"Permission denied" when pulling images**
+   - Check GHCR_PAT is valid
+   - Login: `echo $GHCR_PAT | docker login ghcr.io -u USERNAME --password-stdin`
 
-1. Check service logs:
-   ```bash
-   ./docker-compose-env.sh -f docker-compose.yml logs -f slack_mcp_gateway slack-adapter
-   ```
+2. **"Slack commands not responding"**
+   - Verify SLACK_APP_TOKEN starts with `xapp-`
+   - Verify SLACK_BOT_TOKEN starts with `xoxb-`
+   - Check docker logs: `docker logs slack-adapter`
 
-2. Verify Slack app configuration:
-   - Ensure Socket Mode is enabled
-   - Verify the slash commands are registered
-   - Confirm the bot has appropriate permissions
+3. **"Redis connection failed"**
+   - Ensure REDIS_PASSWORD matches redis service config
+   - Check redis is running: `docker ps | grep redis`
 
-3. Validate environment variables:
-   ```bash
-   ./docker-compose-env.sh -f docker-compose.yml exec slack_mcp_gateway env | grep SLACK
-   ```
+## Security Notes
 
-4. Check service health:
-   ```bash
-   ./docker-compose-env.sh -f docker-compose.yml ps
-   ```
-
-## Stopping Services
-
-To stop the services:
-```bash
-./docker-compose-env.sh -f docker-compose.yml stop
-```
-
-Or to stop and remove containers:
-```bash
-./docker-compose-env.sh -f docker-compose.yml down
-```
+- NEVER commit .env files
+- Use different secrets for dev/staging/prod
+- Rotate tokens regularly
+- Use read-only GHCR tokens when possible
