@@ -3,8 +3,7 @@
 import structlog
 from fastapi import FastAPI
 from fastapi.responses import JSONResponse
-
-from ..middleware.metrics import setup_metrics_middleware
+from middleware.metrics import setup_metrics_middleware
 
 # Set up structured logging
 structlog.configure(

@@ -1950,7 +1950,7 @@ services/agent-orchestrator/tailwind.config.ts,.ts,2290,UNKNOWN
 services/agent-orchestrator/vite.config.ts,.ts,526,UNKNOWN
 services/agent_bizops/__init__.py,.py,55,UNKNOWN
 services/agent_bizops/app/__init__.py,.py,73,UNKNOWN
-services/agent_bizops/app/main.py,.py,1608,UNKNOWN
+services/agent_bizops/app/main.py,.py,1606,UNKNOWN
 services/agent_bizops/docker-assets/app.py,.py,74,UNKNOWN
 services/agent_bizops/middleware/__init__.py,.py,39,UNKNOWN
 services/agent_bizops/middleware/metrics.py,.py,6587,UNKNOWN
