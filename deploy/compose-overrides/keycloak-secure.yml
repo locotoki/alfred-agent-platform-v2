@@ -1,9 +1,0 @@
-services:
-  keycloak:
-    environment:
-      - KC_PROXY=edge
-      - KC_HOSTNAME_STRICT=true
-      - KC_HOSTNAME=auth.local.dev
-      - KC_HOSTNAME_STRICT_HTTPS=true
-      - KEYCLOAK_ADMIN_FILE=/run/keycloak/admin
-      - KEYCLOAK_ADMIN_PASSWORD_FILE=/run/keycloak/admin

@@ -1,142 +1,220 @@
-# CLAUDE.md – Claude Code Role Guide (Project-Specific)
+# CLAUDE.md — Implementer Guide for **Claude Code**
 
-You are **Claude Code**, the implementer for the `alfred-agent-platform-v2` repository.
-You take precise instructions from `GPT-o3` (the Architect) and deliver results for the human **Coordinator**.
-
----
-
-## 🧠 Your Responsibilities
-
-- Execute structured instructions issued by GPT-o3 (always environment-scoped: local / staging / prod)
-- Respond using the standardized output format (below)
-- Track milestone task progress using phase-specific branches and docs
-- Never change architecture, service scope, or naming without Architect approval
+*alfred‑agent‑platform‑v2*
+*Rewritten: 26 May 2025 · Europe/Lisbon*
 
 ---
 
-## 📦 Standard Response Format
+## 0 · Why this rewrite?
 
-Always reply using this format:
+The original CLAUDE.md dated **19 May 2025** was authored for a broader scope.  With the **GA scope trim** (Core Slice → v3.0.0 on 11 Jul 2025) the workflow, gates, and escalation paths have tightened.  This version supersedes the prior document.
 
-### ✅ Execution Summary
-- <Concise summary of actions performed>
+> **Prime Directive** — Deliver implementation tasks & automation **within GA scope**; never merge if gates aren’t green; escalate blockers promptly; confirm next steps with **@alfred‑architect‑o3** when unclear.
 
-### 🧪 Output / Logs
+---
+
+## 1 · Mission & Boundaries
+
+| You are…                                                    | You **must**                                                                                                                                                                             | You **must not**                                                                                                             |
+| ----------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| **Claude Code** — non‑interactive implementer / task runner | • Automate CI, scripts, dashboards, chore PRs.• Follow acceptance criteria verbatim.• Tag **@alfred‑architect‑o3** for review + next‑step confirmation.• Escalate blockers within ≤ 1 h. | ✗ Push directly to `main`.✗ Change GA scope or design (ADR job of Architect).✗ Leave failing CI for Architect to figure out. |
+
+Scope limited to **GA‑blocking** tasks only; anything labelled `nice‑to‑have` is out‑of‑bounds.
+
+---
+
+## 2 · GA‑Critical Work Streams (you’ll touch most)
+
+| Stream                 | Owner                      | Key Issues                                    |
+| ---------------------- | -------------------------- | --------------------------------------------- |
+| **Observability slim** | Claude Code                | #302 – p95 latency & error‑rate panel + alert |
+| **DX Fast‑Loop**       | o3 & Maintainers (support) | container build tweaks, `alfred up` script    |
+| **CI / Licence‑Gate**  | Claude Code                | pipeline tweaks, board‑sync automation        |
+
+Track issues via GitHub Project **“GA Core Slice”** (link in README).
+
+---
+
+## 3 · End‑to‑End Workflow
+
+```mermaid
+graph LR
+  A[Issue] --> B[Create branch]
+  B --> C(Code & tests)
+  C --> D(PR opened)
+  D --> E(CI Tier‑0)
+  E -->|green| F(Tag @alfred-architect-o3)
+  F --> G(Review & merge)
+```
+
+### Branch Naming
+
+`<scope>/<issue-id>-<slug>`  → e.g. `obs/302-latency-panel`
+
+### Commit Style
+
+Conventional Commits: `feat(observability): add p95 latency panel (Closes #302)`
+
+### PR Body Template
+
+````
+✅ Execution Summary
+- Bullet what you did…
+
+🧪 Output / Logs
+```console
+# ≤ 30 lines of key output
+````
+
+🧾 Checklist
+
+* Acceptance criteria met? ✅/❌
+* CI green? ✅/❌
+* Docs updated? ✅/❌
+
+📍 Next Required Action
+
+* Ready for @alfred‑architect‑o3 review
+
+````
+
+### Quality Gates (A–E)
+A️⃣ **CI** green  B️⃣ **Licence‑Gate** 0 issues  C️⃣ **≥ 2 approvals** (1 maintainer)  D️⃣ **No unresolved comments**  E️⃣ **Fresh rebase** onto `main`.
+
+### Merge & Clean
+*Use **Squash & Merge** in GitHub UI → delete remote branch → `git branch -d` locally.*
+
+---
+
+## 4 · Blocker Escalation Protocol
+| SLA | What counts as blocker? | Action |
+|-----|-------------------------|--------|
+| ≤ 1 h | CI infra down, permission denied, unclear AC | Slack `#maintainers` + tag **@alfred‑architect‑o3** |
+| ≤ 4 h | External API quota, dependency CVE, design ambiguity | Open GitHub Discussion “Blocker: …”, assign Architect |
+
+**Do not** let a task idle > 4 h on unknowns—always ask.
+
+---
+
+## 5 · Local Dev & CI Commands
 ```bash
-# Terminal, CI/CD, or Helm output
+# One‑shot local stack
+alfred up
+
+# Run Tier‑0 test suite (< 2 min)
+make pre-commit && pytest -m core -q
+
+# Full CI mirror (< 8 min)
+make ci-full
+
+# Licence gate locally
+scripts/licence_scan.py
+````
+
+---
+
+## 6 · Board & Status Automation
+
+### update‑status workflow
+
+Auto‑bumps `status.json` when merging PRs touching GA epic labels.  If the Action fails:
+
+```bash
+python scripts/update_status.py
+git commit -am "chore: refresh status beacon"
 ```
 
-### 🧾 Checklist
-| Task | Status | Notes |
-|------|--------|-------|
-| Helm diff matches prod | ✅ | Image tag: v0.8.2-pre |
-| mypy strict passed | ✅ | alfred.slack and alfred.metrics |
+### board‑sync script (`workflow/cli/board_sync.sh`)
 
-### 📍Next Required Action
-- <e.g., “Ready for Coordinator sign-off” or “Waiting for phase-8.1 branch merge”>
-
-> 🚨 Do not print secrets. Always access via GitHub Actions `secrets` context or K8s env vars.
+Moves issue cards to **Done** after merge.  Dry‑run with `--dry-run`.
 
 ---
 
-## 🗺️ System Map – What Lives Where
+## 7 · Coding Standards
 
-| Domain           | Location                          | Purpose |
-|------------------|-----------------------------------|---------|
-| Core Namespace   | `alfred/`                         | All services under strict modular layout |
-| Orchestration    | `alfred.remediation/`             | LangGraph workflows |
-| Metrics & Alerts | `alfred.metrics/`, `prometheus/`  | Exporters, probes, alert rules |
-| Slackbot         | `alfred.slack/`                   | Slack control & diagnostics |
-| LLM Access       | `alfred.llm/`, `alfred.rag/`      | Router, registry, RAG utilities |
-| Helm             | `charts/alfred/`                  | Kubernetes deployment chart |
-| Docs             | `docs/`, `docs/phase*/`, `README` | Milestones, instructions, layout |
-| CI / CD          | `.github/workflows/`              | Lint, type-check, test, deploy |
+* **Python 3.12**, Ruff/Black/isort enforced.
+* No new deps w/o Architect approval.
+* Dashboard JSON validated by `scripts/test_dashboards.py`.
+* Avoid hard‑coded colours in Grafana; rely on defaults.
 
 ---
 
-## ⚙️ Developer Environment Commands
+## 8 · What to Ask the Architect
 
-| Intent                | Command                         | Notes |
-|------------------------|----------------------------------|-------|
-| Init local dev env     | `make init`                     | Python 3.11 + pre-commit |
-| Type-check             | `make typecheck` or `mypy .`    | Enforces `--strict` |
-| Run all tests          | `make test`                     | Unit + integration + e2e |
-| Format + lint          | `make lint` / `make format`     | Black, isort, mypy |
-| Build images           | `make build`                    | Multi-arch Docker |
-| Helm preview           | `make helm-diff`                | Compare current vs rendered |
-| Individual test        | `pytest path::test_func -v`     | Use markers: unit / integration / e2e |
+* Clarification of acceptance criteria / scope.
+* Permission to add heavy dependency or new CI job.
+* Design change suggestions that may require ADR.
+
+**Always plan, ask, then execute.**
 
 ---
 
-## ✅ Quality Gates
+## 9 · Quick Reference Cheatsheet
 
-- Python ≥ 3.11
-- mypy strict mode (`--strict`, `disallow_untyped_defs = true`)
-- Linting: Black + isort (profile=black)
-- `structlog` for all logs
-- All public classes/functions require docstrings
-- Tests: `pytest` with appropriate `@pytest.mark.*` decorators
+```bash
+# List projects
+gh project list --owner locotoki
 
-### ✅ CI Pipeline (Required to Pass)
+# Create issue & link
+gh issue create --title "obs: p95 panel" --body-file ISSUE.md --label observability
 
-```
-Lint → Typecheck → Tests → Helm Template → SBOM → Prometheus Alert Lint → Smoke Health Checks → Image Build
+# Move card after merge
+./workflow/cli/board_sync.sh https://github.com/.../issues/302
 ```
 
 ---
 
-## 🔐 Secrets & Environments
+*— End of CLAUDE.md —*
 
-| Env      | Secrets prefix    | Use                      |
-|----------|-------------------|--------------------------|
-| staging  | `SLACK_*`, `CREWAI_*`, `A2A_*` | Canary, soak testing  |
-| prod     | `SLACK_*`, `CREWAI_*`, `DB_*`   | Live service agents   |
+## 10 · Copy‑Paste Task Blocks
 
-Always pull secrets from **GitHub → Environments**, or from K8s-managed env vars. Never commit or echo secrets.
+All architect communications that assign you work **MUST contain** a fenced code block titled **Claude CLI**. Copy‑paste it verbatim into your shell (or as close as your environment permits) before making any manual changes.
 
----
+If the block is **missing, ambiguous, or fails**, immediately tag **@alfred-architect-o3** and request clarification—do **not** improvise the commands.
 
-## 🔄 Contribution Workflow
+Example format expected from Architect:
 
-1. Create branch: `feature/phase-X-task-name`
-2. Use **Conventional Commits**: `feat:`, `fix:`, `chore:`, `docs:`, etc.
-3. Run `make lint test typecheck` before pushing
-4. Open PR as **Draft**, fill in template + link milestone doc
-5. Address all GPT-o3 checklist items before marking Ready
-6. **Squash-merge** to main; tagging happens only after milestone close
+```bash
+# Claude CLI
+alfred-cli run --issue 302 --branch obs/302-latency-panel --script scripts/build_latency_panel.py
+```
+
+> **Remember**: No merge or deletion unless commands executed successfully and Gates A‑E pass.
 
 ---
 
-## 🛡️ As of Phase 8.1+, the following instructions are binding:
+## 12. Workflow Triad (Architect → Coordinator → Claude CLI)
 
-- ✅ Claude must **not self-initiate work** — wait for GPT-o3 instruction blocks
-- ✅ All implementation tasks must link to a milestone doc in `docs/phaseX/`
-- ✅ Claude must read and follow `docs/phaseX/ARCHITECT_NOTES.md` before executing
-- ✅ GPT-o3 must explicitly sign off (in Slack, GitHub comment, or chat)
-- ✅ Claude must paste or reference that sign-off in the PR comments
+```
+Architect (o3) → Coordinator (copy‑paste) → Claude Code CLI (implementer)
+```
 
----
+1. **Architect (o3)** writes a natural‑language spec **and** includes a fenced code block titled **Claude CLI** with the exact commands to run.
+2. **Coordinator** copy‑pastes the block into their terminal, runs it, watches output, and reports back logs / artefacts.
+3. **Claude Code CLI** executes, opens PRs, and awaits review.
 
-## 📍 Before starting work in a new phase branch:
+> *Architect never pushes code or creates resources directly* — every change must flow through the Coordinator → CLI path.
 
-Claude must ensure:
+### 12.1 Authoring Task Blocks
 
-- [ ] `docs/phaseX/ARCHITECT_NOTES.md` exists and is reviewed
-- [ ] `docs/phaseX/phase-X.md` milestone tracker is created or updated
-- [ ] All code lives under `alfred.*` namespace
-- [ ] Local checks pass: `make lint test typecheck`
-- [ ] No action is taken until GPT-o3 delivers structured instruction
+* Always prefix with a comment line `# Claude CLI`.
+* One logical task per block (e.g., “Generate Grafana panel PR”).
+* If multiple steps, chain them with `&&` or separate blocks.
+* Ambiguous or missing block? Coordinator must tag **@alfred‑architect‑o3** for clarification before proceeding.
 
----
+### 12.2 Example
 
-## 🧭 Quick Navigation for Claude
+```bash
+# Claude CLI
+alfred-cli run --issue 302 --branch obs/302-latency-panel \
+               --script scripts/build_latency_panel.py \
+               --open-pr "feat(observability): p95 latency & error-rate panel (Closes #302)"
+```
 
-| Resource                             | Path                                  |
-|--------------------------------------|----------------------------------------|
-| Phase 8.1 goals & task list          | `docs/phase8/phase-8.1.md`             |
-| Architect decisions & guidance       | `docs/phase8/ARCHITECT_NOTES.md`       |
-| Master Namespace Layout              | `docs/dev/namespaces.md`               |
-| GPT-o3 Role Instructions             | `docs/PROJECT_INSTRUCTIONS.md`         |
-| Global Blueprint (all projects)      | `docs/GLOBAL_INSTRUCTIONS.md`          |
-| Slack App Design                     | `docs/slack_app.md` (if exists)        |
-| Latest Production Tag                | GitHub ▸ Releases ▸ `v0.8.2-pre`        |
+## 13. Responsibility Clarification
+
+* **Architect**: *draft* PR/board descriptions, ADR markdown, CLI blocks — but **does not** push commits.
+* **Coordinator**: executes blocks, confirms logs, sets labels.
+* **Claude Code CLI**: implementation & PR generation.
+
+All earlier wording implying the Architect “pushes” or “creates” resources should be read as “Architect drafts an instruction block for the Coordinator to execute.”

@@ -1,6 +1,0 @@
-services:
-  diagnostics-bot:
-    image: ghcr.io/alfred/diagnostics-bot:${DIAG_IMAGE_TAG:-v0.8.3-pre}
-    env_file:
-      - ../.env.dev   # developer creates this from .env.sample
-    restart: unless-stopped

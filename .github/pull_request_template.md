@@ -1,64 +1,57 @@
 ## Description
+<!-- Brief description of changes -->
 
-<!-- A clear and concise description of what this PR does -->
+## Type of Change
+- [ ] 🐛 Bug fix
+- [ ] ✨ New feature
+- [ ] 📚 Documentation
+- [ ] ♻️ Refactoring
+- [ ] 🧹 Cleanup
+- [ ] 🔧 Configuration
 
-## Development Phase
+## File Hygiene Checklist
+- [ ] No new files added to root directory (or justified in PR)
+- [ ] All documentation placed in appropriate `/docs` subdirectory
+- [ ] No temporary/cache files included (`*.tmp`, `*.log`, `__pycache__`)
+- [ ] Large files (>5MB) use Git LFS or justified
+- [ ] No duplicate functionality introduced
 
-<!-- Select the development phase for this PR -->
-- [ ] Phase 0: Foundational changes with basic metrics and monitoring
-- [ ] Phase 1: Enhanced metrics with service_health gauges
-- [ ] Phase 2: Advanced metrics with custom service-specific metrics
-- [ ] Phase 8.1: Type safety enforcement with mypy --strict
-- [ ] Phase 8.2: Prometheus alert enrichment
-- [ ] Phase 8.3: Slack diagnostics enhancements
+## Testing
+- [ ] Tests pass locally (`make test`)
+- [ ] No new warnings from linters (`make lint`)
+- [ ] Pre-commit hooks pass
 
-## Change Type
+## Documentation
+- [ ] Code changes include necessary documentation updates
+- [ ] New features documented in appropriate location
+- [ ] API changes reflected in `/docs/api`
 
-<!-- Select the type of change -->
-- [ ] Feature
-- [ ] Bug fix
-- [ ] Documentation
-- [ ] Refactoring
-- [ ] Infrastructure / DevOps
-
-## CI Sanity Checklist
-
-<!-- Please verify these checks before submitting the PR -->
-
-### Basic Validation
-- [ ] All tests pass locally
-- [ ] Code follows project style guidelines
-- [ ] Required documentation has been updated
-- [ ] mypy --strict passes for alfred.* modules
-- [ ] GPT-o3 (Architect) signed off
-- [ ] Reference to phase doc included
-
-### Metrics and Monitoring
-- [ ] Metrics reach Prometheus (`curl -s http://localhost:9090/api/v1/query?query=service_health`)
-- [ ] Grafana dashboard shows expected metrics
-- [ ] Metrics lint script passes (`./scripts/lint-metrics-format.sh`)
-- [ ] Healthcheck binary is latest version (currently v0.4.0)
-- [ ] Metrics endpoints are accessible on port 9091
-- [ ] All metrics follow naming conventions
-
-### Documentation
-- [ ] README.md updated (if applicable)
-- [ ] CHANGELOG.md updated with version bump
-- [ ] Phase-specific documentation updated
-
-## Screenshots / curl output
-
-<!-- For UI changes or API changes, please include screenshots or curl output to demonstrate the changes -->
-
-## Testing Done
-
-<!-- Describe the testing you've done -->
-
-## Related Issues
-
-<!-- Link to any related issues -->
-Closes #
+## Dependencies
+- [ ] No unnecessary dependencies added
+- [ ] Security vulnerabilities checked
+- [ ] License compatibility verified
 
 ## Additional Notes
+<!-- Any additional context, screenshots, or notes -->
 
-<!-- Any additional information that might be useful for reviewers -->
+---
+<details>
+<summary>PR Standards Reminder</summary>
+
+### Root Directory Rules
+Only these files allowed in root:
+- README.md, CHANGELOG.md, LICENSE, Makefile, VERSION
+- Config files: docker-compose.yml, pyproject.toml, package.json, etc.
+- No scripts, docs, or temporary files
+
+### Documentation Structure
+```
+docs/
+├── api/          # API specifications
+├── architecture/ # Design decisions
+├── guides/       # How-to guides
+├── operational/  # Deployment, status
+├── runbooks/     # Incident response
+└── services/     # Service-specific
+```
+</details>
