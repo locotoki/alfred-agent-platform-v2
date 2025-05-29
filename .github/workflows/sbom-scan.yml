@@ -1,0 +1,36 @@
+name: SBOM Generation
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  sbom:
+    name: Generate SBOM
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: Install CycloneDX
+        run: pip install cyclonedx-bom
+      
+      - name: Generate SBOM
+        run: |
+          # Generate SBOM if requirements.txt exists
+          if [ -f requirements.txt ]; then
+            cyclonedx-py requirements -i requirements.txt -o sbom.json --format json
+          else
+            echo "No requirements.txt found"
+          fi
+      
+      - name: Upload SBOM
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sbom-${{ github.run_id }}
+          path: sbom.json
