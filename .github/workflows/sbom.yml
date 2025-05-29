@@ -24,7 +24,7 @@ jobs:
       - name: Generate SBOM
         run: |
           if [ -f requirements.txt ]; then
-            cyclonedx-py requirements requirements.txt --output sbom.json --format json
+            cyclonedx-py requirements -i requirements.txt -o sbom.json --format json
             echo "✅ SBOM generated successfully"
           else
             echo "⚠️ No requirements.txt found"
