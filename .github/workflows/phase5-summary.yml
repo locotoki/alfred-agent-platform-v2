@@ -1,3 +1,6 @@
+# DISABLED: This workflow is temporarily disabled
+if: false
+
 name: Phase 5 Implementation Summary
 
 permissions:
