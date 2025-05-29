@@ -1,0 +1,103 @@
+site_name: Alfred Agent Platform
+site_description: Enterprise-grade AI agent orchestration platform
+site_url: https://digital-native-ventures.github.io/alfred-agent-platform-v2/
+repo_url: https://github.com/Digital-Native-Ventures/alfred-agent-platform-v2
+repo_name: alfred-agent-platform-v2
+
+theme:
+  name: material
+  palette:
+    - scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.expand
+    - navigation.path
+    - navigation.top
+    - search.suggest
+    - search.highlight
+    - content.tabs.link
+    - content.code.annotation
+    - content.code.copy
+  language: en
+
+plugins:
+  - search
+  - mermaid2
+
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - admonition
+  - pymdownx.arithmatex:
+      generic: true
+  - footnotes
+  - pymdownx.details
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.mark
+  - attr_list
+  - pymdownx.emoji:
+      emoji_index: !!python/name:materialx.emoji.twemoji
+      emoji_generator: !!python/name:materialx.emoji.to_svg
+
+nav:
+  - Home: README.md
+  - Getting Started:
+    - Quick Start: guides/quickstart.md
+    - Local Development: LOCAL-DEV-QUICKSTART.md
+    - Environment Setup: ENV-QUICKSTART.md
+    - Deployment Guide: DEPLOYMENT-QUICKSTART.md
+  - Architecture:
+    - System Overview: docs/architecture/system-architecture.md
+    - Service Architecture: docs/architecture/SERVICE_CONTAINERIZATION.md
+    - Port Allocation: docs/architecture/PORT-ALLOCATION.md
+    - Decision Log: docs/architecture/DECISION_LOG.md
+    - ADRs:
+      - ADR-001: docs/architecture/ADR-001.md
+  - Services:
+    - Agent Core: docs/services/alfred-core/README.md
+    - Social Intelligence: docs/services/social-intel/README.md
+    - Slack Integration: docs/services/slack-app/README.md
+    - CRM Sync: docs/services/crm-sync/README.md
+    - Contact Ingest: docs/services/contact-ingest/README.md
+  - Operations:
+    - Health Checks: docs/operational/HEALTH_CHECK_STANDARD.md
+    - Monitoring: docs/operational/ALERTING.md
+    - Deployment: docs/operational/DEPLOYMENT-PROGRESS.md
+    - Runbooks:
+      - Critical Alerts: docs/runbooks/alfred_core_health_critical.md
+      - Credential Rotation: docs/runbooks/credential_rotation_postgres.md
+  - Development:
+    - Contributing: docs/CONTRIBUTING.md
+    - Code Standards: docs/guides/code-style-guide.md
+    - Testing: docs/guides/testing-guide.md
+    - Security: docs/SECURITY.md
+  - API Reference:
+    - Overview: docs/api/README.md
+    - REST API: docs/api/rest-api.md
+    - GraphQL: docs/api/graphql.md
+  - Changelog: CHANGELOG.md
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/Digital-Native-Ventures/alfred-agent-platform-v2
+  version:
+    provider: mike

@@ -102,12 +102,35 @@ jobs:
           echo "repository=$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')" >> $GITHUB_OUTPUT
 
       - name: Build & push ${{ matrix.name }}
+        id: build
         uses: docker/build-push-action@v5
         with:
           provenance: false
           sbom: false
-          push: true
+          push: false
+          load: true
           tags: ghcr.io/${{ steps.tag.outputs.repository }}/${{ matrix.name }}:${{ steps.tag.outputs.tag }}
           file: ${{ matrix.dockerfile }}
           context: ${{ matrix.context }}
           platforms: linux/amd64
+
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: ghcr.io/${{ steps.tag.outputs.repository }}/${{ matrix.name }}:${{ steps.tag.outputs.tag }}
+          format: 'sarif'
+          output: 'trivy-results-${{ matrix.name }}.sarif'
+          severity: 'CRITICAL,HIGH'
+          exit-code: '1'
+
+      - name: Upload Trivy scan results to GitHub Security
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: 'trivy-results-${{ matrix.name }}.sarif'
+          category: 'trivy-${{ matrix.name }}'
+
+      - name: Push image if scan passes
+        if: success()
+        run: |
+          docker push ghcr.io/${{ steps.tag.outputs.repository }}/${{ matrix.name }}:${{ steps.tag.outputs.tag }}

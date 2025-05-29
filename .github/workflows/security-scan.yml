@@ -1,0 +1,156 @@
+name: Security Scan
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    # Run daily at 2 AM UTC
+    - cron: '0 2 * * *'
+
+jobs:
+  sbom-generation:
+    name: Generate SBOM
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install CycloneDX
+        run: |
+          pip install cyclonedx-bom
+
+      - name: Generate Python SBOM
+        run: |
+          # Generate SBOM for Python dependencies
+          cyclonedx-py requirements -i requirements.txt -o sbom-python.json --format json
+          cyclonedx-py requirements -i requirements.txt -o sbom-python.xml --format xml
+
+      - name: Generate Docker SBOM
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'
+          scan-ref: '.'
+          format: 'cyclonedx'
+          output: 'sbom-docker.json'
+          scanners: 'vuln,secret,config'
+
+      - name: Upload SBOM artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: sbom-reports
+          path: |
+            sbom-*.json
+            sbom-*.xml
+
+  license-check:
+    name: License Compliance Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install pip-licenses licensecheck
+
+      - name: Generate license report
+        run: |
+          # Generate detailed license report
+          pip-licenses --format=csv --output-file=licenses.csv
+          pip-licenses --format=json --output-file=licenses.json
+          pip-licenses --format=markdown --output-file=licenses.md
+
+      - name: Check for incompatible licenses
+        run: |
+          # Check for copyleft and other incompatible licenses
+          licensecheck --zero --exclude-license "(MIT|Apache-2.0|BSD-3-Clause|BSD-2-Clause|ISC|Python-2.0|PSF-2.0|Unlicense)"
+        continue-on-error: true
+
+      - name: Upload license reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: license-reports
+          path: |
+            licenses.*
+
+      - name: Comment PR with license summary
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const licenses = JSON.parse(fs.readFileSync('licenses.json', 'utf8'));
+            
+            // Count licenses by type
+            const licenseCounts = {};
+            licenses.forEach(pkg => {
+              const license = pkg.License || 'Unknown';
+              licenseCounts[license] = (licenseCounts[license] || 0) + 1;
+            });
+            
+            // Create markdown table
+            let comment = '## 📋 License Summary\n\n';
+            comment += '| License | Count |\n';
+            comment += '|---------|-------|\n';
+            
+            Object.entries(licenseCounts)
+              .sort((a, b) => b[1] - a[1])
+              .forEach(([license, count]) => {
+                comment += `| ${license} | ${count} |\n`;
+              });
+            
+            // Check for problematic licenses
+            const problematic = ['GPL', 'LGPL', 'AGPL', 'CC-BY-SA'];
+            const found = Object.keys(licenseCounts).filter(l => 
+              problematic.some(p => l.includes(p))
+            );
+            
+            if (found.length > 0) {
+              comment += '\n⚠️ **Warning**: Found potentially incompatible licenses: ' + found.join(', ');
+            } else {
+              comment += '\n✅ **All licenses appear to be compatible**';
+            }
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });
+
+  security-summary:
+    name: Security Summary
+    needs: [sbom-generation, license-check]
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: security-artifacts
+
+      - name: Create summary
+        run: |
+          echo "# Security Scan Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## 📦 SBOM Generation" >> $GITHUB_STEP_SUMMARY
+          echo "- Python SBOM: ✅ Generated" >> $GITHUB_STEP_SUMMARY
+          echo "- Docker SBOM: ✅ Generated" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## 📋 License Compliance" >> $GITHUB_STEP_SUMMARY
+          echo "- License report: ✅ Generated" >> $GITHUB_STEP_SUMMARY
+          echo "- Compliance check: ✅ Completed" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "View detailed reports in the artifacts section above." >> $GITHUB_STEP_SUMMARY

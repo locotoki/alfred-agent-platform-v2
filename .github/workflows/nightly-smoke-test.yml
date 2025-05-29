@@ -1,0 +1,120 @@
+name: Nightly Smoke Test
+
+on:
+  schedule:
+    # Run at 3 AM UTC every day
+    - cron: '0 3 * * *'
+  workflow_dispatch:
+    inputs:
+      debug:
+        description: 'Enable debug logging'
+        required: false
+        type: boolean
+        default: false
+
+jobs:
+  smoke-test:
+    name: Run Smoke Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Start slim services
+        run: |
+          docker-compose -f docker-compose.slim.yml up -d
+          echo "Waiting for services to be healthy..."
+          
+      - name: Wait for services
+        run: |
+          # Wait for all services to be healthy
+          timeout 300 bash -c 'until docker-compose -f docker-compose.slim.yml ps | grep -E "(healthy|running)" | wc -l | grep -q "4"; do sleep 5; echo "Waiting for services..."; done'
+          
+          # Show service status
+          docker-compose -f docker-compose.slim.yml ps
+
+      - name: Run health checks
+        run: |
+          # Check Redis
+          docker-compose -f docker-compose.slim.yml exec -T redis redis-cli ping | grep -q "PONG"
+          echo "✅ Redis is healthy"
+          
+          # Check PostgreSQL
+          docker-compose -f docker-compose.slim.yml exec -T db-postgres pg_isready -U postgres
+          echo "✅ PostgreSQL is healthy"
+          
+          # Check agent-core API
+          curl -f http://localhost:8011/health || exit 1
+          echo "✅ Agent Core API is healthy"
+          
+          # Check UI
+          curl -f http://localhost:8501/_stcore/health || exit 1
+          echo "✅ UI Chat is healthy"
+
+      - name: Run basic functional tests
+        run: |
+          # Test database connectivity
+          docker-compose -f docker-compose.slim.yml exec -T db-postgres psql -U postgres -c "SELECT 1" || exit 1
+          echo "✅ Database query successful"
+          
+          # Test Redis operations
+          docker-compose -f docker-compose.slim.yml exec -T redis redis-cli SET test_key "test_value" || exit 1
+          docker-compose -f docker-compose.slim.yml exec -T redis redis-cli GET test_key | grep -q "test_value" || exit 1
+          echo "✅ Redis operations successful"
+          
+          # Test API endpoint
+          response=$(curl -s -X GET http://localhost:8011/api/v1/status || echo "failed")
+          if [[ "$response" == "failed" ]]; then
+            echo "❌ API test failed"
+            exit 1
+          fi
+          echo "✅ API endpoint test successful"
+
+      - name: Collect logs on failure
+        if: failure()
+        run: |
+          echo "=== Docker Compose Logs ==="
+          docker-compose -f docker-compose.slim.yml logs --tail=100
+          
+          echo "=== Docker Process Status ==="
+          docker ps -a
+          
+          echo "=== System Resources ==="
+          df -h
+          free -h
+
+      - name: Clean up
+        if: always()
+        run: |
+          docker-compose -f docker-compose.slim.yml down -v
+          docker system prune -f
+
+      - name: Send notification on failure
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const issue = await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `🚨 Nightly Smoke Test Failed - ${new Date().toISOString().split('T')[0]}`,
+              body: `The nightly smoke test failed. Please check the [workflow run](${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}) for details.`,
+              labels: ['bug', 'ci-failure', 'urgent']
+            });
+            console.log(`Created issue #${issue.data.number}`);
+
+  report-success:
+    name: Report Success
+    needs: smoke-test
+    if: success()
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Update status
+        run: |
+          echo "✅ Nightly smoke test passed successfully at $(date -u +%Y-%m-%dT%H:%M:%SZ)" >> $GITHUB_STEP_SUMMARY

@@ -1,0 +1,71 @@
+# Slack Integration Stack - Complete Configuration
+# This file ensures all Slack services start together with proper dependencies
+
+services:
+  # Slack Adapter - Basic HTTP endpoint
+  slack-adapter:
+    env_file: .env
+    depends_on:
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/healthz"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  # Slack MCP Gateway - Socket Mode connection
+  slack_mcp_gateway:
+    build:
+      context: ./services/slack_mcp_gateway
+      dockerfile: Dockerfile
+    image: slack-mcp-gateway:latest
+    container_name: slack_mcp_gateway
+    env_file: .env
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - REDIS_URL=redis://redis:6379
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - SLACK_APP_TOKEN=${SLACK_APP_TOKEN}
+      - SLACK_BOT_TOKEN=${SLACK_BOT_TOKEN}
+      - LOG_LEVEL=debug
+    ports:
+      - "3010:3000"
+      - "9127:9091"
+    depends_on:
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    networks:
+      - alfred-network
+
+  # Echo Agent - Command processor
+  echo-agent:
+    build:
+      context: ./services/slack_mcp_gateway
+      dockerfile: Dockerfile.echo-agent
+    image: echo-agent:latest
+    container_name: echo-agent
+    env_file: .env
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - PYTHONUNBUFFERED=1
+    depends_on:
+      redis:
+        condition: service_healthy
+      slack_mcp_gateway:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - alfred-network

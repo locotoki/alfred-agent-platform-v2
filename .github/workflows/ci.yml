@@ -77,3 +77,34 @@ jobs:
         run: |
           ./scripts/update-images-lock.sh
           git diff --exit-code images.lock
+
+  # 📦 SBOM and License Check
+  sbom-license:
+    needs: lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: Install tools
+        run: |
+          pip install cyclonedx-bom pip-licenses licensecheck
+      
+      - name: Generate SBOM
+        run: |
+          cyclonedx-py requirements -i requirements.txt -o sbom.json --format json
+      
+      - name: Check licenses
+        run: |
+          # Allow common open source licenses
+          licensecheck --zero --exclude-license "(MIT|Apache-2.0|BSD-3-Clause|BSD-2-Clause|ISC|Python-2.0|PSF-2.0|Unlicense)"
+        continue-on-error: true
+      
+      - name: Upload SBOM
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: sbom-ci-${{ github.run_id }}
+          path: sbom.json
