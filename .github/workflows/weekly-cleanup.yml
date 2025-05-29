@@ -1,0 +1,105 @@
+name: Weekly Cleanup
+
+on:
+  schedule:
+    - cron: '0 2 * * 0'  # 2 AM UTC every Sunday
+  workflow_dispatch:
+
+jobs:
+  cleanup-runner:
+    name: Clean Runner Cache
+    runs-on: ubuntu-latest
+    steps:
+      - name: Prune old Docker images
+        run: |
+          echo "🧹 Pruning Docker images older than 7 days..."
+          docker image prune -af --filter "until=168h"
+          
+          echo "📊 Disk usage before cleanup:"
+          df -h
+          
+          echo "🗑️ Removing all unused Docker resources..."
+          docker system prune -af --volumes
+          
+          echo "📊 Disk usage after cleanup:"
+          df -h
+      
+      - name: Clean build caches
+        run: |
+          echo "🧹 Cleaning build caches..."
+          # Clean npm cache if exists
+          npm cache clean --force 2>/dev/null || true
+          
+          # Clean pip cache
+          pip cache purge 2>/dev/null || true
+          
+          # Clean apt cache
+          sudo apt-get clean
+          sudo apt-get autoremove -y
+      
+      - name: Report space saved
+        run: |
+          echo "✅ Weekly cleanup complete"
+          echo "Available disk space:"
+          df -h /
+
+  cleanup-repo:
+    name: Clean Repository Files
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Find and remove temporary files
+        run: |
+          echo "🧹 Removing temporary files..."
+          
+          # Remove editor backup files
+          find . -name "*~" -type f -delete
+          find . -name "*.swp" -type f -delete
+          find . -name ".DS_Store" -type f -delete
+          
+          # Remove Python cache
+          find . -name "__pycache__" -type d -exec rm -rf {} + 2>/dev/null || true
+          find . -name "*.pyc" -type f -delete
+          find . -name "*.pyo" -type f -delete
+          
+          # Remove test artifacts
+          find . -name ".pytest_cache" -type d -exec rm -rf {} + 2>/dev/null || true
+          find . -name ".coverage" -type f -delete
+          find . -name "htmlcov" -type d -exec rm -rf {} + 2>/dev/null || true
+          
+          # Count what was cleaned
+          echo "✅ Cleanup complete"
+      
+      - name: Check for large files
+        run: |
+          echo "🔍 Checking for large files..."
+          
+          # Find files larger than 10MB
+          LARGE_FILES=$(find . -type f -size +10M -not -path "./.git/*" | head -20)
+          
+          if [ -n "$LARGE_FILES" ]; then
+            echo "⚠️ Found large files (>10MB):"
+            echo "$LARGE_FILES"
+            echo ""
+            echo "Consider using Git LFS for these files"
+          else
+            echo "✅ No large files found"
+          fi
+      
+      - name: Stale branch report
+        run: |
+          echo "📊 Stale branch report..."
+          
+          # List branches not updated in 30 days
+          git for-each-ref --format='%(committerdate:raw)%(refname:short)' refs/remotes/origin/ | \
+            awk '$1 < '$(date -d "30 days ago" +%s)' {print $2}' | \
+            sed 's|origin/||' | \
+            grep -v "main\|master\|develop" > stale-branches.txt || true
+          
+          if [ -s stale-branches.txt ]; then
+            echo "⚠️ Branches not updated in 30+ days:"
+            cat stale-branches.txt
+          else
+            echo "✅ No stale branches found"
+          fi
