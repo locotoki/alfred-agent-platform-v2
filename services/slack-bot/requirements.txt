@@ -1,0 +1,5 @@
+slack_bolt==1.18.0
+fastapi==0.110.0
+uvicorn==0.29.0
+redis==5.0.3
+aiohttp==3.9.3
