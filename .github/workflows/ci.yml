@@ -65,3 +65,15 @@ jobs:
             const core = require('@actions/core');
             const conclusion = '${{ needs.lint.result }} / ${{ needs.unit.result }} / ${{ needs.integration.result }}';
             core.notice(`Composite conclusion: ${conclusion}`);
+
+
+  # 🔒 images.lock guard
+  images-lock:
+    needs: lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check images.lock unchanged
+        run: |
+          ./scripts/update-images-lock.sh
+          git diff --exit-code images.lock

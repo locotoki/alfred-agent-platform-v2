@@ -46,6 +46,9 @@ jobs:
           - name: slack-app
             dockerfile: ./services/slack_app/Dockerfile
             context: .
+          - name: slack-bot
+            dockerfile: ./services/slack-bot/Dockerfile
+            context: .
           - name: social-intel
             dockerfile: ./services/social-intel/Dockerfile
             context: .
