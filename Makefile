@@ -3,11 +3,13 @@
 -include .env
 export $(shell [ -f .env ] && sed 's/=.*//' .env)
 
-.PHONY: help install start stop restart clean test test-unit test-integration test-e2e lint format fmt dev deploy build update-dashboards setup-metrics compose-generate up down board-sync scripts-inventory deps-inventory vuln-scan license-scan audit-dashboard cve-alert
+.PHONY: help install start stop restart clean test test-unit test-integration test-e2e lint format fmt dev deploy build update-dashboards setup-metrics compose-generate up down board-sync scripts-inventory deps-inventory vuln-scan license-scan audit-dashboard cve-alert setup-env validate-env
 
 help:
 	@echo "Alfred Agent Platform v2 Makefile"
 	@echo "--------------------------------"
+	@echo "setup-env            Setup local environment (first time)"
+	@echo "validate-env         Validate environment variables"
 	@echo "install              Install all dependencies"
 	@echo "start                Start all services"
 	@echo "stop                 Stop all services"
@@ -35,7 +37,21 @@ help:
 	@echo "audit-dashboard      Generate audit dashboard markdown"
 	@echo "cve-alert            Send CVE alerts to Slack for HIGH/CRITICAL vulnerabilities"
 
-install:
+setup-env:
+	@if [ ! -f .env ]; then \
+		cp .env.template .env; \
+		echo "✅ Created .env from template"; \
+		echo "⚠️  Please edit .env with actual secrets"; \
+		echo "Run 'make validate-env' after adding secrets"; \
+	else \
+		echo "✅ .env already exists"; \
+		$(MAKE) validate-env; \
+	fi
+
+validate-env:
+	@./scripts/validate-env.sh
+
+install: validate-env
 	pip install -r requirements.txt
 	pip install -r requirements-dev.txt
 
