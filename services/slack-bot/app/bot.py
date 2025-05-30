@@ -8,7 +8,7 @@ import os
 from contextlib import asynccontextmanager
 
 import redis.asyncio as redis
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from slack_bolt.adapter.fastapi.async_handler import AsyncSlackRequestHandler
 from slack_bolt.app.async_app import AsyncApp
 
@@ -80,7 +80,7 @@ async def health():
 
 
 @app.post("/slack/events")
-async def slack_events(req):
+async def slack_events(req: Request):
     """Handle Slack events"""
     return await handler.handle(req)
 
