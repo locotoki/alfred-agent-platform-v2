@@ -5,11 +5,11 @@
 
 ## 📚 Documentation
 
-- **[Quick Reference](docs/QUICK-REFERENCE.md)** - Common commands and troubleshooting
-- **[AI Assistant Guide](CLAUDE.md)** - Development guidelines for AI assistants
-- **[Security Guide](docs/SECURITY.md)** - Security practices and guidelines  
-- **[Maintenance Guide](docs/MAINTENANCE.md)** - Operational procedures
-- **[Contributing](docs/CONTRIBUTING.md)** - How to contribute to the project
+- **[AI Assistant Guide](CLAUDE.md)** - Development guidelines for AI assistants  
+- **[Environment Setup](ENV-QUICKSTART.md)** - Quick start guide for environment configuration
+- **[Architect Instructions](docs/PROJECT_INSTRUCTIONS.md)** - GPT-o3 architecture guidelines
+- **[Health Check Guide](docs/HEALTH_CHECK_IMPLEMENTATION_GUIDE.md)** - Service health monitoring
+- **[Environment Variables](docs/ENVIRONMENT_VARIABLES.md)** - Complete env var reference
 
 [![Black Code Style](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![Black Format Check](https://github.com/locotoki/alfred-agent-platform-v2/actions/workflows/black-check.yml/badge.svg?branch=main)](https://github.com/locotoki/alfred-agent-platform-v2/actions/workflows/black-check.yml)

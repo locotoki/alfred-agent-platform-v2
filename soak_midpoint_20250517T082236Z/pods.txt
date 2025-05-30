@@ -1,6 +1,0 @@
-NAME                           READY   STATUS    RESTARTS   AGE     IP              NODE         NOMINATED NODE   READINESS GATES
-db-api-metrics-6d7bf9b88b-xk7fv    1/1     Running   0          12h     10.244.1.45     worker-01    <none>           <none>
-db-admin-metrics-7c56f84c77-9p3zq  1/1     Running   0          12h     10.244.2.67     worker-02    <none>           <none>
-db-auth-metrics-5b8f9d77d6-lm4nt   1/1     Running   0          12h     10.244.3.89     worker-03    <none>           <none>
-db-realtime-metrics-9d4c6f88c5-zt8wp 1/1     Running   0          12h   10.244.1.46     worker-01    <none>           <none>
-db-storage-metrics-8c7b5e99d4-qr3vx  1/1     Running   0          12h   10.244.2.68     worker-02    <none>           <none>
