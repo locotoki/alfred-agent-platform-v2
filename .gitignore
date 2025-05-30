@@ -48,6 +48,58 @@ credentials/
 
 # ML Models
 models/
+
+# Generated and temporary files
+docker-compose.generated.yml
+docker-compose-clean.yml
+flake8_*.txt
+mypy*.txt
+*_failures.txt
+*_violations.txt
+ga_diff.txt
+pre_*.txt
+post_*.txt
+mypy_namespace_pass*.txt
+mypy_post_namespace_refactor.txt
+
+# Log files
+*.log
+ci_log.txt
+coverage_log.txt
+deploy_msg.txt
+
+# Temporary fix scripts that shouldn't be tracked
+port-fix-inject.js
+metrics_fix.py
+
+# Data files that should be in data/ directory
+project_files.txt
+actual-services.txt
+canonical-services.txt
+current-services.txt
+collection_hooks.txt
+ignores.txt
+licence-UNKNOWN.txt
+pytestmarks.txt
+vulture_whitelist.txt
+xfails.txt
+
+# Service-specific files
+niche-scout-viewer.html
+create-niche-scout-results.js
+clean-youtube-service.ts
+fixed-youtube-service.ts
+simplified-youtube-service.ts
+
+# Archives
+*.tar.gz
+*.tgz
+
+# Status markers (unless explicitly needed)
+.db_storage_fixed
+
+# Nested project directory (accidental)
+alfred-agent-platform-v2/
 *.gguf
 *.bin
 *.pt
