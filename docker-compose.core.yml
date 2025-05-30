@@ -1,0 +1,39 @@
+services:
+  # keep these
+  redis: {}
+  redis-exporter: {}
+  db-postgres: {}
+  db-api: {}
+  agent-core: {}
+  telegram-adapter: {}
+  pubsub-metrics: {}
+  monitoring-metrics: {}
+  monitoring-dashboard: {}
+  # explicitly scale non-critical services down
+  agent-atlas:
+    deploy:
+      replicas: 0
+  agent-social:
+    deploy:
+      replicas: 0
+  agent-rag:
+    deploy:
+      replicas: 0
+  agent-bizdev:
+    deploy:
+      replicas: 0
+  model-router:
+    deploy:
+      replicas: 0
+  llm-service:
+    deploy:
+      replicas: 0
+  model-registry:
+    deploy:
+      replicas: 0
+  slack-bot:
+    deploy:
+      replicas: 0
+  monitoring-node:
+    deploy:
+      replicas: 0
