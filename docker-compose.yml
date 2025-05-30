@@ -195,16 +195,25 @@ services:
     - 9094:9091
     volumes:
     - llm-service-data:/root/.ollama
+    environment:
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+    command:
+    - uvicorn
+    - llm.main:app
+    - --host
+    - 0.0.0.0
+    - --port
+    - '8000'
     healthcheck:
       interval: 30s
-      timeout: 20s
-      retries: 5
+      timeout: 5s
+      retries: 3
       start_period: 20s
       test:
       - CMD
       - curl
-      - -f
-      - http://localhost:11434/api/tags
+      - -fsSL
+      - http://llm-service:8000/health
     restart: unless-stopped
     deploy: null
     networks:
@@ -457,18 +466,18 @@ services:
       PGRST_DB_SCHEMAS: public,storage,graphql_public
       PGRST_DB_ANON_ROLE: anon
       PGRST_JWT_SECRET: ${DB_JWT_SECRET:-your-super-secret-jwt-token}
+      DATABASE_URL: postgresql://postgres:${POSTGRES_PASSWORD}@db-postgres:5432/alfred
     healthcheck:
       interval: 30s
-      timeout: 20s
-      retries: 5
+      timeout: 5s
+      retries: 3
       start_period: 45s
       test:
       - CMD
       - wget
-      - --no-verbose
-      - --tries=1
       - --spider
-      - http://localhost:3000/
+      - -q
+      - http://db-api:8000/health
     depends_on:
       db-postgres:
         condition: service_healthy
