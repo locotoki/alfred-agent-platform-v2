@@ -802,40 +802,40 @@ services:
       com.docker.compose.project: alfred
       com.docker.compose.group: agents
       com.docker.compose.service: agent-core
-  slack-adapter:
-    build:
-      context: .
-      dockerfile: ./alfred/adapters/slack/Dockerfile
-    image: alfred-slack-adapter:latest
-    container_name: slack-adapter
-    ports:
-    - 3011:8000
-    - 9128:9091
-    environment:
-    - SLACK_SIGNING_SECRET=${SLACK_SIGNING_SECRET}
-    - ALFRED_LOG_LEVEL=${ALFRED_LOG_LEVEL:-INFO}
-    - PROMETHEUS_MULTIPROC_DIR=/tmp/prometheus
-    healthcheck:
-      interval: 30s
-      timeout: 20s
-      retries: 5
-      start_period: 45s
-      test:
-      - CMD
-      - curl
-      - -f
-      - http://localhost:8000/healthz
-    depends_on:
-      redis:
-        condition: service_healthy
-    restart: unless-stopped
-    networks:
-    - alfred-network
-    labels:
-      com.docker.compose.project: alfred
-      com.docker.compose.group: agents
-      com.docker.compose.service: slack-adapter
-      prometheus.metrics.port: '9091'
+  # slack-adapter: (consolidated into slack-bot)
+  #   build:
+  #     context: .
+  #     dockerfile: ./alfred/adapters/slack/Dockerfile
+  #   image: alfred-slack-adapter:latest
+  #   container_name: slack-adapter
+  #   ports:
+  #   - 3011:8000
+  #   - 9128:9091
+  #   environment:
+  #   - SLACK_SIGNING_SECRET=${SLACK_SIGNING_SECRET}
+  #   - ALFRED_LOG_LEVEL=${ALFRED_LOG_LEVEL:-INFO}
+  #   - PROMETHEUS_MULTIPROC_DIR=/tmp/prometheus
+  #   healthcheck:
+  #     interval: 30s
+  #     timeout: 20s
+  #     retries: 5
+  #     start_period: 45s
+  #     test:
+  #     - CMD
+  #     - curl
+  #     - -f
+  #     - http://localhost:8000/healthz
+  #   depends_on:
+  #     redis:
+  #       condition: service_healthy
+  #   restart: unless-stopped
+  #   networks:
+  #   - alfred-network
+  #   labels:
+  #     com.docker.compose.project: alfred
+  #     com.docker.compose.group: agents
+  #     com.docker.compose.service: slack-adapter
+  #     prometheus.metrics.port: '9091'
   telegram-adapter:
     build:
       context: ./adapters/telegram
@@ -1434,7 +1434,7 @@ services:
     image: ghcr.io/digital-native-ventures/slack-bot:${TAG:-edge}
     container_name: slack-bot
     ports:
-    - 3012:8000
+    - 3011:8000  # Using original slack-adapter port
     environment:
     - SLACK_BOT_TOKEN=${SLACK_BOT_TOKEN}
     - SLACK_SIGNING_SECRET=${SLACK_SIGNING_SECRET}
