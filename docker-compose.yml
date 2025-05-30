@@ -60,7 +60,7 @@ services:
       com.docker.compose.group: infrastructure
       com.docker.compose.service: redis
   redis-exporter:
-    image: oliver006/redis_exporter:v1.55.0
+    image: oliver006/redis_exporter:v1.62.0
     container_name: redis-exporter
     ports:
     - 9101:9121
@@ -474,10 +474,9 @@ services:
       start_period: 45s
       test:
       - CMD
-      - wget
-      - --spider
-      - -q
-      - http://localhost:3000/
+      - curl
+      - -fsSL
+      - http://db-api:8000/health
     depends_on:
       db-postgres:
         condition: service_healthy
