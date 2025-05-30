@@ -459,25 +459,13 @@ services:
     ports:
     - 3000:3000
     environment:
-      PGRST_DB_URI: postgres://${DB_USER:-postgres}:${DB_PASSWORD:-your-super-secret-password}@db-postgres:5432/${DB_NAME:-postgres}
+      PGRST_DB_URI: postgres://postgres:${POSTGRES_PASSWORD}@db-postgres:5432/postgres
       PGRST_DB_SCHEMAS: public,storage,graphql_public
       PGRST_DB_ANON_ROLE: anon
       PGRST_JWT_SECRET: ${DB_JWT_SECRET:-your-super-secret-jwt-token}
       DATABASE_URL: postgresql://postgres:${POSTGRES_PASSWORD}@db-postgres:5432/alfred
-    healthcheck:
-      interval: 30s
-      timeout: 5s
-      retries: 3
-      start_period: 120s
-      test:
-      - CMD
-      - curl
-      - -fsSL
-      - -o
-      - /dev/null
-      - -w
-      - "%{http_code}"
-      - http://localhost:3000/
+    # Health check disabled - PostgREST image has no shell or utilities
+    # Service is healthy if it starts and responds on port 3000
     depends_on:
       db-postgres:
         condition: service_healthy

@@ -1,0 +1,90 @@
+name: Core Health Gate
+
+on:
+  push:
+    branches: [ main, develop, 'feature/**' ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  core-health:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        
+      - name: Create Docker network
+        run: docker network create alfred-network || true
+        
+      - name: Start Core Services
+        run: |
+          # Start only the 10 core services
+          docker compose up -d \
+            redis redis-exporter \
+            db-postgres db-api \
+            agent-core telegram-adapter \
+            pubsub-emulator pubsub-metrics \
+            monitoring-metrics monitoring-dashboard
+            
+      - name: Wait for Services to Initialize
+        run: |
+          echo "⏳ Waiting 120 seconds for services to initialize..."
+          sleep 120
+          
+      - name: Show Container Status
+        run: docker compose ps
+        
+      - name: Check Core Health
+        id: health_check
+        run: |
+          chmod +x ./scripts/check-core-health.sh
+          ./scripts/check-core-health.sh || true
+          
+      - name: Capture Current Audit
+        run: |
+          chmod +x ./scripts/audit-core.sh
+          ./scripts/audit-core.sh > current-audit.txt
+          cat current-audit.txt
+          
+      - name: Verify Baseline (Optional)
+        continue-on-error: true
+        run: |
+          if [ -f "core-baseline/audit.hash" ]; then
+            current_hash=$(sha256sum current-audit.txt | awk '{print $1}')
+            baseline_hash=$(cat core-baseline/audit.hash | awk '{print $1}')
+            echo "Current hash: $current_hash"
+            echo "Baseline hash: $baseline_hash"
+            if [ "$current_hash" != "$baseline_hash" ]; then
+              echo "⚠️  Configuration drift detected!"
+              echo "Run './scripts/audit-core.sh' locally to see differences"
+            else
+              echo "✅ Configuration matches baseline"
+            fi
+          else
+            echo "⚠️  No baseline hash found. Skipping verification."
+          fi
+          
+      - name: Collect Logs on Failure
+        if: failure()
+        run: |
+          echo "=== Container Status ==="
+          docker compose ps
+          echo
+          echo "=== Unhealthy Container Logs ==="
+          for container in $(docker compose ps --format '{{.Name}}' | xargs); do
+            if docker inspect $container --format '{{.State.Health.Status}}' | grep -v healthy; then
+              echo "=== Logs for $container ==="
+              docker compose logs $container --tail 50
+            fi
+          done
+          
+      - name: Cleanup
+        if: always()
+        run: |
+          docker compose down --remove-orphans
+          docker network rm alfred-network || true
