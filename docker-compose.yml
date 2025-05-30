@@ -1438,7 +1438,7 @@ services:
     environment:
     - SLACK_BOT_TOKEN=${SLACK_BOT_TOKEN}
     - SLACK_SIGNING_SECRET=${SLACK_SIGNING_SECRET}
-    - REDIS_URL=redis://redis:6379
+    - REDIS_URL=redis://:${REDIS_PASSWORD}@redis:6379
     depends_on:
       redis:
         condition: service_healthy
