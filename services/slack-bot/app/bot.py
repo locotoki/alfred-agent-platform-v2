@@ -27,7 +27,9 @@ async def lifespan(app: FastAPI):
 
     # Startup
     logger.info("Initializing Redis connection...")
-    redis_client = await redis.from_url("redis://localhost:6379", decode_responses=True)
+    # Use Redis container name when running in Docker, localhost for local dev
+    redis_url = os.environ.get("REDIS_URL", "redis://redis:6379")
+    redis_client = await redis.from_url(redis_url, decode_responses=True)
 
     # Initialize Slack app
     # Note: retry handlers are configured during AsyncApp initialization
