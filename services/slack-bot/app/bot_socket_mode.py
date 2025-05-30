@@ -5,6 +5,7 @@ Slack bot implementation with Socket Mode and Redis integration
 import asyncio
 import logging
 import os
+import re
 from contextlib import asynccontextmanager
 
 import redis.asyncio as redis
@@ -13,8 +14,8 @@ from slack_bolt.app.async_app import AsyncApp
 from slack_bolt.adapter.socket_mode.async_handler import AsyncSocketModeHandler
 
 # Configure logging
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger("bot_socket_mode")
 
 # Redis client (embedded)
 redis_client = None
@@ -31,6 +32,17 @@ async def lifespan(app: FastAPI):
     redis_url = os.environ.get("REDIS_URL", "redis://redis:6379")
     redis_client = await redis.from_url(redis_url, decode_responses=True)
 
+    # Start Socket Mode handler
+    app_token = os.environ.get("SLACK_APP_TOKEN")
+    if app_token:
+        handler = AsyncSocketModeHandler(slack_app, app_token)
+        logger.info("Starting Socket Mode handler...")
+        logger.info(f"Registered commands: {list(slack_app._slash_command_listeners.keys())}")
+        # Start Socket Mode in the background
+        asyncio.create_task(handler.start_async())
+    else:
+        logger.warning("SLACK_APP_TOKEN not found, Socket Mode disabled")
+
     yield
 
     # Shutdown
@@ -41,10 +53,13 @@ async def lifespan(app: FastAPI):
 # Initialize FastAPI with lifespan
 app = FastAPI(lifespan=lifespan)
 
-# Initialize Slack app
+# Initialize Slack app with debug logging
 slack_app = AsyncApp(
     token=os.environ.get("SLACK_BOT_TOKEN"),
-    # Socket Mode doesn't use signing secret for verification
+    signing_secret=os.environ.get("SLACK_SIGNING_SECRET"),
+    logger=logger,
+    # Set to DEBUG to see full payloads
+    log_level="DEBUG"
 )
 
 
@@ -73,11 +88,13 @@ async def health():
         raise HTTPException(status_code=503, detail=str(e))
 
 
-# Slack command handler
+# Slack command handler - register WITH slash prefix
 @slack_app.command("/alfred")
 async def handle_alfred_command(ack, command, say):
     """Handle /alfred commands"""
-    await ack()
+    # Acknowledge immediately with a message
+    await ack("Processing your request...")
+    logger.info(f"Received /alfred command: {command}")
 
     text = command.get("text", "").strip()
     user_id = command["user_id"]
@@ -118,6 +135,33 @@ async def handle_alfred_command(ack, command, say):
     except Exception as e:
         logger.error(f"Error processing command: {e}")
         await say(f"❌ Error: {str(e)}")
+
+
+# Slack /diag command handler - register WITH slash prefix
+@slack_app.command("/diag")
+async def handle_diag_command(ack, command, say):
+    """Handle /diag commands"""
+    # Acknowledge immediately
+    await ack("Running diagnostics...")
+    logger.info(f"Received /diag command: {command}")
+    
+    # Get system status
+    redis_status = "unknown"
+    try:
+        if redis_client:
+            await redis_client.ping()
+            redis_status = "healthy"
+    except:
+        redis_status = "unhealthy"
+    
+    response = f"""🔧 Diagnostics:
+• Redis: {redis_status}
+• Socket Mode: Active
+• Version: {os.environ.get("TAG", "unknown")}
+• User: <@{command["user_id"]}>
+• Channel: <#{command["channel_id"]}>"""
+    
+    await say(response)
 
 
 # Slack app mention handler

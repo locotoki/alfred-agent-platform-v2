@@ -1,7 +1,15 @@
 # Alfred Agent Platform v2
 
-> **🎉 GA Ready - v3.0.0** | **Health: 100%** | **Cold-start: 14s**
+> **🎉 GA Ready - v0.9.3-pre** | **Health: 100%** | **Cold-start: 14s**
 > A production-ready, scalable AI agent platform built with Docker, Supabase, and Pub/Sub messaging.
+
+## 📚 Documentation
+
+- **[Quick Reference](docs/QUICK-REFERENCE.md)** - Common commands and troubleshooting
+- **[AI Assistant Guide](CLAUDE.md)** - Development guidelines for AI assistants
+- **[Security Guide](docs/SECURITY.md)** - Security practices and guidelines  
+- **[Maintenance Guide](docs/MAINTENANCE.md)** - Operational procedures
+- **[Contributing](docs/CONTRIBUTING.md)** - How to contribute to the project
 
 [![Black Code Style](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![Black Format Check](https://github.com/locotoki/alfred-agent-platform-v2/actions/workflows/black-check.yml/badge.svg?branch=main)](https://github.com/locotoki/alfred-agent-platform-v2/actions/workflows/black-check.yml)

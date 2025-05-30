@@ -1431,6 +1431,9 @@ services:
       com.docker.compose.group: monitoring
       com.docker.compose.service: db-exporter
   slack-bot:
+    build:
+      context: ./services/slack-bot
+      dockerfile: Dockerfile
     image: ghcr.io/digital-native-ventures/slack-bot:${TAG:-edge}
     container_name: slack-bot
     ports:

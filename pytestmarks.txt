@@ -1,4 +1,0 @@
-tests/unit/agents/financial_tax/test_xfail_markers.py:pytestmark = pytest.mark.xfail(
-tests/unit/agents/financial_tax/conftest.py:pytestmark = pytest.mark.xfail(
-tests/integration/agents/financial_tax/test_agent_integration.py:pytestmark = pytest.mark.integration
-tests/smoke/test_telegram_adapter.py:pytestmark = pytest.mark.smoke
