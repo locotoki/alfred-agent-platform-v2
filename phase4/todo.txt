@@ -1,3 +1,0 @@
-/home/locotoki/projects/alfred-agent-platform-v2/services/mission-control-simplified/Dockerfile
-/home/locotoki/projects/alfred-agent-platform-v2/services/mission-control-simplified/proxy-service/Dockerfile
-/home/locotoki/projects/alfred-agent-platform-v2/services/streamlit-chat/Dockerfile
