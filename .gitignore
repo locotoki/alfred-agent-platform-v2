@@ -48,6 +48,58 @@ credentials/
 
 # ML Models
 models/
+
+# Generated and temporary files
+docker-compose.generated.yml
+docker-compose-clean.yml
+flake8_*.txt
+mypy*.txt
+*_failures.txt
+*_violations.txt
+ga_diff.txt
+pre_*.txt
+post_*.txt
+mypy_namespace_pass*.txt
+mypy_post_namespace_refactor.txt
+
+# Log files
+*.log
+ci_log.txt
+coverage_log.txt
+deploy_msg.txt
+
+# Temporary fix scripts that shouldn't be tracked
+port-fix-inject.js
+metrics_fix.py
+
+# Data files that should be in data/ directory
+project_files.txt
+actual-services.txt
+canonical-services.txt
+current-services.txt
+collection_hooks.txt
+ignores.txt
+licence-UNKNOWN.txt
+pytestmarks.txt
+vulture_whitelist.txt
+xfails.txt
+
+# Service-specific files
+niche-scout-viewer.html
+create-niche-scout-results.js
+clean-youtube-service.ts
+fixed-youtube-service.ts
+simplified-youtube-service.ts
+
+# Archives
+*.tar.gz
+*.tgz
+
+# Status markers (unless explicitly needed)
+.db_storage_fixed
+
+# Nested project directory (accidental)
+alfred-agent-platform-v2/
 *.gguf
 *.bin
 *.pt
@@ -146,3 +198,93 @@ bin/act
 services/*/docker-assets/health.json
 docker-assets/health.json
 health.json
+
+# Root directory temporary documentation files
+/SLACK-*.md
+/ENV-QUICKSTART.md
+
+# Root directory shell scripts (should be in scripts/)
+/alfred-cli
+/check-critical-services.sh
+/ga-accelerator.sh
+/ga-readiness-and-rc-tag.sh
+/get_helm.sh
+/grafana_dashboard_check.sh
+/healthcheck.sh
+/monitor-freeze-prs.sh
+/promote-ga-simple.sh
+/promote-rc-to-ga.sh
+/run-simplified-mc.sh
+/setup-dev-env.sh
+/skip_ci_sc320.sh
+/stability-freeze-calendar.sh
+/start-all-services.sh
+/start-platform-dryrun.sh
+/start-platform.sh
+/start-slack-commands.sh
+/start-slack.sh
+/tag-rc1.sh
+/test-slack-local.sh
+/update-health-endpoints.sh
+/validate-orchestration.sh
+/verify-port-config.sh
+/pre_freeze_tests.sh
+
+# Root directory Python scripts (should be in scripts/)
+/run-black-format.py
+/fix_class_methods.py
+/fix_docstrings.py
+/fix_e501.py
+/fix_f401.py
+/fix_f401_v2.py
+/fix_imports.py
+
+# Root directory formatting scripts
+/fix-formatting.sh
+/format-with-black.sh
+/fix_mypy.sh
+
+# Docker compose overrides (temporary/experimental)
+docker-compose.override.*.yml
+!docker-compose.override.yml
+bench.compose.yml
+cadvisor-service.yml
+cold-start-core.yml
+compose.observability.yaml
+docker-compose.beta.yml
+docker-compose.ci.yml
+docker-compose.falco.yml
+docker-compose.healthchecks.yml
+docker-compose.memory-test.yml
+docker-compose.observability.yml
+docker-compose.slim.yml
+docker-compose.tls.yml
+redis-exporter-compose.yml
+
+# Service lists and manifest files
+actual-services.txt
+canonical-services.txt
+current-services.txt
+services.yaml
+
+# Temporary JavaScript/TypeScript fix files
+fix-port-issue.js
+clean-youtube-service.ts
+fixed-youtube-service.ts
+simplified-youtube-service.ts
+
+# Mypy output files
+mypy.before.txt
+mypy.after.txt
+d4xx.before.txt
+
+# Deployment and rollout messages
+slack_rollout_message.txt
+sprint2_final_slack.txt
+
+# Miscellaneous root files
+1
+"\\"
+mission-control.tar.gz
+soak_midpoint_20250517T082236Z.tgz
+falco-redis-rule.yaml

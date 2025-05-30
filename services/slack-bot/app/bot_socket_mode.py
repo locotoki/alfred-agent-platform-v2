@@ -1,20 +1,21 @@
 """
-Complete Slack bot implementation with Redis integration
+Slack bot implementation with Socket Mode and Redis integration
 """
 
 import asyncio
 import logging
 import os
+import re
 from contextlib import asynccontextmanager
 
 import redis.asyncio as redis
-from fastapi import FastAPI, HTTPException, Request
-from slack_bolt.adapter.fastapi.async_handler import AsyncSlackRequestHandler
+from fastapi import FastAPI, HTTPException
 from slack_bolt.app.async_app import AsyncApp
+from slack_bolt.adapter.socket_mode.async_handler import AsyncSocketModeHandler
 
 # Configure logging
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger("bot_socket_mode")
 
 # Redis client (embedded)
 redis_client = None
@@ -31,8 +32,16 @@ async def lifespan(app: FastAPI):
     redis_url = os.environ.get("REDIS_URL", "redis://redis:6379")
     redis_client = await redis.from_url(redis_url, decode_responses=True)
 
-    # Initialize Slack app
-    # Note: retry handlers are configured during AsyncApp initialization
+    # Start Socket Mode handler
+    app_token = os.environ.get("SLACK_APP_TOKEN")
+    if app_token:
+        handler = AsyncSocketModeHandler(slack_app, app_token)
+        logger.info("Starting Socket Mode handler...")
+        logger.info(f"Registered commands: {list(slack_app._slash_command_listeners.keys())}")
+        # Start Socket Mode in the background
+        asyncio.create_task(handler.start_async())
+    else:
+        logger.warning("SLACK_APP_TOKEN not found, Socket Mode disabled")
 
     yield
 
@@ -44,15 +53,14 @@ async def lifespan(app: FastAPI):
 # Initialize FastAPI with lifespan
 app = FastAPI(lifespan=lifespan)
 
-# Initialize Slack app
+# Initialize Slack app with debug logging
 slack_app = AsyncApp(
     token=os.environ.get("SLACK_BOT_TOKEN"),
     signing_secret=os.environ.get("SLACK_SIGNING_SECRET"),
-    process_before_response=True,
+    logger=logger,
+    # Set to DEBUG to see full payloads
+    log_level="DEBUG"
 )
-
-# Slack request handler
-handler = AsyncSlackRequestHandler(slack_app)
 
 
 @app.get("/health")
@@ -73,23 +81,20 @@ async def health():
             "ok": True,
             "redis": redis_status,
             "slack": slack_status,
+            "socket_mode": True,
             "version": os.environ.get("TAG", "unknown"),
         }
     except Exception as e:
         raise HTTPException(status_code=503, detail=str(e))
 
 
-@app.post("/slack/events")
-async def slack_events(req: Request):
-    """Handle Slack events"""
-    return await handler.handle(req)
-
-
-# Slack command handler
+# Slack command handler - register WITH slash prefix
 @slack_app.command("/alfred")
 async def handle_alfred_command(ack, command, say):
     """Handle /alfred commands"""
-    await ack()
+    # Acknowledge immediately with a message
+    await ack("Processing your request...")
+    logger.info(f"Received /alfred command: {command}")
 
     text = command.get("text", "").strip()
     user_id = command["user_id"]
@@ -132,6 +137,33 @@ async def handle_alfred_command(ack, command, say):
         await say(f"❌ Error: {str(e)}")
 
 
+# Slack /diag command handler - register WITH slash prefix
+@slack_app.command("/diag")
+async def handle_diag_command(ack, command, say):
+    """Handle /diag commands"""
+    # Acknowledge immediately
+    await ack("Running diagnostics...")
+    logger.info(f"Received /diag command: {command}")
+    
+    # Get system status
+    redis_status = "unknown"
+    try:
+        if redis_client:
+            await redis_client.ping()
+            redis_status = "healthy"
+    except:
+        redis_status = "unhealthy"
+    
+    response = f"""🔧 Diagnostics:
+• Redis: {redis_status}
+• Socket Mode: Active
+• Version: {os.environ.get("TAG", "unknown")}
+• User: <@{command["user_id"]}>
+• Channel: <#{command["channel_id"]}>"""
+    
+    await say(response)
+
+
 # Slack app mention handler
 @slack_app.event("app_mention")
 async def handle_mention(event, say):
@@ -147,7 +179,24 @@ async def custom_error_handler(error, body, logger):
     logger.error(f"Request body: {body}")
 
 
+async def start_socket_mode():
+    """Start Socket Mode handler"""
+    app_token = os.environ.get("SLACK_APP_TOKEN")
+    if not app_token:
+        logger.error("SLACK_APP_TOKEN not found! Socket Mode requires an app-level token.")
+        logger.error("Get it from: https://api.slack.com/apps > Your App > Basic Information > App-Level Tokens")
+        return
+    
+    handler = AsyncSocketModeHandler(slack_app, app_token)
+    logger.info("Starting Socket Mode handler...")
+    await handler.start_async()
+
+
 if __name__ == "__main__":
     import uvicorn
-
+    
+    # Start Socket Mode handler in background
+    asyncio.create_task(start_socket_mode())
+    
+    # Start FastAPI for health checks
     uvicorn.run(app, host="0.0.0.0", port=8000)
