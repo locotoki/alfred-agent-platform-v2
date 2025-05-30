@@ -99,18 +99,21 @@ services:
     - 9102:6333
     volumes:
     - vector-db-data:/qdrant/storage
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    depends_on:
+      db-postgres:
+        condition: service_healthy
     healthcheck:
       interval: 30s
-      timeout: 20s
-      retries: 5
+      timeout: 5s
+      retries: 3
       start_period: 60s
       test:
       - CMD
       - wget
-      - --no-verbose
-      - --tries=1
-      - --spider
-      - http://localhost:6333/health
+      - -qO-
+      - http://vector-db:6333/ready
     restart: unless-stopped
     deploy: null
     networks:
@@ -263,17 +266,19 @@ services:
     - PORT=8080
     healthcheck:
       interval: 30s
-      timeout: 20s
-      retries: 5
+      timeout: 5s
+      retries: 3
       start_period: 20s
       test:
       - CMD
-      - healthcheck
-      - --http
-      - http://localhost:8080/health
+      - curl
+      - -fsSL
+      - http://model-router:8080/health
     depends_on:
       model-registry:
         condition: service_started
+      llm-service:
+        condition: service_healthy
     restart: unless-stopped
     deploy: null
     networks:
