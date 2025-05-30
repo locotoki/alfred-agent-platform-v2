@@ -67,7 +67,11 @@ services:
     environment:
       REDIS_ADDR: redis:6379
       REDIS_PASSWORD: ${REDIS_PASSWORD}
-    command: --redis.addr redis://:${REDIS_PASSWORD}@redis:6379
+    command:
+    - --redis.addr
+    - redis://:${REDIS_PASSWORD}@redis:6379
+    - --web.listen-address
+    - :9121
     depends_on:
       redis:
         condition: service_healthy
@@ -192,11 +196,13 @@ services:
     container_name: llm-service
     ports:
     - 11434:11434
-    - 9094:9091
     volumes:
     - llm-service-data:/root/.ollama
     environment:
       OPENAI_API_KEY: ${OPENAI_API_KEY}
+    command:
+    - ollama
+    - serve
     healthcheck:
       interval: 30s
       timeout: 5s
@@ -206,7 +212,7 @@ services:
       - CMD
       - curl
       - -fsSL
-      - http://localhost:11434/api/tags
+      - http://localhost:11434
     restart: unless-stopped
     deploy: null
     networks:
@@ -266,6 +272,7 @@ services:
     - DEBUG=true
     - MODEL_REGISTRY_URL=http://model-registry:8079
     - PORT=8080
+    - LLM_HOST=http://llm-service:11434
     healthcheck:
       interval: 30s
       timeout: 5s
@@ -1458,11 +1465,11 @@ services:
       test:
       - CMD
       - curl
-      - -sf
+      - -fsSL
       - http://localhost:8000/health
-      interval: 10s
+      interval: 30s
       timeout: 5s
-      retries: 5
+      retries: 3
       start_period: 30s
     restart: unless-stopped
     networks:
