@@ -113,7 +113,7 @@ services:
       - CMD
       - wget
       - -qO-
-      - http://vector-db:6333/ready
+      - http://localhost:6333/health
     restart: unless-stopped
     deploy: null
     networks:
