@@ -1,1 +1,1 @@
-## v0.9.12-beta2 · Baseline hash stabilised (`bd81e0a3`) — deterministic audit script
+## v0.9.12-beta2 · Baseline hash stabilised (`03b31b03`) — deterministic audit script
