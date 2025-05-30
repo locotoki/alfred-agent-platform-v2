@@ -1,10 +1,11 @@
 name: Core Health Gate
 
 on:
-  push:
-    branches: [ main, develop, 'feature/**' ]
   pull_request:
-    branches: [ main, develop ]
+    branches: [main]
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
 
 jobs:
   core-health:
