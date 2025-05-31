@@ -29,7 +29,7 @@ while IFS=: read -r name status; do
     else
         echo "❓ $name: $status"
     fi
-done < <(docker compose -f ${COMPOSE_FILE:-docker-compose.yml} ps --all --format '{{.Name}}: {{.Status}}')
+done < <(docker compose -p ${COMPOSE_PROJECT:-alfred} -f ${COMPOSE_FILE:-docker-compose.yml} ps --all --format '{{.Name}}: {{.Status}}')
 
 echo
 echo "📊 Summary:"
