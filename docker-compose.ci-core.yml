@@ -70,3 +70,4 @@ volumes:
   db-postgres-data:
   monitoring-redis-data:
   llm-service-data:
+  db-storage-data:
