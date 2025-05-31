@@ -67,3 +67,6 @@ volumes:
   vector-db-data:
   model-data:
   pubsub-data:
+  db-postgres-data:
+  monitoring-redis-data:
+  llm-service-data:
