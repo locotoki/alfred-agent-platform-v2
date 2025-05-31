@@ -191,6 +191,7 @@ services:
   llm-service:
     image: ollama/ollama:latest
     container_name: llm-service
+    mem_limit: 1g
     ports:
     - 11434:11434
     volumes:
@@ -198,18 +199,15 @@ services:
     environment:
       OPENAI_API_KEY: ${OPENAI_API_KEY}
     command:
-    - ollama
     - serve
     healthcheck:
       interval: 30s
       timeout: 5s
       retries: 3
-      start_period: 20s
+      start_period: 120s
       test:
-      - CMD
-      - curl
-      - -fsSL
-      - http://localhost:11434
+      - CMD-SHELL
+      - "ollama list || exit 1"
     restart: unless-stopped
     deploy: null
     networks:
@@ -236,13 +234,14 @@ services:
     - PORT=8079
     healthcheck:
       interval: 30s
-      timeout: 20s
-      retries: 5
+      timeout: 5s
+      retries: 3
       start_period: 20s
       test:
       - CMD
-      - curl
-      - -f
+      - wget
+      - --spider
+      - -q
       - http://localhost:8079/health
     depends_on:
       db-postgres:
@@ -767,8 +766,8 @@ services:
     healthcheck:
       test:
       - CMD
-      - wget
-      - -qO-
+      - curl
+      - -fsSL
       - http://localhost:8011/health
       interval: 30s
       timeout: 5s
@@ -796,7 +795,7 @@ services:
       redis:
         condition: service_started
       model-router:
-        condition: service_started
+        condition: service_healthy
     restart: unless-stopped
     deploy: null
     networks:

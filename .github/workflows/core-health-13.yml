@@ -1,0 +1,17 @@
+name: core-health-13
+on: pull_request
+jobs:
+  core-health-13:
+    name: core-health-13
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Spin 13-service slice
+        env:
+          CI: true
+        run: |
+          docker compose up -d    # all services without "extras" profile
+      - name: Wait & check probes
+        run: |
+          sleep 240    # Llama model download
+          ./scripts/check-core-health.sh
