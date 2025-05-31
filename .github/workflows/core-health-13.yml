@@ -15,5 +15,5 @@ jobs:
         env:
           COMPOSE_FILE: docker-compose.ci-core.yml
         run: |
-          sleep 240    # Llama model download
+          sleep 360    # 6 minutes for Llama model download and all services to stabilize
           ./scripts/check-core-health.sh
