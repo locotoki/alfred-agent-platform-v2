@@ -219,30 +219,29 @@ services:
       prometheus.metrics.port: '9091'
   model-registry:
     build:
-      context: ./alfred/model/registry
+      context: ./services/model-registry
       dockerfile: Dockerfile
     image: model-registry:latest
     container_name: model-registry
     ports:
-    - 8079:8079
+    - 8079:8080
     environment:
     - DEBUG=true
     - DATABASE_URL=postgresql+asyncpg://postgres:postgres@db-postgres:5432/postgres
     - OLLAMA_URL=http://llm-service:11434
     - OPENAI_API_KEY=${ALFRED_OPENAI_API_KEY:-sk-mock-key-for-development-only}
     - ANTHROPIC_API_KEY=${ALFRED_ANTHROPIC_API_KEY:-}
-    - PORT=8079
+    - PORT=8080
     healthcheck:
-      interval: 30s
+      interval: 10s
       timeout: 5s
       retries: 3
       start_period: 20s
       test:
       - CMD
-      - wget
-      - --spider
-      - -q
-      - http://localhost:8079/health
+      - curl
+      - -f
+      - http://model-registry:8080/health
     depends_on:
       db-postgres:
         condition: service_healthy

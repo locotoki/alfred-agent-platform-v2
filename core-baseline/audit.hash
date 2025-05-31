@@ -1,1 +1,34 @@
-5424aea3144d151bb5a0e06005454eab249e20fc97044c58e74bf3658c3bd817  -
+db-api postgrest/postgrest:v11.2.0 Up 40 minutes
+db-postgres sha256:bb2f29a43b8977c6a22d597ef56411f05940b60079ee12c3b98c7a866d1c56fa Up 40 minutes (healthy)
+monitoring-dashboard grafana/grafana:10.2.3 Up 40 minutes (healthy)
+monitoring-metrics prom/prometheus:v2.48.1 Up 40 minutes (healthy)
+pubsub-emulator gcr.io/google.com/cloudsdktool/cloud-sdk:latest Up 40 minutes (healthy)
+pubsub-metrics pubsub-metrics:latest Up 40 minutes (healthy)
+redis redis:7-alpine Up 40 minutes (healthy)
+redis-exporter oliver006/redis_exporter:v1.62.0-alpine Up 40 minutes (healthy)
+telegram-adapter sha256:8d9d299687f7f44f75154f06c424a97947dec512cef19ff503c9ce3f50803a65 Up 40 minutes (healthy)
+---
+/db-api "no-healthcheck"
+/db-postgres ["CMD","pg_isready","-U","postgres"]
+/monitoring-dashboard ["CMD","wget","--spider","-q","http://localhost:3000/api/health"]
+/monitoring-metrics ["CMD","wget","--spider","-q","http://localhost:9090/-/ready"]
+/pubsub-emulator ["CMD","curl","-f","http://localhost:8085/v1/projects/alfred-agent-platform/topics"]
+/pubsub-metrics ["CMD","curl","-fs","http://localhost:9103/health"]
+/redis ["CMD","redis-cli","-a","NTWtO6kBAsuoaKQJMXEqXEE8qxcHNmrc","ping"]
+/redis-exporter ["CMD","sh","-c","wget -qO- http://localhost:9121/metrics | grep -q '^redis_up 1'"]
+/telegram-adapter ["CMD","curl","-f","http://localhost:8080/health"]
+---
+anon:false
+pg_checkpoint:false
+pg_database_owner:false
+pg_execute_server_program:false
+pg_monitor:false
+pg_read_all_data:false
+pg_read_all_settings:false
+pg_read_all_stats:false
+pg_read_server_files:false
+pg_signal_backend:false
+pg_stat_scan_tables:false
+pg_write_all_data:false
+pg_write_server_files:false
+postgres:true
