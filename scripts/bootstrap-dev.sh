@@ -62,7 +62,7 @@ docker network create alfred-network 2>/dev/null || echo "✅ Network 'alfred-ne
 echo "🛑 Stopping existing containers..."
 docker compose down --remove-orphans
 
-# Define core services
+# Define core services (13-service baseline)
 CORE_SERVICES=(
     redis
     redis-exporter
@@ -74,14 +74,33 @@ CORE_SERVICES=(
     pubsub-metrics
     monitoring-metrics
     monitoring-dashboard
+    llm-service
+    model-router
+    model-registry
+)
+
+# For lean mode (9 services only)
+LEAN_SERVICES=(
+    redis
+    redis-exporter
+    db-postgres
+    db-api
+    telegram-adapter
+    pubsub-emulator
+    pubsub-metrics
+    monitoring-metrics
+    monitoring-dashboard
 )
 
 # Start services based on mode
-if [ "$INCLUDE_EXTRAS" = true ]; then
+if [ "${CORE_NO_LLM:-}" = "1" ]; then
+    echo "🚀 Starting lean core services (9 services, no LLM)..."
+    docker compose up -d "${LEAN_SERVICES[@]}"
+elif [ "$INCLUDE_EXTRAS" = true ]; then
     echo "🚀 Starting all services (core + extras)..."
     docker compose up -d
 else
-    echo "🚀 Starting core services only..."
+    echo "🚀 Starting core services (13 services including LLM)..."
     docker compose up -d "${CORE_SERVICES[@]}"
 fi
 

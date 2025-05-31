@@ -191,6 +191,7 @@ services:
   llm-service:
     image: ollama/ollama:latest
     container_name: llm-service
+    mem_limit: 1g
     ports:
     - 11434:11434
     volumes:
@@ -198,18 +199,15 @@ services:
     environment:
       OPENAI_API_KEY: ${OPENAI_API_KEY}
     command:
-    - ollama
     - serve
     healthcheck:
       interval: 30s
       timeout: 5s
       retries: 3
-      start_period: 20s
+      start_period: 120s
       test:
-      - CMD
-      - curl
-      - -fsSL
-      - http://localhost:11434
+      - CMD-SHELL
+      - "ollama list || exit 1"
     restart: unless-stopped
     deploy: null
     networks:
@@ -221,29 +219,29 @@ services:
       prometheus.metrics.port: '9091'
   model-registry:
     build:
-      context: ./alfred/model/registry
+      context: ./services/model-registry
       dockerfile: Dockerfile
     image: model-registry:latest
     container_name: model-registry
     ports:
-    - 8079:8079
+    - 8079:8080
     environment:
     - DEBUG=true
     - DATABASE_URL=postgresql+asyncpg://postgres:postgres@db-postgres:5432/postgres
     - OLLAMA_URL=http://llm-service:11434
     - OPENAI_API_KEY=${ALFRED_OPENAI_API_KEY:-sk-mock-key-for-development-only}
     - ANTHROPIC_API_KEY=${ALFRED_ANTHROPIC_API_KEY:-}
-    - PORT=8079
+    - PORT=8080
     healthcheck:
-      interval: 30s
-      timeout: 20s
-      retries: 5
+      interval: 10s
+      timeout: 5s
+      retries: 3
       start_period: 20s
       test:
       - CMD
       - curl
       - -f
-      - http://localhost:8079/health
+      - http://model-registry:8080/health
     depends_on:
       db-postgres:
         condition: service_healthy
@@ -767,8 +765,8 @@ services:
     healthcheck:
       test:
       - CMD
-      - wget
-      - -qO-
+      - curl
+      - -fsSL
       - http://localhost:8011/health
       interval: 30s
       timeout: 5s
@@ -796,7 +794,7 @@ services:
       redis:
         condition: service_started
       model-router:
-        condition: service_started
+        condition: service_healthy
     restart: unless-stopped
     deploy: null
     networks:
@@ -1151,6 +1149,8 @@ services:
       com.docker.compose.service: ui-admin
       prometheus.metrics.port: '9091'
   auth-ui:
+    profiles:
+    - extras
     build:
       context: ./services/auth-ui
       dockerfile: Dockerfile
