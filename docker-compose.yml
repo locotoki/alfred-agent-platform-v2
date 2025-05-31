@@ -1149,6 +1149,8 @@ services:
       com.docker.compose.service: ui-admin
       prometheus.metrics.port: '9091'
   auth-ui:
+    profiles:
+    - extras
     build:
       context: ./services/auth-ui
       dockerfile: Dockerfile
