@@ -10,7 +10,6 @@ jobs:
         env:
           CI: true
         run: |
-          docker network create alfred-network || true
           docker compose -f docker-compose.ci-core.yml up -d    # only 13 core services
       - name: Wait & check probes
         env:

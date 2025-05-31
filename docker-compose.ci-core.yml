@@ -55,5 +55,11 @@ services:
 
 networks:
   alfred-network:
-    external: true
-    name: alfred-network
+    driver: bridge
+
+volumes:
+  postgres-data:
+  redis-data:
+  vector-db-data:
+  model-data:
+  pubsub-data:
