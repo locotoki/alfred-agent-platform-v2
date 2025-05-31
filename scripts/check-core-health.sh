@@ -6,12 +6,20 @@ set -euo pipefail
 echo "🏥 Core Services Health Check"
 echo "============================="
 echo "Time: $(date)"
+echo "COMPOSE_FILE: ${COMPOSE_FILE:-docker-compose.yml}"
+echo "COMPOSE_PROJECT: ${COMPOSE_PROJECT:-alfred}"
 echo
 
 # Check container states
 healthy=0
 unhealthy=0
 starting=0
+
+# Debug: show raw output
+echo "Debug: Running docker compose command..."
+docker compose -p ${COMPOSE_PROJECT:-alfred} -f ${COMPOSE_FILE:-docker-compose.yml} ps --all --format '{{.Name}}: {{.Status}}' | head -20
+echo "Debug: End of raw output"
+echo
 
 while IFS=: read -r name status; do
     name=$(echo "$name" | xargs)
