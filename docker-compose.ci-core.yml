@@ -1,0 +1,59 @@
+# Minimal compose for CI core health check - 13 services only
+services:
+  db-postgres:
+    extends:
+      file: docker-compose.yml
+      service: db-postgres
+  redis:
+    extends:
+      file: docker-compose.yml
+      service: redis
+  db-api:
+    extends:
+      file: docker-compose.yml
+      service: db-api
+  db-auth:
+    extends:
+      file: docker-compose.yml
+      service: db-auth
+  db-realtime:
+    extends:
+      file: docker-compose.yml
+      service: db-realtime
+  db-storage:
+    extends:
+      file: docker-compose.yml
+      service: db-storage
+  pubsub-emulator:
+    extends:
+      file: docker-compose.yml
+      service: pubsub-emulator
+  vector-db:
+    extends:
+      file: docker-compose.yml
+      service: vector-db
+  monitoring-redis:
+    extends:
+      file: docker-compose.yml
+      service: monitoring-redis
+  llm-service:
+    extends:
+      file: docker-compose.yml
+      service: llm-service
+  model-router:
+    extends:
+      file: docker-compose.yml
+      service: model-router
+  model-registry:
+    extends:
+      file: docker-compose.yml
+      service: model-registry
+  agent-core:
+    extends:
+      file: docker-compose.yml
+      service: agent-core
+
+networks:
+  alfred-network:
+    external: true
+    name: alfred-network
