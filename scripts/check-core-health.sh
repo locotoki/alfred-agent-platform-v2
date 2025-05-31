@@ -17,7 +17,7 @@ starting=0
 
 # Debug: show raw output
 echo "Debug: Running docker compose command..."
-docker compose -p ${COMPOSE_PROJECT:-alfred} -f ${COMPOSE_FILE:-docker-compose.yml} ps --all --format '{{.Name}}: {{.Status}}' | head -20
+docker compose -p ${COMPOSE_PROJECT:-alfred} -f ${COMPOSE_FILE:-docker-compose.yml} ps --all --format '{{.Name}}: {{.Status}}' 2>/dev/null | head -20
 echo "Debug: End of raw output"
 echo
 
@@ -37,7 +37,7 @@ while IFS=: read -r name status; do
     else
         echo "❓ $name: $status"
     fi
-done < <(docker compose -p ${COMPOSE_PROJECT:-alfred} -f ${COMPOSE_FILE:-docker-compose.yml} ps --all --format '{{.Name}}: {{.Status}}')
+done < <(docker compose -p ${COMPOSE_PROJECT:-alfred} -f ${COMPOSE_FILE:-docker-compose.yml} ps --all --format '{{.Name}}: {{.Status}}' 2>/dev/null)
 
 echo
 echo "📊 Summary:"
