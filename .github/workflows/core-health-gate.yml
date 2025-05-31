@@ -23,6 +23,16 @@ jobs:
         run: docker network create alfred-network || true
         
       - name: Start Core Services
+        env:
+          POSTGRES_PASSWORD: postgres
+          REDIS_PASSWORD: redis-ci-password
+          TELEGRAM_BOT_TOKEN: dummy-bot-token-for-ci
+          OPENAI_API_KEY: dummy-api-key-for-ci
+          SLACK_BOT_TOKEN: dummy-slack-token
+          SLACK_SIGNING_SECRET: dummy-slack-secret
+          SLACK_APP_TOKEN: dummy-slack-app-token
+          DB_JWT_SECRET: dummy-jwt-secret-for-ci
+          SERVICE_ROLE_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoic2VydmljZV9yb2xlIiwiZXhwIjoxNzQ5NTM2MTMwfQ.EDf3DT0Zl6qQbrLIQLwAXRWAN5kaJ5mvlAh1jm0CY-o
         run: |
           # Start only the 10 core services
           docker compose up -d \
@@ -49,7 +59,7 @@ jobs:
       - name: Capture Current Audit
         run: |
           chmod +x ./scripts/audit-core.sh
-          ./scripts/audit-core.sh > current-audit.txt
+          POSTGRES_PASSWORD=postgres ./scripts/audit-core.sh > current-audit.txt
           cat current-audit.txt
           
       - name: Verify Baseline (Optional)
