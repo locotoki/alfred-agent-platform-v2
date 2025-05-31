@@ -10,7 +10,7 @@ jobs:
         env:
           CI: true
         run: |
-          docker compose up -d    # all services without "extras" profile
+          docker compose --profile core up -d    # only core profile services
       - name: Wait & check probes
         run: |
           sleep 240    # Llama model download
