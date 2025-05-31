@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Define core services list (matching CI workflow)
-CORE_SERVICES="redis|redis-exporter|db-postgres|db-api|agent-core|telegram-adapter|pubsub-emulator|pubsub-metrics|monitoring-metrics|monitoring-dashboard"
+# Define core services list (matching CI workflow - excluding agent-core due to llm-service dependency)
+CORE_SERVICES="redis|redis-exporter|db-postgres|db-api|telegram-adapter|pubsub-emulator|pubsub-metrics|monitoring-metrics|monitoring-dashboard"
 
 # Capture raw inventory - deterministic output only
 docker compose ps --format '{{.Name}} {{.Image}} {{.Status}}' | grep -E "^($CORE_SERVICES) " | LC_ALL=C sort

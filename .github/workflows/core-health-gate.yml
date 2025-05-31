@@ -34,11 +34,11 @@ jobs:
           DB_JWT_SECRET: dummy-jwt-secret-for-ci
           SERVICE_ROLE_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoic2VydmljZV9yb2xlIiwiZXhwIjoxNzQ5NTM2MTMwfQ.EDf3DT0Zl6qQbrLIQLwAXRWAN5kaJ5mvlAh1jm0CY-o
         run: |
-          # Start only the 10 core services
+          # Start only the 9 core services (excluding agent-core due to llm-service dependency)
           docker compose up -d \
             redis redis-exporter \
             db-postgres db-api \
-            agent-core telegram-adapter \
+            telegram-adapter \
             pubsub-emulator pubsub-metrics \
             monitoring-metrics monitoring-dashboard
             
