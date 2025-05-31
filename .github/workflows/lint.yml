@@ -10,8 +10,8 @@ on:
       - 'setup.cfg'
 
 jobs:
-  lint:
-    name: Black & isort Check
+  lint-python:
+    name: lint-python
     runs-on: ubuntu-latest
     timeout-minutes: 2
     steps:

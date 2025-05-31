@@ -1,0 +1,58 @@
+name: Forbid Unknown Checks
+
+on: 
+  pull_request:
+    paths:
+      - '.github/workflows/*.yml'
+
+jobs:
+  validate-check-names:
+    name: validate-check-names
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          
+      - name: Install yq
+        run: |
+          wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
+          chmod +x /usr/local/bin/yq
+          
+      - name: Ensure only approved status names
+        run: |
+          APPROVED="build|lint-python|core-health|ci-summary|validate-check-names"
+          
+          # Get changed workflow files
+          git fetch origin ${{ github.base_ref }}
+          CHANGED=$(git diff --name-only origin/${{ github.base_ref }}...HEAD -- '.github/workflows/*.yml' || true)
+          
+          if [ -z "$CHANGED" ]; then
+            echo "No workflow changes detected"
+            exit 0
+          fi
+          
+          echo "Checking workflow files: $CHANGED"
+          
+          for f in $CHANGED; do
+            if [ -f "$f" ]; then
+              echo "Checking $f..."
+              # Extract all job names
+              JOB_NAMES=$(yq '.jobs.*.name' "$f" | grep -v '^null$' || true)
+              
+              if [ -n "$JOB_NAMES" ]; then
+                echo "Found job names in $f:"
+                echo "$JOB_NAMES"
+                
+                # Check for unapproved names
+                BAD=$(echo "$JOB_NAMES" | grep -Ev "^($APPROVED)$" || true)
+                if [ -n "$BAD" ]; then
+                  echo "::error file=$f::Found unapproved job name(s): $BAD"
+                  echo "Only approved names are: $APPROVED"
+                  exit 1
+                fi
+              fi
+            fi
+          done
+          
+          echo "✅ All job names are approved"

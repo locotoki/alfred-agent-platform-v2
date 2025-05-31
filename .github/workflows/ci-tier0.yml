@@ -58,7 +58,8 @@ jobs:
           echo "Running isort import order check..."
           isort --check-only --profile black .
 
-  pytest-core:
+  build:
+    name: build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
