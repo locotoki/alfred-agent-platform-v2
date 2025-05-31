@@ -52,6 +52,10 @@ services:
     extends:
       file: docker-compose.yml
       service: agent-core
+  mail-server:
+    extends:
+      file: docker-compose.yml
+      service: mail-server
 
 networks:
   alfred-network:
