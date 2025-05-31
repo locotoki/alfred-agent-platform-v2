@@ -10,8 +10,8 @@ from contextlib import asynccontextmanager
 
 import redis.asyncio as redis
 from fastapi import FastAPI, HTTPException
-from slack_bolt.app.async_app import AsyncApp
 from slack_bolt.adapter.socket_mode.async_handler import AsyncSocketModeHandler
+from slack_bolt.app.async_app import AsyncApp
 
 # Configure logging
 logging.basicConfig(level=logging.DEBUG)
@@ -59,7 +59,7 @@ slack_app = AsyncApp(
     signing_secret=os.environ.get("SLACK_SIGNING_SECRET"),
     logger=logger,
     # Set to DEBUG to see full payloads
-    log_level="DEBUG"
+    log_level="DEBUG",
 )
 
 
@@ -144,7 +144,7 @@ async def handle_diag_command(ack, command, say):
     # Acknowledge immediately
     await ack("Running diagnostics...")
     logger.info(f"Received /diag command: {command}")
-    
+
     # Get system status
     redis_status = "unknown"
     try:
@@ -153,14 +153,14 @@ async def handle_diag_command(ack, command, say):
             redis_status = "healthy"
     except:
         redis_status = "unhealthy"
-    
+
     response = f"""🔧 Diagnostics:
 • Redis: {redis_status}
 • Socket Mode: Active
 • Version: {os.environ.get("TAG", "unknown")}
 • User: <@{command["user_id"]}>
 • Channel: <#{command["channel_id"]}>"""
-    
+
     await say(response)
 
 
@@ -184,9 +184,11 @@ async def start_socket_mode():
     app_token = os.environ.get("SLACK_APP_TOKEN")
     if not app_token:
         logger.error("SLACK_APP_TOKEN not found! Socket Mode requires an app-level token.")
-        logger.error("Get it from: https://api.slack.com/apps > Your App > Basic Information > App-Level Tokens")
+        logger.error(
+            "Get it from: https://api.slack.com/apps > Your App > Basic Information > App-Level Tokens"
+        )
         return
-    
+
     handler = AsyncSocketModeHandler(slack_app, app_token)
     logger.info("Starting Socket Mode handler...")
     await handler.start_async()
@@ -194,9 +196,9 @@ async def start_socket_mode():
 
 if __name__ == "__main__":
     import uvicorn
-    
+
     # Start Socket Mode handler in background
     asyncio.create_task(start_socket_mode())
-    
+
     # Start FastAPI for health checks
     uvicorn.run(app, host="0.0.0.0", port=8000)

@@ -843,7 +843,7 @@ services:
     build:
       context: ./adapters/telegram
       dockerfile: Dockerfile
-    image: ${ALFRED_REGISTRY}/alfred-platform/telegram-adapter:${ALFRED_VERSION:-latest}
+    image: ${ALFRED_REGISTRY:-ghcr.io}/alfred-platform/telegram-adapter:${ALFRED_VERSION:-latest}
     container_name: telegram-adapter
     ports:
     - 3002:8080
