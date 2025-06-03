@@ -1,20 +1,29 @@
 name: core-health-13
-on: pull_request
+on:
+  pull_request:
+    paths:
+      - 'docker-compose.yml'
+      - 'services/**'
+      - 'scripts/**'
+      - '.github/workflows/core-health-13.yml'
+permissions:
+  contents: read
 jobs:
-  core-health-13:
-    name: core-health-13
-    runs-on: ubuntu-22.04
+  health:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    concurrency:
+      group: core-health-13-${{ github.ref }}
+      cancel-in-progress: true
     steps:
       - uses: actions/checkout@v4
-      - name: Spin 13-service slice
-        env:
-          CI: true
-        run: |
-          docker compose -p alfred -f docker-compose.ci-core.yml up -d    # only 13 core services
-      - name: Wait & check probes
-        env:
-          COMPOSE_FILE: docker-compose.ci-core.yml
-          COMPOSE_PROJECT: alfred
-        run: |
-          sleep 360    # 6 minutes for Llama model download and all services to stabilize
-          ./scripts/check-core-health.sh
+
+      - name: Docker Hub login
+        if: github.event.pull_request.head.repo.full_name == github.repository && secrets.DOCKERHUB_READ_TOKEN != ''
+        run: echo "${{ secrets.DOCKERHUB_READ_TOKEN }}" | docker login -u "${{ secrets.DOCKERHUB_USER }}" --password-stdin
+
+      - name: Compose up (core profile)
+        run: docker compose --profile core up -d --pull=missing
+
+      - name: Wait for health
+        run: ./scripts/wait-healthy.sh core
