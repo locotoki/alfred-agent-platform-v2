@@ -6,8 +6,6 @@ set -euo pipefail
 echo "🏥 Core Services Health Check"
 echo "============================="
 echo "Time: $(date)"
-echo "COMPOSE_FILE: ${COMPOSE_FILE:-docker-compose.yml}"
-echo "COMPOSE_PROJECT: ${COMPOSE_PROJECT:-alfred}"
 echo
 
 # Check container states
@@ -15,15 +13,18 @@ healthy=0
 unhealthy=0
 starting=0
 
-# Debug: show raw output
-echo "Debug: Running docker compose command..."
-docker compose -p ${COMPOSE_PROJECT:-alfred} -f ${COMPOSE_FILE:-docker-compose.yml} ps --all --format '{{.Name}}: {{.Status}}' 2>/dev/null | head -20
-echo "Debug: End of raw output"
-echo
+# Get container statuses into a temp file to avoid subshell issues
+TMPFILE=$(mktemp)
+docker compose -p ${COMPOSE_PROJECT:-alfred} -f ${COMPOSE_FILE:-docker-compose.yml} ps --all --format '{{.Name}}: {{.Status}}' 2>/dev/null > "$TMPFILE"
 
-while IFS=: read -r name status; do
-    name=$(echo "$name" | xargs)
-    status=$(echo "$status" | xargs)
+# Process each line
+while IFS= read -r line; do
+    if [[ -z "$line" ]]; then
+        continue
+    fi
+    
+    name=$(echo "$line" | cut -d: -f1 | xargs)
+    status=$(echo "$line" | cut -d: -f2- | xargs)
     
     if [[ "$status" == *"(healthy)"* ]]; then
         echo "✅ $name: healthy"
@@ -37,7 +38,9 @@ while IFS=: read -r name status; do
     else
         echo "❓ $name: $status"
     fi
-done < <(docker compose -p ${COMPOSE_PROJECT:-alfred} -f ${COMPOSE_FILE:-docker-compose.yml} ps --all --format '{{.Name}}: {{.Status}}' 2>/dev/null)
+done < "$TMPFILE"
+
+rm -f "$TMPFILE"
 
 echo
 echo "📊 Summary:"
