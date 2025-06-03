@@ -26,4 +26,4 @@ done
 echo "❌ Timeout: Services did not become healthy within $((max_attempts * 10)) seconds"
 echo "Current service status:"
 docker compose -f docker-compose.ci-core.yml ps
-exit 1
+exit 1# CI trigger
