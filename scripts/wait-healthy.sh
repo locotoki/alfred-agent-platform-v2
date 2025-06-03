@@ -24,4 +24,4 @@ done
 
 echo "❌ Timeout: Services did not become healthy within $((max_attempts * 10)) seconds"
 docker compose ps
-exit 1
+exit 1# Trigger CI
