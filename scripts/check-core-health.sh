@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Quick health check for core services
 
-set -euo pipefail
+set -eo pipefail
 
 echo "🏥 Core Services Health Check"
 echo "============================="
@@ -14,8 +14,10 @@ unhealthy=0
 starting=0
 
 # Get container statuses into a temp file to avoid subshell issues
-TMPFILE=$(mktemp)
-docker compose -p ${COMPOSE_PROJECT:-alfred} -f ${COMPOSE_FILE:-docker-compose.yml} ps --all --format '{{.Name}}: {{.Status}}' 2>/dev/null > "$TMPFILE"
+TMPFILE=$(mktemp) || { echo "Failed to create temp file"; exit 1; }
+echo "Debug: Getting container statuses..."
+docker compose -p ${COMPOSE_PROJECT:-alfred} -f ${COMPOSE_FILE:-docker-compose.yml} ps --all --format '{{.Name}}: {{.Status}}' 2>/dev/null > "$TMPFILE" || { echo "Failed to get container statuses"; exit 1; }
+echo "Debug: Found $(wc -l < "$TMPFILE") containers"
 
 # Process each line
 while IFS= read -r line; do
