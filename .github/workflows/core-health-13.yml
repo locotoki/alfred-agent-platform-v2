@@ -26,7 +26,7 @@ jobs:
           fi
 
       - name: Compose up (core profile)
-        run: docker compose --profile core up -d --pull=missing
+        run: docker compose -f docker-compose.ci-core.yml up -d --pull=missing
 
       - name: Wait for health
-        run: ./scripts/wait-healthy.sh core
+        run: ./scripts/wait-healthy.sh

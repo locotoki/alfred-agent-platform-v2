@@ -1,16 +1,15 @@
 #!/bin/bash
 set -euo pipefail
-trap "docker compose --profile core down -v" EXIT
+trap "docker compose -f docker-compose.ci-core.yml down -v" EXIT
 
 # Wait for healthy status on core services
-profile="${1:-core}"
 max_attempts=60
 attempt=0
 
-echo "Waiting for $profile services to become healthy..."
+echo "Waiting for services to become healthy..."
 
 while [ $attempt -lt $max_attempts ]; do
-    unhealthy=$(docker compose ps --format json | jq -r 'select(.Health == "unhealthy" or .Health == "starting") | .Name' | wc -l)
+    unhealthy=$(docker compose -f docker-compose.ci-core.yml ps --format json | jq -r 'select(.Health == "unhealthy" or .Health == "starting") | .Name' | wc -l)
     
     if [ "$unhealthy" -eq 0 ]; then
         echo "✅ healthy"
@@ -23,6 +22,6 @@ while [ $attempt -lt $max_attempts ]; do
 done
 
 echo "❌ Timeout: Services did not become healthy within $((max_attempts * 10)) seconds"
-docker compose ps
+docker compose -f docker-compose.ci-core.yml ps
 exit 1
 # Trigger CI
