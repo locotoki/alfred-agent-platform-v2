@@ -1,8 +1,6 @@
 #!/usr/bin/env bash
 # Quick health check for core services
 
-set -eo pipefail
-
 echo "🏥 Core Services Health Check"
 echo "============================="
 echo "Time: $(date)"
@@ -12,12 +10,10 @@ echo
 healthy=0
 unhealthy=0
 starting=0
+total=0
 
-# Get container statuses into a temp file to avoid subshell issues
-TMPFILE=$(mktemp) || { echo "Failed to create temp file"; exit 1; }
-echo "Debug: Getting container statuses..."
-docker compose -p ${COMPOSE_PROJECT:-alfred} -f ${COMPOSE_FILE:-docker-compose.yml} ps --all --format '{{.Name}}: {{.Status}}' 2>/dev/null > "$TMPFILE" || { echo "Failed to get container statuses"; exit 1; }
-echo "Debug: Found $(wc -l < "$TMPFILE") containers"
+# Get all container statuses
+statuses=$(docker compose -p ${COMPOSE_PROJECT:-alfred} -f ${COMPOSE_FILE:-docker-compose.yml} ps --all --format '{{.Name}}: {{.Status}}' 2>/dev/null)
 
 # Process each line
 while IFS= read -r line; do
@@ -25,31 +21,28 @@ while IFS= read -r line; do
         continue
     fi
     
-    name=$(echo "$line" | cut -d: -f1 | xargs)
-    status=$(echo "$line" | cut -d: -f2- | xargs)
+    total=$((total + 1))
     
-    if [[ "$status" == *"(healthy)"* ]]; then
-        echo "✅ $name: healthy"
-        ((healthy++))
-    elif [[ "$status" == *"(unhealthy)"* ]]; then
-        echo "❌ $name: unhealthy"
-        ((unhealthy++))
-    elif [[ "$status" == *"(health: starting)"* ]]; then
-        echo "⏳ $name: starting"
-        ((starting++))
+    if [[ "$line" == *"(healthy)"* ]]; then
+        echo "✅ ${line%%:*}: healthy"
+        healthy=$((healthy + 1))
+    elif [[ "$line" == *"(unhealthy)"* ]]; then
+        echo "❌ ${line%%:*}: unhealthy"
+        unhealthy=$((unhealthy + 1))
+    elif [[ "$line" == *"(health: starting)"* ]]; then
+        echo "⏳ ${line%%:*}: starting"
+        starting=$((starting + 1))
     else
-        echo "❓ $name: $status"
+        echo "❓ $line"
     fi
-done < "$TMPFILE"
-
-rm -f "$TMPFILE"
+done <<< "$statuses"
 
 echo
 echo "📊 Summary:"
 echo "  Healthy: $healthy"
 echo "  Unhealthy: $unhealthy"
 echo "  Starting: $starting"
-echo "  Total: $((healthy + unhealthy + starting))"
+echo "  Total: $total"
 
 if [ $unhealthy -le 2 ]; then
     echo
