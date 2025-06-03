@@ -20,7 +20,7 @@ while [ $attempt -lt $max_attempts ]; do
     
     echo "Attempt $((attempt + 1))/$max_attempts: $unhealthy services still unhealthy/starting"
     sleep 10
-    ((attempt++))
+    attempt=$((attempt + 1))
 done
 
 echo "❌ Timeout: Services did not become healthy within $((max_attempts * 10)) seconds"
