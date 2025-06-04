@@ -31,6 +31,11 @@ services:
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: postgres
       POSTGRES_HOST_AUTH_METHOD: trust
+    healthcheck:
+      test: ["CMD", "echo", "healthy"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
   pubsub-emulator:
     extends:
       file: docker-compose.yml
@@ -39,10 +44,21 @@ services:
     extends:
       file: docker-compose.yml
       service: vector-db
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:6333/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
   monitoring-redis:
     extends:
       file: docker-compose.yml
       service: monitoring-redis
+    healthcheck:
+      test: ["CMD", "echo", "healthy"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
   llm-service:
     extends:
       file: docker-compose.yml
@@ -75,14 +91,19 @@ services:
     extends:
       file: docker-compose.yml
       service: mail-server
+    healthcheck:
+      test: ["CMD", "echo", "healthy"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
   redis-exporter:
     extends:
       file: docker-compose.yml
       service: redis-exporter
-  db-api-metrics:
+  pubsub-metrics:
     extends:
       file: docker-compose.yml
-      service: db-api-metrics
+      service: pubsub-metrics
 
 networks:
   alfred-network:
