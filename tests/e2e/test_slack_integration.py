@@ -1,7 +1,8 @@
+"""E2E tests for Slack integration."""
+
 import pytest
 
-@pytest.mark.skip(reason="flaky after 13-svc refactor – see #642")
-"""E2E tests for Slack integration."""
+pytestmark = pytest.mark.skip(reason="flaky after 13-svc refactor – see #642")
 
 import json
 import os

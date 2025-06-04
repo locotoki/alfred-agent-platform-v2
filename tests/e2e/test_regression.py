@@ -1,7 +1,8 @@
+"""E2E regression tests for platform stability."""
+
 import pytest
 
-@pytest.mark.skip(reason="flaky after 13-svc refactor – see #642")
-"""E2E regression tests for platform stability."""
+pytestmark = pytest.mark.skip(reason="flaky after 13-svc refactor – see #642")
 
 import json
 import time

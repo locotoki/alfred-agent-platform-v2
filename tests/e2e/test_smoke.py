@@ -1,9 +1,8 @@
-import pytest
-
-@pytest.mark.skip(reason="flaky after 13-svc refactor – see #642")
 """E2E smoke tests for core services."""
 
 import pytest
+
+pytestmark = pytest.mark.skip(reason="flaky after 13-svc refactor – see #642")
 
 
 class TestCoreServices:
