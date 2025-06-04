@@ -7,6 +7,7 @@ import os
 import uuid
 from datetime import datetime
 
+
 class A2AEnvelope:.
     """Simple A2A envelope implementation."""
 

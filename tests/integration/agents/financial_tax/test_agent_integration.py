@@ -8,8 +8,6 @@ import pytest
 pytestmark = pytest.mark.xfail(reason="pre-existing async bug, see #220", strict=False)
 
 from libs.a2a_adapter import (
-    
-,
     A2AEnvelope,
     PolicyMiddleware,
     PubSubTransport,

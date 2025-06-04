@@ -5,6 +5,7 @@ from unittest.mock import patch
 
 import pytest
 
+
 @pytest.mark.parametrize(
     "workflows_enabled,expected_workflows",
     [

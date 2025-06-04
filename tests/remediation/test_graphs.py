@@ -11,8 +11,6 @@ import pytest
 
 from alfred.remediation import settings
 from alfred.remediation.graphs import (
-    
-,
     complete_remediation,
     escalate_issue,
     probe_health,
@@ -21,6 +19,7 @@ from alfred.remediation.graphs import (
     should_retry_or_complete,
     wait_for_stabilization,
 )
+
 
 @pytest.fixture
 def basic_state():

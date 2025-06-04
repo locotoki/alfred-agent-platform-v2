@@ -3,6 +3,7 @@
 import os
 from typing import Optional
 
+
 class BizOpsSettings:
     """Centralized settings for Agent BizOps service."""
 

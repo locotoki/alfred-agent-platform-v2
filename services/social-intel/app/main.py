@@ -17,8 +17,6 @@ from agents.social_intel.agent import SocialIntelAgent
 from app.blueprint import SeedToBlueprint
 from app.niche_scout import NicheScout
 from app.workflow_endpoints import (
-    
-,
     get_scheduled_workflows,
     get_workflow_history,
     get_workflow_result,

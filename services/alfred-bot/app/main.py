@@ -9,8 +9,6 @@ from slack_bolt import App
 from slack_bolt.adapter.fastapi import SlackRequestHandler
 
 from libs.a2a_adapter import (
-    
-,
     A2AEnvelope,
     PolicyMiddleware,
     PubSubTransport,

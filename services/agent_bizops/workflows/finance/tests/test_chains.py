@@ -5,16 +5,12 @@ from unittest.mock import AsyncMock, MagicMock, patch
 import pytest
 
 from agents.financial_tax.chains import (
-    
-,
     ComplianceCheckChain,
     FinancialAnalysisChain,
     RateLookupChain,
     TaxCalculationChain,
 )
 from agents.financial_tax.models import (
-    
-,
     ComplianceCheckRequest,
     EntityType,
     FinancialAnalysisRequest,
@@ -22,6 +18,7 @@ from agents.financial_tax.models import (
     TaxJurisdiction,
     TaxRateRequest,
 )
+
 
 @pytest.fixture
 def mock_llm():

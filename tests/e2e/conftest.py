@@ -10,6 +10,7 @@ import requests
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
+
 @pytest.fixture(scope="session")
 def http_client() -> Generator[requests.Session, None, None]:
     """Create HTTP client with retry logic."""

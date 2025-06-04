@@ -6,8 +6,6 @@ from langchain.prompts import PromptTemplate
 from langchain_openai import ChatOpenAI
 
 from .models import (
-    
-,
     ComplianceAuditResult,
     ContractReviewResult,
     DocumentAnalysisResult,

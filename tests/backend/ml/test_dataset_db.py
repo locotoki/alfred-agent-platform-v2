@@ -8,12 +8,11 @@ from sqlalchemy import create_engine, text
 
 from backend.alfred.config.settings import settings
 from backend.alfred.ml.alert_dataset import (
-    
-,
     _severity_to_label,
     _strip_pii,
     load_alert_dataset,
 )
+
 
 @pytest.fixture
 def test_db():

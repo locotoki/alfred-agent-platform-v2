@@ -4,8 +4,6 @@ import pytest
 from pydantic import ValidationError
 
 from services.agent_bizops.workflows.finance.models import (
-    
-,
     ComplianceCheckRequest,
     ComplianceCheckResponse,
     EntityType,

@@ -6,16 +6,12 @@ import pytest
 from langchain.chains import LLMChain
 
 from services.agent_bizops.workflows.finance.chains import (
-    
-,
     ComplianceCheckChain,
     FinancialAnalysisChain,
     RateLookupChain,
     TaxCalculationChain,
 )
 from services.agent_bizops.workflows.finance.models import (
-    
-,
     ComplianceCheckRequest,
     ComplianceCheckResponse,
     EntityType,
@@ -27,6 +23,7 @@ from services.agent_bizops.workflows.finance.models import (
     TaxRateRequest,
     TaxRateResponse,
 )
+
 
 @pytest.fixture
 def mock_llm():

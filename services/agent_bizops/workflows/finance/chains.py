@@ -6,8 +6,6 @@ from langchain.prompts import PromptTemplate
 from langchain_openai import ChatOpenAI
 
 from .models import (
-    
-,
     ComplianceCheckRequest,
     ComplianceCheckResponse,
     FinancialAnalysisRequest,
@@ -17,6 +15,7 @@ from .models import (
     TaxRateRequest,
     TaxRateResponse,
 )
+
 
 class TaxCalculationChain:
     """Chain for tax calculation processing"""

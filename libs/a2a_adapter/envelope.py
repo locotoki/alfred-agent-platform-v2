@@ -1,5 +1,22 @@
-from datetime import datetimeLFfrom typing import Any, Dict, List, OptionalLFfrom uuid import uuid4LFLFfrom pydantic import BaseModel, FieldLFLFLFclass Artifact(BaseModel):LF    key: str
-    uri: str
+from datetime import (
+    :LF,
+    Any,
+    Artifact,
+    BaseModel,
+    Dict,
+    FieldLFLFLFclass,
+    List,
+    OptionalLFfrom,
+    datetimeLFfrom,
+    import,
+    key:,
+    pydantic,
+    str,
+    typing,
+    uri:,
+    uuid,
+    uuid4LFLFfrom,
+)
     mime_type: Optional[str] = None
     description: Optional[str] = None
     metadata: Dict[str, Any] = Field(default_factory=dict)

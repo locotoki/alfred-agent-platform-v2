@@ -1,8 +1,8 @@
 """Alfred UI module."""
 
-from typing import (
+from typing import (  # Will be imported when streamlit_chat is properly typed
     List,
-)  # Will be imported when streamlit_chat is properly typed
+)
 
 # from .streamlit_chat import create_streamlit_app
 

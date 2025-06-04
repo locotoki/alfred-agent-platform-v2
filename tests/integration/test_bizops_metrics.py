@@ -5,6 +5,7 @@ from unittest.mock import MagicMock, patch
 import httpx
 import pytest
 
+
 @pytest.mark.integration
 def test_metrics_endpoint_available():
     """Test that metrics endpoint is available and returns Prometheus format."""
@@ -114,6 +115,7 @@ def test_operation_type_detection():
 def test_metrics_middleware_integration():
     """Test that metrics middleware integrates properly with FastAPI."""
     from fastapi import FastAPI
+
 from fastapi.testclient import TestClient
 
 from services.agent_bizops.middleware.metrics import setup_metrics_middleware
@@ -154,6 +156,7 @@ from services.agent_bizops.middleware.metrics import setup_metrics_middleware
 def test_error_metrics_recording():
     """Test that error metrics are properly recorded."""
     from fastapi import FastAPI, HTTPException
+
 from fastapi.testclient import TestClient
 
 from services.agent_bizops.middleware.metrics import setup_metrics_middleware

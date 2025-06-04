@@ -5,13 +5,12 @@ from unittest.mock import patch
 import pytest
 
 from alfred.scripts.licence_gate import (
-    
-,
     _normalise,
     main,
     normalize_licence,
     validate_licences,
 )
+
 
 @pytest.mark.smoke_licence
 def test_normalize_licence():
