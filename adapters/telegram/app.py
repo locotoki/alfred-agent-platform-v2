@@ -69,11 +69,8 @@ if not TELEGRAM_BOT_TOKEN:
 # Initialize the Telegram bot application
 bot_app = Application.builder().token(TELEGRAM_BOT_TOKEN or "").build()
 
-# A
-RED Core service connection - adjust as needed for your environment
-A
-RED_CORE_URL = os.getenv("A
-RED_CORE_URL", "http://agent-core:8011")
+# Alfred Core service connection - adjust as needed for your environment
+ALFRED_CORE_URL = os.getenv("ALFRED_CORE_URL", "http://agent-core:8011")
 
 async def route_to_alfred(user_id: str, message: str) -> Optional[str]:
     """Route the message to Alfred Core service and get a response.
