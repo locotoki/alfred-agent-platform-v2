@@ -1,4 +1,5 @@
 # Minimal compose for CI core health check - 13 services only
+# Simplified for CI without auth/realtime services that require complex DB setup
 services:
   db-postgres:
     extends:
@@ -21,14 +22,6 @@ services:
     extends:
       file: docker-compose.yml
       service: db-api
-  db-auth:
-    extends:
-      file: docker-compose.yml
-      service: db-auth
-  db-realtime:
-    extends:
-      file: docker-compose.yml
-      service: db-realtime
   db-storage:
     extends:
       file: docker-compose.yml
@@ -82,6 +75,14 @@ services:
     extends:
       file: docker-compose.yml
       service: mail-server
+  redis-exporter:
+    extends:
+      file: docker-compose.yml
+      service: redis-exporter
+  db-api-metrics:
+    extends:
+      file: docker-compose.yml
+      service: db-api-metrics
 
 networks:
   alfred-network:
