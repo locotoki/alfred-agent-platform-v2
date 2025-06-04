@@ -1,52 +1,29 @@
 # Minimal compose for CI core health check - 13 services only
-
-# CI environment defaults
-x-ci-env: &ci-env
-  POSTGRES_PASSWORD: postgres
-  REDIS_PASSWORD: redis123
-  OPENAI_API_KEY: sk-dummy-for-ci
-  SLACK_BOT_TOKEN: xoxb-dummy
-  SLACK_SIGNING_SECRET: dummy
-  SLACK_APP_TOKEN: xapp-dummy
-  TELEGRAM_BOT_TOKEN: dummy:token
-
 services:
   db-postgres:
     extends:
       file: docker-compose.yml
       service: db-postgres
-    environment:
-      <<: *ci-env
   redis:
     extends:
       file: docker-compose.yml
       service: redis
-    environment:
-      <<: *ci-env
   db-api:
     extends:
       file: docker-compose.yml
       service: db-api
-    environment:
-      <<: *ci-env
   db-auth:
     extends:
       file: docker-compose.yml
       service: db-auth
-    environment:
-      <<: *ci-env
   db-realtime:
     extends:
       file: docker-compose.yml
       service: db-realtime
-    environment:
-      <<: *ci-env
   db-storage:
     extends:
       file: docker-compose.yml
       service: db-storage
-    environment:
-      <<: *ci-env
   pubsub-emulator:
     extends:
       file: docker-compose.yml
