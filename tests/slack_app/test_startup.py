@@ -46,6 +46,7 @@ def mock_bolt_app():
 def slack_app_module():
     try:
         # Try to import the actual module
+
         from services.slack_app import app
 
         return app
@@ -89,6 +90,7 @@ def test_app_starts_without_error(mock_bolt_app, capture_stdout):
     os.environ["SLACK_SIGNING_SECRET"] = "test-secret"
 
     # Create a simple app for testing
+
     from slack_bolt import App
 
     app = App(
@@ -100,6 +102,7 @@ def test_app_starts_without_error(mock_bolt_app, capture_stdout):
     app.start(port=3000)
 
     # Create a flask app to check health endpoints
+
     from flask import Flask
 
     flask_app = Flask(__name__)

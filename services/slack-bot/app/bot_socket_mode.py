@@ -198,6 +198,7 @@ if __name__ == "__main__":
     import uvicorn
 
     # Start Socket Mode handler in background
+
     asyncio.create_task(start_socket_mode())
 
     # Start FastAPI for health checks

@@ -126,6 +126,7 @@ def get_package_licenses(packages: List[Dict[str, str]]) -> List[Dict[str, str]]
             raise RuntimeError(f"pip-licenses failed: {result.stderr}")
 
         # Parse JSON output
+
         import json
 
         try:

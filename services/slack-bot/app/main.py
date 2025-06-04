@@ -8,6 +8,7 @@ logger = logging.getLogger("main")
 if os.environ.get("SLACK_APP_TOKEN"):
     logger.info("SLACK_APP_TOKEN detected, loading Socket Mode bot")
     from bot_socket_mode import app
+
 else:
     logger.info("No SLACK_APP_TOKEN, loading regular bot")
     from bot import app

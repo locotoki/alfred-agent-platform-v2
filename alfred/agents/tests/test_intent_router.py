@@ -143,6 +143,7 @@ class TestIntentRouter:
     def test_error_handling_in_route(self, router, monkeypatch):
         """Test error handling during routing."""
         # Create a test pattern that's deliberately invalid
+
         import re
 
         invalid_pattern = re.compile(r"(unclosed")
@@ -160,6 +161,7 @@ class TestIntentRouter:
         from alfred.agents.intent_router import intents_total
 
         # Reset metrics
+
         intents_total._metrics.clear()
 
         # Route several messages

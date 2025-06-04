@@ -33,7 +33,6 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-
 class MetadataUpdater:
     """Class to update metadata in markdown files."""
 
@@ -242,7 +241,6 @@ class MetadataUpdater:
                     md_files.append(os.path.join(root, file))
         return md_files
 
-
 def main():
     parser = argparse.ArgumentParser(
         description="Update metadata in markdown documentation files"
@@ -305,7 +303,6 @@ def main():
             print("\n" + report)
     else:
         updater.generate_report(report_path)
-
 
 if __name__ == "__main__":
     main()

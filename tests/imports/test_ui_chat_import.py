@@ -16,7 +16,9 @@ def test_streamlit_chat_imports():
     sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../../alfred/ui"))
 
     # This should not raise ImportError
+
     import streamlit_chat
 
     # Basic validation
+
     assert streamlit_chat is not None

@@ -1,14 +1,12 @@
 """E2E regression tests for platform stability."""
 
-import pytest
-
-# Temporarily removed skip marker to debug flaky tests
-# pytestmark = pytest.mark.skip(reason="flaky after 13-svc refactor – see #642")
-
 import json
 import time
 
 import pytest
+
+# Temporarily removed skip marker to debug flaky tests
+# pytestmark = pytest.mark.skip(reason="flaky after 13-svc refactor – see #642")
 
 
 class TestDataFlow:
@@ -125,16 +123,16 @@ class TestMetricsCollection:
         # Get metrics
         response = http_client.get(f"{alfred_base_url}/metrics")
         assert response.status_code == 200
-        
+
         metrics_text = response.text
-        
+
         # Verify it's in prometheus format
         assert "# HELP" in metrics_text or "# TYPE" in metrics_text or metrics_text.strip()
-        
+
         # Make some requests to potentially increment metrics
         for _ in range(3):
             http_client.get(f"{alfred_base_url}/health")
-        
+
         # Get metrics again - should still be available
         response2 = http_client.get(f"{alfred_base_url}/metrics")
         assert response2.status_code == 200

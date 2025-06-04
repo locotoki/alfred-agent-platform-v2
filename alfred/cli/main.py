@@ -15,6 +15,5 @@ def cli():
 # Register commands
 cli.add_command(health)
 
-
 if __name__ == "__main__":
     cli()

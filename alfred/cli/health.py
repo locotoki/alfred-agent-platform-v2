@@ -11,7 +11,6 @@ from rich.table import Table
 
 console = Console()
 
-
 CORE_SERVICES = {
     "alfred-core": {
         "url": "http://localhost:8011/health",
@@ -45,7 +44,6 @@ CORE_SERVICES = {
     },
 }
 
-
 OBSERVABILITY_SERVICES = {
     "prometheus": {
         "url": "http://localhost:9090/-/healthy",
@@ -74,6 +72,7 @@ def check_service_health(name: str, config: Dict) -> Dict:
     try:
         if config.get("check_type") == "tcp":
             # For TCP-only services, just check connectivity
+
             import socket
 
             host = config["url"].replace("http://", "").replace("/", "").split(":")[0]

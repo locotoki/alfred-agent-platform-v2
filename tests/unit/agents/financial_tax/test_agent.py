@@ -5,13 +5,14 @@ from unittest.mock import AsyncMock, MagicMock, patch
 import pytest
 
 from libs.a2a_adapter import (
+    
+,
     A2AEnvelope,
     PolicyMiddleware,
     PubSubTransport,
     SupabaseTransport,
 )
 from services.agent_bizops.workflows.finance.agent import FinancialTaxAgent
-
 
 @pytest.fixture
 def mock_pubsub():
@@ -21,7 +22,6 @@ def mock_pubsub():
     mock.subscribe = AsyncMock()
     mock.completed_topic_path = "projects/test/topics/completed"
     return mock
-
 
 @pytest.fixture
 def mock_supabase():
@@ -37,22 +37,21 @@ def mock_supabase():
     mock.disconnect = AsyncMock()
     return mock
 
-
 @pytest.fixture
 def mock_policy():
     """Mock Policy middleware."""
     mock = MagicMock(spec=PolicyMiddleware)
     return mock
 
-
 @pytest.fixture
 def financial_tax_agent(mock_pubsub, mock_supabase, mock_policy):
     """Create Financial Tax Agent with mocks."""
     with patch("services.agent_bizops.workflows.finance.agent.ChatOpenAI") as mock_openai:
         # Create a mock that actually inherits from the base class structure expected
+
         from typing import Any, Optional
 
-        from langchain.schema.runnable import Runnable
+from langchain.schema.runnable import Runnable
 
         class MockLLM(Runnable):
             def invoke(self, input: Any, config: Optional[Any] = None, **kwargs: Any) -> Any:
@@ -83,7 +82,6 @@ def financial_tax_agent(mock_pubsub, mock_supabase, mock_policy):
         agent.process_task = AsyncMock()
 
         return agent
-
 
 class TestFinancialTaxAgent:
     """Test cases for Financial Tax Agent."""

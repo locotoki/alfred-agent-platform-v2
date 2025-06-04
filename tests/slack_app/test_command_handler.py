@@ -10,11 +10,12 @@ from unittest.mock import MagicMock
 # Import the application module
 from services.slack_app.app import (
     COMMAND_PREFIX,
+    
+,
     app,
     handle_alfred_command,
     handle_help_command,
 )
-
 
 @pytest.mark.xfail(
     reason="Slack authentication error in CI environment, see issue #220", strict=False
@@ -47,7 +48,6 @@ def test_command_registration():
 
     # This assertion will fail if the command is registered WITH the slash
     assert len(alfred_listeners) > 0, f"Command '{command_name}' not registered correctly"
-
 
 @pytest.mark.xfail(
     reason="Slack authentication error in CI environment, see issue #220", strict=False
@@ -82,7 +82,6 @@ def test_alfred_command_handler():
     help_message = mock_say.call_args[0][0]
     assert "Alfred Slack Bot Commands" in help_message, "Help message not sent"
 
-
 @pytest.mark.xfail(
     reason="Slack authentication error in CI environment, see issue #220", strict=False
 )
@@ -102,7 +101,6 @@ def test_help_command_handler():
     assert "Alfred Slack Bot Commands" in help_message
     assert "/alfred help" in help_message
     assert "/alfred status" in help_message
-
 
 @pytest.mark.xfail(
     reason="Slack authentication error in CI environment, see issue #220", strict=False
@@ -132,7 +130,6 @@ def test_empty_command_defaults_to_help():
     help_message = mock_say.call_args[0][0]
     assert "Alfred Slack Bot Commands" in help_message
 
-
 # Run this test if you suspect ack() timing issues
 @pytest.mark.xfail(
     reason="Slack authentication error in CI environment, see issue #220", strict=False
@@ -141,7 +138,8 @@ def test_ack_timing():
     """Test that ack() is called immediately."""
     import time
 
-    # Times when actions occur
+# Times when actions occur
+
     timestamps = {"start": 0, "ack": 0, "say": 0}
 
     # Create a timing aware ack function

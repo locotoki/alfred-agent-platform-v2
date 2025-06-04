@@ -24,7 +24,7 @@ print("Testing Slack API tokens...")
 # Test the bot token with a simple API call
 try:
     from slack_sdk import WebClient
-    from slack_sdk.errors import SlackApiError
+from slack_sdk.errors import SlackApiError
 
     client = WebClient(token=bot_token)
     response = client.auth_test()

@@ -31,7 +31,6 @@ logging.basicConfig(
 )
 logger = logging.getLogger("doc_migration")
 
-
 class DocMigrationInventory:
     """Class to handle document migration inventory process."""
 
@@ -423,7 +422,6 @@ class DocMigrationInventory:
         logger.info("Document migration inventory process completed")
         return report_file
 
-
 def main():
     """Main function to run the script."""
     parser = argparse.ArgumentParser(description="Document Migration Inventory Tool")
@@ -473,7 +471,6 @@ def main():
         )
     else:
         print("Failed to generate report. Check the logs for details.")
-
 
 if __name__ == "__main__":
     main()

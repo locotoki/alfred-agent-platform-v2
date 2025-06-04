@@ -6,6 +6,7 @@ from unittest.mock import MagicMock
 # Handle asyncpg import for environment where it might not be available
 try:
     import asyncpg
+
 except ImportError:  # pragma: no cover
     asyncpg = None
     import pytest
@@ -23,10 +24,7 @@ from libs.a2a_adapter import PolicyMiddleware, PubSubTransport, SupabaseTranspor
 def pytest_addoption(parser):
     """Add custom pytest options."""
     parser.addoption(
-        "--slack-tests", 
-        action="store_true", 
-        default=False, 
-        help="run slack integration tests"
+        "--slack-tests", action="store_true", default=False, help="run slack integration tests"
     )
 
 

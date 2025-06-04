@@ -18,7 +18,9 @@ class TestCoreServices:
         assert data["status"] == "healthy"
 
     @pytest.mark.e2e
-    @pytest.mark.skip(reason="model-registry is a stub service (sleep infinity) without real health endpoint")
+    @pytest.mark.skip(
+        reason="model-registry is a stub service (sleep infinity) without real health endpoint"
+    )
     def test_model_registry_health(self, http_client, wait_for_services):
         """Test Model Registry health endpoint."""
         response = http_client.get("http://localhost:8079/health")

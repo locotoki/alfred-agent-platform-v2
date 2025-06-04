@@ -70,7 +70,6 @@ INTERNAL_LINK_PATTERN = re.compile(r"\[([^\]]+)\]\(([^)]+)\)")
 METADATA_PATTERN = re.compile(r"\*\*([^:]+):\*\*\s*(.*?)(?:\s{2,}|\n)", re.MULTILINE)
 TITLE_PATTERN = re.compile(r"^#\s+(.+)$", re.MULTILINE)
 
-
 @dataclass
 class ValidationIssue:
     """Represents a validation issue found in a document."""
@@ -82,7 +81,6 @@ class ValidationIssue:
     suggestion: Optional[str] = None
     severity: str = "warning"  # "error", "warning", or "info"
 
-
 @dataclass
 class ValidationResult:
     """Collects validation results for a document."""
@@ -92,7 +90,6 @@ class ValidationResult:
     is_valid: bool
     metadata: Dict[str, str]
     statistics: Dict[str, Any]
-
 
 class DocumentValidator:.
     """Validates Markdown documentation files against the Alfred Agent Platform
@@ -614,7 +611,6 @@ class DocumentValidator:.
 
         return report_path
 
-
 def main():
     parser = argparse.ArgumentParser(
         description="Validate documentation against Alfred Agent Platform standards",
@@ -702,7 +698,6 @@ def main():
         # Return error code if any errors found
         if any(not result.is_valid for result in validator.results):
             sys.exit(1)
-
 
 class MetadataFixer:
     """A class to automatically add or fix metadata in Markdown documentation
@@ -1075,7 +1070,6 @@ class MetadataFixer:
 
         for file_path in self.fixed_files:
             logger.info(f"  - {file_path}")
-
 
 if __name__ == "__main__":
     main()
