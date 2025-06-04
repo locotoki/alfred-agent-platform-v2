@@ -24,6 +24,7 @@ from .models import (
 
 logger = structlog.get_logger(__name__)
 
+
 class FinancialTaxAgent(BaseAgent):
     """Agent for financial and tax analysis tasks"""
 

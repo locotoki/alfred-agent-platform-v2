@@ -42,6 +42,7 @@ social_agent = SocialIntelAgent(
     policy_middleware=policy_middleware,
 )
 
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Manage application lifecycle"""
@@ -49,7 +50,7 @@ async def lifespan(app: FastAPI):
 
     from app.database import close_pool, get_pool
 
-# Startup
+    # Startup
 
     await supabase_transportconnect()
 
@@ -79,6 +80,7 @@ async def lifespan(app: FastAPI):
 
     logger.info("social_intel_service_stopped")
 
+
 app = FastAPI(
     title="Social Intelligence Service",
     description="Trend analysis and social media monitoring service",
@@ -90,6 +92,7 @@ app = FastAPI(
 health_app = create_health_app("social-intel", "1.0.0")
 app.mount("/health", health_app)
 
+
 @app.get("/status")
 async def get_status():
     """Get agent status"""
@@ -100,6 +103,7 @@ async def get_status():
         "supported_intents": social_agent.supported_intents,
     }
 
+
 @app.post("/force-analyze")
 async def force_analyze(query: str):
     """Force an immediate trend analysis"""
@@ -109,6 +113,7 @@ async def force_analyze(query: str):
     except Exception as e:
         logger.error("force_analyze_failed", error=str(e))
         raise HTTPException(status_code=500, detail=str(e))
+
 
 @app.post("/niche-scout")
 async def run_niche_scout(
@@ -191,6 +196,7 @@ async def run_niche_scout(
         )
         raise HTTPException(status_code=500, detail=str(e))
 
+
 # Alternative routes for Niche-Scout workflow
 @app.post("/youtube/niche-scout")
 async def run_niche_scout_alt1(
@@ -202,6 +208,7 @@ async def run_niche_scout_alt1(
     """Alternative path for Niche-Scout workflow"""
     return await run_niche_scout(request, query, category, subcategory)
 
+
 @app.post("/api/youtube/niche-scout")
 async def run_niche_scout_alt2(
     request: Request,
@@ -211,6 +218,7 @@ async def run_niche_scout_alt2(
 ):
     """Alternative path for Niche-Scout workflow"""
     return await run_niche_scout(request, query, category, subcategory)
+
 
 @app.post("/seed-to-blueprint")
 async def run_seed_to_blueprint(
@@ -262,6 +270,7 @@ async def run_seed_to_blueprint(
         logger.error("seed_to_blueprint_failed", error=str(e))
         raise HTTPException(status_code=500, detail=str(e))
 
+
 # Alternative routes for Seed-to-Blueprint workflow
 @app.post("/youtube/blueprint")
 async def run_seed_to_blueprint_alt1(
@@ -272,6 +281,7 @@ async def run_seed_to_blueprint_alt1(
     """Alternative path for Seed-to-Blueprint workflow"""
     return await run_seed_to_blueprint(request, video_url, niche)
 
+
 @app.post("/api/youtube/blueprint")
 async def run_seed_to_blueprint_alt2(
     request: Request,
@@ -280,6 +290,7 @@ async def run_seed_to_blueprint_alt2(
 ):
     """Alternative path for Seed-to-Blueprint workflow"""
     return await run_seed_to_blueprint(request, video_url, niche)
+
 
 # Workflow result retrieval endpoint
 @app.get("/workflow-result/{result_id}")
@@ -293,6 +304,7 @@ async def get_workflow_result_endpoint(
     """Retrieve previously generated workflow results by ID"""
     return await get_workflow_result(result_id, type)
 
+
 # Alternative routes for workflow results
 @app.get("/youtube/workflow-result/{result_id}")
 async def get_workflow_result_alt1(
@@ -302,6 +314,7 @@ async def get_workflow_result_alt1(
     """Alternative path for workflow results"""
     return await get_workflow_result(result_id, type)
 
+
 @app.get("/api/youtube/workflow-result/{result_id}")
 async def get_workflow_result_alt2(
     result_id: str,
@@ -310,11 +323,13 @@ async def get_workflow_result_alt2(
     """Alternative path for workflow results"""
     return await get_workflow_result(result_id, type)
 
+
 # Workflow history endpoint
 @app.get("/workflow-history")
 async def get_workflow_history_endpoint():
     """Retrieve history of workflow executions"""
     return await get_workflow_history()
+
 
 # Alternative routes for workflow history
 @app.get("/youtube/workflow-history")
@@ -322,10 +337,12 @@ async def get_workflow_history_alt1():
     """Alternative path for workflow history"""
     return await get_workflow_history()
 
+
 @app.get("/api/youtube/workflow-history")
 async def get_workflow_history_alt2():
     """Alternative path for workflow history"""
     return await get_workflow_history()
+
 
 # Scheduled workflows endpoint
 @app.get("/scheduled-workflows")
@@ -333,16 +350,19 @@ async def get_scheduled_workflows_endpoint():
     """Retrieve scheduled workflows"""
     return await get_scheduled_workflows()
 
+
 # Alternative routes for scheduled workflows
 @app.get("/youtube/scheduled-workflows")
 async def get_scheduled_workflows_alt1():
     """Alternative path for scheduled workflows"""
     return await get_scheduled_workflows()
 
+
 @app.get("/api/youtube/scheduled-workflows")
 async def get_scheduled_workflows_alt2():
     """Alternative path for scheduled workflows"""
     return await get_scheduled_workflows()
+
 
 # Schedule workflow endpoint
 @app.post("/schedule-workflow")
@@ -355,6 +375,7 @@ async def schedule_workflow_endpoint(
     """Schedule a new workflow execution"""
     return await schedule_workflow(workflow_type, parameters, frequency, next_run)
 
+
 # Alternative routes for scheduling workflows
 @app.post("/youtube/schedule-workflow")
 async def schedule_workflow_alt1(
@@ -366,6 +387,7 @@ async def schedule_workflow_alt1(
     """Alternative path for scheduling workflows"""
     return await schedule_workflow(workflow_type, parameters, frequency, next_run)
 
+
 @app.post("/api/youtube/schedule-workflow")
 async def schedule_workflow_alt2(
     workflow_type: str = Body(..., description="Type of workflow to schedule"),
@@ -376,7 +398,9 @@ async def schedule_workflow_alt2(
     """Alternative path for scheduling workflows"""
     return await schedule_workflow(workflow_type, parameters, frequency, next_run)
 
+
 # ----- API Documentation Routes -----
+
 
 @app.get("/openapi.yaml", include_in_schema=False)
 async def get_custom_openapi_yaml():
@@ -384,6 +408,7 @@ async def get_custom_openapi_yaml():
     with open("api/openapi.yaml", "r") as f:
         yaml_content = f.read()
     return JSONResponse(content=yaml.safe_load(yaml_content))
+
 
 @app.get("/docs", include_in_schema=False)
 async def custom_swagger_ui_html():
@@ -439,10 +464,12 @@ async def custom_swagger_ui_html():
     """
     return HTMLResponse(content=swagger_ui_html)
 
+
 # Disable the default FastAPI OpenAPI schema
 def custom_openapi():
     """Override the default OpenAPI schema with a custom one"""
     with open("api/openapi.yaml", "r") as f:
         return yaml.safe_load(f)
+
 
 app.openapi = custom_openapi

@@ -17,6 +17,7 @@ from services.agent_bizops.workflows.finance.agent import FinancialTaxAgent
 
 pytestmark = pytest.mark.integration
 
+
 @pytest.fixture(scope="module")
 def event_loop():
     """Create event loop for async tests."""
@@ -24,11 +25,13 @@ def event_loop():
     yield loop
     loop.close()
 
+
 @pytest.fixture
 async def pubsub_transport():
     """Create real PubSubTransport instance."""
     transport = PubSubTransport(project_id=os.getenv("GCP_PROJECT_ID", "alfred-agent-platform"))
     yield transport
+
 
 @pytest.fixture
 async def supabase_transport():
@@ -38,6 +41,7 @@ async def supabase_transport():
     yield transport
     await transport.disconnect()
 
+
 @pytest.fixture
 def policy_middleware():
     """Create real PolicyMiddleware instance."""
@@ -45,6 +49,7 @@ def policy_middleware():
 
     redis_client = redis.from_url(os.getenv("REDIS_URL", "redis://localhost:6379"))
     return PolicyMiddleware(redis_client)
+
 
 @pytest.fixture
 async def financial_tax_agent(pubsub_transport, supabase_transport, policy_middleware):
@@ -55,6 +60,7 @@ async def financial_tax_agent(pubsub_transport, supabase_transport, policy_middl
         policy_middleware=policy_middleware,
     )
     return agent
+
 
 class TestFinancialTaxAgentIntegration:
     """Integration tests for Financial Tax Agent."""

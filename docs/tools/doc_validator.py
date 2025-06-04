@@ -91,14 +91,14 @@ class ValidationResult:
     metadata: Dict[str, str]
     statistics: Dict[str, Any]
 
-class DocumentValidator:.
+class DocumentValidator:
     """Validates Markdown documentation files against the Alfred Agent Platform
     standards.
     """
 
     def __init__(
         self, base_path: str, check_links: bool = False, verbose: bool = False
-    ):.
+    ):
         """Initialize the validator.
 
         Args:
@@ -113,7 +113,7 @@ class DocumentValidator:.
         self.results: List[ValidationResult] = []
         self.heading_counts = defaultdict(int)
 
-    def validate_file(self, file_path: str) -> ValidationResult:.
+    def validate_file(self, file_path: str) -> ValidationResult:
         """Validate a single Markdown file.
 
         Args:

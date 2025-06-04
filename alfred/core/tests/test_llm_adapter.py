@@ -26,6 +26,7 @@ class TestMessage:
         msg = Message("assistant", "Hi there")
         assert msg.to_dict() == {"role": "assistant", "content": "Hi there"}
 
+
 class TestOpenAIAdapter:
     """Test OpenAI adapter implementation"""
 
@@ -115,6 +116,7 @@ class TestOpenAIAdapter:
             adapter = OpenAIAdapter()
             assert adapter.api_key == "env-key"
 
+
 class TestClaudeAdapter:
     """Test Claude adapter implementation"""
 
@@ -160,6 +162,7 @@ class TestClaudeAdapter:
         tokens = adapter.estimate_tokens(text)
         assert tokens == len(text) // 4
 
+
 class TestFactory:
     """Test factory function"""
 
@@ -179,6 +182,7 @@ class TestFactory:
         """Test error handling for unknown LLM providers"""
         with pytest.raises(ValueError, match="Unknown provider: gpt-j"):
             create_llm_adapter("gpt-j")
+
 
 class TestTokenBudgetGuard:
     """Test token budget guard for test suite"""

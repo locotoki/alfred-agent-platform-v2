@@ -6,10 +6,10 @@ from datetime import datetime
 
 
 # Mock YouTube API and vector storage
-class MockYouTubeAPI:.
+class MockYouTubeAPI:
     """Mock YouTube API for testing."""
 
-    async def search_videos(self, query, limit=10):.
+    async def search_videos(self, query, limit=10):
         """Mock video search."""
         return [
             {
@@ -56,7 +56,7 @@ class MockYouTubeAPI:.
 class MockVectorStorage:
     """Mock vector storage for testing."""
 
-    async def initialize_collections(self):.
+    async def initialize_collections(self):
         """Mock collection initialization."""
         print("Initializing vector collections...")
 
@@ -80,7 +80,7 @@ class MockSocialIntelAgent:
         self.youtube_api = MockYouTubeAPI()
         self.youtube_vectors = MockVectorStorage()
 
-    async def _youtube_niche_scout(self, content):.
+    async def _youtube_niche_scout(self, content):
         """Run YouTube Niche-Scout workflow."""
         print("\n=== Running Niche-Scout Workflow ===\n")
 

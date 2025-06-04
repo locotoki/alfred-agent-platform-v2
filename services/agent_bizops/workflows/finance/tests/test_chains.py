@@ -26,7 +26,7 @@ def mock_llm():
     with patch("agents.financial_tax.chains.ChatOpenAI") as mock:
         from typing import Any, Optional
 
-from langchain.schema.runnable import Runnable
+        from langchain.schema.runnable import Runnable
 
         class MockLLM(Runnable):
             def invoke(self, input: Any, config: Optional[Any] = None, **kwargs: Any) -> Any:
@@ -50,6 +50,7 @@ from langchain.schema.runnable import Runnable
         mock.return_value = llm_instance
         yield llm_instance
 
+
 @pytest.fixture
 def mock_chain():
     """Create a mock chain that can be used for testing."""
@@ -57,12 +58,14 @@ def mock_chain():
     chain.ainvoke = AsyncMock()
     return chain
 
+
 @pytest.fixture
 def mock_parser():
     """Create a mock output parser for testing."""
     parser = MagicMock()
     parser.parse = MagicMock()
     return parser
+
 
 class TestTaxCalculationChain:
     """Test suite for TaxCalculationChain."""
@@ -129,6 +132,7 @@ class TestTaxCalculationChain:
         assert result.net_tax_due == 18000
         assert result.effective_tax_rate == 0.20
 
+
 class TestFinancialAnalysisChain:
     """Test suite for FinancialAnalysisChain."""
 
@@ -187,6 +191,7 @@ class TestFinancialAnalysisChain:
         assert result.key_metrics["gross_margin"] == 0.25
         assert len(result.insights) == 2
         assert "Strong revenue growth" in result.insights
+
 
 class TestComplianceCheckChain:
     """Test suite for ComplianceCheckChain."""
@@ -251,6 +256,7 @@ class TestComplianceCheckChain:
         assert result.compliance_status == "partial_compliance"
         assert result.risk_level == "medium"
         assert len(result.issues_found) == 1
+
 
 class TestRateLookupChain:
     """Test suite for RateLookupChain."""

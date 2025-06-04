@@ -25,6 +25,7 @@ from .models import (
 
 logger = structlog.get_logger(__name__)
 
+
 class LegalComplianceAgent(BaseAgent):
     def __init__(
         self,

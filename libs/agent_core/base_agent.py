@@ -14,6 +14,7 @@ from libs.a2a_adapter import (
 
 logger = structlog.get_logger(__name__)
 
+
 class BaseAgent(ABC):
     def __init__(
         self,

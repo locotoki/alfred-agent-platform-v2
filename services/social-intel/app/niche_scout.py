@@ -27,6 +27,7 @@ from app.youtube_api import YouTubeAPIError, get_trends_by_category
 
 logger = structlog.get_logger(__name__)
 
+
 class NicheScout:
     """Implements the Niche-Scout workflow for YouTube trend analysis"""
 

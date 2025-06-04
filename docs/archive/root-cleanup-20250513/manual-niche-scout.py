@@ -16,7 +16,7 @@ from datetime import datetime, timedelta
 # Check if we have the required libraries
 try:
     import googleapiclient.discovery
-import matplotlib.pyplot as plt
+    import matplotlib.pyplot as plt
 
 except ImportError:
     print("Installing required dependencies...")
@@ -193,7 +193,7 @@ def parse_duration(duration_str):
     """Parse ISO 8601 duration string to seconds."""
     import re
 
-# Parse the duration string
+    # Parse the duration string
 
     pattern = r"PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?"
     match = re.match(pattern, duration_str)

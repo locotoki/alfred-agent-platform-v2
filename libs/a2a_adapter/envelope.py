@@ -15,9 +15,10 @@ class Artifact(BaseModel):
 
 class A2AEnvelope(BaseModel):
     """Agent-to-Agent communication envelope.
-    
+
     Provides standardized message format for A2A communication.
     """
+
     message_id: str = Field(default_factory=lambda: str(uuid4()))
     workflow_id: str = Field(default_factory=lambda: str(uuid4()))
     sender: str

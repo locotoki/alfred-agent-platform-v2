@@ -412,7 +412,7 @@ class DocMigrationInventory:
             return sorted_signals[1][0]
         return None
 
-    def run_full_process(self):.
+    def run_full_process(self):
         """Run the full document migration inventory process."""
         logger.info("Starting document migration inventory process")
         self.scan_markdown_files()

@@ -212,7 +212,7 @@ class MetadataUpdater:
                 metadata[field] = match.group(1).strip()
         return metadata
 
-    def _generate_metadata(self, existing_metadata: Dict[str, str]) -> str:.
+    def _generate_metadata(self, existing_metadata: Dict[str, str]) -> str:
         """Generate metadata text."""
         metadata = {
             "Last Updated": self.today,

@@ -1,12 +1,11 @@
-from logging.config import (  # this is the Alembic Config object, which providesLF# access to the values within the .ini file in use.LFconfig = context.configLF
-    alembic,
-    contextLFfrom,
-    engine_from_config,
-    fileConfigLFLFfrom,
-    import,
-    poolLFLF,
-    sqlalchemy,
-)
+from logging.config import fileConfig
+
+from alembic import context
+from sqlalchemy import engine_from_config, pool
+
+# this is the Alembic Config object, which provides
+# access to the values within the .ini file in use.
+config = context.config
 
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.
@@ -74,4 +73,7 @@ if context.is_offline_mode():
 else:
     run_migrations_online()
 
-# Import models for autogenerateLFfrom agent_core.db import modelsLFLFtarget_metadata = models.SQLModel.metadataLF
+# Import models for autogenerate
+from agent_core.db import models
+
+target_metadata = models.SQLModel.metadata

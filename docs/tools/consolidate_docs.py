@@ -34,7 +34,7 @@ class DocumentConsolidator:
         inventory_file=None,
         group=None,
         dry_run=True,
-    ):.
+    ):
         """Initialize the document consolidator.
 
         Args:
