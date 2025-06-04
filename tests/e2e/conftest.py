@@ -30,12 +30,12 @@ def http_client() -> Generator[requests.Session, None, None]:
 @pytest.fixture(scope="session")
 def wait_for_services():
     """Wait for services to be ready."""
+    # Updated to match actual working CI core services
     services = {
-        "alfred-core": "http://localhost:8011/health",
-        "ui-chat": "http://localhost:3001/health",
-        "agent-orchestrator": "http://localhost:8012/health",
-        "crm-sync": "http://localhost:8003/health",
-        "model-registry": "http://localhost:8007/health",
+        "agent-core": "http://localhost:8011/health",
+        "db-api": "http://localhost:3000/",  # db-api doesn't have /health endpoint
+        "pubsub-metrics": "http://localhost:9103/metrics",  # metrics endpoint
+        # Note: model-registry and model-router are stub services running "sleep infinity"
     }
 
     max_attempts = 30

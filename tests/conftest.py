@@ -20,6 +20,16 @@ from libs.a2a_adapter import PolicyMiddleware, PubSubTransport, SupabaseTranspor
 
 
 # Global pytest configuration for SC-320
+def pytest_addoption(parser):
+    """Add custom pytest options."""
+    parser.addoption(
+        "--slack-tests", 
+        action="store_true", 
+        default=False, 
+        help="run slack integration tests"
+    )
+
+
 def pytest_configure(config):
     """Configure pytest with markers for SC-320."""
     config.addinivalue_line(
