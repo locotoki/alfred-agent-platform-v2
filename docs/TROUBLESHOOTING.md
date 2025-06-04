@@ -12,6 +12,54 @@ This guide provides solutions for common issues you might encounter when working
 6. [UI Rendering Problems](#ui-rendering-problems)
 7. [Database Connectivity Issues](#database-connectivity-issues)
 
+## 11-Service Core Baseline
+
+**New in v0.9.14**: The platform now uses a hardened 11-service core baseline for optimal stability and performance.
+
+### Core Services
+The following services are included in the core baseline:
+- `db-postgres` (PostgreSQL 16 with security hardening)
+- `redis` (Redis 7 Alpine)
+- `db-api` (PostgREST API layer)
+- `db-storage` (Storage service)
+- `pubsub-emulator` (Google Cloud Pub/Sub emulator)
+- `llm-service` (Ollama LLM service)
+- `model-router` (Model routing service)
+- `model-registry` (Model registry service)
+- `agent-core` (Core agent service)
+- `mail-server` (MailHog mail server)
+- `redis-exporter` (Redis metrics exporter)
+- `pubsub-metrics` (Pub/Sub metrics collector)
+
+### Starting Core Services
+```bash
+# Start 11-service core baseline
+docker compose --profile core up -d
+
+# Or use the alfred command
+alfred up --profile core
+
+# Check service health
+docker compose ps
+```
+
+### Minimal Development Mode (CORE_NO_LLM)
+For development environments with limited resources, you can disable LLM services:
+
+```bash
+# Set environment variable to disable LLM services
+export CORE_NO_LLM=true
+docker compose --profile core up -d
+
+# Or pass directly
+CORE_NO_LLM=true alfred up --profile core
+```
+
+When `CORE_NO_LLM=true`:
+- `llm-service`, `model-router`, `model-registry` are disabled
+- Reduces to 8-service baseline for faster startup
+- LLM-dependent features will be mocked/disabled
+
 ## Docker Container Issues
 
 ### Container Fails to Start
@@ -25,6 +73,7 @@ This guide provides solutions for common issues you might encounter when working
 - Port conflicts
 - Volume mount issues
 - Dependency service not available
+- Registry authentication issues (for custom images)
 
 **Solutions**:
 
