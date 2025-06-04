@@ -1,8 +1,8 @@
-# Multi-stage build for Alfred Core service
+# Multi-stage build for Alfred Core service with security hardening
 ARG ASSETS=assets
 
-# Build stage - install dependencies and compile if needed
-FROM python:3.11-slim AS builder
+# Build stage - install dependencies and compile if needed  
+FROM alfred-python-secure:latest AS builder
 
 # Install system build dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -18,8 +18,8 @@ RUN pip install --user --no-cache-dir \
     structlog \
     prometheus_client
 
-# Runtime stage - minimal runtime image
-FROM python:3.11-slim AS runtime
+# Runtime stage - minimal runtime image with security hardening
+FROM alfred-python-secure:latest AS runtime
 
 # Make ASSETS available as environment variable
 ARG ASSETS
