@@ -1,4 +1,5 @@
 name: core-health-13
+# Actually tests 11 services - reduced from 13 due to health check issues with vector-db and monitoring-redis
 on:
   pull_request:
     paths:

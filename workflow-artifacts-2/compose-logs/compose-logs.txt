@@ -1,0 +1,423 @@
+pubsub-emulator  | [pubsub] Jun 04, 2025 7:11:25 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+pubsub-emulator  | [pubsub] INFO: Detected non-HTTP/2 connection.
+pubsub-emulator  | [pubsub] Jun 04, 2025 7:11:25 AM io.gapi.emulators.grpc.HttpAdapter$StubMethodHandler handle
+pubsub-emulator  | [pubsub] INFO: Forwarding key: Host
+pubsub-emulator  | [pubsub] Jun 04, 2025 7:11:25 AM io.gapi.emulators.grpc.HttpAdapter$StubMethodHandler handle
+pubsub-emulator  | [pubsub] INFO: Forwarding key: User-Agent
+pubsub-emulator  | [pubsub] Jun 04, 2025 7:11:25 AM io.gapi.emulators.grpc.HttpAdapter$StubMethodHandler handle
+pubsub-emulator  | [pubsub] INFO: Forwarding key: Accept
+pubsub-emulator  | [pubsub] Jun 04, 2025 7:11:25 AM io.gapi.emulators.grpc.HttpAdapter$StubMethodHandler handle
+pubsub-emulator  | [pubsub] INFO: Not forwarding key: content-length
+pubsub-emulator  | [pubsub] Jun 04, 2025 7:11:56 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+db-api-metrics   | INFO:     Started server process [1]
+db-api-metrics   | INFO:     Waiting for application startup.
+db-api-metrics   | INFO:     Application startup complete.
+db-api-metrics   | INFO:     Uvicorn running on http://0.0.0.0:9103 (Press CTRL+C to quit)
+pubsub-emulator  | [pubsub] INFO: Detected non-HTTP/2 connection.
+pubsub-emulator  | [pubsub] Jun 04, 2025 7:11:56 AM io.gapi.emulators.grpc.HttpAdapter$StubMethodHandler handle
+pubsub-emulator  | [pubsub] INFO: Forwarding key: Host
+pubsub-emulator  | [pubsub] Jun 04, 2025 7:11:56 AM io.gapi.emulators.grpc.HttpAdapter$StubMethodHandler handle
+pubsub-emulator  | [pubsub] INFO: Forwarding key: User-Agent
+pubsub-emulator  | [pubsub] Jun 04, 2025 7:11:56 AM io.gapi.emulators.grpc.HttpAdapter$StubMethodHandler handle
+pubsub-emulator  | [pubsub] INFO: Forwarding key: Accept
+pubsub-emulator  | [pubsub] Jun 04, 2025 7:11:56 AM io.gapi.emulators.grpc.HttpAdapter$StubMethodHandler handle
+pubsub-emulator  | [pubsub] INFO: Not forwarding key: content-length
+pubsub-emulator  | [pubsub] Jun 04, 2025 7:12:26 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+pubsub-emulator  | [pubsub] INFO: Detected non-HTTP/2 connection.
+pubsub-emulator  | [pubsub] Jun 04, 2025 7:12:26 AM io.gapi.emulators.grpc.HttpAdapter$StubMethodHandler handle
+pubsub-emulator  | [pubsub] INFO: Forwarding key: Host
+pubsub-emulator  | [pubsub] Jun 04, 2025 7:12:26 AM io.gapi.emulators.grpc.HttpAdapter$StubMethodHandler handle
+pubsub-emulator  | [pubsub] INFO: Forwarding key: User-Agent
+pubsub-emulator  | [pubsub] Jun 04, 2025 7:12:26 AM io.gapi.emulators.grpc.HttpAdapter$StubMethodHandler handle
+pubsub-emulator  | [pubsub] INFO: Forwarding key: Accept
+pubsub-emulator  | [pubsub] Jun 04, 2025 7:12:26 AM io.gapi.emulators.grpc.HttpAdapter$StubMethodHandler handle
+pubsub-emulator  | [pubsub] INFO: Not forwarding key: content-length
+pubsub-emulator  | [pubsub] Jun 04, 2025 7:12:56 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+pubsub-emulator  | [pubsub] INFO: Detected non-HTTP/2 connection.
+pubsub-emulator  | [pubsub] Jun 04, 2025 7:12:56 AM io.gapi.emulators.grpc.HttpAdapter$StubMethodHandler handle
+pubsub-emulator  | [pubsub] INFO: Forwarding key: Host
+pubsub-emulator  | [pubsub] Jun 04, 2025 7:12:56 AM io.gapi.emulators.grpc.HttpAdapter$StubMethodHandler handle
+pubsub-emulator  | [pubsub] INFO: Forwarding key: User-Agent
+pubsub-emulator  | [pubsub] Jun 04, 2025 7:12:56 AM io.gapi.emulators.grpc.HttpAdapter$StubMethodHandler handle
+pubsub-emulator  | [pubsub] INFO: Forwarding key: Accept
+pubsub-emulator  | [pubsub] Jun 04, 2025 7:12:56 AM io.gapi.emulators.grpc.HttpAdapter$StubMethodHandler handle
+pubsub-emulator  | [pubsub] INFO: Not forwarding key: content-length
+pubsub-emulator  | [pubsub] Jun 04, 2025 7:13:26 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+pubsub-emulator  | [pubsub] INFO: Detected non-HTTP/2 connection.
+pubsub-emulator  | [pubsub] Jun 04, 2025 7:13:26 AM io.gapi.emulators.grpc.HttpAdapter$StubMethodHandler handle
+pubsub-emulator  | [pubsub] INFO: Forwarding key: Host
+model-registry   | INFO:     Started server process [1]
+model-registry   | INFO:     Waiting for application startup.
+model-registry   | INFO:     Application startup complete.
+model-registry   | INFO:     Uvicorn running on http://0.0.0.0:8080 (Press CTRL+C to quit)
+model-registry   | INFO:     172.18.0.11:36124 - "GET /health HTTP/1.1" 200 OK
+model-registry   | INFO:     172.18.0.11:41442 - "GET /health HTTP/1.1" 200 OK
+model-registry   | INFO:     172.18.0.11:52206 - "GET /health HTTP/1.1" 200 OK
+model-registry   | INFO:     172.18.0.11:44968 - "GET /health HTTP/1.1" 200 OK
+model-registry   | INFO:     172.18.0.11:54400 - "GET /health HTTP/1.1" 200 OK
+model-registry   | INFO:     172.18.0.11:60132 - "GET /health HTTP/1.1" 200 OK
+model-registry   | INFO:     172.18.0.11:58700 - "GET /health HTTP/1.1" 200 OK
+model-registry   | INFO:     172.18.0.11:46820 - "GET /health HTTP/1.1" 200 OK
+model-registry   | INFO:     172.18.0.11:37638 - "GET /health HTTP/1.1" 200 OK
+model-registry   | INFO:     172.18.0.11:36936 - "GET /health HTTP/1.1" 200 OK
+model-registry   | INFO:     172.18.0.11:47770 - "GET /health HTTP/1.1" 200 OK
+model-registry   | INFO:     172.18.0.11:51314 - "GET /health HTTP/1.1" 200 OK
+model-registry   | INFO:     172.18.0.11:37914 - "GET /health HTTP/1.1" 200 OK
+model-registry   | INFO:     172.18.0.11:54704 - "GET /health HTTP/1.1" 200 OK
+model-registry   | INFO:     172.18.0.11:37136 - "GET /health HTTP/1.1" 200 OK
+model-registry   | INFO:     172.18.0.11:32928 - "GET /health HTTP/1.1" 200 OK
+model-registry   | INFO:     172.18.0.11:51920 - "GET /health HTTP/1.1" 200 OK
+model-registry   | INFO:     172.18.0.11:57204 - "GET /health HTTP/1.1" 200 OK
+model-registry   | INFO:     172.18.0.11:47992 - "GET /health HTTP/1.1" 200 OK
+redis-exporter   | time="2025-06-04T07:10:56Z" level=info msg="Redis Metrics Exporter v1.62.0    build date:     sha1: 620cb9964b0d7d7033fe5f9858e0952b7269de4d    Go: go1.22.5    GOOS: linux    GOARCH: amd64"
+redis-exporter   | time="2025-06-04T07:10:56Z" level=info msg="Providing metrics at :9121/metrics"
+model-registry   | INFO:     172.18.0.11:57098 - "GET /health HTTP/1.1" 200 OK
+model-registry   | INFO:     172.18.0.11:51296 - "GET /health HTTP/1.1" 200 OK
+model-registry   | INFO:     172.18.0.11:51516 - "GET /health HTTP/1.1" 200 OK
+model-registry   | INFO:     172.18.0.11:49948 - "GET /health HTTP/1.1" 200 OK
+model-registry   | INFO:     172.18.0.11:57562 - "GET /health HTTP/1.1" 200 OK
+vector-db        |            _                 _    
+vector-db        |   __ _  __| |_ __ __ _ _ __ | |_  
+vector-db        |  / _` |/ _` | '__/ _` | '_ \| __| 
+vector-db        | | (_| | (_| | | | (_| | | | | |_  
+vector-db        |  \__, |\__,_|_|  \__,_|_| |_|\__| 
+vector-db        |     |_|                           
+vector-db        | 
+vector-db        | Access web UI at http://0.0.0.0:6333/dashboard
+vector-db        | 
+vector-db        | 2025-06-04T07:11:01.264526Z  INFO storage::content_manager::consensus::persistent: Initializing new raft state at ./storage/raft_state.json    
+vector-db        | 2025-06-04T07:11:01.272885Z  INFO qdrant: Distributed mode disabled    
+vector-db        | 2025-06-04T07:11:01.272963Z  INFO qdrant: Telemetry reporting enabled, id: cf4a9034-4935-4608-baa7-cf231c6d065d    
+vector-db        | 2025-06-04T07:11:01.277943Z  INFO qdrant::actix: TLS disabled for REST API    
+vector-db        | 2025-06-04T07:11:01.278173Z  INFO qdrant::actix: Qdrant HTTP listening on 6333    
+vector-db        | 2025-06-04T07:11:01.278212Z  INFO actix_server::builder: Starting 3 workers
+vector-db        | 2025-06-04T07:11:01.278242Z  INFO actix_server::server: Actix runtime found; starting in Actix runtime
+vector-db        | 2025-06-04T07:11:01.280176Z  INFO qdrant::tonic: Qdrant gRPC listening on 6334    
+vector-db        | 2025-06-04T07:11:01.280345Z  INFO qdrant::tonic: TLS disabled for gRPC API    
+db-api           | 04/Jun/2025:07:11:01 +0000: Starting PostgREST 11.2.0...
+db-api           | 04/Jun/2025:07:11:01 +0000: Attempting to connect to the database...
+db-api           | 04/Jun/2025:07:11:01 +0000: Connection successful
+db-api           | 04/Jun/2025:07:11:01 +0000: Listening on port 3000
+db-api           | 04/Jun/2025:07:11:01 +0000: Listening for notifications on the pgrst channel
+db-api           | 04/Jun/2025:07:11:01 +0000: Config reloaded
+db-api           | 04/Jun/2025:07:11:01 +0000: Schema cache loaded
+model-router     | INFO:     Started server process [1]
+model-router     | INFO:     Waiting for application startup.
+model-router     | INFO:     Application startup complete.
+model-router     | INFO:     Uvicorn running on http://0.0.0.0:8080 (Press CTRL+C to quit)
+model-router     | INFO:     172.18.0.14:57804 - "GET /health HTTP/1.1" 200 OK
+model-router     | INFO:     172.18.0.14:36120 - "GET /health HTTP/1.1" 200 OK
+model-router     | INFO:     172.18.0.14:39164 - "GET /health HTTP/1.1" 200 OK
+model-router     | INFO:     172.18.0.14:59816 - "GET /health HTTP/1.1" 200 OK
+model-router     | INFO:     172.18.0.14:52050 - "GET /health HTTP/1.1" 200 OK
+model-router     | INFO:     172.18.0.14:36712 - "GET /health HTTP/1.1" 200 OK
+model-router     | INFO:     172.18.0.14:53698 - "GET /health HTTP/1.1" 200 OK
+model-router     | INFO:     172.18.0.14:51366 - "GET /health HTTP/1.1" 200 OK
+model-router     | INFO:     172.18.0.14:37894 - "GET /health HTTP/1.1" 200 OK
+model-router     | INFO:     172.18.0.14:59078 - "GET /health HTTP/1.1" 200 OK
+model-router     | INFO:     172.18.0.14:36400 - "GET /health HTTP/1.1" 200 OK
+llm-service      | Couldn't find '/root/.ollama/id_ed25519'. Generating new private key.
+llm-service      | Your new public key is: 
+llm-service      | 
+llm-service      | ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJH7HNMIxr75yltmzRxVTtTsKZ8IDsf2Fk8xVORpd/P4
+llm-service      | 
+llm-service      | time=2025-06-04T07:10:50.541Z level=INFO source=routes.go:1234 msg="server config" env="map[CUDA_VISIBLE_DEVICES: GPU_DEVICE_ORDINAL: HIP_VISIBLE_DEVICES: HSA_OVERRIDE_GFX_VERSION: HTTPS_PROXY: HTTP_PROXY: NO_PROXY: OLLAMA_CONTEXT_LENGTH:4096 OLLAMA_DEBUG:INFO OLLAMA_FLASH_ATTENTION:false OLLAMA_GPU_OVERHEAD:0 OLLAMA_HOST:http://0.0.0.0:11434 OLLAMA_INTEL_GPU:false OLLAMA_KEEP_ALIVE:5m0s OLLAMA_KV_CACHE_TYPE: OLLAMA_LLM_LIBRARY: OLLAMA_LOAD_TIMEOUT:5m0s OLLAMA_MAX_LOADED_MODELS:0 OLLAMA_MAX_QUEUE:512 OLLAMA_MODELS:/root/.ollama/models OLLAMA_MULTIUSER_CACHE:false OLLAMA_NEW_ENGINE:false OLLAMA_NOHISTORY:false OLLAMA_NOPRUNE:false OLLAMA_NUM_PARALLEL:0 OLLAMA_ORIGINS:[http://localhost https://localhost http://localhost:* https://localhost:* http://127.0.0.1 https://127.0.0.1 http://127.0.0.1:* https://127.0.0.1:* http://0.0.0.0 https://0.0.0.0 http://0.0.0.0:* https://0.0.0.0:* app://* file://* tauri://* vscode-webview://* vscode-file://*] OLLAMA_SCHED_SPREAD:false ROCR_VISIBLE_DEVICES: http_proxy: https_proxy: no_proxy:]"
+llm-service      | time=2025-06-04T07:10:50.541Z level=INFO source=images.go:479 msg="total blobs: 0"
+llm-service      | time=2025-06-04T07:10:50.541Z level=INFO source=images.go:486 msg="total unused blobs removed: 0"
+llm-service      | time=2025-06-04T07:10:50.542Z level=INFO source=routes.go:1287 msg="Listening on [::]:11434 (version 0.9.0)"
+llm-service      | time=2025-06-04T07:10:50.542Z level=INFO source=gpu.go:217 msg="looking for compatible GPUs"
+llm-service      | time=2025-06-04T07:10:50.546Z level=INFO source=gpu.go:377 msg="no compatible GPUs were discovered"
+llm-service      | time=2025-06-04T07:10:50.546Z level=INFO source=types.go:130 msg="inference compute" id=0 library=cpu variant="" compute="" driver=0.0 name="" total="15.6 GiB" available="14.3 GiB"
+llm-service      | [GIN] 2025/06/04 - 07:10:55 | 200 |      166.41µs |       127.0.0.1 | HEAD     "/"
+llm-service      | [GIN] 2025/06/04 - 07:10:55 | 200 |     340.315µs |       127.0.0.1 | GET      "/api/tags"
+llm-service      | [GIN] 2025/06/04 - 07:11:25 | 200 |      36.729µs |       127.0.0.1 | HEAD     "/"
+llm-service      | [GIN] 2025/06/04 - 07:11:25 | 200 |      86.762µs |       127.0.0.1 | GET      "/api/tags"
+llm-service      | [GIN] 2025/06/04 - 07:11:55 | 200 |      31.729µs |       127.0.0.1 | HEAD     "/"
+llm-service      | [GIN] 2025/06/04 - 07:11:55 | 200 |       59.29µs |       127.0.0.1 | GET      "/api/tags"
+llm-service      | [GIN] 2025/06/04 - 07:12:25 | 200 |      24.546µs |       127.0.0.1 | HEAD     "/"
+llm-service      | [GIN] 2025/06/04 - 07:12:25 | 200 |      51.546µs |       127.0.0.1 | GET      "/api/tags"
+model-registry   | INFO:     172.18.0.11:43064 - "GET /health HTTP/1.1" 200 OK
+llm-service      | [GIN] 2025/06/04 - 07:12:55 | 200 |      144.63µs |       127.0.0.1 | HEAD     "/"
+llm-service      | [GIN] 2025/06/04 - 07:12:55 | 200 |      84.227µs |       127.0.0.1 | GET      "/api/tags"
+llm-service      | [GIN] 2025/06/04 - 07:13:25 | 200 |      41.367µs |       127.0.0.1 | HEAD     "/"
+llm-service      | [GIN] 2025/06/04 - 07:13:25 | 200 |      57.096µs |       127.0.0.1 | GET      "/api/tags"
+llm-service      | [GIN] 2025/06/04 - 07:13:55 | 200 |      37.259µs |       127.0.0.1 | HEAD     "/"
+llm-service      | [GIN] 2025/06/04 - 07:13:55 | 200 |      50.595µs |       127.0.0.1 | GET      "/api/tags"
+llm-service      | [GIN] 2025/06/04 - 07:14:25 | 200 |      37.941µs |       127.0.0.1 | HEAD     "/"
+llm-service      | [GIN] 2025/06/04 - 07:14:25 | 200 |      80.581µs |       127.0.0.1 | GET      "/api/tags"
+llm-service      | [GIN] 2025/06/04 - 07:14:55 | 200 |      25.808µs |       127.0.0.1 | HEAD     "/"
+llm-service      | [GIN] 2025/06/04 - 07:14:55 | 200 |       80.28µs |       127.0.0.1 | GET      "/api/tags"
+llm-service      | [GIN] 2025/06/04 - 07:15:26 | 200 |      30.998µs |       127.0.0.1 | HEAD     "/"
+llm-service      | [GIN] 2025/06/04 - 07:15:26 | 200 |      55.434µs |       127.0.0.1 | GET      "/api/tags"
+llm-service      | [GIN] 2025/06/04 - 07:15:56 | 200 |      24.797µs |       127.0.0.1 | HEAD     "/"
+llm-service      | [GIN] 2025/06/04 - 07:15:56 | 200 |      71.453µs |       127.0.0.1 | GET      "/api/tags"
+redis            | 1:C 04 Jun 2025 07:10:50.533 # WARNING Memory overcommit must be enabled! Without it, a background save or replication may fail under low memory condition. Being disabled, it can also cause failures without low memory condition, see https://github.com/jemalloc/jemalloc/issues/1328. To fix this issue add 'vm.overcommit_memory = 1' to /etc/sysctl.conf and then reboot or run the command 'sysctl vm.overcommit_memory=1' for this to take effect.
+redis            | 1:C 04 Jun 2025 07:10:50.533 * oO0OoO0OoO0Oo Redis is starting oO0OoO0OoO0Oo
+redis            | 1:C 04 Jun 2025 07:10:50.534 * Redis version=7.4.4, bits=64, commit=00000000, modified=0, pid=1, just started
+monitoring-redis  | time="2025-06-04T07:10:50Z" level=info msg="Redis Metrics Exporter v1.55.0    build date:     sha1: 82aa26fa0bf409c7b68af1160f8409f94339920f    Go: go1.20.10    GOOS: linux    GOARCH: amd64"
+monitoring-redis  | time="2025-06-04T07:10:50Z" level=info msg="Providing metrics at :9121/metrics"
+redis             | 1:C 04 Jun 2025 07:10:50.534 # Warning: no config file specified, using the default config. In order to specify a config file use redis-server /path/to/redis.conf
+redis             | 1:M 04 Jun 2025 07:10:50.534 * monotonic clock: POSIX clock_gettime
+mail-server       | 2025/06/04 07:10:50 Using in-memory storage
+mail-server       | 2025/06/04 07:10:50 [SMTP] Binding to address: 0.0.0.0:1025
+mail-server       | 2025/06/04 07:10:50 Serving under http://0.0.0.0:8025/
+mail-server       | [HTTP] Binding to address: 0.0.0.0:8025
+db-storage        | ********************************************************************************
+pubsub-emulator   | [pubsub] Jun 04, 2025 7:13:26 AM io.gapi.emulators.grpc.HttpAdapter$StubMethodHandler handle
+db-storage        | WARNING: POSTGRES_HOST_AUTH_METHOD has been set to "trust". This will allow
+pubsub-emulator   | [pubsub] INFO: Forwarding key: User-Agent
+redis             | 1:M 04 Jun 2025 07:10:50.536 * Running mode=standalone, port=6379.
+pubsub-emulator   | [pubsub] Jun 04, 2025 7:13:26 AM io.gapi.emulators.grpc.HttpAdapter$StubMethodHandler handle
+redis             | 1:M 04 Jun 2025 07:10:50.536 * Server initialized
+pubsub-emulator   | [pubsub] INFO: Forwarding key: Accept
+agent-core        | INFO:     Started server process [1]
+pubsub-emulator   | [pubsub] Jun 04, 2025 7:13:26 AM io.gapi.emulators.grpc.HttpAdapter$StubMethodHandler handle
+db-storage        |          anyone with access to the Postgres port to access your database without
+pubsub-emulator   | [pubsub] INFO: Not forwarding key: content-length
+db-storage        |          a password, even if POSTGRES_PASSWORD is set. See PostgreSQL
+pubsub-emulator   | [pubsub] Jun 04, 2025 7:13:56 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+db-storage        |          documentation about "trust":
+redis             | 1:M 04 Jun 2025 07:10:50.536 * Ready to accept connections tcp
+db-storage        |          https://www.postgresql.org/docs/current/auth-trust.html
+agent-core        | INFO:     Waiting for application startup.
+db-storage        |          In Docker's default configuration, this is effectively any other
+agent-core        | INFO:     Application startup complete.
+pubsub-emulator   | [pubsub] INFO: Detected non-HTTP/2 connection.
+agent-core        | INFO:     Uvicorn running on http://0.0.0.0:8011 (Press CTRL+C to quit)
+agent-core        | INFO:     127.0.0.1:49404 - "GET /health HTTP/1.1" 200 OK
+agent-core        | INFO:     127.0.0.1:52194 - "GET /health HTTP/1.1" 200 OK
+agent-core        | INFO:     127.0.0.1:41672 - "GET /health HTTP/1.1" 200 OK
+agent-core        | INFO:     127.0.0.1:38146 - "GET /health HTTP/1.1" 200 OK
+agent-core        | INFO:     127.0.0.1:55544 - "GET /health HTTP/1.1" 200 OK
+agent-core        | INFO:     127.0.0.1:43502 - "GET /health HTTP/1.1" 200 OK
+agent-core        | INFO:     127.0.0.1:47526 - "GET /health HTTP/1.1" 200 OK
+agent-core        | INFO:     127.0.0.1:35530 - "GET /health HTTP/1.1" 200 OK
+agent-core        | INFO:     127.0.0.1:54242 - "GET /health HTTP/1.1" 200 OK
+agent-core        | INFO:     127.0.0.1:36216 - "GET /health HTTP/1.1" 200 OK
+agent-core        | INFO:     127.0.0.1:58456 - "GET /health HTTP/1.1" 200 OK
+pubsub-emulator   | [pubsub] Jun 04, 2025 7:13:56 AM io.gapi.emulators.grpc.HttpAdapter$StubMethodHandler handle
+pubsub-emulator   | [pubsub] INFO: Forwarding key: Host
+pubsub-emulator   | [pubsub] Jun 04, 2025 7:13:56 AM io.gapi.emulators.grpc.HttpAdapter$StubMethodHandler handle
+pubsub-emulator   | [pubsub] INFO: Forwarding key: User-Agent
+mail-server       | Creating API v1 with WebPath: 
+mail-server       | Creating API v2 with WebPath: 
+mail-server       | [APIv1] KEEPALIVE /api/v1/events
+mail-server       | [APIv1] KEEPALIVE /api/v1/events
+mail-server       | [APIv1] KEEPALIVE /api/v1/events
+mail-server       | [APIv1] KEEPALIVE /api/v1/events
+mail-server       | [APIv1] KEEPALIVE /api/v1/events
+db-storage        |          container on the same system.
+db-storage        | 
+db-storage        |          It is not recommended to use POSTGRES_HOST_AUTH_METHOD=trust. Replace
+db-storage        |          it with "-e POSTGRES_PASSWORD=password" instead to set a password in
+db-storage        |          "docker run".
+db-storage        | ********************************************************************************
+pubsub-emulator   | [pubsub] Jun 04, 2025 7:13:56 AM io.gapi.emulators.grpc.HttpAdapter$StubMethodHandler handle
+db-storage        | The files belonging to this database system will be owned by user "postgres".
+pubsub-emulator   | [pubsub] INFO: Forwarding key: Accept
+db-storage        | This user must also own the server process.
+pubsub-emulator   | [pubsub] Jun 04, 2025 7:13:56 AM io.gapi.emulators.grpc.HttpAdapter$StubMethodHandler handle
+pubsub-emulator   | [pubsub] INFO: Not forwarding key: content-length
+pubsub-emulator   | [pubsub] Jun 04, 2025 7:14:26 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+pubsub-emulator   | [pubsub] INFO: Detected non-HTTP/2 connection.
+pubsub-emulator   | [pubsub] Jun 04, 2025 7:14:26 AM io.gapi.emulators.grpc.HttpAdapter$StubMethodHandler handle
+pubsub-emulator   | [pubsub] INFO: Forwarding key: Host
+pubsub-emulator   | [pubsub] Jun 04, 2025 7:14:26 AM io.gapi.emulators.grpc.HttpAdapter$StubMethodHandler handle
+pubsub-emulator   | [pubsub] INFO: Forwarding key: User-Agent
+pubsub-emulator   | [pubsub] Jun 04, 2025 7:14:26 AM io.gapi.emulators.grpc.HttpAdapter$StubMethodHandler handle
+pubsub-emulator   | [pubsub] INFO: Forwarding key: Accept
+pubsub-emulator   | [pubsub] Jun 04, 2025 7:14:26 AM io.gapi.emulators.grpc.HttpAdapter$StubMethodHandler handle
+pubsub-emulator   | [pubsub] INFO: Not forwarding key: content-length
+pubsub-emulator   | [pubsub] Jun 04, 2025 7:14:56 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+pubsub-emulator   | [pubsub] INFO: Detected non-HTTP/2 connection.
+pubsub-emulator   | [pubsub] Jun 04, 2025 7:14:56 AM io.gapi.emulators.grpc.HttpAdapter$StubMethodHandler handle
+pubsub-emulator   | [pubsub] INFO: Forwarding key: Host
+pubsub-emulator   | [pubsub] Jun 04, 2025 7:14:56 AM io.gapi.emulators.grpc.HttpAdapter$StubMethodHandler handle
+pubsub-emulator   | [pubsub] INFO: Forwarding key: User-Agent
+pubsub-emulator   | [pubsub] Jun 04, 2025 7:14:56 AM io.gapi.emulators.grpc.HttpAdapter$StubMethodHandler handle
+pubsub-emulator   | [pubsub] INFO: Forwarding key: Accept
+pubsub-emulator   | [pubsub] Jun 04, 2025 7:14:56 AM io.gapi.emulators.grpc.HttpAdapter$StubMethodHandler handle
+pubsub-emulator   | [pubsub] INFO: Not forwarding key: content-length
+pubsub-emulator   | [pubsub] Jun 04, 2025 7:15:26 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+pubsub-emulator   | [pubsub] INFO: Detected non-HTTP/2 connection.
+pubsub-emulator   | [pubsub] Jun 04, 2025 7:15:26 AM io.gapi.emulators.grpc.HttpAdapter$StubMethodHandler handle
+pubsub-emulator   | [pubsub] INFO: Forwarding key: Host
+pubsub-emulator   | [pubsub] Jun 04, 2025 7:15:26 AM io.gapi.emulators.grpc.HttpAdapter$StubMethodHandler handle
+pubsub-emulator   | [pubsub] INFO: Forwarding key: User-Agent
+pubsub-emulator   | [pubsub] Jun 04, 2025 7:15:26 AM io.gapi.emulators.grpc.HttpAdapter$StubMethodHandler handle
+pubsub-emulator   | [pubsub] INFO: Forwarding key: Accept
+pubsub-emulator   | [pubsub] Jun 04, 2025 7:15:26 AM io.gapi.emulators.grpc.HttpAdapter$StubMethodHandler handle
+pubsub-emulator   | [pubsub] INFO: Not forwarding key: content-length
+pubsub-emulator   | [pubsub] Jun 04, 2025 7:15:56 AM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+pubsub-emulator   | [pubsub] INFO: Detected non-HTTP/2 connection.
+pubsub-emulator   | [pubsub] Jun 04, 2025 7:15:56 AM io.gapi.emulators.grpc.HttpAdapter$StubMethodHandler handle
+pubsub-emulator   | [pubsub] INFO: Forwarding key: Host
+pubsub-emulator   | [pubsub] Jun 04, 2025 7:15:56 AM io.gapi.emulators.grpc.HttpAdapter$StubMethodHandler handle
+pubsub-emulator   | [pubsub] INFO: Forwarding key: User-Agent
+pubsub-emulator   | [pubsub] Jun 04, 2025 7:15:56 AM io.gapi.emulators.grpc.HttpAdapter$StubMethodHandler handle
+pubsub-emulator   | [pubsub] INFO: Forwarding key: Accept
+pubsub-emulator   | [pubsub] Jun 04, 2025 7:15:56 AM io.gapi.emulators.grpc.HttpAdapter$StubMethodHandler handle
+pubsub-emulator   | [pubsub] INFO: Not forwarding key: content-length
+db-storage        | 
+db-storage        | The database cluster will be initialized with locale "en_US.utf8".
+db-storage        | The default database encoding has accordingly been set to "UTF8".
+db-storage        | The default text search configuration will be set to "english".
+db-storage        | 
+db-storage        | Data page checksums are disabled.
+db-storage        | 
+db-storage        | fixing permissions on existing directory /var/lib/postgresql/data ... ok
+db-storage        | creating subdirectories ... ok
+db-storage        | selecting dynamic shared memory implementation ... posix
+db-storage        | selecting default max_connections ... 100
+db-storage        | selecting default shared_buffers ... 128MB
+db-storage        | selecting default time zone ... UTC
+db-storage        | creating configuration files ... ok
+db-storage        | running bootstrap script ... ok
+db-storage        | sh: locale: not found
+db-storage        | 2025-06-04 07:11:02.382 UTC [31] WARNING:  no usable system locales were found
+db-storage        | performing post-bootstrap initialization ... ok
+db-storage        | syncing data to disk ... ok
+db-storage        | 
+db-storage        | initdb: warning: enabling "trust" authentication for local connections
+db-storage        | 
+db-storage        | initdb: hint: You can change this by editing pg_hba.conf or using the option -A, or --auth-local and --auth-host, the next time you run initdb.
+db-storage        | Success. You can now start the database server using:
+db-storage        | 
+db-storage        |     pg_ctl -D /var/lib/postgresql/data -l logfile start
+db-storage        | 
+db-storage        | waiting for server to start....2025-06-04 07:11:02.915 UTC [37] LOG:  starting PostgreSQL 15.5 on x86_64-pc-linux-musl, compiled by gcc (Alpine 13.2.1_git20231014) 13.2.1 20231014, 64-bit
+db-storage        | 2025-06-04 07:11:02.916 UTC [37] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+db-storage        | 2025-06-04 07:11:02.918 UTC [40] LOG:  database system was shut down at 2025-06-04 07:11:02 UTC
+db-storage        | 2025-06-04 07:11:02.922 UTC [37] LOG:  database system is ready to accept connections
+db-storage        |  done
+db-storage        | server started
+db-storage        | 
+db-storage        | /usr/local/bin/docker-entrypoint.sh: ignoring /docker-entrypoint-initdb.d/*
+db-storage        | 
+db-storage        | waiting for server to shut down...2025-06-04 07:11:03.015 UTC [37] LOG:  received fast shutdown request
+db-storage        | .2025-06-04 07:11:03.015 UTC [37] LOG:  aborting any active transactions
+db-storage        | 2025-06-04 07:11:03.019 UTC [37] LOG:  background worker "logical replication launcher" (PID 43) exited with exit code 1
+db-storage        | 2025-06-04 07:11:03.019 UTC [38] LOG:  shutting down
+db-storage        | 2025-06-04 07:11:03.019 UTC [38] LOG:  checkpoint starting: shutdown immediate
+db-storage        | 2025-06-04 07:11:03.021 UTC [38] LOG:  checkpoint complete: wrote 3 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.001 s, total=0.003 s; sync files=2, longest=0.001 s, average=0.001 s; distance=0 kB, estimate=0 kB
+db-storage        | 2025-06-04 07:11:03.025 UTC [37] LOG:  database system is shut down
+db-storage        |  done
+db-storage        | server stopped
+db-storage        | 
+db-storage        | PostgreSQL init process complete; ready for start up.
+db-storage        | 
+db-storage        | 2025-06-04 07:11:03.134 UTC [1] LOG:  starting PostgreSQL 15.5 on x86_64-pc-linux-musl, compiled by gcc (Alpine 13.2.1_git20231014) 13.2.1 20231014, 64-bit
+db-storage        | 2025-06-04 07:11:03.134 UTC [1] LOG:  listening on IPv4 address "0.0.0.0", port 5432
+db-storage        | 2025-06-04 07:11:03.134 UTC [1] LOG:  listening on IPv6 address "::", port 5432
+db-storage        | 2025-06-04 07:11:03.135 UTC [1] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+db-storage        | 2025-06-04 07:11:03.137 UTC [51] LOG:  database system was shut down at 2025-06-04 07:11:03 UTC
+db-storage        | 2025-06-04 07:11:03.141 UTC [1] LOG:  database system is ready to accept connections
+db-storage        | 2025-06-04 07:16:03.220 UTC [49] LOG:  checkpoint starting: time
+db-storage        | 2025-06-04 07:16:07.231 UTC [49] LOG:  checkpoint complete: wrote 43 buffers (0.3%); 0 WAL file(s) added, 0 removed, 0 recycled; write=4.008 s, sync=0.002 s, total=4.011 s; sync files=11, longest=0.001 s, average=0.001 s; distance=252 kB, estimate=252 kB
+model-registry    | INFO:     172.18.0.11:38864 - "GET /health HTTP/1.1" 200 OK
+model-registry    | INFO:     172.18.0.11:60192 - "GET /health HTTP/1.1" 200 OK
+model-registry    | INFO:     172.18.0.11:36546 - "GET /health HTTP/1.1" 200 OK
+model-registry    | INFO:     172.18.0.11:37590 - "GET /health HTTP/1.1" 200 OK
+model-registry    | INFO:     172.18.0.11:50738 - "GET /health HTTP/1.1" 200 OK
+model-registry    | INFO:     172.18.0.11:41786 - "GET /health HTTP/1.1" 200 OK
+model-registry    | INFO:     172.18.0.11:46492 - "GET /health HTTP/1.1" 200 OK
+db-postgres       | 2025-06-04 07:11:01.206 UTC [57] LOG:  connection authorized: user=postgres database=postgres application_name=PostgREST 11.2.0
+db-postgres       | 2025-06-04 07:11:10.586 UTC [64] LOG:  connection received: host=[local]
+db-postgres       | 2025-06-04 07:11:10.587 UTC [64] LOG:  connection authorized: user=postgres database=postgres application_name=pg_isready
+db-postgres       | 2025-06-04 07:11:10.588 UTC [64] LOG:  disconnection: session time: 0:00:00.001 user=postgres database=postgres host=[local]
+db-postgres       | 2025-06-04 07:11:20.627 UTC [71] LOG:  connection received: host=[local]
+db-postgres       | 2025-06-04 07:11:20.628 UTC [71] LOG:  connection authorized: user=postgres database=postgres application_name=pg_isready
+db-postgres       | 2025-06-04 07:11:20.629 UTC [71] LOG:  disconnection: session time: 0:00:00.001 user=postgres database=postgres host=[local]
+db-postgres       | 2025-06-04 07:11:30.668 UTC [79] LOG:  connection received: host=[local]
+db-postgres       | 2025-06-04 07:11:30.668 UTC [79] LOG:  connection authorized: user=postgres database=postgres application_name=pg_isready
+db-postgres       | 2025-06-04 07:11:30.672 UTC [79] LOG:  disconnection: session time: 0:00:00.003 user=postgres database=postgres host=[local]
+db-postgres       | 2025-06-04 07:11:31.229 UTC [56] LOG:  disconnection: session time: 0:00:30.031 user=postgres database=postgres host=172.18.0.9 port=50804
+db-postgres       | 2025-06-04 07:11:40.715 UTC [86] LOG:  connection received: host=[local]
+db-postgres       | 2025-06-04 07:11:40.716 UTC [86] LOG:  connection authorized: user=postgres database=postgres application_name=pg_isready
+db-postgres       | 2025-06-04 07:11:40.717 UTC [86] LOG:  disconnection: session time: 0:00:00.001 user=postgres database=postgres host=[local]
+db-postgres       | 2025-06-04 07:11:50.758 UTC [93] LOG:  connection received: host=[local]
+db-postgres       | 2025-06-04 07:11:50.759 UTC [93] LOG:  connection authorized: user=postgres database=postgres application_name=pg_isready
+db-postgres       | 2025-06-04 07:11:50.760 UTC [93] LOG:  disconnection: session time: 0:00:00.001 user=postgres database=postgres host=[local]
+db-postgres       | 2025-06-04 07:12:00.800 UTC [101] LOG:  connection received: host=[local]
+db-postgres       | 2025-06-04 07:12:00.801 UTC [101] LOG:  connection authorized: user=postgres database=postgres application_name=pg_isready
+db-postgres       | 2025-06-04 07:12:00.802 UTC [101] LOG:  disconnection: session time: 0:00:00.001 user=postgres database=postgres host=[local]
+db-postgres       | 2025-06-04 07:12:10.844 UTC [108] LOG:  connection received: host=[local]
+db-postgres       | 2025-06-04 07:12:10.844 UTC [108] LOG:  connection authorized: user=postgres database=postgres application_name=pg_isready
+db-postgres       | 2025-06-04 07:12:10.846 UTC [108] LOG:  disconnection: session time: 0:00:00.001 user=postgres database=postgres host=[local]
+db-postgres       | 2025-06-04 07:12:20.890 UTC [115] LOG:  connection received: host=[local]
+db-postgres       | 2025-06-04 07:12:20.891 UTC [115] LOG:  connection authorized: user=postgres database=postgres application_name=pg_isready
+db-postgres       | 2025-06-04 07:12:20.892 UTC [115] LOG:  disconnection: session time: 0:00:00.002 user=postgres database=postgres host=[local]
+db-postgres       | 2025-06-04 07:12:30.933 UTC [123] LOG:  connection received: host=[local]
+db-postgres       | 2025-06-04 07:12:30.933 UTC [123] LOG:  connection authorized: user=postgres database=postgres application_name=pg_isready
+db-postgres       | 2025-06-04 07:12:30.937 UTC [123] LOG:  disconnection: session time: 0:00:00.004 user=postgres database=postgres host=[local]
+db-postgres       | 2025-06-04 07:12:40.978 UTC [130] LOG:  connection received: host=[local]
+db-postgres       | 2025-06-04 07:12:40.978 UTC [130] LOG:  connection authorized: user=postgres database=postgres application_name=pg_isready
+db-postgres       | 2025-06-04 07:12:40.979 UTC [130] LOG:  disconnection: session time: 0:00:00.001 user=postgres database=postgres host=[local]
+db-postgres       | 2025-06-04 07:12:51.022 UTC [137] LOG:  connection received: host=[local]
+db-postgres       | 2025-06-04 07:12:51.022 UTC [137] LOG:  connection authorized: user=postgres database=postgres application_name=pg_isready
+db-postgres       | 2025-06-04 07:12:51.023 UTC [137] LOG:  disconnection: session time: 0:00:00.001 user=postgres database=postgres host=[local]
+db-postgres       | 2025-06-04 07:13:01.065 UTC [145] LOG:  connection received: host=[local]
+db-postgres       | 2025-06-04 07:13:01.066 UTC [145] LOG:  connection authorized: user=postgres database=postgres application_name=pg_isready
+db-postgres       | 2025-06-04 07:13:01.067 UTC [145] LOG:  disconnection: session time: 0:00:00.001 user=postgres database=postgres host=[local]
+db-postgres       | 2025-06-04 07:13:11.109 UTC [152] LOG:  connection received: host=[local]
+db-postgres       | 2025-06-04 07:13:11.109 UTC [152] LOG:  connection authorized: user=postgres database=postgres application_name=pg_isready
+db-postgres       | 2025-06-04 07:13:11.111 UTC [152] LOG:  disconnection: session time: 0:00:00.001 user=postgres database=postgres host=[local]
+db-postgres       | 2025-06-04 07:13:21.155 UTC [159] LOG:  connection received: host=[local]
+db-postgres       | 2025-06-04 07:13:21.155 UTC [159] LOG:  connection authorized: user=postgres database=postgres application_name=pg_isready
+db-postgres       | 2025-06-04 07:13:21.156 UTC [159] LOG:  disconnection: session time: 0:00:00.001 user=postgres database=postgres host=[local]
+db-postgres       | 2025-06-04 07:13:31.197 UTC [167] LOG:  connection received: host=[local]
+db-postgres       | 2025-06-04 07:13:31.198 UTC [167] LOG:  connection authorized: user=postgres database=postgres application_name=pg_isready
+db-postgres       | 2025-06-04 07:13:31.199 UTC [167] LOG:  disconnection: session time: 0:00:00.001 user=postgres database=postgres host=[local]
+db-postgres       | 2025-06-04 07:13:41.241 UTC [174] LOG:  connection received: host=[local]
+db-postgres       | 2025-06-04 07:13:41.242 UTC [174] LOG:  connection authorized: user=postgres database=postgres application_name=pg_isready
+db-postgres       | 2025-06-04 07:13:41.243 UTC [174] LOG:  disconnection: session time: 0:00:00.001 user=postgres database=postgres host=[local]
+db-postgres       | 2025-06-04 07:13:51.282 UTC [181] LOG:  connection received: host=[local]
+db-postgres       | 2025-06-04 07:13:51.283 UTC [181] LOG:  connection authorized: user=postgres database=postgres application_name=pg_isready
+db-postgres       | 2025-06-04 07:13:51.284 UTC [181] LOG:  disconnection: session time: 0:00:00.001 user=postgres database=postgres host=[local]
+db-postgres       | 2025-06-04 07:14:01.326 UTC [189] LOG:  connection received: host=[local]
+db-postgres       | 2025-06-04 07:14:01.327 UTC [189] LOG:  connection authorized: user=postgres database=postgres application_name=pg_isready
+db-postgres       | 2025-06-04 07:14:01.328 UTC [189] LOG:  disconnection: session time: 0:00:00.001 user=postgres database=postgres host=[local]
+db-postgres       | 2025-06-04 07:14:11.368 UTC [196] LOG:  connection received: host=[local]
+db-postgres       | 2025-06-04 07:14:11.369 UTC [196] LOG:  connection authorized: user=postgres database=postgres application_name=pg_isready
+db-postgres       | 2025-06-04 07:14:11.370 UTC [196] LOG:  disconnection: session time: 0:00:00.001 user=postgres database=postgres host=[local]
+db-postgres       | 2025-06-04 07:14:21.410 UTC [203] LOG:  connection received: host=[local]
+db-postgres       | 2025-06-04 07:14:21.410 UTC [203] LOG:  connection authorized: user=postgres database=postgres application_name=pg_isready
+db-postgres       | 2025-06-04 07:14:21.412 UTC [203] LOG:  disconnection: session time: 0:00:00.001 user=postgres database=postgres host=[local]
+db-postgres       | 2025-06-04 07:14:31.453 UTC [211] LOG:  connection received: host=[local]
+db-postgres       | 2025-06-04 07:14:31.454 UTC [211] LOG:  connection authorized: user=postgres database=postgres application_name=pg_isready
+db-postgres       | 2025-06-04 07:14:31.455 UTC [211] LOG:  disconnection: session time: 0:00:00.001 user=postgres database=postgres host=[local]
+db-postgres       | 2025-06-04 07:14:41.496 UTC [218] LOG:  connection received: host=[local]
+db-postgres       | 2025-06-04 07:14:41.496 UTC [218] LOG:  connection authorized: user=postgres database=postgres application_name=pg_isready
+db-postgres       | 2025-06-04 07:14:41.497 UTC [218] LOG:  disconnection: session time: 0:00:00.001 user=postgres database=postgres host=[local]
+db-postgres       | 2025-06-04 07:14:51.540 UTC [225] LOG:  connection received: host=[local]
+db-postgres       | 2025-06-04 07:14:51.540 UTC [225] LOG:  connection authorized: user=postgres database=postgres application_name=pg_isready
+db-postgres       | 2025-06-04 07:14:51.542 UTC [225] LOG:  disconnection: session time: 0:00:00.001 user=postgres database=postgres host=[local]
+db-postgres       | 2025-06-04 07:15:01.589 UTC [233] LOG:  connection received: host=[local]
+db-postgres       | 2025-06-04 07:15:01.590 UTC [233] LOG:  connection authorized: user=postgres database=postgres application_name=pg_isready
+db-postgres       | 2025-06-04 07:15:01.592 UTC [233] LOG:  disconnection: session time: 0:00:00.002 user=postgres database=postgres host=[local]
+db-postgres       | 2025-06-04 07:15:11.632 UTC [240] LOG:  connection received: host=[local]
+db-postgres       | 2025-06-04 07:15:11.632 UTC [240] LOG:  connection authorized: user=postgres database=postgres application_name=pg_isready
+db-postgres       | 2025-06-04 07:15:11.633 UTC [240] LOG:  disconnection: session time: 0:00:00.001 user=postgres database=postgres host=[local]
+db-postgres       | 2025-06-04 07:15:21.674 UTC [247] LOG:  connection received: host=[local]
+db-postgres       | 2025-06-04 07:15:21.674 UTC [247] LOG:  connection authorized: user=postgres database=postgres application_name=pg_isready
+db-postgres       | 2025-06-04 07:15:21.676 UTC [247] LOG:  disconnection: session time: 0:00:00.001 user=postgres database=postgres host=[local]
+db-postgres       | 2025-06-04 07:15:31.715 UTC [255] LOG:  connection received: host=[local]
+db-postgres       | 2025-06-04 07:15:31.716 UTC [255] LOG:  connection authorized: user=postgres database=postgres application_name=pg_isready
+db-postgres       | 2025-06-04 07:15:31.717 UTC [255] LOG:  disconnection: session time: 0:00:00.001 user=postgres database=postgres host=[local]
+db-postgres       | 2025-06-04 07:15:41.758 UTC [262] LOG:  connection received: host=[local]
+db-postgres       | 2025-06-04 07:15:41.758 UTC [262] LOG:  connection authorized: user=postgres database=postgres application_name=pg_isready
+db-postgres       | 2025-06-04 07:15:41.760 UTC [262] LOG:  disconnection: session time: 0:00:00.001 user=postgres database=postgres host=[local]
+db-postgres       | 2025-06-04 07:15:51.802 UTC [269] LOG:  connection received: host=[local]
+db-postgres       | 2025-06-04 07:15:51.803 UTC [269] LOG:  connection authorized: user=postgres database=postgres application_name=pg_isready
+db-postgres       | 2025-06-04 07:15:51.804 UTC [269] LOG:  disconnection: session time: 0:00:00.001 user=postgres database=postgres host=[local]
+db-postgres       | 2025-06-04 07:15:51.962 UTC [43] LOG:  checkpoint starting: time
+db-postgres       | 2025-06-04 07:15:55.973 UTC [43] LOG:  checkpoint complete: wrote 43 buffers (0.3%); 0 WAL file(s) added, 0 removed, 0 recycled; write=4.008 s, sync=0.001 s, total=4.011 s; sync files=11, longest=0.001 s, average=0.001 s; distance=276 kB, estimate=276 kB
+db-postgres       | 2025-06-04 07:16:01.845 UTC [277] LOG:  connection received: host=[local]
+db-postgres       | 2025-06-04 07:16:01.846 UTC [277] LOG:  connection authorized: user=postgres database=postgres application_name=pg_isready
+db-postgres       | 2025-06-04 07:16:01.847 UTC [277] LOG:  disconnection: session time: 0:00:00.001 user=postgres database=postgres host=[local]
+db-postgres       | 2025-06-04 07:16:11.887 UTC [284] LOG:  connection received: host=[local]
+db-postgres       | 2025-06-04 07:16:11.888 UTC [284] LOG:  connection authorized: user=postgres database=postgres application_name=pg_isready
+db-postgres       | 2025-06-04 07:16:11.889 UTC [284] LOG:  disconnection: session time: 0:00:00.001 user=postgres database=postgres host=[local]
+db-postgres       | 2025-06-04 07:16:21.937 UTC [291] LOG:  connection received: host=[local]
+db-postgres       | 2025-06-04 07:16:21.938 UTC [291] LOG:  connection authorized: user=postgres database=postgres application_name=pg_isready
+db-postgres       | 2025-06-04 07:16:21.939 UTC [291] LOG:  disconnection: session time: 0:00:00.001 user=postgres database=postgres host=[local]

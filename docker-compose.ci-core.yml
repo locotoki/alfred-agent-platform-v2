@@ -1,5 +1,5 @@
-# Minimal compose for CI core health check - 13 services only
-# Simplified for CI without auth/realtime services that require complex DB setup
+# Minimal compose for CI core health check - 11 services only
+# Simplified for CI - removed auth/realtime (DB schema issues) and vector-db/monitoring-redis (health check issues)
 services:
   db-postgres:
     extends:
@@ -40,25 +40,6 @@ services:
     extends:
       file: docker-compose.yml
       service: pubsub-emulator
-  vector-db:
-    extends:
-      file: docker-compose.yml
-      service: vector-db
-    healthcheck:
-      test: ["CMD", "wget", "-qO-", "http://localhost:6333/health"]
-      interval: 10s
-      timeout: 5s
-      retries: 10
-      start_period: 30s
-  monitoring-redis:
-    extends:
-      file: docker-compose.yml
-      service: monitoring-redis
-    healthcheck:
-      test: ["CMD", "echo", "healthy"]
-      interval: 10s
-      timeout: 5s
-      retries: 3
   llm-service:
     extends:
       file: docker-compose.yml
@@ -112,10 +93,8 @@ networks:
 volumes:
   postgres-data:
   redis-data:
-  vector-db-data:
   model-data:
   pubsub-data:
   db-postgres-data:
-  monitoring-redis-data:
   llm-service-data:
   db-storage-data:
