@@ -1,0 +1,62 @@
+# Multi-stage build for Alfred Core service
+ARG ASSETS=assets
+
+# Build stage - install dependencies and compile if needed
+FROM python:3.11-slim AS builder
+
+# Install system build dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    wget \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Python dependencies to user directory for later copying
+RUN pip install --user --no-cache-dir \
+    fastapi \
+    uvicorn \
+    structlog \
+    prometheus_client
+
+# Runtime stage - minimal runtime image
+FROM python:3.11-slim AS runtime
+
+# Make ASSETS available as environment variable
+ARG ASSETS
+ENV ASSETS=${ASSETS}
+
+WORKDIR /app
+
+# Copy installed Python packages from builder stage
+COPY --from=builder /root/.local /root/.local
+
+# Add user installed packages to PATH
+ENV PATH=/root/.local/bin:$PATH
+
+# Copy service code and assets
+COPY services/alfred-core/app /app/app
+COPY services/alfred-core/${ASSETS}/health.json /app/health.json
+COPY healthcheck/healthcheck.sh /usr/local/bin/healthcheck.sh
+
+# Make healthcheck script executable
+RUN chmod +x /usr/local/bin/healthcheck.sh
+
+# Set environment variables
+ENV PYTHONPATH=/app
+ENV PYTHONUNBUFFERED=1
+
+# Create non-root user for security
+RUN groupadd -r alfred && useradd -r -g alfred alfred && \
+    chown -R alfred:alfred /app
+USER alfred
+
+# Expose application port and metrics port
+EXPOSE 8011
+EXPOSE 9091
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
+    CMD ["/usr/local/bin/healthcheck.sh"]
+
+# Run the application with metrics export
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8011"]

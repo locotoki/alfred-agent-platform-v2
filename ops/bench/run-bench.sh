@@ -1,4 +1,4 @@
-#\!/usr/bin/env bash
+#!/usr/bin/env bash
 set -euo pipefail
 RUNS=${1:-3}
 OUT=$(mktemp)

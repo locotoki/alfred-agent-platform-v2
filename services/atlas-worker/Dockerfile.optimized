@@ -1,0 +1,64 @@
+# Multi-stage build for Atlas Worker service
+FROM ghcr.io/locotoki/alfred-agent-platform-v2/healthcheck:0.4.0 AS healthcheck
+
+# Build stage - install dependencies with build tools
+FROM python:3.11-slim AS builder
+
+ENV PIP_ROOT_USER_ACTION=ignore
+
+# Install build dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    gcc \
+    git \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Python dependencies to user directory
+RUN pip install --user --no-cache-dir \
+    openai==1.20.0 \
+    fastapi==0.110.0 \
+    google-cloud-pubsub==2.20.0 \
+    httpx==0.24.1 \
+    prometheus-client==0.20.0 \
+    tenacity==8.2.0 \
+    asyncio==3.4.3 \
+    uvicorn[standard]==0.29.0 \
+    supabase==2.0.1 \
+    structlog==24.1.0
+
+# Runtime stage - minimal runtime image
+FROM python:3.11-slim AS runtime
+
+ENV PIP_ROOT_USER_ACTION=ignore
+WORKDIR /app
+
+# Copy healthcheck binary from the first stage
+COPY --from=healthcheck /usr/local/bin/healthcheck /usr/local/bin/healthcheck
+RUN chmod +x /usr/local/bin/healthcheck
+
+# Copy installed Python packages from builder stage
+COPY --from=builder /root/.local /root/.local
+
+# Add user installed packages to PATH
+ENV PATH=/root/.local/bin:$PATH
+
+# Copy application code
+COPY atlas /app/atlas
+
+# Create libs directory if it doesn't exist yet
+RUN mkdir -p /app/libs
+
+# Create non-root user for security
+RUN groupadd -r atlas && useradd -r -g atlas atlas && \
+    chown -R atlas:atlas /app
+USER atlas
+
+# Expose application port and metrics port
+EXPOSE 8000
+EXPOSE 9091
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+    CMD ["/usr/local/bin/healthcheck", "--http", "http://localhost:8000/health"]
+
+# Run the application with healthcheck wrapper
+CMD ["healthcheck", "--export-prom", ":9091", "--", "python", "-m", "atlas.main"]
