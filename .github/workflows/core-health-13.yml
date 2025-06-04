@@ -26,14 +26,6 @@ jobs:
           fi
 
       - name: Compose up (core profile)
-        env:
-          POSTGRES_PASSWORD: postgres
-          REDIS_PASSWORD: redis123
-          OPENAI_API_KEY: sk-dummy-for-ci
-          SLACK_BOT_TOKEN: xoxb-dummy
-          SLACK_SIGNING_SECRET: dummy
-          SLACK_APP_TOKEN: xapp-dummy
-          TELEGRAM_BOT_TOKEN: dummy:token
         run: docker compose -f docker-compose.ci-core.yml up -d --pull=missing
 
       - name: Wait for health
