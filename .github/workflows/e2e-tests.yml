@@ -46,7 +46,7 @@ jobs:
           ./alfred-cli health --critical-only
 
       - name: Show service logs on failure
-        if: failure()
+        if: cancelled() || failure()
         run: |
           docker-compose logs --tail=50
 

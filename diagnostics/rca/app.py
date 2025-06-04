@@ -173,6 +173,7 @@ if __name__ == "__main__":
     service_availability.labels(service=SERVICE_NAME).set(0)
 
     # Start metrics collection in the background
+
     import threading
 
     collector_thread = threading.Thread(target=background_collector, daemon=True)

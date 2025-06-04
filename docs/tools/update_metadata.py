@@ -33,7 +33,6 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-
 class MetadataUpdater:
     """Class to update metadata in markdown files."""
 
@@ -213,7 +212,7 @@ class MetadataUpdater:
                 metadata[field] = match.group(1).strip()
         return metadata
 
-    def _generate_metadata(self, existing_metadata: Dict[str, str]) -> str:.
+    def _generate_metadata(self, existing_metadata: Dict[str, str]) -> str:
         """Generate metadata text."""
         metadata = {
             "Last Updated": self.today,
@@ -241,7 +240,6 @@ class MetadataUpdater:
                 if file.lower().endswith((".md", ".markdown")):
                     md_files.append(os.path.join(root, file))
         return md_files
-
 
 def main():
     parser = argparse.ArgumentParser(
@@ -305,7 +303,6 @@ def main():
             print("\n" + report)
     else:
         updater.generate_report(report_path)
-
 
 if __name__ == "__main__":
     main()

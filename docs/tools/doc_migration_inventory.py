@@ -31,7 +31,6 @@ logging.basicConfig(
 )
 logger = logging.getLogger("doc_migration")
 
-
 class DocMigrationInventory:
     """Class to handle document migration inventory process."""
 
@@ -413,7 +412,7 @@ class DocMigrationInventory:
             return sorted_signals[1][0]
         return None
 
-    def run_full_process(self):.
+    def run_full_process(self):
         """Run the full document migration inventory process."""
         logger.info("Starting document migration inventory process")
         self.scan_markdown_files()
@@ -422,7 +421,6 @@ class DocMigrationInventory:
         report_file = self.create_report()
         logger.info("Document migration inventory process completed")
         return report_file
-
 
 def main():
     """Main function to run the script."""
@@ -473,7 +471,6 @@ def main():
         )
     else:
         print("Failed to generate report. Check the logs for details.")
-
 
 if __name__ == "__main__":
     main()

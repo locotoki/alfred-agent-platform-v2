@@ -17,11 +17,13 @@ from typing import Dict, List, Set, Tuple
 
 try:
     import tomllib
+
 except ImportError:
     import tomli as tomllib
 
 try:
     from modulegraph import modulegraph
+
 except ImportError:
     modulegraph = None
 

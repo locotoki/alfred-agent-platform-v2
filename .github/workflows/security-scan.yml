@@ -1,0 +1,172 @@
+name: Security Scan
+
+on:
+  schedule:
+    - cron: '0 1 * * *'  # Daily at 1 AM UTC
+  workflow_dispatch:
+    inputs:
+      severity:
+        description: 'Minimum severity to report (LOW, MEDIUM, HIGH, CRITICAL)'
+        required: false
+        type: choice
+        options:
+          - HIGH
+          - MEDIUM
+          - LOW
+        default: 'HIGH'
+      create_issue:
+        description: 'Create issue if vulnerabilities found'
+        required: false
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+  issues: write
+  security-events: write
+
+jobs:
+  security-scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        
+      - name: Build security-hardened base images
+        run: |
+          echo "=== Building security-hardened base images ==="
+          docker build -t alfred-python-secure:latest base-images/python-secure/
+          docker build -t alfred-postgres-secure:latest base-images/postgres-secure/
+          
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+          severity: ${{ inputs.severity || 'HIGH,CRITICAL' }}
+          
+      - name: Upload Trivy scan results to GitHub Security
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: 'trivy-results.sarif'
+          
+      - name: Run comprehensive security sweep
+        run: |
+          echo "=== Running comprehensive security sweep ==="
+          ./scripts/security-sweep.sh
+          
+      - name: Check scan results
+        id: scan_results
+        run: |
+          # Check if security sweep found vulnerabilities
+          if [ $? -eq 1 ]; then
+            echo "vulnerabilities_found=true" >> $GITHUB_OUTPUT
+            echo "SCAN_STATUS=failed" >> $GITHUB_ENV
+          else
+            echo "vulnerabilities_found=false" >> $GITHUB_OUTPUT  
+            echo "SCAN_STATUS=passed" >> $GITHUB_ENV
+          fi
+          
+          # Count vulnerabilities
+          REPORT_FILE=$(ls security-reports/security-report-*.md | tail -1)
+          VULNERABLE_IMAGES=$(grep -c "⚠️ Requires attention" "$REPORT_FILE" || echo "0")
+          CLEAN_IMAGES=$(grep -c "✅ Clean" "$REPORT_FILE" || echo "0")
+          
+          echo "vulnerable_images=$VULNERABLE_IMAGES" >> $GITHUB_OUTPUT
+          echo "clean_images=$CLEAN_IMAGES" >> $GITHUB_OUTPUT
+          echo "report_file=$REPORT_FILE" >> $GITHUB_OUTPUT
+          
+      - name: Upload security reports
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: security-reports-${{ github.run_number }}
+          path: |
+            security-reports/
+            trivy-results.sarif
+          retention-days: 30
+          
+      - name: Create security issue
+        if: steps.scan_results.outputs.vulnerabilities_found == 'true' && (inputs.create_issue == true || inputs.create_issue == null)
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const reportFile = '${{ steps.scan_results.outputs.report_file }}';
+            const report = fs.readFileSync(reportFile, 'utf8');
+            
+            const title = `Security vulnerabilities detected: ${{ steps.scan_results.outputs.vulnerable_images }} images require attention`;
+            
+            // Extract executive summary and recommendations
+            const summaryMatch = report.match(/## Executive Summary([\s\S]*?)---/);
+            const recommendationsMatch = report.match(/## Security Recommendations([\s\S]*?)---/);
+            
+            const body = `## 🔒 Security Scan Alert
+            
+            **Date**: $(date -u +"%Y-%m-%d %H:%M:%S UTC")
+            **Severity**: ${{ inputs.severity || 'HIGH,CRITICAL' }}
+            **Status**: ⚠️ Vulnerabilities detected
+            
+            ### Summary
+            - **Vulnerable images**: ${{ steps.scan_results.outputs.vulnerable_images }}
+            - **Clean images**: ${{ steps.scan_results.outputs.clean_images }}
+            - **Total scanned**: $((${{ steps.scan_results.outputs.vulnerable_images }} + ${{ steps.scan_results.outputs.clean_images }}))
+            
+            ${summaryMatch ? summaryMatch[1] : ''}
+            
+            ### Required Actions
+            1. Review the full security report in the workflow artifacts
+            2. Update vulnerable base images to latest patch versions
+            3. Implement security-hardened base images from \`base-images/\` directory
+            4. Test updated images in staging environment
+            5. Deploy security updates to production
+            
+            ${recommendationsMatch ? recommendationsMatch[1] : ''}
+            
+            ### Workflow Details
+            - **Run ID**: ${{ github.run_id }}
+            - **Workflow**: [View Details](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
+            - **Artifacts**: [Security Reports](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
+            
+            ### Next Steps
+            - [ ] Review security report
+            - [ ] Update vulnerable images  
+            - [ ] Test security-hardened base images
+            - [ ] Deploy updates to staging
+            - [ ] Deploy updates to production
+            - [ ] Verify fixes with next security scan
+            `;
+            
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: title,
+              body: body,
+              labels: ['security', 'vulnerability', 'high-priority']
+            });
+            
+      - name: Summary
+        if: always()
+        run: |
+          echo "## Security Scan Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **Status**: $([[ "${{ env.SCAN_STATUS }}" == "passed" ]] && echo "✅ Passed" || echo "⚠️ Failed")" >> $GITHUB_STEP_SUMMARY
+          echo "- **Vulnerable images**: ${{ steps.scan_results.outputs.vulnerable_images }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Clean images**: ${{ steps.scan_results.outputs.clean_images }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Severity threshold**: ${{ inputs.severity || 'HIGH,CRITICAL' }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          if [[ "${{ env.SCAN_STATUS }}" == "failed" ]]; then
+            echo "⚠️ **Action Required**: Critical or high severity vulnerabilities detected" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "Review the security report in the workflow artifacts and implement recommended fixes." >> $GITHUB_STEP_SUMMARY
+          else
+            echo "✅ **All Clear**: No critical or high severity vulnerabilities detected" >> $GITHUB_STEP_SUMMARY
+          fi

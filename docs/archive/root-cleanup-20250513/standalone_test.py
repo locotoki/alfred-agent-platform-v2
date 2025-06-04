@@ -6,10 +6,10 @@ from datetime import datetime
 
 
 # Mock YouTube API and vector storage
-class MockYouTubeAPI:.
+class MockYouTubeAPI:
     """Mock YouTube API for testing."""
 
-    async def search_videos(self, query, limit=10):.
+    async def search_videos(self, query, limit=10):
         """Mock video search."""
         return [
             {
@@ -53,11 +53,10 @@ class MockYouTubeAPI:.
             "description": "This is a test video description.",
         }
 
-
 class MockVectorStorage:
     """Mock vector storage for testing."""
 
-    async def initialize_collections(self):.
+    async def initialize_collections(self):
         """Mock collection initialization."""
         print("Initializing vector collections...")
 
@@ -73,7 +72,6 @@ class MockVectorStorage:
         """Mock storing video vectors."""
         print(f"Storing video vector for {video_id}")
 
-
 # Mock SocialIntelligence Agent
 class MockSocialIntelAgent:
     """Mock SocialIntelligence Agent for testing."""
@@ -82,7 +80,7 @@ class MockSocialIntelAgent:
         self.youtube_api = MockYouTubeAPI()
         self.youtube_vectors = MockVectorStorage()
 
-    async def _youtube_niche_scout(self, content):.
+    async def _youtube_niche_scout(self, content):
         """Run YouTube Niche-Scout workflow."""
         print("\n=== Running Niche-Scout Workflow ===\n")
 
@@ -238,7 +236,6 @@ class MockSocialIntelAgent:
             "timestamp": datetime.now().isoformat(),
         }
 
-
 async def test_niche_scout():
     """Test Niche-Scout workflow."""
     agent = MockSocialIntelAgent()
@@ -248,7 +245,6 @@ async def test_niche_scout():
     print(f"\nResult status: {result['status']}")
     print(f"Found {len(result['trending_niches'])} trending niches")
     print(f"Top niche: {result['top_niches'][0]['query']}")
-
 
 async def test_blueprint():
     """Test Blueprint workflow."""
@@ -261,7 +257,6 @@ async def test_blueprint():
     print(f"Blueprint positioning: {result['blueprint']['positioning']}")
     print(f"Content pillars: {', '.join(result['blueprint']['content_pillars'])}")
 
-
 async def main():
     """Run all tests."""
     print("=== YouTube Workflow Tests ===\n")
@@ -273,7 +268,6 @@ async def main():
     await test_blueprint()
 
     print("\n=== All tests completed successfully! ===")
-
 
 if __name__ == "__main__":
     import asyncio

@@ -74,6 +74,7 @@ class NoiseRankingModel:
         features.append(historical_data.get("service_criticality", 3))
 
         # Time features
+
         import datetime
 
         now = datetime.datetime.now()

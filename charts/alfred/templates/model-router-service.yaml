@@ -1,0 +1,19 @@
+{{- if .Values.modelRouter.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "alfred.fullname" . }}-model-router
+  labels:
+    {{- include "alfred.labels" . | nindent 4 }}
+    app.kubernetes.io/component: model-router
+spec:
+  type: {{ .Values.modelRouter.service.type }}
+  ports:
+  - port: {{ .Values.modelRouter.service.port }}
+    targetPort: http
+    protocol: TCP
+    name: http
+  selector:
+    {{- include "alfred.selectorLabels" . | nindent 4 }}
+    app.kubernetes.io/component: model-router
+{{- end }}

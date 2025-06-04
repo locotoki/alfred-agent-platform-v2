@@ -142,6 +142,7 @@ def test_ack_timing():
     import time
 
     # Times when actions occur
+
     timestamps = {"start": 0, "ack": 0, "say": 0}
 
     # Create a timing aware ack function

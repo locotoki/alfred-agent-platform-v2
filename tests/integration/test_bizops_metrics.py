@@ -124,6 +124,7 @@ def test_metrics_middleware_integration():
     from services.agent_bizops.middleware.metrics import setup_metrics_middleware
 
     # Create test app
+
     app = FastAPI()
     setup_metrics_middleware(app)
 

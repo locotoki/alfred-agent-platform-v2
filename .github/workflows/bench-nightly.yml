@@ -3,17 +3,159 @@ on:
   schedule:
     - cron: "0 2 * * *"     # 02:00 UTC nightly
   workflow_dispatch:
+    inputs:
+      target_time:
+        description: 'Target cold-start time in seconds (default: 60)'
+        required: false
+        type: number
+        default: 60
+      runs:
+        description: 'Number of benchmark runs (default: 3)'
+        required: false
+        type: number
+        default: 3
+
+permissions:
+  contents: read
+  issues: write
 
 jobs:
   bench:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
+    
     steps:
       - uses: actions/checkout@v4
-      - name: Cold-start bench
-        run:  < /dev/null |
-          ./ops/bench/run-bench.sh --runs 3 --json bench.json
-      - name: Archive result
+      
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        with:
+          driver-opts: |
+            image=moby/buildkit:v0.12.5
+            
+      - name: Build optimized images
+        run: |
+          echo "=== Building optimized images for benchmark ==="
+          export DOCKER_BUILDKIT=1
+          
+          # Build core services with local tags to avoid registry issues
+          docker build -t agent-core:bench services/alfred-core/
+          docker build -t pubsub-metrics:bench alfred/metrics/
+          
+          # Tag for compose usage
+          docker tag agent-core:bench ghcr.io/locotoki/agent-core:v0.9.6
+          docker tag pubsub-metrics:bench pubsub-metrics:latest
+          
+      - name: Run cold-start benchmark
+        run: |
+          echo "=== Running cold-start benchmark ==="
+          RUNS=${{ inputs.runs || 3 }}
+          TARGET_TIME=${{ inputs.target_time || 60 }}
+          
+          # Set timeout to prevent hanging
+          timeout 900 ./ops/bench/run-bench.sh $RUNS bench.json || {
+            echo "Benchmark timed out after 15 minutes"
+            exit 1
+          }
+          
+          # Check if results meet target
+          P95_TIME=$(jq '.p95' bench.json)
+          P95_SECONDS=$((P95_TIME / 1000))
+          
+          echo "P95 cold-start time: ${P95_SECONDS}s (target: ${TARGET_TIME}s)"
+          
+          if [ $P95_SECONDS -gt $TARGET_TIME ]; then
+            echo "❌ Cold-start time ${P95_SECONDS}s exceeds target ${TARGET_TIME}s"
+            echo "BENCHMARK_FAILED=true" >> $GITHUB_ENV
+          else
+            echo "✅ Cold-start time ${P95_SECONDS}s meets target ${TARGET_TIME}s"
+          fi
+          
+      - name: Generate benchmark report
+        if: always()
+        run: |
+          cat > bench-report.md << EOF
+          # Nightly Cold-Start Benchmark Report
+          
+          **Date**: $(date -u +"%Y-%m-%d %H:%M:%S UTC")
+          **Target**: ${{ inputs.target_time || 60 }} seconds
+          **Runs**: ${{ inputs.runs || 3 }}
+          
+          ## Results
+          EOF
+          
+          if [ -f bench.json ]; then
+            P95_TIME=$(jq '.p95' bench.json)
+            P95_SECONDS=$((P95_TIME / 1000))
+            
+            echo "- **P95 Time**: ${P95_SECONDS}s" >> bench-report.md
+            echo "- **Status**: $([[ "${BENCHMARK_FAILED:-false}" == "true" ]] && echo "❌ Failed" || echo "✅ Passed")" >> bench-report.md
+            echo "" >> bench-report.md
+            echo "### Raw Results" >> bench-report.md
+            echo '```json' >> bench-report.md
+            cat bench.json >> bench-report.md
+            echo '```' >> bench-report.md
+          else
+            echo "- **Status**: ❌ Benchmark failed to complete" >> bench-report.md
+          fi
+          
+      - name: Archive results
+        if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: bench-results
-          path: bench.json
+          name: bench-results-${{ github.run_number }}
+          path: |
+            bench.json
+            bench-report.md
+          retention-days: 30
+          
+      - name: Create issue if benchmark fails
+        if: env.BENCHMARK_FAILED == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const report = fs.readFileSync('bench-report.md', 'utf8');
+            
+            const title = `Cold-start benchmark failure: exceeds target time`;
+            const body = `## Nightly Cold-Start Benchmark Failed
+            
+            The nightly cold-start benchmark has exceeded the target time threshold.
+            
+            ${report}
+            
+            ### Required Actions
+            1. Review optimization opportunities in key services
+            2. Check for new services added that impact startup time  
+            3. Consider updating target time if current performance is acceptable
+            4. Implement additional optimizations from \`scripts/optimize-docker-builds.sh\`
+            
+            ### Workflow Run
+            [View Details](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
+            `;
+            
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: title,
+              body: body,
+              labels: ['performance', 'cold-start', 'optimization']
+            });
+            
+      - name: Summary
+        if: always()
+        run: |
+          echo "## Cold-Start Benchmark Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          if [ -f bench.json ]; then
+            P95_TIME=$(jq '.p95' bench.json)
+            P95_SECONDS=$((P95_TIME / 1000))
+            TARGET_TIME=${{ inputs.target_time || 60 }}
+            
+            echo "- **P95 Time**: ${P95_SECONDS}s" >> $GITHUB_STEP_SUMMARY
+            echo "- **Target**: ${TARGET_TIME}s" >> $GITHUB_STEP_SUMMARY
+            echo "- **Status**: $([[ $P95_SECONDS -gt $TARGET_TIME ]] && echo "❌ Failed" || echo "✅ Passed")" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "- **Status**: ❌ Benchmark failed to complete" >> $GITHUB_STEP_SUMMARY
+          fi

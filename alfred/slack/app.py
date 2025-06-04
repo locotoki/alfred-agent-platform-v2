@@ -134,6 +134,7 @@ def handle_health_command(say):
 
 if __name__ == "__main__":
     # Start Flask app for health checks
+
     from threading import Thread
 
     flask_thread = Thread(target=lambda: flask_app.run(host="0.0.0.0", port=3000))
@@ -149,6 +150,7 @@ if __name__ == "__main__":
     else:
         # HTTP mode - for production with events API
         # Using Any type for the start method since Bolt typing is incomplete
+
         from typing import Any, cast
 
         cast(Any, app).start(port=3000)

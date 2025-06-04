@@ -8,7 +8,7 @@ import uuid
 from datetime import datetime
 
 
-class A2AEnvelope:.
+class A2AEnvelope:
     """Simple A2A envelope implementation."""
 
     def __init__(self, intent, data=None, task_id=None, trace_id=None):
@@ -29,11 +29,10 @@ class A2AEnvelope:.
     def __str__(self):
         return json.dumps(self.to_dict(), indent=2)
 
-
 class MockSocialIntelAgent:
     """Mock SocialIntelligence Agent for integration testing."""
 
-    def __init__(self):.
+    def __init__(self):
         """Initialize the agent."""
         # Set up mocked components
         self.intents_supported = [
@@ -224,7 +223,6 @@ class MockSocialIntelAgent:
             "timestamp": datetime.now().isoformat(),
         }
 
-
 async def test_a2a_integration():
     """Test A2A integration with SocialIntelligence Agent."""
     print("=== A2A Integration Test ===\n")
@@ -265,7 +263,6 @@ async def test_a2a_integration():
     print(os.path.exists("builder/channel_pack.zip"))
 
     print("\n=== Integration test completed successfully! ===")
-
 
 if __name__ == "__main__":
     asyncio.run(test_a2a_integration())

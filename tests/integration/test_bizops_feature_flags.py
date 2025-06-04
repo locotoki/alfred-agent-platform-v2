@@ -22,6 +22,7 @@ def test_workflow_registration_with_feature_flags(workflows_enabled, expected_wo
     """Test that only enabled workflows are registered based on WORKFLOWS_ENABLED."""
     with patch.dict(os.environ, {"WORKFLOWS_ENABLED": workflows_enabled}, clear=False):
         # Import settings after patching environment
+
         from services.agent_bizops.settings import BizOpsSettings
 
         settings = BizOpsSettings()
@@ -74,6 +75,7 @@ def test_legacy_environment_variable_mapping():
     from services.agent_bizops.settings import BizOpsSettings, LegacyEnvVarWarning
 
     # Test legacy LEGAL_COMPLIANCE_API_KEY
+
     with patch.dict(os.environ, {"LEGAL_COMPLIANCE_API_KEY": "legacy-legal-key"}, clear=True):
         with warnings.catch_warnings(record=True) as w:
             warnings.simplefilter("always")
@@ -113,6 +115,7 @@ def test_new_environment_variables_take_precedence():
     from services.agent_bizops.settings import BizOpsSettings
 
     # Set both new and old variables
+
     env_vars = {
         "BIZOPS_LEGAL_API_KEY": "new-legal-key",
         "LEGAL_COMPLIANCE_API_KEY": "old-legal-key",
@@ -151,6 +154,7 @@ def test_default_values_when_no_env_vars():
     from services.agent_bizops.settings import BizOpsSettings
 
     # Clear all relevant environment variables
+
     env_to_clear = [
         "WORKFLOWS_ENABLED",
         "BIZOPS_LEGAL_API_KEY",

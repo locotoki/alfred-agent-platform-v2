@@ -27,7 +27,6 @@ class Client:
 
         ``httpx_args``: A dictionary of additional arguments to be passed to the ``httpx.Client`` and ``httpx.AsyncClient`` constructor.
 
-
     Attributes:
         raise_on_unexpected_status: Whether or not to raise an errors.UnexpectedStatus if the API returns a
             status code that was not documented in the source OpenAPI document. Can also be provided as a keyword
@@ -155,7 +154,6 @@ class AuthenticatedClient:
         ``follow_redirects``: Whether or not to follow redirects. Default value is False.
 
         ``httpx_args``: A dictionary of additional arguments to be passed to the ``httpx.Client`` and ``httpx.AsyncClient`` constructor.
-
 
     Attributes:
         raise_on_unexpected_status: Whether or not to raise an errors.UnexpectedStatus if the API returns a

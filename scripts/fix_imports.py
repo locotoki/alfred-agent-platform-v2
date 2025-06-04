@@ -19,7 +19,6 @@ if str(project_root) not in sys.path:
 
 import pytest
 
-
 def pytest_collection_modifyitems(config, items):
     \"\"\"Mark ML-related tests as xfail for SC-320.
 
@@ -83,7 +82,6 @@ if str(project_root) not in sys.path:
 
 import pytest
 
-
 def pytest_collection_modifyitems(config, items):
     \"\"\"Mark alfred/ml tests as xfail for SC-320.
 
@@ -122,7 +120,6 @@ if str(project_root) not in sys.path:
 
 import pytest
 
-
 def pytest_collection_modifyitems(config, items):
     \"\"\"Mark slack_app tests as xfail for SC-320.
 
@@ -153,7 +150,6 @@ if str(project_root) not in sys.path:
     sys.path.insert(0, str(project_root))
 
 import pytest
-
 
 def pytest_collection_modifyitems(config, items):
     \"\"\"Mark YouTube workflow tests as xfail for SC-320.

@@ -95,6 +95,7 @@ def background_collector():
 
 if __name__ == "__main__":
     # Start metrics collection in the background
+
     import threading
 
     collector_thread = threading.Thread(target=background_collector, daemon=True)
