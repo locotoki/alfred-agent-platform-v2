@@ -1,0 +1,71 @@
+{{- if .Values.dbPostgres.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "alfred.fullname" . }}-db-postgres
+  labels:
+    {{- include "alfred.labels" . | nindent 4 }}
+    app.kubernetes.io/component: db-postgres
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "alfred.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: db-postgres
+  template:
+    metadata:
+      labels:
+        {{- include "alfred.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: db-postgres
+    spec:
+      containers:
+      - name: db-postgres
+        image: {{ .Values.dbPostgres.image.repository }}:{{ .Values.dbPostgres.image.tag }}
+        imagePullPolicy: {{ .Values.dbPostgres.image.pullPolicy }}
+        ports:
+        - containerPort: 5432
+          name: postgres
+        env:
+        - name: POSTGRES_USER
+          value: {{ .Values.dbPostgres.auth.username | quote }}
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ include "alfred.fullname" . }}-db-postgres-secret
+              key: password
+        - name: POSTGRES_DB
+          value: {{ .Values.dbPostgres.auth.database | quote }}
+        {{- if .Values.dbPostgres.auth.hostAuthMethod }}
+        - name: POSTGRES_HOST_AUTH_METHOD
+          value: {{ .Values.dbPostgres.auth.hostAuthMethod | quote }}
+        {{- end }}
+        volumeMounts:
+        - name: postgres-data
+          mountPath: /var/lib/postgresql/data
+        livenessProbe:
+          exec:
+            command:
+            - pg_isready
+            - -U
+            - {{ .Values.dbPostgres.auth.username }}
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          exec:
+            command:
+            - pg_isready
+            - -U
+            - {{ .Values.dbPostgres.auth.username }}
+          initialDelaySeconds: 5
+          periodSeconds: 5
+        resources:
+          {{- toYaml .Values.dbPostgres.resources | nindent 10 }}
+      volumes:
+      - name: postgres-data
+        {{- if .Values.dbPostgres.persistence.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ include "alfred.fullname" . }}-db-postgres-pvc
+        {{- else }}
+        emptyDir: {}
+        {{- end }}
+{{- end }}

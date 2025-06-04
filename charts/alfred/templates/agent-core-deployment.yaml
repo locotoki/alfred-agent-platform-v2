@@ -1,0 +1,55 @@
+{{- if .Values.agentCore.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "alfred.fullname" . }}-agent-core
+  labels:
+    {{- include "alfred.labels" . | nindent 4 }}
+    app.kubernetes.io/component: agent-core
+spec:
+  replicas: {{ .Values.agentCore.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "alfred.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: agent-core
+  template:
+    metadata:
+      labels:
+        {{- include "alfred.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: agent-core
+    spec:
+      containers:
+      - name: agent-core
+        image: {{ .Values.agentCore.image.repository }}:{{ .Values.agentCore.image.tag }}
+        imagePullPolicy: {{ .Values.agentCore.image.pullPolicy }}
+        ports:
+        - containerPort: 8011
+          name: http
+        - containerPort: 9091
+          name: metrics
+        env:
+        - name: DATABASE_URL
+          value: "postgresql://{{ .Values.dbPostgres.auth.username }}:{{ .Values.dbPostgres.auth.password }}@{{ include "alfred.fullname" . }}-db-postgres:{{ .Values.dbPostgres.service.port }}/{{ .Values.dbPostgres.auth.database }}"
+        - name: REDIS_URL
+          value: "redis://{{ include "alfred.fullname" . }}-redis:{{ .Values.redis.service.port }}/0"
+        - name: ALFRED_ENV
+          value: {{ .Values.agentCore.env.alfredEnv | quote }}
+        {{- range $key, $value := .Values.agentCore.env.extra }}
+        - name: {{ $key }}
+          value: {{ $value | quote }}
+        {{- end }}
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: http
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: http
+          initialDelaySeconds: 5
+          periodSeconds: 5
+        resources:
+          {{- toYaml .Values.agentCore.resources | nindent 10 }}
+{{- end }}
