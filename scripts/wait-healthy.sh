@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # Wait for healthy status on core services
-max_attempts=60
+max_attempts=30
 attempt=0
 
 echo "Waiting for services to become healthy..."
@@ -26,4 +26,13 @@ done
 echo "❌ Timeout: Services did not become healthy within $((max_attempts * 10)) seconds"
 echo "Current service status:"
 docker compose -f docker-compose.ci-core.yml ps
-exit 1# CI trigger
+
+# Capture logs on failure
+if [ "$unhealthy" -gt 0 ]; then
+  echo "---- docker compose ps ----"
+  docker compose -f docker-compose.ci-core.yml ps
+  echo "---- docker compose logs (tail) ----"
+  docker compose -f docker-compose.ci-core.yml logs --no-color --tail=100 | tee compose-logs.txt
+fi
+
+exit 1

@@ -30,3 +30,10 @@ jobs:
 
       - name: Wait for health
         run: ./scripts/wait-healthy.sh
+
+      - name: Upload compose logs
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: compose-logs
+          path: compose-logs.txt

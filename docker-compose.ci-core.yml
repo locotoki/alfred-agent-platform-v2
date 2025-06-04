@@ -40,18 +40,30 @@ services:
     extends:
       file: docker-compose.yml
       service: llm-service
+    healthcheck:
+      start_period: 45s
+      retries: 5
   model-router:
     extends:
       file: docker-compose.yml
       service: model-router
+    healthcheck:
+      start_period: 30s
+      retries: 5
   model-registry:
     extends:
       file: docker-compose.yml
       service: model-registry
+    healthcheck:
+      start_period: 20s
+      retries: 5
   agent-core:
     extends:
       file: docker-compose.yml
       service: agent-core
+    healthcheck:
+      start_period: 30s
+      retries: 5
   mail-server:
     extends:
       file: docker-compose.yml
