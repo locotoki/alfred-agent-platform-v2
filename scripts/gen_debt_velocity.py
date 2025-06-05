@@ -7,7 +7,9 @@ import subprocess
 
 csv_path = pathlib.Path("metrics/scripts_inventory.csv")
 removed = int(
-    subprocess.check_output(["git", "log", "--pretty=format:", "--name-status", "HEAD"], text=True)
+    subprocess.check_output(
+        ["git", "log", "--pretty=format:", "--name-status", "HEAD"], text=True
+    )
     .splitlines()
     .count("D")
 )  # crude but good enough
@@ -17,7 +19,9 @@ rows = []
 if out.exists():
     rows = list(csv.DictReader(out.open()))
 cumulative = int(rows[-1]["cumulative"]) if rows else 0
-rows.append({"date": today, "scripts_removed": removed, "cumulative": cumulative + removed})
+rows.append(
+    {"date": today, "scripts_removed": removed, "cumulative": cumulative + removed}
+)
 with out.open("w", newline="") as f:
     w = csv.DictWriter(f, fieldnames=["date", "scripts_removed", "cumulative"])
     w.writeheader()

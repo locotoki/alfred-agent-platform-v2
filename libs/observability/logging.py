@@ -35,7 +35,9 @@ def setup_logging(service_name: str, log_level: str = "INFO") -> None:
 def add_service_context(service_name: str):
     """Add service context to all log entries"""
 
-    def processor(logger: Any, method_name: str, event_dict: Dict[str, Any]) -> Dict[str, Any]:
+    def processor(
+        logger: Any, method_name: str, event_dict: Dict[str, Any]
+    ) -> Dict[str, Any]:
         event_dict["service"] = service_name
         return event_dict
 

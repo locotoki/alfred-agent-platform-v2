@@ -14,7 +14,9 @@ class TestWorkloadCLI:
     def test_workload_help(self):
         """Test that workload help displays correctly."""
         result = subprocess.run(
-            ["go", "run", "./cmd/alfred", "workload", "--help"], capture_output=True, text=True
+            ["go", "run", "./cmd/alfred", "workload", "--help"],
+            capture_output=True,
+            text=True,
         )
         assert result.returncode == 0
         assert "Generate synthetic workload" in result.stdout

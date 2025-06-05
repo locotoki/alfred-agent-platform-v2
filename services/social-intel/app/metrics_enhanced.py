@@ -37,7 +37,9 @@ DB_ERROR_COUNTER = Counter(
 )
 
 # Social Intel specific metrics
-NICHE_SCOUT_RESULTS_COUNT = Gauge("si_niche_scout_results", "Number of niche results returned")
+NICHE_SCOUT_RESULTS_COUNT = Gauge(
+    "si_niche_scout_results", "Number of niche results returned"
+)
 
 NICHE_OPPORTUNITY_SCORE = Histogram(
     "si_niche_opportunity_score",

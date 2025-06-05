@@ -76,7 +76,9 @@ def check_service_health(name: str, config: Dict) -> Dict:
             import socket
 
             host = config["url"].replace("http://", "").replace("/", "").split(":")[0]
-            port = int(config["url"].replace("http://", "").replace("/", "").split(":")[1])
+            port = int(
+                config["url"].replace("http://", "").replace("/", "").split(":")[1]
+            )
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             sock.settimeout(5)
             sock.connect((host, port))
@@ -158,11 +160,15 @@ def health(output_json: bool, critical_only: bool):
             print_health_table(obs_results, "Observability Services")
 
         # Overall status
-        critical_healthy = all(r["status"] == "healthy" for r in core_results if r["critical"])
+        critical_healthy = all(
+            r["status"] == "healthy" for r in core_results if r["critical"]
+        )
 
         console.print()
         if critical_healthy:
-            console.print("[bold green]✓ All critical services are healthy[/bold green]")
+            console.print(
+                "[bold green]✓ All critical services are healthy[/bold green]"
+            )
             sys.exit(0)
         else:
             console.print("[bold red]✗ Some critical services are unhealthy[/bold red]")

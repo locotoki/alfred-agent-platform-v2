@@ -15,7 +15,11 @@ class MockModels:
             self.last_name = kwargs.get("last_name")
 
         def to_dict(self):
-            return {"email": self.email, "first_name": self.first_name, "last_name": self.last_name}
+            return {
+                "email": self.email,
+                "first_name": self.first_name,
+                "last_name": self.last_name,
+            }
 
 
 # Create a models object with Contact as an attribute

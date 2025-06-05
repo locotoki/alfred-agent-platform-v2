@@ -71,7 +71,9 @@ class AlertNoiseRanker:
         if model_path:
             self.load_model(model_path)
 
-    def extract_features(self, alert: AlertProtocol, historical_data: Dict) -> AlertFeatures:
+    def extract_features(
+        self, alert: AlertProtocol, historical_data: Dict
+    ) -> AlertFeatures:
         """Extract comprehensive features from an alert.
 
         Args:
@@ -191,7 +193,9 @@ class AlertNoiseRanker:
 
         return noise_score
 
-    def calculate_similarity_score(self, alert1: AlertProtocol, alert2: AlertProtocol) -> float:
+    def calculate_similarity_score(
+        self, alert1: AlertProtocol, alert2: AlertProtocol
+    ) -> float:
         """Calculate semantic similarity between two alerts using HF
         embeddings.
 
@@ -231,17 +235,22 @@ class AlertNoiseRanker:
             List of (alert, similarity_score) tuples above threshold.
 
         """
-        query_text = f"{query_alert.name} {query_alert.description} {query_alert.summary}"
+        query_text = (
+            f"{query_alert.name} {query_alert.description} {query_alert.summary}"
+        )
         query_embedding = self.embedder.embed(query_text)
 
         # Get embeddings for all candidates
         candidate_texts = [
-            f"{alert.name} {alert.description} {alert.summary}" for alert in candidate_alerts
+            f"{alert.name} {alert.description} {alert.summary}"
+            for alert in candidate_alerts
         ]
         candidate_embeddings = self.embedder.embed(candidate_texts)
 
         # Calculate similarities
-        similarities = self.embedder.batch_similarity(query_embedding, candidate_embeddings)
+        similarities = self.embedder.batch_similarity(
+            query_embedding, candidate_embeddings
+        )
 
         # Filter by threshold and sort
         similar_alerts = []
@@ -277,7 +286,9 @@ class AlertNoiseRanker:
 
         # Emit volume reduction metrics
         if self.metrics:
-            suppressed_count = sum(1 for _, score in ranked if score > self.noise_threshold)
+            suppressed_count = sum(
+                1 for _, score in ranked if score > self.noise_threshold
+            )
             reduction_rate = suppressed_count / len(alerts) if alerts else 0
             self.metrics.gauge("alert_volume_reduction", reduction_rate)
 

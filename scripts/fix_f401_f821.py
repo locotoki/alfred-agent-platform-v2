@@ -9,7 +9,10 @@ def run_flake8() -> str:
     """Run flake8 and return the output as a string."""
     try:
         result = subprocess.run(
-            ["flake8", "--config=.flake8", "."], capture_output=True, text=True, check=False
+            ["flake8", "--config=.flake8", "."],
+            capture_output=True,
+            text=True,
+            check=False,
         )
         return result.stdout
     except subprocess.CalledProcessError as e:
@@ -70,7 +73,11 @@ def fix_f401_violations(violations: List[str]) -> Set[str]:
 
             elif "from " in import_line and import_name in import_line:
                 # From import
-                import_part = import_name.rsplit(".", 1)[-1] if "." in import_name else import_name
+                import_part = (
+                    import_name.rsplit(".", 1)[-1]
+                    if "." in import_name
+                    else import_name
+                )
 
                 if (
                     f" {import_part}" in import_line
@@ -111,7 +118,9 @@ def fix_f401_violations(violations: List[str]) -> Set[str]:
                     with open(filepath, "w") as outfile:
                         outfile.writelines(lines)
                     fixed_files.add(filepath)
-                    print(f"Fixed F401: {filepath}:{line_num+1} - Removed '{import_name}'")
+                    print(
+                        f"Fixed F401: {filepath}:{line_num+1} - Removed '{import_name}'"
+                    )
                 except Exception as e:
                     print(f"Error writing {filepath}: {e}")
 

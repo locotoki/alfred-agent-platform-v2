@@ -23,9 +23,16 @@ def read_csv_file(file_path: Path) -> List[Dict[str, str]]:
 def compute_stats(deps_data, vuln_data, license_data):
     """Compute all statistics from the three data sources."""
     total_packages = len(deps_data)
-    unique_packages = len(set(row.get("package", "") for row in deps_data if row.get("package")))
+    unique_packages = len(
+        set(row.get("package", "") for row in deps_data if row.get("package"))
+    )
 
-    location_counts = {"requirements.txt": 0, "pyproject.toml": 0, "import-only": 0, "other": 0}
+    location_counts = {
+        "requirements.txt": 0,
+        "pyproject.toml": 0,
+        "import-only": 0,
+        "other": 0,
+    }
     for row in deps_data:
         location = row.get("location", "")
         if ".txt" in location:
@@ -46,18 +53,28 @@ def compute_stats(deps_data, vuln_data, license_data):
         package = row.get("package", "")
         if package:
             package_vuln_counts[package] = package_vuln_counts.get(package, 0) + 1
-    top_vulnerable = sorted(package_vuln_counts.items(), key=lambda x: x[1], reverse=True)[:10]
+    top_vulnerable = sorted(
+        package_vuln_counts.items(), key=lambda x: x[1], reverse=True
+    )[:10]
 
     total_licenses = len(license_data)
     classification_counts = {}
     for row in license_data:
         classification = row.get("license_classification", "unknown")
-        classification_counts[classification] = classification_counts.get(classification, 0) + 1
-    unknown_count = classification_counts.get("unknown", 0) + classification_counts.get("other", 0)
+        classification_counts[classification] = (
+            classification_counts.get(classification, 0) + 1
+        )
+    unknown_count = classification_counts.get("unknown", 0) + classification_counts.get(
+        "other", 0
+    )
     unknown_ratio = (unknown_count / total_licenses * 100) if total_licenses > 0 else 0
 
     return {
-        "deps": {"total": total_packages, "unique": unique_packages, "locations": location_counts},
+        "deps": {
+            "total": total_packages,
+            "unique": unique_packages,
+            "locations": location_counts,
+        },
         "vulns": {
             "total": total_vulns,
             "severities": severity_counts,

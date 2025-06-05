@@ -51,7 +51,9 @@ class SeedToBlueprint:
         if not video_url and not niche:
             raise ValueError("Either video_url or niche must be provided")
 
-        self.logger.info("Starting SeedToBlueprint workflow", video_url=video_url, niche=niche)
+        self.logger.info(
+            "Starting SeedToBlueprint workflow", video_url=video_url, niche=niche
+        )
 
         # Simulate processing time
         await asynciosleep(3)

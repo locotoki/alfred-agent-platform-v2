@@ -29,7 +29,10 @@ def pytest_collection_modifyitems(config, items):
             continue
 
         # Apply specific markers based on test dependencies
-        if any(test_name in item.nodeid for test_name in sentence_transformers_dependent_tests):
+        if any(
+            test_name in item.nodeid
+            for test_name in sentence_transformers_dependent_tests
+        ):
             item.add_marker(
                 pytest.mark.xfail(
                     reason="Missing sentence_transformers dependency, see issue #220",

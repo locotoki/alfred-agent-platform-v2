@@ -25,7 +25,10 @@ def main():
         basename = p.name
         try:
             out = subprocess.run(
-                ["git", "grep", "-l", basename], capture_output=True, text=True, timeout=5
+                ["git", "grep", "-l", basename],
+                capture_output=True,
+                text=True,
+                timeout=5,
             ).stdout
             if out.strip():
                 used.add(str(p))

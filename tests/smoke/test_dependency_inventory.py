@@ -47,7 +47,9 @@ def test_dependency_inventory_format():
 
         # Check header format
         expected_headers = ["package", "declared_version", "latest_pinned", "location"]
-        assert reader.fieldnames == expected_headers, f"CSV headers should be {expected_headers}"
+        assert (
+            reader.fieldnames == expected_headers
+        ), f"CSV headers should be {expected_headers}"
 
         # Check at least one row has required fields
         first_row = next(reader, None)
@@ -73,7 +75,15 @@ def test_dependency_inventory_has_common_packages():
         packages = {row["package"].lower() for row in reader}
 
     # Should find some common Python packages in a typical project
-    common_packages = {"pytest", "requests", "fastapi", "pandas", "numpy", "flask", "django"}
+    common_packages = {
+        "pytest",
+        "requests",
+        "fastapi",
+        "pandas",
+        "numpy",
+        "flask",
+        "django",
+    }
     found_packages = packages & common_packages
 
     # Don't assert specific packages exist, just check format is working

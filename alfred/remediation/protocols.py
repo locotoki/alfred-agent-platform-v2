@@ -140,7 +140,9 @@ class AlertHandler(Protocol):
         ...
 
     @abstractmethod
-    def get_remediation_history(self, service_name: str, limit: int = 10) -> List[Dict[str, Any]]:
+    def get_remediation_history(
+        self, service_name: str, limit: int = 10
+    ) -> List[Dict[str, Any]]:
         """Get remediation history for a service.
 
         Args:
@@ -157,7 +159,9 @@ class EscalationPolicy(Protocol):
     """Protocol for escalation policies"""
 
     @abstractmethod
-    def should_escalate(self, service_name: str, failure_count: int, time_window: int) -> bool:
+    def should_escalate(
+        self, service_name: str, failure_count: int, time_window: int
+    ) -> bool:
         """Determine if issue should be escalated.
 
         Args:

@@ -11,6 +11,7 @@ def pytest_collection_modifyitems(config, items):
         # Add xfail marker to all tests in this directory
         item.add_marker(
             pytest.mark.xfail(
-                reason="Kind tests need Kubernetes environment, see issue #220", strict=False
+                reason="Kind tests need Kubernetes environment, see issue #220",
+                strict=False,
             )
         )

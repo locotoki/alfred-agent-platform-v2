@@ -52,13 +52,17 @@ def main():
         print("Testing contact-ingest service...")
         ci_response = requests.get("http://localhost:8080/ping", timeout=BASE_TIMEOUT)
         ci_data = ci_response.json()
-        assert ci_data["msg"].startswith("contact-ingest"), f"Unexpected response: {ci_data}"
+        assert ci_data["msg"].startswith(
+            "contact-ingest"
+        ), f"Unexpected response: {ci_data}"
         print("✓ contact-ingest is reachable")
 
         print("Testing hubspot-mock service...")
         hm_response = requests.get("http://localhost:8000/ping", timeout=BASE_TIMEOUT)
         hm_data = hm_response.json()
-        assert hm_data["msg"].startswith("hubspot-mock"), f"Unexpected response: {hm_data}"
+        assert hm_data["msg"].startswith(
+            "hubspot-mock"
+        ), f"Unexpected response: {hm_data}"
         print("✓ hubspot-mock is reachable")
 
         print("\nAll tests passed!")

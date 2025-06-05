@@ -14,8 +14,12 @@ class TestDataFlow:
 
     @pytest.mark.e2e
     @pytest.mark.regression
-    @pytest.mark.skipif(True, reason="Agent orchestration not implemented in CI core stub services")
-    def test_agent_orchestration_flow(self, http_client, alfred_base_url, wait_for_services):
+    @pytest.mark.skipif(
+        True, reason="Agent orchestration not implemented in CI core stub services"
+    )
+    def test_agent_orchestration_flow(
+        self, http_client, alfred_base_url, wait_for_services
+    ):
         """Test complete agent orchestration flow."""
         # Create a test request
         request_data = {
@@ -25,7 +29,9 @@ class TestDataFlow:
         }
 
         # Submit request to Alfred Core
-        response = http_client.post(f"{alfred_base_url}/api/v1/agent/query", json=request_data)
+        response = http_client.post(
+            f"{alfred_base_url}/api/v1/agent/query", json=request_data
+        )
         assert response.status_code in [200, 201]
 
         # Get request ID
@@ -36,7 +42,9 @@ class TestDataFlow:
         # Poll for completion
         max_attempts = 30
         for attempt in range(max_attempts):
-            status_response = http_client.get(f"{alfred_base_url}/api/v1/agent/status/{request_id}")
+            status_response = http_client.get(
+                f"{alfred_base_url}/api/v1/agent/status/{request_id}"
+            )
             if status_response.status_code == 200:
                 status = status_response.json()
                 if status.get("status") in ["completed", "failed"]:
@@ -53,8 +61,12 @@ class TestPersistence:
 
     @pytest.mark.e2e
     @pytest.mark.regression
-    @pytest.mark.skipif(True, reason="Database persistence API not implemented in CI core")
-    def test_database_persistence(self, http_client, alfred_base_url, wait_for_services):
+    @pytest.mark.skipif(
+        True, reason="Database persistence API not implemented in CI core"
+    )
+    def test_database_persistence(
+        self, http_client, alfred_base_url, wait_for_services
+    ):
         """Test database write and read operations."""
         # Create test data
         test_data = {
@@ -64,7 +76,9 @@ class TestPersistence:
         }
 
         # Write data
-        write_response = http_client.post(f"{alfred_base_url}/api/v1/data/store", json=test_data)
+        write_response = http_client.post(
+            f"{alfred_base_url}/api/v1/data/store", json=test_data
+        )
         assert write_response.status_code in [200, 201]
 
         # Read data back
@@ -84,7 +98,9 @@ class TestErrorHandling:
 
     @pytest.mark.e2e
     @pytest.mark.regression
-    def test_basic_api_functionality(self, http_client, alfred_base_url, wait_for_services):
+    def test_basic_api_functionality(
+        self, http_client, alfred_base_url, wait_for_services
+    ):
         """Test basic API functionality with valid requests."""
         # Test tasks endpoint with any data (stub service accepts anything)
         test_data = {
@@ -118,7 +134,9 @@ class TestMetricsCollection:
 
     @pytest.mark.e2e
     @pytest.mark.regression
-    def test_metrics_endpoint_availability(self, http_client, alfred_base_url, wait_for_services):
+    def test_metrics_endpoint_availability(
+        self, http_client, alfred_base_url, wait_for_services
+    ):
         """Test that metrics endpoint is available and returns prometheus format."""
         # Get metrics
         response = http_client.get(f"{alfred_base_url}/metrics")
@@ -127,7 +145,9 @@ class TestMetricsCollection:
         metrics_text = response.text
 
         # Verify it's in prometheus format
-        assert "# HELP" in metrics_text or "# TYPE" in metrics_text or metrics_text.strip()
+        assert (
+            "# HELP" in metrics_text or "# TYPE" in metrics_text or metrics_text.strip()
+        )
 
         # Make some requests to potentially increment metrics
         for _ in range(3):

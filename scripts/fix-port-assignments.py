@@ -30,7 +30,9 @@ def fix_port_conflicts(compose_file):
         if service_name in services and "ports" in services[service_name]:
             ports = services[service_name]["ports"]
             for i, port in enumerate(ports):
-                if isinstance(port, str) and port.startswith(remapping["old"].split(":")[0] + ":"):
+                if isinstance(port, str) and port.startswith(
+                    remapping["old"].split(":")[0] + ":"
+                ):
                     old_port = port
                     new_port = remapping["new"]
                     # Preserve comments if any
@@ -47,7 +49,13 @@ def fix_port_conflicts(compose_file):
 
     # Write updated compose file
     with open(compose_file, "w") as f:
-        yaml.dump(compose_data, f, default_flow_style=False, allow_unicode=True, sort_keys=False)
+        yaml.dump(
+            compose_data,
+            f,
+            default_flow_style=False,
+            allow_unicode=True,
+            sort_keys=False,
+        )
 
     print("\n📝 Port changes made:")
     for change in changes_made:
@@ -68,7 +76,9 @@ def main():
     if fix_port_conflicts(compose_file):
         print("\n✅ Port conflicts fixed!")
         print("\n🎯 Next steps:")
-        print("  1. Review the changes: diff docker-compose.yml docker-compose.yml.backup")
+        print(
+            "  1. Review the changes: diff docker-compose.yml docker-compose.yml.backup"
+        )
         print("  2. Update any override files to remove port configurations")
         print("  3. Restart services: docker-compose down && docker-compose up -d")
     else:

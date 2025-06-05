@@ -25,7 +25,9 @@ class ChatInterface(Protocol):
         ...
 
     @abstractmethod
-    async def get_conversation_history(self, user_id: str, limit: int = 50) -> List[Dict[str, Any]]:
+    async def get_conversation_history(
+        self, user_id: str, limit: int = 50
+    ) -> List[Dict[str, Any]]:
         """Get conversation history for a user.
 
         Args:
@@ -148,7 +150,9 @@ class NotificationManager(Protocol):
     """Protocol for UI notifications."""
 
     @abstractmethod
-    def show_notification(self, message: str, type: str = "info", duration: int = 5000) -> str:
+    def show_notification(
+        self, message: str, type: str = "info", duration: int = 5000
+    ) -> str:
         """Show a notification.
 
         Args:

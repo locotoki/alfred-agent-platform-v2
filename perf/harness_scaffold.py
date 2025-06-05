@@ -49,7 +49,11 @@ def make_request(query_text):
 
 def run_load_test():
     """Run the performance test."""
-    print("🚀 Starting performance test: {} RPS for {}s".format(TARGET_RPS, DURATION_SECONDS))
+    print(
+        "🚀 Starting performance test: {} RPS for {}s".format(
+            TARGET_RPS, DURATION_SECONDS
+        )
+    )
     print("Target: p95 < 300ms, error rate < 1%\n")
 
     results = []

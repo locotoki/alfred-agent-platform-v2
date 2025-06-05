@@ -37,7 +37,9 @@ async def lifespan(app: FastAPI):
     if app_token:
         handler = AsyncSocketModeHandler(slack_app, app_token)
         logger.info("Starting Socket Mode handler...")
-        logger.info(f"Registered commands: {list(slack_app._slash_command_listeners.keys())}")
+        logger.info(
+            f"Registered commands: {list(slack_app._slash_command_listeners.keys())}"
+        )
         # Start Socket Mode in the background
         asyncio.create_task(handler.start_async())
     else:
@@ -168,7 +170,9 @@ async def handle_diag_command(ack, command, say):
 @slack_app.event("app_mention")
 async def handle_mention(event, say):
     """Handle @alfred mentions"""
-    await say(f"Hello <@{event['user']}>! Use `/alfred help` to see available commands.")
+    await say(
+        f"Hello <@{event['user']}>! Use `/alfred help` to see available commands."
+    )
 
 
 # Error handler
@@ -183,7 +187,9 @@ async def start_socket_mode():
     """Start Socket Mode handler"""
     app_token = os.environ.get("SLACK_APP_TOKEN")
     if not app_token:
-        logger.error("SLACK_APP_TOKEN not found! Socket Mode requires an app-level token.")
+        logger.error(
+            "SLACK_APP_TOKEN not found! Socket Mode requires an app-level token."
+        )
         logger.error(
             "Get it from: https://api.slack.com/apps > Your App > Basic Information > App-Level Tokens"
         )

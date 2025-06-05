@@ -21,13 +21,17 @@ SERVICES = {
 }
 
 
-async def check_service_health(service_name: str, config: Dict[str, Any]) -> Dict[str, Any]:
+async def check_service_health(
+    service_name: str, config: Dict[str, Any]
+) -> Dict[str, Any]:
     """Check health of a single service"""
     url = f"http://localhost:{config['port']}{config['health_endpoint']}"
 
     try:
         async with aiohttp.ClientSession() as session:
-            async with session.get(url, timeout=aiohttp.ClientTimeout(total=5)) as response:
+            async with session.get(
+                url, timeout=aiohttp.ClientTimeout(total=5)
+            ) as response:
                 if response.status == 200:
                     return {
                         "service": service_name,

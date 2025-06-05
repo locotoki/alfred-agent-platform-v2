@@ -24,7 +24,10 @@ from libs.a2a_adapter import PolicyMiddleware, PubSubTransport, SupabaseTranspor
 def pytest_addoption(parser):
     """Add custom pytest options."""
     parser.addoption(
-        "--slack-tests", action="store_true", default=False, help="run slack integration tests"
+        "--slack-tests",
+        action="store_true",
+        default=False,
+        help="run slack integration tests",
     )
 
 
@@ -45,12 +48,18 @@ def pytest_collection_modifyitems(config, items):
     """Apply xfail marks to tests that need them for SC-320."""
     # List of specific ML-related failing tests with their reason
     ml_failing_tests = [
-        ("test_hf_embedder", "Missing sentence_transformers dependency, see issue #220"),
+        (
+            "test_hf_embedder",
+            "Missing sentence_transformers dependency, see issue #220",
+        ),
         ("test_thresholds", "Missing sentence_transformers dependency, see issue #220"),
         ("test_alert_dataset", "Missing faiss dependency, see issue #220"),
         ("test_dataset_db", "Missing ML dependencies, see issue #220"),
         ("test_faiss_index", "Missing faiss dependency, see issue #220"),
-        ("test_inference_benchmark", "Missing sentence_transformers dependency, see issue #220"),
+        (
+            "test_inference_benchmark",
+            "Missing sentence_transformers dependency, see issue #220",
+        ),
         ("test_model_registry", "Missing ML dependencies, see issue #220"),
         ("test_retrain_pipeline", "Missing ML dependencies, see issue #220"),
         ("test_trainer_benchmark", "Missing faiss dependency, see issue #220"),

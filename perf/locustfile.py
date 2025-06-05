@@ -12,4 +12,6 @@ class RAGUser(HttpUser):  # type: ignore
     @task
     def query_rag(self):
         """Test RAG query endpoint with sample query."""
-        self.client.post("/rag/query", json={"query": "What is the platform architecture?"})
+        self.client.post(
+            "/rag/query", json={"query": "What is the platform architecture?"}
+        )

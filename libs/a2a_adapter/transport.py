@@ -38,7 +38,9 @@ class PubSubTransport:
 
     def create_subscription(self, subscription: str, topic: str) -> None:
         """Stub method to create a subscription."""
-        logger.info("STUB: Creating subscription", subscription=subscription, topic=topic)
+        logger.info(
+            "STUB: Creating subscription", subscription=subscription, topic=topic
+        )
 
     async def publish_task(self, envelope: Any, topic: str = None) -> str:
         """Stub method to publish a task envelope."""
@@ -84,7 +86,9 @@ class SupabaseTransport:
 
     async def store_task(self, envelope: Any) -> str:
         """Stub method to store a task envelope in the database."""
-        logger.info("STUB: Storing task envelope", intent=getattr(envelope, "intent", "unknown"))
+        logger.info(
+            "STUB: Storing task envelope", intent=getattr(envelope, "intent", "unknown")
+        )
         return getattr(envelope, "task_id", "task-id-stub")
 
     async def get_task_status(self, task_id: str) -> Optional[Dict[str, Any]]:
@@ -102,10 +106,16 @@ class SupabaseTransport:
         logger.info("STUB: Checking duplicate task", task_id=task_id)
         return False
 
-    async def update_task_status(self, task_id: str, status: str, error: str = None) -> None:
+    async def update_task_status(
+        self, task_id: str, status: str, error: str = None
+    ) -> None:
         """Stub method to update task status."""
-        logger.info("STUB: Updating task status", task_id=task_id, status=status, error=error)
+        logger.info(
+            "STUB: Updating task status", task_id=task_id, status=status, error=error
+        )
 
-    async def store_task_result(self, task_id: str, status: str, result: Dict[str, Any]) -> None:
+    async def store_task_result(
+        self, task_id: str, status: str, result: Dict[str, Any]
+    ) -> None:
         """Stub method to store task result."""
         logger.info("STUB: Storing task result", task_id=task_id, status=status)

@@ -149,7 +149,9 @@ def main() -> None:
     is_compliant, violations = validate_licences()
 
     if violations:
-        violation_list = "\n".join(f"  - {pkg}: {licence}" for pkg, licence in violations)
+        violation_list = "\n".join(
+            f"  - {pkg}: {licence}" for pkg, licence in violations
+        )
         message = f"Licence gate failed! {len(violations)} disallowed licences:\n{violation_list}"
         create_github_annotation(message)
 

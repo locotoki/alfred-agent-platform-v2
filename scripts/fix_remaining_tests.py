@@ -31,7 +31,9 @@ def add_xfail_to_test_file(file_path, reason):
         content = "import pytest\n" + content
 
     # Add module-level xfail marker (after imports)
-    import_section_end = re.search(r"(?:^import [^\n]+$|^from [^\n]+$)+", content, re.MULTILINE)
+    import_section_end = re.search(
+        r"(?:^import [^\n]+$|^from [^\n]+$)+", content, re.MULTILINE
+    )
     if import_section_end:
         pos = import_section_end.end()
         decorator = f'\n\n# Mark all tests in this module as xfail\npytestmark = [pytest.mark.xfail(reason="{reason}", strict=False)]\n'
@@ -118,7 +120,8 @@ def main():
     benchmark_dir = project_root / "tests" / "benchmark"
     if benchmark_dir.exists():
         add_test_file_skipping(
-            benchmark_dir, "Benchmark tests need special environment setup, see issue #220"
+            benchmark_dir,
+            "Benchmark tests need special environment setup, see issue #220",
         )
 
     # Create simple benchmark conftest.py if needed
@@ -159,7 +162,8 @@ def pytest_collection_modifyitems(config, items):
     validate_dir = project_root / "tests" / "validation"
     if validate_dir.exists():
         add_test_file_skipping(
-            validate_dir, "Validation tests need specific environment setup, see issue #220"
+            validate_dir,
+            "Validation tests need specific environment setup, see issue #220",
         )
 
     print("Added xfail markers to remaining problematic test files.")

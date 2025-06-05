@@ -11,7 +11,9 @@ from typing import Any, Dict, List
 from urllib.error import URLError
 
 
-def format_vulnerability_message(vulnerabilities: List[Dict[str, str]]) -> Dict[str, Any]:
+def format_vulnerability_message(
+    vulnerabilities: List[Dict[str, str]],
+) -> Dict[str, Any]:
     """Format vulnerabilities into Slack message payload."""
     if not vulnerabilities:
         return {
@@ -28,7 +30,9 @@ def format_vulnerability_message(vulnerabilities: List[Dict[str, str]]) -> Dict[
         }
 
     # Group by severity
-    critical_vulns = [v for v in vulnerabilities if v.get("severity", "").lower() == "critical"]
+    critical_vulns = [
+        v for v in vulnerabilities if v.get("severity", "").lower() == "critical"
+    ]
     high_vulns = [v for v in vulnerabilities if v.get("severity", "").lower() == "high"]
 
     total_count = len(vulnerabilities)
@@ -42,7 +46,10 @@ def format_vulnerability_message(vulnerabilities: List[Dict[str, str]]) -> Dict[
     if high_count > 0:
         header += f"\n🟠 {high_count} HIGH"
 
-    blocks = [{"type": "section", "text": {"type": "mrkdwn", "text": header}}, {"type": "divider"}]
+    blocks = [
+        {"type": "section", "text": {"type": "mrkdwn", "text": header}},
+        {"type": "divider"},
+    ]
 
     # Add vulnerability details (limit to first 10 to avoid message size limits)
     displayed_vulns = vulnerabilities[:10]
@@ -91,7 +98,10 @@ def format_vulnerability_message(vulnerabilities: List[Dict[str, str]]) -> Dict[
         }
     )
 
-    return {"text": f"Security Alert: {total_count} HIGH/CRITICAL CVEs found", "blocks": blocks}
+    return {
+        "text": f"Security Alert: {total_count} HIGH/CRITICAL CVEs found",
+        "blocks": blocks,
+    }
 
 
 def send_webhook_message(message: Dict[str, Any], webhook_url: str) -> bool:
@@ -107,7 +117,10 @@ def send_webhook_message(message: Dict[str, Any], webhook_url: str) -> bool:
                 print("✅ Slack alert sent successfully")
                 return True
             else:
-                print(f"❌ Slack webhook returned status {response.status}", file=sys.stderr)
+                print(
+                    f"❌ Slack webhook returned status {response.status}",
+                    file=sys.stderr,
+                )
                 return False
 
     except URLError as e:

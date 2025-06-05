@@ -24,7 +24,9 @@ class TestIntent:
 
     def test_intent_string_representation(self):
         """Test string representation of Intent objects."""
-        intent = Intent(type="help", confidence=0.87, entities={}, raw_message="I need help")
+        intent = Intent(
+            type="help", confidence=0.87, entities={}, raw_message="I need help"
+        )
 
         assert str(intent) == "Intent(type=help, confidence=0.87)"
 
@@ -117,7 +119,9 @@ class TestIntentRouter:
     def test_handler_access(self, router):
         """Test handler access via handle method."""
         # Create an intent
-        intent = Intent(type="greeting", confidence=0.9, entities={}, raw_message="Hello")
+        intent = Intent(
+            type="greeting", confidence=0.9, entities={}, raw_message="Hello"
+        )
 
         # Use the handle method
         response = router.handle(intent)

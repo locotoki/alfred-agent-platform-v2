@@ -27,7 +27,9 @@ def read_vulnerability_report(report_path: Path) -> List[Dict[str, str]]:
     """Read vulnerability report CSV and return list of vulnerabilities."""
     vulnerabilities = []
     if not report_path.exists():
-        print(f"Warning: Vulnerability report not found at {report_path}", file=sys.stderr)
+        print(
+            f"Warning: Vulnerability report not found at {report_path}", file=sys.stderr
+        )
         return vulnerabilities
 
     try:
@@ -108,7 +110,9 @@ def main():
     # Send to Slack
     success = send_webhook_message(message, webhook_url)
     if success:
-        print(f"📤 Notified #sec-alerts of {len(alertable_vulns)} alertable vulnerabilities")
+        print(
+            f"📤 Notified #sec-alerts of {len(alertable_vulns)} alertable vulnerabilities"
+        )
     else:
         print("❌ Failed to send Slack notification")
 

@@ -178,7 +178,9 @@ class RulesEngine:
                     similarity_threshold=rule_config.get(
                         "similarity_threshold", self.default_similarity_threshold
                     ),
-                    time_window=rule_config.get("time_window", self.default_time_window),
+                    time_window=rule_config.get(
+                        "time_window", self.default_time_window
+                    ),
                 )
 
                 self.rules[service].append(rule)

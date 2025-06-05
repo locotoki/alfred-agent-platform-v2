@@ -59,7 +59,9 @@ def fix_file(file_path):
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Fix common syntax errors in Python files")
+    parser = argparse.ArgumentParser(
+        description="Fix common syntax errors in Python files"
+    )
     parser.add_argument("--dir", "-d", default=".", help="Directory to process")
     parser.add_argument("--files", "-f", nargs="+", help="Specific files to process")
     args = parser.parse_args()

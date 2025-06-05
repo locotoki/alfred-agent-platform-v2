@@ -9,7 +9,10 @@ def run_flake8() -> str:
     """Run flake8 and return the output as a string."""
     try:
         result = subprocess.run(
-            ["flake8", "--config=.flake8", "."], capture_output=True, text=True, check=False
+            ["flake8", "--config=.flake8", "."],
+            capture_output=True,
+            text=True,
+            check=False,
         )
         return result.stdout
     except subprocess.CalledProcessError as e:
@@ -33,7 +36,8 @@ def fix_f841_violations(violations: List[str]) -> Set[str]:
     for line in violations:
         # Parse the violation line
         match = re.match(
-            r"(.+):(\d+):(\d+): F841 local variable '(.+)' is assigned to but never used", line
+            r"(.+):(\d+):(\d+): F841 local variable '(.+)' is assigned to but never used",
+            line,
         )  # noqa: E501
         if not match:
             continue

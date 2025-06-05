@@ -112,7 +112,9 @@ class HFEmbedder(Service):
         return float(np.clip(similarity, 0.0, 1.0))
 
     def batch_similarity(
-        self, query_embedding: NDArray[np.float64], candidate_embeddings: NDArray[np.float64]
+        self,
+        query_embedding: NDArray[np.float64],
+        candidate_embeddings: NDArray[np.float64],
     ) -> NDArray[np.float64]:
         """Calculate similarities between query and multiple candidates.
 

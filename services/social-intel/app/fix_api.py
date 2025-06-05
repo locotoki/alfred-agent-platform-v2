@@ -45,7 +45,9 @@ def fix_json_handling(content):
     content = modify_endpoint(content, endpoint_pattern, new_param_pattern)
 
     # Pattern to add request handling to youtube/niche-scout endpoint
-    endpoint_pattern = r'@app\.post\("/youtube/niche-scout"\)\s*async def run_niche_scout_alt1\('
+    endpoint_pattern = (
+        r'@app\.post\("/youtube/niche-scout"\)\s*async def run_niche_scout_alt1\('
+    )
     content = modify_endpoint(content, endpoint_pattern, new_param_pattern)
 
     # Pattern to add request handling to api/youtube/niche-scout endpoint
@@ -106,7 +108,11 @@ def fix_json_handling(content):
                   subcategory=subcategory,
                   json_task_id=json_data.get("task_id", "none") if json_data else "none")
 """
-        content = content[:implementation_pos] + json_handling_code + content[implementation_pos:]
+        content = (
+            content[:implementation_pos]
+            + json_handling_code
+            + content[implementation_pos:]
+        )
 
     return content
 

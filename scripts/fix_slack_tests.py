@@ -38,7 +38,9 @@ def add_xfail_to_test(file_path, test_name, reason):
         return False
 
     # Add the xfail marker before the test function
-    replacement = f'@pytest.mark.xfail(reason="{reason}", strict=False)\ndef {test_name}('
+    replacement = (
+        f'@pytest.mark.xfail(reason="{reason}", strict=False)\ndef {test_name}('
+    )
     modified_content = re.sub(pattern, replacement, content)
 
     # Ensure pytest is imported

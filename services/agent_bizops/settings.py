@@ -14,7 +14,9 @@ class BizOpsSettings:
 
         # API Keys
         self.legal_api_key = os.getenv("BIZOPS_LEGAL_API_KEY", "legal-default-key")
-        self.finance_api_key = os.getenv("BIZOPS_FINANCE_API_KEY", "finance-default-key")
+        self.finance_api_key = os.getenv(
+            "BIZOPS_FINANCE_API_KEY", "finance-default-key"
+        )
 
         # Database and Redis URLs
         self.database_url = os.getenv("BIZOPS_DATABASE_URL")
@@ -26,10 +28,14 @@ class BizOpsSettings:
         self.rag_finance_api_key = os.getenv("BIZOPS_RAG_FINANCE_KEY", "financial-key")
 
         # Model Router
-        self.model_router_url = os.getenv("BIZOPS_MODEL_ROUTER_URL", "http://model-router:8080")
+        self.model_router_url = os.getenv(
+            "BIZOPS_MODEL_ROUTER_URL", "http://model-router:8080"
+        )
 
         # OpenAI API Key
-        self.openai_api_key = os.getenv("BIZOPS_OPENAI_API_KEY", "sk-mock-key-for-development-only")
+        self.openai_api_key = os.getenv(
+            "BIZOPS_OPENAI_API_KEY", "sk-mock-key-for-development-only"
+        )
 
     def _check_legacy_env_vars(self) -> None:
         """Check for legacy environment variables and raise error if found."""

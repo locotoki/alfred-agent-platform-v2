@@ -44,7 +44,9 @@ def handle_alfred_command(ack, command, say):
     if subcommand == "help":
         handle_help_command(say)
     else:
-        say(f"Unknown command: {subcommand}. Try `/alfred help` for available commands.")
+        say(
+            f"Unknown command: {subcommand}. Try `/alfred help` for available commands."
+        )
 
 
 def handle_help_command(say):

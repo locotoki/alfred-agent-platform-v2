@@ -41,7 +41,9 @@ def get_webhook_url(service_name: str) -> str:
     Returns:
         The webhook URL to use for the service.
     """
-    service_env_var = f"REMEDIATION_N8N_WEBHOOK_{service_name.upper().replace('-', '_')}"
+    service_env_var = (
+        f"REMEDIATION_N8N_WEBHOOK_{service_name.upper().replace('-', '_')}"
+    )
 
     # Check for service-specific webhook
     if service_env_var in os.environ:

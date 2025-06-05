@@ -49,7 +49,9 @@ def financial_tax_agent(mock_pubsub, mock_supabase, mock_policy):
         from langchain.schema.runnable import Runnable
 
         class MockLLM(Runnable):
-            def invoke(self, input: Any, config: Optional[Any] = None, **kwargs: Any) -> Any:
+            def invoke(
+                self, input: Any, config: Optional[Any] = None, **kwargs: Any
+            ) -> Any:
                 return "test response"
 
             def _call(self, *args, **kwargs):
@@ -300,7 +302,9 @@ class TestFinancialTaxAgent:
 
         # Create a mock for the workflow that raises an exception
         mock_workflow = AsyncMock()
-        mock_workflow.invoke.side_effect = ValueError("Unsupported intent: UNSUPPORTED_INTENT")
+        mock_workflow.invoke.side_effect = ValueError(
+            "Unsupported intent: UNSUPPORTED_INTENT"
+        )
         financial_tax_agent.workflow = mock_workflow
 
         with pytest.raises(ValueError, match="Unsupported intent"):

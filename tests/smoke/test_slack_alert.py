@@ -27,7 +27,11 @@ def test_slack_alert_can_import():
     repo_root = Path(__file__).parent.parent.parent
 
     result = subprocess.run(
-        ["python3", "-c", "import sys; sys.path.append('scripts'); import slack_cve_alert"],
+        [
+            "python3",
+            "-c",
+            "import sys; sys.path.append('scripts'); import slack_cve_alert",
+        ],
         cwd=repo_root,
         capture_output=True,
         text=True,
@@ -43,7 +47,9 @@ def test_slack_alert_no_webhook_graceful_failure():
     # Create test vulnerability data with HIGH/CRITICAL CVEs
     with NamedTemporaryFile(mode="w", suffix=".csv", delete=False) as f:
         writer = csv.writer(f)
-        writer.writerow(["package", "installed_version", "vuln_id", "severity", "fixed_version"])
+        writer.writerow(
+            ["package", "installed_version", "vuln_id", "severity", "fixed_version"]
+        )
         # Young HIGH CVE (should trigger alert)
         writer.writerow(["test-package", "1.0.0", "CVE-2024-12345", "high", "1.0.1"])
         temp_report = f.name
@@ -85,7 +91,9 @@ def test_slack_alert_filters_low_medium_vulnerabilities():
     # Create test vulnerability data with mixed severities
     with NamedTemporaryFile(mode="w", suffix=".csv", delete=False) as f:
         writer = csv.writer(f)
-        writer.writerow(["package", "installed_version", "vuln_id", "severity", "fixed_version"])
+        writer.writerow(
+            ["package", "installed_version", "vuln_id", "severity", "fixed_version"]
+        )
         writer.writerow(["pkg1", "1.0.0", "CVE-2025-11111", "low", "1.0.1"])
         writer.writerow(["pkg2", "1.0.0", "CVE-2025-22222", "medium", "1.0.1"])
         writer.writerow(["pkg3", "1.0.0", "CVE-2025-33333", "high", "1.0.1"])

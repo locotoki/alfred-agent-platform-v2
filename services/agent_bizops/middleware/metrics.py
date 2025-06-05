@@ -97,7 +97,9 @@ class PrometheusMetrics:
         else:
             return f"{method.lower()}_request"
 
-    def record_request_metrics(self, request: Request, response: Response, duration: float):
+    def record_request_metrics(
+        self, request: Request, response: Response, duration: float
+    ):
         """Record metrics for a completed request."""
         method = request.method
         path = request.url.path
@@ -107,7 +109,10 @@ class PrometheusMetrics:
 
         # Record basic request metrics
         self.request_total.labels(
-            method=method, endpoint=path, status_code=status_code, bizops_workflow=workflow
+            method=method,
+            endpoint=path,
+            status_code=status_code,
+            bizops_workflow=workflow,
         ).inc()
 
         # Record duration metrics
@@ -121,15 +126,22 @@ class PrometheusMetrics:
 
         # Record failures for 4xx/5xx status codes
         if response.status_code >= 400:
-            error_type = "client_error" if response.status_code < 500 else "server_error"
+            error_type = (
+                "client_error" if response.status_code < 500 else "server_error"
+            )
             self.request_failures.labels(
-                method=method, endpoint=path, bizops_workflow=workflow, error_type=error_type
+                method=method,
+                endpoint=path,
+                bizops_workflow=workflow,
+                error_type=error_type,
             ).inc()
 
         # Record workflow operation
         operation_status = "success" if response.status_code < 400 else "failure"
         self.workflow_operations.labels(
-            bizops_workflow=workflow, operation_type=operation_type, status=operation_status
+            bizops_workflow=workflow,
+            operation_type=operation_type,
+            status=operation_status,
         ).inc()
 
 
@@ -164,7 +176,9 @@ class MetricsMiddleware(BaseHTTPMiddleware):
         except Exception as e:
             # Create error response
             response = Response(
-                content=f"Internal Server Error: {str(e)}", status_code=500, media_type="text/plain"
+                content=f"Internal Server Error: {str(e)}",
+                status_code=500,
+                media_type="text/plain",
             )
             return response
         finally:

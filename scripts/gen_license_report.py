@@ -91,7 +91,10 @@ def read_dependency_inventory(inventory_path: Path) -> List[Dict[str, str]]:
     packages = []
 
     if not inventory_path.exists():
-        print(f"Warning: Dependency inventory not found at {inventory_path}", file=sys.stderr)
+        print(
+            f"Warning: Dependency inventory not found at {inventory_path}",
+            file=sys.stderr,
+        )
         return packages
 
     try:
@@ -175,7 +178,9 @@ def get_package_licenses(packages: List[Dict[str, str]]) -> List[Dict[str, str]]
     except subprocess.TimeoutExpired:
         raise RuntimeError("pip-licenses timed out after 2 minutes")
     except FileNotFoundError:
-        raise RuntimeError("pip-licenses not found. Install with: pip install pip-licenses")
+        raise RuntimeError(
+            "pip-licenses not found. Install with: pip install pip-licenses"
+        )
     except Exception as e:
         raise RuntimeError(f"Error running pip-licenses: {e}")
 
@@ -244,7 +249,9 @@ def main():
     # Assert unknown/other ratio is acceptable
     if license_data:
         unknown_count = sum(
-            1 for item in license_data if item["license_classification"] in ["unknown", "other"]
+            1
+            for item in license_data
+            if item["license_classification"] in ["unknown", "other"]
         )
         total_count = len(license_data)
         unknown_ratio = unknown_count / total_count
@@ -255,7 +262,9 @@ def main():
                 "Expected ≤10%. Check SPDX mappings in script or filter dependency inventory."
             )
 
-        print(f"Unknown/other ratio: {unknown_ratio:.1%} ({unknown_count}/{total_count}) - OK")
+        print(
+            f"Unknown/other ratio: {unknown_ratio:.1%} ({unknown_count}/{total_count}) - OK"
+        )
 
     print("License report generation completed")
 

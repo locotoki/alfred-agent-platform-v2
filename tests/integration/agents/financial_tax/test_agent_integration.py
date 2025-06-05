@@ -29,7 +29,9 @@ def event_loop():
 @pytest.fixture
 async def pubsub_transport():
     """Create real PubSubTransport instance."""
-    transport = PubSubTransport(project_id=os.getenv("GCP_PROJECT_ID", "alfred-agent-platform"))
+    transport = PubSubTransport(
+        project_id=os.getenv("GCP_PROJECT_ID", "alfred-agent-platform")
+    )
     yield transport
 
 
@@ -108,7 +110,9 @@ class TestFinancialTaxAgentIntegration:
         assert "result" in result
 
     @pytest.mark.asyncio
-    async def test_financial_analysis_flow(self, financial_tax_agent, supabase_transport):
+    async def test_financial_analysis_flow(
+        self, financial_tax_agent, supabase_transport
+    ):
         """Test end-to-end financial analysis flow."""
         envelope = A2AEnvelope(
             intent="FINANCIAL_ANALYSIS",
@@ -185,7 +189,9 @@ class TestFinancialTaxAgentIntegration:
         assert "result" in result
 
     @pytest.mark.asyncio
-    async def test_error_handling_integration(self, financial_tax_agent, supabase_transport):
+    async def test_error_handling_integration(
+        self, financial_tax_agent, supabase_transport
+    ):
         """Test error handling in integration context."""
         # Create envelope with invalid data
         envelope = A2AEnvelope(
@@ -205,7 +211,9 @@ class TestFinancialTaxAgentIntegration:
             await financial_tax_agent.process_task(envelope)
 
     @pytest.mark.asyncio
-    async def test_concurrent_task_processing(self, financial_tax_agent, supabase_transport):
+    async def test_concurrent_task_processing(
+        self, financial_tax_agent, supabase_transport
+    ):
         """Test processing multiple tasks concurrently."""
         # Create multiple envelopes
         envelopes = [

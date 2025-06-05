@@ -89,14 +89,22 @@ class RankerBenchmark:
 
             # Historical data
             historical = {
-                "count_24h": (random.randint(1, 100) if is_noise else random.randint(0, 5)),
-                "count_7d": (random.randint(10, 500) if is_noise else random.randint(0, 20)),
+                "count_24h": (
+                    random.randint(1, 100) if is_noise else random.randint(0, 5)
+                ),
+                "count_7d": (
+                    random.randint(10, 500) if is_noise else random.randint(0, 20)
+                ),
                 "avg_resolution_time": random.uniform(100, 10000),
                 "false_positive_rate": (
                     random.uniform(0.7, 0.95) if is_noise else random.uniform(0, 0.3)
                 ),
-                "snooze_count": (random.randint(0, 50) if is_noise else random.randint(0, 5)),
-                "ack_rate": (random.uniform(0.1, 0.5) if is_noise else random.uniform(0.5, 0.9)),
+                "snooze_count": (
+                    random.randint(0, 50) if is_noise else random.randint(0, 5)
+                ),
+                "ack_rate": (
+                    random.uniform(0.1, 0.5) if is_noise else random.uniform(0.5, 0.9)
+                ),
             }
 
             alerts.append((alert, historical, is_noise))
@@ -190,7 +198,9 @@ class RankerBenchmark:
         alerts = self.generate_test_alerts()
 
         # Benchmark old ranker
-        old_results = self.benchmark_ranker("Legacy Ranker (v1)", self.old_ranker, alerts)
+        old_results = self.benchmark_ranker(
+            "Legacy Ranker (v1)", self.old_ranker, alerts
+        )
 
         # Benchmark new ranker
         new_results = self.benchmark_ranker("ML Ranker (v2)", self.new_ranker, alerts)
@@ -203,7 +213,10 @@ class RankerBenchmark:
                 * 100
             ),
             "false_negative_improvement": (
-                (old_results["false_negative_rate"] - new_results["false_negative_rate"])
+                (
+                    old_results["false_negative_rate"]
+                    - new_results["false_negative_rate"]
+                )
                 / old_results["false_negative_rate"]
                 * 100
             ),
@@ -226,7 +239,9 @@ class RankerBenchmark:
             "timestamp": datetime.utcnow().isoformat(),
         }
 
-    def generate_report(self, results: Dict, output_path: str = "ranker_benchmark_report.pdf"):
+    def generate_report(
+        self, results: Dict, output_path: str = "ranker_benchmark_report.pdf"
+    ):
         """Generate PDF report with visualizations"""
         print(f"Generating report: {output_path}")
 
@@ -321,7 +336,11 @@ Key Findings:
                         cm_data[i][j],
                         ha="center",
                         va="center",
-                        color=("white" if cm_data[i][j] > sum(sum(cm_data, [])) / 4 else "black"),
+                        color=(
+                            "white"
+                            if cm_data[i][j] > sum(sum(cm_data, [])) / 4
+                            else "black"
+                        ),
                     )
 
             # Processing performance
@@ -463,7 +482,9 @@ def main():
     parser = argparse.ArgumentParser(description="Benchmark noise ranker versions")
     parser.add_argument("--new", default="v2", help="New ranker version")
     parser.add_argument("--old", default="v1", help="Old ranker version")
-    parser.add_argument("--alerts", type=int, default=50000, help="Number of test alerts")
+    parser.add_argument(
+        "--alerts", type=int, default=50000, help="Number of test alerts"
+    )
     parser.add_argument(
         "--output", default="ranker_benchmark_report.pdf", help="Output report path"
     )
@@ -496,9 +517,13 @@ def main():
     # Print summary
     print("\nSummary:")
     print(f"- Volume reduction: {results['new_ranker']['suppression_rate']*100:.1f}%")
-    print(f"- False negative rate: {results['new_ranker']['false_negative_rate']*100:.2f}%")
+    print(
+        f"- False negative rate: {results['new_ranker']['false_negative_rate']*100:.2f}%"
+    )
     print(f"- P95 latency: {results['new_ranker']['p95_latency_ms']:.1f}ms")
-    print(f"- Overall improvement: {results['improvements']['volume_reduction_improvement']:.1f}%")
+    print(
+        f"- Overall improvement: {results['improvements']['volume_reduction_improvement']:.1f}%"
+    )
 
 
 if __name__ == "__main__":

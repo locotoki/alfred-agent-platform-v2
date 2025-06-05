@@ -43,7 +43,9 @@ class VectorStore(Protocol):
         ...
 
     @abstractmethod
-    async def delete_documents(self, document_ids: List[str], collection_name: str) -> bool:
+    async def delete_documents(
+        self, document_ids: List[str], collection_name: str
+    ) -> bool:
         """Delete documents from the vector store.
 
         Args:
@@ -112,7 +114,9 @@ class DocumentProcessor(Protocol):
     """Protocol for document processing and chunking"""
 
     @abstractmethod
-    def process_document(self, content: str, metadata: Dict[str, Any]) -> List[Dict[str, Any]]:
+    def process_document(
+        self, content: str, metadata: Dict[str, Any]
+    ) -> List[Dict[str, Any]]:
         """Process a document into chunks.
 
         Args:

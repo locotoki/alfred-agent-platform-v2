@@ -20,7 +20,9 @@ def _run_vuln_gate_test(vulnerability_data, expected_exit_code, expected_output)
 
     with NamedTemporaryFile(mode="w", suffix=".csv", delete=False) as f:
         writer = csv.writer(f)
-        writer.writerow(["package", "installed_version", "vuln_id", "severity", "fixed_version"])
+        writer.writerow(
+            ["package", "installed_version", "vuln_id", "severity", "fixed_version"]
+        )
         for row in vulnerability_data:
             writer.writerow(row)
         temp_report = f.name
@@ -34,7 +36,10 @@ def _run_vuln_gate_test(vulnerability_data, expected_exit_code, expected_output)
         original_report.write_text(Path(temp_report).read_text())
 
         result = subprocess.run(
-            ["python3", "scripts/ci_vuln_gate.py"], cwd=repo_root, capture_output=True, text=True
+            ["python3", "scripts/ci_vuln_gate.py"],
+            cwd=repo_root,
+            capture_output=True,
+            text=True,
         )
 
         assert result.returncode == expected_exit_code
@@ -85,7 +90,9 @@ def _run_vuln_gate_test(vulnerability_data, expected_exit_code, expected_output)
         ),
     ],
 )
-def test_vuln_gate_scenarios(vulnerability_data, expected_exit_code, expected_output, description):
+def test_vuln_gate_scenarios(
+    vulnerability_data, expected_exit_code, expected_output, description
+):
     """Test vulnerability gate behavior with various scenarios."""
     _run_vuln_gate_test(vulnerability_data, expected_exit_code, expected_output)
 
@@ -97,8 +104,12 @@ def test_vuln_gate_max_age_days_flag():
     # Test with old CVE (2020) that has fix
     with NamedTemporaryFile(mode="w", suffix=".csv", delete=False) as f:
         writer = csv.writer(f)
-        writer.writerow(["package", "installed_version", "vuln_id", "severity", "fixed_version"])
-        writer.writerow(["test-package", "1.0.0", "CVE-2020-12345", "critical", "1.0.1"])
+        writer.writerow(
+            ["package", "installed_version", "vuln_id", "severity", "fixed_version"]
+        )
+        writer.writerow(
+            ["test-package", "1.0.0", "CVE-2020-12345", "critical", "1.0.1"]
+        )
         temp_report = f.name
 
     try:
@@ -137,8 +148,12 @@ def test_vuln_gate_max_age_days_flag():
     # Test with recent CVE (2025) that should NOT be waived
     with NamedTemporaryFile(mode="w", suffix=".csv", delete=False) as f:
         writer = csv.writer(f)
-        writer.writerow(["package", "installed_version", "vuln_id", "severity", "fixed_version"])
-        writer.writerow(["test-package", "1.0.0", "CVE-2025-12345", "critical", "1.0.1"])
+        writer.writerow(
+            ["package", "installed_version", "vuln_id", "severity", "fixed_version"]
+        )
+        writer.writerow(
+            ["test-package", "1.0.0", "CVE-2025-12345", "critical", "1.0.1"]
+        )
         temp_report = f.name
 
     try:

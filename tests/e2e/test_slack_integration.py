@@ -14,7 +14,9 @@ class TestSlackIntegration:
 
     @pytest.mark.e2e
     @pytest.mark.slack
-    @pytest.mark.skipif(True, reason="Slack integration not configured in CI core setup")
+    @pytest.mark.skipif(
+        True, reason="Slack integration not configured in CI core setup"
+    )
     def test_slack_alert_delivery(self, http_client):
         """Test alert delivery to Slack."""
         # This test requires SLACK_WEBHOOK_URL to be set

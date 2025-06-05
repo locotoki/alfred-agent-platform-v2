@@ -114,7 +114,7 @@ services:
       - CMD
       - wget
       - -qO-
-      - http://localhost:6333/health
+      - http://localhost:6333/readyz
     restart: unless-stopped
     deploy: null
     networks:

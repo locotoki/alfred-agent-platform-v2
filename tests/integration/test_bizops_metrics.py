@@ -101,11 +101,18 @@ def test_operation_type_detection():
 
     # Test legal operations
     assert metrics.get_operation_type("/legal/compliance", "POST") == "compliance_check"
-    assert metrics.get_operation_type("/legal/contract/review", "POST") == "contract_review"
+    assert (
+        metrics.get_operation_type("/legal/contract/review", "POST")
+        == "contract_review"
+    )
 
     # Test finance operations
-    assert metrics.get_operation_type("/finance/calculation", "POST") == "tax_calculation"
-    assert metrics.get_operation_type("/finance/analysis", "GET") == "financial_analysis"
+    assert (
+        metrics.get_operation_type("/finance/calculation", "POST") == "tax_calculation"
+    )
+    assert (
+        metrics.get_operation_type("/finance/analysis", "GET") == "financial_analysis"
+    )
 
     # Test system operations
     assert metrics.get_operation_type("/health", "GET") == "health_check"

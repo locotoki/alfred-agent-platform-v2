@@ -132,7 +132,9 @@ def update_status_file():
     with open(STATUS_FILE, "w") as f:
         json.dump(status, f, indent=2)
 
-    print(f"Updated status.json: {status['tasks_done']}/{status['tasks_total']} tasks complete")
+    print(
+        f"Updated status.json: {status['tasks_done']}/{status['tasks_total']} tasks complete"
+    )
     return status
 
 

@@ -79,7 +79,8 @@ def add_type_ignore_comments(file_errors):
                             ignore_code = "[return-value]"
 
                         lines[line_num - 1] = (
-                            lines[line_num - 1].rstrip() + f"  # type: ignore{ignore_code}\n"
+                            lines[line_num - 1].rstrip()
+                            + f"  # type: ignore{ignore_code}\n"
                         )
                         modified = True
 

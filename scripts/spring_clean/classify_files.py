@@ -169,8 +169,12 @@ def main() -> None:
         writer.writerows(classifications)
 
     # Generate counts
-    used_count = sum(1 for _, classification in classifications if classification == "USED")
-    orphan_count = sum(1 for _, classification in classifications if classification == "ORPHAN")
+    used_count = sum(
+        1 for _, classification in classifications if classification == "USED"
+    )
+    orphan_count = sum(
+        1 for _, classification in classifications if classification == "ORPHAN"
+    )
     total_count = len(classifications)
 
     print("Classification complete:")

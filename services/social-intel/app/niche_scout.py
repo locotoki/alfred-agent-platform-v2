@@ -122,7 +122,9 @@ class NicheScout:
                     )
 
                     # Record success
-                    SI_REQUESTS_TOTAL.labels(endpoint="/niche-scout", status="success").inc()
+                    SI_REQUESTS_TOTAL.labels(
+                        endpoint="/niche-scout", status="success"
+                    ).inc()
                 else:
                     # If database is empty, fall back to API or simulated data
                     self.logger.warning(
@@ -132,8 +134,12 @@ class NicheScout:
                     # Use YouTube API if available, otherwise fall back to simulated data
                     youtube_api_key = os.environ.get("YOUTUBE_API_KEY")
                     if not youtube_api_key:
-                        self.logger.warning("No YouTube API key found, using simulated data")
-                        results = self._generate_simulated_results(query, category, subcategory)
+                        self.logger.warning(
+                            "No YouTube API key found, using simulated data"
+                        )
+                        results = self._generate_simulated_results(
+                            query, category, subcategory
+                        )
                     else:
                         try:
                             # Use real YouTube API to get trends
@@ -151,7 +157,9 @@ class NicheScout:
                             # Format results to match our expected output structure
                             results = {
                                 "run_date": datetime.now().isoformat(),
-                                "trending_niches": api_results.get("trending_niches", []),
+                                "trending_niches": api_results.get(
+                                    "trending_niches", []
+                                ),
                                 "top_niches": api_results.get("top_niches", []),
                                 "visualization_url": "https://example.com/visualization",
                                 # This would be calculated based on actual API usage
@@ -161,7 +169,9 @@ class NicheScout:
                             }
 
                             # Also add results to database for future use
-                            for i, niche in enumerate(api_results.get("trending_niches", [])):
+                            for i, niche in enumerate(
+                                api_results.get("trending_niches", [])
+                            ):
                                 try:
                                     # Extract normalized scores from the API results
                                     phrase = niche.get("query", "")
@@ -188,7 +198,9 @@ class NicheScout:
                                     )
 
                             # Update metrics with result count
-                            NICHE_SCOUT_RESULTS_COUNT.set(len(results.get("trending_niches", [])))
+                            NICHE_SCOUT_RESULTS_COUNT.set(
+                                len(results.get("trending_niches", []))
+                            )
 
                             self.logger.info(
                                 "Successfully retrieved trends from YouTube API",
@@ -205,7 +217,9 @@ class NicheScout:
                                 "YouTube API error, falling back to simulated data",
                                 error=str(e),
                             )
-                            results = self._generate_simulated_results(query, category, subcategory)
+                            results = self._generate_simulated_results(
+                                query, category, subcategory
+                            )
 
                             # Record API error
                             SI_REQUESTS_TOTAL.labels(
@@ -213,15 +227,21 @@ class NicheScout:
                             ).inc()
             except Exception as e:
                 # If there's any error with the database, fall back to simulated data
-                self.logger.error("Database error, falling back to simulated data", error=str(e))
+                self.logger.error(
+                    "Database error, falling back to simulated data", error=str(e)
+                )
                 results = self._generate_simulated_results(query, category, subcategory)
 
                 # Record database error
-                SI_REQUESTS_TOTAL.labels(endpoint="/niche-scout", status="db_error").inc()
+                SI_REQUESTS_TOTAL.labels(
+                    endpoint="/niche-scout", status="db_error"
+                ).inc()
 
         # If we still don't have results due to some error, generate simulated data
         if results is None:
-            self.logger.error("Failed to get results, using simulated data as last resort")
+            self.logger.error(
+                "Failed to get results, using simulated data as last resort"
+            )
             results = self._generate_simulated_results(query, category, subcategory)
 
             # Record fallback
@@ -660,7 +680,11 @@ class NicheScout:
                     niches[0]["name"],
                 ),
                 "lowest_competition": next(
-                    (n["name"] for n in niches if n.get("competition_level") == "Medium"),
+                    (
+                        n["name"]
+                        for n in niches
+                        if n.get("competition_level") == "Medium"
+                    ),
                     niches[0]["name"],
                 ),
             },

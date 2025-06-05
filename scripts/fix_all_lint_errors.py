@@ -9,7 +9,10 @@ def run_flake8() -> str:
     """Run flake8 and return the output as a string."""
     try:
         result = subprocess.run(
-            ["flake8", "--config=.flake8", "."], capture_output=True, text=True, check=False
+            ["flake8", "--config=.flake8", "."],
+            capture_output=True,
+            text=True,
+            check=False,
         )
         return result.stdout
     except subprocess.CalledProcessError as e:
@@ -77,7 +80,11 @@ def fix_import_violations(violations: List[str]) -> Set[str]:
 
             elif "from " in import_line and import_name in import_line:
                 # From import
-                import_part = import_name.rsplit(".", 1)[-1] if "." in import_name else import_name
+                import_part = (
+                    import_name.rsplit(".", 1)[-1]
+                    if "." in import_name
+                    else import_name
+                )
 
                 if (
                     f" {import_part}" in import_line
@@ -118,7 +125,9 @@ def fix_import_violations(violations: List[str]) -> Set[str]:
                     with open(filepath, "w") as outfile:
                         outfile.writelines(lines)
                     fixed_files.add(filepath)
-                    print(f"Fixed F401: {filepath}:{line_num+1} - Removed '{import_name}'")
+                    print(
+                        f"Fixed F401: {filepath}:{line_num+1} - Removed '{import_name}'"
+                    )
                 except Exception as e:
                     print(f"Error writing {filepath}: {e}")
 
@@ -184,7 +193,8 @@ def fix_unused_var_violations(violations: List[str]) -> Set[str]:
     for line in violations:
         # Parse the violation line
         match = re.match(
-            r"(.+):(\d+):(\d+): F841 local variable '(.+)' is assigned to but never used", line
+            r"(.+):(\d+):(\d+): F841 local variable '(.+)' is assigned to but never used",
+            line,
         )  # noqa: E501
         if not match:
             continue
@@ -237,7 +247,9 @@ def fix_line_too_long_violations(violations: List[str]) -> Set[str]:
 
     for line in violations:
         # Parse the violation line
-        match = re.match(r"(.+):(\d+):(\d+): E501 line too long \((\d+) > (\d+) characters\)", line)
+        match = re.match(
+            r"(.+):(\d+):(\d+): E501 line too long \((\d+) > (\d+) characters\)", line
+        )
         if not match:
             continue
 
@@ -284,7 +296,9 @@ def fix_indentation_violations(violations: List[str]) -> Set[str]:
 
     for line in violations:
         # Parse the violation line
-        match = re.match(r"(.+):(\d+):(\d+): E114 indentation is not a multiple of 4", line)
+        match = re.match(
+            r"(.+):(\d+):(\d+): E114 indentation is not a multiple of 4", line
+        )
         if not match:
             continue
 
@@ -316,7 +330,9 @@ def fix_indentation_violations(violations: List[str]) -> Set[str]:
                 with open(filepath, "w") as outfile:
                     outfile.writelines(lines)
                 fixed_files.add(filepath)
-                print(f"Fixed E114: {filepath}:{line_num+1} - Added noqa for indentation error")
+                print(
+                    f"Fixed E114: {filepath}:{line_num+1} - Added noqa for indentation error"
+                )
             except Exception as e:
                 print(f"Error writing {filepath}: {e}")
 
@@ -329,7 +345,9 @@ def fix_blank_lines_violations(violations: List[str]) -> Set[str]:
 
     for line in violations:
         # Parse the violation line
-        match = re.match(r"(.+):(\d+):(\d+): E302 expected 2 blank lines, found (\d+)", line)
+        match = re.match(
+            r"(.+):(\d+):(\d+): E302 expected 2 blank lines, found (\d+)", line
+        )
         if not match:
             continue
 
@@ -361,7 +379,9 @@ def fix_blank_lines_violations(violations: List[str]) -> Set[str]:
                 with open(filepath, "w") as outfile:
                     outfile.writelines(lines)
                 fixed_files.add(filepath)
-                print(f"Fixed E302: {filepath}:{line_num+1} - Added noqa for blank lines error")
+                print(
+                    f"Fixed E302: {filepath}:{line_num+1} - Added noqa for blank lines error"
+                )
             except Exception as e:
                 print(f"Error writing {filepath}: {e}")
 
@@ -393,7 +413,9 @@ def main():
 
     # F841: Unused variable
     if "F841" in violations:
-        print(f"\nFixing {len(violations['F841'])} F841 violations (unused variable)...")
+        print(
+            f"\nFixing {len(violations['F841'])} F841 violations (unused variable)..."
+        )
         f841_fixed = fix_unused_var_violations(violations["F841"])
         fixed_files.update(f841_fixed)
 

@@ -50,7 +50,9 @@ def generate_niche_scout_html(
     return filepath
 
 
-def generate_blueprint_html(data: Dict[str, Any], output_dir: str = "/app/data/builder") -> str:
+def generate_blueprint_html(
+    data: Dict[str, Any], output_dir: str = "/app/data/builder"
+) -> str:
     """Generate HTML report for Seed-to-Blueprint results.
 
     Args:

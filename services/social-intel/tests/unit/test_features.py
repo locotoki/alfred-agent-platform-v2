@@ -135,4 +135,6 @@ async def test_update_feature_scores(test_db):
     assert abs(float(row["opportunity"]) - expected_opportunity) < 0.0001
 
     # Verify updated_at was changed
-    assert row["updated_at"] > datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
+    assert row["updated_at"] > datetime.now().replace(
+        hour=0, minute=0, second=0, microsecond=0
+    )

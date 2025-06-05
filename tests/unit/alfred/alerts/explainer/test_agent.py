@@ -38,7 +38,9 @@ def mock_llm():
     """Create a mock LLM that implements the Runnable interface."""
 
     class MockLLM(Runnable):
-        def invoke(self, input: Any, config: Optional[Dict[str, Any]] = None, **kwargs: Any) -> Any:
+        def invoke(
+            self, input: Any, config: Optional[Dict[str, Any]] = None, **kwargs: Any
+        ) -> Any:
             return "Mocked LLM response"
 
         async def ainvoke(
@@ -47,12 +49,18 @@ def mock_llm():
             return "Mocked LLM response"
 
         def batch(
-            self, inputs: List[Any], config: Optional[Dict[str, Any]] = None, **kwargs: Any
+            self,
+            inputs: List[Any],
+            config: Optional[Dict[str, Any]] = None,
+            **kwargs: Any,
         ) -> List[Any]:
             return ["Mocked LLM response"] * len(inputs)
 
         async def abatch(
-            self, inputs: List[Any], config: Optional[Dict[str, Any]] = None, **kwargs: Any
+            self,
+            inputs: List[Any],
+            config: Optional[Dict[str, Any]] = None,
+            **kwargs: Any,
         ) -> List[Any]:
             return ["Mocked LLM response"] * len(inputs)
 

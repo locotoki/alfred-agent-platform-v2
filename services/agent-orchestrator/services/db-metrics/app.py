@@ -14,7 +14,9 @@ from prometheus_client import REGISTRY, Counter, Gauge, generate_latest
 app = Flask(__name__)
 
 # Create metrics
-service_availability = Gauge("service_availability", "Availability of the service", ["service"])
+service_availability = Gauge(
+    "service_availability", "Availability of the service", ["service"]
+)
 service_requests_total = Counter(
     "service_requests_total", "Number of service requests", ["service"]
 )
@@ -42,7 +44,9 @@ def check_service_http():
         # Special handling for database services that might have different health endpoints
         if SERVICE_NAME == "db-admin" or SERVICE_NAME == "db-storage":
             # First try TCP connection to verify service is running
-            url_parts = SERVICE_URL.replace("http://", "").replace("https://", "").split(":")
+            url_parts = (
+                SERVICE_URL.replace("http://", "").replace("https://", "").split(":")
+            )
             host = url_parts[0]
             port = int(url_parts[1]) if len(url_parts) > 1 else 80
 
@@ -198,7 +202,9 @@ def run_smoke_test():
 if __name__ == "__main__":
     # Parse command line arguments
     parser = argparse.ArgumentParser(description="DB Metrics Exporter")
-    parser.add_argument("--check", action="store_true", help="Run a smoke test and exit")
+    parser.add_argument(
+        "--check", action="store_true", help="Run a smoke test and exit"
+    )
     args = parser.parse_args()
 
     # Run smoke test if requested

@@ -37,7 +37,9 @@ class TestDiagnosticsBot:
         slack_client.chat_postMessage.assert_not_called()
 
     @pytest.mark.asyncio
-    async def test_unknown_command(self, bot: DiagnosticsBot, slack_client: AsyncMock) -> None:
+    async def test_unknown_command(
+        self, bot: DiagnosticsBot, slack_client: AsyncMock
+    ) -> None:
         """Test handling unknown command"""
         await bot.handle_command("/diag", "C123", "U456", "unknown")
         slack_client.chat_postMessage.assert_called_once()
@@ -45,7 +47,9 @@ class TestDiagnosticsBot:
         assert "Commands" in str(call_args)
 
     @pytest.mark.asyncio
-    async def test_command_error(self, bot: DiagnosticsBot, slack_client: AsyncMock) -> None:
+    async def test_command_error(
+        self, bot: DiagnosticsBot, slack_client: AsyncMock
+    ) -> None:
         """Test command error handling"""
         # Mock the command dictionary entry to raise an exception
         bot.commands["/diag health"] = AsyncMock(side_effect=Exception("Test error"))

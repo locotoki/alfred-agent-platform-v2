@@ -19,7 +19,9 @@ from libs.agent_core.health import create_health_app
 logger = structlog.get_logger(__name__)
 
 # Initialize services
-pubsub_transport = PubSubTransport(project_id=os.getenv("GCP_PROJECT_ID", "alfred-agent-platform"))
+pubsub_transport = PubSubTransport(
+    project_id=os.getenv("GCP_PROJECT_ID", "alfred-agent-platform")
+)
 
 supabase_transport = SupabaseTransport(database_url=os.getenv("DATABASE_URL"))
 
@@ -78,7 +80,9 @@ async def handle_alfred_command(ack, body, client):
 
 async def handle_ping(client, channel_id, user_id):
     """Handle ping command"""
-    envelope = A2AEnvelope(intent="PING", content={"message": "ping", "user_id": user_id})
+    envelope = A2AEnvelope(
+        intent="PING", content={"message": "ping", "user_id": user_id}
+    )
 
     try:
         await pubsub_transport.publish_task(envelope)

@@ -29,7 +29,9 @@ class DashboardValidator:
             self.errors.append(f"{filepath}: Invalid JSON - {e}")
             return False
 
-    def validate_dashboard_structure(self, filepath: Path, data: Dict[str, Any]) -> bool:
+    def validate_dashboard_structure(
+        self, filepath: Path, data: Dict[str, Any]
+    ) -> bool:
         """Validate dashboard has required fields."""
         required_fields = ["dashboard"]
         dashboard_fields = ["uid", "title", "panels", "templating", "time", "refresh"]
@@ -60,14 +62,18 @@ class DashboardValidator:
             required = ["type", "title", "gridPos", "datasource", "targets"]
             for field in required:
                 if field not in panel:
-                    self.errors.append(f"{filepath}: Panel {panel_id} missing '{field}'")
+                    self.errors.append(
+                        f"{filepath}: Panel {panel_id} missing '{field}'"
+                    )
                     valid = False
 
             # Validate gridPos
             if "gridPos" in panel:
                 grid = panel["gridPos"]
                 if not all(k in grid for k in ["x", "y", "w", "h"]):
-                    self.errors.append(f"{filepath}: Panel {panel_id} has invalid gridPos")
+                    self.errors.append(
+                        f"{filepath}: Panel {panel_id} has invalid gridPos"
+                    )
                     valid = False
 
             # Validate targets
@@ -102,7 +108,9 @@ class DashboardValidator:
     def validate_refresh_rate(self, filepath: Path, refresh: str) -> bool:
         """Validate auto-refresh is set to 30s."""
         if refresh != "30s":
-            self.warnings.append(f"{filepath}: Refresh rate is '{refresh}', expected '30s'")
+            self.warnings.append(
+                f"{filepath}: Refresh rate is '{refresh}', expected '30s'"
+            )
             return False
         return True
 
@@ -137,10 +145,14 @@ class DashboardValidator:
                 checks.append(self.validate_panels(filepath, dashboard["panels"]))
 
             if "templating" in dashboard:
-                checks.append(self.validate_templating(filepath, dashboard["templating"]))
+                checks.append(
+                    self.validate_templating(filepath, dashboard["templating"])
+                )
 
             if "refresh" in dashboard:
-                checks.append(self.validate_refresh_rate(filepath, dashboard["refresh"]))
+                checks.append(
+                    self.validate_refresh_rate(filepath, dashboard["refresh"])
+                )
 
             if "time" in dashboard:
                 checks.append(self.validate_time_range(filepath, dashboard["time"]))

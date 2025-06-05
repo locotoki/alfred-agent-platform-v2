@@ -20,7 +20,9 @@ def read_vulnerability_report(report_path: Path) -> List[Dict[str, str]]:
     """Read vulnerability report CSV and return list of vulnerabilities."""
     vulnerabilities: List[Dict[str, str]] = []
     if not report_path.exists():
-        print(f"Warning: Vulnerability report not found at {report_path}", file=sys.stderr)
+        print(
+            f"Warning: Vulnerability report not found at {report_path}", file=sys.stderr
+        )
         return vulnerabilities
 
     try:
@@ -119,7 +121,9 @@ def print_vulnerability_summary(analysis: Dict[str, Any], max_age_days: int):
 
     # Show waived vulnerabilities
     if analysis["waived_vulns"]:
-        print(f"\n🕒 WAIVED vulnerabilities (age > {max_age_days} days, fix available):")
+        print(
+            f"\n🕒 WAIVED vulnerabilities (age > {max_age_days} days, fix available):"
+        )
         for vuln in analysis["waived_vulns"]:
             package = vuln.get("package", "unknown")
             vuln_id = vuln.get("vuln_id", "unknown")
@@ -130,7 +134,9 @@ def print_vulnerability_summary(analysis: Dict[str, Any], max_age_days: int):
 
 def main() -> None:
     """Run the CI vulnerability gate check."""
-    parser = argparse.ArgumentParser(description="CI vulnerability gate with age-based waivers")
+    parser = argparse.ArgumentParser(
+        description="CI vulnerability gate with age-based waivers"
+    )
     parser.add_argument(
         "--max_age_days",
         type=int,

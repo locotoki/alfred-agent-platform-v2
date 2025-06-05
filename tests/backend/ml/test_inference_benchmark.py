@@ -43,7 +43,9 @@ def test_batch_inference_throughput(benchmark, model):
 def test_large_batch_performance(benchmark, model):
     """Test performance with large batches."""
     batch_size = 1000
-    test_alerts = [f"Alert {i}: Random error {np.random.rand()}" for i in range(batch_size)]
+    test_alerts = [
+        f"Alert {i}: Random error {np.random.rand()}" for i in range(batch_size)
+    ]
 
     def process_large_batch():
         # Process in smaller chunks to avoid memory issues

@@ -54,7 +54,9 @@ def create_health_app(service_name: str, version: str) -> FastAPI:
     @health_app.get("/metrics")
     async def metrics() -> Response:
         """Prometheus metrics endpoint"""
-        return Response(content=prometheus_client.generate_latest(), media_type="text/plain")
+        return Response(
+            content=prometheus_client.generate_latest(), media_type="text/plain"
+        )
 
     # Legacy endpoints (maintain backward compatibility)
     @health_app.get("/")
@@ -76,5 +78,7 @@ def create_health_app(service_name: str, version: str) -> FastAPI:
     health_app.register_dependency = dependency_tracker.register_dependency
     health_app.update_dependency_status = dependency_tracker.update_dependency_status
 
-    logger.info("Created standardized health app", service=service_name, version=version)
+    logger.info(
+        "Created standardized health app", service=service_name, version=version
+    )
     return health_app

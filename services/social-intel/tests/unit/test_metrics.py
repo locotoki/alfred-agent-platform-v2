@@ -13,7 +13,8 @@ def test_si_latency_seconds_buckets():
         [
             float(bucket.labels()["le"])
             for bucket in REGISTRY.get_sample_values()
-            if bucket.name == f"{metric_name}_bucket" and bucket.labels()["le"] != "+Inf"
+            if bucket.name == f"{metric_name}_bucket"
+            and bucket.labels()["le"] != "+Inf"
         ]
     )
 
@@ -22,7 +23,9 @@ def test_si_latency_seconds_buckets():
 
     # Test the bucket values
     expected_buckets = [0.05, 0.1, 0.2, 0.4, 0.8, 2]
-    assert buckets == expected_buckets, f"Expected buckets {expected_buckets}, got {buckets}"
+    assert (
+        buckets == expected_buckets
+    ), f"Expected buckets {expected_buckets}, got {buckets}"
 
 
 def test_latency_timer():
@@ -40,7 +43,8 @@ def test_latency_timer():
     samples = [
         s
         for s in REGISTRY.get_sample_values()
-        if s.name == f"{SI_LATENCY_SECONDS._name}_count" and s.labels().get("endpoint") == "/test"
+        if s.name == f"{SI_LATENCY_SECONDS._name}_count"
+        and s.labels().get("endpoint") == "/test"
     ]
 
     assert len(samples) > 0, "LatencyTimer did not record any samples"

@@ -11,7 +11,9 @@ app = FastAPI(title="Slack Adapter Service")
 logger = structlog.get_logger(__name__)
 
 # Metrics
-request_counter = Counter("slack_adapter_requests_total", "Total number of requests", ["endpoint"])
+request_counter = Counter(
+    "slack_adapter_requests_total", "Total number of requests", ["endpoint"]
+)
 
 
 @app.get("/health")

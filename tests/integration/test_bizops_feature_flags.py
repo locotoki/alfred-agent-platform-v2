@@ -18,7 +18,9 @@ import pytest
     ],
 )
 @pytest.mark.integration
-def test_workflow_registration_with_feature_flags(workflows_enabled, expected_workflows):
+def test_workflow_registration_with_feature_flags(
+    workflows_enabled, expected_workflows
+):
     """Test that only enabled workflows are registered based on WORKFLOWS_ENABLED."""
     with patch.dict(os.environ, {"WORKFLOWS_ENABLED": workflows_enabled}, clear=False):
         # Import settings after patching environment
@@ -32,7 +34,9 @@ def test_workflow_registration_with_feature_flags(workflows_enabled, expected_wo
 
         # Test individual workflow checks
         assert settings.is_workflow_enabled("legal") == ("legal" in expected_workflows)
-        assert settings.is_workflow_enabled("finance") == ("finance" in expected_workflows)
+        assert settings.is_workflow_enabled("finance") == (
+            "finance" in expected_workflows
+        )
         assert settings.is_workflow_enabled("unknown") is False
 
 
@@ -47,9 +51,13 @@ def test_service_health_reflects_enabled_workflows():
     ]
 
     for workflows_enabled, expected_workflows in test_cases:
-        with patch.dict(os.environ, {"WORKFLOWS_ENABLED": workflows_enabled}, clear=False):
+        with patch.dict(
+            os.environ, {"WORKFLOWS_ENABLED": workflows_enabled}, clear=False
+        ):
             # Mock the health endpoint response
-            with patch("services.agent_bizops.app.main.WORKFLOWS_ENABLED", expected_workflows):
+            with patch(
+                "services.agent_bizops.app.main.WORKFLOWS_ENABLED", expected_workflows
+            ):
                 # Simulate health check call
                 mock_response = {
                     "status": "healthy",
@@ -76,7 +84,9 @@ def test_legacy_environment_variable_mapping():
 
     # Test legacy LEGAL_COMPLIANCE_API_KEY
 
-    with patch.dict(os.environ, {"LEGAL_COMPLIANCE_API_KEY": "legacy-legal-key"}, clear=True):
+    with patch.dict(
+        os.environ, {"LEGAL_COMPLIANCE_API_KEY": "legacy-legal-key"}, clear=True
+    ):
         with warnings.catch_warnings(record=True) as w:
             warnings.simplefilter("always")
 
@@ -93,7 +103,9 @@ def test_legacy_environment_variable_mapping():
             assert any("LEGAL_COMPLIANCE_API_KEY" in msg for msg in warning_messages)
 
     # Test legacy FINANCIAL_TAX_API_KEY
-    with patch.dict(os.environ, {"FINANCIAL_TAX_API_KEY": "legacy-finance-key"}, clear=True):
+    with patch.dict(
+        os.environ, {"FINANCIAL_TAX_API_KEY": "legacy-finance-key"}, clear=True
+    ):
         with warnings.catch_warnings(record=True) as w:
             warnings.simplefilter("always")
 

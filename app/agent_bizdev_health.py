@@ -11,7 +11,11 @@ class HealthHandler(BaseHTTPRequestHandler):
             self.send_response(200)
             self.send_header("Content-type", "application/json")
             self.end_headers()
-            response = {"status": "healthy", "service": "agent-bizdev", "version": "dev"}
+            response = {
+                "status": "healthy",
+                "service": "agent-bizdev",
+                "version": "dev",
+            }
             self.wfile.write(json.dumps(response).encode())
         elif self.path == "/":
             self.send_response(200)

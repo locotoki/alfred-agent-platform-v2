@@ -33,7 +33,9 @@ def test_deps_inventory_cron_workflow_content():
     assert "schedule:" in content, "Workflow should have schedule trigger"
     assert "cron:" in content, "Workflow should have cron schedule"
     assert "workflow_dispatch:" in content, "Workflow should have manual dispatch"
-    assert "make deps-inventory" in content, "Workflow should run deps-inventory command"
+    assert (
+        "make deps-inventory" in content
+    ), "Workflow should run deps-inventory command"
     assert "github-actions[bot]" in content, "Workflow should use bot user for commits"
 
 

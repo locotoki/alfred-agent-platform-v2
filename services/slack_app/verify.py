@@ -19,7 +19,9 @@ print(f"SOCKET_MODE: {os.getenv('SOCKET_MODE', 'true')}")
 print(f"LOG_LEVEL: {os.getenv('LOG_LEVEL', 'info')}")
 print(f"COMMAND_PREFIX: {os.getenv('COMMAND_PREFIX', '/alfred')}")
 print(f"DEFAULT_CHANNEL: {os.getenv('DEFAULT_CHANNEL', 'general')}")
-print(f"ALLOWED_COMMANDS: {os.getenv('ALLOWED_COMMANDS', 'help,status,search,ask,agents,health')}")
+print(
+    f"ALLOWED_COMMANDS: {os.getenv('ALLOWED_COMMANDS', 'help,status,search,ask,agents,health')}"
+)
 
 # Check required tokens (masked for security)
 bot_token = os.getenv("SLACK_BOT_TOKEN", "")

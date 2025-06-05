@@ -9,7 +9,10 @@ def run_flake8() -> str:
     """Run flake8 and return the output as a string."""
     try:
         result = subprocess.run(
-            ["flake8", "--config=.flake8", "."], capture_output=True, text=True, check=False
+            ["flake8", "--config=.flake8", "."],
+            capture_output=True,
+            text=True,
+            check=False,
         )
         return result.stdout
     except subprocess.CalledProcessError as e:

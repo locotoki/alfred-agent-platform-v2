@@ -54,12 +54,18 @@ async def root():
 async def api_status():
     """Return API status."""
     with request_duration.labels(method="GET", endpoint="/api/v1/status").time():
-        request_count.labels(method="GET", endpoint="/api/v1/status", status="200").inc()
+        request_count.labels(
+            method="GET", endpoint="/api/v1/status", status="200"
+        ).inc()
         logger.info("Status check requested")
         return {
             "api_version": "v1",
             "status": "active",
-            "capabilities": ["agent-orchestration", "task-routing", "metric-collection"],
+            "capabilities": [
+                "agent-orchestration",
+                "task-routing",
+                "metric-collection",
+            ],
         }
 
 
@@ -68,7 +74,11 @@ async def create_task(task: dict):
     """Create a new task (placeholder)."""
     request_count.labels(method="POST", endpoint="/api/v1/tasks", status="201").inc()
     logger.info("Task created", task_id=task.get("id", "unknown"))
-    return {"task_id": "task-123", "status": "queued", "message": "Task queued for processing"}
+    return {
+        "task_id": "task-123",
+        "status": "queued",
+        "message": "Task queued for processing",
+    }
 
 
 if __name__ == "__main__":

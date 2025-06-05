@@ -85,7 +85,9 @@ class BaseAgent(ABC):
         try:
             # Check if intent is supported
             if envelope.intent not in self.supported_intents:
-                logger.warning("unsupported_intent", intent=envelope.intent, agent=self.name)
+                logger.warning(
+                    "unsupported_intent", intent=envelope.intent, agent=self.name
+                )
                 return
 
             # Check for duplicate
@@ -156,11 +158,15 @@ class BaseAgent(ABC):
                     timestamp=datetime.utcnow().isoformat(),
                 )
 
-                await asynciosleep(30)  # Heartbeat every 30 seconds  # type: ignore[name-defined]
+                await asynciosleep(
+                    30
+                )  # Heartbeat every 30 seconds  # type: ignore[name-defined]
 
             except Exception as e:
                 logger.error("heartbeat_failed", error=str(e), agent=self.name)
-                await asynciosleep(5)  # Retry after 5 seconds  # type: ignore[name-defined]
+                await asynciosleep(
+                    5
+                )  # Retry after 5 seconds  # type: ignore[name-defined]
 
     async def _update_agent_status(self, status: str):
         """Update agent status in registry"""

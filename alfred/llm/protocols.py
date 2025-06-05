@@ -12,7 +12,9 @@ class LLMProvider(Protocol):
     """Protocol for LLM provider interfaces"""
 
     @abstractmethod
-    async def generate(self, prompt: str, config: Optional[Dict[str, Any]] = None) -> str:
+    async def generate(
+        self, prompt: str, config: Optional[Dict[str, Any]] = None
+    ) -> str:
         """Generate text from a prompt.
 
         Args:
@@ -154,7 +156,9 @@ class TokenCounter(Protocol):
         ...
 
     @abstractmethod
-    def estimate_cost(self, token_count: int, model: str, operation: str = "completion") -> float:
+    def estimate_cost(
+        self, token_count: int, model: str, operation: str = "completion"
+    ) -> float:
         """Estimate cost for token usage.
 
         Args:

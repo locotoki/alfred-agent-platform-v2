@@ -32,13 +32,19 @@ class TestModelRegistry:
         mock_result = Mock()
         mock_result.version = "1"
 
-        with patch("backend.alfred.ml.model_registry.mlflow.register_model") as mock_register:
+        with patch(
+            "backend.alfred.ml.model_registry.mlflow.register_model"
+        ) as mock_register:
             mock_register.return_value = mock_result
 
-            version = registry.register_model(run_id="test-run-123", artifact_path="model")
+            version = registry.register_model(
+                run_id="test-run-123", artifact_path="model"
+            )
 
             assert version == "1"
-            mock_register.assert_called_once_with("runs:/test-run-123/model", "test-model")
+            mock_register.assert_called_once_with(
+                "runs:/test-run-123/model", "test-model"
+            )
 
     def test_promote_model_to_production(self, registry):
         """Test promoting model to production."""
@@ -66,7 +72,9 @@ class TestModelRegistry:
 
     def test_promote_model_error(self, registry):
         """Test promotion error handling."""
-        registry.client.transition_model_version_stage.side_effect = Exception("Test error")
+        registry.client.transition_model_version_stage.side_effect = Exception(
+            "Test error"
+        )
 
         success = registry.promote_model(version="4", stage="Production")
 
@@ -130,7 +138,9 @@ class TestModelRegistry:
         assert comparison["version1"]["version"] == "1"
         assert comparison["version2"]["version"] == "2"
         assert comparison["metric_diff"]["accuracy"]["diff"] == 0.02
-        assert comparison["metric_diff"]["f1"]["pct_change"] == pytest.approx(2.22, rel=1e-2)
+        assert comparison["metric_diff"]["f1"]["pct_change"] == pytest.approx(
+            2.22, rel=1e-2
+        )
 
     def test_rollback_production(self, registry):
         """Test production rollback."""
@@ -188,7 +198,9 @@ class TestModelRegistry:
         def mock_get_run(run_id):
             run = Mock()
             run.data.metrics = {"accuracy": 0.95 + int(run_id.split("-")[1]) * 0.01}
-            run.data.params = {"n_estimators": str(100 + int(run_id.split("-")[1]) * 50)}
+            run.data.params = {
+                "n_estimators": str(100 + int(run_id.split("-")[1]) * 50)
+            }
             return run
 
         registry.client.get_run.side_effect = mock_get_run

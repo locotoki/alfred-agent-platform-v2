@@ -83,7 +83,9 @@ def validate_inventory(inventory_file: str) -> bool:
 
     # Report issues
     if empty_paths:
-        print(f"Error: Found {len(empty_paths)} empty file paths on lines: {empty_paths}")
+        print(
+            f"Error: Found {len(empty_paths)} empty file paths on lines: {empty_paths}"
+        )
 
     if invalid_classifications:
         print("Error: Found invalid classifications:")
@@ -112,7 +114,9 @@ def validate_inventory(inventory_file: str) -> bool:
     print("\nInventory summary:")
     print(f"  Total entries: {total_files}")
     print(f"  USED:         {used_count} ({used_count/total_files*100:.1f}% if valid)")
-    print(f"  ORPHAN:       {orphan_count} ({orphan_count/total_files*100:.1f}% if valid)")
+    print(
+        f"  ORPHAN:       {orphan_count} ({orphan_count/total_files*100:.1f}% if valid)"
+    )
     if other_count > 0:
         print(f"  Invalid:      {other_count}")
 
@@ -123,7 +127,9 @@ def main() -> int:
     """Run the validator on the inventory.csv file."""
     # Get the script directory
     script_dir = Path(__file__).parent
-    inventory_file = script_dir.parent.parent / "arch" / "spring_clean" / "inventory.csv"
+    inventory_file = (
+        script_dir.parent.parent / "arch" / "spring_clean" / "inventory.csv"
+    )
 
     print(f"Validating inventory file: {inventory_file}")
     if validate_inventory(str(inventory_file)):

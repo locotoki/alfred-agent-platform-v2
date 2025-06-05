@@ -32,6 +32,11 @@ def get_default_config() -> Dict[str, Any]:
         "alertable_severities": ["critical", "high"],
         "message_format": {
             "max_displayed_vulns": 10,
-            "severity_emojis": {"critical": "🔴", "high": "🟠", "medium": "🟡", "low": "🔵"},
+            "severity_emojis": {
+                "critical": "🔴",
+                "high": "🟠",
+                "medium": "🟡",
+                "low": "🔵",
+            },
         },
     }

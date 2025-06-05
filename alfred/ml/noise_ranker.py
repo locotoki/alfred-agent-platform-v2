@@ -83,7 +83,9 @@ class NoiseRankingModel:
 
         return np.array(features).reshape(1, -1)
 
-    def predict_noise_score(self, alert: AlertProtocol, historical_data: Dict[str, Any]) -> float:
+    def predict_noise_score(
+        self, alert: AlertProtocol, historical_data: Dict[str, Any]
+    ) -> float:
         """Predict noise score for an alert (0-1, higher = more noise).
 
         Args:
@@ -146,7 +148,9 @@ class NoiseRankingModel:
         X_scaled = self.scaler.fit_transform(X_array)
 
         # Train model
-        self.model = RandomForestClassifier(n_estimators=100, max_depth=10, random_state=42)
+        self.model = RandomForestClassifier(
+            n_estimators=100, max_depth=10, random_state=42
+        )
         self.model.fit(X_scaled, y)
 
     def save_model(self, path: str) -> None:

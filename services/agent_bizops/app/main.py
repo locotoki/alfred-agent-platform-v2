@@ -43,7 +43,11 @@ WORKFLOWS_ENABLED = ["finance", "legal"]
 async def health():
     """Health check endpoint."""
     return JSONResponse(
-        {"status": "healthy", "service": "agent-bizops", "workflows_enabled": WORKFLOWS_ENABLED}
+        {
+            "status": "healthy",
+            "service": "agent-bizops",
+            "workflows_enabled": WORKFLOWS_ENABLED,
+        }
     )
 
 

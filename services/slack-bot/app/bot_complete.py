@@ -134,7 +134,9 @@ async def handle_alfred_command(ack, command, say):
 @slack_app.event("app_mention")
 async def handle_mention(event, say):
     """Handle @alfred mentions"""
-    await say(f"Hello <@{event['user']}>! Use `/alfred help` to see available commands.")
+    await say(
+        f"Hello <@{event['user']}>! Use `/alfred help` to see available commands."
+    )
 
 
 # Error handler

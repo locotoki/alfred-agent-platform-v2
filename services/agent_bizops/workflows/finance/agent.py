@@ -64,9 +64,15 @@ class FinancialTaxAgent(BaseAgent):
         # Add nodes for different processing steps
         self.workflow_graph.add_node("parse_request", self._parse_request)
         self.workflow_graph.add_node("validate_data", self._validate_data)
-        self.workflow_graph.add_node("process_tax_calculation", self._process_tax_calculation)
-        self.workflow_graph.add_node("process_financial_analysis", self._process_financial_analysis)
-        self.workflow_graph.add_node("process_compliance_check", self._process_compliance_check)
+        self.workflow_graph.add_node(
+            "process_tax_calculation", self._process_tax_calculation
+        )
+        self.workflow_graph.add_node(
+            "process_financial_analysis", self._process_financial_analysis
+        )
+        self.workflow_graph.add_node(
+            "process_compliance_check", self._process_compliance_check
+        )
         self.workflow_graph.add_node("process_rate_lookup", self._process_rate_lookup)
         self.workflow_graph.add_node("format_response", self._format_response)
 
@@ -175,11 +181,16 @@ class FinancialTaxAgent(BaseAgent):
                 "credits_applied": 2000,
                 "net_tax_due": 18000,
                 "breakdown": {"federal": 15000, "state": 5000},
-                "calculation_details": ["Standard deduction applied", "Tax credit applied"],
+                "calculation_details": [
+                    "Standard deduction applied",
+                    "Tax credit applied",
+                ],
             }
         return state
 
-    async def _process_financial_analysis(self, state: Dict[str, Any]) -> Dict[str, Any]:
+    async def _process_financial_analysis(
+        self, state: Dict[str, Any]
+    ) -> Dict[str, Any]:
         """Process financial analysis request"""
         request = FinancialAnalysisRequest(**state["parsed_content"])
         # Use the mocked function that was passed during patch.object
@@ -190,7 +201,10 @@ class FinancialTaxAgent(BaseAgent):
         else:
             # Mock the result structure for test
             state["result"] = {
-                "summary": {"overall_health": "strong", "profitability": "above average"},
+                "summary": {
+                    "overall_health": "strong",
+                    "profitability": "above average",
+                },
                 "key_metrics": {"gross_margin": 0.25, "debt_to_equity": 0.4},
                 "trends": {"revenue_growth": [0.05, 0.07, 0.06, 0.08]},
                 "insights": ["Strong revenue growth", "Healthy profit margins"],
@@ -309,7 +323,9 @@ class FinancialTaxAgent(BaseAgent):
             "overall_status": result.compliance_status,
             "risk_level": result.risk_level,
             "critical_issues": [
-                issue for issue in result.issues_found if issue.get("severity") == "critical"
+                issue
+                for issue in result.issues_found
+                if issue.get("severity") == "critical"
             ],
         }
 

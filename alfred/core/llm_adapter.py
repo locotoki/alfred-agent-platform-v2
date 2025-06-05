@@ -18,7 +18,9 @@ llm_tokens_total = Counter(
     ["model", "operation"],
 )
 
-llm_requests_total = Counter("alfred_llm_requests_total", "Total LLM requests", ["model", "status"])
+llm_requests_total = Counter(
+    "alfred_llm_requests_total", "Total LLM requests", ["model", "status"]
+)
 
 logger = structlog.get_logger(__name__)
 
@@ -115,7 +117,9 @@ class OpenAIAdapter(LLMAdapter):
 
                 self._client = AsyncOpenAI(api_key=self.api_key)
             except ImportError:
-                raise ImportError("openai package not installed. Run: pip install openai")
+                raise ImportError(
+                    "openai package not installed. Run: pip install openai"
+                )
         return self._client
 
     async def generate(
@@ -155,9 +159,9 @@ class OpenAIAdapter(LLMAdapter):
 
                 # Track token usage
                 if hasattr(response, "usage"):
-                    llm_tokens_total.labels(model=self.model, operation="completion").inc(
-                        response.usage.total_tokens
-                    )
+                    llm_tokens_total.labels(
+                        model=self.model, operation="completion"
+                    ).inc(response.usage.total_tokens)
 
                 return str(content)
 
@@ -176,7 +180,9 @@ class OpenAIAdapter(LLMAdapter):
                 yield content
 
         # Track token usage for streamed responses
-        llm_tokens_total.labels(model=self.model, operation="stream_completion").inc(total_tokens)
+        llm_tokens_total.labels(model=self.model, operation="stream_completion").inc(
+            total_tokens
+        )
 
     def estimate_tokens(self, text: str) -> int:
         """Estimate token count using simple heuristic.
@@ -191,7 +197,9 @@ class OpenAIAdapter(LLMAdapter):
 class ClaudeAdapter(LLMAdapter):
     """Implement adapter for Anthropic Claude 3 Sonnet model."""
 
-    def __init__(self, api_key: Optional[str] = None, model: str = "claude-3-sonnet-20240229"):
+    def __init__(
+        self, api_key: Optional[str] = None, model: str = "claude-3-sonnet-20240229"
+    ):
         """Initialize the Claude adapter.
 
         Args:
@@ -217,7 +225,9 @@ class ClaudeAdapter(LLMAdapter):
 
                 self._client = AsyncAnthropic(api_key=self.api_key)
             except ImportError:
-                raise ImportError("anthropic package not installed. Run: pip install anthropic")
+                raise ImportError(
+                    "anthropic package not installed. Run: pip install anthropic"
+                )
         return self._client
 
     async def generate(
@@ -259,16 +269,18 @@ class ClaudeAdapter(LLMAdapter):
 
             if stream:
                 # Claude streaming requires different handling
-                stream_response = await self.client.messages.create(**params, stream=True)
+                stream_response = await self.client.messages.create(
+                    **params, stream=True
+                )
                 return self._stream_response(stream_response)
             else:
                 content = response.content[0].text
 
                 # Track token usage
                 if hasattr(response, "usage"):
-                    llm_tokens_total.labels(model=self.model, operation="completion").inc(
-                        response.usage.total_tokens
-                    )
+                    llm_tokens_total.labels(
+                        model=self.model, operation="completion"
+                    ).inc(response.usage.total_tokens)
 
                 return str(content)
 
@@ -286,7 +298,9 @@ class ClaudeAdapter(LLMAdapter):
                 total_tokens += self.estimate_tokens(content)
                 yield content
 
-        llm_tokens_total.labels(model=self.model, operation="stream_completion").inc(total_tokens)
+        llm_tokens_total.labels(model=self.model, operation="stream_completion").inc(
+            total_tokens
+        )
 
     def estimate_tokens(self, text: str) -> int:
         """Estimate token count for Claude API."""

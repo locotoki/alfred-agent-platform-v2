@@ -36,9 +36,7 @@ def process_file(file_path: Path) -> tuple[bool, int]:
 
     # Replace global pytestmark = pytest.mark.xfail
     pattern = r"pytestmark\s*=\s*pytest\.mark\.xfail\(.*?\)"
-    benchmark_replacement = (
-        "# pytestmark has been removed - benchmark tests are skipped by default in conftest.py"
-    )
+    benchmark_replacement = "# pytestmark has been removed - benchmark tests are skipped by default in conftest.py"
     new_content = re.sub(pattern, benchmark_replacement, new_content)
 
     # Only write the file if changes were made

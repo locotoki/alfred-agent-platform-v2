@@ -38,7 +38,9 @@ def add_xfail_to_test(file_path, test_name, reason):
         return False
 
     # Add the xfail marker before the test function
-    replacement = f'@pytest.mark.xfail(reason="{reason}", strict=False)\ndef {test_name}('
+    replacement = (
+        f'@pytest.mark.xfail(reason="{reason}", strict=False)\ndef {test_name}('
+    )
     modified_content = re.sub(pattern, replacement, content)
 
     # Ensure pytest is imported
@@ -58,9 +60,13 @@ def main():
     project_root = Path(__file__).parent.parent
 
     # Trainer benchmark tests
-    trainer_benchmark_path = project_root / "tests" / "backend" / "ml" / "test_trainer_benchmark.py"
+    trainer_benchmark_path = (
+        project_root / "tests" / "backend" / "ml" / "test_trainer_benchmark.py"
+    )
     add_xfail_to_test(
-        trainer_benchmark_path, "test_training_speed", "Missing faiss dependency, see issue #220"
+        trainer_benchmark_path,
+        "test_training_speed",
+        "Missing faiss dependency, see issue #220",
     )
     add_xfail_to_test(
         trainer_benchmark_path,
@@ -68,7 +74,9 @@ def main():
         "Missing faiss dependency, see issue #220",
     )
     add_xfail_to_test(
-        trainer_benchmark_path, "test_memory_usage", "Missing faiss dependency, see issue #220"
+        trainer_benchmark_path,
+        "test_memory_usage",
+        "Missing faiss dependency, see issue #220",
     )
     add_xfail_to_test(
         trainer_benchmark_path,
@@ -123,7 +131,9 @@ def main():
         "test_numerical_stability",
     ]:
         add_xfail_to_test(
-            hf_embedder_path, test_name, "Missing sentence_transformers dependency, see issue #220"
+            hf_embedder_path,
+            test_name,
+            "Missing sentence_transformers dependency, see issue #220",
         )
 
     # FAISS index tests

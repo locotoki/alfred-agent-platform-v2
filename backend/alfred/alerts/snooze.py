@@ -74,7 +74,9 @@ class AlertSnoozeService(SnoozeService):
 
         """
         # Validate duration
-        duration = max(self.config.min_duration, min(duration, self.config.max_duration))
+        duration = max(
+            self.config.min_duration, min(duration, self.config.max_duration)
+        )
 
         # Create snooze record
         snooze_id = str(uuid.uuid4())
@@ -289,7 +291,9 @@ class AlertSnoozeService(SnoozeService):
             user_id=user_id,
         )
 
-    async def get_snooze_history(self, alert_id: str, limit: int = 10) -> List[Dict[str, Any]]:
+    async def get_snooze_history(
+        self, alert_id: str, limit: int = 10
+    ) -> List[Dict[str, Any]]:
         """Get snooze history for an alert.
 
         Args:

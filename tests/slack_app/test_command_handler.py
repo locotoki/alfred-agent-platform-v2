@@ -26,7 +26,9 @@ def test_command_registration():
 
     # Find slash command listeners
     command_listeners = [
-        listener for listener in listeners if listener.matcher.match_function_name == "match_event"
+        listener
+        for listener in listeners
+        if listener.matcher.match_function_name == "match_event"
     ]
 
     # Check if we have at least one command listener
@@ -42,11 +44,14 @@ def test_command_registration():
     alfred_listeners = [
         listener
         for listener in command_listeners
-        if hasattr(listener.matcher, "command") and listener.matcher.command == command_name
+        if hasattr(listener.matcher, "command")
+        and listener.matcher.command == command_name
     ]
 
     # This assertion will fail if the command is registered WITH the slash
-    assert len(alfred_listeners) > 0, f"Command '{command_name}' not registered correctly"
+    assert (
+        len(alfred_listeners) > 0
+    ), f"Command '{command_name}' not registered correctly"
 
 
 @pytest.mark.xfail(
@@ -171,4 +176,6 @@ def test_ack_timing():
     assert timestamps["say"] > timestamps["ack"], "say() was called before ack()"
 
     # Verify ack was called quickly (within 100ms)
-    assert timestamps["ack"] - timestamps["start"] < 0.1, "ack() was not called quickly enough"
+    assert (
+        timestamps["ack"] - timestamps["start"] < 0.1
+    ), "ack() was not called quickly enough"

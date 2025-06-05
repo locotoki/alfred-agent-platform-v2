@@ -4,7 +4,10 @@ import pytest
 def pytest_addoption(parser):
     """Add command line option to run benchmarks."""
     parser.addoption(
-        "--run-benchmark", action="store_true", default=False, help="run benchmark tests"
+        "--run-benchmark",
+        action="store_true",
+        default=False,
+        help="run benchmark tests",
     )
 
 

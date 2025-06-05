@@ -46,9 +46,13 @@ def create_compose_snippet(service_name, service_dir):
     if service_name in ["redis", "vector-db"]:
         snippet["services"][service_name]["ports"] = []
         if service_name == "redis":
-            snippet["services"][service_name]["ports"].append("${REDIS_PORT:-6379}:6379")
+            snippet["services"][service_name]["ports"].append(
+                "${REDIS_PORT:-6379}:6379"
+            )
         elif service_name == "vector-db":
-            snippet["services"][service_name]["ports"].append("${QDRANT_PORT:-6333}:6333")
+            snippet["services"][service_name]["ports"].append(
+                "${QDRANT_PORT:-6333}:6333"
+            )
 
     if service_name.endswith("-ui") or service_name in [
         "mission-control",
@@ -56,7 +60,9 @@ def create_compose_snippet(service_name, service_dir):
     ]:
         snippet["services"][service_name]["ports"] = []
         base_port = 3000 if "mission" in service_name else 8501
-        snippet["services"][service_name]["ports"].append(f"${{UI_PORT:-{base_port}}}:{base_port}")
+        snippet["services"][service_name]["ports"].append(
+            f"${{UI_PORT:-{base_port}}}:{base_port}"
+        )
 
     # Write the snippet
     compose_file.parent.mkdir(parents=True, exist_ok=True)

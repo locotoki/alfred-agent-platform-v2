@@ -34,7 +34,9 @@ def mock_llm():
     from langchain.schema.runnable import Runnable, RunnableConfig
 
     class MockLLM(Runnable):
-        def invoke(self, input: Any, config: Optional[RunnableConfig] = None, **kwargs: Any) -> Any:
+        def invoke(
+            self, input: Any, config: Optional[RunnableConfig] = None, **kwargs: Any
+        ) -> Any:
             return "test response"
 
         async def ainvoke(
@@ -102,7 +104,9 @@ class TestTaxCalculationChain:
 
     @patch("langchain.chains.LLMChain.__init__", return_value=None)
     @patch.object(LLMChain, "ainvoke")
-    async def test_calculate_with_valid_request(self, mock_ainvoke, mock_init, mock_llm):
+    async def test_calculate_with_valid_request(
+        self, mock_ainvoke, mock_init, mock_llm
+    ):
         """Test tax calculation with valid request."""
         chain = TaxCalculationChain(llm=mock_llm)
 
@@ -156,7 +160,9 @@ class TestTaxCalculationChain:
 
     @patch("langchain.chains.LLMChain.__init__", return_value=None)
     @patch.object(LLMChain, "ainvoke")
-    async def test_calculate_with_parsing_error(self, mock_ainvoke, mock_init, mock_llm):
+    async def test_calculate_with_parsing_error(
+        self, mock_ainvoke, mock_init, mock_llm
+    ):
         """Test error handling when LLM returns unparseable result."""
         chain = TaxCalculationChain(llm=mock_llm)
 
@@ -207,7 +213,10 @@ class TestFinancialAnalysisChain:
             analysis_type="profitability",
             period="2024",
             industry="technology",
-            custom_metrics=["roi", "debt_to_equity"],  # List of metrics as required by model
+            custom_metrics=[
+                "roi",
+                "debt_to_equity",
+            ],  # List of metrics as required by model
         )
 
         response = await chain.analyze(request)
@@ -223,7 +232,9 @@ class TestComplianceCheckChain:
 
     @patch("langchain.chains.LLMChain.__init__", return_value=None)
     @patch.object(LLMChain, "ainvoke")
-    async def test_check_compliance_with_valid_request(self, mock_ainvoke, mock_init, mock_llm):
+    async def test_check_compliance_with_valid_request(
+        self, mock_ainvoke, mock_init, mock_llm
+    ):
         """Test compliance check with valid request."""
         chain = ComplianceCheckChain(llm=mock_llm)
 
@@ -260,7 +271,9 @@ class TestRateLookupChain:
 
     @patch("langchain.chains.LLMChain.__init__", return_value=None)
     @patch.object(LLMChain, "ainvoke")
-    async def test_lookup_rates_with_valid_request(self, mock_ainvoke, mock_init, mock_llm):
+    async def test_lookup_rates_with_valid_request(
+        self, mock_ainvoke, mock_init, mock_llm
+    ):
         """Test tax rate lookup with valid request."""
         chain = RateLookupChain(llm=mock_llm)
 

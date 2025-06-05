@@ -44,7 +44,9 @@ class TestCoreServices:
         assert "# HELP" in response.text
 
     @pytest.mark.e2e
-    @pytest.mark.skip(reason="agent-core service doesn't expose database connectivity info")
+    @pytest.mark.skip(
+        reason="agent-core service doesn't expose database connectivity info"
+    )
     def test_database_connectivity(self, http_client, wait_for_services):
         """Test database connectivity through Agent Core."""
         response = http_client.get("http://localhost:8011/health/db")

@@ -42,7 +42,9 @@ def test_license_report_format():
 
         # Check header format
         expected_headers = ["package", "version", "license", "license_classification"]
-        assert reader.fieldnames == expected_headers, f"CSV headers should be {expected_headers}"
+        assert (
+            reader.fieldnames == expected_headers
+        ), f"CSV headers should be {expected_headers}"
 
 
 def test_license_report_has_data():
@@ -83,7 +85,12 @@ def test_license_report_readable():
         # Check that all expected columns exist
         if rows:
             first_row = rows[0]
-            required_fields = ["package", "version", "license", "license_classification"]
+            required_fields = [
+                "package",
+                "version",
+                "license",
+                "license_classification",
+            ]
             for field in required_fields:
                 assert field in first_row, f"Row should contain field: {field}"
 
@@ -109,8 +116,12 @@ def test_makefile_license_scan_target():
     with open(makefile_path, "r", encoding="utf-8") as f:
         makefile_content = f.read()
 
-    assert "license-scan:" in makefile_content, "Makefile should have license-scan target"
-    assert "gen_license_report.py" in makefile_content, "license-scan target should call script"
+    assert (
+        "license-scan:" in makefile_content
+    ), "Makefile should have license-scan target"
+    assert (
+        "gen_license_report.py" in makefile_content
+    ), "license-scan target should call script"
 
 
 def test_license_classifications():
@@ -136,7 +147,9 @@ def test_license_classifications():
 
     for row in rows:
         classification = row.get("license_classification", "")
-        assert classification in valid_classifications, f"Invalid classification: {classification}"
+        assert (
+            classification in valid_classifications
+        ), f"Invalid classification: {classification}"
 
 
 def test_unknown_other_ratio():
