@@ -288,4 +288,4 @@ sprint2_final_slack.txt
 mission-control.tar.gz
 soak_midpoint_20250517T082236Z.tgz
 falco-redis-rule.yaml
-docs/event-catalog/
+# docs/event-catalog/ - now committed
