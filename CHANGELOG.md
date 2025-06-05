@@ -8,3 +8,4 @@
 * Stubbed model-registry (FastAPI) until schema ADR lands- Infra E2E harness added; stub services moved to extras.
 - ADR-001 Auth & Tenancy (JWT, SOPS, JWKS rotation)
 - ADR-002 Event Contract Catalog (CloudEvents + Protobuf)
+- Supply-chain security scaffold: cosign signatures, SLSA 2 provenance, Trivy gate, SBOM

@@ -1,0 +1,39 @@
+name: build-sign-push
+on:
+  push:
+    paths: ['services/**/Dockerfile']
+  workflow_dispatch:
+jobs:
+  build-sign:
+    permissions:
+      contents: write
+      id-token: write   # keyless signing
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up QEMU & Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Build & push
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: ghcr.io/${{ github.repository }}/$GITHUB_SHA
+          provenance: true        # SLSA 2 attestation
+      - name: Install cosign
+        uses: sigstore/cosign-installer@v3
+      - name: Sign image
+        run: |
+          cosign sign --yes ghcr.io/${{ github.repository }}/$GITHUB_SHA
+      - name: Generate SBOM (CycloneDX+SPDX)
+        uses: anchore/sbom-action@v0
+        with:
+          image: ghcr.io/${{ github.repository }}/$GITHUB_SHA
+          format: spdx-json,cyclonedx-json
+      - name: Upload SBOM to release (if tag)
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            *.spdx.json
+            *.cdx.json
