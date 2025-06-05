@@ -1,6 +1,5 @@
 """E2E regression tests for platform stability."""
 
-import json
 import time
 
 import pytest

@@ -186,9 +186,11 @@ CATEGORY_MAPPING = {
     },
 }
 
+
 def build_youtube_client():
     """Build and return a YouTube API client."""
     return googleapiclient.discovery.build("youtube", "v3", developerKey=API_KEY)
+
 
 def parse_duration(duration_str):
     """Parse ISO 8601 duration string to seconds."""
@@ -206,6 +208,7 @@ def parse_duration(duration_str):
     seconds = int(match.group(3) or 0)
 
     return hours * 3600 + minutes * 60 + seconds
+
 
 def calculate_freshness_score(published_at):
     """Calculate a freshness score based on publish date."""
@@ -227,6 +230,7 @@ def calculate_freshness_score(published_at):
             return 0.2
     except Exception:
         return 0.5  # Default if we can't parse date
+
 
 async def search_videos(query, max_results=10, youtube=None, published_after=None):
     """Search for videos using YouTube API."""
@@ -304,6 +308,7 @@ async def search_videos(query, max_results=10, youtube=None, published_after=Non
 
     return videos
 
+
 async def get_channel_details(channel_ids, youtube=None):
     """Get detailed information about specific channels."""
     if not channel_ids:
@@ -365,6 +370,7 @@ async def get_channel_details(channel_ids, youtube=None):
             channels.append(channel_data)
 
     return channels
+
 
 def identify_video_pattern(videos):
     """Identify patterns in successful videos."""
@@ -435,6 +441,7 @@ def identify_video_pattern(videos):
         "best_upload_day": top_day,
         "best_upload_hour": top_hour if top_hour != -1 else "Unknown",
     }
+
 
 def generate_visualization_guide(niches, category, subcategory):
     """Generate a visualization guide based on the analysis."""
@@ -513,6 +520,7 @@ def generate_visualization_guide(niches, category, subcategory):
         "top_recommendations": [],
         "content_strategy": [],
     }
+
 
 async def analyze_niche(category, subcategory):
     """Run the full Niche Scout analysis."""
@@ -804,6 +812,7 @@ async def analyze_niche(category, subcategory):
             print(f"- {rec['niche']}: {rec['why']}")
 
     return result
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Manual Niche Scout Workflow")

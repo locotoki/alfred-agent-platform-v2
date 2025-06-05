@@ -3,7 +3,6 @@
 import argparse
 import json
 import sys
-from pathlib import Path
 
 from . import analyze, emit_github_summary
 
@@ -25,19 +24,19 @@ def main() -> int:
         print(f"❌ Error: {result['error']}")
         return 1
 
-    print(f"📊 Analysis Results:")
+    print("📊 Analysis Results:")
     print(f"   Total tests: {result.get('total_tests', 0)}")
     print(f"   Failed tests: {result.get('failed_tests', 0)}")
     print(f"   Flaky tests: {len(result.get('flakes', []))}")
 
     if result.get("flakes"):
-        print(f"\n⚠️  Flaky tests detected:")
+        print("\n⚠️  Flaky tests detected:")
         for i, flake in enumerate(result["flakes"][:5], 1):
             print(f"   {i}. {flake}")
         if len(result["flakes"]) > 5:
             print(f"   ... and {len(result['flakes']) - 5} more")
     else:
-        print(f"\n✅ No flaky tests detected!")
+        print("\n✅ No flaky tests detected!")
 
     # Emit GitHub summary if requested
     if args.emit_summary:

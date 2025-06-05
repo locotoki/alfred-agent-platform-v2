@@ -1,6 +1,5 @@
 """E2E tests for Slack integration."""
 
-import json
 import os
 
 import pytest

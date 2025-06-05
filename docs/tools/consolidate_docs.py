@@ -24,6 +24,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger("consolidate_docs")
 
+
 class DocumentConsolidator:
     """Class to handle document consolidation process."""
 
@@ -102,7 +103,7 @@ class DocumentConsolidator:
             logger.error(f"Staging directory does not exist: {self.staging_dir}")
             return {"consolidated": 0, "skipped": 0, "errors": 1}
 
-        logger.info(f"Starting document consolidation process")
+        logger.info("Starting document consolidation process")
         logger.info(f"Staging directory: {self.staging_dir}")
         logger.info(f"Target directory: {self.target_dir}")
         logger.info(f"Dry run: {self.dry_run}")
@@ -189,7 +190,7 @@ class DocumentConsolidator:
                 f"DRY RUN: Would consolidate {len(matching_files)} files into {target_file_path}"
             )
             logger.info(f"DRY RUN: Primary document: {primary_file_path}")
-            logger.info(f"DRY RUN: Files to merge:")
+            logger.info("DRY RUN: Files to merge:")
             for file_path, rel_path in matching_files:
                 if file_path != primary_file_path:
                     logger.info(f"  - {rel_path}")
@@ -247,11 +248,10 @@ Last consolidated: {datetime.now().strftime('%Y-%m-%d')}.
 
         if self.dry_run:
             logger.info("\nThis was a dry run. No files were actually consolidated.")
-            logger.info(
-                "To actually consolidate files, run without the --dry-run option."
-            )
+            logger.info("To actually consolidate files, run without the --dry-run option.")
         else:
             logger.info(f"\nSuccessfully consolidated documents into {self.target_dir}")
+
 
 def main():
     """Main function to run the script."""
@@ -298,6 +298,7 @@ def main():
 
     stats = consolidator.consolidate_documents()
     consolidator.print_summary(stats)
+
 
 if __name__ == "__main__":
     main()

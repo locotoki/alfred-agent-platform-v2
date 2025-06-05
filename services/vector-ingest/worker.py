@@ -1,8 +1,7 @@
 """Vector ingestion worker with CloudEvents support."""
+
 import json
 import os
-import time
-import uuid
 
 import requests
 from cloudevents.http import CloudEvent

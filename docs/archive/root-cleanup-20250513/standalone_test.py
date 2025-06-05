@@ -53,6 +53,7 @@ class MockYouTubeAPI:
             "description": "This is a test video description.",
         }
 
+
 class MockVectorStorage:
     """Mock vector storage for testing."""
 
@@ -71,6 +72,7 @@ class MockVectorStorage:
     async def store_video_vector(self, video_id, video_data, embedding):
         """Mock storing video vectors."""
         print(f"Storing video vector for {video_id}")
+
 
 # Mock SocialIntelligence Agent
 class MockSocialIntelAgent:
@@ -120,9 +122,7 @@ class MockSocialIntelAgent:
 
         # Save mock digest
         with open("niche_scout/digest.md", "w") as f:
-            f.write(
-                f"# YouTube Niche Scout - {datetime.now().strftime('%Y-%m-%d')}\n\n"
-            )
+            f.write(f"# YouTube Niche Scout - {datetime.now().strftime('%Y-%m-%d')}\n\n")
             f.write("## Top Trending Niches\n\n")
             for i, niche in enumerate(trending_niches, 1):
                 f.write(f"{i}. **{niche['query']}** - Score: {niche['score']:.2f}\n")
@@ -144,9 +144,7 @@ class MockSocialIntelAgent:
         print("\n=== Running Seed-to-Blueprint Workflow ===\n")
 
         # Get seed URL or auto-niche flag
-        seed_url = content.get(
-            "seed_url", "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
-        )
+        seed_url = content.get("seed_url", "https://www.youtube.com/watch?v=dQw4w9WgXcQ")
         auto_niche = content.get("auto_niche", False)
 
         if auto_niche:
@@ -236,6 +234,7 @@ class MockSocialIntelAgent:
             "timestamp": datetime.now().isoformat(),
         }
 
+
 async def test_niche_scout():
     """Test Niche-Scout workflow."""
     agent = MockSocialIntelAgent()
@@ -245,6 +244,7 @@ async def test_niche_scout():
     print(f"\nResult status: {result['status']}")
     print(f"Found {len(result['trending_niches'])} trending niches")
     print(f"Top niche: {result['top_niches'][0]['query']}")
+
 
 async def test_blueprint():
     """Test Blueprint workflow."""
@@ -257,6 +257,7 @@ async def test_blueprint():
     print(f"Blueprint positioning: {result['blueprint']['positioning']}")
     print(f"Content pillars: {', '.join(result['blueprint']['content_pillars'])}")
 
+
 async def main():
     """Run all tests."""
     print("=== YouTube Workflow Tests ===\n")
@@ -268,6 +269,7 @@ async def main():
     await test_blueprint()
 
     print("\n=== All tests completed successfully! ===")
+
 
 if __name__ == "__main__":
     import asyncio
