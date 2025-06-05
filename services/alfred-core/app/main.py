@@ -10,8 +10,37 @@ from prometheus_client import Counter, Histogram, generate_latest
 # Configure structured logging
 logger = structlog.get_logger()
 
+
+# WhatsApp chat handler (placeholder implementation)
+async def chat_handler(text: str, from_user: str) -> str:
+    """Handle incoming WhatsApp messages and return responses."""
+    logger.info("Processing WhatsApp message", text=text, from_user=from_user)
+    
+    # Simple echo response for now - replace with actual AI/agent logic
+    if "hello" in text.lower():
+        return f"Hello {from_user}! How can I help you today?"
+    elif "help" in text.lower():
+        return "I'm Alfred, your AI assistant. I can help with various tasks!"
+    else:
+        return f"I received your message: '{text}'. This is a placeholder response from Alfred Core."
+
 # Create FastAPI app
 app = FastAPI(title="Alfred Core Service", version="0.9.6")
+
+
+@app.on_event("startup")
+async def startup():
+    """Initialize services on startup."""
+    logger.info("Starting Alfred Core service")
+    
+    # Initialize WhatsApp bridge
+    try:
+        from .wa_bridge import start as wa_start
+        wa_start(chat_handler)
+        logger.info("WhatsApp bridge initialized")
+    except Exception as e:
+        logger.warning("WhatsApp bridge initialization failed", error=str(e))
+
 
 # Prometheus metrics
 request_count = Counter(
