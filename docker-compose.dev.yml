@@ -71,24 +71,17 @@ services:
       - redis
 
   whatsapp-adapter:
-    image: python:3.11-slim
-    working_dir: /app
-    command: >
-      bash -c "pip install flask werkzeug==2.0.3 redis requests &&
-      mkdir -p /app/src &&
-      cp /app_host/whatsapp-adapter/src/app.py /app/src/ &&
-      python -m src.app"
+    build:
+      context: services/whatsapp-adapter
     ports:
-      - "8014:8014"
+      - "8080:8080"
     environment:
-      - PORT=8014
+      - WHATSAPP_ENABLED=${WHATSAPP_ENABLED:-false}
+      - WHATSAPP_ACCESS_TOKEN=${WHATSAPP_ACCESS_TOKEN}
+      - PHONE_NUMBER_ID=${PHONE_NUMBER_ID}
+      - APP_SECRET=${APP_SECRET}
+      - VERIFY_TOKEN=${VERIFY_TOKEN:-alfred-sandbox}
       - REDIS_URL=redis://redis:6379
-      - WHATSAPP_API_TOKEN=${WHATSAPP_API_TOKEN}
-      - WHATSAPP_PHONE_NUMBER_ID=${WHATSAPP_PHONE_NUMBER_ID}
-      - ENVIRONMENT=${ENVIRONMENT:-development}
-      - DEBUG=${DEBUG:-true}
-    volumes:
-      - ./:/app_host
     depends_on:
       - redis
 
