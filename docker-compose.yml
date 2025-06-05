@@ -1062,6 +1062,24 @@ services:
       com.docker.compose.service: agent-bizdev
     profiles:
     - extras
+  vector-ingest:
+    build:
+      context: services/vector-ingest
+    container_name: vector-ingest
+    environment:
+      EMBED_MODEL: sentence-transformers/all-MiniLM-L6-v2
+    depends_on:
+      - vector-db
+      - pubsub-emulator
+    restart: unless-stopped
+    networks:
+    - alfred-network
+    labels:
+      com.docker.compose.project: alfred
+      com.docker.compose.group: ml
+      com.docker.compose.service: vector-ingest
+    profiles:
+    - extras
   ui-chat:
     build:
       context: ./alfred/ui
