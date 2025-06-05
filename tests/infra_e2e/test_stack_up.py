@@ -48,4 +48,3 @@ def test_core_profile_healthy(tmp_path):
         wait_healthy()
     finally:
         subprocess.call(COMPOSE + ["down", "-v"])
-

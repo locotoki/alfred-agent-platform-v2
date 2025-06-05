@@ -1,12 +1,10 @@
 """Model Router API for Alfred Agent Platform v2"""
 
 import os
-import threading
 from datetime import datetime
 
 import httpx
 import prometheus_client
-import uvicorn
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -62,31 +60,7 @@ async def metrics():
     return Response(content=prometheus_client.generate_latest(), media_type="text/plain")
 
 
-# Create a separate app to serve metrics on port 9091
-
-metrics_app = FastAPI(title="Model Router Metrics")
-
-
-@metrics_app.get("/metrics")
-async def metrics_export():
-    """Prometheus metrics endpoint for port 9091"""
-    from fastapi.responses import Response
-
-    return Response(content=prometheus_client.generate_latest(), media_type="text/plain")
-
-
-# Start metrics server in separate thread when the main app starts
-@app.on_event("startup")
-async def start_metrics_server():
-    """Start metrics server on port 9091"""
-    # Start metrics server in a separate thread
-    thread = threading.Thread(
-        target=uvicorn.run,
-        args=(metrics_app,),
-        kwargs={"host": "0.0.0.0", "port": 9091, "log_level": "error"},
-        daemon=True,
-    )
-    thread.start()
+# Metrics server removed - metrics available on main port at /metrics
 
 
 @app.get("/models")
@@ -97,32 +71,26 @@ async def get_models():
             response = await client.get(f"{MODEL_REGISTRY_URL}/models")
             response.raise_for_status()
             return response.json()
-    except httpx.RequestError as exc:
-        if DEBUG:
-            raise HTTPException(
-                status_code=503,
-                detail=f"Error connecting to model registry: {str(exc)}",
-            )
-        else:
-            # Return mock data in debug mode if model registry is not available
-            return [
-                {
-                    "id": 1,
-                    "name": "gpt-4",
-                    "display_name": "GPT-4 Turbo (mock)",
-                    "provider": "openai",
-                    "model_type": "chat",
-                    "description": "Mock GPT-4 model for development",
-                },
-                {
-                    "id": 2,
-                    "name": "claude-3-sonnet",
-                    "display_name": "Claude 3 Sonnet (mock)",
-                    "provider": "anthropic",
-                    "model_type": "chat",
-                    "description": "Mock Claude 3 model for development",
-                },
-            ]
+    except (httpx.RequestError, httpx.HTTPStatusError) as exc:
+        # Return mock data when model registry is not available or endpoint doesn't exist
+        return [
+            {
+                "id": 1,
+                "name": "gpt-4",
+                "display_name": "GPT-4 Turbo (mock)",
+                "provider": "openai",
+                "model_type": "chat",
+                "description": "Mock GPT-4 model for development",
+            },
+            {
+                "id": 2,
+                "name": "claude-3-sonnet",
+                "display_name": "Claude 3 Sonnet (mock)",
+                "provider": "anthropic",
+                "model_type": "chat",
+                "description": "Mock Claude 3 model for development",
+            },
+        ]
 
 
 @app.post("/completions")
