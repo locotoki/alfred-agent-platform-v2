@@ -105,11 +105,12 @@ services:
       interval: 30s
       timeout: 20s
       retries: 5
-      start_period: 30s
+      start_period: 45s
       test:
       - CMD
-      - echo
-      - "service is running"
+      - curl
+      - -f
+      - http://localhost:8000/health
 
 networks:
   alfred-network:
