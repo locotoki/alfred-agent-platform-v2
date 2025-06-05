@@ -9,7 +9,6 @@ db-metrics:latest
 db-metrics:latest
 gcr.io/google.com/cloudsdktool/cloud-sdk:latest
 ghcr.io/digital-native-ventures/slack-bot:edge
-ghcr.io/locotoki/agent-bizdev:edge
 ghcr.io/locotoki/agent-core:v0.9.6
 ghcr.io/locotoki/crm-sync:latest
 ghcr.io/locotoki/hubspot-mock:latest

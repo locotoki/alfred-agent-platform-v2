@@ -1069,8 +1069,19 @@ services:
     environment:
       EMBED_MODEL: sentence-transformers/all-MiniLM-L6-v2
     depends_on:
-      - vector-db
-      - pubsub-emulator
+      vector-db:
+        condition: service_healthy
+      pubsub-emulator:
+        condition: service_started
+    healthcheck:
+      interval: 30s
+      timeout: 20s
+      retries: 5
+      start_period: 30s
+      test:
+      - CMD
+      - echo
+      - "service is running"
     restart: unless-stopped
     networks:
     - alfred-network
