@@ -1,3 +1,10 @@
+"""Vector ingestion worker with CloudEvents support."""
+
+import json
+import os
+import time
+import uuid
+
 from fastapi import FastAPI, Response
 
 app = FastAPI()
@@ -7,11 +14,6 @@ app = FastAPI()
 def health():
     return {"status": "ok"}
 
-
-"""Vector ingestion worker with CloudEvents support."""
-
-import json
-import os
 
 import requests
 from cloudevents.http import CloudEvent
