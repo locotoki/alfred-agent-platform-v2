@@ -2,6 +2,7 @@ import asyncio
 import json
 import logging
 import os
+import sys
 from typing import Any, Dict
 
 import httpx
@@ -21,7 +22,7 @@ ACCESS_TOKEN = os.getenv("WHATSAPP_ACCESS_TOKEN")
 GRAPH_URL = f"https://graph.facebook.com/v20.0/{PHONE_NUMBER_ID}/messages"
 
 app = FastAPI(title="WhatsApp Adapter (Sandbox)")
-producer: AIOKafkaProducer | None = None
+producer: AIOKafkaProducer  < /dev/null |  None = None
 consumer: AIOKafkaConsumer | None = None
 http: httpx.AsyncClient | None = None
 
