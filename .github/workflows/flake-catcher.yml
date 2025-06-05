@@ -9,7 +9,7 @@ on:
 
 jobs:
   e2e-flake-check:
-    name: E2E Flake Detection
+    name: E2E Flake Check
     runs-on: ubuntu-latest
     timeout-minutes: 30
     strategy:
@@ -63,7 +63,7 @@ jobs:
             });
             
             const e2eJobs = jobs.data.jobs.filter(job => 
-              job.name.includes('E2E Flake Detection')
+              job.name.includes('E2E Flake Check')
             );
             
             const failures = e2eJobs.filter(job => 
