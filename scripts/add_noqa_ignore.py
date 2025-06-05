@@ -2,7 +2,8 @@
 """Script to add # noqa comments to all lines with flake8 errors."""
 import re
 import subprocess
-from typing import Dict, List, Set, Tuple  # noqa: F401
+from typing import Dict  # noqa: F401
+from typing import List, Set, Tuple
 
 
 def run_flake8() -> str:

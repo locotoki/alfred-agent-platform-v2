@@ -2,7 +2,8 @@
 """Script to automatically fix various flake8 violations."""
 import re
 import subprocess
-from typing import Dict, List, Set, Tuple  # noqa: F401
+from typing import Dict  # noqa: F401
+from typing import List, Set, Tuple
 
 
 def run_flake8() -> str:

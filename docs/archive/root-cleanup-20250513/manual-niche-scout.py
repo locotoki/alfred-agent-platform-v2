@@ -22,6 +22,7 @@ except ImportError:
     print("Installing required dependencies...")
     os.system("pip install aiohttp google-api-python-client matplotlib numpy")
     import googleapiclient.discovery
+
 import matplotlib.pyplot as plt
 
 # API Key from environment or direct input

@@ -2,7 +2,8 @@
 """Script to automatically fix flake8 F401 (unused imports) and F821 (undefined name) violations."""
 import re
 import subprocess
-from typing import Dict, List, Set, Tuple  # noqa: F401
+from typing import Dict  # noqa: F401
+from typing import List, Set, Tuple
 
 
 def run_flake8() -> str:
