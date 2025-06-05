@@ -1,0 +1,17 @@
+name: rotate-jwks
+on:
+  schedule: [{cron: '0 3 * * 1'}] # every Monday 03:00 UTC
+jobs:
+  rotate:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Generate new RSA & update JWKS
+      run: |
+        python security/gen_jwk.py # to be committed in follow-up
+    - name: Commit & PR
+      uses: peter-evans/create-pull-request@v6
+      with:
+        title: "chore(security): weekly JWKS rotation"
+        branch: security/rotate-jwks-$GITHUB_RUN_ID
+        commit-message: "chore: rotate JWKS key"
