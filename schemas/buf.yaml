@@ -1,0 +1,8 @@
+version: v1
+name: buf.build/alfred/schemas
+lint:
+  use:
+    - DEFAULT
+breaking:
+  use:
+    - WIRE_JSON
