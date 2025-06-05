@@ -46,7 +46,7 @@ jobs:
     name: Analyze Flake Results
     needs: e2e-flake-check
     runs-on: ubuntu-latest
-    if: always()
+    if: cancelled() || failure()
     steps:
       - name: Check flake status
         uses: actions/github-script@v7
