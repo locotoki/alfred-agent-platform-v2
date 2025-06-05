@@ -1,4 +1,4 @@
-"""Adapters for SocialIntelligence Agent"""
+"""Adapters for SocialIntelligence Agent."""
 
 from .a2a_adapter import (
     YouTubeBlueprintAdapter,

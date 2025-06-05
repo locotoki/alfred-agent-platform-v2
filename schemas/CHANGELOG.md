@@ -1,0 +1,1 @@
+- Vector ingest pipeline skeleton (CloudEvents + Protobuf + TTL) added

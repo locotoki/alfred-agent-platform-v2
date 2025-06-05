@@ -29,6 +29,7 @@ class A2AEnvelope:
     def __str__(self):
         return json.dumps(self.to_dict(), indent=2)
 
+
 class MockSocialIntelAgent:
     """Mock SocialIntelligence Agent for integration testing."""
 
@@ -107,9 +108,7 @@ class MockSocialIntelAgent:
 
         # Save mock digest
         with open("niche_scout/digest.md", "w") as f:
-            f.write(
-                f"# YouTube Niche Scout - {datetime.now().strftime('%Y-%m-%d')}\n\n"
-            )
+            f.write(f"# YouTube Niche Scout - {datetime.now().strftime('%Y-%m-%d')}\n\n")
             f.write("## Top Trending Niches\n\n")
             for i, niche in enumerate(trending_niches, 1):
                 f.write(f"{i}. **{niche['query']}** - Score: {niche['score']:.2f}\n")
@@ -131,9 +130,7 @@ class MockSocialIntelAgent:
         print("\n=== Running Seed-to-Blueprint Workflow ===\n")
 
         # Get seed URL or auto-niche flag
-        seed_url = content.get(
-            "seed_url", "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
-        )
+        seed_url = content.get("seed_url", "https://www.youtube.com/watch?v=dQw4w9WgXcQ")
         auto_niche = content.get("auto_niche", False)
 
         if auto_niche:
@@ -223,6 +220,7 @@ class MockSocialIntelAgent:
             "timestamp": datetime.now().isoformat(),
         }
 
+
 async def test_a2a_integration():
     """Test A2A integration with SocialIntelligence Agent."""
     print("=== A2A Integration Test ===\n")
@@ -263,6 +261,7 @@ async def test_a2a_integration():
     print(os.path.exists("builder/channel_pack.zip"))
 
     print("\n=== Integration test completed successfully! ===")
+
 
 if __name__ == "__main__":
     asyncio.run(test_a2a_integration())

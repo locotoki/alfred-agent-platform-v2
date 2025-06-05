@@ -1,19 +1,36 @@
-import json, os, time, uuid, requests
+from fastapi import FastAPI, Response
+
+app = FastAPI()
+
+
+@app.get("/health")
+def health():
+    return {"status": "ok"}
+
+
+"""Vector ingestion worker with CloudEvents support."""
+
+import json
+import os
+
+import requests
 from cloudevents.http import CloudEvent
-from alfred_sdk.auth.verify import verify
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from sentence_transformers import SentenceTransformer
+
+from alfred_sdk.auth.verify import verify
 
 MODEL = SentenceTransformer(os.getenv("EMBED_MODEL", "sentence-transformers/all-MiniLM-L6-v2"))
 SPLITTER = RecursiveCharacterTextSplitter(chunk_size=512, chunk_overlap=64)
 
+
 def handle_cloud_event(event: CloudEvent):
     claims = verify(event["headers"].get("authorization", "").split()[-1])
-    data   = json.loads(event.data)
+    data = json.loads(event.data)
     tenant = claims["tenant"]
     doc_id = data["id"]
 
-    chunks  = SPLITTER.split_text(data["text"])
+    chunks = SPLITTER.split_text(data["text"])
     vectors = MODEL.encode(chunks).tolist()
 
     payload = {

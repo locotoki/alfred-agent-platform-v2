@@ -33,6 +33,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+
 class MetadataUpdater:
     """Class to update metadata in markdown files."""
 
@@ -87,9 +88,7 @@ class MetadataUpdater:
             has_metadata = len(existing_metadata) > 0
 
             if has_metadata and not self.force:
-                logger.info(
-                    f"File already has metadata (use --force to update): {file_path}"
-                )
+                logger.info(f"File already has metadata (use --force to update): {file_path}")
                 self.skipped_files.append(file_path)
                 return False
 
@@ -119,9 +118,7 @@ class MetadataUpdater:
                         r"^# .+\n\n(\*.+\*\n\*.+\*\n\*.+\*\n)", content, re.MULTILINE
                     )
                     if metadata_block:
-                        updated_content = content.replace(
-                            metadata_block.group(1), new_metadata
-                        )
+                        updated_content = content.replace(metadata_block.group(1), new_metadata)
             else:
                 # Insert new metadata after title
                 updated_content = (
@@ -241,10 +238,9 @@ class MetadataUpdater:
                     md_files.append(os.path.join(root, file))
         return md_files
 
+
 def main():
-    parser = argparse.ArgumentParser(
-        description="Update metadata in markdown documentation files"
-    )
+    parser = argparse.ArgumentParser(description="Update metadata in markdown documentation files")
     parser.add_argument("path", help="File or directory to process")
     parser.add_argument("--owner", default="Documentation Team", help="Document owner")
     parser.add_argument(
@@ -261,9 +257,7 @@ def main():
         ],
         help="Document status",
     )
-    parser.add_argument(
-        "--force", action="store_true", help="Overwrite existing metadata"
-    )
+    parser.add_argument("--force", action="store_true", help="Overwrite existing metadata")
     parser.add_argument(
         "--dry-run", action="store_true", help="Show changes without modifying files"
     )
@@ -303,6 +297,7 @@ def main():
             print("\n" + report)
     else:
         updater.generate_report(report_path)
+
 
 if __name__ == "__main__":
     main()

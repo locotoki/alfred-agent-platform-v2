@@ -70,6 +70,7 @@ INTERNAL_LINK_PATTERN = re.compile(r"\[([^\]]+)\]\(([^)]+)\)")
 METADATA_PATTERN = re.compile(r"\*\*([^:]+):\*\*\s*(.*?)(?:\s{2,}|\n)", re.MULTILINE)
 TITLE_PATTERN = re.compile(r"^#\s+(.+)$", re.MULTILINE)
 
+
 @dataclass
 class ValidationIssue:
     """Represents a validation issue found in a document."""
@@ -81,6 +82,7 @@ class ValidationIssue:
     suggestion: Optional[str] = None
     severity: str = "warning"  # "error", "warning", or "info"
 
+
 @dataclass
 class ValidationResult:
     """Collects validation results for a document."""
@@ -91,14 +93,13 @@ class ValidationResult:
     metadata: Dict[str, str]
     statistics: Dict[str, Any]
 
+
 class DocumentValidator:
     """Validates Markdown documentation files against the Alfred Agent Platform
     standards.
     """
 
-    def __init__(
-        self, base_path: str, check_links: bool = False, verbose: bool = False
-    ):
+    def __init__(self, base_path: str, check_links: bool = False, verbose: bool = False):
         """Initialize the validator.
 
         Args:
@@ -423,9 +424,7 @@ class DocumentValidator:
         """
         # Find headings that appear multiple times
         potential_duplicates = {
-            heading: count
-            for heading, count in self.heading_counts.items()
-            if count > 1
+            heading: count for heading, count in self.heading_counts.items() if count > 1
         }
 
         if not potential_duplicates:
@@ -465,22 +464,13 @@ class DocumentValidator:
 
         """
         error_count = sum(
-            1
-            for result in self.results
-            for issue in result.issues
-            if issue.severity == "error"
+            1 for result in self.results for issue in result.issues if issue.severity == "error"
         )
         warning_count = sum(
-            1
-            for result in self.results
-            for issue in result.issues
-            if issue.severity == "warning"
+            1 for result in self.results for issue in result.issues if issue.severity == "warning"
         )
         info_count = sum(
-            1
-            for result in self.results
-            for issue in result.issues
-            if issue.severity == "info"
+            1 for result in self.results for issue in result.issues if issue.severity == "info"
         )
 
         valid_count = sum(1 for result in self.results if result.is_valid)
@@ -540,11 +530,7 @@ class DocumentValidator:
             sorted_issues = sorted(
                 result.issues,
                 key=lambda i: (
-                    (
-                        0
-                        if i.severity == "error"
-                        else (1 if i.severity == "warning" else 2)
-                    ),
+                    (0 if i.severity == "error" else (1 if i.severity == "warning" else 2)),
                     i.line_number,
                 ),
             )
@@ -572,12 +558,10 @@ class DocumentValidator:
                 report.append("")
 
                 for issue in [i for i in sorted_issues if i.suggestion]:
-                    report.append(
-                        f"- **Line {issue.line_number}** ({issue.issue_type}):"
-                    )
-                    report.append(f"  ```")
+                    report.append(f"- **Line {issue.line_number}** ({issue.issue_type}):")
+                    report.append("  ```")
                     report.append(f"  {issue.suggestion}")
-                    report.append(f"  ```")
+                    report.append("  ```")
 
                 report.append("")
 
@@ -611,6 +595,7 @@ class DocumentValidator:
 
         return report_path
 
+
 def main():
     parser = argparse.ArgumentParser(
         description="Validate documentation against Alfred Agent Platform standards",
@@ -618,16 +603,10 @@ def main():
         epilog=__doc__,
     )
 
-    parser.add_argument(
-        "path", nargs="?", default=None, help="Path to documentation directory"
-    )
+    parser.add_argument("path", nargs="?", default=None, help="Path to documentation directory")
     parser.add_argument("--single-file", help="Validate a single file")
-    parser.add_argument(
-        "--report", default="validation_report.md", help="Output report to file"
-    )
-    parser.add_argument(
-        "--fix", action="store_true", help="Generate fixes for common issues"
-    )
+    parser.add_argument("--report", default="validation_report.md", help="Output report to file")
+    parser.add_argument("--fix", action="store_true", help="Generate fixes for common issues")
     parser.add_argument(
         "--fix-metadata",
         action="store_true",
@@ -639,12 +618,8 @@ def main():
         help="Specify the owner for metadata fixes",
     )
     parser.add_argument("--verbose", action="store_true", help="Show detailed output")
-    parser.add_argument(
-        "--check-links", action="store_true", help="Perform link validation"
-    )
-    parser.add_argument(
-        "--dry-run", action="store_true", help="Show changes without making them"
-    )
+    parser.add_argument("--check-links", action="store_true", help="Perform link validation")
+    parser.add_argument("--dry-run", action="store_true", help="Show changes without making them")
     parser.add_argument(
         "--batch", action="store_true", help="Run in batch mode on an entire directory"
     )
@@ -670,9 +645,7 @@ def main():
 
     # Fix metadata if requested
     if args.fix_metadata:
-        metadata_fixer = MetadataFixer(
-            owner=args.owner, dry_run=args.dry_run, verbose=args.verbose
-        )
+        metadata_fixer = MetadataFixer(owner=args.owner, dry_run=args.dry_run, verbose=args.verbose)
 
         if args.single_file:
             metadata_fixer.fix_single_file(args.single_file)
@@ -698,6 +671,7 @@ def main():
         # Return error code if any errors found
         if any(not result.is_valid for result in validator.results):
             sys.exit(1)
+
 
 class MetadataFixer:
     """A class to automatically add or fix metadata in Markdown documentation
@@ -727,19 +701,13 @@ class MetadataFixer:
         # Alternative metadata patterns that might be present in different formats
         self.alt_metadata_patterns = [
             re.compile(r"^(\w+):\s*(.*?)$", re.MULTILINE),  # Simple key: value format
-            re.compile(
-                r"^<!--\s*(\w+):\s*(.*?)\s*-->$", re.MULTILINE
-            ),  # HTML comment format
-            re.compile(
-                r"^---\s*$(.+?)^---\s*$", re.DOTALL | re.MULTILINE
-            ),  # YAML frontmatter
+            re.compile(r"^<!--\s*(\w+):\s*(.*?)\s*-->$", re.MULTILINE),  # HTML comment format
+            re.compile(r"^---\s*$(.+?)^---\s*$", re.DOTALL | re.MULTILINE),  # YAML frontmatter
         ]
 
     def extract_yaml_frontmatter(self, content: str) -> Dict[str, str]:
         """Extract metadata from YAML frontmatter."""
-        frontmatter_match = re.search(
-            r"^---\s*$(.+?)^---\s*$", content, re.DOTALL | re.MULTILINE
-        )
+        frontmatter_match = re.search(r"^---\s*$(.+?)^---\s*$", content, re.DOTALL | re.MULTILINE)
         if not frontmatter_match:
             return {}
 
@@ -901,11 +869,7 @@ class MetadataFixer:
                 if re.match(r"\*\*[^:]+:\*\*", line) and not in_metadata:
                     metadata_start = i
                     in_metadata = True
-                elif (
-                    in_metadata
-                    and not re.match(r"\*\*[^:]+:\*\*", line)
-                    and line.strip()
-                ):
+                elif in_metadata and not re.match(r"\*\*[^:]+:\*\*", line) and line.strip():
                     metadata_end = i
                     break
 
@@ -915,9 +879,7 @@ class MetadataFixer:
             if metadata_start is not None and metadata_end is not None:
                 # Replace the metadata block
                 new_lines = (
-                    lines[:metadata_start]
-                    + new_metadata_block.split("\n")
-                    + lines[metadata_end:]
+                    lines[:metadata_start] + new_metadata_block.split("\n") + lines[metadata_end:]
                 )
                 new_content = "\n".join(new_lines)
             else:
@@ -950,9 +912,7 @@ class MetadataFixer:
                 new_content = "\n".join(lines[skip_to:])
             else:  # comment format
                 # Remove HTML comment metadata
-                new_content = re.sub(
-                    r"^<!--\s*\w+:\s*.*?\s*-->$", "", content, flags=re.MULTILINE
-                )
+                new_content = re.sub(r"^<!--\s*\w+:\s*.*?\s*-->$", "", content, flags=re.MULTILINE)
 
             # Insert title and metadata after the title
             if title_match:
@@ -1070,6 +1030,7 @@ class MetadataFixer:
 
         for file_path in self.fixed_files:
             logger.info(f"  - {file_path}")
+
 
 if __name__ == "__main__":
     main()

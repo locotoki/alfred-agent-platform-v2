@@ -5,7 +5,6 @@ Slack bot implementation with Socket Mode and Redis integration
 import asyncio
 import logging
 import os
-import re
 from contextlib import asynccontextmanager
 
 import redis.asyncio as redis

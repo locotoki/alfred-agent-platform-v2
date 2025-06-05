@@ -45,7 +45,7 @@ services:
       file: docker-compose.yml
       service: llm-service
     healthcheck:
-      start_period: 45s
+      start_period: 60s
       retries: 5
   model-router:
     extends:
@@ -85,6 +85,32 @@ services:
     extends:
       file: docker-compose.yml
       service: pubsub-metrics
+  vector-db:
+    extends:
+      file: docker-compose.yml
+      service: vector-db
+    healthcheck:
+      start_period: 60s
+      retries: 5
+  vector-ingest:
+    extends:
+      file: docker-compose.yml
+      service: vector-ingest
+    depends_on:
+      vector-db:
+        condition: service_healthy
+      pubsub-emulator:
+        condition: service_started
+    healthcheck:
+      interval: 30s
+      timeout: 20s
+      retries: 5
+      start_period: 60s
+      test:
+      - CMD
+      - curl
+      - -f
+      - http://localhost:8000/health
 
 networks:
   alfred-network:

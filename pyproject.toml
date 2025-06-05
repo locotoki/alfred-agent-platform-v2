@@ -89,3 +89,9 @@ exclude = [
 [[tool.mypy.overrides]]
 module = "slack-app.*"
 ignore_errors = true
+
+[tool.ruff.lint]
+ignore = ["D401"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["D400","D401","F401"]
