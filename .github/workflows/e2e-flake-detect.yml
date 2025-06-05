@@ -1,0 +1,11 @@
+name: e2e-flake-detect
+on: workflow_run
+permissions: contents: read
+jobs:
+  analyze:
+    if: github.event.workflow_run.conclusion == 'failure'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Skip (rewrite in progress)
+        run: echo "Detector rewrite pending (#651)"; exit 0
