@@ -1,9 +1,12 @@
 from fastapi import FastAPI, Response
+
 app = FastAPI()
+
 
 @app.get("/health")
 def health():
-    return {"status":"ok"}
+    return {"status": "ok"}
+
 
 """Vector ingestion worker with CloudEvents support."""
 
