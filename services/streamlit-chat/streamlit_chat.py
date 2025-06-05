@@ -42,4 +42,3 @@ if st.button("Send", type="primary"):
         st.info(f"Message sent: {message}")
     else:
         st.warning("Please enter a message")
-
