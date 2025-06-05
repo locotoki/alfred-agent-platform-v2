@@ -1478,6 +1478,76 @@ services:
       com.docker.compose.project: alfred
       com.docker.compose.group: agents
       com.docker.compose.service: slack-bot
+  # FastAPI stub services for extras profile
+  agent-atlas-stub:
+    build:
+      context: services/agent-atlas
+    container_name: agent-atlas-stub
+    ports:
+    - 8081:8080
+    healthcheck:
+      test:
+      - CMD
+      - curl
+      - -f
+      - http://agent-atlas-stub:8080/health
+      interval: 10s
+      start_period: 20s
+    profiles:
+    - extras
+    restart: unless-stopped
+    networks:
+    - alfred-network
+    labels:
+      com.docker.compose.project: alfred
+      com.docker.compose.group: agents
+      com.docker.compose.service: agent-atlas-stub
+  agent-social-stub:
+    build:
+      context: services/agent-social
+    container_name: agent-social-stub
+    ports:
+    - 8083:8080
+    healthcheck:
+      test:
+      - CMD
+      - curl
+      - -f
+      - http://agent-social-stub:8080/health
+      interval: 10s
+      start_period: 20s
+    profiles:
+    - extras
+    restart: unless-stopped
+    networks:
+    - alfred-network
+    labels:
+      com.docker.compose.project: alfred
+      com.docker.compose.group: agents
+      com.docker.compose.service: agent-social-stub
+  agent-rag-stub:
+    build:
+      context: services/agent-rag
+    container_name: agent-rag-stub
+    ports:
+    - 8084:8080
+    healthcheck:
+      test:
+      - CMD
+      - curl
+      - -f
+      - http://agent-rag-stub:8080/health
+      interval: 10s
+      start_period: 20s
+    profiles:
+    - extras
+    restart: unless-stopped
+    networks:
+    - alfred-network
+    labels:
+      com.docker.compose.project: alfred
+      com.docker.compose.group: agents
+      com.docker.compose.service: agent-rag-stub
 volumes:
   redis-data:
     name: alfred-redis-data
