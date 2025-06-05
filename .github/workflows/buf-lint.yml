@@ -1,0 +1,11 @@
+name: proto-lint
+on: [pull_request]
+jobs:
+  buf:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: bufbuild/buf-action@v1
+        with:
+          input: .
+          buf_command: lint

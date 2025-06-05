@@ -1,0 +1,1 @@
+buf generate --template '{"version":"v1","plugins":[{"name":"protoc-gen-doc","out":"docs/event-catalog","opt":"markdown,mode=grpc"}]}' schemas
