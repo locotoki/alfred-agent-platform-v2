@@ -1,1 +1,3 @@
-schemas
+version: v1
+directories:
+  - schemas
