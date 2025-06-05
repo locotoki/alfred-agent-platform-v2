@@ -1,5 +1,5 @@
 syntax = "proto3";
-package agent_rag;
+package agent_rag.v1;
 
 message QueryRequest {
   string id        = 1;
