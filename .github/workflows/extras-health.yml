@@ -1,0 +1,167 @@
+name: Extras Profile Health Check
+
+on:
+  pull_request:
+    paths:
+      - 'services/agent-atlas/**'
+      - 'services/agent-social/**' 
+      - 'services/agent-rag/**'
+      - 'docker-compose*.yml'
+  workflow_dispatch:
+
+jobs:
+  extras-health-check:
+    name: Extras Health Check
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      
+      - name: Start extras profile services
+        run: |
+          echo "🚀 Starting services with extras profile..."
+          
+          # Start services with extras profile
+          docker-compose --profile extras up -d --build
+          
+          # Wait for services to start
+          echo "⏳ Waiting for services to start..."
+          sleep 30
+      
+      - name: Check service health
+        id: health
+        run: |
+          echo "🔍 Checking extras services health..."
+          
+          # Define expected services and their health endpoints
+          declare -A services=(
+            ["agent-atlas-stub"]="http://localhost:8081/health"
+            ["agent-social-stub"]="http://localhost:8083/health"
+            ["agent-rag-stub"]="http://localhost:8084/health"
+          )
+          
+          healthy_count=0
+          total_count=${#services[@]}
+          failed_services=()
+          
+          for service in "${!services[@]}"; do
+            endpoint="${services[$service]}"
+            echo "🩺 Checking $service at $endpoint"
+            
+            # Check if service is running
+            if docker-compose ps --services --filter "status=running" | grep -q "^${service%-stub}$"; then
+              # Try to reach health endpoint
+              if curl -f -s --max-time 10 "$endpoint" > /dev/null; then
+                echo "✅ $service is healthy"
+                healthy_count=$((healthy_count + 1))
+              else
+                echo "❌ $service health check failed"
+                failed_services+=("$service")
+                
+                # Get container logs for debugging
+                echo "📋 Logs for $service:"
+                docker-compose logs --tail=20 "${service%-stub}" || true
+              fi
+            else
+              echo "❌ $service is not running"
+              failed_services+=("$service")
+            fi
+          done
+          
+          echo "health_ratio=$healthy_count/$total_count" >> $GITHUB_OUTPUT
+          echo "healthy_count=$healthy_count" >> $GITHUB_OUTPUT
+          echo "total_count=$total_count" >> $GITHUB_OUTPUT
+          
+          if [ ${#failed_services[@]} -gt 0 ]; then
+            echo "failed_services=${failed_services[*]}" >> $GITHUB_OUTPUT
+          fi
+          
+          echo "📊 Health Summary: $healthy_count/$total_count services healthy"
+      
+      - name: Validate extras profile
+        run: |
+          echo "🔍 Validating extras profile configuration..."
+          
+          # Check that extras services are properly configured
+          extras_services=$(docker-compose config --services --profile extras | sort)
+          echo "Extras profile services: $extras_services"
+          
+          # Verify expected services are present
+          expected_services="agent-atlas-stub agent-rag-stub agent-social-stub"
+          for service in $expected_services; do
+            service_name="${service%-stub}"
+            if echo "$extras_services" | grep -q "^$service_name$"; then
+              echo "✅ $service_name found in extras profile"
+            else
+              echo "❌ $service_name missing from extras profile"
+              exit 1
+            fi
+          done
+      
+      - name: Generate health report
+        if: always()
+        run: |
+          echo "📋 Generating extras health report..."
+          
+          # Create summary for GitHub
+          {
+            echo "## 🏥 Extras Profile Health Report"
+            echo ""
+            echo "| Service | Status | Endpoint |"
+            echo "|---------|--------|----------|"
+            
+            declare -A services=(
+              ["agent-atlas-stub"]="http://localhost:8081/health"
+              ["agent-social-stub"]="http://localhost:8083/health" 
+              ["agent-rag-stub"]="http://localhost:8084/health"
+            )
+            
+            for service in "${!services[@]}"; do
+              endpoint="${services[$service]}"
+              if curl -f -s --max-time 5 "$endpoint" > /dev/null 2>&1; then
+                echo "| $service | ✅ Healthy | \`$endpoint\` |"
+              else
+                echo "| $service | ❌ Failed | \`$endpoint\` |"
+              fi
+            done
+            
+            echo ""
+            echo "**Health Ratio**: ${{ steps.health.outputs.healthy_count }}/${{ steps.health.outputs.total_count }}"
+            echo ""
+            
+            if [ -n "${{ steps.health.outputs.failed_services }}" ]; then
+              echo "### ❌ Failed Services"
+              echo "${{ steps.health.outputs.failed_services }}"
+              echo ""
+            fi
+            
+            echo "**Profile**: extras"
+            echo "**Timestamp**: $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
+          } >> $GITHUB_STEP_SUMMARY
+      
+      - name: Cleanup
+        if: always()
+        run: |
+          echo "🧹 Cleaning up extras services..."
+          docker-compose --profile extras down -v --timeout 10 || true
+      
+      - name: Set job status
+        if: always()
+        run: |
+          healthy=${{ steps.health.outputs.healthy_count }}
+          total=${{ steps.health.outputs.total_count }}
+          
+          if [ "$healthy" -eq "$total" ]; then
+            echo "✅ All extras services are healthy ($healthy/$total)"
+            exit 0
+          elif [ "$healthy" -gt 0 ]; then
+            echo "⚠️ Partial health: $healthy/$total extras services healthy"
+            exit 1
+          else
+            echo "❌ No extras services are healthy (0/$total)"
+            exit 1
+          fi
