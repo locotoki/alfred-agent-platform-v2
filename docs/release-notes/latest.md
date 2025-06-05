@@ -1,1 +1,1 @@
-**Baseline updated to 11 services.** See v0.9.13-beta1 release notes for details.
+**v0.9.15-beta1** – Infra E2E harness foundation; flake detector architecture; agent-bizdev stub ready.
