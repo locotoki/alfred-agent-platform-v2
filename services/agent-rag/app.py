@@ -1,4 +1,5 @@
 """FastAPI stub for agent-rag service."""
+
 from typing import Dict
 
 from fastapi import FastAPI
