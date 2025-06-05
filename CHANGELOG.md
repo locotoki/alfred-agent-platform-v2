@@ -9,3 +9,8 @@
 - ADR-001 Auth & Tenancy (JWT, SOPS, JWKS rotation)
 - ADR-002 Event Contract Catalog (CloudEvents + Protobuf)
 - Supply-chain security scaffold: cosign signatures, SLSA 2 provenance, Trivy gate, SBOM
+
+## [v0.9.20-beta2] – 2025-06-05
+* Auth hardening: JWKS endpoint implemented and deployed
+* Pending: JWT contract test & secret-rotation docs (auto-merge in progress)
+* Security: Supply-chain workflows active and monitored

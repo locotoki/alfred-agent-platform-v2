@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#\!/usr/bin/env python3
 """CLI tool for flake detection analysis."""
 import argparse
 import json
@@ -36,7 +36,7 @@ def main() -> int:
         if len(result["flakes"]) > 5:
             print(f"   ... and {len(result['flakes']) - 5} more")
     else:
-        print("\n✅ No flaky tests detected!")
+        print("\n✅ No flaky tests detected\!")
 
     # Emit GitHub summary if requested
     if args.emit_summary:
