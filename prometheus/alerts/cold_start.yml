@@ -1,0 +1,11 @@
+groups:
+- name: bench
+  rules:
+  - alert: ColdStartHigh
+    expr: cold_start_seconds > 60
+    for: 3m
+    labels:
+      severity: warning
+    annotations:
+      summary: "Cold-start exceeds 60 s"
+      description: "The nightly benchmark cold-start SLA (>60 s) breached for 3 minutes."
