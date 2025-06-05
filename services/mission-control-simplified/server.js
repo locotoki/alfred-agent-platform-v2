@@ -46,6 +46,12 @@ app.get('/api/health', async (req, res) => {
   });
 });
 
+// Simple health endpoint for healthcheck binary
+app.get('/health', async (req, res) => {
+  console.log('Simple health check requested');
+  res.json({ status: 'ok' });
+});
+
 app.get('/api/agents/status', async (req, res) => {
   console.log('Agent status requested');
   try {

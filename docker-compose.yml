@@ -114,7 +114,7 @@ services:
       - CMD
       - wget
       - -qO-
-      - http://localhost:6333/health
+      - http://localhost:6333/readyz
     restart: unless-stopped
     deploy: null
     networks:
@@ -265,7 +265,7 @@ services:
     - 8080:8080
     environment:
     - DEBUG=true
-    - MODEL_REGISTRY_URL=http://model-registry:8079
+    - MODEL_REGISTRY_URL=http://model-registry:8080
     - PORT=8080
     - LLM_HOST=http://llm-service:11434
     healthcheck:
@@ -874,6 +874,8 @@ services:
       com.docker.compose.service: telegram-adapter
       prometheus.metrics.port: '9091'
   agent-rag:
+    profiles:
+    - extras
     build:
       context: ./services/rag-service
       dockerfile: Dockerfile
@@ -922,6 +924,8 @@ services:
       com.docker.compose.service: agent-rag
       prometheus.metrics.port: '9091'
   agent-atlas:
+    profiles:
+    - extras
     build:
       context: ./services/atlas-worker
       dockerfile: Dockerfile
@@ -978,6 +982,8 @@ services:
       com.docker.compose.service: agent-atlas
       prometheus.metrics.port: '9091'
   agent-social:
+    profiles:
+    - extras
     build:
       context: ./agents/social_intel
       dockerfile: Dockerfile
@@ -1034,6 +1040,8 @@ services:
       com.docker.compose.service: agent-social
       prometheus.metrics.port: '9091'
   agent-bizdev:
+    profiles:
+    - extras
     image: ghcr.io/locotoki/agent-bizdev:edge
     pull_policy: always
     container_name: agent-bizdev
@@ -1072,7 +1080,7 @@ services:
       prometheus.metrics.port: '9091'
   ui-chat:
     build:
-      context: ./alfred/ui
+      context: ./services/streamlit-chat
       dockerfile: Dockerfile
     container_name: ui-chat
     ports:
@@ -1082,9 +1090,6 @@ services:
     - ALFRED_API_URL=http://agent-core:8011
     - ALFRED_MODEL_ROUTER_URL=http://model-router:8080
     - ENABLE_DIRECT_INFERENCE=true
-    volumes:
-    - ./services/streamlit-chat:/app
-    working_dir: /app
     healthcheck:
       interval: 30s
       timeout: 20s
@@ -1092,9 +1097,11 @@ services:
       start_period: 45s
       test:
       - CMD
-      - healthcheck
-      - --http
-      - http://localhost:8501/health
+      - wget
+      - --no-verbose
+      - --tries=1
+      - --spider
+      - http://localhost:8080/health
     depends_on:
       agent-core:
         condition: service_started
@@ -1110,6 +1117,8 @@ services:
       com.docker.compose.service: ui-chat
       prometheus.metrics.port: '9091'
   ui-admin:
+    profiles:
+    - extras
     build:
       context: ./services/mission-control-simplified
       dockerfile: Dockerfile
@@ -1131,8 +1140,10 @@ services:
       start_period: 45s
       test:
       - CMD
-      - healthcheck
-      - --http
+      - wget
+      - --no-verbose
+      - --tries=1
+      - --spider
       - http://localhost:3007/health
     depends_on:
       agent-core:
