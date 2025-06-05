@@ -1,5 +1,7 @@
 from fastapi import FastAPI, Request, HTTPException
 from alfred_sdk.auth.verify import verify
+from cloudevents.http import CloudEvent, to_structured
+import uuid, time, requests, json
 
 app = FastAPI()
 
@@ -21,4 +23,24 @@ async def _auth(req: Request, call_next):
 def health():
     return {"status": "ok"}
 
-# TODO: implement core endpoint (e.g., /recommend, /summary, /embed)
+@app.post("/query")
+def query(req: dict):
+    # TODO: replace with real vector lookup
+    hits = [{"chunk_id": "demo", "text": "stub", "score": 0.42}]
+    ce = CloudEvent(
+        {
+            "type": "rag.query.v1",
+            "source": "agent-rag",
+            "id": str(uuid.uuid4()),
+            "time": time.strftime("%Y-%m-%dT%H:%M:%SZ"),
+            "tenant": req.get("tenant_id", "demo"),
+        },
+        {"id": req.get("id", "demo"), "hits": hits},
+    )
+    headers, body = to_structured(ce)
+    # publish to pubsub-emulator (stubbed HTTP endpoint)
+    try:
+        requests.post("http://pubsub-emulator:8681/publish", headers=headers, data=body, timeout=2)
+    except Exception as e:
+        print("publish stub: ", e, flush=True)
+    return {"hits": hits}

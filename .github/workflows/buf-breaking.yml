@@ -1,0 +1,17 @@
+name: proto-breaking
+on:
+  pull_request:
+    paths: ["schemas/**"]
+jobs:
+  breaking:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # Need fetch-depth for git history comparison
+          fetch-depth: 0
+      - uses: bufbuild/buf-setup-action@v1
+      - name: Check for breaking changes
+        run: |
+          cd schemas
+          buf breaking --against '../.git#branch=main'
