@@ -1,0 +1,2 @@
+# HELP chunks_ingested_total Number of chunks ingested
+chunks_ingested_total 0

@@ -1,0 +1,9 @@
+syntax = "proto3";
+package doc.v1;
+
+message IngestRequest {
+  string id        = 1;
+  string tenant_id = 2;
+  string text      = 3;
+  int64  ttl_days  = 4;
+}
