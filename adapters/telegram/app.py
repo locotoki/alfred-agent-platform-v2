@@ -31,7 +31,10 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 # Initialize FastAPI app
-app = FastAPI(title="Telegram Adapter", description="Telegram adapter for Alfred Agent Platform")
+app = FastAPI(
+    title="Telegram Adapter", 
+    description="Telegram adapter for Alfred Agent Platform"
+)
 
 # Add CORS middleware
 app.add_middleware(
