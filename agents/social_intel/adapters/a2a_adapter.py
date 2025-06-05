@@ -1,4 +1,4 @@
-"""A2A adapters for SocialIntelligence Agent"""
+"""A2A adapters for SocialIntelligence Agent."""
 
 from datetime import datetime
 from typing import Any, Dict

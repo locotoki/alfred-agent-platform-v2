@@ -1,3 +1,4 @@
+"""Vector ingestion worker with CloudEvents support."""
 import json
 import os
 import time
