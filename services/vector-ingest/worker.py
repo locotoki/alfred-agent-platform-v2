@@ -14,6 +14,7 @@ app = FastAPI()
 def health():
     return {"status": "ok"}
 
+
 import requests
 from cloudevents.http import CloudEvent
 from langchain.text_splitter import RecursiveCharacterTextSplitter
