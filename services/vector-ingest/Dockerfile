@@ -3,7 +3,8 @@ WORKDIR /app
 # Security: Update base packages
 RUN apt-get update && apt-get upgrade -y && apt-get clean && rm -rf /var/lib/apt/lists/*
 RUN pip install --no-cache-dir --upgrade pip
-RUN pip install --no-cache-dir langchain sentence-transformers cloudevents requests
+RUN pip install --no-cache-dir langchain sentence-transformers cloudevents requests \
+  && pip install --no-cache-dir fastapi uvicorn[standard]
 COPY worker.py .
 # Security: Run as non-root user
 RUN groupadd -r appgroup && useradd -r -g appgroup appuser
