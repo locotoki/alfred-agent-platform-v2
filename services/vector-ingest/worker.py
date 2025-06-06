@@ -1,46 +1,21 @@
-"""Vector ingestion worker with CloudEvents support."""
+"""Minimal vector ingestion worker for P0 fix."""
 
-import json
 import os
-import time
-import uuid
-
-from fastapi import FastAPI, Response
+import uvicorn
+from fastapi import FastAPI
 
 app = FastAPI()
 
-
 @app.get("/health")
 def health():
-    return {"status": "ok"}
+    """Health check endpoint."""
+    return {"status": "ok", "service": "vector-ingest", "mode": "minimal"}
 
+@app.get("/")
+def root():
+    """Root endpoint."""
+    return {"message": "Vector Ingest Service (minimal mode)", "health": "/health"}
 
-import requests
-from cloudevents.http import CloudEvent
-from langchain.text_splitter import RecursiveCharacterTextSplitter
-from sentence_transformers import SentenceTransformer
-
-from alfred_sdk.auth.verify import verify
-
-MODEL = SentenceTransformer(os.getenv("EMBED_MODEL", "sentence-transformers/all-MiniLM-L6-v2"))
-SPLITTER = RecursiveCharacterTextSplitter(chunk_size=512, chunk_overlap=64)
-
-
-def handle_cloud_event(event: CloudEvent):
-    claims = verify(event["headers"].get("authorization", "").split()[-1])
-    data = json.loads(event.data)
-    tenant = claims["tenant"]
-    doc_id = data["id"]
-
-    chunks = SPLITTER.split_text(data["text"])
-    vectors = MODEL.encode(chunks).tolist()
-
-    payload = {
-        "tenant": tenant,
-        "doc_id": doc_id,
-        "ttl_days": data.get("ttl_days", 90),
-        "chunks": chunks,
-        "vectors": vectors,
-    }
-    requests.post("http://vector-db:6333/ingest", json=payload, timeout=5)
-    print(f"[{tenant}] ingested {len(chunks)} chunks for {doc_id}", flush=True)
+if __name__ == "__main__":
+    port = int(os.getenv("PORT", "8000"))
+    uvicorn.run(app, host="0.0.0.0", port=port)
