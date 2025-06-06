@@ -1068,6 +1068,8 @@ services:
     container_name: vector-ingest
     environment:
       EMBED_MODEL: sentence-transformers/all-MiniLM-L6-v2
+    ports:
+      - "8000:8000"
     depends_on:
       vector-db:
         condition: service_healthy
