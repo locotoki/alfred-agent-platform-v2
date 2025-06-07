@@ -1,6 +1,7 @@
 """Minimal vector ingestion worker for P0 fix."""
 
 import os
+
 import uvicorn
 from fastapi import FastAPI
 
