@@ -17,9 +17,13 @@ jobs:
       - uses: actions/checkout@v4
       - name: Set up QEMU & Docker Buildx
         uses: docker/setup-buildx-action@v3
-      - name: Set image tag
+      - name: Set image tag and repo
         id: tag
         run: |
+          # Force lowercase repository name for GHCR compatibility
+          REPO_LOWER=$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')
+          echo "repo=${REPO_LOWER}" >> $GITHUB_OUTPUT
+          
           if [[ "${{ github.ref }}" =~ refs/tags/v.* ]]; then
             echo "tag=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
           elif [[ "${{ github.event_name }}" == "pull_request" ]]; then
@@ -32,20 +36,20 @@ jobs:
         with:
           context: .
           push: true
-          tags: ghcr.io/${{ github.repository_owner }}/alfred-agent-platform-v2:${{ steps.tag.outputs.tag }}
+          tags: ghcr.io/${{ steps.tag.outputs.repo }}:${{ steps.tag.outputs.tag }}
           provenance: true        # SLSA 2 attestation
       - name: Install cosign
         uses: sigstore/cosign-installer@v3
       - name: Sign image
         if: startsWith(github.ref, 'refs/tags/')
         env:
-          COSIGN_REPOSITORY: "ghcr.io/${{ github.repository_owner }}/alfred-agent-platform-v2"
+          COSIGN_REPOSITORY: "ghcr.io/${{ steps.tag.outputs.repo }}"
         run: |
-          cosign sign --yes ghcr.io/${{ github.repository_owner }}/alfred-agent-platform-v2:${{ steps.tag.outputs.tag }}
+          cosign sign --yes ghcr.io/${{ steps.tag.outputs.repo }}:${{ steps.tag.outputs.tag }}
       - name: Generate SBOM (CycloneDX+SPDX)
         uses: anchore/sbom-action@v0
         with:
-          image: ghcr.io/${{ github.repository_owner }}/alfred-agent-platform-v2:${{ steps.tag.outputs.tag }}
+          image: ghcr.io/${{ steps.tag.outputs.repo }}:${{ steps.tag.outputs.tag }}
           format: spdx-json,cyclonedx-json
       - name: Upload SBOM to release (if tag)
         if: startsWith(github.ref, 'refs/tags/')
