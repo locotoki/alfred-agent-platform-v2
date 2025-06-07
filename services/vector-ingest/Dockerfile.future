@@ -1,0 +1,21 @@
+# Vector-ingest service with ML functionality (future version)
+FROM ghcr.io/locotoki/vector-ingest-base:ml-20250607
+
+WORKDIR /app
+
+# Copy the simple ML worker (no langchain dependency)
+COPY worker_simple.py worker.py
+COPY requirements-simple.txt requirements.txt
+
+# Install any additional service-specific dependencies as root
+USER root
+RUN pip install --no-cache-dir -r requirements.txt || true
+
+# Fix permissions and switch to non-root user
+RUN chown -R alfred:alfred /app
+USER alfred
+
+ENV PYTHONUNBUFFERED=1
+ENV EMBED_MODEL="sentence-transformers/all-MiniLM-L6-v2"
+EXPOSE 8000
+CMD ["python", "worker.py"]
