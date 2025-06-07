@@ -1063,8 +1063,7 @@ services:
     profiles:
     - extras
   vector-ingest:
-    build:
-      context: services/vector-ingest
+    image: ghcr.io/locotoki/vector-ingest-base:ml-20250607
     container_name: vector-ingest
     environment:
       EMBED_MODEL: sentence-transformers/all-MiniLM-L6-v2
