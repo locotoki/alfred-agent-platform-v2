@@ -2,10 +2,10 @@ name: build-sign-push
 on:
   push:
     tags:
-      - "v*"    # run on tags as well
+      - "v*"    # run on tags (no path filter)
     branches:
       - main
-    paths: ['services/**/Dockerfile']
+    paths: ['services/**/Dockerfile']  # path filter only applies to branches
   workflow_dispatch:
 jobs:
   build-sign:
@@ -34,7 +34,8 @@ jobs:
       - name: Build & push
         uses: docker/build-push-action@v5
         with:
-          context: .
+          context: services/vector-ingest
+          file: services/vector-ingest/Dockerfile
           push: true
           tags: ghcr.io/${{ steps.tag.outputs.repo }}:${{ steps.tag.outputs.tag }}
           provenance: true        # SLSA 2 attestation
