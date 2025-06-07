@@ -1065,6 +1065,9 @@ services:
   vector-ingest:
     image: ghcr.io/locotoki/vector-ingest-base:ml-20250607
     container_name: vector-ingest
+    command: ["python3", "/app/worker_simple.py"]
+    volumes:
+      - ./services/vector-ingest/worker_simple.py:/app/worker_simple.py:ro
     environment:
       EMBED_MODEL: sentence-transformers/all-MiniLM-L6-v2
     ports:
