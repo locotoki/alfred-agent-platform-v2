@@ -4,6 +4,8 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
+from unittest.mock import Mock
+
 from libs.a2a_adapter import (
     A2AEnvelope,
     PolicyMiddleware,
@@ -106,17 +108,19 @@ class TestFinancialTaxAgent:
 
     async def test_process_tax_calculation(self, financial_tax_agent):
         """Test tax calculation processing."""
-        envelope = A2AEnvelope(
-            intent="TAX_CALCULATION",
-            content={
-                "income": 100000,
-                "jurisdiction": "US-FED",
-                "entity_type": "individual",
-                "tax_year": 2024,
-                "deductions": {"standard": 13850},
-                "credits": {},
-            },
-        )
+        # Create a mock envelope with the expected attributes
+        envelope = Mock(spec=A2AEnvelope)
+        envelope.intent = "TAX_CALCULATION"
+        envelope.task_id = "test-task-id"
+        envelope.message_id = "test-message-id"
+        envelope.content = {
+            "income": 100000,
+            "jurisdiction": "US-FED",
+            "entity_type": "individual",
+            "tax_year": 2024,
+            "deductions": {"standard": 13850},
+            "credits": {},
+        }
 
         # Set up the mock to return the expected result
         expected_result = {
@@ -145,20 +149,22 @@ class TestFinancialTaxAgent:
 
     async def test_process_financial_analysis(self, financial_tax_agent):
         """Test financial analysis processing."""
-        envelope = A2AEnvelope(
-            intent="FINANCIAL_ANALYSIS",
-            content={
-                "analysis_type": "tax_optimization",
-                "financial_statements": {
-                    "income_statement": {
-                        "revenue": 250000,
-                        "expenses": 180000,
-                    }
-                },
-                "period": "2024",
-                "industry": "Technology",
+        # Create a mock envelope with the expected attributes
+        envelope = Mock(spec=A2AEnvelope)
+        envelope.intent = "FINANCIAL_ANALYSIS"
+        envelope.task_id = "test-task-id"
+        envelope.message_id = "test-message-id"
+        envelope.content = {
+            "analysis_type": "tax_optimization",
+            "financial_statements": {
+                "income_statement": {
+                    "revenue": 250000,
+                    "expenses": 180000,
+                }
             },
-        )
+            "period": "2024",
+            "industry": "Technology",
+        }
 
         # Set up the mock to return the expected result
         expected_result = {
@@ -195,16 +201,18 @@ class TestFinancialTaxAgent:
 
     async def test_process_compliance_check(self, financial_tax_agent):
         """Test compliance check processing."""
-        envelope = A2AEnvelope(
-            intent="TAX_COMPLIANCE_CHECK",
-            content={
-                "entity_type": "corporation",
-                "jurisdiction": "US-CA",
-                "tax_year": 2024,
-                "transactions": [{"id": "tx1", "amount": 5000, "type": "sale"}],
-                "compliance_areas": ["sales_tax", "employment_tax", "corporate_tax"],
-            },
-        )
+        # Create a mock envelope with the expected attributes
+        envelope = Mock(spec=A2AEnvelope)
+        envelope.intent = "TAX_COMPLIANCE_CHECK"
+        envelope.task_id = "test-task-id"
+        envelope.message_id = "test-message-id"
+        envelope.content = {
+            "entity_type": "corporation",
+            "jurisdiction": "US-CA",
+            "tax_year": 2024,
+            "transactions": [{"id": "tx1", "amount": 5000, "type": "sale"}],
+            "compliance_areas": ["sales_tax", "employment_tax", "corporate_tax"],
+        }
 
         # Set up the mock to return the expected result
         expected_result = {
@@ -237,16 +245,18 @@ class TestFinancialTaxAgent:
 
     async def test_process_rate_lookup(self, financial_tax_agent):
         """Test tax rate lookup processing."""
-        envelope = A2AEnvelope(
-            intent="RATE_SHEET_LOOKUP",
-            content={
-                "jurisdiction": "US-CA",
-                "tax_year": 2024,
-                "entity_type": "individual",
-                "income_level": 150000,
-                "special_categories": ["capital_gains"],
-            },
-        )
+        # Create a mock envelope with the expected attributes
+        envelope = Mock(spec=A2AEnvelope)
+        envelope.intent = "RATE_SHEET_LOOKUP"
+        envelope.task_id = "test-task-id"
+        envelope.message_id = "test-message-id"
+        envelope.content = {
+            "jurisdiction": "US-CA",
+            "tax_year": 2024,
+            "entity_type": "individual",
+            "income_level": 150000,
+            "special_categories": ["capital_gains"],
+        }
 
         # Set up the mock to return the expected result
         expected_result = {
@@ -290,7 +300,12 @@ class TestFinancialTaxAgent:
 
     async def test_error_handling(self, financial_tax_agent):
         """Test error handling in process_task."""
-        envelope = A2AEnvelope(intent="INVALID_INTENT", content={})
+        # Create a mock envelope with the expected attributes
+        envelope = Mock(spec=A2AEnvelope)
+        envelope.intent = "INVALID_INTENT"
+        envelope.task_id = "test-task-id"
+        envelope.message_id = "test-message-id"
+        envelope.content = {}
 
         # Set up the mock to raise an exception
         financial_tax_agent.process_task.side_effect = ValueError("Unsupported intent")
