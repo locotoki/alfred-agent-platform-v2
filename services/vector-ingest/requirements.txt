@@ -1,0 +1,11 @@
+# Vector-ingest service dependencies
+fastapi>=0.110.2
+uvicorn[standard]>=0.29.0
+requests>=2.31.0
+cloudevents>=1.10.0
+langchain-core>=0.1.25
+langchain-community>=0.2.0
+langchain>=0.1.7
+sentence-transformers>=2.2.0
+structlog>=24.1.0
+prometheus-client>=0.20.0

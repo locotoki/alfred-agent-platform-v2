@@ -1,0 +1,18 @@
+# Vector-ingest service with ML functionality (no langchain)
+FROM alfred-python-ml:latest
+
+WORKDIR /app
+
+# Copy the simple worker implementation
+COPY worker_simple.py worker.py
+
+# Install any additional service-specific dependencies
+COPY requirements.txt* ./
+RUN if [ -f requirements.txt ]; then pip install --no-cache-dir -r requirements.txt || true; fi
+
+# Ensure correct permissions
+USER alfred
+
+ENV PYTHONUNBUFFERED=1
+EXPOSE 8000
+CMD ["python", "worker.py"]
