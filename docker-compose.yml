@@ -31,29 +31,29 @@ services:
     image: redis:7-alpine
     container_name: redis
     ports:
-    - 6379:6379
+      - 6379:6379
     environment:
-    - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
     volumes:
-    - redis-data:/data
+      - redis-data:/data
     command:
-    - redis-server
-    - --requirepass
-    - ${REDIS_PASSWORD}
+      - redis-server
+      - --requirepass
+      - ${REDIS_PASSWORD}
     healthcheck:
       interval: 30s
       timeout: 5s
       retries: 3
       start_period: 45s
       test:
-      - CMD
-      - redis-cli
-      - -a
-      - ${REDIS_PASSWORD}
-      - ping
+        - CMD
+        - redis-cli
+        - -a
+        - ${REDIS_PASSWORD}
+        - ping
     restart: unless-stopped
     networks:
-    - alfred-network
+      - alfred-network
     deploy: null
     labels:
       com.docker.compose.project: alfred
@@ -63,13 +63,13 @@ services:
     image: oliver006/redis_exporter:v1.62.0-alpine
     container_name: redis-exporter
     ports:
-    - 9101:9121
+      - 9101:9121
     environment:
       REDIS_ADDR: redis:6379
       REDIS_PASSWORD: ${REDIS_PASSWORD}
     command:
-    - --redis.addr=redis://:${REDIS_PASSWORD}@redis:6379
-    - --web.listen-address=:9121
+      - --redis.addr=redis://:${REDIS_PASSWORD}@redis:6379
+      - --web.listen-address=:9121
     depends_on:
       redis:
         condition: service_healthy
@@ -79,13 +79,13 @@ services:
       retries: 3
       start_period: 30s
       test:
-      - CMD
-      - sh
-      - -c
-      - wget -qO- http://localhost:9121/metrics | grep -q '^redis_up 1'
+        - CMD
+        - sh
+        - -c
+        - wget -qO- http://localhost:9121/metrics | grep -q '^redis_up 1'
     restart: unless-stopped
     networks:
-    - alfred-network
+      - alfred-network
     labels:
       com.docker.compose.project: alfred
       com.docker.compose.group: infrastructure
@@ -95,30 +95,21 @@ services:
     image: qdrant/qdrant:v1.7.4
     container_name: vector-db
     ports:
-    - 6333:6333
-    - 6334:6334
-    - 9102:6333
+      - 6333:6333
+      - 6334:6334
+      - 9102:6333
     volumes:
-    - vector-db-data:/qdrant/storage
+      - vector-db-data:/qdrant/storage
     environment:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      QDRANT__STORAGE__ROOT_PATH: /qdrant/storage
     depends_on:
       db-postgres:
         condition: service_healthy
-    healthcheck:
-      interval: 30s
-      timeout: 5s
-      retries: 3
-      start_period: 60s
-      test:
-      - CMD
-      - wget
-      - -qO-
-      - http://localhost:6333/health
     restart: unless-stopped
     deploy: null
     networks:
-    - alfred-network
+      - alfred-network
     labels:
       com.docker.compose.project: alfred
       com.docker.compose.group: infrastructure
@@ -128,29 +119,29 @@ services:
     image: gcr.io/google.com/cloudsdktool/cloud-sdk:latest
     container_name: pubsub-emulator
     command:
-    - gcloud
-    - beta
-    - emulators
-    - pubsub
-    - start
-    - --host-port=0.0.0.0:8085
-    - --project=${ALFRED_PROJECT_ID:-alfred-agent-platform}
+      - gcloud
+      - beta
+      - emulators
+      - pubsub
+      - start
+      - --host-port=0.0.0.0:8085
+      - --project=${ALFRED_PROJECT_ID:-alfred-agent-platform}
     ports:
-    - 8085:8085
+      - 8085:8085
     healthcheck:
       interval: 30s
       timeout: 20s
       retries: 5
       start_period: 45s
       test:
-      - CMD
-      - curl
-      - -f
-      - http://localhost:8085/v1/projects/alfred-agent-platform/topics
+        - CMD
+        - curl
+        - -f
+        - http://localhost:8085/v1/projects/alfred-agent-platform/topics
     restart: unless-stopped
     deploy: null
     networks:
-    - alfred-network
+      - alfred-network
     labels:
       com.docker.compose.project: alfred
       com.docker.compose.group: infrastructure
@@ -162,27 +153,27 @@ services:
     image: pubsub-metrics:latest
     container_name: pubsub-metrics
     ports:
-    - 9103:9103
+      - 9103:9103
     environment:
-    - PUBSUB_URL=http://pubsub-emulator:8085
-    - PROJECT_ID=${ALFRED_PROJECT_ID:-alfred-agent-platform}
-    - PORT=9103
+      - PUBSUB_URL=http://pubsub-emulator:8085
+      - PROJECT_ID=${ALFRED_PROJECT_ID:-alfred-agent-platform}
+      - PORT=9103
     healthcheck:
       interval: 30s
       timeout: 20s
       retries: 5
       start_period: 45s
       test:
-      - CMD
-      - curl
-      - -fs
-      - http://localhost:9103/health
+        - CMD
+        - curl
+        - -fs
+        - http://localhost:9103/health
     depends_on:
       pubsub-emulator:
         condition: service_started
     restart: unless-stopped
     networks:
-    - alfred-network
+      - alfred-network
     labels:
       com.docker.compose.project: alfred
       com.docker.compose.group: infrastructure
@@ -193,25 +184,25 @@ services:
     container_name: llm-service
     mem_limit: 1g
     ports:
-    - 11434:11434
+      - 11434:11434
     volumes:
-    - llm-service-data:/root/.ollama
+      - llm-service-data:/root/.ollama
     environment:
       OPENAI_API_KEY: ${OPENAI_API_KEY}
     command:
-    - serve
+      - serve
     healthcheck:
       interval: 30s
       timeout: 5s
       retries: 3
       start_period: 120s
       test:
-      - CMD-SHELL
-      - "ollama list || exit 1"
+        - CMD-SHELL
+        - "ollama list || exit 1"
     restart: unless-stopped
     deploy: null
     networks:
-    - alfred-network
+      - alfred-network
     labels:
       com.docker.compose.project: alfred
       com.docker.compose.group: llm
@@ -224,24 +215,24 @@ services:
     image: model-registry:latest
     container_name: model-registry
     ports:
-    - 8079:8080
+      - 8079:8080
     environment:
-    - DEBUG=true
-    - DATABASE_URL=postgresql+asyncpg://postgres:postgres@db-postgres:5432/postgres
-    - OLLAMA_URL=http://llm-service:11434
-    - OPENAI_API_KEY=${ALFRED_OPENAI_API_KEY:-sk-mock-key-for-development-only}
-    - ANTHROPIC_API_KEY=${ALFRED_ANTHROPIC_API_KEY:-}
-    - PORT=8080
+      - DEBUG=true
+      - DATABASE_URL=postgresql+asyncpg://postgres:postgres@db-postgres:5432/postgres
+      - OLLAMA_URL=http://llm-service:11434
+      - OPENAI_API_KEY=${ALFRED_OPENAI_API_KEY:-sk-mock-key-for-development-only}
+      - ANTHROPIC_API_KEY=${ALFRED_ANTHROPIC_API_KEY:-}
+      - PORT=8080
     healthcheck:
       interval: 10s
       timeout: 5s
       retries: 3
       start_period: 20s
       test:
-      - CMD
-      - curl
-      - -f
-      - http://model-registry:8080/health
+        - CMD
+        - curl
+        - -f
+        - http://model-registry:8080/health
     depends_on:
       db-postgres:
         condition: service_healthy
@@ -250,7 +241,7 @@ services:
     restart: unless-stopped
     deploy: null
     networks:
-    - alfred-network
+      - alfred-network
     labels:
       com.docker.compose.project: alfred
       com.docker.compose.group: llm
@@ -262,22 +253,22 @@ services:
     image: model-router:latest
     container_name: model-router
     ports:
-    - 8080:8080
+      - 8080:8080
     environment:
-    - DEBUG=true
-    - MODEL_REGISTRY_URL=http://model-registry:8079
-    - PORT=8080
-    - LLM_HOST=http://llm-service:11434
+      - DEBUG=true
+      - MODEL_REGISTRY_URL=http://model-registry:8079
+      - PORT=8080
+      - LLM_HOST=http://llm-service:11434
     healthcheck:
       interval: 30s
       timeout: 5s
       retries: 3
       start_period: 20s
       test:
-      - CMD
-      - curl
-      - -fsSL
-      - http://model-router:8080/health
+        - CMD
+        - curl
+        - -fsSL
+        - http://model-router:8080/health
     depends_on:
       model-registry:
         condition: service_started
@@ -286,7 +277,7 @@ services:
     restart: unless-stopped
     deploy: null
     networks:
-    - alfred-network
+      - alfred-network
     labels:
       com.docker.compose.project: alfred
       com.docker.compose.group: llm
@@ -295,10 +286,10 @@ services:
     build:
       context: ./bootstrap
       dockerfile: Dockerfile.postgres-hardened
-    image: postgres:15-alpine-hardened
+    image: postgres:15-alpine
     container_name: db-postgres
     ports:
-    - 127.0.0.1:5432:5432
+      - 127.0.0.1:5432:5432
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
@@ -306,54 +297,54 @@ services:
       POSTGRES_HOST_AUTH_METHOD: scram-sha-256
       POSTGRES_INITDB_ARGS: --auth-host=scram-sha-256 --auth-local=scram-sha-256
     volumes:
-    - db-postgres-data:/var/lib/postgresql/data
-    - ./migrations/supabase:/docker-entrypoint-initdb.d:ro
-    - ./bootstrap:/bootstrap:ro
+      - db-postgres-data:/var/lib/postgresql/data
+      - ./migrations/supabase:/docker-entrypoint-initdb.d:ro
+      - ./bootstrap:/bootstrap:ro
     command:
-    - postgres
-    - -c
-    - wal_level=logical
-    - -c
-    - max_connections=200
-    - -c
-    - listen_addresses=*
-    - -c
-    - shared_preload_libraries=pg_stat_statements
-    - -c
-    - log_statement=ddl
-    - -c
-    - log_connections=on
-    - -c
-    - log_disconnections=on
-    - -c
-    - password_encryption=scram-sha-256
+      - postgres
+      - -c
+      - wal_level=logical
+      - -c
+      - max_connections=200
+      - -c
+      - listen_addresses=*
+      - -c
+      - shared_preload_libraries=pg_stat_statements
+      - -c
+      - log_statement=ddl
+      - -c
+      - log_connections=on
+      - -c
+      - log_disconnections=on
+      - -c
+      - password_encryption=scram-sha-256
     deploy:
       resources:
         limits:
           cpus: '2'
           memory: 2G
     security_opt:
-    - no-new-privileges:true
+      - no-new-privileges:true
     cap_drop:
-    - ALL
+      - ALL
     cap_add:
-    - CHOWN
-    - SETUID
-    - SETGID
-    - FOWNER
-    - DAC_OVERRIDE
+      - CHOWN
+      - SETUID
+      - SETGID
+      - FOWNER
+      - DAC_OVERRIDE
     healthcheck:
       test:
-      - CMD
-      - pg_isready
-      - -U
-      - postgres
+        - CMD
+        - pg_isready
+        - -U
+        - postgres
       interval: 10s
       timeout: 5s
       retries: 5
     restart: unless-stopped
     networks:
-    - alfred-network
+      - alfred-network
     labels:
       com.docker.compose.project: alfred
       com.docker.compose.group: database
@@ -363,13 +354,13 @@ services:
     image: supabase/gotrue:v2.132.3
     container_name: db-auth
     ports:
-    - 9999:9999
+      - 9999:9999
     environment:
       GOTRUE_API_HOST: 0.0.0.0
       GOTRUE_API_PORT: 9999
       API_EXTERNAL_URL: ${API_EXTERNAL_URL:-http://localhost:8000}
       GOTRUE_DB_DRIVER: postgres
-      GOTRUE_DB_DATABASE_URL: postgres://${DB_USER:-postgres}:${DB_PASSWORD:-your-super-secret-password}@db-postgres:5432/${DB_NAME:-postgres}?search_path=auth
+      GOTRUE_DB_DATABASE_URL: postgres://postgres:${POSTGRES_PASSWORD}@db-postgres:5432/postgres?search_path=auth
       GOTRUE_SITE_URL: ${SITE_URL:-http://localhost:3000}
       GOTRUE_URI_ALLOW_LIST: ${ADDITIONAL_REDIRECT_URLS}
       GOTRUE_DISABLE_SIGNUP: ${DISABLE_SIGNUP:-false}
@@ -377,7 +368,7 @@ services:
       GOTRUE_JWT_AUD: authenticated
       GOTRUE_JWT_DEFAULT_GROUP_NAME: authenticated
       GOTRUE_JWT_EXP: ${JWT_EXPIRY:-3600}
-      GOTRUE_JWT_SECRET: ${DB_JWT_SECRET:-your-super-secret-jwt-token}
+      GOTRUE_JWT_SECRET: ${DB_JWT_SECRET}
       GOTRUE_EXTERNAL_EMAIL_ENABLED: ${ENABLE_EMAIL_SIGNUP:-true}
       GOTRUE_MAILER_AUTOCONFIRM: ${ENABLE_EMAIL_AUTOCONFIRM:-false}
       GOTRUE_SMTP_ADMIN_EMAIL: admin@example.com
@@ -386,20 +377,18 @@ services:
       GOTRUE_SMTP_USER: ${SMTP_USER:-}
       GOTRUE_SMTP_PASS: ${SMTP_PASS:-}
       GOTRUE_SMTP_SENDER_NAME: Alfred Auth
-    command:
-    - auth
     healthcheck:
       interval: 30s
       timeout: 20s
       retries: 5
       start_period: 45s
       test:
-      - CMD
-      - wget
-      - --no-verbose
-      - --tries=1
-      - --spider
-      - http://localhost:9999/health
+        - CMD
+        - wget
+        - --no-verbose
+        - --tries=1
+        - --spider
+        - http://localhost:9999/health
     depends_on:
       db-postgres:
         condition: service_healthy
@@ -408,12 +397,13 @@ services:
     restart: unless-stopped
     deploy: null
     networks:
-    - alfred-network
+      - alfred-network
     labels:
       com.docker.compose.project: alfred
       com.docker.compose.group: database
       com.docker.compose.service: db-auth
       prometheus.metrics.port: '9091'
+    platform: linux/amd64
   db-auth-metrics:
     build:
       context: ./alfred/metrics
@@ -421,31 +411,31 @@ services:
     image: db-metrics:latest
     container_name: db-auth-metrics
     ports:
-    - 9120:9091
+      - 9120:9091
     environment:
-    - SERVICE_NAME=db-auth
-    - SERVICE_URL=http://db-auth:9999
-    - CHECK_TYPE=http
-    - HEALTH_PATH=/health
-    - PORT=9091
+      - SERVICE_NAME=db-auth
+      - SERVICE_URL=http://db-auth:9999
+      - CHECK_TYPE=http
+      - HEALTH_PATH=/health
+      - PORT=9091
     healthcheck:
       interval: 30s
       timeout: 20s
       retries: 5
       start_period: 45s
       test:
-      - CMD
-      - wget
-      - --no-verbose
-      - --tries=1
-      - --spider
-      - http://localhost:9091/healthz
+        - CMD
+        - wget
+        - --no-verbose
+        - --tries=1
+        - --spider
+        - http://localhost:9091/healthz
     depends_on:
       db-auth:
         condition: service_started
     restart: unless-stopped
     networks:
-    - alfred-network
+      - alfred-network
     labels:
       com.docker.compose.project: alfred
       com.docker.compose.group: monitoring
@@ -455,7 +445,7 @@ services:
     image: postgrest/postgrest:v11.2.0
     container_name: db-api
     ports:
-    - 3000:3000
+      - 3000:3000
     environment:
       PGRST_DB_URI: postgres://postgres:${POSTGRES_PASSWORD}@db-postgres:5432/postgres
       PGRST_DB_SCHEMAS: public,storage,graphql_public
@@ -470,7 +460,7 @@ services:
     restart: unless-stopped
     deploy: null
     networks:
-    - alfred-network
+      - alfred-network
     labels:
       com.docker.compose.project: alfred
       com.docker.compose.group: database
@@ -482,41 +472,41 @@ services:
     image: db-metrics:latest
     container_name: db-api-metrics
     ports:
-    - 9121:9091
+      - 9121:9091
     environment:
-    - SERVICE_NAME=db-api
-    - SERVICE_URL=http://db-api:3000
-    - CHECK_TYPE=http
-    - HEALTH_PATH=/
-    - PORT=9091
+      - SERVICE_NAME=db-api
+      - SERVICE_URL=http://db-api:3000
+      - CHECK_TYPE=http
+      - HEALTH_PATH=/
+      - PORT=9091
     healthcheck:
       interval: 30s
       timeout: 20s
       retries: 5
       start_period: 45s
       test:
-      - CMD
-      - wget
-      - --no-verbose
-      - --tries=1
-      - --spider
-      - http://localhost:9091/healthz
+        - CMD
+        - wget
+        - --no-verbose
+        - --tries=1
+        - --spider
+        - http://localhost:9091/healthz
     depends_on:
       db-api:
         condition: service_started
     restart: unless-stopped
     networks:
-    - alfred-network
+      - alfred-network
     labels:
       com.docker.compose.project: alfred
       com.docker.compose.group: monitoring
       com.docker.compose.service: db-api-metrics
       prometheus.metrics.port: '9091'
   db-admin:
-    image: supabase/studio:20231123-64a766a
+    image: supabase/studio:20240326-5e5586d
     container_name: db-admin
     ports:
-    - 3001:3000
+      - 3001:3000
     environment:
       STUDIO_PG_META_URL: http://postgres-meta:8080
       POSTGRES_PASSWORD: ${DB_PASSWORD:-your-super-secret-password}
@@ -532,12 +522,12 @@ services:
       retries: 5
       start_period: 45s
       test:
-      - CMD
-      - wget
-      - --no-verbose
-      - --tries=1
-      - --spider
-      - http://localhost:3000/api/health
+        - CMD
+        - wget
+        - --no-verbose
+        - --tries=1
+        - --spider
+        - http://localhost:3000/api/health
     depends_on:
       db-postgres:
         condition: service_healthy
@@ -546,7 +536,7 @@ services:
     restart: unless-stopped
     deploy: null
     networks:
-    - alfred-network
+      - alfred-network
     labels:
       com.docker.compose.project: alfred
       com.docker.compose.group: database
@@ -558,41 +548,41 @@ services:
     image: db-metrics:latest
     container_name: db-admin-metrics
     ports:
-    - 9122:9091
+      - 9122:9091
     environment:
-    - SERVICE_NAME=db-admin
-    - SERVICE_URL=http://db-admin:3000
-    - CHECK_TYPE=http
-    - HEALTH_PATH=/health
-    - PORT=9091
+      - SERVICE_NAME=db-admin
+      - SERVICE_URL=http://db-admin:3000
+      - CHECK_TYPE=http
+      - HEALTH_PATH=/health
+      - PORT=9091
     healthcheck:
       interval: 30s
       timeout: 20s
       retries: 5
       start_period: 45s
       test:
-      - CMD
-      - wget
-      - --no-verbose
-      - --tries=1
-      - --spider
-      - http://localhost:9091/healthz
+        - CMD
+        - wget
+        - --no-verbose
+        - --tries=1
+        - --spider
+        - http://localhost:9091/healthz
     depends_on:
       db-admin:
         condition: service_started
     restart: unless-stopped
     networks:
-    - alfred-network
+      - alfred-network
     labels:
       com.docker.compose.project: alfred
       com.docker.compose.group: monitoring
       com.docker.compose.service: db-admin-metrics
       prometheus.metrics.port: '9091'
   db-realtime:
-    image: supabase/realtime:v2.25.35
+    image: supabase/realtime:v2.27.5
     container_name: db-realtime
     ports:
-    - 4000:4000
+      - 4000:4000
     environment:
       PORT: 4000
       DB_HOST: db-postgres
@@ -618,15 +608,15 @@ services:
       retries: 5
       start_period: 45s
       test:
-      - CMD-SHELL
-      - nc -z localhost 4000 || exit 1
+        - CMD-SHELL
+        - nc -z localhost 4000 || exit 1
     depends_on:
       db-postgres:
         condition: service_healthy
     restart: unless-stopped
     deploy: null
     networks:
-    - alfred-network
+      - alfred-network
     labels:
       com.docker.compose.project: alfred
       com.docker.compose.group: database
@@ -638,30 +628,30 @@ services:
     image: db-metrics:latest
     container_name: db-realtime-metrics
     ports:
-    - 9123:9091
+      - 9123:9091
     environment:
-    - SERVICE_NAME=db-realtime
-    - SERVICE_URL=db-realtime:4000
-    - CHECK_TYPE=tcp
-    - PORT=9091
+      - SERVICE_NAME=db-realtime
+      - SERVICE_URL=db-realtime:4000
+      - CHECK_TYPE=tcp
+      - PORT=9091
     healthcheck:
       interval: 30s
       timeout: 20s
       retries: 5
       start_period: 45s
       test:
-      - CMD
-      - wget
-      - --no-verbose
-      - --tries=1
-      - --spider
-      - http://localhost:9091/healthz
+        - CMD
+        - wget
+        - --no-verbose
+        - --tries=1
+        - --spider
+        - http://localhost:9091/healthz
     depends_on:
       db-realtime:
         condition: service_started
     restart: unless-stopped
     networks:
-    - alfred-network
+      - alfred-network
     labels:
       com.docker.compose.project: alfred
       com.docker.compose.group: monitoring
@@ -671,8 +661,8 @@ services:
     image: postgres:15.5-alpine
     container_name: db-storage
     ports:
-    - 5000:5000
-    - 5001:5001
+      - 5000:5000
+      - 5001:5001
     environment:
       ANON_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImV4cCI6MTc0OTUzNjEzMH0.zcPCLGlqF3YHBP-gTlXOQ2zjV-h3VmxbThiYEg2I5io
       SERVICE_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoic2VydmljZV9yb2xlIiwiZXhwIjoxNzQ5NTM2MTMwfQ.EDf3DT0Zl6qQbrLIQLwAXRWAN5kaJ5mvlAh1jm0CY-o
@@ -689,19 +679,19 @@ services:
       ENABLE_IMAGE_TRANSFORMATION: 'true'
       SKIP_MIGRATIONS: 'true'
     volumes:
-    - db-storage-data:/var/lib/storage
+      - db-storage-data:/var/lib/storage
     healthcheck:
       interval: 30s
       timeout: 20s
       retries: 5
       start_period: 30s
       test:
-      - CMD
-      - wget
-      - --no-verbose
-      - --tries=1
-      - --spider
-      - http://127.0.0.1:5001/health
+        - CMD
+        - wget
+        - --no-verbose
+        - --tries=1
+        - --spider
+        - http://127.0.0.1:5001/health
     depends_on:
       db-postgres:
         condition: service_healthy
@@ -710,7 +700,7 @@ services:
     restart: unless-stopped
     deploy: null
     networks:
-    - alfred-network
+      - alfred-network
     labels:
       com.docker.compose.project: alfred
       com.docker.compose.group: database
@@ -722,25 +712,25 @@ services:
     image: db-metrics:latest
     container_name: db-storage-metrics
     ports:
-    - 9124:9091
+      - 9124:9091
     environment:
-    - SERVICE_NAME=db-storage
-    - SERVICE_URL=http://db-storage:5001
-    - CHECK_TYPE=http
-    - HEALTH_PATH=/health
-    - PORT=9091
+      - SERVICE_NAME=db-storage
+      - SERVICE_URL=http://db-storage:5001
+      - CHECK_TYPE=http
+      - HEALTH_PATH=/health
+      - PORT=9091
     healthcheck:
       interval: 30s
       timeout: 20s
       retries: 5
       start_period: 45s
       test:
-      - CMD
-      - wget
-      - --no-verbose
-      - --tries=1
-      - --spider
-      - http://localhost:9091/healthz
+        - CMD
+        - wget
+        - --no-verbose
+        - --tries=1
+        - --spider
+        - http://localhost:9091/healthz
     depends_on:
       db-postgres:
         condition: service_healthy
@@ -748,7 +738,7 @@ services:
         condition: service_started
     restart: unless-stopped
     networks:
-    - alfred-network
+      - alfred-network
     labels:
       com.docker.compose.project: alfred
       com.docker.compose.group: monitoring
@@ -761,31 +751,31 @@ services:
     pull_policy: always
     container_name: agent-core
     ports:
-    - 8011:8011
+      - 8011:8011
     healthcheck:
       test:
-      - CMD
-      - curl
-      - -fsSL
-      - http://localhost:8011/health
+        - CMD
+        - curl
+        - -fsSL
+        - http://localhost:8011/health
       interval: 30s
       timeout: 5s
       retries: 3
     environment:
-    - ALFRED_ENVIRONMENT=development
-    - ALFRED_DEBUG=true
-    - ALFRED_MODE=default
-    - ALFRED_ENABLE_SLACK=true
-    - ALFRED_DATABASE_URL=postgresql://postgres:postgres@db-postgres:5432/postgres
-    - ALFRED_REDIS_URL=redis://redis:6379
-    - ALFRED_PUBSUB_EMULATOR_HOST=pubsub-emulator:8085
-    - ALFRED_PROJECT_ID=alfred-agent-platform
-    - ALFRED_SLACK_BOT_TOKEN=placeholder-token
-    - ALFRED_SLACK_SIGNING_SECRET=placeholder-secret
-    - ALFRED_OPENAI_API_KEY=sk-mock-key-for-development-only
-    - ALFRED_MODEL_ROUTER_URL=http://model-router:8080
+      - ALFRED_ENVIRONMENT=development
+      - ALFRED_DEBUG=true
+      - ALFRED_MODE=default
+      - ALFRED_ENABLE_SLACK=true
+      - ALFRED_DATABASE_URL=postgresql://postgres:postgres@db-postgres:5432/postgres
+      - ALFRED_REDIS_URL=redis://redis:6379
+      - ALFRED_PUBSUB_EMULATOR_HOST=pubsub-emulator:8085
+      - ALFRED_PROJECT_ID=alfred-agent-platform
+      - ALFRED_SLACK_BOT_TOKEN=placeholder-token
+      - ALFRED_SLACK_SIGNING_SECRET=placeholder-secret
+      - ALFRED_OPENAI_API_KEY=sk-mock-key-for-development-only
+      - ALFRED_MODEL_ROUTER_URL=http://model-router:8080
     volumes:
-    - ./libs:/app/libs
+      - ./libs:/app/libs
     depends_on:
       db-postgres:
         condition: service_healthy
@@ -798,7 +788,7 @@ services:
     restart: unless-stopped
     deploy: null
     networks:
-    - alfred-network
+      - alfred-network
     labels:
       com.docker.compose.project: alfred
       com.docker.compose.group: agents
@@ -844,30 +834,30 @@ services:
     image: ${ALFRED_REGISTRY:-ghcr.io}/alfred-platform/telegram-adapter:${ALFRED_VERSION:-latest}
     container_name: telegram-adapter
     ports:
-    - 3002:8080
-    - 9129:9091
+      - 3002:8080
+      - 9129:9091
     environment:
-    - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}
-    - ALFRED_ENVIRONMENT=${ALFRED_ENVIRONMENT:-development}
-    - ALFRED_LOG_LEVEL=${ALFRED_LOG_LEVEL:-INFO}
-    - ALFRED_CORE_URL=http://agent-core:8011
-    - PROMETHEUS_MULTIPROC_DIR=/tmp/prometheus
+      - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}
+      - ALFRED_ENVIRONMENT=${ALFRED_ENVIRONMENT:-development}
+      - ALFRED_LOG_LEVEL=${ALFRED_LOG_LEVEL:-INFO}
+      - ALFRED_CORE_URL=http://agent-core:8011
+      - PROMETHEUS_MULTIPROC_DIR=/tmp/prometheus
     healthcheck:
       interval: 30s
       timeout: 20s
       retries: 5
       start_period: 45s
       test:
-      - CMD
-      - curl
-      - -f
-      - http://localhost:8080/health
+        - CMD
+        - curl
+        - -f
+        - http://localhost:8080/health
     depends_on:
       redis:
         condition: service_healthy
     restart: unless-stopped
     networks:
-    - alfred-network
+      - alfred-network
     labels:
       com.docker.compose.project: alfred
       com.docker.compose.group: agents
@@ -880,31 +870,31 @@ services:
     image: atlas-rag-gateway:latest
     container_name: agent-rag
     ports:
-    - 8501:8501
-    - 9099:9091
+      - 8501:8501
+      - 9099:9091
     environment:
-    - ALFRED_QDRANT_URL=http://vector-db:6333
-    - ALFRED_QDRANT_HOST=vector-db
-    - ALFRED_REDIS_URL=redis://redis:6379/0
-    - ALFRED_DEFAULT_COLLECTION=general-knowledge
-    - ALFRED_ENABLE_COLLECTIONS=true
-    - ALFRED_AUTH_ENABLED=true
-    - ALFRED_API_KEYS=atlas:atlas-key,alfred:alfred-key,financial:financial-key,legal:legal-key,social:social-key
-    - ALFRED_RATE_LIMIT_REQUESTS=100
-    - ALFRED_RATE_LIMIT_WINDOW_SECONDS=60
-    - ALFRED_LOG_LEVEL=INFO
-    - ALFRED_LOG_AGENT_ACCESS=true
-    - ALFRED_MODEL_ROUTER_URL=http://model-router:8080
+      - ALFRED_QDRANT_URL=http://vector-db:6333
+      - ALFRED_QDRANT_HOST=vector-db
+      - ALFRED_REDIS_URL=redis://redis:6379/0
+      - ALFRED_DEFAULT_COLLECTION=general-knowledge
+      - ALFRED_ENABLE_COLLECTIONS=true
+      - ALFRED_AUTH_ENABLED=true
+      - ALFRED_API_KEYS=atlas:atlas-key,alfred:alfred-key,financial:financial-key,legal:legal-key,social:social-key
+      - ALFRED_RATE_LIMIT_REQUESTS=100
+      - ALFRED_RATE_LIMIT_WINDOW_SECONDS=60
+      - ALFRED_LOG_LEVEL=INFO
+      - ALFRED_LOG_AGENT_ACCESS=true
+      - ALFRED_MODEL_ROUTER_URL=http://model-router:8080
     healthcheck:
       interval: 30s
       timeout: 20s
       retries: 5
       start_period: 60s
       test:
-      - CMD
-      - curl
-      - -f
-      - http://localhost:8501/health
+        - CMD
+        - curl
+        - -f
+        - http://localhost:8501/health
     depends_on:
       vector-db:
         condition: service_started
@@ -915,7 +905,7 @@ services:
     restart: unless-stopped
     deploy: null
     networks:
-    - alfred-network
+      - alfred-network
     labels:
       com.docker.compose.project: alfred
       com.docker.compose.group: agents
@@ -928,37 +918,37 @@ services:
     image: atlas-worker:latest
     container_name: agent-atlas
     ports:
-    - 8000:8000
-    - 9095:9091
+      - 8000:8000
+      - 9095:9091
     environment:
-    - ALFRED_DATABASE_URL=${ALFRED_DATABASE_URL:-postgresql://${DB_USER:-postgres}:${DB_PASSWORD:-your-super-secret-password}@db-postgres:5432/${DB_NAME:-postgres}}
-    - ALFRED_SUPABASE_URL=http://db-api:3000
-    - ALFRED_SUPABASE_KEY=${SERVICE_ROLE_KEY:-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoic2VydmljZV9yb2xlIiwiZXhwIjoxNzQ5NTM2MTMwfQ.EDf3DT0Zl6qQbrLIQLwAXRWAN5kaJ5mvlAh1jm0CY-o}
-    - ALFRED_PUBSUB_EMULATOR_HOST=pubsub-emulator:8085
-    - ALFRED_PROJECT_ID=${ALFRED_PROJECT_ID:-alfred-agent-platform}
-    - PUBSUB_EMULATOR_HOST=pubsub-emulator:8085
-    - PUBSUB_PROJECT_ID=${ALFRED_PROJECT_ID:-alfred-agent-platform}
-    - GOOGLE_CLOUD_PROJECT=${ALFRED_PROJECT_ID:-alfred-agent-platform}
-    - GOOGLE_APPLICATION_CREDENTIALS=/tmp/empty-credentials.json
-    - ALFRED_GOOGLE_APPLICATION_CREDENTIALS=/tmp/empty-credentials.json
-    - ALFRED_MODEL_ROUTER_URL=http://model-router:8080
-    - ALFRED_RAG_URL=http://agent-rag:8501
-    - ALFRED_RAG_API_KEY=atlas-key
-    - OPENAI_API_KEY=${ALFRED_OPENAI_API_KEY:-sk-mock-key-for-development-only}
-    - ALFRED_OPENAI_API_KEY=${ALFRED_OPENAI_API_KEY:-sk-mock-key-for-development-only}
+      - ALFRED_DATABASE_URL=${ALFRED_DATABASE_URL:-postgresql://${DB_USER:-postgres}:${DB_PASSWORD:-your-super-secret-password}@db-postgres:5432/${DB_NAME:-postgres}}
+      - ALFRED_SUPABASE_URL=http://db-api:3000
+      - ALFRED_SUPABASE_KEY=${SERVICE_ROLE_KEY:-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoic2VydmljZV9yb2xlIiwiZXhwIjoxNzQ5NTM2MTMwfQ.EDf3DT0Zl6qQbrLIQLwAXRWAN5kaJ5mvlAh1jm0CY-o}
+      - ALFRED_PUBSUB_EMULATOR_HOST=pubsub-emulator:8085
+      - ALFRED_PROJECT_ID=${ALFRED_PROJECT_ID:-alfred-agent-platform}
+      - PUBSUB_EMULATOR_HOST=pubsub-emulator:8085
+      - PUBSUB_PROJECT_ID=${ALFRED_PROJECT_ID:-alfred-agent-platform}
+      - GOOGLE_CLOUD_PROJECT=${ALFRED_PROJECT_ID:-alfred-agent-platform}
+      - GOOGLE_APPLICATION_CREDENTIALS=/tmp/empty-credentials.json
+      - ALFRED_GOOGLE_APPLICATION_CREDENTIALS=/tmp/empty-credentials.json
+      - ALFRED_MODEL_ROUTER_URL=http://model-router:8080
+      - ALFRED_RAG_URL=http://agent-rag:8501
+      - ALFRED_RAG_API_KEY=atlas-key
+      - OPENAI_API_KEY=${ALFRED_OPENAI_API_KEY:-sk-mock-key-for-development-only}
+      - ALFRED_OPENAI_API_KEY=${ALFRED_OPENAI_API_KEY:-sk-mock-key-for-development-only}
     volumes:
-    - ./config/credentials/empty-credentials.json:/tmp/empty-credentials.json
-    - ./libs:/app/libs
+      - ./config/credentials/empty-credentials.json:/tmp/empty-credentials.json
+      - ./libs:/app/libs
     healthcheck:
       interval: 30s
       timeout: 20s
       retries: 5
       start_period: 60s
       test:
-      - CMD
-      - curl
-      - -f
-      - http://localhost:8000/health
+        - CMD
+        - curl
+        - -f
+        - http://localhost:8000/health
     depends_on:
       agent-rag:
         condition: service_started
@@ -971,7 +961,7 @@ services:
     restart: unless-stopped
     deploy: null
     networks:
-    - alfred-network
+      - alfred-network
     labels:
       com.docker.compose.project: alfred
       com.docker.compose.group: agents
@@ -984,35 +974,35 @@ services:
     image: alfred-agent-platform-v2-social-intel:latest
     container_name: agent-social
     ports:
-    - 9000:9000
-    - 9093:9091
+      - 9000:9000
+      - 9093:9091
     environment:
-    - ALFRED_ENVIRONMENT=${ALFRED_ENVIRONMENT:-development}
-    - ALFRED_DEBUG=${ALFRED_DEBUG:-true}
-    - ALFRED_DATABASE_URL=${ALFRED_DATABASE_URL:-postgresql://${DB_USER:-postgres}:${DB_PASSWORD:-your-super-secret-password}@db-postgres:5432/${DB_NAME:-postgres}}
-    - ALFRED_REDIS_URL=redis://redis:6379
-    - ALFRED_PUBSUB_EMULATOR_HOST=pubsub-emulator:8085
-    - ALFRED_PROJECT_ID=${ALFRED_PROJECT_ID:-alfred-agent-platform}
-    - ALFRED_OPENAI_API_KEY=${ALFRED_OPENAI_API_KEY:-sk-mock-key-for-development-only}
-    - ALFRED_YOUTUBE_API_KEY=${ALFRED_YOUTUBE_API_KEY:-youtube-mock-key-for-development-only}
-    - ALFRED_SUPABASE_URL=http://db-api:3000
-    - ALFRED_SUPABASE_KEY=${SERVICE_ROLE_KEY:-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoic2VydmljZV9yb2xlIiwiZXhwIjoxNzQ5NTM2MTMwfQ.EDf3DT0Zl6qQbrLIQLwAXRWAN5kaJ5mvlAh1jm0CY-o}
-    - ALFRED_RAG_URL=http://agent-rag:8501
-    - ALFRED_RAG_API_KEY=social-key
-    - ALFRED_RAG_COLLECTION=social-knowledge
-    - ALFRED_MODEL_ROUTER_URL=http://model-router:8080
+      - ALFRED_ENVIRONMENT=${ALFRED_ENVIRONMENT:-development}
+      - ALFRED_DEBUG=${ALFRED_DEBUG:-true}
+      - ALFRED_DATABASE_URL=${ALFRED_DATABASE_URL:-postgresql://${DB_USER:-postgres}:${DB_PASSWORD:-your-super-secret-password}@db-postgres:5432/${DB_NAME:-postgres}}
+      - ALFRED_REDIS_URL=redis://redis:6379
+      - ALFRED_PUBSUB_EMULATOR_HOST=pubsub-emulator:8085
+      - ALFRED_PROJECT_ID=${ALFRED_PROJECT_ID:-alfred-agent-platform}
+      - ALFRED_OPENAI_API_KEY=${ALFRED_OPENAI_API_KEY:-sk-mock-key-for-development-only}
+      - ALFRED_YOUTUBE_API_KEY=${ALFRED_YOUTUBE_API_KEY:-youtube-mock-key-for-development-only}
+      - ALFRED_SUPABASE_URL=http://db-api:3000
+      - ALFRED_SUPABASE_KEY=${SERVICE_ROLE_KEY:-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoic2VydmljZV9yb2xlIiwiZXhwIjoxNzQ5NTM2MTMwfQ.EDf3DT0Zl6qQbrLIQLwAXRWAN5kaJ5mvlAh1jm0CY-o}
+      - ALFRED_RAG_URL=http://agent-rag:8501
+      - ALFRED_RAG_API_KEY=social-key
+      - ALFRED_RAG_COLLECTION=social-knowledge
+      - ALFRED_MODEL_ROUTER_URL=http://model-router:8080
     volumes:
-    - ./libs:/app/libs
+      - ./libs:/app/libs
     healthcheck:
       interval: 30s
       timeout: 20s
       retries: 5
       start_period: 45s
       test:
-      - CMD
-      - curl
-      - -f
-      - http://localhost:9000/health
+        - CMD
+        - curl
+        - -f
+        - http://localhost:9000/health
     depends_on:
       db-postgres:
         condition: service_healthy
@@ -1027,7 +1017,7 @@ services:
     restart: unless-stopped
     deploy: null
     networks:
-    - alfred-network
+      - alfred-network
     labels:
       com.docker.compose.project: alfred
       com.docker.compose.group: agents
@@ -1038,30 +1028,30 @@ services:
       context: services/agent-bizdev
     container_name: agent-bizdev
     ports:
-    - 8012:8080
+      - 8012:8080
     environment:
-    - ALFRED_ENVIRONMENT=development
-    - ALFRED_DEBUG=true
-    - ALFRED_LOG_LEVEL=${ALFRED_LOG_LEVEL:-INFO}
+      - ALFRED_ENVIRONMENT=development
+      - ALFRED_DEBUG=true
+      - ALFRED_LOG_LEVEL=${ALFRED_LOG_LEVEL:-INFO}
     healthcheck:
       interval: 30s
       timeout: 20s
       retries: 5
       start_period: 45s
       test:
-      - CMD
-      - curl
-      - -f
-      - http://agent-bizdev:8080/health
+        - CMD
+        - curl
+        - -f
+        - http://agent-bizdev:8080/health
     restart: unless-stopped
     networks:
-    - alfred-network
+      - alfred-network
     labels:
       com.docker.compose.project: alfred
       com.docker.compose.group: agents
       com.docker.compose.service: agent-bizdev
     profiles:
-    - extras
+      - extras
   vector-ingest:
     image: ghcr.io/locotoki/vector-ingest-base:ml-20250607
     container_name: vector-ingest
@@ -1083,33 +1073,33 @@ services:
       retries: 5
       start_period: 45s
       test:
-      - CMD
-      - curl
-      - -f
-      - http://localhost:8000/health
+        - CMD
+        - curl
+        - -f
+        - http://localhost:8000/health
     restart: unless-stopped
     networks:
-    - alfred-network
+      - alfred-network
     labels:
       com.docker.compose.project: alfred
       com.docker.compose.group: ml
       com.docker.compose.service: vector-ingest
     profiles:
-    - extras
+      - extras
   ui-chat:
     build:
       context: ./alfred/ui
       dockerfile: Dockerfile
     container_name: ui-chat
     ports:
-    - 8502:8501
-    - 9098:9091
+      - 8502:8501
+      - 9098:9091
     environment:
-    - ALFRED_API_URL=http://agent-core:8011
-    - ALFRED_MODEL_ROUTER_URL=http://model-router:8080
-    - ENABLE_DIRECT_INFERENCE=true
+      - ALFRED_API_URL=http://agent-core:8011
+      - ALFRED_MODEL_ROUTER_URL=http://model-router:8080
+      - ENABLE_DIRECT_INFERENCE=true
     volumes:
-    - ./services/streamlit-chat:/app
+      - ./services/streamlit-chat:/app
     working_dir: /app
     healthcheck:
       interval: 30s
@@ -1117,10 +1107,10 @@ services:
       retries: 5
       start_period: 45s
       test:
-      - CMD
-      - healthcheck
-      - --http
-      - http://localhost:8501/health
+        - CMD
+        - healthcheck
+        - --http
+        - http://localhost:8501/health
     depends_on:
       agent-core:
         condition: service_started
@@ -1129,7 +1119,7 @@ services:
     restart: unless-stopped
     deploy: null
     networks:
-    - alfred-network
+      - alfred-network
     labels:
       com.docker.compose.project: alfred
       com.docker.compose.group: ui
@@ -1142,24 +1132,24 @@ services:
     image: mission-control-simplified:latest
     container_name: ui-admin
     ports:
-    - 3007:3007
-    - 9126:9091
+      - 3007:3007
+      - 9126:9091
     environment:
-    - ALFRED_API_URL=http://agent-core:8011
-    - ALFRED_RAG_URL=http://agent-rag:8501
-    - NEXT_PUBLIC_SOCIAL_INTEL_URL=http://agent-social:9000
-    - NODE_ENV=production
-    - PORT=3007
+      - ALFRED_API_URL=http://agent-core:8011
+      - ALFRED_RAG_URL=http://agent-rag:8501
+      - NEXT_PUBLIC_SOCIAL_INTEL_URL=http://agent-social:9000
+      - NODE_ENV=production
+      - PORT=3007
     healthcheck:
       interval: 30s
       timeout: 20s
       retries: 5
       start_period: 45s
       test:
-      - CMD
-      - healthcheck
-      - --http
-      - http://localhost:3007/health
+        - CMD
+        - healthcheck
+        - --http
+        - http://localhost:3007/health
     depends_on:
       agent-core:
         condition: service_started
@@ -1168,7 +1158,7 @@ services:
     restart: unless-stopped
     deploy: null
     networks:
-    - alfred-network
+      - alfred-network
     labels:
       com.docker.compose.project: alfred
       com.docker.compose.group: ui
@@ -1176,34 +1166,34 @@ services:
       prometheus.metrics.port: '9091'
   auth-ui:
     profiles:
-    - extras
+      - extras
     build:
       context: ./services/auth-ui
       dockerfile: Dockerfile
     image: auth-ui:latest
     container_name: auth-ui
     ports:
-    - 3006:80
+      - 3006:80
     environment:
-    - ALFRED_AUTH_URL=http://db-auth:9999
-    - ALFRED_API_URL=http://db-api:3000
+      - ALFRED_AUTH_URL=http://db-auth:9999
+      - ALFRED_API_URL=http://db-api:3000
     healthcheck:
       interval: 30s
       timeout: 20s
       retries: 5
       start_period: 45s
       test:
-      - CMD
-      - healthcheck
-      - --http
-      - http://localhost:80/health
+        - CMD
+        - healthcheck
+        - --http
+        - http://localhost:80/health
     depends_on:
       db-auth:
         condition: service_started
     restart: unless-stopped
     deploy: null
     networks:
-    - alfred-network
+      - alfred-network
     labels:
       com.docker.compose.project: alfred
       com.docker.compose.group: ui
@@ -1212,17 +1202,17 @@ services:
     image: prom/prometheus:v2.48.1
     container_name: monitoring-metrics
     ports:
-    - 9090:9090
+      - 9090:9090
     volumes:
-    - ./monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
-    - monitoring-metrics-data:/prometheus
+      - ./monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - monitoring-metrics-data:/prometheus
     healthcheck:
       test:
-      - CMD
-      - wget
-      - --spider
-      - -q
-      - http://localhost:9090/-/ready
+        - CMD
+        - wget
+        - --spider
+        - -q
+        - http://localhost:9090/-/ready
       interval: 30s
       timeout: 5s
       retries: 3
@@ -1230,7 +1220,7 @@ services:
     restart: unless-stopped
     deploy: null
     networks:
-    - alfred-network
+      - alfred-network
     labels:
       com.docker.compose.project: alfred
       com.docker.compose.group: monitoring
@@ -1239,20 +1229,20 @@ services:
     image: grafana/grafana:10.2.3
     container_name: monitoring-dashboard
     ports:
-    - 3005:3000
+      - 3005:3000
     volumes:
-    - ./monitoring/grafana/dashboards:/var/lib/grafana/dashboards
-    - ./monitoring/grafana/provisioning:/etc/grafana/provisioning
-    - monitoring-dashboard-data:/var/lib/grafana
+      - ./monitoring/grafana/dashboards:/var/lib/grafana/dashboards
+      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning
+      - monitoring-dashboard-data:/var/lib/grafana
     environment:
       GF_SECURITY_ADMIN_PASSWORD: ${MONITORING_ADMIN_PASSWORD:-admin}
     healthcheck:
       test:
-      - CMD
-      - wget
-      - --spider
-      - -q
-      - http://localhost:3000/api/health
+        - CMD
+        - wget
+        - --spider
+        - -q
+        - http://localhost:3000/api/health
       interval: 30s
       timeout: 5s
       retries: 3
@@ -1260,7 +1250,7 @@ services:
     restart: unless-stopped
     deploy: null
     networks:
-    - alfred-network
+      - alfred-network
     labels:
       com.docker.compose.project: alfred
       com.docker.compose.group: monitoring
@@ -1269,11 +1259,11 @@ services:
     image: prom/node-exporter:v1.7.0
     container_name: monitoring-node
     ports:
-    - 9100:9100
+      - 9100:9100
     volumes:
-    - /proc:/host/proc:ro
-    - /sys:/host/sys:ro
-    - /:/rootfs:ro
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
     command: null
     healthcheck:
       interval: 30s
@@ -1281,14 +1271,14 @@ services:
       retries: 5
       start_period: 45s
       test:
-      - CMD
-      - healthcheck
-      - --http
-      - http://localhost:9090/-/healthy
+        - CMD
+        - healthcheck
+        - --http
+        - http://localhost:9090/-/healthy
     restart: unless-stopped
     deploy: null
     networks:
-    - alfred-network
+      - alfred-network
     labels:
       com.docker.compose.project: alfred
       com.docker.compose.group: monitoring
@@ -1297,7 +1287,7 @@ services:
     image: prometheuscommunity/postgres-exporter:v0.15.0
     container_name: monitoring-db
     ports:
-    - 9187:9187
+      - 9187:9187
     environment:
       DATA_SOURCE_NAME: postgresql://${DB_USER:-postgres}:${DB_PASSWORD:-your-super-secret-password}@db-postgres:5432/${DB_NAME:-postgres}?sslmode=disable
     depends_on:
@@ -1309,14 +1299,14 @@ services:
       retries: 5
       start_period: 45s
       test:
-      - CMD
-      - healthcheck
-      - --http
-      - http://localhost:9187/metrics
+        - CMD
+        - healthcheck
+        - --http
+        - http://localhost:9187/metrics
     restart: unless-stopped
     deploy: null
     networks:
-    - alfred-network
+      - alfred-network
     labels:
       com.docker.compose.project: alfred
       com.docker.compose.group: monitoring
@@ -1325,7 +1315,7 @@ services:
     image: oliver006/redis_exporter:v1.55.0
     container_name: monitoring-redis
     ports:
-    - 9125:9121
+      - 9125:9121
     environment:
       REDIS_ADDR: redis:6379
     depends_on:
@@ -1337,38 +1327,38 @@ services:
       retries: 5
       start_period: 45s
       test:
-      - CMD
-      - healthcheck
-      - --http
-      - http://localhost:9125/metrics
+        - CMD
+        - healthcheck
+        - --http
+        - http://localhost:9125/metrics
     restart: unless-stopped
     deploy: null
     networks:
-    - alfred-network
+      - alfred-network
     labels:
       com.docker.compose.project: alfred
       com.docker.compose.group: monitoring
       com.docker.compose.service: monitoring-redis
   mail-server:
-    image: mailhog/mailhog:latest
+    image: mailhog/mailhog:v1.0.1
     container_name: mail-server
     ports:
-    - 1025:1025
-    - 8025:8025
+      - 1025:1025
+      - 8025:8025
     healthcheck:
-      interval: 30s
-      timeout: 20s
-      retries: 5
-      start_period: 45s
       test:
-      - CMD
-      - healthcheck
-      - --tcp
-      - localhost:1025
+        - CMD
+        - wget
+        - --spider
+        - -q
+        - http://localhost:8025/
+      interval: 15s
+      timeout: 3s
+      retries: 5
     restart: unless-stopped
     deploy: null
     networks:
-    - alfred-network
+      - alfred-network
     labels:
       com.docker.compose.project: alfred
       com.docker.compose.group: mail
@@ -1380,22 +1370,22 @@ services:
     image: ghcr.io/locotoki/hubspot-mock:latest
     container_name: hubspot-mock
     ports:
-    - 8088:8000
+      - 8088:8000
     environment:
-    - PORT=8000
+      - PORT=8000
     healthcheck:
       interval: 30s
       timeout: 20s
       retries: 5
       start_period: 45s
       test:
-      - CMD
-      - curl
-      - -f
-      - http://localhost:8000/health
+        - CMD
+        - curl
+        - -f
+        - http://localhost:8000/health
     restart: unless-stopped
     networks:
-    - alfred-network
+      - alfred-network
     labels:
       com.docker.compose.project: alfred
       com.docker.compose.service: hubspot-mock
@@ -1406,24 +1396,24 @@ services:
     image: ghcr.io/locotoki/crm-sync:latest
     container_name: crm-sync
     ports:
-    - 8096:8000
+      - 8096:8000
     environment:
-    - HUBSPOT_URL=http://hubspot-mock:8000
+      - HUBSPOT_URL=http://hubspot-mock:8000
     healthcheck:
       interval: 30s
       timeout: 20s
       retries: 5
       start_period: 45s
       test:
-      - CMD
-      - curl
-      - -f
-      - http://localhost:8000/healthz
+        - CMD
+        - curl
+        - -f
+        - http://localhost:8000/healthz
     restart: unless-stopped
     networks:
-    - alfred-network
+      - alfred-network
     depends_on:
-    - hubspot-mock
+      - hubspot-mock
     labels:
       com.docker.compose.project: alfred
       com.docker.compose.service: crm-sync
@@ -1434,39 +1424,39 @@ services:
     image: ghcr.io/locotoki/contact-ingest:latest
     container_name: contact-ingest
     ports:
-    - 8082:8081
+      - 8082:8081
     environment:
-    - CRM_SYNC_URL=http://crm-sync:8000/sync
-    - INGEST_DIR=/app/data
+      - CRM_SYNC_URL=http://crm-sync:8000/sync
+      - INGEST_DIR=/app/data
     depends_on:
-    - crm-sync
+      - crm-sync
     profiles:
-    - bizdev
+      - bizdev
     healthcheck:
       interval: 30s
       timeout: 20s
       retries: 5
       start_period: 45s
       test:
-      - CMD
-      - curl
-      - -f
-      - http://localhost:8081/healthz
+        - CMD
+        - curl
+        - -f
+        - http://localhost:8081/healthz
     restart: unless-stopped
     networks:
-    - alfred-network
+      - alfred-network
     labels:
       com.docker.compose.project: alfred
       com.docker.compose.service: contact-ingest
   db-exporter:
     image: quay.io/prometheuscommunity/postgres-exporter:latest
     depends_on:
-    - db-postgres
+      - db-postgres
     environment:
       DATA_SOURCE_NAME: postgresql://postgres:postgres@db-postgres:5432/postgres?sslmode=disable
     restart: unless-stopped
     networks:
-    - alfred-network
+      - alfred-network
     labels:
       com.docker.compose.project: alfred
       com.docker.compose.group: monitoring
@@ -1478,28 +1468,28 @@ services:
     image: ghcr.io/digital-native-ventures/slack-bot:${TAG:-edge}
     container_name: slack-bot
     ports:
-    - 3011:8000  # Using original slack-adapter port
+      - 3011:8000 # Using original slack-adapter port
     environment:
-    - SLACK_BOT_TOKEN=${SLACK_BOT_TOKEN}
-    - SLACK_SIGNING_SECRET=${SLACK_SIGNING_SECRET}
-    - SLACK_APP_TOKEN=${SLACK_APP_TOKEN}  # For Socket Mode
-    - REDIS_URL=redis://:${REDIS_PASSWORD}@redis:6379
+      - SLACK_BOT_TOKEN=${SLACK_BOT_TOKEN}
+      - SLACK_SIGNING_SECRET=${SLACK_SIGNING_SECRET}
+      - SLACK_APP_TOKEN=${SLACK_APP_TOKEN} # For Socket Mode
+      - REDIS_URL=redis://:${REDIS_PASSWORD}@redis:6379
     depends_on:
       redis:
         condition: service_healthy
     healthcheck:
       test:
-      - CMD
-      - curl
-      - -fsSL
-      - http://localhost:8000/health
+        - CMD
+        - curl
+        - -fsSL
+        - http://localhost:8000/health
       interval: 30s
       timeout: 5s
       retries: 3
       start_period: 30s
     restart: unless-stopped
     networks:
-    - alfred-network
+      - alfred-network
     labels:
       com.docker.compose.project: alfred
       com.docker.compose.group: agents
@@ -1521,4 +1511,3 @@ volumes:
     name: alfred-monitoring-dashboard-data
 networks:
   alfred-network:
-    external: true
