@@ -166,6 +166,7 @@ def policy_middleware(mock_redis):
 def http_client():
     """Provide HTTP client for E2E tests."""
     import requests
+
     return requests
 
 
@@ -173,14 +174,15 @@ def http_client():
 def wait_for_services(http_client):
     """Wait for services to be ready before running tests."""
     import time
+
     import requests
-    
+
     services_to_check = [
         ("agent-core", "http://localhost:8011/health"),
         ("db-api", "http://localhost:3000/"),
         ("pubsub-metrics", "http://localhost:9103/metrics"),
     ]
-    
+
     max_retries = 60  # 5 minutes
     for service_name, url in services_to_check:
         retries = 0
@@ -192,13 +194,13 @@ def wait_for_services(http_client):
                     break
             except (requests.ConnectionError, requests.Timeout):
                 pass
-            
+
             retries += 1
             if retries < max_retries:
                 time.sleep(5)
         else:
             pytest.skip(f"Service {service_name} not ready after {max_retries} retries")
-    
+
     return True
 
 
@@ -206,4 +208,3 @@ def wait_for_services(http_client):
 def slack_webhook_url():
     """Get Slack webhook URL from environment."""
     return os.environ.get("SLACK_WEBHOOK_URL")
-EOF < /dev/null
