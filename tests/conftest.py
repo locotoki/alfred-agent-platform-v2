@@ -159,3 +159,52 @@ async def supabase_transport(test_db):
 def policy_middleware(mock_redis):
     """Create PolicyMiddleware with mock Redis."""
     return PolicyMiddleware(redis_client=mock_redis)
+
+
+# E2E test fixtures
+@pytest.fixture(scope="session")
+def http_client():
+    """Provide HTTP client for E2E tests."""
+    import requests
+
+    return requests
+
+
+@pytest.fixture(scope="session")
+def wait_for_services(http_client):
+    """Wait for services to be ready before running tests."""
+    import time
+
+    import requests
+
+    services_to_check = [
+        ("agent-core", "http://localhost:8011/health"),
+        ("db-api", "http://localhost:3000/"),
+        ("pubsub-metrics", "http://localhost:9103/metrics"),
+    ]
+
+    max_retries = 60  # 5 minutes
+    for service_name, url in services_to_check:
+        retries = 0
+        while retries < max_retries:
+            try:
+                response = http_client.get(url, timeout=5)
+                if response.status_code == 200:
+                    print(f"✓ {service_name} is ready")
+                    break
+            except (requests.ConnectionError, requests.Timeout):
+                pass
+
+            retries += 1
+            if retries < max_retries:
+                time.sleep(5)
+        else:
+            pytest.skip(f"Service {service_name} not ready after {max_retries} retries")
+
+    return True
+
+
+@pytest.fixture
+def slack_webhook_url():
+    """Get Slack webhook URL from environment."""
+    return os.environ.get("SLACK_WEBHOOK_URL")

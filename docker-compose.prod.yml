@@ -236,35 +236,20 @@ services:
 # Docker Secrets
 secrets:
   openai_api_key:
-    external: true
   anthropic_api_key:
-    external: true
   slack_token:
-    external: true
   slack_app_token:
-    external: true
   crewai_api_key:
-    external: true
   a2a_auth_token:
-    external: true
   postgres_password:
-    external: true
   redis_password:
-    external: true
   model_registry_db_url:
-    external: true
   storage_db_url:
-    external: true
   auth_db_url:
-    external: true
   jwt_secret:
-    external: true
   operator_token:
-    external: true
   grafana_password:
-    external: true
   youtube_api_key:
-    external: true
 
 # Production Volumes
 volumes:
