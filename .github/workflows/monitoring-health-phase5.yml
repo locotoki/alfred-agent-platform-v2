@@ -363,7 +363,7 @@ jobs:
 
       - name: Upload alert rules artifact
         if: steps.create-rules.outputs.created == 'true' || steps.check-rules.outputs.exists == 'true'
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: prometheus-alert-rules
           path: monitoring/prometheus/alerts/service_health.yml
@@ -448,7 +448,7 @@ jobs:
           cat MONITORING-STATUS-REPORT.md
 
       - name: Upload status report
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: monitoring-status-report
           path: MONITORING-STATUS-REPORT.md

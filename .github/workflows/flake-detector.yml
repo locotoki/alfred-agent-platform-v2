@@ -55,7 +55,7 @@ jobs:
       
       - name: Upload test report
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: pytest-reports-${{ matrix.attempt }}
           path: reports/pytest-${{ matrix.attempt }}.json
@@ -81,7 +81,7 @@ jobs:
           python-version: '3.11'
       
       - name: Download all test reports
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           path: reports/
       
