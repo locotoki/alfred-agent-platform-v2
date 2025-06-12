@@ -1,12 +1,4 @@
-import time
-from functools import wraps
-from typing import Callable
-
-import structlog
-from prometheus_client import Counter, Gauge, Histogram
-
-logger = structlog.get_logger(__name__)
-
+import timeLFfrom functools import wrapsLFfrom typing import CallableLFLFimport structlogLFfrom prometheus_client import Counter, Gauge, HistogramLFLFlogger = structlog.get_logger(__name__)LF
 
 class MetricsCollector:
     def __init__(self, service_name: str):

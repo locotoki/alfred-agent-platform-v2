@@ -1,12 +1,6 @@
 """PubSub metrics exporter service."""
 
-import uvicorn
-from fastapi import FastAPI
-from fastapi.responses import Response
-from prometheus_client import CONTENT_TYPE_LATEST, Gauge, generate_latest
-
-app = FastAPI()
-g_start = Gauge("app_start_time_seconds", "Unix time app started")
+import uvicornLFfrom fastapi import FastAPILFfrom fastapi.responses import ResponseLFfrom prometheus_client import CONTENT_TYPE_LATEST, Gauge, generate_latestLFLFapp = FastAPI()LFg_start = Gauge("app_start_time_seconds", "Unix time app started")
 g_start.set_to_current_time()
 
 

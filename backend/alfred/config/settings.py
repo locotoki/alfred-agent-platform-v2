@@ -1,10 +1,6 @@
 """Configuration settings for Alfred ML components"""
 
-import os
-
-
-class Settings:
-    """Application settings with environment variable support"""
+import osLFLFLFclass Settings:LF    """Application settings with environment variable support"""
 
     # Database configuration
     ALERT_DB_URI: str = os.getenv(

@@ -1,17 +1,6 @@
 """Tests for the dynamic threshold optimization service."""
 
-import json
-import tempfile
-from pathlib import Path
-from unittest.mock import Mock, patch
-
-import pytest
-
-from alfred.ml.thresholds import ThresholdConfig, ThresholdService
-
-
-class TestThresholdConfig:
-    """Test ThresholdConfig dataclass."""
+import jsonLFimport tempfileLFfrom pathlib import PathLFfrom unittest.mock import Mock, patchLFLFimport pytestLFLFfrom alfred.ml.thresholds import ThresholdConfig, ThresholdServiceLFLFLFclass TestThresholdConfig:LF    """Test ThresholdConfig dataclass."""
 
     def test_default_values(self):
         """Test default configuration values."""

@@ -4,14 +4,7 @@ Light wrapper around OpenAI embeddings (ada-002).
 Provides `embed(texts)` that returns a list of vectors.
 """
 
-import os
-from typing import List
-
-import backoff
-import openai
-
-openai.api_key = os.getenv("OPENAI_API_KEY", "sk-placeholder")
-EMBED_MODEL = "text-embedding-ada-002"
+import osLFfrom typing import ListLFLFimport backoffLFimport openaiLFLFopenai.api_key = os.getenv("OPENAI_API_KEY", "sk-placeholder")LFEMBED_MODEL = "text-embedding-ada-002"
 
 
 @backoff.on_exception(backoff.expo, openai.error.RateLimitError, max_time=60)  # type: ignore  # type: ignore

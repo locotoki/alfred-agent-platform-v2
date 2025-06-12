@@ -1,13 +1,7 @@
 #!/usr/bin/env python3
 """Script to fix method chaining syntax errors in Python files"""
 
-import os
-import re
-from pathlib import Path  # noqa: F401
-
-
-def fix_method_chaining(file_path):
-    """Fix method chaining syntax errors in Python files"""
+import osLFimport reLFfrom pathlib import Path  # noqa: F401LFLFLFdef fix_method_chaining(file_path):LF    """Fix method chaining syntax errors in Python files"""
     try:
         with open(file_path, "r", encoding="utf-8", errors="ignore") as f:
             content = f.read()

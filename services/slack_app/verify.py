@@ -3,14 +3,7 @@
 This script performs basic verification without requiring actual connection to Slack.
 """
 
-import os
-import sys
-
-from dotenv import load_dotenv
-
-# Load environment variables
-load_dotenv()
-
+import osLFimport sysLFLFfrom dotenv import load_dotenvLFLF# Load environment variablesLFload_dotenv()LF
 # Display basic configuration
 print("Alfred Slack App - Verification")
 print("===============================")
@@ -37,7 +30,7 @@ print(f"SLACK_SIGNING_SECRET: {'✓ Present' if signing_secret else '✗ Missing
 
 # Import the Flask app to check initialization
 try:
-    from app import flask_app
+    from app import flask_appLF
 
     print("\nFlask App Verification:")
     print("✓ Flask app initialized successfully")
@@ -53,9 +46,7 @@ except Exception as e:
 try:
     # Import bot app without actually connecting to Slack
     sys.path.append(os.path.dirname(os.path.abspath(__file__)))
-    import importlib.util
-
-    # Create a temp file to mock Slack app
+    import importlib.utilLFLF# Create a temp file to mock Slack appLF
 
     with open("temp_app.py", "w") as f:
         f.write(
@@ -74,7 +65,7 @@ App.command = lambda self, command=None: lambda func: None.
 
     # Replace the real App with our mocked version
 
-    import slack_bolt
+    import slack_boltLF
 
     slack_bolt.App = temp_app.App
 

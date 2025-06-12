@@ -1,27 +1,4 @@
-import logging
-import os
-import threading
-from datetime import datetime
-from typing import Any, Dict, List, Optional
-
-import prometheus_client
-import uvicorn
-from fastapi import Depends, FastAPI, HTTPException
-from pydantic import BaseModel, Field
-from sqlalchemy import JSON, Column, DateTime, Integer, String, Text, select
-from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
-from sqlalchemy.ext.declarative import declarative_base
-
-# from sqlalchemy.orm import declarative_base as typed_declarative_base
-from sqlalchemy.orm import sessionmaker
-
-# Import Type annotations for SQLAlchemy
-from sqlalchemy.orm.decl_api import DeclarativeMeta
-from sqlalchemy.sql import text
-
-# Set up logging
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+import loggingLFimport osLFimport threadingLFfrom datetime import datetimeLFfrom typing import Any, Dict, List, OptionalLFLFimport prometheus_clientLFimport uvicornLFfrom fastapi import Depends, FastAPI, HTTPExceptionLFfrom pydantic import BaseModel, FieldLFfrom sqlalchemy import JSON, Column, DateTime, Integer, String, Text, selectLFfrom sqlalchemy.ext.asyncio import AsyncSession, create_async_engineLFfrom sqlalchemy.ext.declarative import declarative_baseLFLF# from sqlalchemy.orm import declarative_base as typed_declarative_baseLFfrom sqlalchemy.orm import sessionmakerLFLF# Import Type annotations for SQLAlchemyLFfrom sqlalchemy.orm.decl_api import DeclarativeMetaLFfrom sqlalchemy.sql import textLFLF# Set up loggingLFlogging.basicConfig(level=logging.INFO)LFlogger = logging.getLogger(__name__)
 
 # Database configuration
 DATABASE_URL = os.getenv(
@@ -116,7 +93,7 @@ async def simple_health():
 @app.get("/metrics")
 async def metrics():
     """Prometheus metrics endpoint on the main service port"""
-    from fastapi.responses import Response
+    from fastapi.responses import ResponseLF
 
     return Response(content=prometheus_client.generate_latest(), media_type="text/plain")
 
@@ -124,7 +101,7 @@ async def metrics():
 @metrics_app.get("/metrics")
 async def metrics_dedicated():
     """Prometheus metrics endpoint for the dedicated metrics port"""
-    from fastapi.responses import Response
+    from fastapi.responses import ResponseLF
 
     return Response(content=prometheus_client.generate_latest(), media_type="text/plain")
 

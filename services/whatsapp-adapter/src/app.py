@@ -1,16 +1,4 @@
-import asyncio
-import json
-import logging
-import os
-import sys
-from typing import Any, Dict
-
-import httpx
-from aiokafka import AIOKafkaConsumer, AIOKafkaProducer
-from fastapi import FastAPI, HTTPException, Request
-
-log = logging.getLogger("wa-adapter")
-log.setLevel(logging.INFO)
+import asyncioLFimport jsonLFimport loggingLFimport osLFimport sysLFfrom typing import Any, DictLFLFimport httpxLFfrom aiokafka import AIOKafkaConsumer, AIOKafkaProducerLFfrom fastapi import FastAPI, HTTPException, RequestLFLFlog = logging.getLogger("wa-adapter")LFlog.setLevel(logging.INFO)
 
 ENABLED = os.getenv("WHATSAPP_ENABLED", "false").lower() == "true"
 KAFKA_BROKERS = os.getenv("KAFKA_BROKERS", "kafka:9092")

@@ -1,13 +1,6 @@
 """E2E smoke tests for core services."""
 
-import pytest
-
-# Temporarily removed skip marker to debug flaky tests
-# pytestmark = pytest.mark.skip(reason="flaky after 13-svc refactor – see #642")
-
-
-class TestCoreServices:
-    """Test core service health endpoints."""
+import pytestLFLF# Temporarily removed skip marker to debug flaky testsLF# pytestmark = pytest.mark.skip(reason="flaky after 13-svc refactor – see #642")LFLFLFclass TestCoreServices:LF    """Test core service health endpoints."""
 
     @pytest.mark.e2e
     def test_agent_core_health(self, http_client, wait_for_services):

@@ -1,14 +1,6 @@
 """API routes for dynamic threshold management"""
 
-from typing import Dict
-
-from fastapi import APIRouter, HTTPException, status
-from pydantic import BaseModel, Field
-
-from alfred.ml import ThresholdService
-
-router = APIRouter(prefix="/thresholds", tags=["thresholds"])
-
+from typing import DictLFLFfrom fastapi import APIRouter, HTTPException, statusLFfrom pydantic import BaseModel, FieldLFLFfrom alfred.ml import ThresholdServiceLFLFrouter = APIRouter(prefix="/thresholds", tags=["thresholds"])LF
 
 class ThresholdUpdate(BaseModel):
     """Request model for threshold updates"""

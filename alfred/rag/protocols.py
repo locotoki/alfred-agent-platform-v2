@@ -4,12 +4,7 @@ This module defines the abstract interfaces used throughout the alfred.rag subsy
 retrieval-augmented generation functionality.
 """
 
-from abc import abstractmethod
-from typing import Any, Dict, List, Optional, Protocol, Tuple
-
-
-class VectorStore(Protocol):
-    """Protocol for vector database operations"""
+from abc import abstractmethodLFfrom typing import Any, Dict, List, Optional, Protocol, TupleLFLFLFclass VectorStore(Protocol):LF    """Protocol for vector database operations"""
 
     @abstractmethod
     async def add_documents(

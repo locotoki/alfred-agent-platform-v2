@@ -1,11 +1,6 @@
 """Stub transport implementation for A2A Adapter."""
 
-from typing import Any, Callable, Dict, List, Optional
-
-import structlog
-
-logger = structlog.get_logger(__name__)
-
+from typing import Any, Callable, Dict, List, OptionalLFLFimport structlogLFLFlogger = structlog.get_logger(__name__)LF
 
 class PubSubTransport:
     """Stub implementation of PubSubTransport for social-intel container."""

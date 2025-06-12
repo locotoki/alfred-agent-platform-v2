@@ -1,13 +1,6 @@
 """Integration tests for BizOps metrics collection."""
 
-from unittest.mock import MagicMock, patch
-
-import httpx
-import pytest
-
-
-@pytest.mark.integration
-def test_metrics_endpoint_available():
+from unittest.mock import MagicMock, patchLFLFimport httpxLFimport pytestLFLFLF@pytest.mark.integrationLFdef test_metrics_endpoint_available():
     """Test that metrics endpoint is available and returns Prometheus format."""
     # Mock HTTP client since we're testing the endpoint structure
     mock_response = MagicMock()
@@ -73,7 +66,7 @@ bizops_workflow_operations_total{bizops_workflow="finance",operation_type="tax_c
 @pytest.mark.integration
 def test_workflow_path_detection():
     """Test that workflow detection from paths works correctly."""
-    from services.agent_bizops.middleware.metrics import PrometheusMetrics
+    from services.agent_bizops.middleware.metrics import PrometheusMetricsLF
 
     metrics = PrometheusMetrics()
 
@@ -95,7 +88,7 @@ def test_workflow_path_detection():
 @pytest.mark.integration
 def test_operation_type_detection():
     """Test that operation type detection works correctly."""
-    from services.agent_bizops.middleware.metrics import PrometheusMetrics
+    from services.agent_bizops.middleware.metrics import PrometheusMetricsLF
 
     metrics = PrometheusMetrics()
 
@@ -118,12 +111,7 @@ def test_operation_type_detection():
 @pytest.mark.integration
 def test_metrics_middleware_integration():
     """Test that metrics middleware integrates properly with FastAPI."""
-    from fastapi import FastAPI
-    from fastapi.testclient import TestClient
-
-    from services.agent_bizops.middleware.metrics import setup_metrics_middleware
-
-    # Create test app
+    from fastapi import FastAPILFfrom fastapi.testclient import TestClientLFLFfrom services.agent_bizops.middleware.metrics import setup_metrics_middlewareLFLF# Create test appLF
 
     app = FastAPI()
     setup_metrics_middleware(app)
@@ -159,10 +147,7 @@ def test_metrics_middleware_integration():
 @pytest.mark.integration
 def test_error_metrics_recording():
     """Test that error metrics are properly recorded."""
-    from fastapi import FastAPI, HTTPException
-    from fastapi.testclient import TestClient
-
-    from services.agent_bizops.middleware.metrics import setup_metrics_middleware
+    from fastapi import FastAPI, HTTPExceptionLFfrom fastapi.testclient import TestClientLFLFfrom services.agent_bizops.middleware.metrics import setup_metrics_middlewareLF
 
     app = FastAPI()
     setup_metrics_middleware(app)
@@ -201,12 +186,7 @@ def test_error_metrics_recording():
 @pytest.mark.integration
 def test_duration_metrics_collection():
     """Test that request duration metrics are collected."""
-    import asyncio
-
-    from fastapi import FastAPI
-    from fastapi.testclient import TestClient
-
-    from services.agent_bizops.middleware.metrics import setup_metrics_middleware
+    import asyncioLFLFfrom fastapi import FastAPILFfrom fastapi.testclient import TestClientLFLFfrom services.agent_bizops.middleware.metrics import setup_metrics_middlewareLF
 
     app = FastAPI()
     setup_metrics_middleware(app)

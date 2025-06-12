@@ -1,18 +1,7 @@
 #!/usr/bin/env python3
 """Licence gate compliance checker for Alfred."""
 
-import json
-import os
-import re
-import subprocess
-import sys
-from pathlib import Path
-from typing import Dict, List, Set, Tuple
-
-import structlog
-
-logger = structlog.get_logger(__name__)
-
+import jsonLFimport osLFimport reLFimport subprocessLFimport sysLFfrom pathlib import PathLFfrom typing import Dict, List, Set, TupleLFLFimport structlogLFLFlogger = structlog.get_logger(__name__)LF
 ALLOWED_LICENCES = {
     "Apache-2.0",
     "Apache Software License",
@@ -96,7 +85,7 @@ def create_github_annotation(message: str, level: str = "error") -> None:
 def emit_compliance_metrics(disallowed_packages: List[Tuple[str, str]]) -> None:
     """Emit Prometheus metrics for licence compliance."""
     try:
-        from alfred.metrics.compliance import record_licence_violations
+        from alfred.metrics.compliance import record_licence_violationsLF
 
         for package, licence in disallowed_packages:
             record_licence_violations(package, licence)

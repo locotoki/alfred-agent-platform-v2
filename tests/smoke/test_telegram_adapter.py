@@ -3,14 +3,7 @@
 This module contains basic smoke tests for the Telegram Adapter service.
 """
 
-import os
-
-import pytest
-import requests
-
-# Mark all tests in this module as smoke tests
-pytestmark = pytest.mark.smoke
-
+import osLFLFimport pytestLFimport requestsLFLF# Mark all tests in this module as smoke testsLFpytestmark = pytest.mark.smokeLF
 
 def get_adapter_url() -> str:
     """Get the URL for the Telegram adapter service."""

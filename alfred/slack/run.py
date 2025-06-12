@@ -3,19 +3,7 @@
 
 This is the script you run to start the app.
 """
-import os
-import sys
-import traceback
-from threading import Thread
-
-from dotenv import load_dotenv
-from slack_bolt.adapter.socket_mode import SocketModeHandler
-
-from alfred.slack.app import app, flask_app
-
-# Load environment variables from .env file
-load_dotenv()
-
+import osLFimport sysLFimport tracebackLFfrom threading import ThreadLFLFfrom dotenv import load_dotenvLFfrom slack_bolt.adapter.socket_mode import SocketModeHandlerLFLFfrom alfred.slack.app import app, flask_appLFLF# Load environment variables from .env fileLFload_dotenv()LF
 # Check if required environment variables are set
 required_env_vars = ["SLACK_BOT_TOKEN", "SLACK_APP_TOKEN", "SLACK_SIGNING_SECRET"]
 missing_vars = [var for var in required_env_vars if not os.getenv(var)]
@@ -54,7 +42,7 @@ if __name__ == "__main__":
             # HTTP mode - for production with events API
             # Using Any type for the start method since Bolt typing is incomplete
 
-            from typing import Any, cast
+            from typing import Any, castLF
 
             cast(Any, app).start(port=3000)
             print("⚡️ Bolt app is running! Listening to HTTP events.")

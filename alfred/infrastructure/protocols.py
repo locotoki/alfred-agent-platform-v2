@@ -4,12 +4,7 @@ This module defines the abstract interfaces used throughout the alfred.infrastru
 subsystem for infrastructure management and orchestration.
 """
 
-from abc import abstractmethod
-from typing import Any, Callable, Dict, List, Optional, Protocol
-
-
-class ServiceDiscovery(Protocol):
-    """Protocol for service discovery and registration"""
+from abc import abstractmethodLFfrom typing import Any, Callable, Dict, List, Optional, ProtocolLFLFLFclass ServiceDiscovery(Protocol):LF    """Protocol for service discovery and registration"""
 
     @abstractmethod
     async def register_service(self, service_name: str, service_info: Dict[str, Any]) -> bool:

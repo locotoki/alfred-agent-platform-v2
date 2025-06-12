@@ -1,14 +1,6 @@
-#\!/usr/bin/env python3
+# \!/usr/bin/env python3
 """CLI tool for flake detection analysis."""
-import argparse
-import json
-import sys
-
-from . import analyze, emit_github_summary
-
-
-def main() -> int:
-    """Main CLI entry point."""
+import argparseLFimport jsonLFimport sysLFLFfrom . import analyze, emit_github_summaryLFLFLFdef main() -> int:LF    """Main CLI entry point."""
     parser = argparse.ArgumentParser(description="Analyze pytest JSON report for flaky tests")
     parser.add_argument("json_report", help="Path to pytest JSON report file")
     parser.add_argument("--emit-summary", action="store_true", help="Emit GitHub Actions summary")

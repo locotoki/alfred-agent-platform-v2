@@ -35,11 +35,8 @@ async def call_ollama(prompt: str) -> str:
                     "model": "llama3:8b",
                     "prompt": f"System: You are Alfred, a helpful AI assistant for the Alfred Agent Platform. Be friendly, helpful, and informative.\n\nHuman: {prompt}\n\nAssistant:",
                     "stream": False,
-                    "options": {
-                        "temperature": 0.7,
-                        "num_predict": 500
-                    }
-                }
+                    "options": {"temperature": 0.7, "num_predict": 500},
+                },
             )
             response.raise_for_status()
             data = response.json()
@@ -86,7 +83,12 @@ async def api_status():
         return {
             "api_version": "v1",
             "status": "active",
-            "capabilities": ["agent-orchestration", "task-routing", "metric-collection", "llm-chat"],
+            "capabilities": [
+                "agent-orchestration",
+                "task-routing",
+                "metric-collection",
+                "llm-chat",
+            ],
         }
 
 
@@ -103,18 +105,18 @@ async def chat(request: dict):
     """Chat endpoint for UI integration."""
     request_count.labels(method="POST", endpoint="/api/v1/chat", status="200").inc()
     logger.info("Chat request received", question=request.get("question", ""))
-    
+
     question = request.get("question", "")
     model = request.get("model", "llama3:8b")
-    
+
     try:
         response = await call_ollama(question)
-        
+
         return {
             "response": response,
             "model": model,
             "timestamp": int(time.time()),
-            "status": "success"
+            "status": "success",
         }
     except Exception as e:
         logger.error("Error in chat endpoint", error=str(e))
@@ -122,7 +124,7 @@ async def chat(request: dict):
             "response": "I apologize, but I encountered an error processing your request. Please try again.",
             "model": model,
             "timestamp": int(time.time()),
-            "status": "error"
+            "status": "error",
         }
 
 
@@ -131,17 +133,17 @@ async def query(request: dict):
     """Alternative query endpoint for compatibility."""
     request_count.labels(method="POST", endpoint="/query", status="200").inc()
     logger.info("Query request received", question=request.get("question", ""))
-    
+
     question = request.get("question", "")
-    
+
     try:
         answer = await call_ollama(question)
-        
+
         return {
             "answer": answer,
             "question": question,
             "timestamp": int(time.time()),
-            "status": "success"
+            "status": "success",
         }
     except Exception as e:
         logger.error("Error in query endpoint", error=str(e))
@@ -149,7 +151,7 @@ async def query(request: dict):
             "answer": "I apologize, but I encountered an error processing your request.",
             "question": question,
             "timestamp": int(time.time()),
-            "status": "error"
+            "status": "error",
         }
 
 

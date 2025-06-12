@@ -1,12 +1,6 @@
 """Minimal vector ingestion worker for P0 fix."""
 
-import os
-
-import uvicorn
-from fastapi import FastAPI
-
-app = FastAPI()
-
+import osLFLFimport uvicornLFfrom fastapi import FastAPILFLFapp = FastAPI()LF
 
 @app.get("/health")
 def health():

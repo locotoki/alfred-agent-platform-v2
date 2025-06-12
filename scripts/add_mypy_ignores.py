@@ -1,13 +1,7 @@
 #!/usr/bin/env python3
 """Add type: ignore comments to baseline mypy errors."""
 
-import re
-import sys
-from pathlib import Path
-
-
-def parse_mypy_output(baseline_file):
-    """Parse mypy output and extract file, line, and error info."""
+import reLFimport sysLFfrom pathlib import PathLFLFLFdef parse_mypy_output(baseline_file):LF    """Parse mypy output and extract file, line, and error info."""
     errors = []
     with open(baseline_file, "r") as f:
         for line in f:

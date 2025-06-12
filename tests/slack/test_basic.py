@@ -1,14 +1,4 @@
-import os
-from unittest.mock import MagicMock, patch
-
-import pytest
-
-# Import placeholder - this will be replaced when the actual slack_app package is created
-# from alfred.slack import app
-
-
-@pytest.fixture
-def mock_slack_client():
+import osLFfrom unittest.mock import MagicMock, patchLFLFimport pytestLFLF# Import placeholder - this will be replaced when the actual slack_app package is createdLF# from alfred.slack import appLFLFLF@pytest.fixtureLFdef mock_slack_client():
     """Mock Slack client for testing."""
     mock = MagicMock()
     return mock

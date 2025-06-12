@@ -3,12 +3,7 @@
 This module provides a feature flag system for controlling alert system behavior.
 """
 
-import os
-from typing import Dict
-
-
-class AlertFeatureFlags:
-    """Feature flag management for the alert system"""
+import osLFfrom typing import DictLFLFLFclass AlertFeatureFlags:LF    """Feature flag management for the alert system"""
 
     @classmethod
     def is_enabled(cls, flag_name: str) -> bool:

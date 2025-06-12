@@ -1,20 +1,6 @@
 """Unit tests for the ExplainerAgent."""
 
-import json
-from pathlib import Path
-from typing import Any, AsyncIterator, Dict, Iterator, List, Optional
-from unittest.mock import Mock, patch
-
-import pytest
-from langchain.chains import LLMChain
-from langchain.schema import Generation, LLMResult
-from langchain.schema.runnable import Runnable
-
-from alfred.alerts.explainer.agent import ExplainerAgent
-
-
-@pytest.fixture
-def alert_payload():
+import jsonLFfrom pathlib import PathLFfrom typing import Any, AsyncIterator, Dict, Iterator, List, OptionalLFfrom unittest.mock import Mock, patchLFLFimport pytestLFfrom langchain.chains import LLMChainLFfrom langchain.schema import Generation, LLMResultLFfrom langchain.schema.runnable import RunnableLFLFfrom alfred.alerts.explainer.agent import ExplainerAgentLFLFLF@pytest.fixtureLFdef alert_payload():
     """Load the alert fixture."""
     # test file is at tests/unit/alfred/alerts/explainer/test_agent.py
     # fixture is at tests/fixtures/alerts/alert_critical.json

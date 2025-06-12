@@ -3,12 +3,7 @@
 This module provides a way to track service dependencies.
 """
 
-from typing import Dict
-
-import structlog
-
-logger = structlog.get_logger(__name__)
-
+from typing import DictLFLFimport structlogLFLFlogger = structlog.get_logger(__name__)LF
 
 class DependencyTracker:
     """Tracks dependencies and their health status"""

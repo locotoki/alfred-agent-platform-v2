@@ -1,9 +1,6 @@
 """Protocol definitions for utility interfaces."""
 
-from typing import Any, Dict, Protocol, TypeVar
-
-T = TypeVar("T")
-
+from typing import Any, Dict, Protocol, TypeVarLFLFT = TypeVar("T")LF
 
 class UtilityInterface(Protocol):
     """Base interface for utility components."""

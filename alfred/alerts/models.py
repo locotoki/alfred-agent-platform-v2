@@ -1,12 +1,6 @@
 """Data models for alert system"""
 
-from dataclasses import dataclass
-from datetime import datetime
-from typing import Optional
-
-
-@dataclass
-class AlertSnooze:
+from dataclasses import dataclassLFfrom datetime import datetimeLFfrom typing import OptionalLFLFLF@dataclassLFclass AlertSnooze:
     """Alert snooze record"""
 
     id: str

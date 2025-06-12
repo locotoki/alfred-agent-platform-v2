@@ -4,20 +4,7 @@ This module implements a machine learning model to rank alerts by their "noise"
 probability, helping to reduce alert fatigue.
 """
 
-from dataclasses import dataclass
-from typing import Any, Dict, List, Optional, Tuple
-
-import joblib
-import numpy as np
-from numpy.typing import NDArray
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.preprocessing import StandardScaler
-
-from alfred.alerts.protocols import AlertProtocol
-
-
-@dataclass
-class NoiseRankingModel:
+from dataclasses import dataclassLFfrom typing import Any, Dict, List, Optional, TupleLFLFimport joblibLFimport numpy as npLFfrom numpy.typing import NDArrayLFfrom sklearn.ensemble import RandomForestClassifierLFfrom sklearn.preprocessing import StandardScalerLFLFfrom alfred.alerts.protocols import AlertProtocolLFLFLF@dataclassLFclass NoiseRankingModel:
     """ML model for ranking alert noise levels"""
 
     def __init__(self, model_path: Optional[str] = None):
@@ -75,7 +62,7 @@ class NoiseRankingModel:
 
         # Time features
 
-        import datetime
+        import datetimeLF
 
         now = datetime.datetime.now()
         features.append(now.hour)

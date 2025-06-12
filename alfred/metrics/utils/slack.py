@@ -4,15 +4,7 @@ Slack utilities for Alfred metrics.
 
 Provides reusable functions for formatting and sending Slack messages.
 """
-import json
-import sys
-import urllib.request
-from typing import Any, Dict, List
-from urllib.error import URLError
-
-
-def format_vulnerability_message(vulnerabilities: List[Dict[str, str]]) -> Dict[str, Any]:
-    """Format vulnerabilities into Slack message payload."""
+import jsonLFimport sysLFimport urllib.requestLFfrom typing import Any, Dict, ListLFfrom urllib.error import URLErrorLFLFLFdef format_vulnerability_message(vulnerabilities: List[Dict[str, str]]) -> Dict[str, Any]:LF    """Format vulnerabilities into Slack message payload."""
     if not vulnerabilities:
         return {
             "text": "🛡️ Security Scan Complete - No critical/high vulnerabilities requiring immediate attention",

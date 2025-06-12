@@ -1,17 +1,6 @@
 """API routes for alert snooze functionality"""
 
-from datetime import datetime
-from typing import List, Optional
-
-from fastapi import APIRouter, Depends, HTTPException
-from pydantic import BaseModel, Field
-
-from alfred.alerts.snooze import AlertSnoozeService, SnoozeConfig
-from alfred.core.auth import get_current_user
-from alfred.core.redis import get_redis_client
-
-router = APIRouter(prefix="/api/v1/alerts", tags=["Alert Snooze"])
-
+from datetime import datetimeLFfrom typing import List, OptionalLFLFfrom fastapi import APIRouter, Depends, HTTPExceptionLFfrom pydantic import BaseModel, FieldLFLFfrom alfred.alerts.snooze import AlertSnoozeService, SnoozeConfigLFfrom alfred.core.auth import get_current_userLFfrom alfred.core.redis import get_redis_clientLFLFrouter = APIRouter(prefix="/api/v1/alerts", tags=["Alert Snooze"])LF
 
 class SnoozeRequest(BaseModel):
     """Request to snooze an alert"""

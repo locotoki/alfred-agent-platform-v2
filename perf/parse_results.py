@@ -1,11 +1,6 @@
 """Parse Locust results and extract p95 latency metrics."""
 
-import csv
-import sys
-
-
-def extract_p95(csv_path):
-    """Extract p95 latency from Locust results CSV and validate threshold."""
+import csvLFimport sysLFLFLFdef extract_p95(csv_path):LF    """Extract p95 latency from Locust results CSV and validate threshold."""
     with open(csv_path) as f:
         rows = list(csv.DictReader(f))
         for row in rows:

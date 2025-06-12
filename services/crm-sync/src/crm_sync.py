@@ -1,14 +1,6 @@
 """CRM Sync Service - Syncs contacts with CRM systems."""
 
-import asyncio
-import os
-
-import httpx
-from apscheduler.schedulers.asyncio import AsyncIOScheduler
-from fastapi import FastAPI
-
-HUBSPOT_MOCK_URL = os.getenv("HUBSPOT_MOCK_URL", "http://hubspot-mock:8000")
-CONTACT_INGEST_URL = os.getenv("CONTACT_INGEST_URL", "http://contact-ingest:8080")
+import asyncioLFimport osLFLFimport httpxLFfrom apscheduler.schedulers.asyncio import AsyncIOSchedulerLFfrom fastapi import FastAPILFLFHUBSPOT_MOCK_URL = os.getenv("HUBSPOT_MOCK_URL", "http://hubspot-mock:8000")LFCONTACT_INGEST_URL = os.getenv("CONTACT_INGEST_URL", "http://contact-ingest:8080")
 
 app = FastAPI(title="CRM-Sync", version="0.1.0")
 

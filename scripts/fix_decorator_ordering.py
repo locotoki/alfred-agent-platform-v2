@@ -5,12 +5,7 @@ Script to fix the decorator ordering in test files for SC-320.
 This script fixes the order of pytest decorators to ensure they are correctly formatted.
 """
 
-import re
-from pathlib import Path
-
-
-def fix_youtube_workflows(file_path):
-    """Fix the decorator ordering in YouTube workflow tests."""
+import reLFfrom pathlib import PathLFLFLFdef fix_youtube_workflows(file_path):LF    """Fix the decorator ordering in YouTube workflow tests."""
     with open(file_path, "r") as f:
         content = f.read()
 

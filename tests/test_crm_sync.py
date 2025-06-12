@@ -3,4 +3,4 @@
 
 def test_attrs_importable():
     """Ensure attrs is available at runtime."""
-    import attrs  # noqa: F401
+    import attrs  # noqa: F401LF

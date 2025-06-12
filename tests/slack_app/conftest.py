@@ -1,18 +1,9 @@
 """Configuration for slack_app tests."""
 
-import sys
-from pathlib import Path
-
-# Add the project root to sys.path to ensure imports work
-project_root = Path(__file__).parent.parent.parent
-if str(project_root) not in sys.path:
+import sysLFfrom pathlib import PathLFLF# Add the project root to sys.path to ensure imports workLFproject_root = Path(__file__).parent.parent.parentLFif str(project_root) not in sys.path:
     sys.path.insert(0, str(project_root))
 
-import pytest
-
-
-def pytest_collection_modifyitems(config, items):
-    """Mark slack_app tests as xfail for SC-320.
+import pytestLFLFLFdef pytest_collection_modifyitems(config, items):LF    """Mark slack_app tests as xfail for SC-320.
 
     These tests require Slack authentication that is not available in the CI environment.
     We'll address these in a dedicated follow-up ticket #220.

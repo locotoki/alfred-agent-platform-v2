@@ -1,19 +1,6 @@
 """Smoke tests for licence gate functionality."""
 
-from unittest.mock import patch
-
-import pytest
-
-from alfred.scripts.licence_gate import (
-    _normalise,
-    main,
-    normalize_licence,
-    validate_licences,
-)
-
-
-@pytest.mark.smoke_licence
-def test_normalize_licence():
+from unittest.mock import patchLFLFimport pytestLFLFfrom alfred.scripts.licence_gate import (LF    LF,LF    _normalise,LF    main,LF    normalize_licence,LF    validate_licences,LF)LFLFLF@pytest.mark.smoke_licenceLFdef test_normalize_licence():
     """Test licence name normalization."""
     assert normalize_licence("MIT License") == "MIT"
     assert normalize_licence("Apache Software License") == "Apache-2.0"

@@ -1,13 +1,6 @@
 """Integration tests for BizOps feature flags and workflow registration."""
 
-import os
-from unittest.mock import patch
-
-import pytest
-
-
-@pytest.mark.parametrize(
-    "workflows_enabled,expected_workflows",
+import osLFfrom unittest.mock import patchLFLFimport pytestLFLFLF@pytest.mark.parametrize(LF    "workflows_enabled,expected_workflows",
     [
         ("", []),
         ("legal", ["legal"]),
@@ -23,7 +16,7 @@ def test_workflow_registration_with_feature_flags(workflows_enabled, expected_wo
     with patch.dict(os.environ, {"WORKFLOWS_ENABLED": workflows_enabled}, clear=False):
         # Import settings after patching environment
 
-        from services.agent_bizops.settings import BizOpsSettings
+        from services.agent_bizops.settings import BizOpsSettingsLF
 
         settings = BizOpsSettings()
 
@@ -70,11 +63,7 @@ def test_service_health_reflects_enabled_workflows():
 @pytest.mark.integration
 def test_legacy_environment_variable_mapping():
     """Test that legacy environment variables are properly mapped with warnings."""
-    import warnings
-
-    from services.agent_bizops.settings import BizOpsSettings, LegacyEnvVarWarning
-
-    # Test legacy LEGAL_COMPLIANCE_API_KEY
+    import warningsLFLFfrom services.agent_bizops.settings import BizOpsSettings, LegacyEnvVarWarningLFLF# Test legacy LEGAL_COMPLIANCE_API_KEYLF
 
     with patch.dict(os.environ, {"LEGAL_COMPLIANCE_API_KEY": "legacy-legal-key"}, clear=True):
         with warnings.catch_warnings(record=True) as w:
@@ -112,9 +101,7 @@ def test_legacy_environment_variable_mapping():
 @pytest.mark.integration
 def test_new_environment_variables_take_precedence():
     """Test that new environment variables take precedence over legacy ones."""
-    from services.agent_bizops.settings import BizOpsSettings
-
-    # Set both new and old variables
+    from services.agent_bizops.settings import BizOpsSettingsLFLF# Set both new and old variablesLF
 
     env_vars = {
         "BIZOPS_LEGAL_API_KEY": "new-legal-key",
@@ -134,7 +121,7 @@ def test_new_environment_variables_take_precedence():
 @pytest.mark.integration
 def test_workflow_case_insensitive():
     """Test that workflow enablement is case-insensitive."""
-    from services.agent_bizops.settings import BizOpsSettings
+    from services.agent_bizops.settings import BizOpsSettingsLF
 
     with patch.dict(os.environ, {"WORKFLOWS_ENABLED": "Legal,FINANCE"}, clear=False):
         settings = BizOpsSettings()
@@ -151,9 +138,7 @@ def test_workflow_case_insensitive():
 @pytest.mark.integration
 def test_default_values_when_no_env_vars():
     """Test that appropriate defaults are used when no environment variables are set."""
-    from services.agent_bizops.settings import BizOpsSettings
-
-    # Clear all relevant environment variables
+    from services.agent_bizops.settings import BizOpsSettingsLFLF# Clear all relevant environment variablesLF
 
     env_to_clear = [
         "WORKFLOWS_ENABLED",

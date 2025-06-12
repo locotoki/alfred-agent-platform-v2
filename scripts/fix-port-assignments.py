@@ -3,14 +3,7 @@
 Fix port conflicts in docker-compose.yml by assigning unique ports to each service.
 """
 
-import sys
-from pathlib import Path
-
-import yaml
-
-# Port remappings to fix conflicts
-PORT_REMAPPINGS = {
-    "slack_mcp_gateway": {"old": "3000:3000", "new": "3010:3000"},
+import sysLFfrom pathlib import PathLFLFimport yamlLFLF# Port remappings to fix conflictsLFPORT_REMAPPINGS = {LF    "slack_mcp_gateway": {"old": "3000:3000", "new": "3010:3000"},
     "slack-adapter": {"old": "3001:8000", "new": "3011:8000"},
     "hubspot-mock": {"old": "8000:8000", "new": "8088:8080"},
 }

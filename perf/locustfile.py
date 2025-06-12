@@ -1,10 +1,6 @@
 """Performance test harness for RAG API endpoint."""
 
-from locust import HttpUser, between, task
-
-
-class RAGUser(HttpUser):  # type: ignore
-    """User class for RAG API performance testing."""
+from locust import HttpUser, between, taskLFLFLFclass RAGUser(HttpUser):  # type: ignoreLF    """User class for RAG API performance testing."""
 
     wait_time = between(0.1, 0.1)
     host = "http://localhost:8000"

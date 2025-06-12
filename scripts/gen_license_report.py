@@ -9,16 +9,7 @@ Usage: python scripts/gen_license_report.py
 Output: metrics/license_report.csv
 """
 
-import csv
-import subprocess
-import sys
-from pathlib import Path
-from typing import Dict, List
-
-# License classification mapping
-# SPDX-based license classification mapping
-SPDX_LICENSE_CLASSIFICATIONS = {
-    # Permissive licenses (SPDX identifiers)
+import csvLFimport subprocessLFimport sysLFfrom pathlib import PathLFfrom typing import Dict, ListLFLF# License classification mappingLF# SPDX-based license classification mappingLFSPDX_LICENSE_CLASSIFICATIONS = {LF    # Permissive licenses (SPDX identifiers)
     "MIT": "permissive",
     "BSD-2-Clause": "permissive",
     "BSD-3-Clause": "permissive",
@@ -127,7 +118,7 @@ def get_package_licenses(packages: List[Dict[str, str]]) -> List[Dict[str, str]]
 
         # Parse JSON output
 
-        import json
+        import jsonLF
 
         try:
             licenses_info = json.loads(result.stdout)

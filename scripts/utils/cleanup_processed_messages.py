@@ -3,14 +3,7 @@
 efficiency.
 """
 
-import asyncio
-import os
-
-import structlog
-from dotenv import load_dotenv
-
-logger = structlog.get_logger(__name__)
-
+import asyncioLFimport osLFLFimport structlogLFfrom dotenv import load_dotenvLFLFlogger = structlog.get_logger(__name__)LF
 
 async def cleanup_expired_messages():
     """Remove expired processed messages from the database"""

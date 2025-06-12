@@ -1,20 +1,6 @@
 """Tests for Slack webhook with HMAC verification."""
 
-import hashlib
-import hmac
-import json
-import time
-from typing import Any, Dict
-from unittest.mock import patch
-
-import pytest
-from fastapi.testclient import TestClient
-
-from alfred.adapters.slack.webhook import SlackVerifier, app
-
-
-class TestSlackVerifier:
-    """Test Slack signature verification."""
+import hashlibLFimport hmacLFimport jsonLFimport timeLFfrom typing import Any, DictLFfrom unittest.mock import patchLFLFimport pytestLFfrom fastapi.testclient import TestClientLFLFfrom alfred.adapters.slack.webhook import SlackVerifier, appLFLFLFclass TestSlackVerifier:LF    """Test Slack signature verification."""
 
     @pytest.fixture
     def verifier(self) -> SlackVerifier:

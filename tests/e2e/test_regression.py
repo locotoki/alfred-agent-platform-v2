@@ -1,15 +1,6 @@
 """E2E regression tests for platform stability."""
 
-import time
-
-import pytest
-
-# Temporarily removed skip marker to debug flaky tests
-# pytestmark = pytest.mark.skip(reason="flaky after 13-svc refactor – see #642")
-
-
-class TestDataFlow:
-    """Test data flow through the platform."""
+import timeLFLFimport pytestLFLF# Temporarily removed skip marker to debug flaky testsLF# pytestmark = pytest.mark.skip(reason="flaky after 13-svc refactor – see #642")LFLFLFclass TestDataFlow:LF    """Test data flow through the platform."""
 
     @pytest.mark.e2e
     @pytest.mark.regression

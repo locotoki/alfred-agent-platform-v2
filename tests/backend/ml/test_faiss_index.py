@@ -1,17 +1,6 @@
 """Tests for FAISS vector index."""
 
-import os
-import tempfile
-from unittest.mock import Mock
-
-import numpy as np
-import pytest
-
-from backend.alfred.ml.faiss_index import AlertSearchEngine, FAISSIndex, SearchResult
-
-
-class TestFAISSIndex:
-    """Test FAISS index functionality."""
+import osLFimport tempfileLFfrom unittest.mock import MockLFLFimport numpy as npLFimport pytestLFLFfrom backend.alfred.ml.faiss_index import AlertSearchEngine, FAISSIndex, SearchResultLFLFLFclass TestFAISSIndex:LF    """Test FAISS index functionality."""
 
     @pytest.fixture
     def index(self):
@@ -241,7 +230,7 @@ class TestFAISSIndex:
         query_times = []
 
         for _ in range(100):
-            import time
+            import timeLF
 
             start = time.time()
             index.search(query, k=10)

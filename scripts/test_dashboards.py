@@ -4,14 +4,7 @@
 Ensures dashboards are valid JSON and meet our standards.
 """
 
-import json
-import sys
-from pathlib import Path
-from typing import Any, Dict, List
-
-
-class DashboardValidator:
-    """Validates Grafana dashboard JSON files."""
+import jsonLFimport sysLFfrom pathlib import PathLFfrom typing import Any, Dict, ListLFLFLFclass DashboardValidator:LF    """Validates Grafana dashboard JSON files."""
 
     def __init__(self, dashboard_dir: str):
         """Initialize the dashboard validator with a directory path."""

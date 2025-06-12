@@ -1,10 +1,6 @@
 """HubSpot mock client – exposes Client class."""
 
-from .client import Client
-
-
-class MockModels:
-    """Mock models module to avoid circular import."""
+from .client import ClientLFLFLFclass MockModels:LF    """Mock models module to avoid circular import."""
 
     class Contact:
         """Simple Contact model for testing."""

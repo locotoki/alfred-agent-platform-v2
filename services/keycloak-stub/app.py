@@ -1,10 +1,4 @@
-import json
-import pathlib
-
-from fastapi import FastAPI, Response, status
-
-app = FastAPI()
-
+import jsonLFimport pathlibLFLFfrom fastapi import FastAPI, Response, statusLFLFapp = FastAPI()LF
 
 @app.get("/health")
 def health():

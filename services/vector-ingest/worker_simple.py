@@ -1,21 +1,6 @@
 """Vector ingestion worker with ML functionality (no langchain dependency)."""
 
-import json
-import logging
-import os
-import time
-import uuid
-from typing import List, Optional
-
-import requests
-import uvicorn
-from cloudevents.http import CloudEvent
-from fastapi import FastAPI, HTTPException, Response
-from sentence_transformers import SentenceTransformer
-
-# Configure logging
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+import jsonLFimport loggingLFimport osLFimport timeLFimport uuidLFfrom typing import List, OptionalLFLFimport requestsLFimport uvicornLFfrom cloudevents.http import CloudEventLFfrom fastapi import FastAPI, HTTPException, ResponseLFfrom sentence_transformers import SentenceTransformerLFLF# Configure loggingLFlogging.basicConfig(level=logging.INFO)LFlogger = logging.getLogger(__name__)
 
 # Initialize FastAPI app
 app = FastAPI(title="Vector Ingest Service")

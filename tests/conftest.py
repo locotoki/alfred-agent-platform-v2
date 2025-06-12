@@ -1,28 +1,12 @@
-import asyncio
-import os
-from typing import Generator
-from unittest.mock import MagicMock
-
-# Handle asyncpg import for environment where it might not be available
-try:
-    import asyncpg
+import asyncioLFimport osLFfrom typing import GeneratorLFfrom unittest.mock import MagicMockLFLF# Handle asyncpg import for environment where it might not be availableLFtry:LF    import asyncpgLF
 
 except ImportError:  # pragma: no cover
     asyncpg = None
-    import pytest
+    import pytestLF
 
     pytest.skip("asyncpg not available", allow_module_level=True)
 
-import pytest
-import redis
-from google.cloud import pubsub_v1
-
-from libs.a2a_adapter import PolicyMiddleware, PubSubTransport, SupabaseTransport
-
-
-# Global pytest configuration for SC-320
-def pytest_addoption(parser):
-    """Add custom pytest options."""
+import pytestLFimport redisLFfrom google.cloud import pubsub_v1LFLFfrom libs.a2a_adapter import PolicyMiddleware, PubSubTransport, SupabaseTransportLFLFLF# Global pytest configuration for SC-320LFdef pytest_addoption(parser):LF    """Add custom pytest options."""
     parser.addoption(
         "--slack-tests", action="store_true", default=False, help="run slack integration tests"
     )

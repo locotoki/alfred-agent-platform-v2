@@ -1,10 +1,6 @@
 """Alfred protocol definitions."""
 
-from enum import Enum
-
-
-class Status(Enum):
-    """New status enum."""
+from enum import EnumLFLFLFclass Status(Enum):LF    """New status enum."""
 
     ACTIVE = "active"
     INACTIVE = "inactive"

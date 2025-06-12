@@ -5,15 +5,7 @@ This script queries GitHub API to count closed vs total issues with the label
 epic:SC-241 and updates status.json in the repo root with current progress.
 """
 
-import json
-import subprocess
-import sys
-from datetime import datetime
-from pathlib import Path
-
-# Repository root is parent of scripts directory
-REPO_ROOT = Path(__file__).parent.parent
-STATUS_FILE = REPO_ROOT / "status.json"
+import jsonLFimport subprocessLFimport sysLFfrom datetime import datetimeLFfrom pathlib import PathLFLF# Repository root is parent of scripts directoryLFREPO_ROOT = Path(__file__).parent.parentLFSTATUS_FILE = REPO_ROOT / "status.json"
 
 
 def run_gh_command(command):

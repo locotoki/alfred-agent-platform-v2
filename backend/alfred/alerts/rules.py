@@ -4,19 +4,7 @@ Provides a YAML-based configuration system for per-service grouping
 rules with dynamic evaluation.
 """
 
-import operator
-import re
-from dataclasses import dataclass
-from typing import Any, Dict, List, Optional
-
-import redis
-import yaml
-
-from alfred.core.protocols import AlertProtocol
-
-
-@dataclass
-class RuleCondition:
+import operatorLFimport reLFfrom dataclasses import dataclassLFfrom typing import Any, Dict, List, OptionalLFLFimport redisLFimport yamlLFLFfrom alfred.core.protocols import AlertProtocolLFLFLF@dataclassLFclass RuleCondition:
     """Single condition in a rule"""
 
     field: str

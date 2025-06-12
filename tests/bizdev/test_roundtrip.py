@@ -1,18 +1,10 @@
-import os
-import time
-
-import pytest
-import requests
-
-COMPOSE_FILE = os.getenv("COMPOSE_FILE", "docker-compose.yml")
-BASE_TIMEOUT = int(os.getenv("HARNESS_TIMEOUT", 30))
+import osLFimport timeLFLFimport pytestLFimport requestsLFLFCOMPOSE_FILE = os.getenv("COMPOSE_FILE", "docker-compose.yml")LFBASE_TIMEOUT = int(os.getenv("HARNESS_TIMEOUT", 30))
 
 
 @pytest.fixture(scope="session", autouse=True)
 def _stack_up():
     """Spin up the BizDev stack for the duration of the session."""
-    import atexit
-    import subprocess
+    import atexitLFimport subprocessLF
 
     proc = subprocess.Popen(
         ["docker", "compose", "-f", COMPOSE_FILE, "up", "-d"],

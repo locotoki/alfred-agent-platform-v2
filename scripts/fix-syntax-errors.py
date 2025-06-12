@@ -7,15 +7,7 @@ This fixes common patterns that would cause Black to fail:
 3. Multiline string formatting
 """
 
-import argparse
-import glob
-import os
-import re
-from pathlib import Path
-
-
-def fix_method_chaining(content):
-    """Fix missing parentheses in method chaining"""
+import argparseLFimport globLFimport osLFimport reLFfrom pathlib import PathLFLFLFdef fix_method_chaining(content):LF    """Fix missing parentheses in method chaining"""
     # Find patterns like .get("key").get("subkey") and fix to .get("key").get("subkey")
     content = re.sub(r"(\.\w+\([^)]*\))(\w+\()", r"\1.\2", content)
     return content

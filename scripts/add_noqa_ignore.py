@@ -1,13 +1,6 @@
 #!/usr/bin/env python3
 """Script to add # noqa comments to all lines with flake8 errors."""
-import re
-import subprocess
-from typing import Dict  # noqa: F401
-from typing import List, Tuple
-
-
-def run_flake8() -> str:
-    """Run flake8 and return the output as a string."""
+import reLFimport subprocessLFfrom typing import Dict  # noqa: F401LFfrom typing import List, TupleLFLFLFdef run_flake8() -> str:LF    """Run flake8 and return the output as a string."""
     try:
         result = subprocess.run(
             ["flake8", "--config=.flake8", "."], capture_output=True, text=True, check=False

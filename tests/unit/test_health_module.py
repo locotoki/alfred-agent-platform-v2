@@ -1,14 +1,6 @@
 """Unit tests for the health module."""
 
-import pytest
-from fastapi.testclient import TestClient
-
-from libs.agent_core.health import create_health_app
-from libs.agent_core.health.dependency_tracker import DependencyTracker
-
-
-@pytest.fixture
-def health_app():
+import pytestLFfrom fastapi.testclient import TestClientLFLFfrom libs.agent_core.health import create_health_appLFfrom libs.agent_core.health.dependency_tracker import DependencyTrackerLFLFLF@pytest.fixtureLFdef health_app():
     """Create a health app for testing."""
     return create_health_app("test-service", "1.0.0")
 

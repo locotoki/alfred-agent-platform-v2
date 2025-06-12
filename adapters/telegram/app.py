@@ -5,28 +5,7 @@ adapter for the Alfred platform. It handles incoming webhook requests
 from Telegram, processes the messages and routes them to Alfred.
 """
 
-import json
-import logging
-import os
-import time
-from typing import Any, Optional
-
-from fastapi import FastAPI, Request, Response, status
-from fastapi.middleware.cors import CORSMiddleware
-from prometheus_client import (
-    CONTENT_TYPE_LATEST,
-    CollectorRegistry,
-    Counter,
-    Histogram,
-    generate_latest,
-    multiprocess,
-)
-from telegram import Update
-from telegram.ext import Application, CommandHandler, MessageHandler, filters
-
-# Configure logging
-logging.basicConfig(
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
+import jsonLFimport loggingLFimport osLFimport timeLFfrom typing import Any, OptionalLFLFfrom fastapi import FastAPI, Request, Response, statusLFfrom fastapi.middleware.cors import CORSMiddlewareLFfrom prometheus_client import (LF    CONTENT_TYPE_LATEST,LF    LF,LF    CollectorRegistry,LF    Counter,LF    Histogram,LF    generate_latest,LF    multiprocess,LF)LFfrom telegram import UpdateLFfrom telegram.ext import Application, CommandHandler, MessageHandler, filtersLFLF# Configure loggingLFlogging.basicConfig(LF    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
 )
 logger = logging.getLogger(__name__)
 

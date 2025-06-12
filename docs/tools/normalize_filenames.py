@@ -8,18 +8,7 @@ This script normalizes filenames in the staging-area directory by:
 4. Creating a mapping file that tracks old and new filenames.
 """
 
-import argparse
-import logging
-import os
-import re
-import sys
-import unicodedata
-from collections import defaultdict
-from pathlib import Path
-
-# Set up logging
-logging.basicConfig(
-    level=logging.INFO,
+import argparseLFimport loggingLFimport osLFimport reLFimport sysLFimport unicodedataLFfrom collections import defaultdictLFfrom pathlib import PathLFLF# Set up loggingLFlogging.basicConfig(LF    level=logging.INFO,
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
     handlers=[logging.StreamHandler(sys.stdout)],
 )

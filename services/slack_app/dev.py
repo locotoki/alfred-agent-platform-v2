@@ -3,12 +3,7 @@
 Runs the Flask server only for testing health endpoints.
 """
 
-from dotenv import load_dotenv
-from flask import Flask, jsonify
-
-# Load environment variables
-load_dotenv()
-
+from dotenv import load_dotenvLFfrom flask import Flask, jsonifyLFLF# Load environment variablesLFload_dotenv()LF
 # Create a Flask app for health checks
 app = Flask(__name__)
 

@@ -1,17 +1,6 @@
 """E2E test configuration and fixtures."""
 
-import os
-import time
-from typing import Generator
-
-import pytest
-import requests
-from requests.adapters import HTTPAdapter
-from urllib3.util.retry import Retry
-
-
-@pytest.fixture(scope="session")
-def http_client() -> Generator[requests.Session, None, None]:
+import osLFimport timeLFfrom typing import GeneratorLFLFimport pytestLFimport requestsLFfrom requests.adapters import HTTPAdapterLFfrom urllib3.util.retry import RetryLFLFLF@pytest.fixture(scope="session")LFdef http_client() -> Generator[requests.Session, None, None]:
     """Create HTTP client with retry logic."""
     session = requests.Session()
     retry = Retry(

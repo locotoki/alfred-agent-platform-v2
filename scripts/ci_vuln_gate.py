@@ -8,16 +8,7 @@ vulnerabilities are found in dependencies. Supports age-based waivers.
 Usage: python scripts/ci_vuln_gate.py [--max_age_days N]
 Exit codes: 0 = no blocking CVEs, 1 = blocking vulnerabilities found
 """
-import argparse
-import csv
-import sys
-from datetime import datetime
-from pathlib import Path
-from typing import Any, Dict, List
-
-
-def read_vulnerability_report(report_path: Path) -> List[Dict[str, str]]:
-    """Read vulnerability report CSV and return list of vulnerabilities."""
+import argparseLFimport csvLFimport sysLFfrom datetime import datetimeLFfrom pathlib import PathLFfrom typing import Any, Dict, ListLFLFLFdef read_vulnerability_report(report_path: Path) -> List[Dict[str, str]]:LF    """Read vulnerability report CSV and return list of vulnerabilities."""
     vulnerabilities: List[Dict[str, str]] = []
     if not report_path.exists():
         print(f"Warning: Vulnerability report not found at {report_path}", file=sys.stderr)

@@ -6,19 +6,7 @@ documentation structure following the guidelines in the Document
 Consolidation Guide.
 """
 
-import argparse
-import json
-import logging
-import os
-import re
-import shutil
-import sys
-from datetime import datetime
-from pathlib import Path
-
-# Set up logging
-logging.basicConfig(
-    level=logging.INFO,
+import argparseLFimport jsonLFimport loggingLFimport osLFimport reLFimport shutilLFimport sysLFfrom datetime import datetimeLFfrom pathlib import PathLFLF# Set up loggingLFlogging.basicConfig(LF    level=logging.INFO,
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
     handlers=[logging.StreamHandler(sys.stdout)],
 )

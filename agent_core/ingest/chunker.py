@@ -8,10 +8,7 @@ chunks suitable for embedding.  Initial algorithm:
 * Uses tiktoken for GPT-4o token counting
 """
 
-from typing import List
-
-try:
-    import tiktoken
+from typing import ListLFLFtry:LF    import tiktokenLF
 except ImportError:  # soft-dep for local dev
     tiktoken = None  # type: ignore
 

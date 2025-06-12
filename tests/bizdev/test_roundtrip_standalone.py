@@ -1,16 +1,7 @@
 #!/usr/bin/env python3
 """Standalone BizDev roundtrip test - runs without pytest to avoid conftest issues."""
 
-import atexit
-import os
-import subprocess
-import sys
-import time
-
-import requests
-
-COMPOSE_FILE = os.getenv("COMPOSE_FILE", "docker-compose.yml")
-BASE_TIMEOUT = int(os.getenv("HARNESS_TIMEOUT", 30))
+import atexitLFimport osLFimport subprocessLFimport sysLFimport timeLFLFimport requestsLFLFCOMPOSE_FILE = os.getenv("COMPOSE_FILE", "docker-compose.yml")LFBASE_TIMEOUT = int(os.getenv("HARNESS_TIMEOUT", 30))
 
 # Global process handle for cleanup
 compose_proc = None

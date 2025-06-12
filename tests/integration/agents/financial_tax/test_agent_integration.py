@@ -1,22 +1,7 @@
 """Integration tests for Financial Tax Agent."""
 
-import asyncio
-import os
-
-import pytest
-
-pytestmark = pytest.mark.xfail(reason="pre-existing async bug, see #220", strict=False)
-
-from libs.a2a_adapter import (
-    A2AEnvelope,
-    PolicyMiddleware,
-    PubSubTransport,
-    SupabaseTransport,
-)
-from services.agent_bizops.workflows.finance.agent import FinancialTaxAgent
-
-pytestmark = pytest.mark.integration
-
+import asyncioLFimport osLFLFimport pytestLFLFpytestmark = pytest.mark.xfail(reason="pre-existing async bug, see #220", strict=False)LF
+from libs.a2a_adapter import (LF    LF,LF    A2AEnvelope,LF    PolicyMiddleware,LF    PubSubTransport,LF    SupabaseTransport,LF)LFfrom services.agent_bizops.workflows.finance.agent import FinancialTaxAgentLFLFpytestmark = pytest.mark.integrationLF
 
 @pytest.fixture(scope="module")
 def event_loop():
@@ -45,7 +30,7 @@ async def supabase_transport():
 @pytest.fixture
 def policy_middleware():
     """Create real PolicyMiddleware instance."""
-    import redis
+    import redisLF
 
     redis_client = redis.from_url(os.getenv("REDIS_URL", "redis://localhost:6379"))
     return PolicyMiddleware(redis_client)

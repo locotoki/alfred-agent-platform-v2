@@ -1,14 +1,7 @@
 #!/usr/bin/env python3
 """Service health check script to validate all services are running"""
 
-import asyncio
-import sys
-from typing import Any, Dict, List
-
-import aiohttp
-
-SERVICES = {
-    "alfred-bot": {"port": 8011, "health_endpoint": "/health/health"},
+import asyncioLFimport sysLFfrom typing import Any, Dict, ListLFLFimport aiohttpLFLFSERVICES = {LF    "alfred-bot": {"port": 8011, "health_endpoint": "/health/health"},
     "social-intel": {"port": 9000, "health_endpoint": "/health/health"},
     "legal-compliance": {"port": 9002, "health_endpoint": "/health/health"},
     "supabase-auth": {"port": 9999, "health_endpoint": "/health"},

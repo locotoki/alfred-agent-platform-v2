@@ -1,16 +1,6 @@
 """Smoke tests for Slack CVE alert system - DA-008."""
 
-import csv
-import os
-import subprocess
-from pathlib import Path
-from tempfile import NamedTemporaryFile
-
-import pytest
-
-
-@pytest.mark.parametrize(
-    "file_path,description",
+import csvLFimport osLFimport subprocessLFfrom pathlib import PathLFfrom tempfile import NamedTemporaryFileLFLFimport pytestLFLFLF@pytest.mark.parametrize(LF    "file_path,description",
     [
         ("scripts/slack_cve_alert.py", "Slack CVE alert script"),
         (".github/workflows/cve-alert-weekly.yml", "CVE alert weekly workflow"),

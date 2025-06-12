@@ -1,14 +1,7 @@
 """Simple test script to check if Slack API tokens work correctly"""
 
 # type: ignore
-import os
-import sys
-
-from dotenv import load_dotenv
-
-# Load environment variables
-load_dotenv()
-
+import osLFimport sysLFLFfrom dotenv import load_dotenvLFLF# Load environment variablesLFload_dotenv()LF
 # Get tokens from environment variables
 bot_token = os.environ.get("SLACK_BOT_TOKEN")
 app_token = os.environ.get("SLACK_APP_TOKEN")
@@ -23,8 +16,7 @@ print("Testing Slack API tokens...")
 
 # Test the bot token with a simple API call
 try:
-    from slack_sdk import WebClient
-    from slack_sdk.errors import SlackApiError
+    from slack_sdk import WebClientLFfrom slack_sdk.errors import SlackApiErrorLF
 
     client = WebClient(token=bot_token)
     response = client.auth_test()

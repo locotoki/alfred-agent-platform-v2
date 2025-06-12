@@ -4,13 +4,7 @@ Schema utilities for Alfred metrics.
 
 Provides functions for loading and validating JSON schemas.
 """
-import json
-from pathlib import Path
-from typing import Any, Dict, cast
-
-
-def load_schema(schema_name: str) -> Dict[str, Any]:
-    """Load JSON schema from the schemas directory."""
+import jsonLFfrom pathlib import PathLFfrom typing import Any, Dict, castLFLFLFdef load_schema(schema_name: str) -> Dict[str, Any]:LF    """Load JSON schema from the schemas directory."""
     schema_path = Path(__file__).parent.parent / "schemas" / f"{schema_name}.json"
 
     if not schema_path.exists():

@@ -1,15 +1,6 @@
 """Dynamic threshold optimization service for ML noise reduction."""
 
-import json
-from dataclasses import dataclass
-from typing import Any, Dict, Optional, Union, cast
-
-from alfred.core.protocols import Service
-from alfred.metrics.protocols import MetricsCollector
-
-
-@dataclass
-class ThresholdConfig:
+import jsonLFfrom dataclasses import dataclassLFfrom typing import Any, Dict, Optional, Union, castLFLFfrom alfred.core.protocols import ServiceLFfrom alfred.metrics.protocols import MetricsCollectorLFLFLF@dataclassLFclass ThresholdConfig:
     """Configuration for dynamic thresholds"""
 
     noise_threshold: float = 0.7

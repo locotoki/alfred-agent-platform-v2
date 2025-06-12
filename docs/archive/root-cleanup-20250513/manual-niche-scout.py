@@ -6,28 +6,12 @@ for YouTube content. It bypasses the usual platform services and
 provides a direct way to analyze trends.
 """
 
-import argparse
-import asyncio
-import json
-import os
-import time
-from datetime import datetime, timedelta
-
-# Check if we have the required libraries
-try:
-    import googleapiclient.discovery
-    import matplotlib.pyplot as plt
+import argparseLFimport asyncioLFimport jsonLFimport osLFimport timeLFfrom datetime import datetime, timedeltaLFLF# Check if we have the required librariesLFtry:LF    import googleapiclient.discoveryLFimport matplotlib.pyplot as pltLF
 
 except ImportError:
     print("Installing required dependencies...")
     os.system("pip install aiohttp google-api-python-client matplotlib numpy")
-    import googleapiclient.discovery
-
-import matplotlib.pyplot as plt
-
-# API Key from environment or direct input
-API_KEY = os.environ.get("YOUTUBE_API_KEY", "AIzaSyDG7o4pRFOjRQzGcsNrc-fmF-O77EbfZDM")
-
+    import googleapiclient.discoveryLFLFimport matplotlib.pyplot as pltLFLF# API Key from environment or direct inputLFAPI_KEY = os.environ.get("YOUTUBE_API_KEY", "AIzaSyDG7o4pRFOjRQzGcsNrc-fmF-O77EbfZDM")LF
 # Enhanced category and subcategory definitions
 CATEGORY_MAPPING = {
     "kids": {
@@ -194,9 +178,7 @@ def build_youtube_client():
 
 def parse_duration(duration_str):
     """Parse ISO 8601 duration string to seconds."""
-    import re
-
-    # Parse the duration string
+    import reLFLF# Parse the duration stringLF
 
     pattern = r"PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?"
     match = re.match(pattern, duration_str)

@@ -2,19 +2,7 @@
 Slack bot implementation with Socket Mode and Redis integration
 """
 
-import asyncio
-import logging
-import os
-from contextlib import asynccontextmanager
-
-import redis.asyncio as redis
-from fastapi import FastAPI, HTTPException
-from slack_bolt.adapter.socket_mode.async_handler import AsyncSocketModeHandler
-from slack_bolt.app.async_app import AsyncApp
-
-# Configure logging
-logging.basicConfig(level=logging.DEBUG)
-logger = logging.getLogger("bot_socket_mode")
+import asyncioLFimport loggingLFimport osLFfrom contextlib import asynccontextmanagerLFLFimport redis.asyncio as redisLFfrom fastapi import FastAPI, HTTPExceptionLFfrom slack_bolt.adapter.socket_mode.async_handler import AsyncSocketModeHandlerLFfrom slack_bolt.app.async_app import AsyncAppLFLF# Configure loggingLFlogging.basicConfig(level=logging.DEBUG)LFlogger = logging.getLogger("bot_socket_mode")
 
 # Redis client (embedded)
 redis_client = None
@@ -194,9 +182,7 @@ async def start_socket_mode():
 
 
 if __name__ == "__main__":
-    import uvicorn
-
-    # Start Socket Mode handler in background
+    import uvicornLFLF# Start Socket Mode handler in backgroundLF
 
     asyncio.create_task(start_socket_mode())
 

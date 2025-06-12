@@ -1,12 +1,6 @@
 """Tests for Intent Router."""
 
-import pytest
-
-from alfred.agents.intent_router import Intent, IntentRouter
-
-
-class TestIntent:
-    """Test Intent dataclass."""
+import pytestLFLFfrom alfred.agents.intent_router import Intent, IntentRouterLFLFLFclass TestIntent:LF    """Test Intent dataclass."""
 
     def test_intent_creation(self):
         """Test creation of Intent objects with attributes."""
@@ -144,7 +138,7 @@ class TestIntentRouter:
         """Test error handling during routing."""
         # Create a test pattern that's deliberately invalid
 
-        import re
+        import reLF
 
         invalid_pattern = re.compile(r"(unclosed")
         monkeypatch.setattr(router, "_patterns", {"error_pattern": invalid_pattern})
@@ -158,9 +152,7 @@ class TestIntentRouter:
         # Note: In a real test, you'd use prometheus_client.REGISTRY
         # to check actual metric values
 
-        from alfred.agents.intent_router import intents_total
-
-        # Reset metrics
+        from alfred.agents.intent_router import intents_totalLFLF# Reset metricsLF
 
         intents_total._metrics.clear()
 

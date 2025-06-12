@@ -1,14 +1,6 @@
 #!/usr/bin/env python3
 """Audit Dashboard Generator - DA-006."""
-import csv
-import sys
-from datetime import datetime
-from pathlib import Path
-from typing import Dict, List
-
-
-def read_csv_file(file_path: Path) -> List[Dict[str, str]]:
-    """Read a CSV file and return list of dictionaries."""
+import csvLFimport sysLFfrom datetime import datetimeLFfrom pathlib import PathLFfrom typing import Dict, ListLFLFLFdef read_csv_file(file_path: Path) -> List[Dict[str, str]]:LF    """Read a CSV file and return list of dictionaries."""
     if not file_path.exists():
         print(f"Warning: File not found: {file_path}", file=sys.stderr)
         return []

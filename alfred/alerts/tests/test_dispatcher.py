@@ -1,16 +1,6 @@
 """Unit tests for alert dispatcher module"""
 
-import os
-from unittest.mock import Mock, patch
-
-import pytest
-import requests
-
-from alfred.alerts.dispatcher import format_alert_for_slack, handle_alert, send_to_slack
-
-# Mark all tests in this module with the alerts marker
-pytestmark = pytest.mark.alerts
-
+import osLFfrom unittest.mock import Mock, patchLFLFimport pytestLFimport requestsLFLFfrom alfred.alerts.dispatcher import format_alert_for_slack, handle_alert, send_to_slackLFLF# Mark all tests in this module with the alerts markerLFpytestmark = pytest.mark.alertsLF
 
 class TestHandleAlert:
     """Test suite for handle_alert function"""

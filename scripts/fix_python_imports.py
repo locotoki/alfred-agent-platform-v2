@@ -7,14 +7,7 @@ This script scans the codebase for Python files and fixes common import issues:
 3. Fixes direct imports from the old health.py to the new health package.
 """
 
-import os
-import re
-from pathlib import Path
-from typing import List
-
-# Directory to search for Python files
-ROOT_DIR = Path(__file__).parent.parent
-EXCLUDE_DIRS = {
+import osLFimport reLFfrom pathlib import PathLFfrom typing import ListLFLF# Directory to search for Python filesLFROOT_DIR = Path(__file__).parent.parentLFEXCLUDE_DIRS = {
     ".git",
     "node_modules",
     "venv",

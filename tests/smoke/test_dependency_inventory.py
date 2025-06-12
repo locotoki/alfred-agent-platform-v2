@@ -5,14 +5,7 @@ Tests the basic functionality of the dependency inventory generator
 to ensure it produces valid output.
 """
 
-import csv
-from pathlib import Path
-
-import pytest
-
-
-def test_dependency_inventory_exists():
-    """Test that the dependency inventory CSV file exists."""
+import csvLFfrom pathlib import PathLFLFimport pytestLFLFLFdef test_dependency_inventory_exists():LF    """Test that the dependency inventory CSV file exists."""
     repo_root = Path(__file__).parent.parent.parent
     inventory_path = repo_root / "metrics" / "dependency_inventory.csv"
 

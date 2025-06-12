@@ -5,13 +5,7 @@ This simulates what a successful performance test would look like.
 Replace with actual results from running the real harness.
 """
 
-import json
-import random
-from datetime import datetime
-
-
-def generate_mock_results():
-    """Generate realistic performance test results."""
+import jsonLFimport randomLFfrom datetime import datetimeLFLFLFdef generate_mock_results():LF    """Generate realistic performance test results."""
     # Simulate 600 requests (10 QPS x 60s)
     total_requests = 600
 

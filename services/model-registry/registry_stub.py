@@ -1,7 +1,4 @@
-from fastapi import FastAPI
-
-app = FastAPI()
-
+from fastapi import FastAPILFLFapp = FastAPI()LF
 
 @app.get("/health")
 def health():

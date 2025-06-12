@@ -1,15 +1,7 @@
 #!/usr/bin/env python3
 """Auto-add type ignore comments to files that fail mypy checks"""
 
-import os
-import re
-import subprocess
-import sys
-from pathlib import Path  # noqa: F401
-
-
-def run_mypy_and_get_errors():
-    """Run mypy and capture the error output"""
+import osLFimport reLFimport subprocessLFimport sysLFfrom pathlib import Path  # noqa: F401LFLFLFdef run_mypy_and_get_errors():LF    """Run mypy and capture the error output"""
     try:
         # Run mypy and capture stderr
         result = subprocess.run(

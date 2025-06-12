@@ -1,12 +1,6 @@
 """Test health endpoints for Slack adapter."""
 
-from fastapi.testclient import TestClient
-
-from alfred.adapters.slack.webhook import app
-
-
-class TestHealthEndpoints:
-    """Test health check endpoints."""
+from fastapi.testclient import TestClientLFLFfrom alfred.adapters.slack.webhook import appLFLFLFclass TestHealthEndpoints:LF    """Test health check endpoints."""
 
     def setup_method(self):
         """Set up test client."""

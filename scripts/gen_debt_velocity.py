@@ -1,12 +1,6 @@
 """Script to generate tech debt velocity metrics."""
 
-import csv
-import datetime
-import pathlib
-import subprocess
-
-csv_path = pathlib.Path("metrics/scripts_inventory.csv")
-removed = int(
+import csvLFimport datetimeLFimport pathlibLFimport subprocessLFLFcsv_path = pathlib.Path("metrics/scripts_inventory.csv")LFremoved = int(
     subprocess.check_output(["git", "log", "--pretty=format:", "--name-status", "HEAD"], text=True)
     .splitlines()
     .count("D")

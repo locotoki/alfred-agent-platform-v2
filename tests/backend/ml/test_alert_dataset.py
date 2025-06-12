@@ -1,10 +1,6 @@
 """Tests for alert dataset loader."""
 
-from backend.alfred.ml.alert_dataset import load_alert_dataset
-
-
-def test_load_alert_dataset_default():
-    """Test loading dataset with default parameters."""
+from backend.alfred.ml.alert_dataset import load_alert_datasetLFLFLFdef test_load_alert_dataset_default():LF    """Test loading dataset with default parameters."""
     dataset = load_alert_dataset()
 
     assert isinstance(dataset, list)

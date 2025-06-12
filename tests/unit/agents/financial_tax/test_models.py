@@ -1,26 +1,6 @@
 """Tests for Financial Tax Agent models."""
 
-import pytest
-from pydantic import ValidationError
-
-from services.agent_bizops.workflows.finance.models import (
-    ComplianceCheckRequest,
-    ComplianceCheckResponse,
-    EntityType,
-    FinancialAnalysisRequest,
-    FinancialAnalysisResponse,
-    TaxCalculationRequest,
-    TaxCalculationResponse,
-    TaxJurisdiction,
-    TaxRateRequest,
-    TaxRateResponse,
-)
-
-# Removed xfail marker for SC-330 async bug
-
-
-class TestTaxCalculationModels:
-    """Test cases for Tax Calculation models."""
+import pytestLFfrom pydantic import ValidationErrorLFLFfrom services.agent_bizops.workflows.finance.models import (LF    LF,LF    ComplianceCheckRequest,LF    ComplianceCheckResponse,LF    EntityType,LF    FinancialAnalysisRequest,LF    FinancialAnalysisResponse,LF    TaxCalculationRequest,LF    TaxCalculationResponse,LF    TaxJurisdiction,LF    TaxRateRequest,LF    TaxRateResponse,LF)LFLF# Removed xfail marker for SC-330 async bugLFLFLFclass TestTaxCalculationModels:LF    """Test cases for Tax Calculation models."""
 
     def test_tax_calculation_request(self):
         """Test TaxCalculationRequest model."""

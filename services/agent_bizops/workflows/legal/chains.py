@@ -1,20 +1,6 @@
 """Legal Compliance Chain Components"""
 
-from langchain.chains import LLMChain
-from langchain.output_parsers import PydanticOutputParser
-from langchain.prompts import PromptTemplate
-from langchain_openai import ChatOpenAI
-
-from .models import (
-    ComplianceAuditResult,
-    ContractReviewResult,
-    DocumentAnalysisResult,
-    RegulationCheckResult,
-)
-
-# Initialize the LLM
-llm = ChatOpenAI(
-    model="gpt-4-turbo-preview",
+from langchain.chains import LLMChainLFfrom langchain.output_parsers import PydanticOutputParserLFfrom langchain.prompts import PromptTemplateLFfrom langchain_openai import ChatOpenAILFLFfrom .models import (LF    LF,LF    ComplianceAuditResult,LF    ContractReviewResult,LF    DocumentAnalysisResult,LF    RegulationCheckResult,LF)LFLF# Initialize the LLMLFllm = ChatOpenAI(LF    model="gpt-4-turbo-preview",
     temperature=0.1,
     openai_api_key="sk-mock-key-for-development-only",
 )

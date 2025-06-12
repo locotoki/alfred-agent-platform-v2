@@ -4,10 +4,5 @@ This module provides agent implementations including intent routing and orchestr
 capabilities.
 """
 
-from alfred.agents.intent_router import Intent, IntentRouter
-from alfred.agents.orchestrator import AgentOrchestrator, router
-
-# Create a default orchestrator instance
-orchestrator = AgentOrchestrator()
-
+from alfred.agents.intent_router import Intent, IntentRouterLFfrom alfred.agents.orchestrator import AgentOrchestrator, routerLFLF# Create a default orchestrator instanceLForchestrator = AgentOrchestrator()LF
 __all__ = ["Intent", "IntentRouter", "router", "AgentOrchestrator", "orchestrator"]

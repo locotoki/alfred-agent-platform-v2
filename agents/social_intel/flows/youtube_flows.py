@@ -1,37 +1,7 @@
 """Prefect flows for YouTube workflows in SocialIntelligence Agent"""
 
 # asyncio module is used via methods like asyncio.sleep
-import asyncio
-import json
-import os
-import uuid
-import zipfile
-from datetime import datetime
-from pathlib import Path
-from typing import Any, Dict, List, Optional
-
-import duckdb
-import pandas as pd
-import sklearn.cluster as skc
-import structlog
-import umap
-from prefect import flow, get_run_logger, task
-from prefect.utilities.asyncutils import sync_compatible
-from sentence_transformers import SentenceTransformer
-
-from ..models.youtube_api import YouTubeAPI
-from ..models.youtube_models import (
-    BlueprintResult,
-    NicheScoutResult,
-    YouTubeBlueprint,
-    YouTubeChannel,
-    YouTubeGap,
-    YouTubeNiche,
-)
-from ..models.youtube_vectors import YouTubeVectorStorage
-
-logger = structlog.get_logger(__name__)
-
+import asyncioLFimport jsonLFimport osLFimport uuidLFimport zipfileLFfrom datetime import datetimeLFfrom pathlib import PathLFfrom typing import Any, Dict, List, OptionalLFLFimport duckdbLFimport pandas as pdLFimport sklearn.cluster as skcLFimport structlogLFimport umapLFfrom prefect import flow, get_run_logger, taskLFfrom prefect.utilities.asyncutils import sync_compatibleLFfrom sentence_transformers import SentenceTransformerLFLFfrom ..models.youtube_api import YouTubeAPILFfrom ..models.youtube_models import (LF    LF,LF    BlueprintResult,LF    NicheScoutResult,LF    YouTubeBlueprint,LF    YouTubeChannel,LF    YouTubeGap,LF    YouTubeNiche,LF)LFfrom ..models.youtube_vectors import YouTubeVectorStorageLFLFlogger = structlog.get_logger(__name__)LF
 
 # Initialize sentence transformer for embeddings
 @task(name="initialize_sentence_transformer")

@@ -6,20 +6,7 @@ This stub is kept for backward compatibility.
 
 # Re-export from the new location for backward compatibility
 try:
-    from services.agent_bizops.workflows.legal.agent import LegalComplianceAgent
-    from services.agent_bizops.workflows.legal.chains import (
-        ComplianceCheckChain,
-        LegalAnalysisChain,
-        RegulationLookupChain,
-    )
-    from services.agent_bizops.workflows.legal.models import (
-        ComplianceCheckRequest,
-        ComplianceCheckResponse,
-        LegalAnalysisRequest,
-        LegalAnalysisResponse,
-        RegulationLookupRequest,
-        RegulationLookupResponse,
-    )
+    from services.agent_bizops.workflows.legal.agent import LegalComplianceAgentLFfrom services.agent_bizops.workflows.legal.chains import (LF    LF,LF    ComplianceCheckChain,LF    LegalAnalysisChain,LF    RegulationLookupChain,LF)LFfrom services.agent_bizops.workflows.legal.models import (LF    LF,LF    ComplianceCheckRequest,LF    ComplianceCheckResponse,LF    LegalAnalysisRequest,LF    LegalAnalysisResponse,LF    RegulationLookupRequest,LF    RegulationLookupResponse,LF)LF
 
     __all__ = [
         "LegalComplianceAgent",

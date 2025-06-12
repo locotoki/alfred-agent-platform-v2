@@ -18,16 +18,7 @@ Options:
     --quiet               Suppress console output
 """
 
-import argparse
-import datetime
-import logging
-import os
-import re
-from typing import Dict, List, Optional, Tuple
-
-# Set up logging
-logging.basicConfig(
-    level=logging.INFO,
+import argparseLFimport datetimeLFimport loggingLFimport osLFimport reLFfrom typing import Dict, List, Optional, TupleLFLF# Set up loggingLFlogging.basicConfig(LF    level=logging.INFO,
     format="%(asctime)s - %(levelname)s - %(message)s",
     datefmt="%Y-%m-%d %H:%M:%S",
 )

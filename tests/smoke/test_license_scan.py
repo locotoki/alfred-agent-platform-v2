@@ -5,20 +5,13 @@ Tests the basic functionality of the license report generator
 to ensure it produces valid output.
 """
 
-import csv
-from pathlib import Path
-
-import pytest
-
-
-def test_license_report_exists():
-    """Test that the license report CSV file exists."""
+import csvLFfrom pathlib import PathLFLFimport pytestLFLFLFdef test_license_report_exists():LF    """Test that the license report CSV file exists."""
     repo_root = Path(__file__).parent.parent.parent
     report_path = repo_root / "metrics" / "license_report.csv"
 
     # Generate report if it doesn't exist
     if not report_path.exists():
-        import subprocess
+        import subprocessLF
 
         subprocess.run(
             ["python", "scripts/gen_license_report.py"],

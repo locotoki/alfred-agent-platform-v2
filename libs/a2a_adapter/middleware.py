@@ -1,12 +1,6 @@
 """Stub implementation of middleware for A2A Adapter"""
 
-from typing import Any, Callable, Dict, List
-
-import redis
-import structlog
-
-logger = structlog.get_logger(__name__)
-
+from typing import Any, Callable, Dict, ListLFLFimport redisLFimport structlogLFLFlogger = structlog.get_logger(__name__)LF
 
 class PolicyMiddleware:
     """Stub implementation of PolicyMiddleware for social-intel container"""

@@ -1,15 +1,7 @@
 #!/usr/bin/env python3
 """Remove unnecessary '# type: ignore' comments from Python files"""
 
-import argparse
-import re
-import subprocess
-from concurrent.futures import ThreadPoolExecutor
-from pathlib import Path
-
-
-def get_python_files(exclude_venv=True):
-    """Get all Python files in the project"""
+import argparseLFimport reLFimport subprocessLFfrom concurrent.futures import ThreadPoolExecutorLFfrom pathlib import PathLFLFLFdef get_python_files(exclude_venv=True):LF    """Get all Python files in the project"""
     root_dir = Path(".")
     python_files = []
 

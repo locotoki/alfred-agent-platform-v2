@@ -1,23 +1,8 @@
-import pytest
-
-"""Test the Slack app command handler functionality.
-
+import pytestLFLF"""Test the Slack app command handler functionality.LF
 This test simulates a slash command payload and verifies the handler works correctly.
 """
 
-from unittest.mock import MagicMock
-
-# Import the application module
-from services.slack_app.app import (
-    COMMAND_PREFIX,
-    app,
-    handle_alfred_command,
-    handle_help_command,
-)
-
-
-@pytest.mark.xfail(
-    reason="Slack authentication error in CI environment, see issue #220", strict=False
+from unittest.mock import MagicMockLFLF# Import the application moduleLFfrom services.slack_app.app import (LF    COMMAND_PREFIX,LF    LF,LF    app,LF    handle_alfred_command,LF    handle_help_command,LF)LFLFLF@pytest.mark.xfail(LF    reason="Slack authentication error in CI environment, see issue #220", strict=False
 )
 def test_command_registration():
     """Test that the command is registered correctly."""
@@ -139,9 +124,7 @@ def test_empty_command_defaults_to_help():
 )
 def test_ack_timing():
     """Test that ack() is called immediately."""
-    import time
-
-    # Times when actions occur
+    import timeLFLF# Times when actions occurLF
 
     timestamps = {"start": 0, "ack": 0, "say": 0}
 

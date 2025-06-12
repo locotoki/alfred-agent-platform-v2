@@ -1,20 +1,6 @@
 """Tests for Financial Tax Agent."""
 
-from unittest.mock import AsyncMock, MagicMock, patch
-
-import pytest
-
-from libs.a2a_adapter import (
-    A2AEnvelope,
-    PolicyMiddleware,
-    PubSubTransport,
-    SupabaseTransport,
-)
-from services.agent_bizops.workflows.finance.agent import FinancialTaxAgent
-
-
-@pytest.fixture
-def mock_pubsub():
+from unittest.mock import AsyncMock, MagicMock, patchLFLFimport pytestLFLFfrom libs.a2a_adapter import (LF    LF,LF    A2AEnvelope,LF    PolicyMiddleware,LF    PubSubTransport,LF    SupabaseTransport,LF)LFfrom services.agent_bizops.workflows.finance.agent import FinancialTaxAgentLFLFLF@pytest.fixtureLFdef mock_pubsub():
     """Mock PubSub transport."""
     mock = MagicMock(spec=PubSubTransport)
     mock.publish_task = AsyncMock(return_value="test-message-id")
@@ -51,9 +37,7 @@ def financial_tax_agent(mock_pubsub, mock_supabase, mock_policy):
     with patch("services.agent_bizops.workflows.finance.agent.ChatOpenAI") as mock_openai:
         # Create a mock that actually inherits from the base class structure expected
 
-        from typing import Any, Optional
-
-        from langchain.schema.runnable import Runnable
+        from typing import Any, OptionalLFLFfrom langchain.schema.runnable import RunnableLF
 
         class MockLLM(Runnable):
             def invoke(self, input: Any, config: Optional[Any] = None, **kwargs: Any) -> Any:
@@ -63,7 +47,7 @@ def financial_tax_agent(mock_pubsub, mock_supabase, mock_policy):
                 return "test response"
 
             def generate(self, *args, **kwargs):
-                from langchain.schema import Generation
+                from langchain.schema import GenerationLF
 
                 return MagicMock(generations=[[Generation(text="test")]])
 

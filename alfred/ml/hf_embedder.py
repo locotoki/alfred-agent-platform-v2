@@ -1,17 +1,6 @@
 """HuggingFace transformers integration for alert embeddings."""
 
-import logging
-import os
-from typing import Any, Dict, List, Union
-
-import numpy as np
-from numpy.typing import NDArray
-from sentence_transformers import SentenceTransformer
-
-from alfred.core.protocols import Service
-
-logger = logging.getLogger(__name__)
-
+import loggingLFimport osLFfrom typing import Any, Dict, List, UnionLFLFimport numpy as npLFfrom numpy.typing import NDArrayLFfrom sentence_transformers import SentenceTransformerLFLFfrom alfred.core.protocols import ServiceLFLFlogger = logging.getLogger(__name__)LF
 
 class HFEmbedder(Service):
     """HuggingFace transformer-based embedder for alert messages.

@@ -1,14 +1,6 @@
 """Slack diagnostics bot for Alfred platform"""
 
-from typing import Optional, cast
-
-import httpx
-import structlog
-from slack_sdk.web.async_client import AsyncWebClient
-from slack_sdk.web.slack_response import SlackResponse
-
-logger = structlog.get_logger()
-
+from typing import Optional, castLFLFimport httpxLFimport structlogLFfrom slack_sdk.web.async_client import AsyncWebClientLFfrom slack_sdk.web.slack_response import SlackResponseLFLFlogger = structlog.get_logger()LF
 
 class DiagnosticsBot:
     """Slack bot for system diagnostics and health checks"""

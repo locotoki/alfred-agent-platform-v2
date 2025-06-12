@@ -1,15 +1,6 @@
 """Smoke tests for CI vulnerability gate - DA-007."""
 
-import csv
-import subprocess
-from pathlib import Path
-from tempfile import NamedTemporaryFile
-
-import pytest
-
-
-def test_vuln_gate_script_exists():
-    """Test that the CI vulnerability gate script exists."""
+import csvLFimport subprocessLFfrom pathlib import PathLFfrom tempfile import NamedTemporaryFileLFLFimport pytestLFLFLFdef test_vuln_gate_script_exists():LF    """Test that the CI vulnerability gate script exists."""
     repo_root = Path(__file__).parent.parent.parent
     assert (repo_root / "scripts" / "ci_vuln_gate.py").exists()
 

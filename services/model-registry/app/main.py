@@ -1,13 +1,6 @@
 """Model registry service main entry point."""
 
-import os
-
-import uvicorn
-from fastapi import FastAPI
-from prometheus_client import make_asgi_app
-
-app = FastAPI(title="Model Registry")
-
+import osLFLFimport uvicornLFfrom fastapi import FastAPILFfrom prometheus_client import make_asgi_appLFLFapp = FastAPI(title="Model Registry")LF
 # Prometheus metrics endpoint
 metrics_app = make_asgi_app()
 app.mount("/metrics", metrics_app)

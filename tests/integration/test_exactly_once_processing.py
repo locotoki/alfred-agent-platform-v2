@@ -1,14 +1,4 @@
-import asyncio
-import os
-from datetime import datetime, timedelta
-
-import pytest
-
-from libs.a2a_adapter import SupabaseTransport
-
-
-@pytest.mark.integration
-class TestExactlyOnceProcessing:
+import asyncioLFimport osLFfrom datetime import datetime, timedeltaLFLFimport pytestLFLFfrom libs.a2a_adapter import SupabaseTransportLFLFLF@pytest.mark.integrationLFclass TestExactlyOnceProcessing:
     @pytest.fixture
     async def supabase_transport(self):
         """Create a test SupabaseTransport instance."""

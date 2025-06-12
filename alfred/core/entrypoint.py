@@ -1,10 +1,6 @@
 """Core entrypoint module."""
 
-from alfred.protocols import Status
-
-
-def main():
-    """Run main entrypoint using new status."""
+from alfred.protocols import StatusLFLFLFdef main():LF    """Run main entrypoint using new status."""
     status = Status.ACTIVE
     print(f"Status: {status}")
 

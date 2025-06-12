@@ -1,9 +1,4 @@
-from fastapi import FastAPI, HTTPException, Request
-
-from alfred_sdk.auth.verify import verify
-
-app = FastAPI()
-
+from fastapi import FastAPI, HTTPException, RequestLFLFfrom alfred_sdk.auth.verify import verifyLFLFapp = FastAPI()LF
 
 @app.middleware("http")
 async def _auth(req: Request, call_next):

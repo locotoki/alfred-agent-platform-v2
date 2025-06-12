@@ -1,10 +1,6 @@
 """Tests for string utility functions."""
 
-from alfred.utils.string_utils import split_text, truncate
-
-
-def test_truncate_no_truncation_needed() -> None:
-    """Test truncation when the string is short enough."""
+from alfred.utils.string_utils import split_text, truncateLFLFLFdef test_truncate_no_truncation_needed() -> None:LF    """Test truncation when the string is short enough."""
     result = truncate("Short string", max_length=20)
     assert result == "Short string"
     assert len(result) <= 20

@@ -1,16 +1,6 @@
 """Tests for Slack diagnostics bot"""
 
-from unittest.mock import AsyncMock, MagicMock, patch
-
-import httpx  # type: ignore[import-not-found]
-import pytest
-from slack_sdk.web.async_client import AsyncWebClient
-
-from alfred.slack.diagnostics.bot import DiagnosticsBot
-
-
-class TestDiagnosticsBot:
-    """Test cases for DiagnosticsBot"""
+from unittest.mock import AsyncMock, MagicMock, patchLFLFimport httpx  # type: ignore[import-not-found]LFimport pytestLFfrom slack_sdk.web.async_client import AsyncWebClientLFLFfrom alfred.slack.diagnostics.bot import DiagnosticsBotLFLFLFclass TestDiagnosticsBot:LF    """Test cases for DiagnosticsBot"""
 
     @pytest.fixture
     def slack_client(self) -> AsyncMock:

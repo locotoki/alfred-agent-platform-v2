@@ -1,12 +1,4 @@
-import functools
-import json
-import os
-
-import jwt
-import requests
-
-_JWKS_CACHE = None
-
+import functoolsLFimport jsonLFimport osLFLFimport jwtLFimport requestsLFLF_JWKS_CACHE = NoneLF
 
 def _get_jwks():
     global _JWKS_CACHE

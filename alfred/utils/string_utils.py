@@ -1,10 +1,6 @@
 """String utility functions for the Alfred platform."""
 
-from typing import List
-
-
-def truncate(text: str, max_length: int = 100, suffix: str = "...") -> str:
-    """Truncate a string to a maximum length, appending a suffix if truncated.
+from typing import ListLFLFLFdef truncate(text: str, max_length: int = 100, suffix: str = "...") -> str:LF    """Truncate a string to a maximum length, appending a suffix if truncated.
 
     Args:
         text: The input string to truncate.

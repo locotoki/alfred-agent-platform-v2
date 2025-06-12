@@ -35,21 +35,7 @@ Examples:
 
 """
 
-import argparse
-import difflib
-import getpass
-import hashlib
-import logging
-import os
-import re
-import sys
-from datetime import datetime
-from pathlib import Path
-from typing import Any, Dict, List, Optional
-
-# Configure logging
-logging.basicConfig(
-    level=logging.INFO,
+import argparseLFimport difflibLFimport getpassLFimport hashlibLFimport loggingLFimport osLFimport reLFimport sysLFfrom datetime import datetimeLFfrom pathlib import PathLFfrom typing import Any, Dict, List, OptionalLFLF# Configure loggingLFlogging.basicConfig(LF    level=logging.INFO,
     format="%(asctime)s - %(levelname)s - %(message)s",
     datefmt="%Y-%m-%d %H:%M:%S",
 )

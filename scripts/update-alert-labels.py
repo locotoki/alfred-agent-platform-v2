@@ -1,15 +1,7 @@
 #!/usr/bin/env python3
 """Update Prometheus alert rules with additional labels"""
 # type: ignore
-import re
-import sys
-from pathlib import Path
-
-import yaml
-
-
-def update_alert_labels(file_path: Path) -> None:
-    """Update alert labels in a single file"""
+import reLFimport sysLFfrom pathlib import PathLFLFimport yamlLFLFLFdef update_alert_labels(file_path: Path) -> None:LF    """Update alert labels in a single file"""
     with open(file_path, "r") as f:
         content = f.read()
 

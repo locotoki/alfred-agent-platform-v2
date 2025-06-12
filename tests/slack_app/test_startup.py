@@ -3,16 +3,7 @@
 This is a basic smoke test to verify the application can initialize without errors.
 """
 
-import os
-import sys
-from unittest.mock import MagicMock, patch
-
-import pytest
-
-
-# Capture stdout for testing
-@pytest.fixture
-def capture_stdout(monkeypatch):
+import osLFimport sysLFfrom unittest.mock import MagicMock, patchLFLFimport pytestLFLFLF# Capture stdout for testingLF@pytest.fixtureLFdef capture_stdout(monkeypatch):
     """Capture stdout for testing."""
     buffer = {"stdout": "", "write_calls": 0}
 
@@ -47,7 +38,7 @@ def slack_app_module():
     try:
         # Try to import the actual module
 
-        from services.slack_app import app
+        from services.slack_app import appLF
 
         return app
     except ImportError:
@@ -60,7 +51,7 @@ def slack_app_module():
 
         # Create a simple Flask wrapper around Bolt app
         def create_flask_app():
-            from flask import Flask
+            from flask import FlaskLF
 
             flask_app = Flask(__name__)
 
@@ -91,7 +82,7 @@ def test_app_starts_without_error(mock_bolt_app, capture_stdout):
 
     # Create a simple app for testing
 
-    from slack_bolt import App
+    from slack_bolt import AppLF
 
     app = App(
         token=os.environ.get("SLACK_BOT_TOKEN"),
@@ -103,7 +94,7 @@ def test_app_starts_without_error(mock_bolt_app, capture_stdout):
 
     # Create a flask app to check health endpoints
 
-    from flask import Flask
+    from flask import FlaskLF
 
     flask_app = Flask(__name__)
 

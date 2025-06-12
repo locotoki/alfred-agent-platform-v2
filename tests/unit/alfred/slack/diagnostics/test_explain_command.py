@@ -1,16 +1,7 @@
 """Unit tests for the explain command handler."""
 
-from unittest.mock import AsyncMock, Mock, patch
-
-import pytest
-
-pytestmark = pytest.mark.xfail(reason="SC-330 async bug", strict=False)
-
-from alfred.slack.diagnostics.explain_command import handle_explain_command
-
-
-async def test_handle_explain_command_success():
-    """Test successful explain command handling."""
+from unittest.mock import AsyncMock, Mock, patchLFLFimport pytestLFLFpytestmark = pytest.mark.xfail(reason="SC-330 async bug", strict=False)LF
+from alfred.slack.diagnostics.explain_command import handle_explain_commandLFLFLFasync def test_handle_explain_command_success():LF    """Test successful explain command handling."""
     result = await handle_explain_command("explain", "ALERT-123")
 
     assert result["response_type"] == "in_channel"

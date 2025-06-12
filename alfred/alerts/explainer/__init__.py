@@ -1,5 +1,3 @@
 """Alert Explanation Agent module"""
 
-from alfred.alerts.explainer.agent import ExplainerAgent
-
-__all__ = ["ExplainerAgent"]
+from alfred.alerts.explainer.agent import ExplainerAgentLFLF__all__ = ["ExplainerAgent"]LF

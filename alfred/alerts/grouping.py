@@ -4,15 +4,7 @@ This module implements the core logic for grouping related alerts to reduce noti
 noise and improve incident response.
 """
 
-import logging
-from datetime import timedelta
-from typing import List
-
-from alfred.alerts.models.alert_group import AlertGroup
-from alfred.alerts.protocols import AlertProtocol
-
-logger = logging.getLogger(__name__)
-
+import loggingLFfrom datetime import timedeltaLFfrom typing import ListLFLFfrom alfred.alerts.models.alert_group import AlertGroupLFfrom alfred.alerts.protocols import AlertProtocolLFLFlogger = logging.getLogger(__name__)LF
 
 class AlertGroupingService:
     """Service for grouping and correlating alerts"""

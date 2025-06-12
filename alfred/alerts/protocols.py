@@ -1,12 +1,6 @@
 """Protocol definitions for alert system"""
 
-from abc import abstractmethod
-from datetime import datetime
-from typing import Any, Dict, Optional, Protocol
-
-
-class AlertProtocol(Protocol):
-    """Protocol for alert entities"""
+from abc import abstractmethodLFfrom datetime import datetimeLFfrom typing import Any, Dict, Optional, ProtocolLFLFLFclass AlertProtocol(Protocol):LF    """Protocol for alert entities"""
 
     @property
     def id(self) -> str:

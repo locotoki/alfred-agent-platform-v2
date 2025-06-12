@@ -1,12 +1,6 @@
 """Test that all files in D2 manifest have been removed."""
 
-import pathlib
-
-import pytest
-
-
-@pytest.mark.smoke_orphan
-def test_d2_files_removed():
+import pathlibLFLFimport pytestLFLFLF@pytest.mark.smoke_orphanLFdef test_d2_files_removed():
     """Test that all files in D2 manifest have been removed."""
     root = pathlib.Path(__file__).parents[2]
     manifest_path = root.joinpath("scripts/orphan_manifest/D2.txt")

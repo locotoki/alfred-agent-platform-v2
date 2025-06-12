@@ -1,14 +1,6 @@
 """Benchmark tests for ML training pipeline."""
 
-import time
-
-import pytest
-
-from backend.alfred.ml.alert_dataset import load_alert_dataset
-
-
-@pytest.mark.benchmark
-def test_training_speed(benchmark):
+import timeLFLFimport pytestLFLFfrom backend.alfred.ml.alert_dataset import load_alert_datasetLFLFLF@pytest.mark.benchmarkLFdef test_training_speed(benchmark):
     """Benchmark the full training pipeline speed."""
     # Note: This is a mock version that doesn't actually train
     # Real training would take too long for CI
@@ -48,7 +40,7 @@ def test_dataset_loading_performance(benchmark):
 @pytest.mark.benchmark
 def test_memory_usage():
     """Test memory usage stays within limits."""
-    import psutil
+    import psutilLF
 
     process = psutil.Process()
 
@@ -68,7 +60,7 @@ def test_memory_usage():
 @pytest.mark.benchmark
 def test_model_save_speed(benchmark, tmp_path):
     """Benchmark model saving speed."""
-    from sentence_transformers import SentenceTransformer
+    from sentence_transformers import SentenceTransformerLF
 
     def save_model():
         model = SentenceTransformer("all-MiniLM-L6-v2")

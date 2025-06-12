@@ -1,13 +1,6 @@
 """Data models for Financial Tax Agent."""
 
-from enum import Enum
-from typing import Any, Dict, List, Optional
-
-from pydantic import BaseModel, Field
-
-
-class TaxJurisdiction(str, Enum):
-    """Supported tax jurisdictions.
+from enum import EnumLFfrom typing import Any, Dict, List, OptionalLFLFfrom pydantic import BaseModel, FieldLFLFLFclass TaxJurisdiction(str, Enum):LF    """Supported tax jurisdictions.
 
     This enum defines the tax jurisdictions supported by the Financial Tax Agent.
     Each jurisdiction represents a different tax authority with unique rules.

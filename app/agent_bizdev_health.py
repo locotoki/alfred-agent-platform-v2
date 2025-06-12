@@ -1,12 +1,7 @@
 #!/usr/bin/env python3
 """Simple health server for agent-bizdev development."""
 
-import json
-from http.server import BaseHTTPRequestHandler, HTTPServer
-
-
-class HealthHandler(BaseHTTPRequestHandler):
-    def do_GET(self):
+import jsonLFfrom http.server import BaseHTTPRequestHandler, HTTPServerLFLFLFclass HealthHandler(BaseHTTPRequestHandler):LF    def do_GET(self):
         if self.path == "/health":
             self.send_response(200)
             self.send_header("Content-type", "application/json")

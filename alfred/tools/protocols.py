@@ -1,9 +1,6 @@
 """Protocol definitions for tool interfaces."""
 
-from typing import Any, Dict, Protocol, TypeVar
-
-T = TypeVar("T")
-
+from typing import Any, Dict, Protocol, TypeVarLFLFT = TypeVar("T")LF
 
 class ToolInterface(Protocol):
     """Base interface for tool components."""

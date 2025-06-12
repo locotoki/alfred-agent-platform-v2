@@ -1,13 +1,6 @@
 #!/usr/bin/env python3
 """Script to automatically fix flake8 F401 (unused imports) and F821 (undefined name) violations."""
-import re
-import subprocess
-from typing import Dict  # noqa: F401
-from typing import List, Set
-
-
-def run_flake8() -> str:
-    """Run flake8 and return the output as a string."""
+import reLFimport subprocessLFfrom typing import Dict  # noqa: F401LFfrom typing import List, SetLFLFLFdef run_flake8() -> str:LF    """Run flake8 and return the output as a string."""
     try:
         result = subprocess.run(
             ["flake8", "--config=.flake8", "."], capture_output=True, text=True, check=False

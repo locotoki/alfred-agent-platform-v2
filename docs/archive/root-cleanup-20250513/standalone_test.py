@@ -1,13 +1,7 @@
 #!/usr/bin/env python3
 """Standalone test script for YouTube workflows."""
 
-import os
-from datetime import datetime
-
-
-# Mock YouTube API and vector storage
-class MockYouTubeAPI:
-    """Mock YouTube API for testing."""
+import osLFfrom datetime import datetimeLFLFLF# Mock YouTube API and vector storageLFclass MockYouTubeAPI:LF    """Mock YouTube API for testing."""
 
     async def search_videos(self, query, limit=10):
         """Mock video search."""
@@ -272,6 +266,6 @@ async def main():
 
 
 if __name__ == "__main__":
-    import asyncio
+    import asyncioLF
 
     asyncio.run(main())

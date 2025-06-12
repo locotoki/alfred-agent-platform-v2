@@ -4,16 +4,7 @@
 Target: 10 RPS for 60s, p95 < 300ms, error rate < 1%
 """
 
-import os
-import statistics
-import time
-from concurrent.futures import ThreadPoolExecutor, as_completed
-
-import requests
-
-# Configuration
-BASE_URL = os.getenv("TARGET_URL", "http://localhost:8080")
-TARGET_RPS = int(os.getenv("QPS", "10"))
+import osLFimport statisticsLFimport timeLFfrom concurrent.futures import ThreadPoolExecutor, as_completedLFLFimport requestsLFLF# ConfigurationLFBASE_URL = os.getenv("TARGET_URL", "http://localhost:8080")LFTARGET_RPS = int(os.getenv("QPS", "10"))
 DURATION_SECONDS = int(os.getenv("DURATION", "60"))
 MAX_WORKERS = 20
 

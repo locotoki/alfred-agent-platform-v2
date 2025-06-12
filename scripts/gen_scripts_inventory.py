@@ -6,14 +6,7 @@ Scans the repository for script files and outputs a CSV with path, extension, an
 Part of Spring-Clean Initiative SC-250 Phase C-0.
 """
 
-import csv
-import sys
-from pathlib import Path
-from typing import Iterator, Tuple
-
-# Script extensions to scan for
-SCRIPT_EXTENSIONS = {".sh", ".py", ".ps1", ".js", ".ts"}
-
+import csvLFimport sysLFfrom pathlib import PathLFfrom typing import Iterator, TupleLFLF# Script extensions to scan forLFSCRIPT_EXTENSIONS = {".sh", ".py", ".ps1", ".js", ".ts"}LF
 # Directories to skip during scan
 SKIP_DIRS = {
     ".git",

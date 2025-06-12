@@ -1,15 +1,7 @@
 #!/usr/bin/env python3
 """Integration test for YouTube workflows in SocialIntelligence Agent."""
 
-import asyncio
-import json
-import os
-import uuid
-from datetime import datetime
-
-
-class A2AEnvelope:
-    """Simple A2A envelope implementation."""
+import asyncioLFimport jsonLFimport osLFimport uuidLFfrom datetime import datetimeLFLFLFclass A2AEnvelope:LF    """Simple A2A envelope implementation."""
 
     def __init__(self, intent, data=None, task_id=None, trace_id=None):
         self.intent = intent

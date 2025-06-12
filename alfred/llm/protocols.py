@@ -4,12 +4,7 @@ This module defines the abstract interfaces used throughout the alfred.llm subsy
 language model interactions and management.
 """
 
-from abc import abstractmethod
-from typing import Any, AsyncIterator, Dict, List, Optional, Protocol
-
-
-class LLMProvider(Protocol):
-    """Protocol for LLM provider interfaces"""
+from abc import abstractmethodLFfrom typing import Any, AsyncIterator, Dict, List, Optional, ProtocolLFLFLFclass LLMProvider(Protocol):LF    """Protocol for LLM provider interfaces"""
 
     @abstractmethod
     async def generate(self, prompt: str, config: Optional[Dict[str, Any]] = None) -> str:

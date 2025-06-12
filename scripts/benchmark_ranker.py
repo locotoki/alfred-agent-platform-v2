@@ -7,26 +7,7 @@ Generates performance report with metrics on:
 - Processing latency
 - Memory usage.
 """
-# type: ignore
-import argparse
-import json
-import random
-import time
-from datetime import datetime
-from typing import Dict, List, Tuple
-
-import matplotlib.pyplot as plt
-import numpy as np
-import psutil
-from matplotlib.backends.backend_pdf import PdfPages
-
-from alfred.core.protocols import AlertProtocol
-from alfred.ml.noise_ranker import NoiseRankingModel as LegacyRanker
-from backend.alfred.alerts.ranker import AlertNoiseRanker
-
-
-class BenchmarkAlert(AlertProtocol):
-    """Mock alert for benchmarking"""
+# type: ignoreLFimport argparseLFimport jsonLFimport randomLFimport timeLFfrom datetime import datetimeLFfrom typing import Dict, List, TupleLFLFimport matplotlib.pyplot as pltLFimport numpy as npLFimport psutilLFfrom matplotlib.backends.backend_pdf import PdfPagesLFLFfrom alfred.core.protocols import AlertProtocolLFfrom alfred.ml.noise_ranker import NoiseRankingModel as LegacyRankerLFfrom backend.alfred.alerts.ranker import AlertNoiseRankerLFLFLFclass BenchmarkAlert(AlertProtocol):LF    """Mock alert for benchmarking"""
 
     def __init__(self, **kwargs):
         """Initialize the mock alert with arbitrary properties"""

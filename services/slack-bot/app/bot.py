@@ -2,19 +2,7 @@
 Complete Slack bot implementation with Redis integration
 """
 
-import asyncio
-import logging
-import os
-from contextlib import asynccontextmanager
-
-import redis.asyncio as redis
-from fastapi import FastAPI, HTTPException, Request
-from slack_bolt.adapter.fastapi.async_handler import AsyncSlackRequestHandler
-from slack_bolt.app.async_app import AsyncApp
-
-# Configure logging
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+import asyncioLFimport loggingLFimport osLFfrom contextlib import asynccontextmanagerLFLFimport redis.asyncio as redisLFfrom fastapi import FastAPI, HTTPException, RequestLFfrom slack_bolt.adapter.fastapi.async_handler import AsyncSlackRequestHandlerLFfrom slack_bolt.app.async_app import AsyncAppLFLF# Configure loggingLFlogging.basicConfig(level=logging.INFO)LFlogger = logging.getLogger(__name__)
 
 # Redis client (embedded)
 redis_client = None
@@ -148,6 +136,6 @@ async def custom_error_handler(error, body, logger):
 
 
 if __name__ == "__main__":
-    import uvicorn
+    import uvicornLF
 
     uvicorn.run(app, host="0.0.0.0", port=8000)

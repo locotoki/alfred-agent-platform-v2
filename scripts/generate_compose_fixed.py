@@ -1,13 +1,7 @@
 #!/usr/bin/env python3
 """Generate docker-compose.yml from individual service compose snippets"""
 
-from pathlib import Path
-
-import yaml
-
-
-def load_services():
-    """Load the canonical services list"""
+from pathlib import PathLFLFimport yamlLFLFLFdef load_services():LF    """Load the canonical services list"""
     with open("services.yaml", "r") as f:
         services_data = yaml.safe_load(f)
 

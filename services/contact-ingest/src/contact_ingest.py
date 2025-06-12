@@ -1,10 +1,6 @@
 """Contact Ingest Service API."""
 
-from fastapi import FastAPI
-from pydantic import BaseModel
-
-app = FastAPI(title="Contact-Ingest", version="0.1.0")
-
+from fastapi import FastAPILFfrom pydantic import BaseModelLFLFapp = FastAPI(title="Contact-Ingest", version="0.1.0")LF
 
 class Contact(BaseModel):
     """Contact model for lead capture."""

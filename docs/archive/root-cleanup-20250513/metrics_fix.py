@@ -1,11 +1,7 @@
 #!/usr/bin/env python3
 """Script to fix Prometheus metrics content type."""
 
-import re
-
-# Path to health.py
-HEALTH_FILE = "/app/libs/agent_core/health.py"
-
+import reLFLF# Path to health.pyLFHEALTH_FILE = "/app/libs/agent_core/health.py"LF
 # Read the current file
 with open(HEALTH_FILE, "r") as file:
     content = file.read()

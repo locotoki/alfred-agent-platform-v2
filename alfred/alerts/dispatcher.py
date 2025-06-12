@@ -3,15 +3,7 @@
 This module handles the dispatching of alerts to different notification channels.
 """
 
-import json
-import os
-from typing import Any, Dict
-
-import requests
-import structlog
-
-logger = structlog.get_logger(__name__)
-
+import jsonLFimport osLFfrom typing import Any, DictLFLFimport requestsLFimport structlogLFLFlogger = structlog.get_logger(__name__)LF
 
 def handle_alert(alert_data: Dict[str, Any]) -> None:
     """Handle incoming alert data and dispatch to appropriate channels.

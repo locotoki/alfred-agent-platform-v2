@@ -199,7 +199,7 @@ class OllamaAdapter(LLMAdapter):
             base_url: Ollama API base URL (default: http://localhost:11434)
         """
         self.model = model
-        self.base_url = base_url.rstrip('/')
+        self.base_url = base_url.rstrip("/")
         self._client: Optional[Any] = None
 
     @property
@@ -207,6 +207,7 @@ class OllamaAdapter(LLMAdapter):
         """Return HTTP client for Ollama API."""
         if self._client is None:
             import httpx
+
             self._client = httpx.AsyncClient(base_url=self.base_url, timeout=60.0)
         return self._client
 
@@ -223,40 +224,40 @@ class OllamaAdapter(LLMAdapter):
         try:
             # Convert messages to Ollama format
             prompt = self._format_messages(messages)
-            
+
             params = {
                 "model": self.model,
                 "prompt": prompt,
                 "stream": stream,
                 "options": {
                     "temperature": temperature,
-                }
+                },
             }
-            
+
             if max_tokens:
                 params["options"]["num_predict"] = max_tokens
-            
+
             # Add any additional kwargs to options
             if kwargs:
                 params["options"].update(kwargs)
-            
+
             if stream:
                 return self._stream_response(params)
             else:
                 response = await self.client.post("/api/generate", json=params)
                 response.raise_for_status()
                 data = response.json()
-                
+
                 llm_requests_total.labels(model=self.model, status="success").inc()
-                
+
                 # Track token usage
                 if "eval_count" in data:
                     llm_tokens_total.labels(model=self.model, operation="completion").inc(
                         data.get("prompt_eval_count", 0) + data.get("eval_count", 0)
                     )
-                
+
                 return data["response"]
-                
+
         except Exception as e:
             llm_requests_total.labels(model=self.model, status="error").inc()
             logger.error("Ollama API error", error=str(e), model=self.model)
@@ -265,24 +266,29 @@ class OllamaAdapter(LLMAdapter):
     async def _stream_response(self, params: Dict[str, Any]) -> AsyncIterator[str]:
         """Stream response chunks from Ollama API."""
         total_tokens = 0
-        
+
         async with self.client.stream("POST", "/api/generate", json=params) as response:
             response.raise_for_status()
             async for line in response.aiter_lines():
                 if line:
                     import json
+
                     try:
                         data = json.loads(line)
                         if "response" in data and data["response"]:
                             content = data["response"]
                             total_tokens += self.estimate_tokens(content)
                             yield content
-                        
+
                         if data.get("done"):
                             # Track final token usage
                             if "eval_count" in data:
-                                actual_tokens = data.get("prompt_eval_count", 0) + data.get("eval_count", 0)
-                                llm_tokens_total.labels(model=self.model, operation="stream_completion").inc(actual_tokens)
+                                actual_tokens = data.get("prompt_eval_count", 0) + data.get(
+                                    "eval_count", 0
+                                )
+                                llm_tokens_total.labels(
+                                    model=self.model, operation="stream_completion"
+                                ).inc(actual_tokens)
                             break
                     except json.JSONDecodeError:
                         continue
@@ -290,7 +296,7 @@ class OllamaAdapter(LLMAdapter):
     def _format_messages(self, messages: List[Message]) -> str:
         """Format messages for Ollama prompt."""
         formatted_parts = []
-        
+
         for msg in messages:
             if msg.role == "system":
                 formatted_parts.append(f"System: {msg.content}")
@@ -298,10 +304,10 @@ class OllamaAdapter(LLMAdapter):
                 formatted_parts.append(f"Human: {msg.content}")
             elif msg.role == "assistant":
                 formatted_parts.append(f"Assistant: {msg.content}")
-        
+
         # Add final prompt for assistant
         formatted_parts.append("Assistant:")
-        
+
         return "\n\n".join(formatted_parts)
 
     def estimate_tokens(self, text: str) -> int:

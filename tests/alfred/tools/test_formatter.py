@@ -1,14 +1,6 @@
 """Tests for formatter tools."""
 
-import json
-
-import yaml
-
-from alfred.tools.formatter import JsonFormatter, YamlFormatter
-
-
-class TestJsonFormatter:
-    """Tests for JsonFormatter class."""
+import jsonLFLFimport yamlLFLFfrom alfred.tools.formatter import JsonFormatter, YamlFormatterLFLFLFclass TestJsonFormatter:LF    """Tests for JsonFormatter class."""
 
     def test_format_dict(self) -> None:
         """Test formatting a dictionary as JSON."""

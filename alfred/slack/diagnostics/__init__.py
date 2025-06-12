@@ -1,5 +1,3 @@
 """Slack diagnostics command module"""
 
-from .bot import DiagnosticsBot
-
-__all__ = ["DiagnosticsBot"]
+from .bot import DiagnosticsBotLFLF__all__ = ["DiagnosticsBot"]LF

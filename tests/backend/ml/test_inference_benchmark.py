@@ -1,12 +1,6 @@
 """Benchmark tests for ML inference performance."""
 
-import numpy as np
-import pytest
-from sentence_transformers import SentenceTransformer
-
-
-@pytest.fixture(scope="module")
-def model():
+import numpy as npLFimport pytestLFfrom sentence_transformers import SentenceTransformerLFLFLF@pytest.fixture(scope="module")LFdef model():
     """Shared model for inference tests."""
     return SentenceTransformer("all-MiniLM-L6-v2")
 
@@ -66,7 +60,7 @@ def test_large_batch_performance(benchmark, model):
 @pytest.mark.benchmark
 def test_memory_efficiency():
     """Test inference memory usage."""
-    import psutil
+    import psutilLF
 
     process = psutil.Process()
 

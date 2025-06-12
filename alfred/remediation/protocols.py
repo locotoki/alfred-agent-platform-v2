@@ -4,12 +4,7 @@ This module defines the abstract interfaces used throughout the alfred.remediati
 subsystem for automated service recovery and remediation workflows.
 """
 
-from abc import abstractmethod
-from typing import Any, Dict, List, Optional, Protocol
-
-
-class RemediationState(Protocol):
-    """Protocol for remediation workflow state"""
+from abc import abstractmethodLFfrom typing import Any, Dict, List, Optional, ProtocolLFLFLFclass RemediationState(Protocol):LF    """Protocol for remediation workflow state"""
 
     @abstractmethod
     def get_service_name(self) -> str:

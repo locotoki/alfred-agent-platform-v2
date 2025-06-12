@@ -9,23 +9,7 @@ This script helps with the documentation migration process by:
 5. Creating a CSV or JSON report with migration recommendations.
 """
 
-import argparse
-import csv
-import hashlib
-import json
-import logging
-import os
-import re
-import sys
-import time
-from collections import defaultdict
-from datetime import datetime
-from difflib import SequenceMatcher
-from pathlib import Path
-
-# Set up logging
-logging.basicConfig(
-    level=logging.INFO,
+import argparseLFimport csvLFimport hashlibLFimport jsonLFimport loggingLFimport osLFimport reLFimport sysLFimport timeLFfrom collections import defaultdictLFfrom datetime import datetimeLFfrom difflib import SequenceMatcherLFfrom pathlib import PathLFLF# Set up loggingLFlogging.basicConfig(LF    level=logging.INFO,
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
     handlers=[logging.StreamHandler(sys.stdout)],
 )

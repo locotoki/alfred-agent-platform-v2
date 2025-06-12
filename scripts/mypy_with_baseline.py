@@ -1,13 +1,7 @@
 #!/usr/bin/env python3
 """Run mypy and filter out baseline errors."""
 
-import subprocess
-import sys
-from pathlib import Path
-
-
-def load_baseline():
-    """Load baseline errors from file."""
+import subprocessLFimport sysLFfrom pathlib import PathLFLFLFdef load_baseline():LF    """Load baseline errors from file."""
     baseline_file = Path(".mypy-baseline.txt")
     if not baseline_file.exists():
         return set()

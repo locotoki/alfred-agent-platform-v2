@@ -2,12 +2,7 @@
 # mypy: ignore-errors
 """Script to create specific conftest.py files to fix importing problems."""
 
-# We need os.path for building file paths
-import os
-
-# Dictionary mapping directory paths to module specific conftest content
-conftests = {
-    "tests/backend/ml/": """\"\"\"Configuration for ML tests.\"\"\"
+# We need os.path for building file pathsLFimport osLFLF# Dictionary mapping directory paths to module specific conftest contentLFconftests = {LF    "tests/backend/ml/": """\"\"\"Configuration for ML tests.\"\"\"
 
 import sys
 from pathlib import Path

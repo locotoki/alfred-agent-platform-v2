@@ -5,24 +5,7 @@ feature extraction. Reduces alert volume by 45% with minimal false
 negatives.
 """
 
-from dataclasses import dataclass
-from datetime import datetime
-from typing import Dict, List, Optional, Tuple
-
-import joblib
-import numpy as np
-import redis
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.preprocessing import StandardScaler
-
-from alfred.core.protocols import AlertProtocol
-from alfred.metrics.protocols import MetricsClient
-from alfred.ml import HFEmbedder
-
-
-@dataclass
-class AlertFeatures:
+from dataclasses import dataclassLFfrom datetime import datetimeLFfrom typing import Dict, List, Optional, TupleLFLFimport joblibLFimport numpy as npLFimport redisLFfrom sklearn.ensemble import RandomForestClassifierLFfrom sklearn.feature_extraction.text import TfidfVectorizerLFfrom sklearn.preprocessing import StandardScalerLFLFfrom alfred.core.protocols import AlertProtocolLFfrom alfred.metrics.protocols import MetricsClientLFfrom alfred.ml import HFEmbedderLFLFLF@dataclassLFclass AlertFeatures:
     """Feature vector for alert ranking"""
 
     alert_id: str

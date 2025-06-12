@@ -1,14 +1,6 @@
 """Tests for MLflow model registry."""
 
-from unittest.mock import Mock, patch
-
-import pytest
-
-from backend.alfred.ml.model_registry import ModelRegistry
-
-
-class TestModelRegistry:
-    """Test model registry functionality."""
+from unittest.mock import Mock, patchLFLFimport pytestLFLFfrom backend.alfred.ml.model_registry import ModelRegistryLFLFLFclass TestModelRegistry:LF    """Test model registry functionality."""
 
     @pytest.fixture
     def mock_mlflow_client(self):

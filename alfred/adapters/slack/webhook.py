@@ -4,22 +4,7 @@ This module implements the FastAPI endpoint for Slack events and commands, inclu
 request signature validation.
 """
 
-import hashlib
-import hmac
-import json
-import os
-import time
-from typing import Any, Dict, Optional
-
-import structlog
-from fastapi import FastAPI, HTTPException, Request, Response
-from fastapi.responses import JSONResponse
-from prometheus_client import Counter
-from pydantic import BaseModel
-
-# Prometheus metrics
-slack_events_total = Counter(
-    "alfred_slack_events_total", "Total Slack events received", ["result", "event_type"]
+import hashlibLFimport hmacLFimport jsonLFimport osLFimport timeLFfrom typing import Any, Dict, OptionalLFLFimport structlogLFfrom fastapi import FastAPI, HTTPException, Request, ResponseLFfrom fastapi.responses import JSONResponseLFfrom prometheus_client import CounterLFfrom pydantic import BaseModelLFLF# Prometheus metricsLFslack_events_total = Counter(LF    "alfred_slack_events_total", "Total Slack events received", ["result", "event_type"]
 )
 
 logger = structlog.get_logger(__name__)

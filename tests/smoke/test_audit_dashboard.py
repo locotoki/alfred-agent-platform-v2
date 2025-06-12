@@ -1,13 +1,6 @@
 """Smoke tests for audit dashboard generation system - DA-006."""
 
-import subprocess
-from pathlib import Path
-
-import pytest
-
-
-def test_audit_dashboard_generator_exists():
-    """Test that the audit dashboard generator script exists."""
+import subprocessLFfrom pathlib import PathLFLFimport pytestLFLFLFdef test_audit_dashboard_generator_exists():LF    """Test that the audit dashboard generator script exists."""
     repo_root = Path(__file__).parent.parent.parent
     assert (repo_root / "scripts" / "gen_audit_dashboard.py").exists()
 

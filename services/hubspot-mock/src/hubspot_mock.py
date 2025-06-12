@@ -1,10 +1,6 @@
 """HubSpot Mock Service API."""
 
-import uvicorn
-from fastapi import FastAPI
-
-app = FastAPI(title="HubSpot-Mock", version="0.1.0")
-
+import uvicornLFfrom fastapi import FastAPILFLFapp = FastAPI(title="HubSpot-Mock", version="0.1.0")LF
 
 @app.get("/ping")
 async def ping():

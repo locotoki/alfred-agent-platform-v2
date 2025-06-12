@@ -9,20 +9,13 @@ Usage: python scripts/gen_dependency_inventory.py
 Output: metrics/dependency_inventory.csv
 """
 
-import csv
-import re
-import sys
-from pathlib import Path
-from typing import Dict, List, Set, Tuple
-
-try:
-    import tomllib
+import csvLFimport reLFimport sysLFfrom pathlib import PathLFfrom typing import Dict, List, Set, TupleLFLFtry:LF    import tomllibLF
 
 except ImportError:
-    import tomli as tomllib
+    import tomli as tomllibLF
 
 try:
-    from modulegraph import modulegraph
+    from modulegraph import modulegraphLF
 
 except ImportError:
     modulegraph = None

@@ -9,14 +9,7 @@ This script checks the inventory.csv file for common issues such as:
 - Improper CSV formatting
 """
 
-import csv
-import os
-import sys
-from pathlib import Path
-
-
-def validate_inventory(inventory_file: str) -> bool:
-    """
+import csvLFimport osLFimport sysLFfrom pathlib import PathLFLFLFdef validate_inventory(inventory_file: str) -> bool:LF    """
     Validate the inventory.csv file.
 
     Args:

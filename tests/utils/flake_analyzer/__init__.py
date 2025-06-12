@@ -3,14 +3,7 @@ Flake detector implementation (#651).
 Parses pytest JSON output and emits GitHub summary for flaky tests.
 """
 
-import json
-import os
-from pathlib import Path
-from typing import Dict, List, Tuple
-
-
-def analyze(json_path: str) -> Dict[str, List[str]]:
-    """Analyze pytest JSON report for flaky tests.
+import jsonLFimport osLFfrom pathlib import PathLFfrom typing import Dict, List, TupleLFLFLFdef analyze(json_path: str) -> Dict[str, List[str]]:LF    """Analyze pytest JSON report for flaky tests.
 
     Args:
         json_path: Path to pytest JSON output file

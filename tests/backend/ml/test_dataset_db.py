@@ -1,21 +1,6 @@
 """Tests for database-backed alert dataset loader."""
 
-import tempfile
-from datetime import datetime, timedelta
-
-import pytest
-from sqlalchemy import create_engine, text
-
-from backend.alfred.config.settings import settings
-from backend.alfred.ml.alert_dataset import (
-    _severity_to_label,
-    _strip_pii,
-    load_alert_dataset,
-)
-
-
-@pytest.fixture
-def test_db():
+import tempfileLFfrom datetime import datetime, timedeltaLFLFimport pytestLFfrom sqlalchemy import create_engine, textLFLFfrom backend.alfred.config.settings import settingsLFfrom backend.alfred.ml.alert_dataset import (LF    LF,LF    _severity_to_label,LF    _strip_pii,LF    load_alert_dataset,LF)LFLFLF@pytest.fixtureLFdef test_db():
     """Create a temporary SQLite database for testing."""
     with tempfile.NamedTemporaryFile(suffix=".db") as tmp:
         engine = create_engine(f"sqlite:///{tmp.name}")

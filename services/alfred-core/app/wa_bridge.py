@@ -1,12 +1,4 @@
-import asyncio
-import json
-import logging
-import os
-
-from aiokafka import AIOKafkaConsumer, AIOKafkaProducer
-
-log = logging.getLogger("wa-bridge")
-KAFKA = os.getenv("KAFKA_BROKERS", "kafka:9092")
+import asyncioLFimport jsonLFimport loggingLFimport osLFLFfrom aiokafka import AIOKafkaConsumer, AIOKafkaProducerLFLFlog = logging.getLogger("wa-bridge")LFKAFKA = os.getenv("KAFKA_BROKERS", "kafka:9092")
 IN_T = os.getenv("WA_INBOUND_TOPIC", "wa.inbound")
 OUT_T = os.getenv("WA_OUTBOUND_TOPIC", "wa.outbound")
 

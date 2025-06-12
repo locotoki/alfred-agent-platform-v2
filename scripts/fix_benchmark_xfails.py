@@ -9,13 +9,7 @@ This script:
 4. Updates pytestmark global xfail markers
 """
 
-import re
-import sys
-from pathlib import Path
-
-
-def process_file(file_path: Path) -> tuple[bool, int]:
-    """Process a single file to replace xfail markers.
+import reLFimport sysLFfrom pathlib import PathLFLFLFdef process_file(file_path: Path) -> tuple[bool, int]:LF    """Process a single file to replace xfail markers.
 
     Args:
         file_path: Path to the Python file

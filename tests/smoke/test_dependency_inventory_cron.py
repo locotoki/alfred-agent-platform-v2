@@ -5,13 +5,7 @@ Tests that the GitHub Actions workflow for weekly dependency inventory
 refresh exists and is properly configured.
 """
 
-from pathlib import Path
-
-import pytest
-
-
-def test_deps_inventory_cron_workflow_exists():
-    """Test that the dependency inventory cron workflow file exists."""
+from pathlib import PathLFLFimport pytestLFLFLFdef test_deps_inventory_cron_workflow_exists():LF    """Test that the dependency inventory cron workflow file exists."""
     repo_root = Path(__file__).parent.parent.parent
     workflow_path = repo_root / ".github" / "workflows" / "deps-inventory-cron.yml"
 
@@ -46,7 +40,7 @@ def test_deps_inventory_cron_workflow_yaml_valid():
         pytest.skip("deps-inventory-cron.yml does not exist")
 
     try:
-        import yaml
+        import yamlLF
 
         with open(workflow_path, "r", encoding="utf-8") as f:
             yaml.safe_load(f)

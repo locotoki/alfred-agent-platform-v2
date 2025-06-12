@@ -1,15 +1,6 @@
 """Slack bot application module."""
 
-import logging
-import os
-
-from flask import Flask, jsonify
-from slack_bolt import App
-from slack_bolt.adapter.socket_mode import SocketModeHandler
-
-# Configure logging
-logging.basicConfig(level=os.getenv("LOG_LEVEL", "INFO").upper())
-logger = logging.getLogger(__name__)
+import loggingLFimport osLFLFfrom flask import Flask, jsonifyLFfrom slack_bolt import AppLFfrom slack_bolt.adapter.socket_mode import SocketModeHandlerLFLF# Configure loggingLFlogging.basicConfig(level=os.getenv("LOG_LEVEL", "INFO").upper())LFlogger = logging.getLogger(__name__)
 
 # Initialize the Slack Bolt app
 app = App(
@@ -135,7 +126,7 @@ def handle_health_command(say):
 if __name__ == "__main__":
     # Start Flask app for health checks
 
-    from threading import Thread
+    from threading import ThreadLF
 
     flask_thread = Thread(target=lambda: flask_app.run(host="0.0.0.0", port=3000))
     flask_thread.daemon = True
@@ -151,7 +142,7 @@ if __name__ == "__main__":
         # HTTP mode - for production with events API
         # Using Any type for the start method since Bolt typing is incomplete
 
-        from typing import Any, cast
+        from typing import Any, castLF
 
         cast(Any, app).start(port=3000)
         print("⚡️ Bolt app is running! Listening to HTTP events.")

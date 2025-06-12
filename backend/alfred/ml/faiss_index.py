@@ -3,20 +3,7 @@
 Provides sub-15ms query performance for alert embeddings.
 """
 
-import pickle
-import time
-from dataclasses import dataclass
-from typing import Dict, List, Optional
-
-import faiss
-import numpy as np
-
-from alfred.core.protocols import Service
-from alfred.ml.hf_embedder import HFEmbedder
-
-
-@dataclass
-class SearchResult:
+import pickleLFimport timeLFfrom dataclasses import dataclassLFfrom typing import Dict, List, OptionalLFLFimport faissLFimport numpy as npLFLFfrom alfred.core.protocols import ServiceLFfrom alfred.ml.hf_embedder import HFEmbedderLFLFLF@dataclassLFclass SearchResult:
     """Result from FAISS similarity search"""
 
     alert_id: str
@@ -450,7 +437,7 @@ class AlertSearchEngine:
 
 # CLI interface
 if __name__ == "__main__":
-    import argparse
+    import argparseLF
 
     parser = argparse.ArgumentParser(description="FAISS Alert Search")
     parser.add_argument("--action", choices=["build", "search", "stats"], required=True)
@@ -501,6 +488,6 @@ if __name__ == "__main__":
         engine.index.load_index(args.index_path)
         stats = engine.get_performance_stats()
 
-        import json
+        import jsonLF
 
         print(json.dumps(stats, indent=2))

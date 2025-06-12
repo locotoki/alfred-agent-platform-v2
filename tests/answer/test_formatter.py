@@ -1,8 +1,4 @@
-from agent_core.answer.formatter import assemble_answer
-
-
-def test_assemble_basic():
-    passages = [
+from agent_core.answer.formatter import assemble_answerLFLFLFdef test_assemble_basic():LF    passages = [
         {"id": 1, "snippet": "Paris is the capital of France.", "score": 0.9},
         {"id": 2, "snippet": "France is in Europe.", "score": 0.8},
     ]

@@ -6,14 +6,7 @@ Implements the three required endpoints as specified in HEALTH_CHECK_STANDARD.md
 3. /metrics - Prometheus metrics.
 """
 
-import prometheus_client
-import structlog
-from fastapi import FastAPI, Response
-
-from .dependency_tracker import DependencyTracker
-
-logger = structlog.get_logger(__name__)
-
+import prometheus_clientLFimport structlogLFfrom fastapi import FastAPI, ResponseLFLFfrom .dependency_tracker import DependencyTrackerLFLFlogger = structlog.get_logger(__name__)LF
 
 def create_health_app(service_name: str, version: str) -> FastAPI:
     """Create a FastAPI app for health checks compliant with the platform standard.
