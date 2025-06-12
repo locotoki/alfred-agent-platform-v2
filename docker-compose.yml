@@ -878,10 +878,8 @@ services:
       retries: 5
       start_period: 60s
       test:
-        - CMD
-        - curl
-        - -f
-        - http://localhost:8501/health
+        - CMD-SHELL
+        - nc -z localhost 8501 || exit 1
     depends_on:
       vector-db:
         condition: service_started
@@ -1466,10 +1464,8 @@ services:
         condition: service_healthy
     healthcheck:
       test:
-        - CMD
-        - curl
-        - -fsSL
-        - http://localhost:8000/health
+        - CMD-SHELL
+        - nc -z localhost 8000 || exit 1
       interval: 30s
       timeout: 5s
       retries: 3
