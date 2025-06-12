@@ -24,7 +24,7 @@ A brief description of what this feature does and why it's being implemented.
 
 High-level description of the system architecture. Include diagrams if necessary.
 
-```
+```text
 ┌─────────────┐     ┌─────────────┐
 │ Component A │────▶│ Component B │
 └─────────────┘     └─────────────┘
