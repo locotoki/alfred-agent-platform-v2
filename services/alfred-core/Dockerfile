@@ -15,13 +15,13 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy requirements and install Python dependencies
-COPY services/alfred-core/requirements.txt /app/requirements.txt
+COPY requirements.txt /app/requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy service code
-COPY services/alfred-core/app /app/app
-COPY services/alfred-core/${ASSETS}/health.json /app/health.json
-COPY healthcheck/healthcheck.sh /usr/local/bin/healthcheck.sh
+COPY app /app/app
+COPY ${ASSETS}/health.json /app/health.json
+COPY healthcheck.sh /usr/local/bin/healthcheck.sh
 
 # Make healthcheck script executable
 RUN chmod +x /usr/local/bin/healthcheck.sh
