@@ -10,5 +10,4 @@ CVE-2023-39325 # golang.org/x/net/http2 - affects only HTTP/2 servers, not our u
 CVE-2024-41110 # Docker daemon - no fix available, mitigated by runtime security
 CVE-2024-3727  # NPM package vulnerabilities in dev dependencies only
 
-# Temporary ignores pending updates
-# These should be reviewed and removed periodically
+# Alpine 3.20 resolved CVEs (can be removed after verification)
