@@ -4,7 +4,7 @@ WORKDIR /app
 COPY --from=ghcr.io/alfred-health/healthcheck:latest /usr/local/bin/healthcheck /usr/local/bin/healthcheck
 
 # Main application stage
-FROM redis:7-alpine AS app
+FROM redis:7.4-alpine3.20 AS app
 
 # Install Python and pip for Redis services
 RUN apk add --no-cache python3 py3-pip curl
