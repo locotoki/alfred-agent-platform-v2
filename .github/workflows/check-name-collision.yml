@@ -21,7 +21,7 @@ jobs:
           
       - name: Ensure only approved status names
         run: |
-          APPROVED="build|lint-python|core-health|ci-summary|validate-check-names"
+          APPROVED="build|lint-python|core-health|ci-summary|validate-check-names|E2E Smoke Tests|E2E Regression Tests|Quick Build & Boot Check|validate-templates"
           
           # Get changed workflow files
           git fetch origin ${{ github.base_ref }}
