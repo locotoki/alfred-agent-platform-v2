@@ -4,4 +4,4 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 COPY app/ /app
 WORKDIR /app
-ENTRYPOINT ["python", "simple_bot.py"]
+ENTRYPOINT ["python", "main.py"]
