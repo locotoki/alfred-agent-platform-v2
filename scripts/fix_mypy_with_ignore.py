@@ -5,7 +5,12 @@ This is a quick fix to silence mypy errors and get the build passing.
 Later, type hints and fixes can be gradually added.
 """
 
-import osLFimport reLFfrom pathlib import PathLFLFLFdef add_type_ignore_to_file(file_path):LF    """Add '# type: ignore' to the top of the file"""
+import os
+import re
+from pathlib import Path
+
+def add_type_ignore_to_file(file_path):
+    """Add '# type: ignore' to the top of the file"""
     with open(file_path, "r", encoding="utf-8", errors="ignore") as f:
         content = f.read()
 
@@ -36,7 +41,6 @@ import osLFimport reLFfrom pathlib import PathLFLFLFdef add_type_ignore_to_file(
         f.write(new_content)
 
     return True
-
 
 def main():
     """Process Python files to add type ignore comments"""
@@ -90,7 +94,6 @@ def main():
 
     print(f"\nProcessed {total_count} Python files")
     print(f"Added '# type: ignore' to {modified_count} files")
-
 
 if __name__ == "__main__":
     main()

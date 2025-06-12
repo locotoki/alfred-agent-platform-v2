@@ -1,6 +1,14 @@
 """Contains some shared types for properties"""
 
-from collections.abc import MutableMappingLFfrom http import HTTPStatusLFfrom typing import BinaryIO, Generic, Literal, Optional, TypeVarLFLFfrom attrs import defineLFLFLFclass Unset:LF    def __bool__(self) -> Literal[False]:
+from collections.abc import MutableMapping
+from http import HTTPStatus
+from typing import BinaryIO, Generic, Literal, Optional, TypeVar
+
+from attrs import define
+
+
+class Unset:
+    def __bool__(self) -> Literal[False]:
         return False
 
 

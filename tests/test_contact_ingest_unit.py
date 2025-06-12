@@ -1,4 +1,14 @@
-import asyncioLFimport jsonLFimport osLFLFimport httpxLFimport respxLFLFfrom services.contact_ingest.app.main import CRM_SYNC_URL, ingest_loopLFLFLF@respx.mockLFdef test_ingest_loop(tmp_path):
+import asyncio
+import json
+import os
+
+import httpx
+import respx
+
+from services.contact_ingest.app.main import CRM_SYNC_URL, ingest_loop
+
+@respx.mock
+def test_ingest_loop(tmp_path):
     # prepare fake data file
     data = {
         "email": "unit@example.com",

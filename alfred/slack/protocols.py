@@ -4,7 +4,12 @@ This module defines the abstract interfaces used throughout the alfred.slack sub
 for Slack bot integration and messaging.
 """
 
-from abc import abstractmethodLFfrom typing import Any, Callable, Dict, List, Optional, ProtocolLFLFLFclass SlackClient(Protocol):LF    """Protocol for Slack API client interactions"""
+from abc import abstractmethod
+from typing import Any, Callable, Dict, List, Optional, Protocol
+
+
+class SlackClient(Protocol):
+    """Protocol for Slack API client interactions"""
 
     @abstractmethod
     async def send_message(

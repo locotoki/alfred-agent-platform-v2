@@ -1,6 +1,12 @@
 """Data models for Financial Tax Agent."""
 
-from enum import EnumLFfrom typing import Any, Dict, List, OptionalLFLFfrom pydantic import BaseModel, FieldLFLFLFclass TaxJurisdiction(str, Enum):LF    """Supported tax jurisdictions.
+from enum import Enum
+from typing import Any, Dict, List, Optional
+
+from pydantic import BaseModel, Field
+
+class TaxJurisdiction(str, Enum):
+    """Supported tax jurisdictions.
 
     This enum defines the tax jurisdictions supported by the Financial Tax Agent.
     Each jurisdiction represents a different tax authority with unique rules.
@@ -19,7 +25,6 @@ from enum import EnumLFfrom typing import Any, Dict, List, OptionalLFLFfrom pyda
     JP = "JP"
     IN = "IN"
 
-
 class EntityType(str, Enum):
     """Entity types for tax calculations.
 
@@ -33,7 +38,6 @@ class EntityType(str, Enum):
     TRUST = "trust"
     NON_PROFIT = "non_profit"
 
-
 class TaxCalculationRequest(BaseModel):
     """Request model for tax calculation."""
 
@@ -46,7 +50,6 @@ class TaxCalculationRequest(BaseModel):
     additional_info: Dict[str, Any] = Field(
         default_factory=dict, description="Additional information"
     )
-
 
 class TaxCalculationResponse(BaseModel):
     """Response model for tax calculation."""
@@ -62,7 +65,6 @@ class TaxCalculationResponse(BaseModel):
     breakdown: Dict[str, float]
     calculation_details: List[str]
 
-
 class FinancialAnalysisRequest(BaseModel):
     """Request model for financial analysis."""
 
@@ -73,7 +75,6 @@ class FinancialAnalysisRequest(BaseModel):
     period: str = Field(..., description="Analysis period")
     industry: Optional[str] = Field(None, description="Industry for benchmarking")
     custom_metrics: Optional[List[str]] = Field(None, description="Custom metrics to calculate")
-
 
 class FinancialAnalysisResponse(BaseModel):
     """Response model for financial analysis."""
@@ -86,7 +87,6 @@ class FinancialAnalysisResponse(BaseModel):
     visualizations: Optional[Dict[str, str]] = None
     benchmark_comparison: Optional[Dict[str, Any]] = None
 
-
 class ComplianceCheckRequest(BaseModel):
     """Request model for tax compliance check."""
 
@@ -97,7 +97,6 @@ class ComplianceCheckRequest(BaseModel):
     compliance_areas: List[str] = Field(
         default_factory=list, description="Specific compliance areas to check"
     )
-
 
 class ComplianceCheckResponse(BaseModel):
     """Response model for compliance check."""
@@ -114,7 +113,6 @@ class ComplianceCheckResponse(BaseModel):
         default_factory=dict, description="Detailed findings by area"
     )
 
-
 class TaxRateRequest(BaseModel):
     """Request model for tax rate lookup."""
 
@@ -123,7 +121,6 @@ class TaxRateRequest(BaseModel):
     entity_type: EntityType
     income_level: Optional[float] = None
     special_categories: Optional[List[str]] = None
-
 
 class TaxRateResponse(BaseModel):
     """Response model for tax rate lookup."""

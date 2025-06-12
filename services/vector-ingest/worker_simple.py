@@ -1,13 +1,27 @@
 """Vector ingestion worker with ML functionality (no langchain dependency)."""
 
-import jsonLFimport loggingLFimport osLFimport timeLFimport uuidLFfrom typing import List, OptionalLFLFimport requestsLFimport uvicornLFfrom cloudevents.http import CloudEventLFfrom fastapi import FastAPI, HTTPException, ResponseLFfrom sentence_transformers import SentenceTransformerLFLF# Configure loggingLFlogging.basicConfig(level=logging.INFO)LFlogger = logging.getLogger(__name__)
+import json
+import logging
+import os
+import time
+import uuid
+from typing import List, Optional
+
+import requests
+import uvicorn
+from cloudevents.http import CloudEvent
+from fastapi import FastAPI, HTTPException, Response
+from sentence_transformers import SentenceTransformer
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 # Initialize FastAPI app
 app = FastAPI(title="Vector Ingest Service")
 
 # Initialize ML components (lazy loading)
 MODEL: Optional[SentenceTransformer] = None
-
 
 def get_model():
     """Lazy load the sentence transformer model."""
@@ -17,7 +31,6 @@ def get_model():
         logger.info(f"Loading model: {model_name}")
         MODEL = SentenceTransformer(model_name)
     return MODEL
-
 
 def simple_text_splitter(text: str, chunk_size: int = 512, chunk_overlap: int = 64) -> List[str]:
     """Simple text splitter without langchain dependency."""
@@ -51,7 +64,6 @@ def simple_text_splitter(text: str, chunk_size: int = 512, chunk_overlap: int = 
 
     return chunks
 
-
 @app.get("/health")
 def health():
     """Health check endpoint."""
@@ -62,12 +74,10 @@ def health():
         "model_loaded": MODEL is not None,
     }
 
-
 @app.get("/healthz")
 def healthz():
     """Simple health probe."""
     return {"status": "ok"}
-
 
 @app.get("/")
 def root():
@@ -78,7 +88,6 @@ def root():
         "health": "/health",
         "mode": "simple ML support (no langchain)",
     }
-
 
 @app.post("/ingest")
 async def ingest(event: dict):
@@ -128,7 +137,6 @@ async def ingest(event: dict):
     except Exception as e:
         logger.error(f"Error processing ingestion: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
-
 
 if __name__ == "__main__":
     port = int(os.getenv("PORT", "8000"))

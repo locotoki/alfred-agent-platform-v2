@@ -1,7 +1,32 @@
 """Financial Tax Agent implementation"""
 
-from typing import Any, DictLFLFimport structlogLFfrom langchain_openai import ChatOpenAILFfrom langgraph.graph import END, GraphLFLFfrom libs.a2a_adapter import A2AEnvelopeLFfrom libs.agent_core import BaseAgentLFLFfrom .chains import (LF    LF,LF    ComplianceCheckChain,LF    FinancialAnalysisChain,LF    RateLookupChain,LF    TaxCalculationChain,LF)LFfrom .models import (LF    LF,LF    ComplianceCheckRequest,LF    FinancialAnalysisRequest,LF    TaxCalculationRequest,LF    TaxRateRequest,LF)LFLFlogger = structlog.get_logger(__name__)LF
+from typing import Any, Dict
 
+import structlog
+from langchain_openai import ChatOpenAI
+from langgraph.graph import END, Graph
+
+from libs.a2a_adapter import A2AEnvelope
+from libs.agent_core import BaseAgent
+
+from .chains import (
+    
+,
+    ComplianceCheckChain,
+    FinancialAnalysisChain,
+    RateLookupChain,
+    TaxCalculationChain,
+)
+from .models import (
+    
+,
+    ComplianceCheckRequest,
+    FinancialAnalysisRequest,
+    TaxCalculationRequest,
+    TaxRateRequest,
+)
+
+logger = structlog.get_logger(__name__)
 class FinancialTaxAgent(BaseAgent):
     """Agent for financial and tax analysis tasks"""
 

@@ -1,11 +1,24 @@
 """Smoke tests for licence gate functionality."""
 
-from unittest.mock import patchLFLFimport pytestLFLFfrom alfred.scripts.licence_gate import (LF    LF,LF    _normalise,LF    main,LF    normalize_licence,LF    validate_licences,LF)LFLFLF@pytest.mark.smoke_licenceLFdef test_normalize_licence():
+from unittest.mock import patch
+
+import pytest
+
+from alfred.scripts.licence_gate import (
+    
+,
+    _normalise,
+    main,
+    normalize_licence,
+    validate_licences,
+)
+
+@pytest.mark.smoke_licence
+def test_normalize_licence():
     """Test licence name normalization."""
     assert normalize_licence("MIT License") == "MIT"
     assert normalize_licence("Apache Software License") == "Apache-2.0"
     assert normalize_licence("Unknown") == "Unknown"
-
 
 @pytest.mark.smoke_licence
 def test_normalise_composite_licences():
@@ -19,7 +32,6 @@ def test_normalise_composite_licences():
     assert _normalise("unknown") == ["UNKNOWN"]
     assert _normalise("") == []
 
-
 @pytest.mark.smoke_licence
 @patch("alfred.scripts.licence_gate.get_package_licences")
 @patch("alfred.scripts.licence_gate.load_licence_waivers")
@@ -32,7 +44,6 @@ def test_validate_licences_allowed(mock_waivers, mock_packages):
     assert is_compliant is True
     assert violations == []
 
-
 @pytest.mark.smoke_licence
 @patch("alfred.scripts.licence_gate.get_package_licences")
 @patch("alfred.scripts.licence_gate.load_licence_waivers")
@@ -44,7 +55,6 @@ def test_validate_licences_violations(mock_waivers, mock_packages):
     is_compliant, violations = validate_licences()
     assert is_compliant is False
     assert violations == [("bad-package", "GPL-3.0")]
-
 
 @pytest.mark.smoke_licence
 @pytest.mark.parametrize(

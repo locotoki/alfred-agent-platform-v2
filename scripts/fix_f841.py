@@ -1,6 +1,11 @@
 #!/usr/bin/env python3
 """Script to automatically fix flake8 F841 (local variable assigned but never used) violations."""
-import reLFimport subprocessLFfrom typing import List, SetLFLFLFdef run_flake8() -> str:LF    """Run flake8 and return the output as a string."""
+import re
+import subprocess
+from typing import List, Set
+
+def run_flake8() -> str:
+    """Run flake8 and return the output as a string."""
     try:
         result = subprocess.run(
             ["flake8", "--config=.flake8", "."], capture_output=True, text=True, check=False
@@ -10,7 +15,6 @@ import reLFimport subprocessLFfrom typing import List, SetLFLFLFdef run_flake8()
         print(f"Error running flake8: {e}")
         return e.stdout if e.stdout else ""
 
-
 def extract_f841_violations(flake8_output: str) -> List[str]:
     """Extract F841 violations from flake8 output."""
     violations = []
@@ -18,7 +22,6 @@ def extract_f841_violations(flake8_output: str) -> List[str]:
         if "F841" in line:
             violations.append(line)
     return violations
-
 
 def fix_f841_violations(violations: List[str]) -> Set[str]:
     """Fix F841 violations by adding type ignores."""
@@ -73,7 +76,6 @@ def fix_f841_violations(violations: List[str]) -> Set[str]:
 
     return fixed_files
 
-
 def main():
     # Run flake8 and get violations
     print("Running flake8 to find F841 violations...")
@@ -93,7 +95,6 @@ def main():
         print("\nFixed files:")
         for file in sorted(fixed_files):
             print(f"  - {file}")
-
 
 if __name__ == "__main__":
     main()

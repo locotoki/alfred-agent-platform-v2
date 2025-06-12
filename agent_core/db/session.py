@@ -1,14 +1,16 @@
 """Database session management."""
 
-import osLFLFfrom sqlmodel import Session, SQLModel, create_engineLFLFDATABASE_URL = os.getenv("DATABASE_URL", "postgresql+psycopg://alfred:alfred@localhost:5432/alfred")LFengine = create_engine(DATABASE_URL, echo=False)
+import os
 
+from sqlmodel import Session, SQLModel, create_engine
+
+DATABASE_URL = os.getenv("DATABASE_URL", "postgresql+psycopg://alfred:alfred@localhost:5432/alfred")
+engine = create_engine(DATABASE_URL, echo=False)
 
 def init_db() -> None:
     """Initialize database and create all tables."""
-    from agent_core.db import models  # noqa: F401LF
-
+    from agent_core.db import models  # noqa: F401
     SQLModel.metadata.create_all(engine)
-
 
 def get_session() -> Session:
     """Get a new database session."""

@@ -3,7 +3,18 @@
 Loads alert data from database and prepares for ML training.
 """
 
-import hashlibLFimport reLFfrom typing import Dict, TupleLFLFimport numpy as npLFimport pandas as pdLFfrom sqlalchemy import create_engine, textLFLFfrom alfred.core.protocols import ServiceLFLFLFclass AlertDataset(Service):LF    """Loads and preprocesses alert data for ML training"""
+import hashlib
+import re
+from typing import Dict, Tuple
+
+import numpy as np
+import pandas as pd
+from sqlalchemy import create_engine, text
+
+from alfred.core.protocols import Service
+
+class AlertDataset(Service):
+    """Loads and preprocesses alert data for ML training"""
 
     PII_PATTERNS = [
         (r"\b\d{3}-\d{2}-\d{4}\b", "SSN"),  # SSN
@@ -249,11 +260,9 @@ import hashlibLFimport reLFfrom typing import Dict, TupleLFLFimport numpy as npL
 
         return train_dataset, test_dataset
 
-
 # CLI interface for testing
 if __name__ == "__main__":
-    import argparseLF
-
+    import argparse
     parser = argparse.ArgumentParser(description="Alert Dataset Loader")
     parser.add_argument("--source", required=True, help="Database URI or CSV file")
     parser.add_argument("--info", action="store_true", help="Show dataset info")
@@ -264,8 +273,7 @@ if __name__ == "__main__":
 
     if args.info:
         info = dataset.get_info()
-        import jsonLF
-
+        import json
         print(json.dumps(info, indent=2))
     else:
         X, y = dataset.prepare_training_data()

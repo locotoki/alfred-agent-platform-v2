@@ -13,7 +13,12 @@ Current stub echoes the top-k passages; GPT call will be
 added after ADR-013 is accepted.
 """
 
-from __future__ import annotationsLFLFfrom typing import Dict, ListLFLFLFdef assemble_answer(query: str, passages: List[Dict]) -> Dict:  # type: ignoreLF    """Return assembled answer with citations.
+from __future__ import annotations
+
+from typing import Dict, List
+
+def assemble_answer(query: str, passages: List[Dict]) -> Dict:  # type: ignore
+    """Return assembled answer with citations.
 
     Very first placeholder that returns the first passage as 'answer'
     and passes through citations unchanged.

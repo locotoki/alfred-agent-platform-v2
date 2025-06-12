@@ -1,6 +1,14 @@
 """CRM sync service for syncing contacts to HubSpot."""
 
-import osLFfrom datetime import datetime, timezoneLFLFfrom clients.hubspot_mock_client import Client, modelsLFfrom fastapi import FastAPI, HTTPExceptionLFfrom pydantic import BaseModel, EmailStrLFLFapp = FastAPI()LFhubspot = Client(base_url=os.getenv("HUBSPOT_URL", "http://hubspot-mock:8000"))
+import os
+from datetime import datetime, timezone
+
+from clients.hubspot_mock_client import Client, models
+from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel, EmailStr
+
+app = FastAPI()
+hubspot = Client(base_url=os.getenv("HUBSPOT_URL", "http://hubspot-mock:8000"))
 
 
 class ContactSyncEvent(BaseModel):

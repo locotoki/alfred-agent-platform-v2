@@ -4,7 +4,12 @@ This module defines the abstract interfaces used throughout the alfred.model sub
 for model routing, registry, and management.
 """
 
-from abc import abstractmethodLFfrom typing import Any, Dict, List, Optional, ProtocolLFLFLFclass ModelRouter(Protocol):LF    """Protocol for model routing and selection"""
+from abc import abstractmethod
+from typing import Any, Dict, List, Optional, Protocol
+
+
+class ModelRouter(Protocol):
+    """Protocol for model routing and selection"""
 
     @abstractmethod
     async def route_request(self, task_type: str, payload: Dict[str, Any]) -> str:

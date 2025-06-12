@@ -1,6 +1,14 @@
 """Agent BizOps Main Application."""
 
-import structlogLFfrom fastapi import FastAPILFfrom fastapi.responses import JSONResponseLFLFfrom ..middleware.metrics import setup_metrics_middlewareLFLF# Set up structured loggingLFstructlog.configure(LF    processors=[
+import structlog
+from fastapi import FastAPI
+from fastapi.responses import JSONResponse
+
+from ..middleware.metrics import setup_metrics_middleware
+
+# Set up structured logging
+structlog.configure(
+    processors=[
         structlog.stdlib.filter_by_level,
         structlog.stdlib.add_logger_name,
         structlog.stdlib.add_log_level,
@@ -30,7 +38,6 @@ setup_metrics_middleware(app)
 # Static workflows configuration - no longer environment-driven
 WORKFLOWS_ENABLED = ["finance", "legal"]
 
-
 @app.get("/health")
 async def health():
     """Health check endpoint."""
@@ -38,14 +45,11 @@ async def health():
         {"status": "healthy", "service": "agent-bizops", "workflows_enabled": WORKFLOWS_ENABLED}
     )
 
-
 @app.get("/")
 async def root():
     """Root endpoint."""
     return {"message": "Agent BizOps Service", "workflows_enabled": WORKFLOWS_ENABLED}
 
-
 if __name__ == "__main__":
-    import uvicornLF
-
+    import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8080)

@@ -1,6 +1,14 @@
 """Tests for CRM sync service."""
 
-from datetime import datetime, timezoneLFfrom unittest.mock import AsyncMock, Mock, patchLFLFfrom fastapi.testclient import TestClientLFLFfrom app.main import appLFLFclient = TestClient(app)LF
+from datetime import datetime, timezone
+from unittest.mock import AsyncMock, Mock, patch
+
+from fastapi.testclient import TestClient
+
+from app.main import app
+
+client = TestClient(app)
+
 
 def test_health():
     """Test health check endpoint."""

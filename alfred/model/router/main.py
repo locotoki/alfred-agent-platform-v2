@@ -1,6 +1,17 @@
 """Model Router API for Alfred Agent Platform v2"""
 
-import osLFimport threadingLFfrom datetime import datetimeLFLFimport httpxLFimport prometheus_clientLFimport uvicornLFfrom fastapi import FastAPI, HTTPException, RequestLFfrom fastapi.middleware.cors import CORSMiddlewareLFLF# Initialize FastAPI appLFapp = FastAPI(title="Model Router API")LF
+import os
+import threading
+from datetime import datetime
+
+import httpx
+import prometheus_client
+import uvicorn
+from fastapi import FastAPI, HTTPException, Request
+from fastapi.middleware.cors import CORSMiddleware
+
+# Initialize FastAPI app
+app = FastAPI(title="Model Router API")
 # Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
@@ -45,7 +56,7 @@ async def simple_health():
 @app.get("/metrics")
 async def metrics():
     """Prometheus metrics endpoint on the main service port"""
-    from fastapi.responses import ResponseLF
+    from fastapi.responses import Response
 
     return Response(content=prometheus_client.generate_latest(), media_type="text/plain")
 
@@ -58,7 +69,7 @@ metrics_app = FastAPI(title="Model Router Metrics")
 @metrics_app.get("/metrics")
 async def metrics_export():
     """Prometheus metrics endpoint for port 9091"""
-    from fastapi.responses import ResponseLF
+    from fastapi.responses import Response
 
     return Response(content=prometheus_client.generate_latest(), media_type="text/plain")
 

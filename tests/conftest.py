@@ -1,16 +1,28 @@
-import asyncioLFimport osLFfrom typing import GeneratorLFfrom unittest.mock import MagicMockLFLF# Handle asyncpg import for environment where it might not be availableLFtry:LF    import asyncpgLF
+import asyncio
+import os
+from typing import Generator
+from unittest.mock import MagicMock
 
+# Handle asyncpg import for environment where it might not be available
+try:
+    import asyncpg
 except ImportError:  # pragma: no cover
     asyncpg = None
-    import pytestLF
-
+    import pytest
     pytest.skip("asyncpg not available", allow_module_level=True)
 
-import pytestLFimport redisLFfrom google.cloud import pubsub_v1LFLFfrom libs.a2a_adapter import PolicyMiddleware, PubSubTransport, SupabaseTransportLFLFLF# Global pytest configuration for SC-320LFdef pytest_addoption(parser):LF    """Add custom pytest options."""
+import pytest
+import redis
+from google.cloud import pubsub_v1
+
+from libs.a2a_adapter import PolicyMiddleware, PubSubTransport, SupabaseTransport
+
+# Global pytest configuration for SC-320
+def pytest_addoption(parser):
+    """Add custom pytest options."""
     parser.addoption(
         "--slack-tests", action="store_true", default=False, help="run slack integration tests"
     )
-
 
 def pytest_configure(config):
     """Configure pytest with markers for SC-320."""
@@ -22,7 +34,6 @@ def pytest_configure(config):
         "markers",
         "smoke: mark tests that are smoke tests",
     )
-
 
 # Apply xfail to specific tests that are known to fail due to unresolved issues
 def pytest_collection_modifyitems(config, items):
@@ -67,14 +78,12 @@ def pytest_collection_modifyitems(config, items):
         # Benchmark tests are now handled in tests/benchmark/conftest.py
         # We no longer apply global xfail markers to benchmark tests
 
-
 @pytest.fixture(scope="session")
 def event_loop() -> Generator:
     """Create an instance of the default event loop for the test session."""
     loop = asyncio.get_event_loop_policy().new_event_loop()
     yield loop
     loop.close()
-
 
 @pytest.fixture(autouse=True, scope="session")
 def _patch_slack_env():
@@ -84,7 +93,6 @@ def _patch_slack_env():
     os.environ.setdefault("SLACK_BOT_TOKEN", "xoxb-test-token")
     os.environ.setdefault("SLACK_SIGNING_SECRET", "test-signing-secret")
 
-
 @pytest.fixture(autouse=True)
 def setup_test_env():
     """Set up test environment variables."""
@@ -93,7 +101,6 @@ def setup_test_env():
     os.environ["DATABASE_URL"] = "postgresql://postgres:postgres@localhost:5432/test_db"
     os.environ["REDIS_URL"] = "redis://localhost:6379/1"
     os.environ["GCP_PROJECT_ID"] = "test-project"
-
 
 @pytest.fixture
 async def test_db():
@@ -107,7 +114,6 @@ async def test_db():
 
     await conn.close()
 
-
 @pytest.fixture
 def mock_pubsub():
     """Mock Pub/Sub client."""
@@ -115,12 +121,10 @@ def mock_pubsub():
     mock.publish.return_value.result.return_value = "test-message-id"
     return mock
 
-
 @pytest.fixture
 def mock_redis():
     """Mock Redis client."""
     return MagicMock(spec=redis.Redis)
-
 
 @pytest.fixture
 def pubsub_transport(mock_pubsub):
@@ -129,7 +133,6 @@ def pubsub_transport(mock_pubsub):
     transport.publisher = mock_pubsub
     return transport
 
-
 @pytest.fixture
 async def supabase_transport(test_db):
     """Create SupabaseTransport with test database."""
@@ -137,7 +140,6 @@ async def supabase_transport(test_db):
     await transport.connect()
     yield transport
     await transport.disconnect()
-
 
 @pytest.fixture
 def policy_middleware(mock_redis):

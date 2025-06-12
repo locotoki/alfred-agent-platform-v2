@@ -1,13 +1,27 @@
 """Tests for Financial Tax Agent."""
 
-from unittest.mock import AsyncMock, MagicMock, patchLFLFimport pytestLFLFfrom libs.a2a_adapter import (LF    LF,LF    A2AEnvelope,LF    PolicyMiddleware,LF    PubSubTransport,LF    SupabaseTransport,LF)LFfrom services.agent_bizops.workflows.finance.agent import FinancialTaxAgentLFLFLF@pytest.fixtureLFdef mock_pubsub():
+from unittest.mock import AsyncMock, MagicMock, patch
+
+import pytest
+
+from libs.a2a_adapter import (
+    
+,
+    A2AEnvelope,
+    PolicyMiddleware,
+    PubSubTransport,
+    SupabaseTransport,
+)
+from services.agent_bizops.workflows.finance.agent import FinancialTaxAgent
+
+@pytest.fixture
+def mock_pubsub():
     """Mock PubSub transport."""
     mock = MagicMock(spec=PubSubTransport)
     mock.publish_task = AsyncMock(return_value="test-message-id")
     mock.subscribe = AsyncMock()
     mock.completed_topic_path = "projects/test/topics/completed"
     return mock
-
 
 @pytest.fixture
 def mock_supabase():
@@ -23,13 +37,11 @@ def mock_supabase():
     mock.disconnect = AsyncMock()
     return mock
 
-
 @pytest.fixture
 def mock_policy():
     """Mock Policy middleware."""
     mock = MagicMock(spec=PolicyMiddleware)
     return mock
-
 
 @pytest.fixture
 def financial_tax_agent(mock_pubsub, mock_supabase, mock_policy):
@@ -37,8 +49,9 @@ def financial_tax_agent(mock_pubsub, mock_supabase, mock_policy):
     with patch("services.agent_bizops.workflows.finance.agent.ChatOpenAI") as mock_openai:
         # Create a mock that actually inherits from the base class structure expected
 
-        from typing import Any, OptionalLFLFfrom langchain.schema.runnable import RunnableLF
+        from typing import Any, Optional
 
+from langchain.schema.runnable import Runnable
         class MockLLM(Runnable):
             def invoke(self, input: Any, config: Optional[Any] = None, **kwargs: Any) -> Any:
                 return "test response"
@@ -47,8 +60,7 @@ def financial_tax_agent(mock_pubsub, mock_supabase, mock_policy):
                 return "test response"
 
             def generate(self, *args, **kwargs):
-                from langchain.schema import GenerationLF
-
+                from langchain.schema import Generation
                 return MagicMock(generations=[[Generation(text="test")]])
 
             def predict(self, *args, **kwargs):
@@ -68,7 +80,6 @@ def financial_tax_agent(mock_pubsub, mock_supabase, mock_policy):
         agent.process_task = AsyncMock()
 
         return agent
-
 
 class TestFinancialTaxAgent:
     """Test cases for Financial Tax Agent."""

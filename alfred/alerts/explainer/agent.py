@@ -4,7 +4,17 @@ This module provides an agent that explains alerts in natural language by analyz
 alert metadata and providing actionable context.
 """
 
-import reLFfrom typing import Any, Dict, Optional, UnionLFLFimport structlogLFfrom langchain.chains import LLMChainLFfrom langchain.prompts import PromptTemplateLFfrom prometheus_client import CounterLFLF# Import the LLM base class from our custom interfaceLF# In practice, this would be properly typedLFLLM = Any  # Placeholder for a proper LLM interfaceLF
+import re
+from typing import Any, Dict, Optional, Union
+
+import structlog
+from langchain.chains import LLMChain
+from langchain.prompts import PromptTemplate
+from prometheus_client import Counter
+
+# Import the LLM base class from our custom interface
+# In practice, this would be properly typed
+LLM = Any  # Placeholder for a proper LLM interface
 # Set up metrics
 explanations_total = Counter(
     "alfred_alert_explanations_total", "Total alert explanations generated", ["result"]

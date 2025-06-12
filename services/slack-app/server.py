@@ -1,7 +1,18 @@
 """FastAPI server for Slack App integration with Socket Mode"""
 
 # type: ignore
-import loggingLFimport osLFimport threadingLFLFfrom fastapi import FastAPI, ResponseLFfrom prometheus_client import CONTENT_TYPE_LATEST, Counter, generate_latestLFfrom slack_bolt import AppLFfrom slack_bolt.adapter.socket_mode import SocketModeHandlerLFLF# Configure loggingLFlogging.basicConfig(level=logging.INFO)LFlogger = logging.getLogger(__name__)
+import logging
+import os
+import threading
+
+from fastapi import FastAPI, Response
+from prometheus_client import CONTENT_TYPE_LATEST, Counter, generate_latest
+from slack_bolt import App
+from slack_bolt.adapter.socket_mode import SocketModeHandler
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 # FastAPI app
 app = FastAPI(title="Alfred Slack App", description="Slack integration for Alfred Agent Platform")
@@ -15,7 +26,6 @@ slack_app = App(
     token=os.environ.get("SLACK_BOT_TOKEN"),
     signing_secret=os.environ.get("SLACK_SIGNING_SECRET"),
 )
-
 
 # Register slash command handlers
 @slack_app.command("/alfred")
@@ -64,7 +74,6 @@ def handle_alfred_command(ack, command, client):
             text=f"Unknown command: {subcommand}\nUse `/alfred help` to see available commands.",
         )
 
-
 # FastAPI endpoints
 @app.get("/health")
 def health_check():
@@ -72,13 +81,11 @@ def health_check():
     REQUESTS.labels(endpoint="/health").inc()
     return {"status": "healthy"}
 
-
 @app.get("/metrics")
 def metrics():
     """Prometheus metrics endpoint"""
     REQUESTS.labels(endpoint="/metrics").inc()
     return Response(generate_latest(), media_type=CONTENT_TYPE_LATEST)
-
 
 def start_socket_mode():
     """Start Socket Mode handler in a separate thread"""
@@ -90,7 +97,6 @@ def start_socket_mode():
     handler = SocketModeHandler(slack_app, app_token)
     handler.start()
 
-
 # Start Socket Mode on application startup
 @app.on_event("startup")
 def startup_event():
@@ -100,8 +106,6 @@ def startup_event():
     thread.start()
     logger.info("Socket Mode started in background thread")
 
-
 if __name__ == "__main__":
-    import uvicornLF
-
+    import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8080)

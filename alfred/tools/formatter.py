@@ -1,6 +1,13 @@
 """Formatting tools for the Alfred platform."""
 
-import jsonLFfrom typing import Any, Dict, List, UnionLFLFimport yamlLFLFLFclass JsonFormatter:LF    """Tool for formatting JSON data."""
+import json
+from typing import Any, Dict, List, Union
+
+import yaml
+
+
+class JsonFormatter:
+    """Tool for formatting JSON data."""
 
     def __init__(self, indent: int = 2) -> None:
         """Initialize the JSON formatter.

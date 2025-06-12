@@ -9,7 +9,13 @@ This script checks the inventory.csv file for common issues such as:
 - Improper CSV formatting
 """
 
-import csvLFimport osLFimport sysLFfrom pathlib import PathLFLFLFdef validate_inventory(inventory_file: str) -> bool:LF    """
+import csv
+import os
+import sys
+from pathlib import Path
+
+def validate_inventory(inventory_file: str) -> bool:
+    """
     Validate the inventory.csv file.
 
     Args:
@@ -111,7 +117,6 @@ import csvLFimport osLFimport sysLFfrom pathlib import PathLFLFLFdef validate_in
 
     return valid
 
-
 def main() -> int:
     """Run the validator on the inventory.csv file."""
     # Get the script directory
@@ -125,7 +130,6 @@ def main() -> int:
     else:
         print("\n❌ Inventory validation failed! Please fix the issues above.")
         return 1
-
 
 if __name__ == "__main__":
     sys.exit(main())

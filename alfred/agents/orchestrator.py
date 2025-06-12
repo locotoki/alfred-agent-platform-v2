@@ -4,7 +4,16 @@ This module contains the AgentOrchestrator class which coordinates
 interactions between different agent types based on intent.
 """
 
-import uuidLFfrom typing import Any, Callable, Dict, OptionalLFLFimport structlogLFfrom prometheus_client import CounterLFLFfrom .intent_router import Intent, IntentRouterLFLF# Create a default router instanceLFrouter = IntentRouter()LF
+import uuid
+from typing import Any, Callable, Dict, Optional
+
+import structlog
+from prometheus_client import Counter
+
+from .intent_router import Intent, IntentRouter
+
+# Create a default router instance
+router = IntentRouter()
 # Register common patterns
 router.register_pattern("help", r"(?:can you )?(?:help|assist) (?:me )?(?:with )?(?P<topic>.+)")
 router.register_pattern("summarize", r"(?:can you )?summarize (?P<text>.+)")

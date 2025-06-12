@@ -3,7 +3,10 @@
 This implements the standard health checks required by the platform.
 """
 
-from fastapi import APIRouter, ResponseLFLFrouter = APIRouter()LF
+from fastapi import APIRouter, Response
+
+router = APIRouter()
+
 
 @router.get("/health")
 async def health_check():

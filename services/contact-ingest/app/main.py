@@ -1,6 +1,18 @@
 """Contact ingest service with ETL background worker."""
 
-import asyncioLFimport globLFimport jsonLFimport osLFLFimport aiofilesLFimport httpxLFfrom fastapi import FastAPILFfrom prometheus_client import Counter, start_http_serverLFfrom pydantic import BaseModelLFLFCRM_SYNC_URL = os.getenv("CRM_SYNC_URL", "http://crm-sync:8080/sync")LFDATA_DIR = os.getenv("INGEST_DIR", "/app/data")
+import asyncio
+import glob
+import json
+import os
+
+import aiofiles
+import httpx
+from fastapi import FastAPI
+from prometheus_client import Counter, start_http_server
+from pydantic import BaseModel
+
+CRM_SYNC_URL = os.getenv("CRM_SYNC_URL", "http://crm-sync:8080/sync")
+DATA_DIR = os.getenv("INGEST_DIR", "/app/data")
 INGEST_COUNTER = Counter("contact_ingest_total", "Processed contacts")
 
 app = FastAPI(title="contact-ingest")

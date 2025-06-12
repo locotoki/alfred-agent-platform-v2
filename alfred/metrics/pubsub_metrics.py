@@ -1,6 +1,13 @@
 #!/usr/bin/env python3
 
-import osLFimport timeLFLFimport requestsLFfrom flask import Flask, Response, jsonifyLFfrom prometheus_client import REGISTRY, Counter, Gauge, generate_latestLFLFapp = Flask(__name__)LF
+import os
+import time
+
+import requests
+from flask import Flask, Response, jsonify
+from prometheus_client import REGISTRY, Counter, Gauge, generate_latest
+
+app = Flask(__name__)
 # Create metrics
 pubsub_availability = Gauge("pubsub_availability", "Availability of the PubSub emulator")
 pubsub_topics_total = Gauge("pubsub_topics_total", "Total number of PubSub topics")
@@ -88,7 +95,7 @@ def background_collector():
 if __name__ == "__main__":
     # Start metrics collection in the background
 
-    import threadingLF
+    import threading
 
     collector_thread = threading.Thread(target=background_collector, daemon=True)
     collector_thread.start()

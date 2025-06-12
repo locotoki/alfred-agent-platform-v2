@@ -4,7 +4,15 @@ This module provides functions to interact with the YouTube Data API v3 for fetc
 trends, statistics, and channel data.
 """
 
-# type: ignoreLFimport osLFfrom datetime import datetimeLFfrom typing import Any, Dict, List, OptionalLFLFimport aiohttpLFimport structlogLFLFlogger = structlog.get_logger(__name__)LF
+# type: ignore
+import os
+from datetime import datetime
+from typing import Any, Dict, List, Optional
+
+import aiohttp
+import structlog
+
+logger = structlog.get_logger(__name__)
 YOUTUBE_API_KEY = os.environ.get("YOUTUBE_API_KEY")
 YOUTUBE_API_BASE_URL = "https://www.googleapis.com/youtube/v3"
 

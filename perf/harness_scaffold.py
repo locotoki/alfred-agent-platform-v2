@@ -4,7 +4,16 @@
 Target: 10 RPS for 60s, p95 < 300ms, error rate < 1%
 """
 
-import osLFimport statisticsLFimport timeLFfrom concurrent.futures import ThreadPoolExecutor, as_completedLFLFimport requestsLFLF# ConfigurationLFBASE_URL = os.getenv("TARGET_URL", "http://localhost:8080")LFTARGET_RPS = int(os.getenv("QPS", "10"))
+import os
+import statistics
+import time
+from concurrent.futures import ThreadPoolExecutor, as_completed
+
+import requests
+
+# Configuration
+BASE_URL = os.getenv("TARGET_URL", "http://localhost:8080")
+TARGET_RPS = int(os.getenv("QPS", "10"))
 DURATION_SECONDS = int(os.getenv("DURATION", "60"))
 MAX_WORKERS = 20
 
@@ -16,7 +25,6 @@ SAMPLE_QUERIES = [
     "Explain the vector schema design for the documents table in PostgreSQL.",
     "How does the platform ensure p95 latency stays under 300ms at 10 QPS load?",
 ]
-
 
 def make_request(query_text):
     """Make a single request to the retrieval endpoint."""
@@ -36,7 +44,6 @@ def make_request(query_text):
     except Exception as e:
         latency_ms = (time.time() - start_time) * 1000
         return {"success": False, "latency_ms": latency_ms, "error": str(e)}
-
 
 def run_load_test():
     """Run the performance test."""
@@ -87,7 +94,6 @@ def run_load_test():
         print(f"\n{'✅ PASS' if p95 < 300 and error_rate < 1 else '❌ FAIL'}")
     else:
         print("❌ No successful requests - check if server is running")
-
 
 if __name__ == "__main__":
     # Quick health check first

@@ -3,7 +3,13 @@ Flake detector implementation (#651).
 Parses pytest JSON output and emits GitHub summary for flaky tests.
 """
 
-import jsonLFimport osLFfrom pathlib import PathLFfrom typing import Dict, List, TupleLFLFLFdef analyze(json_path: str) -> Dict[str, List[str]]:LF    """Analyze pytest JSON report for flaky tests.
+import json
+import os
+from pathlib import Path
+from typing import Dict, List, Tuple
+
+def analyze(json_path: str) -> Dict[str, List[str]]:
+    """Analyze pytest JSON report for flaky tests.
 
     Args:
         json_path: Path to pytest JSON output file
@@ -37,7 +43,6 @@ import jsonLFimport osLFfrom pathlib import PathLFfrom typing import Dict, List,
         "failed_tests": len(failed_tests),
         "summary": generate_github_summary(flaky_tests, len(tests), len(failed_tests)),
     }
-
 
 def generate_github_summary(flaky_tests: List[str], total_tests: int, failed_tests: int) -> str:
     """Generate GitHub Actions summary table for flaky tests.
@@ -95,7 +100,6 @@ def generate_github_summary(flaky_tests: List[str], total_tests: int, failed_tes
         summary += f"\n*({len(flaky_tests) - 10} additional flaky tests truncated)*\n"
 
     return summary
-
 
 def emit_github_summary(analysis_result: Dict[str, List[str]]) -> None:
     """Emit GitHub Actions summary if running in CI.

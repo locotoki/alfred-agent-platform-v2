@@ -1,10 +1,35 @@
 """Unit tests for Financial Tax Agent chains."""
 
-from unittest.mock import AsyncMock, MagicMock, patchLFLFimport pytestLFLFfrom agents.financial_tax.chains import (LF    LF,LF    ComplianceCheckChain,LF    FinancialAnalysisChain,LF    RateLookupChain,LF    TaxCalculationChain,LF)LFfrom agents.financial_tax.models import (LF    LF,LF    ComplianceCheckRequest,LF    EntityType,LF    FinancialAnalysisRequest,LF    TaxCalculationRequest,LF    TaxJurisdiction,LF    TaxRateRequest,LF)LFLFLF@pytest.fixtureLFdef mock_llm():
+from unittest.mock import AsyncMock, MagicMock, patch
+
+import pytest
+
+from agents.financial_tax.chains import (
+    
+,
+    ComplianceCheckChain,
+    FinancialAnalysisChain,
+    RateLookupChain,
+    TaxCalculationChain,
+)
+from agents.financial_tax.models import (
+    
+,
+    ComplianceCheckRequest,
+    EntityType,
+    FinancialAnalysisRequest,
+    TaxCalculationRequest,
+    TaxJurisdiction,
+    TaxRateRequest,
+)
+
+@pytest.fixture
+def mock_llm():
     """Mock LLM for testing chains."""
     with patch("agents.financial_tax.chains.ChatOpenAI") as mock:
-        from typing import Any, OptionalLFLFfrom langchain.schema.runnable import RunnableLF
+        from typing import Any, Optional
 
+from langchain.schema.runnable import Runnable
         class MockLLM(Runnable):
             def invoke(self, input: Any, config: Optional[Any] = None, **kwargs: Any) -> Any:
                 return "test response"
@@ -16,8 +41,7 @@ from unittest.mock import AsyncMock, MagicMock, patchLFLFimport pytestLFLFfrom a
                 return "test response"
 
             def generate(self, *args, **kwargs):
-                from langchain.schema import GenerationLF
-
+                from langchain.schema import Generation
                 return MagicMock(generations=[[Generation(text="test")]])
 
             def predict(self, *args, **kwargs):
@@ -27,7 +51,6 @@ from unittest.mock import AsyncMock, MagicMock, patchLFLFimport pytestLFLFfrom a
         mock.return_value = llm_instance
         yield llm_instance
 
-
 @pytest.fixture
 def mock_chain():
     """Create a mock chain that can be used for testing."""
@@ -35,14 +58,12 @@ def mock_chain():
     chain.ainvoke = AsyncMock()
     return chain
 
-
 @pytest.fixture
 def mock_parser():
     """Create a mock output parser for testing."""
     parser = MagicMock()
     parser.parse = MagicMock()
     return parser
-
 
 class TestTaxCalculationChain:
     """Test suite for TaxCalculationChain."""
@@ -109,7 +130,6 @@ class TestTaxCalculationChain:
         assert result.net_tax_due == 18000
         assert result.effective_tax_rate == 0.20
 
-
 class TestFinancialAnalysisChain:
     """Test suite for FinancialAnalysisChain."""
 
@@ -168,7 +188,6 @@ class TestFinancialAnalysisChain:
         assert result.key_metrics["gross_margin"] == 0.25
         assert len(result.insights) == 2
         assert "Strong revenue growth" in result.insights
-
 
 class TestComplianceCheckChain:
     """Test suite for ComplianceCheckChain."""
@@ -233,7 +252,6 @@ class TestComplianceCheckChain:
         assert result.compliance_status == "partial_compliance"
         assert result.risk_level == "medium"
         assert len(result.issues_found) == 1
-
 
 class TestRateLookupChain:
     """Test suite for RateLookupChain."""

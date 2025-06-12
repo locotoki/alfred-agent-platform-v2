@@ -4,11 +4,16 @@
 Expose GET /cpu returning current CPU usage and load-average in JSON.
 """
 
-import osLFLFimport psutilLFfrom fastapi import FastAPILFLFapp = FastAPI(LF    title="cpu-probe",
+import os
+
+import psutil
+from fastapi import FastAPI
+
+app = FastAPI(
+    title="cpu-probe",
     description="CPU probe endpoint",
     version="1.0.0",
 )
-
 
 @app.get("/cpu")
 async def cpu_probe():
@@ -22,8 +27,6 @@ async def cpu_probe():
         "load_avg_15m": load_avg_15m,
     }
 
-
 if __name__ == "__main__":
-    import uvicornLF
-
+    import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=9091)

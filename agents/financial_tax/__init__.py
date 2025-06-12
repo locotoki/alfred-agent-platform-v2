@@ -6,8 +6,29 @@ This stub is kept for backward compatibility.
 
 # Re-export from the new location for backward compatibility
 try:
-    from services.agent_bizops.workflows.finance.agent import FinancialTaxAgentLFfrom services.agent_bizops.workflows.finance.chains import (LF    LF,LF    ComplianceCheckChain,LF    FinancialAnalysisChain,LF    RateLookupChain,LF    TaxCalculationChain,LF)LFfrom services.agent_bizops.workflows.finance.models import (LF    LF,LF    ComplianceCheckRequest,LF    ComplianceCheckResponse,LF    EntityType,LF    FinancialAnalysisRequest,LF    FinancialAnalysisResponse,LF    TaxCalculationRequest,LF    TaxCalculationResponse,LF    TaxJurisdiction,LF    TaxRateRequest,LF    TaxRateResponse,LF)LF
-
+    from services.agent_bizops.workflows.finance.agent import FinancialTaxAgent
+from services.agent_bizops.workflows.finance.chains import (
+    
+,
+    ComplianceCheckChain,
+    FinancialAnalysisChain,
+    RateLookupChain,
+    TaxCalculationChain,
+)
+from services.agent_bizops.workflows.finance.models import (
+    
+,
+    ComplianceCheckRequest,
+    ComplianceCheckResponse,
+    EntityType,
+    FinancialAnalysisRequest,
+    FinancialAnalysisResponse,
+    TaxCalculationRequest,
+    TaxCalculationResponse,
+    TaxJurisdiction,
+    TaxRateRequest,
+    TaxRateResponse,
+)
     __all__ = [
         "FinancialTaxAgent",
         "ComplianceCheckChain",

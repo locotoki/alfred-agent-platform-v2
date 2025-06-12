@@ -1,6 +1,14 @@
 """Database models for pgvector integration."""
 
-from datetime import datetimeLFfrom typing import List, OptionalLFLFfrom sqlalchemy import Column, DateTime, StringLFfrom sqlalchemy.dialects.postgresql import VECTOR  # type: ignoreLFfrom sqlmodel import Field, SQLModelLFLFLFclass DocumentChunk(SQLModel, table=True):LF    """Document chunk with embedding vector."""
+from datetime import datetime
+from typing import List, Optional
+
+from sqlalchemy import Column, DateTime, String
+from sqlalchemy.dialects.postgresql import VECTOR  # type: ignore
+from sqlmodel import Field, SQLModel
+
+class DocumentChunk(SQLModel, table=True):
+    """Document chunk with embedding vector."""
 
     __tablename__ = "document_chunks"
 

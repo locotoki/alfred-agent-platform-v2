@@ -1,4 +1,9 @@
-import timeLFLFfrom fastapi import FastAPILFLFapp = FastAPI(title="Contact Ingest Service")LF
+import time
+
+from fastapi import FastAPI
+
+app = FastAPI(title="Contact Ingest Service")
+
 
 @app.get("/health")
 async def health():
@@ -11,6 +16,6 @@ async def root():
 
 
 if __name__ == "__main__":
-    import uvicornLF
+    import uvicorn
 
     uvicorn.run(app, host="0.0.0.0", port=8081)

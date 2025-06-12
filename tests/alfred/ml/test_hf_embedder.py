@@ -1,6 +1,14 @@
 """Tests for the HuggingFace transformer embedder."""
 
-from unittest.mock import Mock, patchLFLFimport numpy as npLFimport pytestLFLFfrom alfred.ml.hf_embedder import HFEmbedderLFLFLFclass TestHFEmbedder:LF    """Test HuggingFace transformer embedder functionality."""
+from unittest.mock import Mock, patch
+
+import numpy as np
+import pytest
+
+from alfred.ml.hf_embedder import HFEmbedder
+
+class TestHFEmbedder:
+    """Test HuggingFace transformer embedder functionality."""
 
     @pytest.fixture
     def embedder(self):

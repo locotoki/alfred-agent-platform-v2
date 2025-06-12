@@ -1,6 +1,16 @@
 """Integration smoke test for the Alert Explainer in kind-in-CI."""
 
-import jsonLFimport timeLFfrom pathlib import PathLFLFimport pytestLFLFpytestmark = pytest.mark.xfail(reason="pre-existing async bug, see #220", strict=False)LFimport requestsLFLFLFdef wait_for_service(url: str, timeout: int = 30):LF    """Wait for a service to become available."""
+import json
+import time
+from pathlib import Path
+
+import pytest
+
+pytestmark = pytest.mark.xfail(reason="pre-existing async bug, see #220", strict=False)
+import requests
+
+def wait_for_service(url: str, timeout: int = 30):
+    """Wait for a service to become available."""
     start_time = time.time()
     while time.time() - start_time < timeout:
         try:
@@ -11,7 +21,6 @@ import jsonLFimport timeLFfrom pathlib import PathLFLFimport pytestLFLFpytestmar
             pass
         time.sleep(1)
     return False
-
 
 @pytest.mark.integration
 def test_explainer_smoke():

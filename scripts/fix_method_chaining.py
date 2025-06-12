@@ -1,7 +1,12 @@
 #!/usr/bin/env python3
 """Script to fix method chaining syntax errors in Python files"""
 
-import osLFimport reLFfrom pathlib import Path  # noqa: F401LFLFLFdef fix_method_chaining(file_path):LF    """Fix method chaining syntax errors in Python files"""
+import os
+import re
+from pathlib import Path  # noqa: F401
+
+def fix_method_chaining(file_path):
+    """Fix method chaining syntax errors in Python files"""
     try:
         with open(file_path, "r", encoding="utf-8", errors="ignore") as f:
             content = f.read()
@@ -69,7 +74,6 @@ import osLFimport reLFfrom pathlib import Path  # noqa: F401LFLFLFdef fix_method
         print(f"Error processing {file_path}: {e}")
         return False
 
-
 def main():
     """Scan the codebase and fix method chaining syntax errors"""
     # Define a list of directories we want to process
@@ -102,7 +106,6 @@ def main():
 
     print(f"\nProcessed {total_files} Python files")
     print(f"Fixed method chaining in {fixed_count} files")
-
 
 if __name__ == "__main__":
     main()

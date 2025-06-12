@@ -18,12 +18,20 @@ Options:
     --quiet               Suppress console output
 """
 
-import argparseLFimport datetimeLFimport loggingLFimport osLFimport reLFfrom typing import Dict, List, Optional, TupleLFLF# Set up loggingLFlogging.basicConfig(LF    level=logging.INFO,
+import argparse
+import datetime
+import logging
+import os
+import re
+from typing import Dict, List, Optional, Tuple
+
+# Set up logging
+logging.basicConfig(
+    level=logging.INFO,
     format="%(asctime)s - %(levelname)s - %(message)s",
     datefmt="%Y-%m-%d %H:%M:%S",
 )
 logger = logging.getLogger(__name__)
-
 
 class MetadataUpdater:
     """Class to update metadata in markdown files."""
@@ -229,7 +237,6 @@ class MetadataUpdater:
                     md_files.append(os.path.join(root, file))
         return md_files
 
-
 def main():
     parser = argparse.ArgumentParser(description="Update metadata in markdown documentation files")
     parser.add_argument("path", help="File or directory to process")
@@ -288,7 +295,6 @@ def main():
             print("\n" + report)
     else:
         updater.generate_report(report_path)
-
 
 if __name__ == "__main__":
     main()

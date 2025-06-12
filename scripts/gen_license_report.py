@@ -9,7 +9,16 @@ Usage: python scripts/gen_license_report.py
 Output: metrics/license_report.csv
 """
 
-import csvLFimport subprocessLFimport sysLFfrom pathlib import PathLFfrom typing import Dict, ListLFLF# License classification mappingLF# SPDX-based license classification mappingLFSPDX_LICENSE_CLASSIFICATIONS = {LF    # Permissive licenses (SPDX identifiers)
+import csv
+import subprocess
+import sys
+from pathlib import Path
+from typing import Dict, List
+
+# License classification mapping
+# SPDX-based license classification mapping
+SPDX_LICENSE_CLASSIFICATIONS = {
+    # Permissive licenses (SPDX identifiers)
     "MIT": "permissive",
     "BSD-2-Clause": "permissive",
     "BSD-3-Clause": "permissive",
@@ -76,7 +85,6 @@ LEGACY_LICENSE_CLASSIFICATIONS = {
     "CC0": "public-domain",
 }
 
-
 def read_dependency_inventory(inventory_path: Path) -> List[Dict[str, str]]:
     """Read the dependency inventory CSV file."""
     packages = []
@@ -95,7 +103,6 @@ def read_dependency_inventory(inventory_path: Path) -> List[Dict[str, str]]:
         print(f"Error reading dependency inventory: {e}", file=sys.stderr)
 
     return packages
-
 
 def get_package_licenses(packages: List[Dict[str, str]]) -> List[Dict[str, str]]:
     """Get license information for packages using pip-licenses."""
@@ -118,8 +125,7 @@ def get_package_licenses(packages: List[Dict[str, str]]) -> List[Dict[str, str]]
 
         # Parse JSON output
 
-        import jsonLF
-
+        import json
         try:
             licenses_info = json.loads(result.stdout)
         except json.JSONDecodeError:
@@ -172,7 +178,6 @@ def get_package_licenses(packages: List[Dict[str, str]]) -> List[Dict[str, str]]
 
     return license_data
 
-
 def classify_license(license_name: str) -> str:
     """Classify a license into a category."""
     if not license_name or license_name.lower() in ["unknown", "not-found"]:
@@ -191,7 +196,6 @@ def classify_license(license_name: str) -> str:
     # No fuzzy matching - require exact SPDX or legacy mapping
     return "other"
 
-
 def write_license_report(license_data: List[Dict[str, str]], output_path: Path):
     """Write the license report to CSV."""
     # Ensure output directory exists
@@ -205,7 +209,6 @@ def write_license_report(license_data: List[Dict[str, str]], output_path: Path):
         writer.writerows(license_data)
 
     print(f"License report written with {len(license_data)} entries: {output_path}")
-
 
 def main():
     """Generate license report from dependency inventory."""
@@ -249,7 +252,6 @@ def main():
         print(f"Unknown/other ratio: {unknown_ratio:.1%} ({unknown_count}/{total_count}) - OK")
 
     print("License report generation completed")
-
 
 if __name__ == "__main__":
     main()

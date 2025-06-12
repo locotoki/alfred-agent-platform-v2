@@ -1,7 +1,12 @@
 #!/usr/bin/env python3
 """Add type: ignore comments to baseline mypy errors."""
 
-import reLFimport sysLFfrom pathlib import PathLFLFLFdef parse_mypy_output(baseline_file):LF    """Parse mypy output and extract file, line, and error info."""
+import re
+import sys
+from pathlib import Path
+
+def parse_mypy_output(baseline_file):
+    """Parse mypy output and extract file, line, and error info."""
     errors = []
     with open(baseline_file, "r") as f:
         for line in f:
@@ -17,7 +22,6 @@ import reLFimport sysLFfrom pathlib import PathLFLFLFdef parse_mypy_output(basel
                     }
                 )
     return errors
-
 
 def add_type_ignore(file_path, line_num, error_code):
     """Add type: ignore comment to a specific line."""
@@ -44,7 +48,6 @@ def add_type_ignore(file_path, line_num, error_code):
         f.writelines(lines)
 
     return True
-
 
 def main():
     """Execute the main logic to add type ignores."""
@@ -80,7 +83,6 @@ def main():
                 fixed_count += 1
 
     print(f"\nTotal fixes applied: {fixed_count}")
-
 
 if __name__ == "__main__":
     main()

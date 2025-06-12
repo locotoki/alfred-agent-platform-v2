@@ -1,9 +1,16 @@
 """Smoke tests for CI vulnerability gate - DA-007."""
 
-import csvLFimport subprocessLFfrom pathlib import PathLFfrom tempfile import NamedTemporaryFileLFLFimport pytestLFLFLFdef test_vuln_gate_script_exists():LF    """Test that the CI vulnerability gate script exists."""
+import csv
+import subprocess
+from pathlib import Path
+from tempfile import NamedTemporaryFile
+
+import pytest
+
+def test_vuln_gate_script_exists():
+    """Test that the CI vulnerability gate script exists."""
     repo_root = Path(__file__).parent.parent.parent
     assert (repo_root / "scripts" / "ci_vuln_gate.py").exists()
-
 
 def _run_vuln_gate_test(vulnerability_data, expected_exit_code, expected_output):
     """Helper function to run vulnerability gate tests with mocked data."""
@@ -35,7 +42,6 @@ def _run_vuln_gate_test(vulnerability_data, expected_exit_code, expected_output)
         if backup_exists:
             original_report.write_text(backup_content)
         Path(temp_report).unlink(missing_ok=True)
-
 
 @pytest.mark.parametrize(
     "vulnerability_data,expected_exit_code,expected_output,description",
@@ -79,7 +85,6 @@ def _run_vuln_gate_test(vulnerability_data, expected_exit_code, expected_output)
 def test_vuln_gate_scenarios(vulnerability_data, expected_exit_code, expected_output, description):
     """Test vulnerability gate behavior with various scenarios."""
     _run_vuln_gate_test(vulnerability_data, expected_exit_code, expected_output)
-
 
 def test_vuln_gate_max_age_days_flag():
     """Test that vulnerability gate respects --max_age_days flag."""
@@ -154,7 +159,6 @@ def test_vuln_gate_max_age_days_flag():
         if backup_exists:
             original_report.write_text(backup_content)
         Path(temp_report).unlink(missing_ok=True)
-
 
 def test_vuln_gate_workflow_exists():
     """Test that the vulnerability gate workflow exists."""

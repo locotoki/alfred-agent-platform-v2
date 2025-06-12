@@ -1,2 +1,7 @@
-from sqlalchemy import inspectLFLFfrom agent_core.db.session import engineLFLFLFdef test_tables_present():LF    insp = inspect(engine)
+from sqlalchemy import inspect
+
+from agent_core.db.session import engine
+
+def test_tables_present():
+    insp = inspect(engine)
     assert "document_chunks" in insp.get_table_names()

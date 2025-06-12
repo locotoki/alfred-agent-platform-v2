@@ -4,7 +4,18 @@ Provides a YAML-based configuration system for per-service grouping
 rules with dynamic evaluation.
 """
 
-import operatorLFimport reLFfrom dataclasses import dataclassLFfrom typing import Any, Dict, List, OptionalLFLFimport redisLFimport yamlLFLFfrom alfred.core.protocols import AlertProtocolLFLFLF@dataclassLFclass RuleCondition:
+import operator
+import re
+from dataclasses import dataclass
+from typing import Any, Dict, List, Optional
+
+import redis
+import yaml
+
+from alfred.core.protocols import AlertProtocol
+
+@dataclass
+class RuleCondition:
     """Single condition in a rule"""
 
     field: str
@@ -58,7 +69,6 @@ import operatorLFimport reLFfrom dataclasses import dataclassLFfrom typing impor
         except Exception:
             return False
 
-
 @dataclass
 class GroupingRule:
     """Custom grouping rule"""
@@ -101,7 +111,6 @@ class GroupingRule:
                 key_parts.append(str(value))
 
         return ":".join(key_parts)
-
 
 class RulesEngine:
     """Engine for evaluating custom grouping rules"""

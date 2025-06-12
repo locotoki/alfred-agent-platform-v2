@@ -1,7 +1,14 @@
 #!/usr/bin/env python3
 """Update Prometheus alert rules with additional labels"""
 # type: ignore
-import reLFimport sysLFfrom pathlib import PathLFLFimport yamlLFLFLFdef update_alert_labels(file_path: Path) -> None:LF    """Update alert labels in a single file"""
+import re
+import sys
+from pathlib import Path
+
+import yaml
+
+def update_alert_labels(file_path: Path) -> None:
+    """Update alert labels in a single file"""
     with open(file_path, "r") as f:
         content = f.read()
 
@@ -65,7 +72,6 @@ import reLFimport sysLFfrom pathlib import PathLFLFimport yamlLFLFLFdef update_a
     else:
         print(f"No changes needed for {file_path}")
 
-
 def main():
     """Update all alert files"""
     alerts_dir = Path("charts/alerts")
@@ -90,7 +96,6 @@ def main():
             continue
 
     print("Alert label update complete")
-
 
 if __name__ == "__main__":
     main()

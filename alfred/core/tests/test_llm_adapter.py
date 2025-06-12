@@ -1,6 +1,19 @@
 """Tests for LLM adapter implementations"""
 
-from unittest.mock import AsyncMock, MagicMock, patchLFLFimport pytestLFLFfrom alfred.core.llm_adapter import (LF    LF,LF    ClaudeAdapter,LF    Message,LF    OpenAIAdapter,LF    create_llm_adapter,LF)LFLFLFclass TestMessage:LF    """Test Message class"""
+from unittest.mock import AsyncMock, MagicMock, patch
+
+import pytest
+
+from alfred.core.llm_adapter import (
+    ClaudeAdapter,
+    Message,
+    OpenAIAdapter,
+    create_llm_adapter,
+)
+
+
+class TestMessage:
+    """Test Message class"""
 
     def test_message_creation(self):
         """Test Message object creation with role and content"""

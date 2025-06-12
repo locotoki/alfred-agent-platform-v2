@@ -5,8 +5,12 @@ This script runs pytest with configurations that ensure proper module
 isolation and prevent import shadowing issues.
 """
 
-import osLFimport subprocessLFimport sysLFfrom pathlib import PathLFLFROOT_DIR = Path(__file__).parent.parentLF
+import os
+import subprocess
+import sys
+from pathlib import Path
 
+ROOT_DIR = Path(__file__).parent.parent
 def main():
     """Run pytest with proper configuration"""
     # Ensure PYTHONPATH is set correctly
@@ -36,7 +40,6 @@ def main():
         sys.exit(0)
     else:
         sys.exit(result.returncode)
-
 
 if __name__ == "__main__":
     main()

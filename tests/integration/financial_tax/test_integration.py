@@ -1,7 +1,15 @@
 """Integration tests for Financial Tax Agent."""
 
-import asyncioLFLFimport pytestLFLFpytestmark = pytest.mark.xfail(reason="pre-existing async bug, see #220", strict=False)LF
-from libs.a2a_adapter import A2AEnvelopeLFfrom services.agent_bizops.workflows.finance import FinancialTaxAgentLFLFLF@pytest.mark.integrationLFclass TestFinancialTaxIntegration:
+import asyncio
+
+import pytest
+
+pytestmark = pytest.mark.xfail(reason="pre-existing async bug, see #220", strict=False)
+from libs.a2a_adapter import A2AEnvelope
+from services.agent_bizops.workflows.finance import FinancialTaxAgent
+
+@pytest.mark.integration
+class TestFinancialTaxIntegration:
     """Integration test suite for Financial Tax Agent."""
 
     @pytest.fixture

@@ -10,7 +10,18 @@ It acts as a wrapper around Redis to make it compliant with the platform
 health check standard.
 """
 
-import osLFimport timeLFfrom typing import DictLFLFimport prometheus_clientLFimport redisLFfrom fastapi import FastAPI, Response, statusLFfrom prometheus_client import Counter, GaugeLFLF# ConfigurationLFREDIS_URL = os.environ.get("REDIS_URL", "redis://localhost:6379")LFSERVICE_NAME = "redis"
+import os
+import time
+from typing import Dict
+
+import prometheus_client
+import redis
+from fastapi import FastAPI, Response, status
+from prometheus_client import Counter, Gauge
+
+# Configuration
+REDIS_URL = os.environ.get("REDIS_URL", "redis://localhost:6379")
+SERVICE_NAME = "redis"
 VERSION = "7.0.0"  # Redis version
 
 # Create FastAPI app
@@ -29,7 +40,6 @@ redis_last_check_time = Gauge("redis_last_check_time", "Timestamp of last Redis 
 
 # Redis client
 redis_client = redis.from_url(REDIS_URL)
-
 
 def check_redis_health() -> Dict[str, str]:
     """Check Redis connection and status.
@@ -62,7 +72,6 @@ def check_redis_health() -> Dict[str, str]:
     finally:
         redis_last_check_time.set(time.time())
 
-
 @app.get("/health")
 async def health_check():
     """Detailed health check endpoint"""
@@ -79,7 +88,6 @@ async def health_check():
         "services": {"redis": result["status"]},
     }, status_code
 
-
 @app.get("/healthz")
 async def simple_health():
     """Simple health check for container probes"""
@@ -94,14 +102,11 @@ async def simple_health():
     else:
         return {"status": "ok"}
 
-
 @app.get("/metrics")
 async def metrics():
     """Prometheus metrics endpoint"""
     return Response(content=prometheus_client.generate_latest(), media_type="text/plain")
 
-
 if __name__ == "__main__":
-    import uvicornLF
-
+    import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=9091)

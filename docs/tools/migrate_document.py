@@ -35,7 +35,21 @@ Examples:
 
 """
 
-import argparseLFimport difflibLFimport getpassLFimport hashlibLFimport loggingLFimport osLFimport reLFimport sysLFfrom datetime import datetimeLFfrom pathlib import PathLFfrom typing import Any, Dict, List, OptionalLFLF# Configure loggingLFlogging.basicConfig(LF    level=logging.INFO,
+import argparse
+import difflib
+import getpass
+import hashlib
+import logging
+import os
+import re
+import sys
+from datetime import datetime
+from pathlib import Path
+from typing import Any, Dict, List, Optional
+
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
     format="%(asctime)s - %(levelname)s - %(message)s",
     datefmt="%Y-%m-%d %H:%M:%S",
 )
@@ -228,7 +242,6 @@ TITLE_PATTERN = re.compile(r"^#\s+(.+)$", re.MULTILINE)
 HEADING_PATTERN = re.compile(r"^(#{1,6})\s+(.+)$", re.MULTILINE)
 METADATA_PATTERN = re.compile(r"\*\*([^:]+):\*\*\s*(.*?)(?:\s{2,}|\n)", re.MULTILINE)
 LINK_PATTERN = re.compile(r"\[([^\]]+)\]\(([^)]+)\)")
-
 
 class DocumentMigrator:
     """Handles the migration of documentation from one location to another with
@@ -701,7 +714,6 @@ class DocumentMigrator:
             "dry_run": self.dry_run,
         }
 
-
 def print_migration_report(result: Dict[str, Any]):
     """Print a formatted report of the migration result."""
     print("\n" + "=" * 80)
@@ -739,7 +751,6 @@ def print_migration_report(result: Dict[str, Any]):
 
     print("\nMigration completed successfully!")
     print("=" * 80)
-
 
 def main():
     """Main function to run the script."""
@@ -791,7 +802,6 @@ def main():
 
     # Return appropriate exit code
     sys.exit(0 if result.get("success", False) else 1)
-
 
 if __name__ == "__main__":
     main()

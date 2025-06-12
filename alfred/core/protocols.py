@@ -4,7 +4,12 @@ This module defines the abstract interfaces used throughout the alfred.core subs
 ensure strict typing and enable proper dependency inversion.
 """
 
-from abc import abstractmethodLFfrom typing import Any, Dict, ProtocolLFLFLFclass Service(Protocol):LF    """Protocol for services that have lifecycle methods."""
+from abc import abstractmethod
+from typing import Any, Dict, Protocol
+
+
+class Service(Protocol):
+    """Protocol for services that have lifecycle methods."""
 
     @abstractmethod
     async def start(self) -> None:

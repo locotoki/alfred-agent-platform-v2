@@ -1,3 +1,5 @@
 """Configuration module for Alfred"""
 
-from .settings import settingsLFLF__all__ = ["settings"]LF
+from .settings import settings
+
+__all__ = ["settings"]

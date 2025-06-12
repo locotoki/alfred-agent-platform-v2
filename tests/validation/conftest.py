@@ -1,4 +1,7 @@
-import pytestLFLFLFdef pytest_collection_modifyitems(config, items):LF    """Skip validation tests for SC-320."""
+import pytest
+
+def pytest_collection_modifyitems(config, items):
+    """Skip validation tests for SC-320."""
     for item in items:
         # Skip already marked tests
         if any(mark.name == "xfail" for mark in item.iter_markers()):

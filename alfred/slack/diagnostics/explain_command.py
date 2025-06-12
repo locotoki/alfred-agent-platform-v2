@@ -1,6 +1,12 @@
 """Slash command handler for alert explanations."""
 
-import loggingLFfrom typing import Any, DictLFLFfrom alfred.alerts.explainer import ExplainerAgentLFLFlogger = logging.getLogger(__name__)LF
+import logging
+from typing import Any, Dict
+
+from alfred.alerts.explainer import ExplainerAgent
+
+logger = logging.getLogger(__name__)
+
 
 async def handle_explain_command(command: str, alert_id: str) -> Dict[str, Any]:
     """Handle the /diag explain <alert-id> command.

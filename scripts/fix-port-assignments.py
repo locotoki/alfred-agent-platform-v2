@@ -3,11 +3,17 @@
 Fix port conflicts in docker-compose.yml by assigning unique ports to each service.
 """
 
-import sysLFfrom pathlib import PathLFLFimport yamlLFLF# Port remappings to fix conflictsLFPORT_REMAPPINGS = {LF    "slack_mcp_gateway": {"old": "3000:3000", "new": "3010:3000"},
+import sys
+from pathlib import Path
+
+import yaml
+
+# Port remappings to fix conflicts
+PORT_REMAPPINGS = {
+    "slack_mcp_gateway": {"old": "3000:3000", "new": "3010:3000"},
     "slack-adapter": {"old": "3001:8000", "new": "3011:8000"},
     "hubspot-mock": {"old": "8000:8000", "new": "8088:8080"},
 }
-
 
 def fix_port_conflicts(compose_file):
     """Fix port conflicts in docker-compose.yml"""
@@ -48,7 +54,6 @@ def fix_port_conflicts(compose_file):
 
     return len(changes_made) > 0
 
-
 def main():
     compose_file = Path("docker-compose.yml")
 
@@ -66,7 +71,6 @@ def main():
         print("  3. Restart services: docker-compose down && docker-compose up -d")
     else:
         print("\n✅ No port conflicts found!")
-
 
 if __name__ == "__main__":
     main()

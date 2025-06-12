@@ -1,6 +1,14 @@
 """E2E tests for Slack integration."""
 
-import osLFLFimport pytestLFLF# Temporarily removed skip marker to debug flaky testsLF# pytestmark = pytest.mark.skip(reason="flaky after 13-svc refactor – see #642")LFLFLFclass TestSlackIntegration:LF    """Test Slack integration functionality."""
+import os
+
+import pytest
+
+# Temporarily removed skip marker to debug flaky tests
+# pytestmark = pytest.mark.skip(reason="flaky after 13-svc refactor – see #642")
+
+class TestSlackIntegration:
+    """Test Slack integration functionality."""
 
     @pytest.mark.e2e
     @pytest.mark.slack

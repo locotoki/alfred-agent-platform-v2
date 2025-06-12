@@ -1,6 +1,19 @@
 """Unit tests for the ExplainerAgent."""
 
-import jsonLFfrom pathlib import PathLFfrom typing import Any, AsyncIterator, Dict, Iterator, List, OptionalLFfrom unittest.mock import Mock, patchLFLFimport pytestLFfrom langchain.chains import LLMChainLFfrom langchain.schema import Generation, LLMResultLFfrom langchain.schema.runnable import RunnableLFLFfrom alfred.alerts.explainer.agent import ExplainerAgentLFLFLF@pytest.fixtureLFdef alert_payload():
+import json
+from pathlib import Path
+from typing import Any, AsyncIterator, Dict, Iterator, List, Optional
+from unittest.mock import Mock, patch
+
+import pytest
+from langchain.chains import LLMChain
+from langchain.schema import Generation, LLMResult
+from langchain.schema.runnable import Runnable
+
+from alfred.alerts.explainer.agent import ExplainerAgent
+
+@pytest.fixture
+def alert_payload():
     """Load the alert fixture."""
     # test file is at tests/unit/alfred/alerts/explainer/test_agent.py
     # fixture is at tests/fixtures/alerts/alert_critical.json
@@ -12,12 +25,10 @@ import jsonLFfrom pathlib import PathLFfrom typing import Any, AsyncIterator, Di
         data["alert_name"] = data.get("alertname", "test_alert")
         return data
 
-
 @pytest.fixture
 def stub_agent():
     """Create a stub ExplainerAgent."""
     return ExplainerAgent()  # No LLM, uses stub mode
-
 
 @pytest.fixture
 def mock_llm():
@@ -66,13 +77,11 @@ def mock_llm():
 
     return MockLLM()
 
-
 def test_explainer_agent_initialization():
     """Test agent initialization."""
     agent = ExplainerAgent()
     assert agent.llm is None
     assert agent._chain is None
-
 
 def test_explainer_agent_with_llm():
     """Test agent initialization with LLM."""
@@ -98,7 +107,6 @@ def test_explainer_agent_with_llm():
         assert kwargs["llm"] == mock_llm
         assert "prompt" in kwargs
 
-
 async def test_explain_alert_stub_mode(stub_agent, alert_payload):
     """Test alert explanation in stub mode."""
     result = await stub_agent.explain_alert(alert_payload)
@@ -109,7 +117,6 @@ async def test_explain_alert_stub_mode(stub_agent, alert_payload):
     assert "This alert" in result["explanation"]
     assert "Priority:" in result["explanation"]
 
-
 async def test_explain_alert_missing_fields(stub_agent):
     """Test explanation with missing alert fields."""
     minimal_alert = {"alert_name": "TestAlert"}
@@ -119,7 +126,6 @@ async def test_explain_alert_missing_fields(stub_agent):
     assert result["alert_name"] == "TestAlert"
     assert isinstance(result["explanation"], str)
     assert len(result["explanation"]) > 0
-
 
 @patch.object(LLMChain, "arun")
 async def test_explain_alert_with_llm_success(mock_arun, mock_llm, alert_payload):
@@ -145,7 +151,6 @@ Runbook: https://runbooks.alfred.ai/service-down"""
         alert_details=alert_payload["description"],
         metric_value=alert_payload["value"],
     )
-
 
 @patch.object(LLMChain, "arun")
 async def test_explain_alert_with_llm_failure(mock_arun, mock_llm, alert_payload):

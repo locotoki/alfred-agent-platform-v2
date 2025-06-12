@@ -6,8 +6,11 @@ Scans for scripts that are not referenced anywhere in the repository
 using git grep and marks them as potential orphans.
 """
 
-import csvLFimport pathlibLFimport subprocessLFLFEXT = {".sh", ".py", ".ps1"}LF
+import csv
+import pathlib
+import subprocess
 
+EXT = {".sh", ".py", ".ps1"}
 def main():
     """Find and list orphan script candidates."""
     # Find all script files
@@ -36,7 +39,6 @@ def main():
     for r in rows:
         if r["status"] == "UNKNOWN" and r["path"] not in used:
             print(r["path"])
-
 
 if __name__ == "__main__":
     main()

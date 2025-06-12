@@ -41,7 +41,21 @@ Examples:
 
 """
 
-import argparseLFimport loggingLFimport osLFimport reLFimport shutilLFimport sysLFfrom collections import defaultdictLFfrom dataclasses import dataclassLFfrom datetime import datetimeLFfrom pathlib import PathLFfrom typing import Any, Dict, List, Optional, TupleLFLF# Configure loggingLFlogging.basicConfig(LF    level=logging.INFO,
+import argparse
+import logging
+import os
+import re
+import shutil
+import sys
+from collections import defaultdict
+from dataclasses import dataclass
+from datetime import datetime
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Tuple
+
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
     format="%(asctime)s - %(levelname)s - %(message)s",
     datefmt="%Y-%m-%d %H:%M:%S",
 )
@@ -56,7 +70,6 @@ INTERNAL_LINK_PATTERN = re.compile(r"\[([^\]]+)\]\(([^)]+)\)")
 METADATA_PATTERN = re.compile(r"\*\*([^:]+):\*\*\s*(.*?)(?:\s{2,}|\n)", re.MULTILINE)
 TITLE_PATTERN = re.compile(r"^#\s+(.+)$", re.MULTILINE)
 
-
 @dataclass
 class ValidationIssue:
     """Represents a validation issue found in a document."""
@@ -68,7 +81,6 @@ class ValidationIssue:
     suggestion: Optional[str] = None
     severity: str = "warning"  # "error", "warning", or "info"
 
-
 @dataclass
 class ValidationResult:
     """Collects validation results for a document."""
@@ -78,7 +90,6 @@ class ValidationResult:
     is_valid: bool
     metadata: Dict[str, str]
     statistics: Dict[str, Any]
-
 
 class DocumentValidator:
     """Validates Markdown documentation files against the Alfred Agent Platform
@@ -581,7 +592,6 @@ class DocumentValidator:
 
         return report_path
 
-
 def main():
     parser = argparse.ArgumentParser(
         description="Validate documentation against Alfred Agent Platform standards",
@@ -657,7 +667,6 @@ def main():
         # Return error code if any errors found
         if any(not result.is_valid for result in validator.results):
             sys.exit(1)
-
 
 class MetadataFixer:
     """A class to automatically add or fix metadata in Markdown documentation
@@ -1016,7 +1025,6 @@ class MetadataFixer:
 
         for file_path in self.fixed_files:
             logger.info(f"  - {file_path}")
-
 
 if __name__ == "__main__":
     main()

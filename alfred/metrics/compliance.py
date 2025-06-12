@@ -1,6 +1,10 @@
 """Compliance metrics for Alfred platform."""
 
-from prometheus_client import CounterLFLF# Licence compliance metricsLFlicence_violations_total = Counter(LF    "alfred_licence_disallowed_total",
+from prometheus_client import Counter
+
+# Licence compliance metrics
+licence_violations_total = Counter(
+    "alfred_licence_disallowed_total",
     "Total count of disallowed licence violations",
     ["package", "licence"],
 )

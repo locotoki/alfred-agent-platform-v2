@@ -3,22 +3,23 @@
 Runs the Flask server only for testing health endpoints.
 """
 
-from dotenv import load_dotenvLFfrom flask import Flask, jsonifyLFLF# Load environment variablesLFload_dotenv()LF
+from dotenv import load_dotenv
+from flask import Flask, jsonify
+
+# Load environment variables
+load_dotenv()
 # Create a Flask app for health checks
 app = Flask(__name__)
-
 
 @app.route("/healthz")
 def health():
     """Health check endpoint"""
     return jsonify({"status": "ok", "service": "slack-app"})
 
-
 @app.route("/readyz")
 def ready():
     """Readiness check endpoint"""
     return jsonify({"status": "ready", "service": "slack-app"})
-
 
 @app.route("/")
 def home():
@@ -36,7 +37,6 @@ def home():
             ],
         }
     )
-
 
 @app.route("/mock/health")
 def mock_health_command():
@@ -57,7 +57,6 @@ def mock_health_command():
         )
     }
     return jsonify(health_response)
-
 
 if __name__ == "__main__":
     port = 8502  # Use a much higher port to avoid conflicts

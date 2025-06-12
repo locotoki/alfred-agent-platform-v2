@@ -1,6 +1,17 @@
 """Main entry point for diagnostics bot"""
 
-import asyncioLFimport osLFfrom typing import AnyLFLFimport structlogLFfrom slack_bolt.adapter.socket_mode.async_handler import AsyncSocketModeHandlerLFfrom slack_bolt.app.async_app import AsyncAppLFLFfrom alfred.slack.diagnostics.bot import DiagnosticsBotLFLFlogger = structlog.get_logger()LF
+import asyncio
+import os
+from typing import Any
+
+import structlog
+from slack_bolt.adapter.socket_mode.async_handler import AsyncSocketModeHandler
+from slack_bolt.app.async_app import AsyncApp
+
+from alfred.slack.diagnostics.bot import DiagnosticsBot
+
+logger = structlog.get_logger()
+
 
 async def main() -> None:
     """Run the diagnostics bot"""

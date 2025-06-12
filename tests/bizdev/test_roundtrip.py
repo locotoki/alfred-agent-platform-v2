@@ -1,11 +1,17 @@
-import osLFimport timeLFLFimport pytestLFimport requestsLFLFCOMPOSE_FILE = os.getenv("COMPOSE_FILE", "docker-compose.yml")LFBASE_TIMEOUT = int(os.getenv("HARNESS_TIMEOUT", 30))
+import os
+import time
 
+import pytest
+import requests
+
+COMPOSE_FILE = os.getenv("COMPOSE_FILE", "docker-compose.yml")
+BASE_TIMEOUT = int(os.getenv("HARNESS_TIMEOUT", 30))
 
 @pytest.fixture(scope="session", autouse=True)
 def _stack_up():
     """Spin up the BizDev stack for the duration of the session."""
-    import atexitLFimport subprocessLF
-
+    import atexit
+import subprocess
     proc = subprocess.Popen(
         ["docker", "compose", "-f", COMPOSE_FILE, "up", "-d"],
         stdout=subprocess.PIPE,
@@ -17,7 +23,6 @@ def _stack_up():
     )
     time.sleep(10)  # allow services to warm
     yield
-
 
 def test_ping_chain():
     ci = requests.get("http://localhost:8080/ping", timeout=BASE_TIMEOUT).json()

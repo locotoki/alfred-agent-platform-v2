@@ -1,4 +1,16 @@
-from http import HTTPStatusLFfrom typing import Any, Optional, UnionLFLFimport httpxLFLFfrom ... import errorsLFfrom ...client import AuthenticatedClient, ClientLFfrom ...models.contact import ContactLFfrom ...types import ResponseLFLFLFdef _get_kwargs(LF    *,
+from http import HTTPStatus
+from typing import Any, Optional, Union
+
+import httpx
+
+from ... import errors
+from ...client import AuthenticatedClient, Client
+from ...models.contact import Contact
+from ...types import Response
+
+
+def _get_kwargs(
+    *,
     body: Contact,
 ) -> dict[str, Any]:
     headers: dict[str, Any] = {}

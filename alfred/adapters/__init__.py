@@ -1,3 +1,5 @@
 """Alfred platform adapters package"""
 
-from typing import ListLFLF__all__: List[str] = []LF
+from typing import List
+
+__all__: List[str] = []

@@ -1,4 +1,11 @@
-import base64LFimport jsonLFimport sysLFLFimport rsaLFLFkey = rsa.generate_private_key(public_exponent=65537, key_size=2048)LFpub = key.public_key().public_numbers()
+import base64
+import json
+import sys
+
+import rsa
+
+key = rsa.generate_private_key(public_exponent=65537, key_size=2048)
+pub = key.public_key().public_numbers()
 b64 = (
     lambda n: base64.urlsafe_b64encode(n.to_bytes((n.bit_length() + 7) // 8, "big"))
     .rstrip(b"=")

@@ -3,7 +3,21 @@
 Provides temporary alert suppression with automatic expiry.
 """
 
-import jsonLFimport uuidLFfrom dataclasses import dataclassLFfrom datetime import datetime, timedeltaLFfrom typing import Any, Dict, List, Optional, UnionLFLFimport redisLFLFfrom alfred.alerts.models import AlertSnoozeLFfrom alfred.alerts.protocols import SnoozeServiceLFfrom alfred.core.protocols import AlertProtocolLFfrom alfred.metrics.protocols import MetricsClientLFLFLF@dataclassLFclass SnoozeConfig:
+import json
+import uuid
+from dataclasses import dataclass
+from datetime import datetime, timedelta
+from typing import Any, Dict, List, Optional, Union
+
+import redis
+
+from alfred.alerts.models import AlertSnooze
+from alfred.alerts.protocols import SnoozeService
+from alfred.core.protocols import AlertProtocol
+from alfred.metrics.protocols import MetricsClient
+
+@dataclass
+class SnoozeConfig:
     """Configuration for snooze behavior"""
 
     min_duration: int = 300  # 5 minutes
@@ -11,7 +25,6 @@ import jsonLFimport uuidLFfrom dataclasses import dataclassLFfrom datetime impor
     default_duration: int = 3600  # 1 hour
     auto_unsnooze_on_change: bool = True
     audit_retention_days: int = 30
-
 
 class AlertSnoozeService(SnoozeService):
     """Service for managing alert snoozes with Redis TTL"""
@@ -325,8 +338,7 @@ class AlertSnoozeService(SnoozeService):
             "labels": sorted(alert.labels.items()),
         }
 
-        import hashlibLF
-
+        import hashlib
         hash_str = json.dumps(hash_data, sort_keys=True)
         return hashlib.sha256(hash_str.encode()).hexdigest()
 

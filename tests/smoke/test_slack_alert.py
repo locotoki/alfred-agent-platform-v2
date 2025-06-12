@@ -1,6 +1,15 @@
 """Smoke tests for Slack CVE alert system - DA-008."""
 
-import csvLFimport osLFimport subprocessLFfrom pathlib import PathLFfrom tempfile import NamedTemporaryFileLFLFimport pytestLFLFLF@pytest.mark.parametrize(LF    "file_path,description",
+import csv
+import os
+import subprocess
+from pathlib import Path
+from tempfile import NamedTemporaryFile
+
+import pytest
+
+@pytest.mark.parametrize(
+    "file_path,description",
     [
         ("scripts/slack_cve_alert.py", "Slack CVE alert script"),
         (".github/workflows/cve-alert-weekly.yml", "CVE alert weekly workflow"),
@@ -10,7 +19,6 @@ def test_required_files_exist(file_path, description):
     """Test that required files exist."""
     repo_root = Path(__file__).parent.parent.parent
     assert (repo_root / file_path).exists(), f"{description} should exist"
-
 
 def test_slack_alert_can_import():
     """Test that the Slack alert script can be imported without errors."""
@@ -24,7 +32,6 @@ def test_slack_alert_can_import():
     )
 
     assert result.returncode == 0, f"Import failed: {result.stderr}"
-
 
 def test_slack_alert_no_webhook_graceful_failure():
     """Test that Slack alert fails gracefully when no webhook URL is provided."""
@@ -66,7 +73,6 @@ def test_slack_alert_no_webhook_graceful_failure():
         if backup_exists:
             original_report.write_text(backup_content)
         Path(temp_report).unlink(missing_ok=True)
-
 
 def test_slack_alert_filters_low_medium_vulnerabilities():
     """Test that Slack alert only processes HIGH/CRITICAL vulnerabilities."""
@@ -112,7 +118,6 @@ def test_slack_alert_filters_low_medium_vulnerabilities():
             original_report.write_text(backup_content)
         Path(temp_report).unlink(missing_ok=True)
 
-
 @pytest.mark.parametrize(
     "expected_content",
     [
@@ -134,7 +139,6 @@ def test_slack_alert_workflow_content(expected_content):
         content = f.read()
 
     assert expected_content in content
-
 
 def test_makefile_cve_alert_target():
     """Test that Makefile has cve-alert target."""

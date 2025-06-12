@@ -1,6 +1,15 @@
 #!/usr/bin/env python3
 
-import osLFimport socketLFimport timeLFimport tracebackLFLFimport requestsLFfrom flask import Flask, Response, jsonifyLFfrom prometheus_client import REGISTRY, Counter, Gauge, generate_latestLFLFapp = Flask(__name__)LF
+import os
+import socket
+import time
+import traceback
+
+import requests
+from flask import Flask, Response, jsonify
+from prometheus_client import REGISTRY, Counter, Gauge, generate_latest
+
+app = Flask(__name__)
 # Create metrics
 service_availability = Gauge("service_availability", "Availability of the service", ["service"])
 service_requests_total = Counter(
@@ -19,7 +28,6 @@ DB_POSTGRES_URL = os.getenv("DB_POSTGRES_URL", "")
 COLLECTION_INTERVAL = int(os.getenv("COLLECTION_INTERVAL", "15"))
 PORT = int(os.getenv("PORT", "9091"))
 DEBUG_MODE = os.getenv("DEBUG_MODE", "false").lower() == "true"
-
 
 def check_service_http():
     """Check HTTP service availability."""
@@ -77,7 +85,6 @@ def check_service_http():
         service_availability.labels(service=SERVICE_NAME).set(0)
         return False
 
-
 def check_service_tcp():
     """Check TCP service availability."""
     try:
@@ -109,7 +116,6 @@ def check_service_tcp():
         service_availability.labels(service=SERVICE_NAME).set(0)
         return False
 
-
 def check_db_connections():
     """Check PostgreSQL connections if URL is provided."""
     if not DB_POSTGRES_URL:
@@ -125,7 +131,6 @@ def check_db_connections():
             print(traceback.format_exc())
         db_postgres_connections.set(0)
 
-
 def collect_metrics():
     """Collect all metrics."""
     if CHECK_TYPE.lower() == "http":
@@ -135,14 +140,12 @@ def collect_metrics():
 
     check_db_connections()
 
-
 @app.route("/metrics")
 def metrics():
     """Prometheus metrics endpoint."""
     service_requests_total.labels(service=SERVICE_NAME).inc()
     collect_metrics()
     return Response(generate_latest(REGISTRY), mimetype="text/plain")
-
 
 @app.route("/health")
 def health():
@@ -163,12 +166,10 @@ def health():
             500,
         )
 
-
 @app.route("/healthz")
 def healthz():
     """Simple health probe endpoint that always returns healthy."""
     return jsonify({"status": "ok"})
-
 
 # Start background metrics collection
 def background_collector():
@@ -184,15 +185,13 @@ def background_collector():
                 print(traceback.format_exc())
         time.sleep(COLLECTION_INTERVAL)
 
-
 if __name__ == "__main__":
     # Initialize metrics
     service_availability.labels(service=SERVICE_NAME).set(0)
 
     # Start metrics collection in the background
 
-    import threadingLF
-
+    import threading
     collector_thread = threading.Thread(target=background_collector, daemon=True)
     collector_thread.start()
 

@@ -4,7 +4,12 @@ This module defines the abstract interfaces used throughout the alfred.ui subsys
 user interface components and interactions.
 """
 
-from abc import abstractmethodLFfrom typing import Any, Dict, List, Optional, ProtocolLFLFLFclass ChatInterface(Protocol):LF    """Protocol for chat interface implementations."""
+from abc import abstractmethod
+from typing import Any, Dict, List, Optional, Protocol
+
+
+class ChatInterface(Protocol):
+    """Protocol for chat interface implementations."""
 
     @abstractmethod
     async def send_message(self, message: str, user_id: str) -> Dict[str, Any]:

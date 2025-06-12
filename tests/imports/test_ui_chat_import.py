@@ -1,7 +1,13 @@
 """Import guard test for ui-chat streamlit module."""
 
-import osLFimport sysLFLFimport pytestLFLF# Skip if running in CI without streamlit installedLFif os.getenv("CI"):LF    pytest.skip("Streamlit not available in CI", allow_module_level=True)
+import os
+import sys
 
+import pytest
+
+# Skip if running in CI without streamlit installed
+if os.getenv("CI"):
+    pytest.skip("Streamlit not available in CI", allow_module_level=True)
 
 def test_streamlit_chat_imports():
     """Test that streamlit_chat module can be imported."""
@@ -10,6 +16,7 @@ def test_streamlit_chat_imports():
 
     # This should not raise ImportError
 
-    import streamlit_chatLFLF# Basic validationLF
+    import streamlit_chat
 
+# Basic validation
     assert streamlit_chat is not None

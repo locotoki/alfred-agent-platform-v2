@@ -1,4 +1,7 @@
-import streamlit as stLFLFst.title("Alfred Chat UI")LFst.header("Welcome to Alfred Chat")
+import streamlit as st
+
+st.title("Alfred Chat UI")
+st.header("Welcome to Alfred Chat")
 st.write("Status: Connected")
 
 with st.sidebar:

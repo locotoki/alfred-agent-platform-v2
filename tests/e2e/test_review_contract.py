@@ -1,6 +1,10 @@
 """End-to-end test for contract review functionality in agent-bizops"""
 
-import pytestLFfrom playwright.sync_api import Page, expectLFLFLF@pytest.mark.e2eLFdef test_contract_review_workflow(page: Page):
+import pytest
+from playwright.sync_api import Page, expect
+
+@pytest.mark.e2e
+def test_contract_review_workflow(page: Page):
     """Test the contract review workflow in agent-bizops"""
     # Navigate to agent-bizops service
     page.goto("http://localhost:8080")
@@ -13,7 +17,6 @@ import pytestLFfrom playwright.sync_api import Page, expectLFLFLF@pytest.mark.e2
     response_text = page.locator("body").text_content()
     assert "healthy" in response_text
     assert "legal" in response_text
-
 
 @pytest.mark.e2e
 def test_finance_workflow_available(page: Page):

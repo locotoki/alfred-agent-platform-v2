@@ -1,6 +1,12 @@
 """E2E smoke tests for core services."""
 
-import pytestLFLF# Temporarily removed skip marker to debug flaky testsLF# pytestmark = pytest.mark.skip(reason="flaky after 13-svc refactor – see #642")LFLFLFclass TestCoreServices:LF    """Test core service health endpoints."""
+import pytest
+
+# Temporarily removed skip marker to debug flaky tests
+# pytestmark = pytest.mark.skip(reason="flaky after 13-svc refactor – see #642")
+
+class TestCoreServices:
+    """Test core service health endpoints."""
 
     @pytest.mark.e2e
     def test_agent_core_health(self, http_client, wait_for_services):
@@ -46,7 +52,6 @@ import pytestLFLF# Temporarily removed skip marker to debug flaky testsLF# pytes
         assert data["postgres"]["status"] == "connected"
         assert data["redis"]["status"] == "connected"
 
-
 class TestMetricsEndpoints:
     """Test metrics endpoints."""
 
@@ -68,7 +73,6 @@ class TestMetricsEndpoints:
                 assert "redis_" in response.text
             else:
                 assert "# HELP" in response.text  # Standard prometheus format
-
 
 class TestSlackIntegration:
     """Test Slack integration."""

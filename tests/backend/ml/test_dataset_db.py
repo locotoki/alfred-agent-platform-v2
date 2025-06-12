@@ -1,6 +1,22 @@
 """Tests for database-backed alert dataset loader."""
 
-import tempfileLFfrom datetime import datetime, timedeltaLFLFimport pytestLFfrom sqlalchemy import create_engine, textLFLFfrom backend.alfred.config.settings import settingsLFfrom backend.alfred.ml.alert_dataset import (LF    LF,LF    _severity_to_label,LF    _strip_pii,LF    load_alert_dataset,LF)LFLFLF@pytest.fixtureLFdef test_db():
+import tempfile
+from datetime import datetime, timedelta
+
+import pytest
+from sqlalchemy import create_engine, text
+
+from backend.alfred.config.settings import settings
+from backend.alfred.ml.alert_dataset import (
+    
+,
+    _severity_to_label,
+    _strip_pii,
+    load_alert_dataset,
+)
+
+@pytest.fixture
+def test_db():
     """Create a temporary SQLite database for testing."""
     with tempfile.NamedTemporaryFile(suffix=".db") as tmp:
         engine = create_engine(f"sqlite:///{tmp.name}")
@@ -63,7 +79,6 @@ import tempfileLFfrom datetime import datetime, timedeltaLFLFimport pytestLFfrom
 
         yield f"sqlite:///{tmp.name}"
 
-
 def test_load_alert_dataset(test_db, monkeypatch):
     """Test loading alerts from database."""
     # Patch the settings to use test database
@@ -87,7 +102,6 @@ def test_load_alert_dataset(test_db, monkeypatch):
     assert not any("192.168.1.1" in msg for msg in messages)
     assert not any("555-123-4567" in msg for msg in messages)
 
-
 def test_load_alert_dataset_custom_days(test_db, monkeypatch):
     """Test loading alerts with custom day range."""
     monkeypatch.setattr(settings, "ALERT_DB_URI", test_db)
@@ -97,7 +111,6 @@ def test_load_alert_dataset_custom_days(test_db, monkeypatch):
 
     # Should get 3 alerts
     assert len(dataset) == 3
-
 
 def test_strip_pii():
     """Test PII stripping function."""
@@ -111,7 +124,6 @@ def test_strip_pii():
 
     for input_msg, expected in test_cases:
         assert _strip_pii(input_msg) == expected
-
 
 def test_severity_to_label():
     """Test severity to label mapping."""

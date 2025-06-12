@@ -4,7 +4,19 @@ This module implements a FastAPI service that provides alert explanation
 functionality via a REST API interface.
 """
 
-import asyncioLFfrom contextlib import asynccontextmanagerLFfrom typing import Any, AsyncIterator, Dict, OptionalLFLFimport structlogLFfrom fastapi import FastAPI, HTTPException, RequestLFfrom fastapi.responses import JSONResponseLFfrom pydantic import BaseModel, FieldLFLFfrom .agent import ExplainerAgentLFLF# Configure loggingLFlogger = structlog.get_logger(__name__)LF
+import asyncio
+from contextlib import asynccontextmanager
+from typing import Any, AsyncIterator, Dict, Optional
+
+import structlog
+from fastapi import FastAPI, HTTPException, Request
+from fastapi.responses import JSONResponse
+from pydantic import BaseModel, Field
+
+from .agent import ExplainerAgent
+
+# Configure logging
+logger = structlog.get_logger(__name__)
 # Initialize the agent
 agent = ExplainerAgent()
 

@@ -1,6 +1,14 @@
 """Tests for Agent Orchestrator"""
 
-from unittest.mock import patchLFLFimport pytestLFLFfrom alfred.agents.orchestrator import AgentOrchestrator, route_totalLFLFLFclass TestAgentOrchestrator:LF    """Test the AgentOrchestrator class"""
+from unittest.mock import patch
+
+import pytest
+
+from alfred.agents.orchestrator import AgentOrchestrator, route_total
+
+
+class TestAgentOrchestrator:
+    """Test the AgentOrchestrator class"""
 
     def setup_method(self):
         """Set up test fixtures"""

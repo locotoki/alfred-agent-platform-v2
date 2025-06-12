@@ -4,7 +4,16 @@ This module implements the intent routing system that maps incoming messages to
 appropriate handlers based on intent classification.
 """
 
-import reLFfrom dataclasses import dataclassLFfrom typing import Any, Callable, Dict, OptionalLFLFimport structlogLFfrom prometheus_client import CounterLFLF# Prometheus metricsLFintents_total = Counter(LF    "alfred_intents_total", "Total intents processed", ["intent_type", "status"]
+import re
+from dataclasses import dataclass
+from typing import Any, Callable, Dict, Optional
+
+import structlog
+from prometheus_client import Counter
+
+# Prometheus metrics
+intents_total = Counter(
+    "alfred_intents_total", "Total intents processed", ["intent_type", "status"]
 )
 
 logger = structlog.get_logger(__name__)

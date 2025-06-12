@@ -1,4 +1,13 @@
-import jsonLFimport osLFimport pathlibLFimport subprocessLFimport timeLFLFimport requestsLFLFLFdef test_e2e():LF    # spin up services
+import json
+import os
+import pathlib
+import subprocess
+import time
+
+import requests
+
+def test_e2e():
+    # spin up services
     env = os.environ.copy()
     env["COMPOSE_PROFILES"] = "core:bizdev"
     proc = subprocess.Popen(["docker", "compose", "up", "-d"], env=env)

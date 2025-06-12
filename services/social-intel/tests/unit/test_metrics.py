@@ -1,6 +1,12 @@
 """Unit tests for the metrics module"""
 
-from prometheus_client import REGISTRYLFLFfrom app.metrics import SI_LATENCY_SECONDS, LatencyTimerLFLFLFdef test_si_latency_seconds_buckets():LF    """Test that SI_LATENCY_SECONDS has exactly 6 buckets with correct values"""
+from prometheus_client import REGISTRY
+
+from app.metrics import SI_LATENCY_SECONDS, LatencyTimer
+
+
+def test_si_latency_seconds_buckets():
+    """Test that SI_LATENCY_SECONDS has exactly 6 buckets with correct values"""
     # Get the buckets from the metric
     metric_name = SI_LATENCY_SECONDS._name
     buckets = sorted(

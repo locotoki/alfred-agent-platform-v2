@@ -5,8 +5,15 @@ This script queries GitHub API to count closed vs total issues with the label
 epic:SC-241 and updates status.json in the repo root with current progress.
 """
 
-import jsonLFimport subprocessLFimport sysLFfrom datetime import datetimeLFfrom pathlib import PathLFLF# Repository root is parent of scripts directoryLFREPO_ROOT = Path(__file__).parent.parentLFSTATUS_FILE = REPO_ROOT / "status.json"
+import json
+import subprocess
+import sys
+from datetime import datetime
+from pathlib import Path
 
+# Repository root is parent of scripts directory
+REPO_ROOT = Path(__file__).parent.parent
+STATUS_FILE = REPO_ROOT / "status.json"
 
 def run_gh_command(command):
     """Run a GitHub CLI command and return its JSON output."""
@@ -23,7 +30,6 @@ def run_gh_command(command):
         print(f"STDERR: {e.stderr}")
         sys.exit(1)
 
-
 def get_current_branch():
     """Get the current git branch name."""
     result = subprocess.run(
@@ -33,7 +39,6 @@ def get_current_branch():
         check=True,
     )
     return result.stdout.strip()
-
 
 def get_last_green_sha():
     """Get the last commit SHA that passed CI."""
@@ -64,7 +69,6 @@ def get_last_green_sha():
     )
     return result.stdout.strip()
 
-
 def get_issue_counts():
     """Get counts of closed and total issues with label epic:SC-241."""
     # Get all issues with the epic:SC-241 label
@@ -88,7 +92,6 @@ def get_issue_counts():
     closed = sum(1 for issue in issues if issue["state"] == "closed")
 
     return {"tasks_done": closed, "tasks_total": total}
-
 
 def update_status_file():
     """Update the status.json file with current progress."""
@@ -126,7 +129,6 @@ def update_status_file():
 
     print(f"Updated status.json: {status['tasks_done']}/{status['tasks_total']} tasks complete")
     return status
-
 
 if __name__ == "__main__":
     update_status_file()

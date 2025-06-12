@@ -1,5 +1,9 @@
-from unittest.mock import MagicMock, patchLFLFfrom backend.alfred.ml import retrain_pipelineLFLFLFdef test_schedule_stub():LF    assert callable(retrain_pipeline.schedule)
+from unittest.mock import MagicMock, patch
 
+from backend.alfred.ml import retrain_pipeline
+
+def test_schedule_stub():
+    assert callable(retrain_pipeline.schedule)
 
 @patch("backend.alfred.ml.retrain_pipeline.ray")
 @patch("backend.alfred.ml.retrain_pipeline.mlflow")

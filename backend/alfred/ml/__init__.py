@@ -1,6 +1,12 @@
 """Machine learning components for Alfred alert system"""
 
-from .alert_dataset import AlertDatasetLFfrom .faiss_index import AlertSearchEngine, FAISSIndexLFfrom .model_registry import ModelRegistryLFfrom .retrain_pipeline import RetrainPipelineLFLF__all__ = [LF    "AlertDataset",
+from .alert_dataset import AlertDataset
+from .faiss_index import AlertSearchEngine, FAISSIndex
+from .model_registry import ModelRegistry
+from .retrain_pipeline import RetrainPipeline
+
+__all__ = [
+    "AlertDataset",
     "ModelRegistry",
     "RetrainPipeline",
     "FAISSIndex",

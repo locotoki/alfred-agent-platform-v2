@@ -4,7 +4,14 @@ This module defines the abstract interfaces used throughout the alfred.metrics s
 for metrics collection, monitoring, and observability.
 """
 
-from abc import abstractmethodLFfrom typing import Any, Dict, List, Optional, ProtocolLFLFfrom prometheus_client import CollectorRegistryLFLFLFclass MetricsCollector(Protocol):LF    """Protocol for metrics collection"""
+from abc import abstractmethod
+from typing import Any, Dict, List, Optional, Protocol
+
+from prometheus_client import CollectorRegistry
+
+
+class MetricsCollector(Protocol):
+    """Protocol for metrics collection"""
 
     @abstractmethod
     def collect_metrics(self) -> Dict[str, float]:

@@ -5,7 +5,10 @@ This file exists to verify the benchmark test configuration works correctly.
 Benchmark tests are skipped by default and can be run explicitly with pytest --run-benchmark -m benchmark.
 """
 
-import pytestLFLFLF@pytest.mark.benchmarkLFdef test_benchmark_marker_exists():
+import pytest
+
+@pytest.mark.benchmark
+def test_benchmark_marker_exists():
     """Ensure benchmark test marker exists.
 
     This test can be used to verify the benchmark test configuration:

@@ -1,7 +1,18 @@
 """OpenTelemetry tracing provider for observability"""
 
-import osLFfrom functools import wrapsLFfrom typing import Any, Dict, OptionalLFLFimport structlogLFfrom opentelemetry import traceLFfrom opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExporterLFfrom opentelemetry.sdk.resources import SERVICE_NAME, SERVICE_VERSION, ResourceLFfrom opentelemetry.sdk.trace import TracerProviderLFfrom opentelemetry.sdk.trace.export import BatchSpanProcessorLFfrom opentelemetry.trace import Status, StatusCodeLFLFlogger = structlog.get_logger(__name__)LF
+import os
+from functools import wraps
+from typing import Any, Dict, Optional
 
+import structlog
+from opentelemetry import trace
+from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExporter
+from opentelemetry.sdk.resources import SERVICE_NAME, SERVICE_VERSION, Resource
+from opentelemetry.sdk.trace import TracerProvider
+from opentelemetry.sdk.trace.export import BatchSpanProcessor
+from opentelemetry.trace import Status, StatusCode
+
+logger = structlog.get_logger(__name__)
 class TracingProvider:
     """Provider for OpenTelemetry tracing functionality"""
 

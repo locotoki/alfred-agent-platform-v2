@@ -1,6 +1,10 @@
 """Global fixtures and configuration for integration tests."""
 
-import pytestLFLFLF# Mark failing tests as xfail with appropriate issue referencesLFdef pytest_configure(config):LF    """Configure pytest for integration tests."""
+import pytest
+
+# Mark failing tests as xfail with appropriate issue references
+def pytest_configure(config):
+    """Configure pytest for integration tests."""
     config.addinivalue_line(
         "markers",
         "xfail_known_issue(reason, issue): mark test as xfail due to a known issue",
@@ -10,7 +14,6 @@ import pytestLFLFLF# Mark failing tests as xfail with appropriate issue referenc
         "markers",
         "flaky(reruns=int): mark test as flaky and retry a given number of times",
     )
-
 
 # Handle flaky tests with reruns
 def pytest_collection_modifyitems(config, items):

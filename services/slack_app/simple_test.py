@@ -1,6 +1,11 @@
 """Simple test script that just prints some information"""
 
-import osLFLFfrom dotenv import load_dotenvLFLF# Load environment variablesLFload_dotenv()LF
+import os
+
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
 print("Alfred Slack App - Simple Test")
 print("==============================")
 

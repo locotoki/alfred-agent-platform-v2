@@ -6,7 +6,12 @@ This script adds additional xfail markers to tests that are still failing in CI
 despite previous fixes. These tests will be addressed in issue #220.
 """
 
-import osLFimport reLFfrom pathlib import PathLFLFLFdef add_xfail_to_test_file(file_path, reason):LF    """
+import os
+import re
+from pathlib import Path
+
+def add_xfail_to_test_file(file_path, reason):
+    """
     Add pytest.mark.xfail to the module level of a test file.
 
     Args:
@@ -40,7 +45,6 @@ import osLFimport reLFfrom pathlib import PathLFLFLFdef add_xfail_to_test_file(f
 
     print(f"Added module-level xfail marker to {file_path}")
     return True
-
 
 def add_test_file_skipping(file_path, reason):
     """
@@ -103,7 +107,6 @@ def pytest_collection_modifyitems(config, items):
             f.write(content)
         print(f"Updated conftest.py to skip tests in {directory}")
 
-
 def main():
     """Fix remaining failing CI jobs."""
     project_root = Path(__file__).parent.parent
@@ -157,7 +160,6 @@ def pytest_collection_modifyitems(config, items):
         )
 
     print("Added xfail markers to remaining problematic test files.")
-
 
 if __name__ == "__main__":
     main()

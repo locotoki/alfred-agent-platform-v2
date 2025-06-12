@@ -1,9 +1,40 @@
 """Tests for Financial Tax Agent chains."""
 
-from unittest.mock import patchLFLFimport pytestLFfrom langchain.chains import LLMChainLFLFfrom services.agent_bizops.workflows.finance.chains import (LF    LF,LF    ComplianceCheckChain,LF    FinancialAnalysisChain,LF    RateLookupChain,LF    TaxCalculationChain,LF)LFfrom services.agent_bizops.workflows.finance.models import (LF    LF,LF    ComplianceCheckRequest,LF    ComplianceCheckResponse,LF    EntityType,LF    FinancialAnalysisRequest,LF    FinancialAnalysisResponse,LF    TaxCalculationRequest,LF    TaxCalculationResponse,LF    TaxJurisdiction,LF    TaxRateRequest,LF    TaxRateResponse,LF)LFLFLF@pytest.fixtureLFdef mock_llm():
-    """Mock LLM for chain tests."""
-    from typing import Any, AsyncIterator, Iterator, List, OptionalLFLFfrom langchain.schema import Generation, LLMResultLFfrom langchain.schema.runnable import Runnable, RunnableConfigLF
+from unittest.mock import patch
 
+import pytest
+from langchain.chains import LLMChain
+
+from services.agent_bizops.workflows.finance.chains import (
+    
+,
+    ComplianceCheckChain,
+    FinancialAnalysisChain,
+    RateLookupChain,
+    TaxCalculationChain,
+)
+from services.agent_bizops.workflows.finance.models import (
+    
+,
+    ComplianceCheckRequest,
+    ComplianceCheckResponse,
+    EntityType,
+    FinancialAnalysisRequest,
+    FinancialAnalysisResponse,
+    TaxCalculationRequest,
+    TaxCalculationResponse,
+    TaxJurisdiction,
+    TaxRateRequest,
+    TaxRateResponse,
+)
+
+@pytest.fixture
+def mock_llm():
+    """Mock LLM for chain tests."""
+    from typing import Any, AsyncIterator, Iterator, List, Optional
+
+from langchain.schema import Generation, LLMResult
+from langchain.schema.runnable import Runnable, RunnableConfig
     class MockLLM(Runnable):
         def invoke(self, input: Any, config: Optional[RunnableConfig] = None, **kwargs: Any) -> Any:
             return "test response"
@@ -56,7 +87,6 @@ from unittest.mock import patchLFLFimport pytestLFfrom langchain.chains import L
             return "test response"
 
     return MockLLM()
-
 
 class TestTaxCalculationChain:
     """Test cases for TaxCalculationChain."""
@@ -146,7 +176,6 @@ class TestTaxCalculationChain:
         with pytest.raises(Exception):  # OutputParserException
             await chain.calculate(request)
 
-
 class TestFinancialAnalysisChain:
     """Test cases for FinancialAnalysisChain."""
 
@@ -188,7 +217,6 @@ class TestFinancialAnalysisChain:
         assert len(response.insights) == 1
         assert len(response.recommendations) == 1
 
-
 class TestComplianceCheckChain:
     """Test cases for ComplianceCheckChain."""
 
@@ -224,7 +252,6 @@ class TestComplianceCheckChain:
         assert response.compliance_status == "partially_compliant"
         assert len(response.issues_found) == 1
         assert response.risk_level == "medium"
-
 
 class TestRateLookupChain:
     """Test cases for RateLookupChain."""

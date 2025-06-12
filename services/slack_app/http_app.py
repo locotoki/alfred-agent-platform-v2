@@ -3,7 +3,18 @@
 This version is designed to run when we don't have a valid App Token for Socket Mode.
 """
 
-# type: ignoreLFimport loggingLFimport osLFimport socketLFLFfrom dotenv import load_dotenvLFfrom flask import Flask, jsonify, requestLFfrom slack_bolt import AppLFfrom slack_bolt.adapter.flask import SlackRequestHandlerLFLF# Load environment variablesLFload_dotenv()LF
+# type: ignore
+import logging
+import os
+import socket
+
+from dotenv import load_dotenv
+from flask import Flask, jsonify, request
+from slack_bolt import App
+from slack_bolt.adapter.flask import SlackRequestHandler
+
+# Load environment variables
+load_dotenv()
 # Configure logging
 logging.basicConfig(level=os.getenv("LOG_LEVEL", "INFO").upper())
 logger = logging.getLogger(__name__)
@@ -21,7 +32,6 @@ ALLOWED_COMMANDS = os.getenv("ALLOWED_COMMANDS", "help,status,search,ask,agents,
 
 # Define allowed commands as a set for faster lookups
 ALLOWED_COMMANDS_SET = set(ALLOWED_COMMANDS)
-
 
 # Command handler for /alfred
 @app.command(f"{COMMAND_PREFIX}")
@@ -57,7 +67,6 @@ def handle_alfred_command(ack, command, say):
         # Forward to appropriate handler based on subcommand
         say(f"Command `{subcommand}` recognized, but not yet implemented.")
 
-
 def handle_help_command(say):
     """Handle the help command"""
     help_text = (
@@ -71,7 +80,6 @@ def handle_help_command(say):
     )
     say(help_text)
 
-
 def handle_status_command(say):
     """Handle the status command"""
     status_text = (
@@ -82,7 +90,6 @@ def handle_status_command(say):
         "• Available Services: 12\n"
     )
     say(status_text)
-
 
 def handle_health_command(say):
     """Handle the health command"""
@@ -102,35 +109,29 @@ def handle_health_command(say):
     )
     say(health_text)
 
-
 # Create a Flask app for HTTP listener and health checks
 flask_app = Flask(__name__)
 handler = SlackRequestHandler(app)
-
 
 @flask_app.route("/slack/events", methods=["POST"])
 def slack_events():
     """Handle Slack events"""
     return handler.handle(request)
 
-
 @flask_app.route("/slack/commands", methods=["POST"])
 def slack_commands():
     """Handle Slack commands"""
     return handler.handle(request)
-
 
 @flask_app.route("/healthz")
 def health():
     """Health check endpoint"""
     return jsonify({"status": "ok", "service": "slack-app"})
 
-
 @flask_app.route("/readyz")
 def ready():
     """Readiness check endpoint"""
     return jsonify({"status": "ready", "service": "slack-app"})
-
 
 @flask_app.route("/")
 def home():
@@ -145,7 +146,6 @@ def home():
         }
     )
 
-
 def find_available_port(start_port, max_attempts=10):
     """Find an available port starting from start_port"""
     for port_offset in range(max_attempts):
@@ -158,7 +158,6 @@ def find_available_port(start_port, max_attempts=10):
         except OSError:
             continue
     return None
-
 
 if __name__ == "__main__":
     # Find an available port

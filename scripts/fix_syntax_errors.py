@@ -1,7 +1,12 @@
 #!/usr/bin/env python3
 """Script to fix common syntax errors in Python files"""
 
-import osLFimport reLFfrom pathlib import Path  # noqa: F401LFLFLFdef fix_syntax_errors(file_path):LF    """Fix various syntax errors in Python files"""
+import os
+import re
+from pathlib import Path  # noqa: F401
+
+def fix_syntax_errors(file_path):
+    """Fix various syntax errors in Python files"""
     try:
         with open(file_path, "r", encoding="utf-8", errors="ignore") as f:
             content = f.read()
@@ -45,7 +50,6 @@ import osLFimport reLFfrom pathlib import Path  # noqa: F401LFLFLFdef fix_syntax
         print(f"Error processing {file_path}: {e}")
         return False
 
-
 def main():
     """Scan the codebase and fix common syntax errors"""
     # Define a list of directories we want to process
@@ -77,7 +81,6 @@ def main():
 
     print(f"\nProcessed {total_files} Python files")
     print(f"Fixed syntax errors in {fixed_count} files")
-
 
 if __name__ == "__main__":
     main()

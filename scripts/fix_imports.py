@@ -2,7 +2,12 @@
 # mypy: ignore-errors
 """Script to create specific conftest.py files to fix importing problems."""
 
-# We need os.path for building file pathsLFimport osLFLF# Dictionary mapping directory paths to module specific conftest contentLFconftests = {LF    "tests/backend/ml/": """\"\"\"Configuration for ML tests.\"\"\"
+# We need os.path for building file paths
+import os
+
+# Dictionary mapping directory paths to module specific conftest content
+conftests = {
+    "tests/backend/ml/": """\"\"\"Configuration for ML tests.\"\"\"
 
 import sys
 from pathlib import Path
@@ -168,7 +173,6 @@ def pytest_collection_modifyitems(config, items):
 """,
 }
 
-
 def main() -> None:
     """Update all conftest files with import fixes."""
     for directory, content in conftests.items():
@@ -181,7 +185,6 @@ def main() -> None:
         with open(filename, "w") as f:
             f.write(content)
         print(f"Updated {filename}")
-
 
 if __name__ == "__main__":  # pragma: no cover
     main()

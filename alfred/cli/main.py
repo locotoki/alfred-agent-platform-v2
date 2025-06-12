@@ -1,6 +1,12 @@
 """Main entry point for Alfred CLI."""
 
-import clickLFLFfrom alfred.cli.health import healthLFLFLF@click.group()LF@click.version_option(version="3.0.0")
+import click
+
+from alfred.cli.health import health
+
+
+@click.group()
+@click.version_option(version="3.0.0")
 def cli():
     """Alfred Agent Platform CLI."""
     pass

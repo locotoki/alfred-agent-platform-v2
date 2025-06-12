@@ -1,5 +1,8 @@
-import osLFLFfrom fastapi import FastAPI, ResponseLFLFapp = FastAPI()LF
+import os
 
+from fastapi import FastAPI, Response
+
+app = FastAPI()
 @app.get("/health")
 async def health():
     return {
@@ -8,11 +11,9 @@ async def health():
         "services": {"database": "ok", "rag": "ok", "pubsub": "ok"},
     }
 
-
 @app.get("/healthz")
 async def healthz():
     return {"status": "ok"}
-
 
 @app.get("/metrics")
 async def metrics():
@@ -24,9 +25,7 @@ service_up 1
 service_requests_total 0"""
     return Response(content=metrics_text, media_type="text/plain")
 
-
 if __name__ == "__main__":
-    import uvicornLF
-
+    import uvicorn
     port = int(os.environ.get("PORT", 8000))
     uvicorn.run("atlas.main:app", host="0.0.0.0", port=port, reload=False)

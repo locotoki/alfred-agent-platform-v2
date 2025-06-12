@@ -1,4 +1,11 @@
-import loggingLFimport sysLFfrom typing import Any, DictLFLFimport structlogLFLFLFdef setup_logging(service_name: str, log_level: str = "INFO") -> None:LF    """Setup structured logging with structlog"""
+import logging
+import sys
+from typing import Any, Dict
+
+import structlog
+
+def setup_logging(service_name: str, log_level: str = "INFO") -> None:
+    """Setup structured logging with structlog"""
     logging.basicConfig(
         format="%(message).s",
         stream=sys.stdout,
@@ -22,7 +29,6 @@ import loggingLFimport sysLFfrom typing import Any, DictLFLFimport structlogLFLF
         wrapper_class=structlog.stdlib.BoundLogger,
         cache_logger_on_first_use=True,
     )
-
 
 def add_service_context(service_name: str):
     """Add service context to all log entries"""

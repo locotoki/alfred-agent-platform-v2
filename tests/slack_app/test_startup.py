@@ -3,7 +3,15 @@
 This is a basic smoke test to verify the application can initialize without errors.
 """
 
-import osLFimport sysLFfrom unittest.mock import MagicMock, patchLFLFimport pytestLFLFLF# Capture stdout for testingLF@pytest.fixtureLFdef capture_stdout(monkeypatch):
+import os
+import sys
+from unittest.mock import MagicMock, patch
+
+import pytest
+
+# Capture stdout for testing
+@pytest.fixture
+def capture_stdout(monkeypatch):
     """Capture stdout for testing."""
     buffer = {"stdout": "", "write_calls": 0}
 
@@ -15,7 +23,6 @@ import osLFimport sysLFfrom unittest.mock import MagicMock, patchLFLFimport pyte
 
     monkeypatch.setattr(sys.stdout, "write", mock_stdout_write)
     return buffer
-
 
 # Mock the Slack Bolt App to avoid actual API calls
 @pytest.fixture
@@ -31,15 +38,13 @@ def mock_bolt_app():
         # Return the mocked class and instance
         yield mock_app, app_instance
 
-
 # Import the application (or mock it if it doesn't exist yet)
 @pytest.fixture
 def slack_app_module():
     try:
         # Try to import the actual module
 
-        from services.slack_app import appLF
-
+        from services.slack_app import app
         return app
     except ImportError:
         # If the module doesn't exist yet, create a mock module
@@ -51,8 +56,7 @@ def slack_app_module():
 
         # Create a simple Flask wrapper around Bolt app
         def create_flask_app():
-            from flask import FlaskLF
-
+            from flask import Flask
             flask_app = Flask(__name__)
 
             @flask_app.route("/healthz")
@@ -66,7 +70,6 @@ def slack_app_module():
             return flask_app
 
         return MagicMock(create_app=create_app, create_flask_app=create_flask_app)
-
 
 @pytest.mark.xfail(
     reason="Slack authentication error in CI environment, see issue #220", strict=False
@@ -82,8 +85,7 @@ def test_app_starts_without_error(mock_bolt_app, capture_stdout):
 
     # Create a simple app for testing
 
-    from slack_bolt import AppLF
-
+    from slack_bolt import App
     app = App(
         token=os.environ.get("SLACK_BOT_TOKEN"),
         signing_secret=os.environ.get("SLACK_SIGNING_SECRET"),
@@ -94,8 +96,7 @@ def test_app_starts_without_error(mock_bolt_app, capture_stdout):
 
     # Create a flask app to check health endpoints
 
-    from flask import FlaskLF
-
+    from flask import Flask
     flask_app = Flask(__name__)
 
     @flask_app.route("/healthz")

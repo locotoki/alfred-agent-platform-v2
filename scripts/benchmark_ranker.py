@@ -7,13 +7,30 @@ Generates performance report with metrics on:
 - Processing latency
 - Memory usage.
 """
-# type: ignoreLFimport argparseLFimport jsonLFimport randomLFimport timeLFfrom datetime import datetimeLFfrom typing import Dict, List, TupleLFLFimport matplotlib.pyplot as pltLFimport numpy as npLFimport psutilLFfrom matplotlib.backends.backend_pdf import PdfPagesLFLFfrom alfred.core.protocols import AlertProtocolLFfrom alfred.ml.noise_ranker import NoiseRankingModel as LegacyRankerLFfrom backend.alfred.alerts.ranker import AlertNoiseRankerLFLFLFclass BenchmarkAlert(AlertProtocol):LF    """Mock alert for benchmarking"""
+# type: ignore
+import argparse
+import json
+import random
+import time
+from datetime import datetime
+from typing import Dict, List, Tuple
+
+import matplotlib.pyplot as plt
+import numpy as np
+import psutil
+from matplotlib.backends.backend_pdf import PdfPages
+
+from alfred.core.protocols import AlertProtocol
+from alfred.ml.noise_ranker import NoiseRankingModel as LegacyRanker
+from backend.alfred.alerts.ranker import AlertNoiseRanker
+
+class BenchmarkAlert(AlertProtocol):
+    """Mock alert for benchmarking"""
 
     def __init__(self, **kwargs):
         """Initialize the mock alert with arbitrary properties"""
         for k, v in kwargs.items():
             setattr(self, k, v)
-
 
 class RankerBenchmark:
     """Benchmark harness for noise rankers"""
@@ -438,7 +455,6 @@ Key Findings:
         print(f"Report generated: {output_path}")
         return output_path
 
-
 def main():
     """Run the benchmark tool as a command-line application"""
     parser = argparse.ArgumentParser(description="Benchmark noise ranker versions")
@@ -480,7 +496,6 @@ def main():
     print(f"- False negative rate: {results['new_ranker']['false_negative_rate']*100:.2f}%")
     print(f"- P95 latency: {results['new_ranker']['p95_latency_ms']:.1f}ms")
     print(f"- Overall improvement: {results['improvements']['volume_reduction_improvement']:.1f}%")
-
 
 if __name__ == "__main__":
     main()

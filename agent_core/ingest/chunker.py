@@ -8,20 +8,21 @@ chunks suitable for embedding.  Initial algorithm:
 * Uses tiktoken for GPT-4o token counting
 """
 
-from typing import ListLFLFtry:LF    import tiktokenLF
+from typing import List
+
+try:
+    import tiktoken
 except ImportError:  # soft-dep for local dev
     tiktoken = None  # type: ignore
 
 MAX_TOKENS = 1024
 OVERLAP = 128
 
-
 def _token_count(text: str) -> int:
     if not tiktoken:
         return len(text.split())  # fallback
     enc = tiktoken.encoding_for_model("gpt-4o")
     return len(enc.encode(text))
-
 
 def chunk(text: str) -> List[str]:
     """Return a list of overlapping chunks.

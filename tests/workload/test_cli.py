@@ -1,6 +1,14 @@
 """Unit tests for workload CLI functionality."""
 
-import subprocessLFimport timeLFfrom unittest.mock import MagicMock, patchLFLFimport pytestLFimport requestsLFLFLFclass TestWorkloadCLI:LF    """Test suite for synthetic workload CLI."""
+import subprocess
+import time
+from unittest.mock import MagicMock, patch
+
+import pytest
+import requests
+
+class TestWorkloadCLI:
+    """Test suite for synthetic workload CLI."""
 
     def test_workload_help(self):
         """Test that workload help displays correctly."""
@@ -95,7 +103,6 @@ import subprocessLFimport timeLFfrom unittest.mock import MagicMock, patchLFLFim
         assert "Success=" in result.stdout
         assert "Errors=" in result.stdout
         assert "Duration=" in result.stdout
-
 
 @pytest.mark.integration
 class TestWorkloadIntegration:

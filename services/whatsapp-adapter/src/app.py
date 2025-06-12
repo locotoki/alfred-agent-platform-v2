@@ -1,4 +1,16 @@
-import asyncioLFimport jsonLFimport loggingLFimport osLFimport sysLFfrom typing import Any, DictLFLFimport httpxLFfrom aiokafka import AIOKafkaConsumer, AIOKafkaProducerLFfrom fastapi import FastAPI, HTTPException, RequestLFLFlog = logging.getLogger("wa-adapter")LFlog.setLevel(logging.INFO)
+import asyncio
+import json
+import logging
+import os
+import sys
+from typing import Any, Dict
+
+import httpx
+from aiokafka import AIOKafkaConsumer, AIOKafkaProducer
+from fastapi import FastAPI, HTTPException, Request
+
+log = logging.getLogger("wa-adapter")
+log.setLevel(logging.INFO)
 
 ENABLED = os.getenv("WHATSAPP_ENABLED", "false").lower() == "true"
 KAFKA_BROKERS = os.getenv("KAFKA_BROKERS", "kafka:9092")
@@ -13,7 +25,6 @@ app = FastAPI(title="WhatsApp Adapter (Sandbox)")
 producer: AIOKafkaProducer  < /dev/null |  None = None
 consumer: AIOKafkaConsumer | None = None
 http: httpx.AsyncClient | None = None
-
 
 @app.on_event("startup")
 async def startup() -> None:
@@ -35,7 +46,6 @@ async def startup() -> None:
     asyncio.create_task(_drain_outbound())  # background loop
     log.info("Startup complete – Kafka bridge running")
 
-
 @app.on_event("shutdown")
 async def shutdown() -> None:
     if producer:
@@ -45,7 +55,6 @@ async def shutdown() -> None:
     if http:
         await http.aclose()
 
-
 @app.get("/health")
 async def health():
     return {
@@ -53,7 +62,6 @@ async def health():
         "enabled": ENABLED,
         "kafka": bool(producer) and bool(consumer),
     }
-
 
 @app.post("/webhook")
 async def webhook(req: Request):
@@ -66,7 +74,6 @@ async def webhook(req: Request):
     body: Dict[str, Any] = await req.json()
     await producer.send_and_wait(IN_TOPIC, json.dumps(body).encode())
     return {"received": True}
-
 
 async def _drain_outbound() -> None:
     """

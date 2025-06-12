@@ -1,7 +1,14 @@
 """Unit tests for the explain command handler."""
 
-from unittest.mock import AsyncMock, Mock, patchLFLFimport pytestLFLFpytestmark = pytest.mark.xfail(reason="SC-330 async bug", strict=False)LF
-from alfred.slack.diagnostics.explain_command import handle_explain_commandLFLFLFasync def test_handle_explain_command_success():LF    """Test successful explain command handling."""
+from unittest.mock import AsyncMock, Mock, patch
+
+import pytest
+
+pytestmark = pytest.mark.xfail(reason="SC-330 async bug", strict=False)
+from alfred.slack.diagnostics.explain_command import handle_explain_command
+
+async def test_handle_explain_command_success():
+    """Test successful explain command handling."""
     result = await handle_explain_command("explain", "ALERT-123")
 
     assert result["response_type"] == "in_channel"
@@ -9,7 +16,6 @@ from alfred.slack.diagnostics.explain_command import handle_explain_commandLFLFL
     assert len(result["attachments"]) == 1
     assert result["attachments"][0]["color"] == "good"
     assert "alert indicates" in result["attachments"][0]["text"].lower()
-
 
 @patch("alfred.slack.diagnostics.explain_command.ExplainerAgent")
 async def test_handle_explain_command_failure(mock_agent_cls):

@@ -1,6 +1,14 @@
 """Legal Compliance Agent Models"""
 
-from datetime import datetimeLFfrom enum import EnumLFfrom typing import Any, Dict, List, OptionalLFLF# Use LangChain's Pydantic v1 for compatibilityLFfrom langchain.pydantic_v1 import BaseModel, FieldLFLFLFclass ComplianceCategory(str, Enum):LF    GDPR = "gdpr"
+from datetime import datetime
+from enum import Enum
+from typing import Any, Dict, List, Optional
+
+# Use LangChain's Pydantic v1 for compatibility
+from langchain.pydantic_v1 import BaseModel, Field
+
+class ComplianceCategory(str, Enum):
+    GDPR = "gdpr"
     CCPA = "ccpa"
     HIPAA = "hipaa"
     SOX = "sox"
@@ -8,13 +16,11 @@ from datetime import datetimeLFfrom enum import EnumLFfrom typing import Any, Di
     ISO_27001 = "iso_27001"
     GENERAL = "general"
 
-
 class RiskLevel(str, Enum):
     LOW = "low"
     MEDIUM = "medium"
     HIGH = "high"
     CRITICAL = "critical"
-
 
 class DocumentType(str, Enum):
     CONTRACT = "contract"
@@ -23,7 +29,6 @@ class DocumentType(str, Enum):
     REGULATION = "regulation"
     REPORT = "report"
     OTHER = "other"
-
 
 # Request Models
 class ComplianceAuditRequest(BaseModel):
@@ -35,7 +40,6 @@ class ComplianceAuditRequest(BaseModel):
     documents: Optional[List[Dict[str, Any]]] = None
     include_recommendations: bool = True
 
-
 class DocumentAnalysisRequest(BaseModel):
     """Request model for document analysis"""
 
@@ -45,7 +49,6 @@ class DocumentAnalysisRequest(BaseModel):
     compliance_frameworks: List[ComplianceCategory]
     check_for_pii: bool = True
 
-
 class RegulationCheckRequest(BaseModel):
     """Request model for regulation checks"""
 
@@ -53,7 +56,6 @@ class RegulationCheckRequest(BaseModel):
     jurisdictions: List[str]
     industry_sector: str
     specific_regulations: Optional[List[str]] = None
-
 
 class ContractReviewRequest(BaseModel):
     """Request model for contract review"""
@@ -67,7 +69,6 @@ class ContractReviewRequest(BaseModel):
         description="Areas to focus on during review",
     )
 
-
 # Result Models
 class ComplianceIssue(BaseModel):
     """Compliance issue model"""
@@ -79,7 +80,6 @@ class ComplianceIssue(BaseModel):
     affected_sections: List[str]
     recommendations: List[str]
 
-
 class ComplianceAuditResult(BaseModel):
     """Result model for compliance audit"""
 
@@ -90,7 +90,6 @@ class ComplianceAuditResult(BaseModel):
     issues_found: List[ComplianceIssue]
     recommendations: List[str]
     executive_summary: str
-
 
 class DocumentAnalysisResult(BaseModel):
     """Result model for document analysis"""
@@ -104,7 +103,6 @@ class DocumentAnalysisResult(BaseModel):
     risk_assessment: Dict[str, Any]
     summary: str
 
-
 class RegulationCheckResult(BaseModel):
     """Result model for regulation checks"""
 
@@ -114,7 +112,6 @@ class RegulationCheckResult(BaseModel):
     compliance_requirements: List[Dict[str, Any]]
     risk_areas: List[Dict[str, Any]]
     recommendations: List[str]
-
 
 class ContractReviewResult(BaseModel):
     """Result model for contract review"""

@@ -1,6 +1,25 @@
 """Unit tests for Financial Tax Agent models."""
 
-import pytestLFfrom pydantic import ValidationErrorLFLFfrom agents.financial_tax.models import (LF    LF,LF    ComplianceCheckRequest,LF    ComplianceCheckResponse,LF    EntityType,LF    FinancialAnalysisRequest,LF    FinancialAnalysisResponse,LF    TaxCalculationRequest,LF    TaxCalculationResponse,LF    TaxJurisdiction,LF    TaxRateRequest,LF    TaxRateResponse,LF)LFLFLFclass TestModels:LF    """Test suite for Financial Tax Agent models."""
+import pytest
+from pydantic import ValidationError
+
+from agents.financial_tax.models import (
+    
+,
+    ComplianceCheckRequest,
+    ComplianceCheckResponse,
+    EntityType,
+    FinancialAnalysisRequest,
+    FinancialAnalysisResponse,
+    TaxCalculationRequest,
+    TaxCalculationResponse,
+    TaxJurisdiction,
+    TaxRateRequest,
+    TaxRateResponse,
+)
+
+class TestModels:
+    """Test suite for Financial Tax Agent models."""
 
     def test_tax_calculation_request_valid(self):
         """Test valid tax calculation request."""

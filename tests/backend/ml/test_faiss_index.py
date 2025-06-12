@@ -1,6 +1,16 @@
 """Tests for FAISS vector index."""
 
-import osLFimport tempfileLFfrom unittest.mock import MockLFLFimport numpy as npLFimport pytestLFLFfrom backend.alfred.ml.faiss_index import AlertSearchEngine, FAISSIndex, SearchResultLFLFLFclass TestFAISSIndex:LF    """Test FAISS index functionality."""
+import os
+import tempfile
+from unittest.mock import Mock
+
+import numpy as np
+import pytest
+
+from backend.alfred.ml.faiss_index import AlertSearchEngine, FAISSIndex, SearchResult
+
+class TestFAISSIndex:
+    """Test FAISS index functionality."""
 
     @pytest.fixture
     def index(self):
@@ -230,8 +240,7 @@ import osLFimport tempfileLFfrom unittest.mock import MockLFLFimport numpy as np
         query_times = []
 
         for _ in range(100):
-            import timeLF
-
+            import time
             start = time.time()
             index.search(query, k=10)
             query_time = (time.time() - start) * 1000  # ms
@@ -240,7 +249,6 @@ import osLFimport tempfileLFfrom unittest.mock import MockLFLFimport numpy as np
         # Check P99 latency
         p99_latency = np.percentile(query_times, 99)
         assert p99_latency < 15  # Must be under 15ms
-
 
 class TestAlertSearchEngine:
     """Test high-level search engine."""

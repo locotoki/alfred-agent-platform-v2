@@ -1,11 +1,19 @@
 #!/usr/bin/env python3
 """Standalone BizDev roundtrip test - runs without pytest to avoid conftest issues."""
 
-import atexitLFimport osLFimport subprocessLFimport sysLFimport timeLFLFimport requestsLFLFCOMPOSE_FILE = os.getenv("COMPOSE_FILE", "docker-compose.yml")LFBASE_TIMEOUT = int(os.getenv("HARNESS_TIMEOUT", 30))
+import atexit
+import os
+import subprocess
+import sys
+import time
+
+import requests
+
+COMPOSE_FILE = os.getenv("COMPOSE_FILE", "docker-compose.yml")
+BASE_TIMEOUT = int(os.getenv("HARNESS_TIMEOUT", 30))
 
 # Global process handle for cleanup
 compose_proc = None
-
 
 def cleanup():
     """Ensure docker compose is cleaned up."""
@@ -13,10 +21,8 @@ def cleanup():
     if compose_proc:
         subprocess.call(["docker", "compose", "-f", COMPOSE_FILE, "down", "-v"])
 
-
 # Register cleanup
 atexit.register(cleanup)
-
 
 def main():
     """Run the BizDev roundtrip test."""
@@ -60,7 +66,6 @@ def main():
         return 1
     finally:
         cleanup()
-
 
 if __name__ == "__main__":
     sys.exit(main())

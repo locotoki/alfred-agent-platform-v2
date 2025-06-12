@@ -2,11 +2,22 @@
 Slack bot implementation with Socket Mode and Redis integration
 """
 
-import asyncioLFimport loggingLFimport osLFfrom contextlib import asynccontextmanagerLFLFimport redis.asyncio as redisLFfrom fastapi import FastAPI, HTTPExceptionLFfrom slack_bolt.adapter.socket_mode.async_handler import AsyncSocketModeHandlerLFfrom slack_bolt.app.async_app import AsyncAppLFLF# Configure loggingLFlogging.basicConfig(level=logging.DEBUG)LFlogger = logging.getLogger("bot_socket_mode")
+import asyncio
+import logging
+import os
+from contextlib import asynccontextmanager
+
+import redis.asyncio as redis
+from fastapi import FastAPI, HTTPException
+from slack_bolt.adapter.socket_mode.async_handler import AsyncSocketModeHandler
+from slack_bolt.app.async_app import AsyncApp
+
+# Configure logging
+logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger("bot_socket_mode")
 
 # Redis client (embedded)
 redis_client = None
-
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -36,7 +47,6 @@ async def lifespan(app: FastAPI):
     if redis_client:
         await redis_client.close()
 
-
 # Initialize FastAPI with lifespan
 app = FastAPI(lifespan=lifespan)
 
@@ -48,7 +58,6 @@ slack_app = AsyncApp(
     # Set to DEBUG to see full payloads
     log_level="DEBUG",
 )
-
 
 @app.get("/health")
 async def health():
@@ -73,7 +82,6 @@ async def health():
         }
     except Exception as e:
         raise HTTPException(status_code=503, detail=str(e))
-
 
 # Slack command handler - register WITH slash prefix
 @slack_app.command("/alfred")
@@ -123,7 +131,6 @@ async def handle_alfred_command(ack, command, say):
         logger.error(f"Error processing command: {e}")
         await say(f"❌ Error: {str(e)}")
 
-
 # Slack /diag command handler - register WITH slash prefix
 @slack_app.command("/diag")
 async def handle_diag_command(ack, command, say):
@@ -150,13 +157,11 @@ async def handle_diag_command(ack, command, say):
 
     await say(response)
 
-
 # Slack app mention handler
 @slack_app.event("app_mention")
 async def handle_mention(event, say):
     """Handle @alfred mentions"""
     await say(f"Hello <@{event['user']}>! Use `/alfred help` to see available commands.")
-
 
 # Error handler
 @slack_app.error
@@ -164,7 +169,6 @@ async def custom_error_handler(error, body, logger):
     """Handle errors gracefully"""
     logger.error(f"Error: {error}")
     logger.error(f"Request body: {body}")
-
 
 async def start_socket_mode():
     """Start Socket Mode handler"""
@@ -180,10 +184,10 @@ async def start_socket_mode():
     logger.info("Starting Socket Mode handler...")
     await handler.start_async()
 
-
 if __name__ == "__main__":
-    import uvicornLFLF# Start Socket Mode handler in backgroundLF
+    import uvicorn
 
+# Start Socket Mode handler in background
     asyncio.create_task(start_socket_mode())
 
     # Start FastAPI for health checks

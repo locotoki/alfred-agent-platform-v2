@@ -4,17 +4,16 @@ This server simulates the complete functionality without requiring real Slack
 authentication.
 """
 
-from flask import Flask, Response, jsonify, requestLFLFapp = Flask(__name__)LF
+from flask import Flask, Response, jsonify, request
 
+app = Flask(__name__)
 # Store mock state
 class MockState:
     health_reports = []
     channels = ["general", "random", "dev"]
     commands_executed = []
 
-
 state = MockState()
-
 
 # Home page with basic info
 @app.route("/")
@@ -28,17 +27,14 @@ def home():
         }
     )
 
-
 # Health endpoints
 @app.route("/healthz")
 def health():
     return jsonify({"status": "ok", "service": "slack-app"})
 
-
 @app.route("/readyz")
 def ready():
     return jsonify({"status": "ready", "service": "slack-app"})
-
 
 # Mock Slack API endpoints
 @app.route("/api/auth.test", methods=["POST"])
@@ -53,7 +49,6 @@ def auth_test():
             "user_id": "U12345",
         }
     )
-
 
 @app.route("/api/chat.postMessage", methods=["POST"])
 def post_message():
@@ -78,7 +73,6 @@ def post_message():
             },
         }
     )
-
 
 # Command endpoint
 @app.route("/slack/commands", methods=["POST"])
@@ -158,7 +152,6 @@ def slack_commands():
 
     return jsonify(response)
 
-
 # Mock events endpoint
 @app.route("/slack/events", methods=["POST"])
 def slack_events():
@@ -170,7 +163,6 @@ def slack_events():
         return jsonify({"ok": True})
 
     return jsonify({"ok": True})
-
 
 # Status page with app information
 @app.route("/status")
@@ -184,7 +176,6 @@ def status():
             "channels": state,
         }
     )
-
 
 # Frontend UI for testing
 @app.route("/ui")
@@ -255,7 +246,6 @@ def ui():
     </html>
     """
     return Response(html, content_type="text/html")
-
 
 if __name__ == "__main__":
     port = 5000

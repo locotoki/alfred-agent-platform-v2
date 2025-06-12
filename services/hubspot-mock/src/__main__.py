@@ -1,3 +1,8 @@
 """HubSpot Mock Service entry point."""
 
-import uvicornLFLFfrom .hubspot_mock import appLFLFif __name__ == "__main__":LF    uvicorn.run(app, host="0.0.0.0", port=8095)
+import uvicorn
+
+from .hubspot_mock import app
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=8095)

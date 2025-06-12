@@ -1,6 +1,10 @@
 """Health server for ui-chat service."""
 
-import uvicornLFfrom fastapi import FastAPILFLFapp = FastAPI()LF
+import uvicorn
+from fastapi import FastAPI
+
+app = FastAPI()
+
 
 @app.get("/health")
 def health():

@@ -9,12 +9,27 @@ This script helps with the documentation migration process by:
 5. Creating a CSV or JSON report with migration recommendations.
 """
 
-import argparseLFimport csvLFimport hashlibLFimport jsonLFimport loggingLFimport osLFimport reLFimport sysLFimport timeLFfrom collections import defaultdictLFfrom datetime import datetimeLFfrom difflib import SequenceMatcherLFfrom pathlib import PathLFLF# Set up loggingLFlogging.basicConfig(LF    level=logging.INFO,
+import argparse
+import csv
+import hashlib
+import json
+import logging
+import os
+import re
+import sys
+import time
+from collections import defaultdict
+from datetime import datetime
+from difflib import SequenceMatcher
+from pathlib import Path
+
+# Set up logging
+logging.basicConfig(
+    level=logging.INFO,
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
     handlers=[logging.StreamHandler(sys.stdout)],
 )
 logger = logging.getLogger("doc_migration")
-
 
 class DocMigrationInventory:
     """Class to handle document migration inventory process."""
@@ -384,7 +399,6 @@ class DocMigrationInventory:
         logger.info("Document migration inventory process completed")
         return report_file
 
-
 def main():
     """Main function to run the script."""
     parser = argparse.ArgumentParser(description="Document Migration Inventory Tool")
@@ -430,7 +444,6 @@ def main():
         print(f"Generated recommendations for {len(inventory.target_recommendations)} files")
     else:
         print("Failed to generate report. Check the logs for details.")
-
 
 if __name__ == "__main__":
     main()

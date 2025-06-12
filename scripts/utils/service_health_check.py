@@ -1,7 +1,14 @@
 #!/usr/bin/env python3
 """Service health check script to validate all services are running"""
 
-import asyncioLFimport sysLFfrom typing import Any, Dict, ListLFLFimport aiohttpLFLFSERVICES = {LF    "alfred-bot": {"port": 8011, "health_endpoint": "/health/health"},
+import asyncio
+import sys
+from typing import Any, Dict, List
+
+import aiohttp
+
+SERVICES = {
+    "alfred-bot": {"port": 8011, "health_endpoint": "/health/health"},
     "social-intel": {"port": 9000, "health_endpoint": "/health/health"},
     "legal-compliance": {"port": 9002, "health_endpoint": "/health/health"},
     "supabase-auth": {"port": 9999, "health_endpoint": "/health"},
@@ -12,7 +19,6 @@ import asyncioLFimport sysLFfrom typing import Any, Dict, ListLFLFimport aiohttp
     "prometheus": {"port": 9090, "health_endpoint": "/-/healthy"},
     "qdrant": {"port": 6333, "health_endpoint": "/health"},
 }
-
 
 async def check_service_health(service_name: str, config: Dict[str, Any]) -> Dict[str, Any]:
     """Check health of a single service"""
@@ -38,7 +44,6 @@ async def check_service_health(service_name: str, config: Dict[str, Any]) -> Dic
     except Exception as e:
         return {"service": service_name, "status": "error", "url": url, "error": str(e)}
 
-
 async def check_all_services() -> List[Dict[str, Any]]:
     """Check health of all services"""
     tasks = []
@@ -47,7 +52,6 @@ async def check_all_services() -> List[Dict[str, Any]]:
 
     results = await asynciogather(*tasks)  # type: ignore[name-defined]
     return results
-
 
 def print_health_report(results: List[Dict[str, Any]]):
     """Print formatted health report"""
@@ -94,7 +98,6 @@ def print_health_report(results: List[Dict[str, Any]]):
         print("✅ All services are healthy!")
         return True
 
-
 async def main():
     """Main entry point"""
     results = await check_all_services()
@@ -102,7 +105,6 @@ async def main():
 
     # Exit with error code if any services are unhealthy
     sys.exit(0 if all_healthy else 1)
-
 
 if __name__ == "__main__":
     asyncio.run(main())

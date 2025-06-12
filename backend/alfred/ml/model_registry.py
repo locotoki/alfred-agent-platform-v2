@@ -3,7 +3,17 @@
 Handles model versioning, promotion, and deployment.
 """
 
-import jsonLFfrom datetime import datetimeLFfrom typing import Dict, List, OptionalLFLFimport mlflowLFfrom mlflow.tracking import MlflowClientLFLFfrom alfred.core.protocols import ServiceLFLFLFclass ModelRegistry(Service):LF    """Manages ML model registry and lifecycle"""
+import json
+from datetime import datetime
+from typing import Dict, List, Optional
+
+import mlflow
+from mlflow.tracking import MlflowClient
+
+from alfred.core.protocols import Service
+
+class ModelRegistry(Service):
+    """Manages ML model registry and lifecycle"""
 
     def __init__(
         self,
@@ -331,11 +341,9 @@ import jsonLFfrom datetime import datetimeLFfrom typing import Dict, List, Optio
 
         return metadata
 
-
 # CLI interface for model registry operations
 if __name__ == "__main__":
-    import argparseLF
-
+    import argparse
     parser = argparse.ArgumentParser(description="Model Registry Management")
     parser.add_argument("--mlflow-uri", default="http://localhost:5000", help="MLflow server URI")
     parser.add_argument("--model-name", default="alert-noise-ranker", help="Model name")

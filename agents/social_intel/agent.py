@@ -1,7 +1,10 @@
 """Stub implementation of Social Intelligence Agent"""
 
-from typing import Any, DictLFLFimport structlogLFLFlogger = structlog.get_logger(__name__)LF
+from typing import Any, Dict
 
+import structlog
+
+logger = structlog.get_logger(__name__)
 class SocialIntelAgent:
     """Stub implementation of SocialIntelAgent"""
 

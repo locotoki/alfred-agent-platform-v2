@@ -1,7 +1,11 @@
 #!/usr/bin/env python3
 """Simple health server for agent-bizdev development."""
 
-import jsonLFfrom http.server import BaseHTTPRequestHandler, HTTPServerLFLFLFclass HealthHandler(BaseHTTPRequestHandler):LF    def do_GET(self):
+import json
+from http.server import BaseHTTPRequestHandler, HTTPServer
+
+class HealthHandler(BaseHTTPRequestHandler):
+    def do_GET(self):
         if self.path == "/health":
             self.send_response(200)
             self.send_header("Content-type", "application/json")
@@ -21,7 +25,6 @@ import jsonLFfrom http.server import BaseHTTPRequestHandler, HTTPServerLFLFLFcla
         # Suppress logs for health checks
         if "/health" not in args[0]:
             super().log_message(format, *args)
-
 
 if __name__ == "__main__":
     server = HTTPServer(("", 8080), HealthHandler)

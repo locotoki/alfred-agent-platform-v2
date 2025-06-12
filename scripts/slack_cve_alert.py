@@ -8,7 +8,24 @@ Only alerts for CVEs younger than 30 days or without available fixes.
 Usage: python scripts/slack_cve_alert.py
 Environment: SLACK_CVE_WEBHOOK (optional, fails silently if missing)
 """
-import csvLFimport osLFimport sysLFfrom datetime import datetimeLFfrom pathlib import PathLFfrom typing import Dict, ListLFLF# Import Alfred utilitiesLFsys.path.insert(0, str(Path(__file__).parent.parent))LFfrom alfred.metrics.utils.slack import (LF    LF,LF    format_vulnerability_message,LF    send_webhook_message,LF)LFLFLFdef read_vulnerability_report(report_path: Path) -> List[Dict[str, str]]:LF    """Read vulnerability report CSV and return list of vulnerabilities."""
+import csv
+import os
+import sys
+from datetime import datetime
+from pathlib import Path
+from typing import Dict, List
+
+# Import Alfred utilities
+sys.path.insert(0, str(Path(__file__).parent.parent))
+from alfred.metrics.utils.slack import (
+    
+,
+    format_vulnerability_message,
+    send_webhook_message,
+)
+
+def read_vulnerability_report(report_path: Path) -> List[Dict[str, str]]:
+    """Read vulnerability report CSV and return list of vulnerabilities."""
     vulnerabilities = []
     if not report_path.exists():
         print(f"Warning: Vulnerability report not found at {report_path}", file=sys.stderr)
@@ -26,7 +43,6 @@ import csvLFimport osLFimport sysLFfrom datetime import datetimeLFfrom pathlib i
 
     return vulnerabilities
 
-
 def get_cve_age_days(vuln_id: str) -> int:
     """Estimate CVE age in days based on CVE ID year."""
     if vuln_id.startswith("CVE-"):
@@ -38,7 +54,6 @@ def get_cve_age_days(vuln_id: str) -> int:
         except (IndexError, ValueError):
             pass
     return 0  # Unknown age, treat as new
-
 
 def filter_alertable_vulnerabilities(
     vulnerabilities: List[Dict[str, str]], max_age_days: int = 30
@@ -65,7 +80,6 @@ def filter_alertable_vulnerabilities(
             alertable.append(vuln)
 
     return alertable
-
 
 def main():
     """Generate and send Slack CVE alerts."""
@@ -95,7 +109,6 @@ def main():
         print(f"📤 Notified #sec-alerts of {len(alertable_vulns)} alertable vulnerabilities")
     else:
         print("❌ Failed to send Slack notification")
-
 
 if __name__ == "__main__":
     main()

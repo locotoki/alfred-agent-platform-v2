@@ -8,7 +8,15 @@ vulnerabilities are found in dependencies. Supports age-based waivers.
 Usage: python scripts/ci_vuln_gate.py [--max_age_days N]
 Exit codes: 0 = no blocking CVEs, 1 = blocking vulnerabilities found
 """
-import argparseLFimport csvLFimport sysLFfrom datetime import datetimeLFfrom pathlib import PathLFfrom typing import Any, Dict, ListLFLFLFdef read_vulnerability_report(report_path: Path) -> List[Dict[str, str]]:LF    """Read vulnerability report CSV and return list of vulnerabilities."""
+import argparse
+import csv
+import sys
+from datetime import datetime
+from pathlib import Path
+from typing import Any, Dict, List
+
+def read_vulnerability_report(report_path: Path) -> List[Dict[str, str]]:
+    """Read vulnerability report CSV and return list of vulnerabilities."""
     vulnerabilities: List[Dict[str, str]] = []
     if not report_path.exists():
         print(f"Warning: Vulnerability report not found at {report_path}", file=sys.stderr)
@@ -25,7 +33,6 @@ import argparseLFimport csvLFimport sysLFfrom datetime import datetimeLFfrom pat
         sys.exit(1)
 
     return vulnerabilities
-
 
 def is_vulnerability_waivable(vuln: Dict[str, str], max_age_days: int) -> bool:
     """Check if a vulnerability can be waived based on age and fix availability."""
@@ -53,7 +60,6 @@ def is_vulnerability_waivable(vuln: Dict[str, str], max_age_days: int) -> bool:
             return False
 
     return False
-
 
 def analyze_vulnerabilities(
     vulnerabilities: List[Dict[str, str]], max_age_days: int
@@ -83,7 +89,6 @@ def analyze_vulnerabilities(
         "waived_vulns": waived_vulns,
         "total_count": len(vulnerabilities),
     }
-
 
 def print_vulnerability_summary(analysis: Dict[str, Any], max_age_days: int):
     """Print a formatted vulnerability summary."""
@@ -117,7 +122,6 @@ def print_vulnerability_summary(analysis: Dict[str, Any], max_age_days: int):
             severity = vuln.get("severity", "unknown").upper()
             fixed_version = vuln.get("fixed_version", "unknown")
             print(f"  • {package}: {vuln_id} ({severity}) - fix: {fixed_version}")
-
 
 def main() -> None:
     """Run the CI vulnerability gate check."""
@@ -171,7 +175,6 @@ def main() -> None:
     else:
         print("No critical or high severity vulnerabilities found")
     sys.exit(0)
-
 
 if __name__ == "__main__":
     main()

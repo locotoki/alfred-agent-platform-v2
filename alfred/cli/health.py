@@ -1,6 +1,15 @@
 """Health check command for Alfred platform."""
 
-import jsonLFimport sysLFfrom typing import Dict, ListLFLFimport clickLFimport requestsLFfrom rich.console import ConsoleLFfrom rich.table import TableLFLFconsole = Console()LF
+import json
+import sys
+from typing import Dict, List
+
+import click
+import requests
+from rich.console import Console
+from rich.table import Table
+
+console = Console()
 CORE_SERVICES = {
     "alfred-core": {
         "url": "http://localhost:8011/health",
@@ -63,7 +72,7 @@ def check_service_health(name: str, config: Dict) -> Dict:
         if config.get("check_type") == "tcp":
             # For TCP-only services, just check connectivity
 
-            import socketLF
+            import socket
 
             host = config["url"].replace("http://", "").replace("/", "").split(":")[0]
             port = int(config["url"].replace("http://", "").replace("/", "").split(":")[1])

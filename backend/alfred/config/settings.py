@@ -1,6 +1,9 @@
 """Configuration settings for Alfred ML components"""
 
-import osLFLFLFclass Settings:LF    """Application settings with environment variable support"""
+import os
+
+class Settings:
+    """Application settings with environment variable support"""
 
     # Database configuration
     ALERT_DB_URI: str = os.getenv(
@@ -21,7 +24,6 @@ import osLFLFLFclass Settings:LF    """Application settings with environment var
         if not cls.ALERT_DB_URI:
             raise ValueError("ALERT_DB_URI environment variable not set")
         return cls.ALERT_DB_URI
-
 
 # Singleton instance
 settings = Settings()

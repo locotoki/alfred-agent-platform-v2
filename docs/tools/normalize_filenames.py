@@ -8,12 +8,22 @@ This script normalizes filenames in the staging-area directory by:
 4. Creating a mapping file that tracks old and new filenames.
 """
 
-import argparseLFimport loggingLFimport osLFimport reLFimport sysLFimport unicodedataLFfrom collections import defaultdictLFfrom pathlib import PathLFLF# Set up loggingLFlogging.basicConfig(LF    level=logging.INFO,
+import argparse
+import logging
+import os
+import re
+import sys
+import unicodedata
+from collections import defaultdict
+from pathlib import Path
+
+# Set up logging
+logging.basicConfig(
+    level=logging.INFO,
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
     handlers=[logging.StreamHandler(sys.stdout)],
 )
 logger = logging.getLogger("normalize_filenames")
-
 
 class FilenameNormalizer:
     """Class to handle filename normalization process."""
@@ -217,7 +227,6 @@ class FilenameNormalizer:
             for file, error in self.errors:
                 logger.info(f"  {os.path.basename(file)}: {error}")
 
-
 def main():
     """Main function to run the script."""
     parser = argparse.ArgumentParser(
@@ -280,7 +289,6 @@ def main():
     else:
         print(f"\nMapping file written to: {args.output_mapping}")
         print(f"Successfully normalized filenames in {args.staging_dir}")
-
 
 if __name__ == "__main__":
     main()
