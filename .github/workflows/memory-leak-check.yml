@@ -54,7 +54,7 @@ jobs:
           # Convert comma-separated list to space-separated
           SERVICES=$(echo "${{ env.MONITOR_SERVICES }}" | tr ',' ' ')
           # Use override file to avoid custom image builds
-          docker compose -f docker compose.yml -f docker compose.memory-test.yml up -d $SERVICES
+          docker compose -f docker-compose.yml -f docker-compose.memory-test.yml up -d $SERVICES
 
           # Wait for services to be ready
           echo "⏳ Waiting for services to stabilize..."
@@ -183,7 +183,7 @@ jobs:
           ALFRED_VERSION: latest
         run: |
           echo "🧹 Cleaning up services..."
-          docker compose -f docker compose.yml -f docker compose.memory-test.yml down -v
+          docker compose -f docker-compose.yml -f docker-compose.memory-test.yml down -v
 
       - name: Upload memory analysis
         uses: actions/upload-artifact@v4

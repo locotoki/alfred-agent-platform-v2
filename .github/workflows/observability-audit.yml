@@ -24,7 +24,7 @@ jobs:
       - name: Spin up stack
         run: |
           echo "🚀 Starting observability stack..."
-          docker compose -f docker compose.yml -f compose.observability.yaml up -d prometheus grafana
+          docker compose -f docker-compose.yml -f compose.observability.yaml up -d prometheus grafana
 
           # Show what's running
           docker compose ps
@@ -64,7 +64,7 @@ jobs:
         if: always()
         run: |
           echo "🧹 Cleaning up..."
-          docker compose -f docker compose.yml -f compose.observability.yaml down -v
+          docker compose -f docker-compose.yml -f compose.observability.yaml down -v
 
       - name: Upload probe logs
         if: always()
@@ -72,6 +72,6 @@ jobs:
         with:
           name: observability-probes-${{ github.run_id }}
           path: |
-            docker compose.yml
+            docker-compose.yml
             compose.observability.yaml
           retention-days: 7

@@ -29,8 +29,8 @@ jobs:
 
       - name: Start services
         run: |
-          docker compose -f docker compose.yml \
-            -f docker compose.healthchecks.yml \
+          docker compose -f docker-compose.yml \
+            -f docker-compose.healthchecks.yml \
             up -d
 
       - name: Wait for services
@@ -76,9 +76,9 @@ jobs:
 
       - name: Start full stack
         run: |
-          docker compose -f docker compose.yml \
-            -f docker compose.healthchecks.yml \
-            -f docker compose.observability.yml \
+          docker compose -f docker-compose.yml \
+            -f docker-compose.healthchecks.yml \
+            -f docker-compose.observability.yml \
             up -d
 
       - name: Wait for services

@@ -44,7 +44,7 @@ jobs:
 
           MISSING=()
           for setting in "${REQUIRED_SETTINGS[@]}"; do
-            if ! grep -q "$setting" docker compose.yml; then
+            if ! grep -q "$setting" docker-compose.yml; then
               MISSING+=("$setting")
             fi
           done

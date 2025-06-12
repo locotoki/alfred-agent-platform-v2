@@ -41,7 +41,7 @@ jobs:
 
           # Check docker volumes for persistence
           echo "📦 Checking persistent volumes in docker compose..."
-          grep -E "volumes:|driver: local" docker compose.yml || echo "⚠️  No persistent volumes configured"
+          grep -E "volumes:|driver: local" docker-compose.yml || echo "⚠️  No persistent volumes configured"
 
       - name: Simulate backup verification
         run: |
@@ -66,7 +66,7 @@ jobs:
           echo "🔄 Testing recovery for ${{ matrix.service }}..."
 
           # Check if service exists in docker compose
-          if grep -q "${{ matrix.service }}:" docker compose.yml; then
+          if grep -q "${{ matrix.service }}:" docker-compose.yml; then
             echo "✅ Service ${{ matrix.service }} found in docker compose"
 
             # Simulate service failure and recovery
