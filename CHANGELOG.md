@@ -1,3 +1,13 @@
+## [v1.0.7] – 2025-06-12
+### Added
+- Local-dev health fixes for Apple-silicon & WSL 2 (#707)
+
+### Changed
+- Disabled failing Qdrant health-check in dev
+- Supabase Studio probe switched to TCP (port 3001)
+
+### Fixed
+- db-auth (GoTrue) schema & migration errors
 ## [v0.9.14-beta2] - 2025-06-04
 * Infra E2E harness merged
 * Stub agents moved to **extras** profile
