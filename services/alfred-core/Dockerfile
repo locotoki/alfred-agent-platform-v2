@@ -1,4 +1,5 @@
-FROM python:3.11-slim
+ARG ASSETS=assets
+FROM python:3.11.10-slim
 
 WORKDIR /app
 

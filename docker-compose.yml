@@ -102,6 +102,7 @@ services:
       - vector-db-data:/qdrant/storage
     environment:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      QDRANT__STORAGE__ROOT_PATH: /qdrant/storage
     depends_on:
       db-postgres:
         condition: service_healthy
@@ -285,7 +286,7 @@ services:
     build:
       context: ./bootstrap
       dockerfile: Dockerfile.postgres-hardened
-    image: postgres:15-alpine-hardened
+    image: postgres:15-alpine
     container_name: db-postgres
     ports:
       - 127.0.0.1:5432:5432
@@ -359,7 +360,7 @@ services:
       GOTRUE_API_PORT: 9999
       API_EXTERNAL_URL: ${API_EXTERNAL_URL:-http://localhost:8000}
       GOTRUE_DB_DRIVER: postgres
-      GOTRUE_DB_DATABASE_URL: postgres://postgres:5a2953e749c7af6d0eacad8977830118@db-postgres:5432/postgres?sslmode=disable&search_path=auth
+      GOTRUE_DB_DATABASE_URL: postgres://postgres:${POSTGRES_PASSWORD}@db-postgres:5432/postgres?search_path=auth
       GOTRUE_SITE_URL: ${SITE_URL:-http://localhost:3000}
       GOTRUE_URI_ALLOW_LIST: ${ADDITIONAL_REDIRECT_URLS}
       GOTRUE_DISABLE_SIGNUP: ${DISABLE_SIGNUP:-false}
@@ -367,7 +368,7 @@ services:
       GOTRUE_JWT_AUD: authenticated
       GOTRUE_JWT_DEFAULT_GROUP_NAME: authenticated
       GOTRUE_JWT_EXP: ${JWT_EXPIRY:-3600}
-      GOTRUE_JWT_SECRET: ${JWT_SECRET}
+      GOTRUE_JWT_SECRET: ${DB_JWT_SECRET}
       GOTRUE_EXTERNAL_EMAIL_ENABLED: ${ENABLE_EMAIL_SIGNUP:-true}
       GOTRUE_MAILER_AUTOCONFIRM: ${ENABLE_EMAIL_AUTOCONFIRM:-false}
       GOTRUE_SMTP_ADMIN_EMAIL: admin@example.com
@@ -376,8 +377,6 @@ services:
       GOTRUE_SMTP_USER: ${SMTP_USER:-}
       GOTRUE_SMTP_PASS: ${SMTP_PASS:-}
       GOTRUE_SMTP_SENDER_NAME: Alfred Auth
-    command:
-      - auth
     healthcheck:
       interval: 30s
       timeout: 20s
@@ -404,6 +403,7 @@ services:
       com.docker.compose.group: database
       com.docker.compose.service: db-auth
       prometheus.metrics.port: '9091'
+    platform: linux/amd64
   db-auth-metrics:
     build:
       context: ./alfred/metrics
@@ -503,7 +503,7 @@ services:
       com.docker.compose.service: db-api-metrics
       prometheus.metrics.port: '9091'
   db-admin:
-    image: supabase/studio:20231123-64a766a
+    image: supabase/studio:20240326-5e5586d
     container_name: db-admin
     ports:
       - 3001:3000
@@ -516,18 +516,6 @@ services:
       SUPABASE_PUBLIC_URL: ${SUPABASE_PUBLIC_URL:-http://localhost:8000}
       SUPABASE_ANON_KEY: ${ANON_KEY:-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImV4cCI6MTc0OTUzNjEzMH0.zcPCLGlqF3YHBP-gTlXOQ2zjV-h3VmxbThiYEg2I5io}
       SUPABASE_SERVICE_KEY: ${SERVICE_ROLE_KEY:-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoic2VydmljZV9yb2xlIiwiZXhwIjoxNzQ5NTM2MTMwfQ.EDf3DT0Zl6qQbrLIQLwAXRWAN5kaJ5mvlAh1jm0CY-o}
-    healthcheck:
-      interval: 30s
-      timeout: 20s
-      retries: 5
-      start_period: 45s
-      test:
-        - CMD
-        - wget
-        - --no-verbose
-        - --tries=1
-        - --spider
-        - http://localhost:3000/api/health
     depends_on:
       db-postgres:
         condition: service_healthy
@@ -579,7 +567,7 @@ services:
       com.docker.compose.service: db-admin-metrics
       prometheus.metrics.port: '9091'
   db-realtime:
-    image: supabase/realtime:v2.25.35
+    image: supabase/realtime:v2.27.5
     container_name: db-realtime
     ports:
       - 4000:4000
@@ -1098,7 +1086,7 @@ services:
       - ALFRED_MODEL_ROUTER_URL=http://model-router:8080
       - ENABLE_DIRECT_INFERENCE=true
     volumes:
-      - ./alfred/ui:/app
+      - ./services/streamlit-chat:/app
     working_dir: /app
     healthcheck:
       interval: 15s
@@ -1106,8 +1094,10 @@ services:
       retries: 5
       start_period: 30s
       test:
-        - CMD-SHELL
-        - "curl -f http://localhost:8501/ || exit 1"
+        - CMD
+        - healthcheck
+        - --http
+        - http://localhost:8501/health
     depends_on:
       agent-core:
         condition: service_started
@@ -1337,21 +1327,21 @@ services:
       com.docker.compose.group: monitoring
       com.docker.compose.service: monitoring-redis
   mail-server:
-    image: mailhog/mailhog:latest
+    image: mailhog/mailhog:v1.0.1
     container_name: mail-server
     ports:
       - 1025:1025
       - 8025:8025
     healthcheck:
-      interval: 30s
-      timeout: 20s
-      retries: 5
-      start_period: 45s
       test:
         - CMD
-        - healthcheck
-        - --tcp
-        - localhost:1025
+        - wget
+        - --spider
+        - -q
+        - http://localhost:8025/
+      interval: 15s
+      timeout: 3s
+      retries: 5
     restart: unless-stopped
     deploy: null
     networks:
@@ -1508,4 +1498,3 @@ volumes:
     name: alfred-monitoring-dashboard-data
 networks:
   alfred-network:
-    external: true

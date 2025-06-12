@@ -1,6 +1,6 @@
 # Security-hardened PostgreSQL image
 # Addresses vulnerabilities in postgres:15-alpine-hardened including gosu CVEs
-FROM postgres:16-alpine AS base
+FROM postgres:16.6-alpine3.20 AS base
 
 # Update Alpine packages to latest patch versions
 RUN apk update && apk upgrade && \
