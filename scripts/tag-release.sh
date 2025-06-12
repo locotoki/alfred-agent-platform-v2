@@ -3,8 +3,9 @@
 
 set -e
 
-VERSION="v0.2.0-phase1"
-DESCRIPTION="Phase 1 metrics exporter implementation"
+# Accept version and description as parameters
+VERSION="${1:-v0.2.0-phase1}"
+DESCRIPTION="${2:-Phase 1 metrics exporter implementation}"
 
 echo "Tagging release $VERSION: $DESCRIPTION"
 
