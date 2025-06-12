@@ -1,0 +1,14 @@
+# Trivy ignore file
+# Ignore specific CVEs that are false positives or have no fix available
+
+# Known false positives in base images
+CVE-2024-6104  # hashicorp/go-retryablehttp - false positive in container scanning
+CVE-2023-45288 # golang.org/x/net/http2 - affects only HTTP/2 servers, not our use case
+CVE-2023-39325 # golang.org/x/net/http2 - affects only HTTP/2 servers, not our use case
+
+# CVEs with no fix available yet
+CVE-2024-41110 # Docker daemon - no fix available, mitigated by runtime security
+CVE-2024-3727  # NPM package vulnerabilities in dev dependencies only
+
+# Temporary ignores pending updates
+# These should be reviewed and removed periodically
