@@ -50,7 +50,7 @@ jobs:
       REDIS_PASSWORD: test
     steps:
       - uses: actions/checkout@v4
-      - run: docker compose -f docker-compose.tests.yml up -d
+      - run: docker compose -f docker compose.tests.yml up -d
       - run: ./scripts/wait_for_services.sh
       - run: pytest tests/integration
 

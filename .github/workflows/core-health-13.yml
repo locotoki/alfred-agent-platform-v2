@@ -3,7 +3,7 @@ name: core-health-13
 on:
   pull_request:
     paths:
-      - 'docker-compose.yml'
+      - 'docker compose.yml'
       - 'services/**'
       - 'scripts/**'
       - '.github/workflows/core-health-13.yml'
@@ -27,7 +27,7 @@ jobs:
           fi
 
       - name: Compose up (core profile)
-        run: docker compose -f docker-compose.ci-core.yml up -d --pull=missing
+        run: docker compose -f docker compose.ci-core.yml up -d --pull=missing
 
       - name: Wait for health
         run: ./scripts/wait-healthy.sh
