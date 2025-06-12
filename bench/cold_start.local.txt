@@ -1,0 +1,1 @@
+Benchmark 1: docker compose down -v >/dev/null 2>&1 || true && docker compose -f docker-compose.yml -f docker-compose.dev.yml --profile dev up -d db-postgres redis vector-db db-admin mail-server
