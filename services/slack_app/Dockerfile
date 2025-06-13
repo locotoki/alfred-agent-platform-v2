@@ -15,6 +15,9 @@ EXPOSE 3000
 # Set the environment variable for the app
 ENV PYTHONUNBUFFERED=1
 
+# Security: Run as non-root user
+USER 1001
+
 # Run the app
 CMD ["python", "run.py"]
 
