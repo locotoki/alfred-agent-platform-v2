@@ -4,7 +4,7 @@ FROM gcr.io/google.com/cloudsdktool/cloud-sdk:latest
 
 
 # Install Python and pip for the health check wrapper
-RUN apt-get update && apt-get install -y python3 python3-pip python3-venv curl && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends python3 python3-pip python3-venv curl && rm -rf /var/lib/apt/lists/*
 
 # Create and use virtual environment
 RUN python3 -m venv /app/venv
