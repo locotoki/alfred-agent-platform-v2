@@ -4,4 +4,8 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 COPY app/ /app
 WORKDIR /app
+
+# Security: Run as non-root user
+USER 1001
+
 ENTRYPOINT ["python", "simple_bot.py"]
