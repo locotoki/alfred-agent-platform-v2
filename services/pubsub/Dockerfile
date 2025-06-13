@@ -32,3 +32,6 @@ HEALTHCHECK --interval=30s --timeout=20s --retries=5 --start-period=45s \
 # Run both PubSub emulator and the health check wrapper
 COPY services/pubsub/entrypoint.init.sh /entrypoint.init.sh
 CMD ["sh","/entrypoint.init.sh"]
+
+# Security: Run as non-root user
+USER 1001
