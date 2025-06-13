@@ -3,6 +3,7 @@
 import time
 import httpx
 import json
+import os
 from typing import Dict, Any
 
 import structlog
@@ -44,6 +45,38 @@ async def call_ollama(prompt: str) -> str:
     except Exception as e:
         logger.error("Error calling Ollama", error=str(e))
         return f"I encountered an error: {str(e)}"
+
+
+async def call_openai(prompt: str, model: str = "gpt-3.5-turbo") -> str:
+    """Call OpenAI API"""
+    try:
+        api_key = os.getenv("ALFRED_OPENAI_API_KEY", "")
+        if not api_key or api_key == "sk-mock-key-for-development-only":
+            return "OpenAI API key not configured properly."
+        
+        async with httpx.AsyncClient(timeout=30.0) as client:
+            response = await client.post(
+                "https://api.openai.com/v1/chat/completions",
+                headers={
+                    "Authorization": f"Bearer {api_key}",
+                    "Content-Type": "application/json"
+                },
+                json={
+                    "model": model,
+                    "messages": [
+                        {"role": "system", "content": "You are Alfred, a helpful AI assistant for the Alfred Agent Platform. Be friendly, helpful, and informative."},
+                        {"role": "user", "content": prompt}
+                    ],
+                    "temperature": 0.7,
+                    "max_tokens": 500
+                }
+            )
+            response.raise_for_status()
+            data = response.json()
+            return data["choices"][0]["message"]["content"]
+    except Exception as e:
+        logger.error("Error calling OpenAI", error=str(e))
+        return f"I encountered an error with OpenAI: {str(e)}"
 
 
 @app.get("/health")
@@ -104,13 +137,17 @@ async def create_task(task: dict):
 async def chat(request: dict):
     """Chat endpoint for UI integration."""
     request_count.labels(method="POST", endpoint="/api/v1/chat", status="200").inc()
-    logger.info("Chat request received", question=request.get("question", ""))
+    logger.info("Chat request received", question=request.get("question", ""), model=request.get("model", ""))
 
     question = request.get("question", "")
     model = request.get("model", "llama3:8b")
 
     try:
-        response = await call_ollama(question)
+        # Route to appropriate LLM based on model
+        if model.startswith("gpt"):
+            response = await call_openai(question, model)
+        else:
+            response = await call_ollama(question)
 
         return {
             "response": response,

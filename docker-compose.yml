@@ -189,6 +189,7 @@ services:
       - llm-service-data:/root/.ollama
     environment:
       OPENAI_API_KEY: ${OPENAI_API_KEY}
+      OLLAMA_HOST: 0.0.0.0
     command:
       - serve
     healthcheck:
@@ -200,7 +201,6 @@ services:
         - CMD-SHELL
         - "ollama list || exit 1"
     restart: unless-stopped
-    deploy: null
     networks:
       - alfred-network
     labels:
@@ -759,7 +759,7 @@ services:
       - ALFRED_PROJECT_ID=alfred-agent-platform
       - ALFRED_SLACK_BOT_TOKEN=placeholder-token
       - ALFRED_SLACK_SIGNING_SECRET=placeholder-secret
-      - ALFRED_OPENAI_API_KEY=sk-mock-key-for-development-only
+      - ALFRED_OPENAI_API_KEY=${ALFRED_OPENAI_API_KEY:-sk-mock-key-for-development-only}
       - ALFRED_MODEL_ROUTER_URL=http://model-router:8080
     volumes:
       - ./libs:/app/libs
