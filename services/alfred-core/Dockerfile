@@ -1,5 +1,5 @@
 ARG ASSETS=assets
-FROM python:3.11-slim
+FROM python:3.11.10-slim
 
 # Make ASSETS available as environment variable
 ARG ASSETS

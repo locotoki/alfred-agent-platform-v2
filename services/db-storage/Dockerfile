@@ -1,5 +1,5 @@
 FROM ghcr.io/locotoki/alfred-agent-platform-v2/healthcheck:0.4.0 AS healthcheck
-FROM node:18-alpine
+FROM node:18.20.5-alpine3.20
 COPY --from=healthcheck /usr/local/bin/healthcheck /usr/local/bin/healthcheck
 
 
