@@ -1,181 +1,25 @@
-name: Flake Detector
+name: flake-detector
 
 on:
+  push:
+    branches: [ main ]
   pull_request:
-    paths:
-      - 'services/**'
-      - 'tests/e2e/**'
-      - 'docker-compose*.yml'
-      - 'tests/utils/flake_analyzer/**'
+  schedule:
+    - cron: '0 4 * * *'   # daily 04:00 UTC
 
 jobs:
-  e2e-flake-detection:
-    name: E2E Flake Detection
+  flakes:
     runs-on: ubuntu-latest
-    timeout-minutes: 45
-    strategy:
-      matrix:
-        attempt: [1, 2, 3]
-      fail-fast: false
-    
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
-      
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
-      
-      - name: Install pytest-json-report
+          python-version: 3.11
+          cache: 'pip'
+      - name: Install deps
         run: |
-          pip install pytest-json-report
-      
-      - name: Run E2E tests (attempt ${{ matrix.attempt }})
-        id: e2e
-        continue-on-error: true
-        run: |
-          echo "🧪 Running E2E tests - Attempt ${{ matrix.attempt }}/3"
-          
-          # Create reports directory
-          mkdir -p reports
-          
-          # Start services
-          docker-compose -f docker-compose.yml up -d --wait || true
-          
-          # Wait for services to stabilize
-          sleep 30
-          
-          # Run tests with JSON reporting
-          pytest tests/e2e/ -v \
-            --json-report --json-report-file=reports/pytest-${{ matrix.attempt }}.json \
-            || echo "Tests completed with exit code $?"
-          
-          # Upload test report as artifact
-          echo "report_file=reports/pytest-${{ matrix.attempt }}.json" >> $GITHUB_OUTPUT
-      
-      - name: Upload test report
-        if: always()
-        uses: actions/upload-artifact@v3
-        with:
-          name: pytest-reports-${{ matrix.attempt }}
-          path: reports/pytest-${{ matrix.attempt }}.json
-          retention-days: 3
-      
-      - name: Cleanup
-        if: always()
-        run: |
-          docker-compose -f docker-compose.yml down -v --timeout 10 || true
-
-  analyze-flakes:
-    name: Analyze Flake Results
-    needs: e2e-flake-detection
-    runs-on: ubuntu-latest
-    if: always()
-    
-    steps:
-      - uses: actions/checkout@v4
-      
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.11'
-      
-      - name: Download all test reports
-        uses: actions/download-artifact@v3
-        with:
-          path: reports/
-      
-      - name: Analyze flakes
-        id: analyze
-        run: |
-          echo "📊 Analyzing flake patterns across test runs..."
-          
-          # Check which reports exist
-          find reports/ -name "*.json" -type f | sort
-          
-          # Analyze each report (simplified approach for now)
-          flaky_count=0
-          for report in reports/*/pytest-*.json; do
-            if [ -f "$report" ]; then
-              echo "🔍 Analyzing $report"
-              python3 tests/utils/flake_analyzer/cli.py "$report" --emit-summary
-              
-              # Count failures as potential flakes (simplified)
-              failures=$(python3 -c "
-import json, sys
-try:
-    with open('$report') as f:
-        data = json.load(f)
-        print(len([t for t in data.get('tests', []) if t.get('outcome') == 'failed']))
-except:
-    print(0)
-")
-              flaky_count=$((flaky_count + failures))
-            fi
-          done
-          
-          echo "total_flakes=$flaky_count" >> $GITHUB_OUTPUT
-          echo "📈 Total potential flakes detected: $flaky_count"
-      
-      - name: Comment on PR
-        if: steps.analyze.outputs.total_flakes > 0
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const flakeCount = ${{ steps.analyze.outputs.total_flakes }};
-            
-            if (flakeCount >= 3) {
-              // Add flaky-test label
-              await github.rest.issues.addLabels({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: context.issue.number,
-                labels: ['flaky-test', 'needs-investigation']
-              });
-              
-              // Comment on PR
-              await github.rest.issues.createComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: context.issue.number,
-                body: `⚠️ **Flaky Tests Detected**
-            
-            The E2E test suite detected ${flakeCount} potential flaky tests across multiple runs.
-            
-            **Action Required**: Please investigate test stability before merging.
-            
-            - Check the "Analyze Flake Results" job for detailed analysis
-            - Review test logs for intermittent failures
-            - Consider adding retries or improving test isolation
-            
-            🔍 See the job summary for detailed flake analysis.`
-              });
-            } else if (flakeCount === 0) {
-              // Remove flaky-test label if no flakes
-              try {
-                await github.rest.issues.removeLabel({
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  issue_number: context.issue.number,
-                  name: 'flaky-test'
-                });
-              } catch (e) {
-                // Label might not exist
-              }
-            }
-      
-      - name: Set output status
-        id: status
-        run: |
-          flakes=${{ steps.analyze.outputs.total_flakes }}
-          if [ "$flakes" -gt 5 ]; then
-            echo "status=critical" >> $GITHUB_OUTPUT
-            echo "🚨 Critical: $flakes flaky tests detected"
-            exit 1
-          elif [ "$flakes" -gt 0 ]; then
-            echo "status=warning" >> $GITHUB_OUTPUT
-            echo "⚠️ Warning: $flakes flaky tests detected"
-          else
-            echo "status=success" >> $GITHUB_OUTPUT
-            echo "✅ No significant flaky tests detected"
-          fi
+          pip install -q -r requirements-dev.txt pytest-rerunfailures
+      - name: Run flake detector
+        run: make flake-detector

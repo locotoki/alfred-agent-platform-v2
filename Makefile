@@ -36,6 +36,7 @@ help:
 	@echo "license-scan         Generate license compliance report CSV"
 	@echo "audit-dashboard      Generate audit dashboard markdown"
 	@echo "cve-alert            Send CVE alerts to Slack for HIGH/CRITICAL vulnerabilities"
+	@echo "flake-detector       Run flake detector (25× reruns)"
 
 setup-env:
 	@if [ ! -f .env ]; then \
@@ -174,3 +175,8 @@ cve-alert:
 .PHONY: ingest-test
 ingest-test:
 	go test ./internal/indexer -run TestIndexer_Run -v
+
+# --- CI gate: deterministic-test flake detector -----------------------------
+flake-detector:
+	@echo "Running flake detector (25× reruns)…"
+	pytest -q --maxfail=1 -ra --reruns 25 --only-rerun failing -m "not slow"
