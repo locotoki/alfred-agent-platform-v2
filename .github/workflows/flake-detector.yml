@@ -21,6 +21,6 @@ jobs:
       - name: Install deps
         run: |
           pip install -q -r requirements.txt
-          pip install -q pytest-rerunfailures
+          pip install -q pytest-rerunfailures pytest-asyncio
       - name: Run flake detector
         run: make flake-detector
