@@ -20,6 +20,7 @@ jobs:
           cache: 'pip'
       - name: Install deps
         run: |
-          pip install -q -r requirements.txt -r requirements-dev.txt pytest-rerunfailures
+          pip install -q -r requirements.txt
+          pip install -q pytest-rerunfailures
       - name: Run flake detector
         run: make flake-detector
