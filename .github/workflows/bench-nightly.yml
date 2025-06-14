@@ -47,6 +47,7 @@ jobs:
           docker tag pubsub-metrics:bench pubsub-metrics:latest
           
       - name: Run cold-start benchmark
+        id: calc
         run: |
           echo "=== Running cold-start benchmark ==="
           RUNS=${{ inputs.runs || 3 }}
@@ -62,7 +63,15 @@ jobs:
           P95_TIME=$(jq '.p95' bench.json)
           P95_SECONDS=$((P95_TIME / 1000))
           
+          # Extract mean time for Prometheus
+          MEAN_TIME=$(jq '.mean // .p95' bench.json)
+          MEAN_SECONDS=$((MEAN_TIME / 1000))
+          
           echo "P95 cold-start time: ${P95_SECONDS}s (target: ${TARGET_TIME}s)"
+          echo "Mean cold-start time: ${MEAN_SECONDS}s"
+          
+          # Output for later steps
+          echo "mean=$MEAN_SECONDS" >> $GITHUB_OUTPUT
           
           if [ $P95_SECONDS -gt $TARGET_TIME ]; then
             echo "❌ Cold-start time ${P95_SECONDS}s exceeds target ${TARGET_TIME}s"
@@ -70,6 +79,13 @@ jobs:
           else
             echo "✅ Cold-start time ${P95_SECONDS}s meets target ${TARGET_TIME}s"
           fi
+
+      - name: Push metric to Prometheus Pushgateway
+        if: always() && steps.calc.outputs.mean
+        run: |
+          echo "vector_ingest_cold_start_seconds ${{ steps.calc.outputs.mean }}" | \
+          curl --data-binary @- http://pushgateway:9091/metrics/job/nightly_bench || \
+          echo "⚠️ Failed to push metric to Pushgateway (service may not be running)"
           
       - name: Generate benchmark report
         if: always()
