@@ -18,7 +18,11 @@ jobs:
 
       - name: Start PostgreSQL service
         run: |
-          docker compose up -d db-postgres
+          # Set required environment variables
+          export POSTGRES_PASSWORD=test123
+          export DB_JWT_SECRET=test-secret
+          # Start only db-postgres service
+          docker compose -f docker-compose.yml up -d db-postgres
           # Wait for PostgreSQL to be ready
           timeout 60 bash -c 'until docker compose exec -T db-postgres pg_isready -U postgres; do sleep 2; done'
 
