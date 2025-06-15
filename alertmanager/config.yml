@@ -1,0 +1,23 @@
+global:
+  resolve_timeout: 5m
+
+receivers:
+  - name: slack_oncall
+    slack_configs:
+      - api_url: ${SLACK_WEBHOOK_URL}
+        channel: "#oncall"
+        title: '{{ .CommonLabels.alertname }}'
+        text: |
+          *Environment*: `dev`
+          *Summary*: {{ .CommonAnnotations.summary }}
+          *Description*: {{ .CommonAnnotations.description }}
+
+route:
+  receiver: slack_oncall
+  group_wait: 30s
+  group_interval: 5m
+  repeat_interval: 3h
+  routes:
+    - matchers:
+        - alertname="ColdStartSLAExceeded"
+      receiver: slack_oncall
