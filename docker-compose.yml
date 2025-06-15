@@ -1479,14 +1479,15 @@ services:
       com.docker.compose.project: alfred
       com.docker.compose.group: agents
       com.docker.compose.service: slack-bot
-  # rag-gateway:
-  #   healthcheck:
-  #     test:
-  #       - CMD-SHELL
-  #       - nc -z localhost 8000
-  #     interval: 15s
-  #     timeout: 3s
-  #     retries: 5
+  rag-gateway:
+    image: ${ALFRED_REGISTRY}/alfred-platform/rag-gateway:${ALFRED_VERSION:-latest}
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - nc -z localhost 8000
+      interval: 15s
+      timeout: 3s
+      retries: 5
 volumes:
   redis-data:
     name: alfred-redis-data
