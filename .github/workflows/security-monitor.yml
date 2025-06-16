@@ -9,13 +9,11 @@ on:
       - 'docker-compose*.yml'
       - '**/Dockerfile*'
       - 'bootstrap/**'
-
 jobs:
   postgres-security-check:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
       - name: Start PostgreSQL service
         run: |
           # Set required environment variables
@@ -25,14 +23,12 @@ jobs:
           docker compose -f docker-compose.yml up -d db-postgres
           # Wait for PostgreSQL to be ready
           timeout 60 bash -c 'until docker compose exec -T db-postgres pg_isready -U postgres; do sleep 2; done'
-
       - name: Prepare DB (pgcrypto + lock public)
         run: |
           docker compose exec -T db-postgres psql -U postgres <<SQL
           CREATE EXTENSION IF NOT EXISTS pgcrypto;
           REVOKE CREATE ON SCHEMA public FROM PUBLIC;
           SQL
-
       - name: Check for hardcoded passwords
         run: |
           echo "Checking for hardcoded PostgreSQL passwords..."
@@ -45,7 +41,6 @@ jobs:
           fi
 
           echo "✅ No hardcoded passwords found"
-
       - name: Verify PostgreSQL hardening
         run: |
           echo "Verifying PostgreSQL security configuration..."
@@ -73,7 +68,6 @@ jobs:
           fi
 
           echo "✅ All security configurations present"
-
       - name: Check for vulnerable commands
         run: |
           echo "Checking for vulnerable PostgreSQL commands..."
@@ -85,7 +79,6 @@ jobs:
           fi
 
           echo "✅ No vulnerable commands found"
-
       - name: Scan Docker images for CVEs
         uses: aquasecurity/trivy-action@master
         with:
@@ -94,7 +87,6 @@ jobs:
           severity: 'CRITICAL,HIGH'
           exit-code: '1'
           format: 'table'
-
       - name: Stop services
         if: always()
         run: docker compose down -v
