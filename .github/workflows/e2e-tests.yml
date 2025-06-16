@@ -18,9 +18,10 @@ jobs:
 
       - name: Setup docker-compose shim
         run: |
-          sudo apt-get update -qq
-          sudo apt-get install -y docker-compose-plugin
-          sudo ln -sf $(command -v docker) /usr/local/bin/docker-compose
+          # Install standalone docker-compose
+          curl -L "https://github.com/docker/compose/releases/download/v2.24.1/docker-compose-$(uname -s)-$(uname -m)" -o /tmp/docker-compose
+          sudo install /tmp/docker-compose /usr/local/bin/docker-compose
+          docker-compose --version
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -73,9 +74,10 @@ jobs:
 
       - name: Setup docker-compose shim
         run: |
-          sudo apt-get update -qq
-          sudo apt-get install -y docker-compose-plugin
-          sudo ln -sf $(command -v docker) /usr/local/bin/docker-compose
+          # Install standalone docker-compose
+          curl -L "https://github.com/docker/compose/releases/download/v2.24.1/docker-compose-$(uname -s)-$(uname -m)" -o /tmp/docker-compose
+          sudo install /tmp/docker-compose /usr/local/bin/docker-compose
+          docker-compose --version
 
       - name: Set up Python
         uses: actions/setup-python@v5
