@@ -1,0 +1,13 @@
+groups:
+  - name: nightly-bench
+    rules:
+      - alert: ColdStartSLAExceeded
+        expr: vector_ingest_cold_start_seconds > 60
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Vector-ingest cold-start exceeded 60 s"
+          description: |
+            Cold-start benchmark recorded {{ $value }} seconds (SLA ≤ 60 s).
+            Investigate regressions in image size or init routines.

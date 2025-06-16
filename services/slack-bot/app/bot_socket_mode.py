@@ -57,8 +57,6 @@ slack_app = AsyncApp(
     token=os.environ.get("SLACK_BOT_TOKEN"),
     signing_secret=os.environ.get("SLACK_SIGNING_SECRET"),
     logger=logger,
-    # Set to DEBUG to see full payloads
-    log_level="DEBUG",
 )
 
 

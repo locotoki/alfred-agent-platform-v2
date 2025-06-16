@@ -18,6 +18,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
+      - name: Setup docker-compose shim
+        run: |
+          # Install standalone docker-compose
+          curl -L "https://github.com/docker/compose/releases/download/v2.24.1/docker-compose-$(uname -s)-$(uname -m)" -o /tmp/docker-compose
+          sudo install /tmp/docker-compose /usr/local/bin/docker-compose
+          docker-compose --version
+      
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
       
