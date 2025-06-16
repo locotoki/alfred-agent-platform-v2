@@ -25,7 +25,8 @@ jobs:
           timeout 60 bash -c 'until docker compose exec -T db-postgres pg_isready -U postgres; do sleep 2; done'
       - name: Prepare DB (pgcrypto + lock public)
         run: |
-          docker compose exec -T db-postgres psql -U postgres <<SQL
+          export POSTGRES_PASSWORD=test123
+          docker compose exec -T db-postgres env PGPASSWORD="$POSTGRES_PASSWORD" psql -U postgres <<SQL
           CREATE EXTENSION IF NOT EXISTS pgcrypto;
           REVOKE CREATE ON SCHEMA public FROM PUBLIC;
           SQL
