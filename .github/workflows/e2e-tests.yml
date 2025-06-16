@@ -16,6 +16,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Setup docker-compose shim
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y docker-compose-plugin
+          sudo ln -sf $(command -v docker) /usr/local/bin/docker-compose
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
@@ -39,7 +45,7 @@ jobs:
 
       - name: Run E2E smoke tests
         env:
-          SLACK_PORT: 8080
+          SLACK_PORT: 3011
         run: |
           pytest tests/e2e/test_smoke.py -v --tb=short --timeout=60
 
@@ -64,6 +70,12 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+
+      - name: Setup docker-compose shim
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y docker-compose-plugin
+          sudo ln -sf $(command -v docker) /usr/local/bin/docker-compose
 
       - name: Set up Python
         uses: actions/setup-python@v5
