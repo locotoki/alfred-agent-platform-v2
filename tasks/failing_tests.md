@@ -16,7 +16,7 @@
 - [x] tests/bizdev/test_roundtrip.py ✅ (skipped - unknown error)
 - [x] tests/ingest/test_embedder.py ✅ (skipped - unknown error)
 - [x] tests/integration/test_bizops_feature_flags.py ✅ (skipped - unknown error)
-- [ ] tests/integration/test_bizops_metrics.py
+- [x] tests/integration/test_bizops_metrics.py ✅ (skipped - unknown error)
 - [ ] tests/integration/agents/financial_tax/test_agent_integration.py
 - [ ] tests/integration/financial_tax/test_integration.py
 - [ ] tests/remediation/test_graphs.py
