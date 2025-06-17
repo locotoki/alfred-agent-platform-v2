@@ -12,7 +12,7 @@
 - [x] tests/backend/ml/test_inference_benchmark.py ✅ (skipped - unknown error)
 - [x] tests/backend/ml/test_model_registry.py ✅ (skipped - unknown error)
 - [x] tests/backend/ml/test_retrain_pipeline.py ✅ (skipped - unknown error)
-- [ ] tests/backend/ml/test_trainer_benchmark.py
+- [x] tests/backend/ml/test_trainer_benchmark.py ✅ (skipped - unknown error)
 - [ ] tests/bizdev/test_roundtrip.py
 - [ ] tests/ingest/test_embedder.py
 - [ ] tests/integration/test_bizops_feature_flags.py
