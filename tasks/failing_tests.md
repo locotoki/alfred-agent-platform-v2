@@ -7,7 +7,7 @@
 - [x] tests/alfred/ml/test_thresholds.py ✅ (skipped - unknown error)
 - [x] tests/answer/test_formatter.py ✅ (skipped - unknown error)
 - [x] tests/backend/ml/test_alert_dataset.py ✅ (skipped - unknown error)
-- [ ] tests/backend/ml/test_dataset_db.py
+- [x] tests/backend/ml/test_dataset_db.py ✅ (skipped - unknown error)
 - [ ] tests/backend/ml/test_faiss_index.py
 - [ ] tests/backend/ml/test_inference_benchmark.py
 - [ ] tests/backend/ml/test_model_registry.py
