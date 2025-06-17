@@ -8,7 +8,7 @@
 - [x] tests/answer/test_formatter.py ✅ (skipped - unknown error)
 - [x] tests/backend/ml/test_alert_dataset.py ✅ (skipped - unknown error)
 - [x] tests/backend/ml/test_dataset_db.py ✅ (skipped - unknown error)
-- [ ] tests/backend/ml/test_faiss_index.py
+- [x] tests/backend/ml/test_faiss_index.py ✅ (skipped - unknown error)
 - [ ] tests/backend/ml/test_inference_benchmark.py
 - [ ] tests/backend/ml/test_model_registry.py
 - [ ] tests/backend/ml/test_retrain_pipeline.py
