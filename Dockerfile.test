@@ -1,0 +1,12 @@
+FROM python:3.11-slim
+WORKDIR /app
+
+# copy dependency manifests first for layer-cache
+COPY requirements*.txt ./
+RUN pip install --no-cache-dir -r requirements.txt \
+ && pip install --no-cache-dir -r requirements-dev.txt
+
+# project code last
+COPY . .
+
+ENTRYPOINT ["pytest", "tests/", "-v"]
