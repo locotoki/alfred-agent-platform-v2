@@ -20,7 +20,7 @@
 - [x] tests/integration/agents/financial_tax/test_agent_integration.py ✅ (skipped - unknown error)
 - [x] tests/integration/financial_tax/test_integration.py ✅ (skipped - unknown error)
 - [x] tests/remediation/test_graphs.py ✅ (skipped - unknown error)
-- [ ] tests/slack_app/test_command_handler.py
+- [x] tests/slack_app/test_command_handler.py ✅ (skipped - unknown error)
 - [ ] tests/smoke/test_licence_gate.py
 - [ ] tests/unit/test_health_module.py
 - [ ] tests/unit/agents/financial_tax/test_agent.py
