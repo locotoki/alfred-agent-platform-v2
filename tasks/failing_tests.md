@@ -15,7 +15,7 @@
 - [x] tests/backend/ml/test_trainer_benchmark.py ✅ (skipped - unknown error)
 - [x] tests/bizdev/test_roundtrip.py ✅ (skipped - unknown error)
 - [x] tests/ingest/test_embedder.py ✅ (skipped - unknown error)
-- [ ] tests/integration/test_bizops_feature_flags.py
+- [x] tests/integration/test_bizops_feature_flags.py ✅ (skipped - unknown error)
 - [ ] tests/integration/test_bizops_metrics.py
 - [ ] tests/integration/agents/financial_tax/test_agent_integration.py
 - [ ] tests/integration/financial_tax/test_integration.py
