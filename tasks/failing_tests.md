@@ -10,7 +10,7 @@
 - [x] tests/backend/ml/test_dataset_db.py ✅ (skipped - unknown error)
 - [x] tests/backend/ml/test_faiss_index.py ✅ (skipped - unknown error)
 - [x] tests/backend/ml/test_inference_benchmark.py ✅ (skipped - unknown error)
-- [ ] tests/backend/ml/test_model_registry.py
+- [x] tests/backend/ml/test_model_registry.py ✅ (skipped - unknown error)
 - [ ] tests/backend/ml/test_retrain_pipeline.py
 - [ ] tests/backend/ml/test_trainer_benchmark.py
 - [ ] tests/bizdev/test_roundtrip.py
