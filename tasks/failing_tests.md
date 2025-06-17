@@ -3,7 +3,7 @@
 ## Tests with Collection Errors (24 total)
 
 - [x] tests/test_contact_ingest_unit.py ✅ (skipped - module naming issue)
-- [ ] tests/alfred/ml/test_hf_embedder.py
+- [x] tests/alfred/ml/test_hf_embedder.py ✅ (skipped - unknown error)
 - [ ] tests/alfred/ml/test_thresholds.py
 - [ ] tests/answer/test_formatter.py
 - [ ] tests/backend/ml/test_alert_dataset.py
