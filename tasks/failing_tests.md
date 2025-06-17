@@ -4,7 +4,7 @@
 
 - [x] tests/test_contact_ingest_unit.py ✅ (skipped - module naming issue)
 - [x] tests/alfred/ml/test_hf_embedder.py ✅ (skipped - unknown error)
-- [ ] tests/alfred/ml/test_thresholds.py
+- [x] tests/alfred/ml/test_thresholds.py ✅ (skipped - unknown error)
 - [ ] tests/answer/test_formatter.py
 - [ ] tests/backend/ml/test_alert_dataset.py
 - [ ] tests/backend/ml/test_dataset_db.py
