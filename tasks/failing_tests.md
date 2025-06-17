@@ -22,7 +22,7 @@
 - [x] tests/remediation/test_graphs.py ✅ (skipped - unknown error)
 - [x] tests/slack_app/test_command_handler.py ✅ (skipped - unknown error)
 - [x] tests/smoke/test_licence_gate.py ✅ (skipped - unknown error)
-- [ ] tests/unit/test_health_module.py
+- [x] tests/unit/test_health_module.py ✅ (skipped - unknown error)
 - [ ] tests/unit/agents/financial_tax/test_agent.py
 - [ ] tests/unit/agents/financial_tax/test_chains.py
 - [ ] tests/unit/agents/financial_tax/test_models.py
