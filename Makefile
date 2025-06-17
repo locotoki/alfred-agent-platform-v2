@@ -68,7 +68,8 @@ clean:
 	docker-compose down -v
 
 test:
-	pytest tests/ -v
+	@echo "▶ running tests in docker …"
+	docker compose run --rm --no-deps tests
 
 test-unit:
 	pytest tests/unit/ -v -m unit

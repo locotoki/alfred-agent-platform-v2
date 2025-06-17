@@ -27,6 +27,16 @@ x-health-check-settings:
   retries: 5
   start_period: 45s
 services:
+  tests:
+    build:
+      context: .
+      dockerfile: Dockerfile.test
+    image: alfred-platform-tests
+    volumes:
+      - .:/app
+    profiles:
+      - test
+  
   redis:
     image: redis:7-alpine
     container_name: redis
