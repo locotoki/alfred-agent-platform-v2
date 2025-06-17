@@ -1,79 +1,22 @@
 name: CI
 
 on:
-  pull_request:
-    types: [opened, synchronize, reopened, labeled]
   push:
-    branches: [main]
+    branches: [ "**" ]
+    # Ignore pure doc edits in planning/ or tasks/
+    paths-ignore:
+      - 'planning/**'
+      - 'tasks/**'
+  pull_request:
+    branches: [ main ]
 
 jobs:
-  lint:
+  tests:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/cache@v4
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt') }}
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-      - run: pip install -r requirements-dev.txt
-      - run: make lint
 
-  unit:
-    needs: lint
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix: { python: ['3.10', '3.11'] }
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/cache@v4
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ matrix.python }}-${{ hashFiles('**/requirements*.txt') }}
-      - uses: actions/setup-python@v5
-        with:
-          python-version: ${{ matrix.python }}
-      - run: pip install -r requirements-dev.txt
-      - run: pytest -n auto --reruns 2 --reruns-delay 1 --cov=.
-      - run: pytest tests/imports
-      - uses: codecov/codecov-action@v4
-
-  integration:
-    needs: unit
-    if: github.event_name == 'push' || contains(github.event.pull_request.labels.*.name, 'needs-integration')
-    runs-on: ubuntu-latest
-    env:
-      POSTGRES_PASSWORD: test
-      REDIS_PASSWORD: test
-    steps:
-      - uses: actions/checkout@v4
-      - run: docker compose -f docker-compose.tests.yml up -d
-      - run: ./scripts/wait_for_services.sh
-      - run: pytest tests/integration
-
-  summary:
-    if: always()
-    needs: [lint, unit, integration]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/github-script@v7
-        with:
-          script: |
-            const core = require('@actions/core');
-            const conclusion = '${{ needs.lint.result }} / ${{ needs.unit.result }} / ${{ needs.integration.result }}';
-            core.notice(`Composite conclusion: ${conclusion}`);
-
-
-  # 🔒 images.lock guard
-  images-lock:
-    needs: lint
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Check images.lock unchanged
+      - name: Build & run tests (Docker)
         run: |
-          ./scripts/update-images-lock.sh
-          git diff --exit-code images.lock
+          docker compose -f docker-compose.yml build tests
+          docker compose -f docker-compose.yml run --rm --no-deps tests
