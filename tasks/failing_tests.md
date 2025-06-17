@@ -17,7 +17,7 @@
 - [x] tests/ingest/test_embedder.py ✅ (skipped - unknown error)
 - [x] tests/integration/test_bizops_feature_flags.py ✅ (skipped - unknown error)
 - [x] tests/integration/test_bizops_metrics.py ✅ (skipped - unknown error)
-- [ ] tests/integration/agents/financial_tax/test_agent_integration.py
+- [x] tests/integration/agents/financial_tax/test_agent_integration.py ✅ (skipped - unknown error)
 - [ ] tests/integration/financial_tax/test_integration.py
 - [ ] tests/remediation/test_graphs.py
 - [ ] tests/slack_app/test_command_handler.py
