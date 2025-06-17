@@ -18,7 +18,7 @@
 - [x] tests/integration/test_bizops_feature_flags.py ✅ (skipped - unknown error)
 - [x] tests/integration/test_bizops_metrics.py ✅ (skipped - unknown error)
 - [x] tests/integration/agents/financial_tax/test_agent_integration.py ✅ (skipped - unknown error)
-- [ ] tests/integration/financial_tax/test_integration.py
+- [x] tests/integration/financial_tax/test_integration.py ✅ (skipped - unknown error)
 - [ ] tests/remediation/test_graphs.py
 - [ ] tests/slack_app/test_command_handler.py
 - [ ] tests/smoke/test_licence_gate.py
