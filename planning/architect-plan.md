@@ -8,3 +8,4 @@
 - Test fixed architect script
 - Test OpenAI GPT-o3 integration
 - Test with properly configured OpenAI key
+- Test with architect script in main repo
