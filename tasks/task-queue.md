@@ -6,4 +6,4 @@
 | [x]    | 002 | PR #710                    | Make flake-detector a required gate                       |
 | [x]    | 003 | Issue #695                 | Kick-off Dependabot + weekly Trivy automation             |
 | [x]   | 004 | Migrate_Slack_Adapter.md   | Migrate Slack adapter from ngrok to Cloudflare Tunnel     |
-| [ ]    | 005 | Slack_Manifest_Update.md   | Update Slack manifest for Cloudflare Tunnel migration     |
+| [x]   | 005 | Slack_Manifest_Update.md   | Update Slack manifest for Cloudflare Tunnel migration     |
