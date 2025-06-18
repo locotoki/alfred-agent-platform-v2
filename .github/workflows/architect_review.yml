@@ -13,7 +13,5 @@ jobs:
     env:
       GH_TOKEN: ${{ secrets.ARCHITECT_PAT }}
     steps:
-      - name: Setup gh auth
-        run: echo "$GH_TOKEN" | gh auth login --with-token
       - name: Merge PR if CI green
         run: gh pr merge --auto --squash
