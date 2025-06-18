@@ -1,2 +1,0 @@
-This is a placeholder Helm chart generated for GA-parity work.
-Manifests will be refined post-GA.

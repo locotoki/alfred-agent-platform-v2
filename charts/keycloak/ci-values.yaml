@@ -1,7 +1,0 @@
-# CI test values for Keycloak chart
-keycloak:
-  auth:
-    existingSecret: keycloak-admin
-  proxy: edge
-  ingress:
-    enabled: false  # Disable ingress for CI

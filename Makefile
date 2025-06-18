@@ -174,3 +174,9 @@ cve-alert:
 .PHONY: ingest-test
 ingest-test:
 	go test ./internal/indexer -run TestIndexer_Run -v
+# -------- AI Agent helpers (call into infra) -------------
+INFRA := $(CURDIR)/infra/scripts
+
+architect-generate:
+	python $(INFRA)/architect-generate.py planning/architect-plan.md
+.PHONY: architect-generate < /dev/null
