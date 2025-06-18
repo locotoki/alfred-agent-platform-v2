@@ -17,4 +17,4 @@
 | [ ]    | 13  | pat_push_auth_test.md | Final test with PAT push authentication                    |
 | [ ]    | 14  | pat_config_test.md    | Final test with correctly configured ARCHITECT_PAT         |
 | [ ]    | 15  | pat_availability.md   | Debug test for ARCHITECT_PAT availability                  |
-| [ ]    | 16  | github_token_test.md  | Test with default GITHUB_TOKEN and write permissions       |
+| [ ]    | 16  | github_token_test.md  | Test with default GITHUB_TOKEN and write permissions       |- Add a Hello-World endpoint (tiny test)
