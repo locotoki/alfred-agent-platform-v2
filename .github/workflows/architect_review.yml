@@ -15,4 +15,4 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Merge PR if CI green
-        run: gh pr merge --auto --squash
+        run: gh pr merge ${{ github.event.pull_request.number }} --auto --squash
