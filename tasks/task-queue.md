@@ -1,9 +1,6 @@
-| Status | ID  | File                        | Description                                           |
-|--------|-----|-----------------------------|-------------------------------------------------------|
-| [x]    | 001 | PR #710                     | Enable optional E2E & perf-stress jobs                |
-| [ ]    | 002 | PR #710                     | Make flake-detector a required gate                   |
-| [ ]    | 003 | Issue #695                  | Kick-off Dependabot + weekly Trivy automation         |
-| [ ]    | 004 | Migrate_Slack_Adapter.md    | Migrate Slack adapter from ngrok to Cloudflare Tunnel |
-| [ ]    | 005 | Slack_Manifest_Update.md    | Update Slack manifest for Cloudflare Tunnel migration |
-
-
+| Status | ID  | File                  | Description                            |
+|--------|-----|-----------------------|----------------------------------------|
+| [ ]    | 1   | server.js             | Create a basic server file             |
+| [ ]    | 2   | routes/helloWorld.js  | Implement Hello-world endpoint logic   |
+| [ ]    | 3   | app.js                | Integrate the endpoint into the app    |
+| [ ]    | 4   | test/helloWorld.test.js| Write tests for the Hello-world endpoint |
