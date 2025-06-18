@@ -7,12 +7,18 @@ jobs:
   engineer:
     runs-on: ubuntu-latest
     timeout-minutes: 40
+    permissions:
+      contents: write
+      pull-requests: write
     env:
       ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
       ENGINEER_MODEL: claude-3.5-sonnet
     steps:
       - uses: actions/checkout@v4
-        with: { submodules: recursive }
+        with: 
+          submodules: recursive
+          token: ${{ github.token }}
+          persist-credentials: true
       - uses: actions/setup-python@v5
         with: { python-version: '3.11' }
       - name: Install deps
@@ -40,6 +46,8 @@ jobs:
         run: make engineer-run
       - name: Commit & PR
         if: steps.next.outputs.found == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           git config user.name engineer-bot
           git config user.email engineer-bot@users.noreply.github.com
