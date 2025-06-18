@@ -19,6 +19,8 @@ jobs:
       - uses: actions/setup-python@v5
         with: { python-version: '3.11' }
       - run: pip install openai ghapi
+      - name: Setup gh auth
+        run: echo "$GH_TOKEN" | gh auth login --with-token
       - name: Extract task row
         id: task
         run: |
