@@ -1,0 +1,24 @@
+name: tests-docker
+
+on:
+  push:
+    branches: [ "**" ]
+    paths:
+      - "agents/**"
+      - "tests/**"
+      - "Dockerfile.test"
+      - ".github/workflows/tests-docker.yml"
+      - "requirements*.txt"
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  pytest-container:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - name: Build + run tests container
+        run: |
+          docker compose -f docker-compose.yml build tests
+          docker compose -f docker-compose.yml run --rm --no-deps tests

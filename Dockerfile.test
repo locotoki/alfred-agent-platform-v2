@@ -1,12 +1,30 @@
+# ---------- build stage ----------
+FROM python:3.11-slim AS build
+WORKDIR /tmp
+
+# install build dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    gcc \
+    python3-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# copy dependency manifests first for cache efficiency
+COPY requirements*.txt ./
+RUN pip install --upgrade pip \
+ && pip install -r requirements.txt \
+ && pip install -r requirements-dev.txt
+
+# ---------- runtime stage ----------
 FROM python:3.11-slim
 WORKDIR /app
+ENV PIP_NO_CACHE_DIR=1 PYTHONUNBUFFERED=1
 
-# copy dependency manifests first for layer-cache
-COPY requirements*.txt ./
-RUN pip install --no-cache-dir -r requirements.txt \
- && pip install --no-cache-dir -r requirements-dev.txt
+# copy installed packages from build stage
+COPY --from=build /usr/local/lib/python3.11/site-packages /usr/local/lib/python3.11/site-packages
+COPY --from=build /usr/local/bin /usr/local/bin
 
-# project code last
+# copy project code
 COPY . .
 
-ENTRYPOINT ["pytest", "-v"]
+# run full suite; --cache-clear avoids permissions issue
+ENTRYPOINT ["pytest", "tests/", "-v", "--cache-clear"]
