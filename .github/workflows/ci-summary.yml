@@ -47,3 +47,18 @@ jobs:
           echo "Running full CI …"
           echo "Skipping non-existent build/test scripts for now"
       # ─────────────────────────────────────────────────────────────────────────
+
+  # 4) Summary job that always runs and reports overall status
+  ci-summary:
+    needs: [detect-docs-only, docs-fast-pass, full-ci]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check status
+        run: |
+          if [[ "${{ needs.docs-fast-pass.result }}" == "success" || "${{ needs.full-ci.result }}" == "success" ]]; then
+            echo "✅ CI passed"
+          else
+            echo "❌ CI failed"
+            exit 1
+          fi
