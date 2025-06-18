@@ -1,0 +1,75 @@
+name: Engineer – Async Task Runner
+on:
+  push:
+    branches-ignore: [main]
+    paths: [ 'tasks/task-queue.md' ]
+jobs:
+  engineer:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    permissions:
+      contents: write
+      pull-requests: write
+    env:
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      ENGINEER_MODEL: claude-3.5-sonnet
+    steps:
+      - uses: actions/checkout@v4
+        with: 
+          submodules: recursive
+          token: ${{ secrets.ARCHITECT_PAT || github.token }}
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.11' }
+      - name: Install deps
+        run: pip install anthropic
+      - name: Parse next task
+        id: next
+        run: |
+          python - <<'PY'
+          import re, pathlib, sys, json, os
+          md = pathlib.Path('tasks/task-queue.md').read_text()
+          m = re.search(r'\| *\[ \] *\| *(\d+) *\| *([^|]+) *\| *([^|]+?) *\|', md)
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
+              if not m: 
+                  f.write('found=false\n')
+              else:
+                  f.write('found=true\n')
+                  f.write(f"id={m.group(1)}\n")
+                  f.write(f"desc={m.group(3).strip()}\n")
+          PY
+      - name: Exit if none
+        if: steps.next.outputs.found == 'false'
+        run: echo "No tasks."
+      - name: Engineer run
+        if: steps.next.outputs.found == 'true'
+        env:
+          TASK: ${{ steps.next.outputs.desc }}
+        run: make engineer-run
+      - name: Commit & Create PR
+        if: steps.next.outputs.found == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.ARCHITECT_PAT || github.token }}
+        run: |
+          git config user.name engineer-bot
+          git config user.email engineer-bot@users.noreply.github.com
+          BR=engineer-task-${{ steps.next.outputs.id }}
+          # Delete branch if it exists
+          git push origin --delete "$BR" 2>/dev/null || true
+          git switch -c "$BR"
+          git add -A
+          git commit -m "feat: task #${{ steps.next.outputs.id }} – ${{ steps.next.outputs.desc }}"
+          git push --set-upstream origin "$BR"
+          
+          # Try to create PR (with fallback logic)
+          echo "🔄 Attempting to create pull request..."
+          if gh pr create --title "Engineer: task #${{ steps.next.outputs.id }}" \
+                         --body "Automated implementation for task #${{ steps.next.outputs.id }}: ${{ steps.next.outputs.desc }}" \
+                         --head "$BR" \
+                         --base "${{ github.ref_name }}"; then
+            echo "✅ Engineer created PR for branch: $BR"
+          else
+            echo "⚠️ PR creation failed, but branch created successfully"
+            echo "✅ Engineer created branch: $BR"
+            echo "🔗 Create PR manually: https://github.com/${{ github.repository }}/compare/${{ github.ref_name }}...$BR"
+          fi

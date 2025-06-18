@@ -1,0 +1,31 @@
+name: Architect – Review & (Auto)Merge
+on:
+  pull_request:
+    types: [opened, synchronize]
+    branches-ignore: [main]
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    if: |
+      startsWith(github.head_ref, 'engineer-task-') ||
+      contains(github.event.pull_request.labels.*.name, 'engineer-pr')
+    env:
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      AUTO_MERGE: ${{ secrets.AUTO_MERGE || 'false' }}
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+        with: { submodules: recursive }
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.11' }
+      - run: pip install openai ghapi
+      - name: Extract task row
+        id: task
+        run: |
+          TASK_ID=$(echo "${{ github.head_ref }}" | grep -oE '[0-9]+')
+          ROW=$(grep -E "\\| *\\[.?\\] *\\| *$TASK_ID " tasks/task-queue.md || true)
+          echo "TASK_ROW<<EOF" >> $GITHUB_ENV
+          echo "$ROW" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+      - name: Review with GPT-o3
+        run: infra/scripts/architect-review.py

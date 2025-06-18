@@ -1,0 +1,25 @@
+name: Test PAT Authentication
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Test PAT
+        env:
+          GH_TOKEN: ${{ secrets.ARCHITECT_PAT }}
+        run: |
+          if [ -z "$GH_TOKEN" ]; then
+            echo "❌ ARCHITECT_PAT is not set or empty"
+            exit 1
+          else
+            echo "✅ ARCHITECT_PAT is configured"
+            # Test if PAT can access the repo
+            curl -s -H "Authorization: token $GH_TOKEN" \
+              https://api.github.com/repos/${{ github.repository }} \
+              -o /dev/null -w "%{http_code}" | grep -q "200" && \
+              echo "✅ PAT has access to repository" || \
+              echo "❌ PAT cannot access repository"
+          fi

@@ -44,3 +44,5 @@ psycopg[binary]
 pgvector
 alembic
 pytest-asyncio>=0.21
+black
+isort

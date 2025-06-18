@@ -1,0 +1,45 @@
+name: Architect – Generate Tasks
+
+on:
+  push:
+    branches-ignore: [main]
+    paths: [ 'planning/**' ]
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    env:
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          token: ${{ github.token }}
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install deps
+        run: pip install openai
+      - name: Generate task table
+        run: make architect-generate
+      - name: Sync task queue
+        run: |
+          python infra/scripts/architect-sync.py
+          git config user.name  "architect-bot"
+          git config user.email "architect-bot@users.noreply.github.com"
+          git diff --quiet || (git commit -am "chore: auto-sync task queue" && git push)
+      - name: Commit & push if changed
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          if ! git diff --quiet; then
+            git commit -am "chore: auto-update planning/tasks via Architect"
+            git push
+            echo "✅ Architect updated planning document with generated tasks"
+            echo "::notice::Architect generated task breakdown - check the commit for updates"
+          else
+            echo "No changes to commit"
+          fi
