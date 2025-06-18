@@ -17,3 +17,4 @@
 - Final test with PAT push authentication
 - Final test with correctly configured ARCHITECT_PAT
 - Debug test for ARCHITECT_PAT availability
+- Test with default GITHUB_TOKEN and write permissions
