@@ -52,6 +52,8 @@ jobs:
           git config user.name engineer-bot
           git config user.email engineer-bot@users.noreply.github.com
           BR=engineer-task-${{ steps.next.outputs.id }}
+          # Delete branch if it exists
+          git push origin --delete "$BR" 2>/dev/null || true
           git switch -c "$BR"
           git add -A
           git commit -m "feat: task #${{ steps.next.outputs.id }} – ${{ steps.next.outputs.desc }}"
