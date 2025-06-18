@@ -8,21 +8,16 @@ on:
 jobs:
   generate:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     env:
       OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
     steps:
-      - name: Debug secrets
-        run: |
-          if [ -n "${{ secrets.ARCHITECT_PAT }}" ]; then
-            echo "✅ ARCHITECT_PAT is available"
-          else
-            echo "❌ ARCHITECT_PAT is NOT available"
-          fi
       - uses: actions/checkout@v4
         with:
           submodules: recursive
-          token: ${{ secrets.ARCHITECT_PAT || secrets.GITHUB_TOKEN }}
-          persist-credentials: false
+          token: ${{ github.token }}
+          persist-credentials: true
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
@@ -31,16 +26,12 @@ jobs:
       - name: Generate task table
         run: make architect-generate
       - name: Commit & push if changed
-        env:
-          GITHUB_TOKEN: ${{ secrets.ARCHITECT_PAT }}
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           if ! git diff --quiet; then
             git commit -am "chore: auto-update planning/tasks via Architect"
-            # Configure git to use the PAT for authentication
-            git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git
-            git push origin HEAD:${{ github.ref_name }}
+            git push
             echo "✅ Architect updated planning document with generated tasks"
             echo "::notice::Architect generated task breakdown - check the commit for updates"
           else
