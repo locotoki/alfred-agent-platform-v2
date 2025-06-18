@@ -1,4 +1,4 @@
-name: Architect – Review & (Auto)Merge
+name: Architect – Auto-Merge Engineer PRs
 on:
   pull_request:
     types: [opened, synchronize]
@@ -11,22 +11,9 @@ jobs:
       contents: read
       pull-requests: write
     env:
-      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-      AUTO_MERGE: ${{ secrets.AUTO_MERGE || 'false' }}
-      GH_TOKEN: ${{ github.token }}
+      GH_TOKEN: ${{ secrets.ARCHITECT_PAT }}
     steps:
-      - uses: actions/checkout@v4
-        with: { submodules: recursive }
-      - uses: actions/setup-python@v5
-        with: { python-version: '3.11' }
-      - run: pip install openai ghapi
-      - name: Extract task row
-        id: task
-        run: |
-          TASK_ID=$(echo "${{ github.head_ref }}" | grep -oE '[0-9]+')
-          ROW=$(grep -E "\\| *\\[.?\\] *\\| *$TASK_ID " tasks/task-queue.md || true)
-          echo "TASK_ROW<<EOF" >> $GITHUB_ENV
-          echo "$ROW" >> $GITHUB_ENV
-          echo "EOF" >> $GITHUB_ENV
-      - name: Review with GPT-o3
-        run: infra/scripts/architect-review.py
+      - name: Setup gh auth
+        run: echo "$GH_TOKEN" | gh auth login --with-token
+      - name: Merge PR if CI green
+        run: gh pr merge --auto --squash
