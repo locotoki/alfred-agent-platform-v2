@@ -6,7 +6,7 @@ on:
 jobs:
   review:
     runs-on: ubuntu-latest
-    if: github.actor == 'engineer-bot'
+    if: startsWith(github.head_ref, 'engineer-task-')
     env:
       OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
       AUTO_MERGE: ${{ secrets.AUTO_MERGE || 'false' }}
