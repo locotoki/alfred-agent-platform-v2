@@ -1,0 +1,49 @@
+name: ci-summary
+
+# ──────────────── Triggers ────────────────
+on:
+  pull_request:           # PRs to any branch
+    types: [opened, synchronize, reopened, labeled]
+  push:                   # Direct pushes (e.g. release tags)
+
+# ──────────────── Jobs ────────────────
+jobs:
+  # 1) Detect whether *only* docs files changed
+  detect-docs-only:
+    runs-on: ubuntu-latest
+    outputs:
+      docs_only: ${{ steps.filter.outputs.docs_only }}
+    steps:
+      - name: Filter changed files
+        id: filter
+        uses: dorny/paths-filter@v3           # <1>
+        with:
+          filters: |
+            docs_only:
+              - '**/*.md'
+              - '!CODEOWNERS'                 # ignore meta files
+
+  # 2) Fast-pass job that satisfies the required status for docs-only changes
+  docs-fast-pass:
+    needs: detect-docs-only
+    if: needs.detect-docs-only.outputs.docs_only == 'true' &&
+        !contains(github.event.head_commit.message, '[force-ci]')
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "📝 Docs-only change detected – ci-summary marked green."
+
+  # 3) The full CI matrix (runs *only* when code changed or "[force-ci]" present)
+  full-ci:
+    needs: detect-docs-only
+    if: needs.detect-docs-only.outputs.docs_only != 'true' ||
+        contains(github.event.head_commit.message, '[force-ci]')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      # ───── Replace the block below with your existing build / test steps ─────
+      - name: Build & test
+        run: |
+          echo "Running full CI …"
+          echo "Skipping non-existent build/test scripts for now"
+      # ─────────────────────────────────────────────────────────────────────────
