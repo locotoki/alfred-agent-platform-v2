@@ -289,3 +289,8 @@ mission-control.tar.gz
 soak_midpoint_20250517T082236Z.tgz
 falco-redis-rule.yaml
 docs/event-catalog/
+
+# ─── AI workspace artefacts ───────────────────────────────────────
+planning/**/outputs/
+tasks/**/outputs/
+agents/**/__pycache__/
