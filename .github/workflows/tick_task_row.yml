@@ -1,0 +1,19 @@
+name: Task Row Ticker
+on:
+  pull_request:
+    types: [closed]
+    branches-ignore: [main]
+jobs:
+  tick:
+    if: github.event.pull_request.merged == true && startsWith(github.head_ref, 'engineer-task-')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { submodules: recursive }
+      - name: Tick row
+        run: |
+          ID=$(echo "${{ github.head_ref }}" | grep -oE '[0-9]+')
+          python infra/scripts/task-ticker.py "$ID"
+          git config user.name  "architect-bot"
+          git config user.email "architect-bot@users.noreply.github.com"
+          git diff --quiet || (git commit -am "chore: mark task #$ID done" && git push)
