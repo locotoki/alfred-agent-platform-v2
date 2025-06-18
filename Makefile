@@ -69,7 +69,7 @@ clean:
 
 test:
 	@echo "▶ running tests in docker …"
-	docker compose run --rm --no-deps tests
+	docker compose run --rm --no-deps tests pytest --cache-clear -v
 
 test-unit:
 	pytest tests/unit/ -v -m unit
