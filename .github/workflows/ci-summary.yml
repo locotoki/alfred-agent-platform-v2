@@ -22,6 +22,8 @@ jobs:
             docs_only:
               - '**/*.md'
               - '!CODEOWNERS'                 # ignore meta files
+              - 'tasks/task-queue.md'         # include task files
+              - 'planning/architect-plan.md'  # include planning files
 
   # 2) Fast-pass job that satisfies the required status for docs-only changes
   docs-fast-pass:
