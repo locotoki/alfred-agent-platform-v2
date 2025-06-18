@@ -61,15 +61,15 @@ jobs:
           git commit -m "feat: task #${{ steps.next.outputs.id }} – ${{ steps.next.outputs.desc }}"
           git push --set-upstream origin "$BR"
           
-          # Try to create PR if GH_PAT is available, otherwise just create branch
-          if [[ "${{ secrets.GH_PAT }}" != "" ]]; then
-            gh pr create --title "Engineer: task #${{ steps.next.outputs.id }}" \
+          # Try to create PR (with fallback logic)
+          echo "🔄 Attempting to create pull request..."
+          if gh pr create --title "Engineer: task #${{ steps.next.outputs.id }}" \
                          --body "Automated implementation for task #${{ steps.next.outputs.id }}: ${{ steps.next.outputs.desc }}" \
                          --head "$BR" \
-                         --base "${{ github.ref_name }}" || echo "⚠️ PR creation failed, but branch created successfully"
+                         --base "${{ github.ref_name }}"; then
             echo "✅ Engineer created PR for branch: $BR"
           else
+            echo "⚠️ PR creation failed, but branch created successfully"
             echo "✅ Engineer created branch: $BR"
             echo "🔗 Create PR manually: https://github.com/${{ github.repository }}/compare/${{ github.ref_name }}...$BR"
-            echo "💡 To enable auto-PR creation, add GH_PAT secret with 'repo' and 'pull_request' scopes"
           fi
