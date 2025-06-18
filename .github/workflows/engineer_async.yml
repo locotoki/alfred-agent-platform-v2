@@ -1,8 +1,7 @@
 name: Engineer – Async Task Runner
 on:
   push:
-    branches-ignore: [main]
-    paths: [ 'tasks/task-queue.md' ]
+    branches: [main]
 jobs:
   engineer:
     runs-on: ubuntu-latest
