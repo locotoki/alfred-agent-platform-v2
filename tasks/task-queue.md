@@ -2,6 +2,5 @@
 
 | Status | ID | File | Description |
 |--------|-----|----|-------------|
-| [ ] | 2001 | src/test_greeting.py | Create a test greeting function |
-| [ ] | 1001 | src/hello.py | Create a simple hello world Python script |
-| [ ] | 1002 | docs/README.md | Update documentation with setup instructions |
+| [ ] | 001 | N/A | Finish umbrella PR #710: make flake-detector required |
+| [ ] | 002 | N/A | Finish umbrella PR #710: fix perf-stress gate |
