@@ -11,10 +11,17 @@ jobs:
     env:
       OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
     steps:
+      - name: Debug secrets
+        run: |
+          if [ -n "${{ secrets.ARCHITECT_PAT }}" ]; then
+            echo "✅ ARCHITECT_PAT is available"
+          else
+            echo "❌ ARCHITECT_PAT is NOT available"
+          fi
       - uses: actions/checkout@v4
         with:
           submodules: recursive
-          token: ${{ secrets.ARCHITECT_PAT }}
+          token: ${{ secrets.ARCHITECT_PAT || secrets.GITHUB_TOKEN }}
           persist-credentials: false
       - uses: actions/setup-python@v5
         with:
