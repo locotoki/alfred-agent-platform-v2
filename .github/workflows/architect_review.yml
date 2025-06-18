@@ -6,7 +6,9 @@ on:
 jobs:
   review:
     runs-on: ubuntu-latest
-    if: startsWith(github.head_ref, 'engineer-task-')
+    if: |
+      startsWith(github.head_ref, 'engineer-task-') ||
+      contains(github.event.pull_request.labels.*.name, 'engineer-pr')
     env:
       OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
       AUTO_MERGE: ${{ secrets.AUTO_MERGE || 'false' }}
