@@ -13,3 +13,4 @@
 - Test with corrected OpenAI API syntax
 - Test PR creation workflow
 - Final test with proper bot authentication
+- Test with ARCHITECT_PAT configured
