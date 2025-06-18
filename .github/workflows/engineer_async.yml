@@ -68,6 +68,11 @@ jobs:
                          --head "$BR" \
                          --base "${{ github.ref_name }}"; then
             echo "✅ Engineer created PR for branch: $BR"
+            
+            # Add automerge label for hands-free automation
+            echo "🏷️ Adding automerge label..."
+            gh pr edit --add-label automerge || echo "⚠️ Failed to add automerge label"
+            echo "✅ Engineer PR ready for auto-merge"
           else
             echo "⚠️ PR creation failed, but branch created successfully"
             echo "✅ Engineer created branch: $BR"
