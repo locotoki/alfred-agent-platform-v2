@@ -12,7 +12,7 @@ Use [ ] for unchecked tasks and [x] for completed ones. -->
 | [x]    | 003 | Issue #695                 | Kick-off Dependabot + weekly Trivy automation             |
 | [ ]    | 004 | Migrate_Slack_Adapter.md   | Migrate Slack adapter from ngrok to Cloudflare Tunnel     |
 | [x]    | 005 | Slack_Manifest_Update.md   | Update Slack manifest for Cloudflare Tunnel migration     |
-| [ ]    | 006 | Issue #697                 | Begin BizDev agent scaffold                               |
+| [x]    | 006 | Issue #697                 | Begin BizDev agent scaffold                               |
 
 ## Planning bullets
 - Relax ci-summary for docs-only commits (auto-green docs-only PRs)
@@ -31,3 +31,8 @@ Use [ ] for unchecked tasks and [x] for completed ones. -->
 - Add Slack alert if task-queue has unchecked items but engineer_async idle > 60 min
 - Re-assert automerge label in engineer_async before workflow ends
 - Add watchdog workflow to alert if architect_generate or engineer_async red > 30 min
+
+- Create BizDev service skeleton (FastAPI project `services/bizdev_service`, poetry config, basic health endpoint)
+- Add initial database schema for BizDev service (SQLAlchemy models + Alembic migration for `leads` table)
+- Write Helm chart and Kubernetes manifests for BizDev service (values.yaml, deployment, service)
+- Add CI lint + unit-test job for BizDev service (pytest sample test, ruff lint)
