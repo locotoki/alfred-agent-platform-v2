@@ -17,7 +17,7 @@ jobs:
       - uses: actions/checkout@v4
         with: 
           submodules: recursive
-          token: ${{ github.token }}
+          token: ${{ secrets.GH_PAT || github.token }}
           persist-credentials: true
       - uses: actions/setup-python@v5
         with: { python-version: '3.11' }
@@ -46,8 +46,10 @@ jobs:
         env:
           TASK: ${{ steps.next.outputs.desc }}
         run: make engineer-run
-      - name: Commit changes
+      - name: Commit & Create PR
         if: steps.next.outputs.found == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GH_PAT || github.token }}
         run: |
           git config user.name engineer-bot
           git config user.email engineer-bot@users.noreply.github.com
@@ -58,5 +60,16 @@ jobs:
           git add -A
           git commit -m "feat: task #${{ steps.next.outputs.id }} – ${{ steps.next.outputs.desc }}"
           git push --set-upstream origin "$BR"
-          echo "✅ Engineer created branch: $BR"
-          echo "🔗 Create PR manually: https://github.com/${{ github.repository }}/compare/${{ github.ref_name }}...$BR"
+          
+          # Try to create PR if GH_PAT is available, otherwise just create branch
+          if [[ "${{ secrets.GH_PAT }}" != "" ]]; then
+            gh pr create --title "Engineer: task #${{ steps.next.outputs.id }}" \
+                         --body "Automated implementation for task #${{ steps.next.outputs.id }}: ${{ steps.next.outputs.desc }}" \
+                         --head "$BR" \
+                         --base "${{ github.ref_name }}" || echo "⚠️ PR creation failed, but branch created successfully"
+            echo "✅ Engineer created PR for branch: $BR"
+          else
+            echo "✅ Engineer created branch: $BR"
+            echo "🔗 Create PR manually: https://github.com/${{ github.repository }}/compare/${{ github.ref_name }}...$BR"
+            echo "💡 To enable auto-PR creation, add GH_PAT secret with 'repo' and 'pull_request' scopes"
+          fi
