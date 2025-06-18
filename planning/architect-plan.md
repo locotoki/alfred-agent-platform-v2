@@ -18,4 +18,4 @@
 | [ ]    | 14  | pat_config_test.md        | Final test with correctly configured ARCHITECT_PAT         |
 | [ ]    | 15  | pat_availability.md       | Debug test for ARCHITECT_PAT availability                  |
 | [ ]    | 16  | github_token_test.md      | Test with default GITHUB_TOKEN and write permissions       |
-| [ ]    | 17  | hello_world_endpoint.md   | Add a Hello-World endpoint (tiny test)                     |
+| [ ]    | 17  | hello_world_endpoint.md   | Add a Hello-World endpoint (tiny test)                     |- Finish umbrella PR #710: make flake-detector required & fix perf-stress gate
