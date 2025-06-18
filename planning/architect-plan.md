@@ -4,3 +4,4 @@
 
 - Architect smoke bullet
 - OAuth login MVP
+- Test OAuth integration after API key setup
