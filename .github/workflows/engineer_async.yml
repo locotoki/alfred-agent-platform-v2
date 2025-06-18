@@ -17,7 +17,7 @@ jobs:
       - uses: actions/checkout@v4
         with: 
           submodules: recursive
-          token: ${{ github.token }}
+          token: ${{ secrets.ARCHITECT_PAT }}
           persist-credentials: true
       - uses: actions/setup-python@v5
         with: { python-version: '3.11' }
@@ -27,14 +27,16 @@ jobs:
         id: next
         run: |
           python - <<'PY'
-          import re, pathlib, sys, json
+          import re, pathlib, sys, json, os
           md = pathlib.Path('tasks/task-queue.md').read_text()
           m = re.search(r'\| *\[ \] *\| *(\d+) *\| *([^|]+) *\| *([^|]+?) *\|', md)
-          if not m: print('::set-output name=found::false')
-          else:
-              print('::set-output name=found::true')
-              print(f"::set-output name=id::{m.group(1)}")
-              print(f"::set-output name=desc::{m.group(3).strip()}")
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
+              if not m: 
+                  f.write('found=false\n')
+              else:
+                  f.write('found=true\n')
+                  f.write(f"id={m.group(1)}\n")
+                  f.write(f"desc={m.group(3).strip()}\n")
           PY
       - name: Exit if none
         if: steps.next.outputs.found == 'false'
@@ -47,7 +49,7 @@ jobs:
       - name: Commit & PR
         if: steps.next.outputs.found == 'true'
         env:
-          GH_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ secrets.ARCHITECT_PAT }}
         run: |
           git config user.name engineer-bot
           git config user.email engineer-bot@users.noreply.github.com
