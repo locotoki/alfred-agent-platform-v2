@@ -12,13 +12,15 @@ jobs:
     env:
       OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
       AUTO_MERGE: ${{ secrets.AUTO_MERGE || 'false' }}
-      GH_TOKEN: ${{ github.token }}
+      GH_TOKEN: ${{ secrets.ARCHITECT_PAT }}
     steps:
       - uses: actions/checkout@v4
         with: { submodules: recursive }
       - uses: actions/setup-python@v5
         with: { python-version: '3.11' }
       - run: pip install openai ghapi
+      - name: Setup gh auth
+        run: echo "$GH_TOKEN" | gh auth login --with-token
       - name: Extract task row
         id: task
         run: |
