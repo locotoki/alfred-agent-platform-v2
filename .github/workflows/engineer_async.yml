@@ -19,11 +19,11 @@ jobs:
         run: pip install anthropic
       - name: Parse next task
         id: next
-        run:  < /dev/null | 
+        run: |
           python - <<'PY'
           import re, pathlib, sys, json
           md = pathlib.Path('tasks/task-queue.md').read_text()
-          m = re.search(r'\\| *\\[ \\] *\\| *(\\d+) *\\| *([^|]+) *\\| *([^|]+?) *\\|', md)
+          m = re.search(r'\| *\[ \] *\| *(\d+) *\| *([^|]+) *\| *([^|]+?) *\|', md)
           if not m: print('::set-output name=found::false')
           else:
               print('::set-output name=found::true')
