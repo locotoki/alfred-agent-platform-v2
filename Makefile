@@ -178,7 +178,7 @@ ingest-test:
 INFRA := $(CURDIR)/infra/scripts
 
 architect-generate:
-	python $(INFRA)/architect-generate.py planning/architect-plan.md
+	python scripts/architect-generate.py planning/architect-plan.md
 
 engineer-run:
 	TASK="$(TASK)" $(INFRA)/engineer-run.sh
