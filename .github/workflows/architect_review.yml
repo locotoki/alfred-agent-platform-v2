@@ -13,5 +13,6 @@ jobs:
     env:
       GH_TOKEN: ${{ secrets.ARCHITECT_PAT }}
     steps:
+      - uses: actions/checkout@v4
       - name: Merge PR if CI green
         run: gh pr merge --auto --squash
