@@ -11,3 +11,4 @@
 - Test with architect script in main repo
 - Test with proper Git submodule
 - Test with corrected OpenAI API syntax
+- Test PR creation workflow
