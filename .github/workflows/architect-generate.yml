@@ -24,11 +24,15 @@ jobs:
       - name: Generate task table
         run: make architect-generate
       - name: Commit & push if changed
+        env:
+          GH_TOKEN: ${{ secrets.ARCHITECT_PAT || github.token }}
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           if ! git diff --quiet; then
             git commit -am "chore: auto-update planning/tasks via Architect"
+            # Configure git to use the PAT for authentication
+            git remote set-url origin https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git
             git push origin HEAD:${{ github.ref_name }}
             echo "✅ Architect updated planning document with generated tasks"
             echo "::notice::Architect generated task breakdown - check the commit for updates"
