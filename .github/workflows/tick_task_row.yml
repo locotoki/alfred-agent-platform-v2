@@ -8,7 +8,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with: { submodules: recursive }
+        with: 
+          submodules: recursive
+          token: ${{ secrets.ARCHITECT_PAT }}
+          persist-credentials: true
       - name: Tick row
         run: |
           ID=$(echo "${{ github.head_ref }}" | grep -oE '[0-9]+')
