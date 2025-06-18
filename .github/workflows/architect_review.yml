@@ -12,7 +12,7 @@ jobs:
     env:
       OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
       AUTO_MERGE: ${{ secrets.AUTO_MERGE || 'false' }}
-      GH_TOKEN: ${{ github.token }}
+      GH_TOKEN: ${{ secrets.ARCHITECT_PAT }}
     steps:
       - uses: actions/checkout@v4
         with: { submodules: recursive }
