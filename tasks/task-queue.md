@@ -8,3 +8,4 @@
 | [x]   | 004 | Migrate_Slack_Adapter.md   | Migrate Slack adapter from ngrok to Cloudflare Tunnel     |
 | [x]   | 005 | Slack_Manifest_Update.md   | Update Slack manifest for Cloudflare Tunnel migration     |
 | [ ]    | 006 | Issue #697                 | Begin BizDev agent scaffold                               |
+
