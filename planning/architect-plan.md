@@ -15,3 +15,4 @@
 - Final test with proper bot authentication
 - Test with ARCHITECT_PAT configured
 - Final test with PAT push authentication
+- Final test with correctly configured ARCHITECT_PAT
