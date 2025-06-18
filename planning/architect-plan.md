@@ -13,3 +13,6 @@ Use [ ] for unchecked tasks and [x] for completed ones. -->
 | [ ]    | 004 | Migrate_Slack_Adapter.md   | Migrate Slack adapter from ngrok to Cloudflare Tunnel     |
 | [ ]    | 005 | Slack_Manifest_Update.md   | Update Slack manifest for Cloudflare Tunnel migration     |
 | [ ]    | 006 | Issue #697                 | Begin BizDev agent scaffold                               |
+
+## Planning bullets
+- Relax ci-summary for docs-only commits (auto-green docs-only PRs)
