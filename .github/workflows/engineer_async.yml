@@ -68,13 +68,45 @@ jobs:
                          --head "$BR" \
                          --base "${{ github.ref_name }}"; then
             echo "✅ Engineer created PR for branch: $BR"
-            
-            # Add automerge label for hands-free automation
-            echo "🏷️ Adding automerge label..."
-            gh pr edit --add-label automerge || echo "⚠️ Failed to add automerge label"
-            echo "✅ Engineer PR ready for auto-merge"
           else
             echo "⚠️ PR creation failed, but branch created successfully"
             echo "✅ Engineer created branch: $BR"
             echo "🔗 Create PR manually: https://github.com/${{ github.repository }}/compare/${{ github.ref_name }}...$BR"
           fi
+
+      - name: Add Labels to PR
+        if: steps.next.outputs.found == 'true'
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.ARCHITECT_PAT || github.token }}
+          script: |
+            const branchName = `engineer-task-${{ steps.next.outputs.id }}`;
+            
+            // Find the PR for this branch
+            const { data: prs } = await github.rest.pulls.list({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              head: `${context.repo.owner}:${branchName}`,
+              state: 'open'
+            });
+            
+            if (prs.length === 0) {
+              console.log('No open PR found for branch:', branchName);
+              return;
+            }
+            
+            const pr = prs[0];
+            console.log(`Found PR #${pr.number} for branch: ${branchName}`);
+            
+            // Add labels for CI self-healing and automerge
+            try {
+              await github.rest.issues.addLabels({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: pr.number,
+                labels: ['attempt:0', 'automerge']
+              });
+              console.log('✅ Successfully added attempt:0 and automerge labels');
+            } catch (error) {
+              console.log('⚠️ Failed to add labels:', error.message);
+            }

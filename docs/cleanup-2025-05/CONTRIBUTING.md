@@ -132,6 +132,62 @@ New or modified services MUST:
 - Follow standard metric naming conventions
 - Update Grafana dashboards when adding metrics
 
+## CI Self-Healing System
+
+The Alfred Agent Platform includes an automated CI self-healing system to handle transient failures in Engineer PRs while escalating persistent issues to human attention.
+
+### How It Works
+
+The system automatically monitors all `engineer-task-*` PRs and implements a two-tier failure handling approach:
+
+#### First Failure (Attempt 0 → 1)
+When an Engineer PR fails CI for the first time:
+1. **Automatic Retry**: The system closes the failed PR and nudges the task queue
+2. **Label Update**: Changes `attempt:0` to `attempt:1` 
+3. **Fresh Implementation**: The engineer generates a completely new implementation approach
+4. **No Human Intervention**: Fully automated recovery for transient issues
+
+#### Second Failure (Attempt 1 → 2)
+When an Engineer PR fails CI for the second time:
+1. **Human Escalation**: Adds `needs-human` and `attempt:2` labels
+2. **Escalation Issue**: Creates a detailed issue for human review
+3. **PR Preservation**: Keeps the PR open for manual investigation
+4. **Root Cause Analysis**: Requires human engineer to analyze persistent failures
+
+### Labels Used
+
+- `attempt:0` - First attempt at the task (added automatically)
+- `attempt:1` - First retry after CI failure
+- `attempt:2` - Second retry, human intervention required
+- `needs-human` - Escalated to human engineer for review
+- `automerge` - Enables automatic merging when CI passes
+- `ci-escalation` - Applied to escalation issues
+
+### Engineer PR Lifecycle
+
+```
+Task Created → Engineer PR (attempt:0) → CI Pass → Auto-merge ✅
+                           ↓ CI Fail
+                      Close & Retry (attempt:1) → CI Pass → Auto-merge ✅  
+                                      ↓ CI Fail
+                                 Human Review (attempt:2, needs-human) 🚨
+```
+
+### Escalation Criteria
+
+The system escalates to human review when:
+- Two consecutive CI failures on the same task
+- Patterns suggest non-transient issues (code quality, logic errors)
+- Infrastructure problems requiring human diagnosis
+
+### Benefits
+
+- **Resilience**: Handles transient CI failures automatically
+- **Fresh Perspectives**: Each retry gets a completely new implementation approach  
+- **Human Focus**: Engineers only handle genuinely problematic cases
+- **Transparency**: Full audit trail via labels and comments
+- **Metrics**: Tracks retry patterns for system improvement
+
 ## Pull Request Process
 
 Before creating a pull request, ensure you've completed the CI Sanity Checklist:

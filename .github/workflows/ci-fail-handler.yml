@@ -1,0 +1,261 @@
+name: CI Self-Healing Handler
+
+on:
+  check_suite:
+    types: [completed]
+
+jobs:
+  handle-failure:
+    runs-on: ubuntu-latest
+    if: github.event.check_suite.conclusion == 'failure'
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Check if Engineer PR
+        id: check-engineer-pr
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const headBranch = context.payload.check_suite.head_branch;
+            console.log(`Head branch: ${headBranch}`);
+            
+            // Only handle engineer-task-* branches
+            if (!headBranch || !headBranch.startsWith('engineer-task-')) {
+              console.log('Not an engineer task branch, skipping');
+              core.setOutput('is_engineer_pr', 'false');
+              return;
+            }
+            
+            core.setOutput('is_engineer_pr', 'true');
+            core.setOutput('branch_name', headBranch);
+            
+            // Find the associated PR
+            const { data: prs } = await github.rest.pulls.list({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              head: `${context.repo.owner}:${headBranch}`,
+              state: 'open'
+            });
+            
+            if (prs.length === 0) {
+              console.log('No open PR found for this branch');
+              core.setOutput('pr_number', '');
+              return;
+            }
+            
+            const pr = prs[0];
+            core.setOutput('pr_number', pr.number.toString());
+            core.setOutput('pr_title', pr.title);
+            
+            // Get current labels
+            const labels = pr.labels.map(label => label.name);
+            console.log(`Current labels: ${labels.join(', ')}`);
+            
+            // Check attempt count
+            const attemptLabels = labels.filter(label => label.startsWith('attempt:'));
+            const currentAttempt = attemptLabels.length > 0 ? 
+              parseInt(attemptLabels[0].split(':')[1]) : 0;
+            
+            console.log(`Current attempt: ${currentAttempt}`);
+            core.setOutput('current_attempt', currentAttempt.toString());
+            core.setOutput('labels', JSON.stringify(labels));
+
+      - name: Handle First Failure
+        if: steps.check-engineer-pr.outputs.is_engineer_pr == 'true' && steps.check-engineer-pr.outputs.current_attempt == '0' && steps.check-engineer-pr.outputs.pr_number != ''
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const prNumber = parseInt('${{ steps.check-engineer-pr.outputs.pr_number }}');
+            const branchName = '${{ steps.check-engineer-pr.outputs.branch_name }}';
+            
+            console.log(`Handling first failure for PR #${prNumber}`);
+            
+            // Update labels: remove attempt:0, add attempt:1
+            await github.rest.issues.removeLabel({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: prNumber,
+              name: 'attempt:0'
+            }).catch(err => console.log('attempt:0 label not found or already removed'));
+            
+            await github.rest.issues.addLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: prNumber,
+              labels: ['attempt:1']
+            });
+            
+            // Add comment explaining the retry
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: prNumber,
+              body: `🔄 **CI Self-Healing: First Failure Detected**
+
+This PR failed CI checks on the first attempt. The system will now:
+1. Close this PR to trigger a fresh retry
+2. Nudge the task queue to regenerate the implementation
+3. Mark this as attempt #1
+
+The engineer will automatically retry this task with a fresh approach.`
+            });
+            
+            // Close the PR
+            await github.rest.pulls.update({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: prNumber,
+              state: 'closed'
+            });
+            
+            console.log(`Closed PR #${prNumber} for retry`);
+
+      - name: Handle Second Failure
+        if: steps.check-engineer-pr.outputs.is_engineer_pr == 'true' && steps.check-engineer-pr.outputs.current_attempt == '1' && steps.check-engineer-pr.outputs.pr_number != ''
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const prNumber = parseInt('${{ steps.check-engineer-pr.outputs.pr_number }}');
+            const prTitle = '${{ steps.check-engineer-pr.outputs.pr_title }}';
+            const branchName = '${{ steps.check-engineer-pr.outputs.branch_name }}';
+            
+            console.log(`Handling second failure for PR #${prNumber} - escalating to human`);
+            
+            // Update labels: remove attempt:1, add attempt:2 and needs-human
+            await github.rest.issues.removeLabel({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: prNumber,
+              name: 'attempt:1'
+            }).catch(err => console.log('attempt:1 label not found or already removed'));
+            
+            await github.rest.issues.addLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: prNumber,
+              labels: ['attempt:2', 'needs-human']
+            });
+            
+            // Add comment explaining escalation
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: prNumber,
+              body: `🚨 **CI Self-Healing: Second Failure - Human Intervention Required**
+
+This PR has now failed CI checks twice. The automated retry system has been exhausted.
+
+**Next Steps:**
+- A human engineer needs to review the failures
+- This PR will remain open for manual investigation
+- Check the CI logs for persistent issues that need addressing
+
+**Failure Pattern:** This suggests a non-transient issue that requires human analysis.`
+            });
+            
+            // Extract task ID from branch name for the issue
+            const taskIdMatch = branchName.match(/engineer-task-(\d+)/);
+            const taskId = taskIdMatch ? taskIdMatch[1] : 'unknown';
+            
+            // Create escalation issue
+            const issueBody = `## CI Self-Healing Escalation
+
+**Engineer Task ID:** ${taskId}
+**PR:** #${prNumber}
+**Branch:** \`${branchName}\`
+
+### Problem
+The automated engineer task has failed CI checks twice, indicating a persistent issue that requires human intervention.
+
+### Analysis Needed
+- [ ] Review CI failure logs in PR #${prNumber}
+- [ ] Identify root cause of failures
+- [ ] Determine if issue is:
+  - [ ] Code quality/logic error
+  - [ ] Environmental/infrastructure issue  
+  - [ ] Task specification problem
+  - [ ] CI configuration issue
+
+### Resolution Options
+- [ ] Fix the code manually and push to the branch
+- [ ] Update the original task specification
+- [ ] Mark task as blocked/won't-fix with explanation
+- [ ] Investigate CI pipeline for systemic issues
+
+### Metrics
+- First failure: Automatic retry attempted
+- Second failure: Human escalation triggered
+- Branch: \`${branchName}\`
+
+/cc @maintainers - requires human engineer review`;
+
+            const { data: issue } = await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `CI Self-Healing Escalation: ${prTitle}`,
+              body: issueBody,
+              labels: ['ci-escalation', 'needs-review', 'engineer-automation']
+            });
+            
+            console.log(`Created escalation issue #${issue.number}`);
+
+      - name: Nudge Task Queue
+        if: steps.check-engineer-pr.outputs.is_engineer_pr == 'true' && steps.check-engineer-pr.outputs.current_attempt == '0' && steps.check-engineer-pr.outputs.pr_number != ''
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const branchName = '${{ steps.check-engineer-pr.outputs.branch_name }}';
+            const taskIdMatch = branchName.match(/engineer-task-(\d+)/);
+            
+            if (!taskIdMatch) {
+              console.log('Could not extract task ID from branch name');
+              return;
+            }
+            
+            const taskId = taskIdMatch[1];
+            console.log(`Nudging task queue to retry task #${taskId}`);
+            
+            // The nudge will be handled by updating the task-queue.md file
+            // to mark the task as pending again, which will trigger the engineer_async workflow
+            
+            // Get current task-queue.md content
+            let taskQueueContent;
+            try {
+              const { data: file } = await github.rest.repos.getContent({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                path: 'tasks/task-queue.md'
+              });
+              taskQueueContent = Buffer.from(file.content, 'base64').toString();
+            } catch (error) {
+              console.log('Could not read task-queue.md:', error.message);
+              return;
+            }
+            
+            // Find and update the specific task to mark it as pending
+            // Look for the task with the matching ID and mark it as unchecked
+            const taskRegex = new RegExp(`\\| *\\[x\\] *\\| *${taskId} *\\| *([^|]+) *\\| *([^|]+?) *\\|`, 'g');
+            const updatedContent = taskQueueContent.replace(taskRegex, `| [ ] | ${taskId} | $1 | $2 |`);
+            
+            if (updatedContent !== taskQueueContent) {
+              // Update the file
+              await github.rest.repos.createOrUpdateFileContents({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                path: 'tasks/task-queue.md',
+                message: `ci-heal: nudge task #${taskId} for retry after CI failure`,
+                content: Buffer.from(updatedContent).toString('base64'),
+                sha: file.sha
+              });
+              
+              console.log(`Successfully nudged task #${taskId} in queue for retry`);
+            } else {
+              console.log(`Task #${taskId} not found in completed state, no nudge needed`);
+            }
