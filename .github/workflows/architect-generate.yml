@@ -21,8 +21,16 @@ jobs:
         run: pip install openai
       - name: Generate task table
         run: make architect-generate
-      - name: Commit & push if changed
+      - name: Commit & create PR if changed
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           git config user.name  "architect-bot"
           git config user.email "architect-bot@users.noreply.github.com"
-          git diff --quiet || (git commit -am "chore: auto-update planning/tasks via Architect" && git push)
+          if ! git diff --quiet; then
+            git commit -am "chore: auto-update planning/tasks via Architect"
+            git push
+            gh pr create --title "🤖 Architect: Auto-generated task updates" \
+              --body "Automatically generated task breakdown from planning document changes." \
+              --head "${{ github.head_ref }}" --base main || echo "PR may already exist"
+          fi
