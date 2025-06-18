@@ -3,6 +3,10 @@ Generate a task breakdown from the planning bullets below.
 Return a markdown table with columns: | Status | ID | File | Description |.  
 Use [ ] for unchecked tasks and [x] for completed ones. -->
 
+## Planning bullets
+- Fix task-ticker trigger (remove branches-ignore: [main])
+- Deploy architect_review.yml auto-merge workflow to main
+
 | Status | ID  | File                        | Description                                           |
 |--------|-----|-----------------------------|-------------------------------------------------------|
 | [x]    | 001 | PR #710                     | Enable optional E2E & perf-stress jobs                |

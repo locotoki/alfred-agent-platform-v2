@@ -2,7 +2,6 @@ name: Task Row Ticker
 on:
   pull_request:
     types: [closed]
-    branches-ignore: [main]
 jobs:
   tick:
     if: github.event.pull_request.merged == true && startsWith(github.head_ref, 'engineer-task-')
