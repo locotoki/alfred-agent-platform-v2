@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     services:
       pg:
-        image: pgvector/pgvector:pg16
+        image: ankane/pgvector
         env:
           POSTGRES_DB: memory
           POSTGRES_USER: memory
