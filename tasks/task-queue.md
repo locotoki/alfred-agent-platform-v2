@@ -8,7 +8,7 @@
 | [x]    | 006 | services/bizdev_service             | Scaffold BizDev agent (create service skeleton, initial DB schema, and README stub)             |
 | [x]    | 010 | docker-compose.yml                  | Integrate Qdrant indexer sidecar into docker-compose and Helm charts (health probe, metrics)    |
 | [x]   | 011 | trivy-alert.yml                     | Add nightly security CVE alert for trivy-image failures (Slack notification)                    |
-| [ ]    | 012 | docs/runbook_1.0.9.md               | Publish GA upgrade runbook & v1.0.9 CHANGELOG                                                   |
+| [x]   | 012 | docs/runbook_1.0.9.md               | Publish GA upgrade runbook & v1.0.9 CHANGELOG                                                   |
 | [x]    | 002 | PR #74                              | Enable flake-detector gate enforcement (merge PR #74, set as required status)                   |
 | [ ]    | 013 | pipeline-health.yml                 | Add pipeline-health badge & Slack alert if any core job red > 1 hr                              |
 | [ ]    | 014 | ci-cache.yml                        | Cache Go/Node build dependencies in CI using actions/cache                                      |
