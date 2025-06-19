@@ -1,0 +1,2 @@
+#!/bin/sh
+scripts/git2mem.py || echo "git2mem warning: indexing failed"
