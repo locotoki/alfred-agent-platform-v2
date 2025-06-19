@@ -11,7 +11,7 @@
 | [x]   | 012 | docs/runbook_1.0.9.md               | Publish GA upgrade runbook & v1.0.9 CHANGELOG                                                   |
 | [x]    | 002 | PR #74                              | Enable flake-detector gate enforcement (merge PR #74, set as required status)                   |
 | [x]   | 013 | pipeline-health.yml                 | Add pipeline-health badge & Slack alert if any core job red > 1 hr                              |
-| [ ]    | 014 | ci-cache.yml                        | Cache Go/Node build dependencies in CI using actions/cache                                      |
+| [x]   | 014 | ci-cache.yml                        | Cache Go/Node build dependencies in CI using actions/cache                                      |
 | [ ]    | 015 | branch-protection.yml               | Migrate classic branch protection to a single Ruleset (delete legacy rules)                     |
 | [ ]    | 016 | architect-sync.py                   | Add duplicate-bullet dedupe logic to architect-sync.py (skip second identical bullet)           |
 | [ ]    | 017 | task-ticker.yml                     | Retry + create GitHub Issue when task-ticker push fails (skip silent drop)                      |
