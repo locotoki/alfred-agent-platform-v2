@@ -14,9 +14,17 @@ async def run():
         data = json.loads(msg.data.decode())
         prd_path = data["path"]  # path to merged PRD
         subprocess.run(["python", "-m", "planner.planner_prd", prd_path])
+        await msg.ack()
 
-    await nc.subscribe("prd.merged", cb=handler)
+    js = nc.jetstream()
+    await js.add_consumer(stream="EVENTS",
+                          config={"durable_name": "planner", "filter_subject": "prd.merged"})
+    sub = await js.pull_subscribe("prd.merged", durable="planner")
+    
     while True:
+        msgs = await sub.fetch(1, timeout=1)
+        for msg in msgs:
+            await handler(msg)
         await asyncio.sleep(1)
 
 

@@ -1,0 +1,30 @@
+name: jetstream-smoke
+on:
+  pull_request:
+    paths:
+      - "scripts/create_streams.sh"
+      - "agents/planner/**"
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    services:
+      nats:
+        image: nats:2.10
+        ports:
+          - 4222:4222
+        options: >-
+          --health-cmd "nats --server nats://localhost:4222 ping"
+          --health-interval 5s --health-retries 5
+          --name nats
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          chmod +x scripts/create_streams.sh
+          # Wait for NATS to be ready
+          sleep 5
+          # Create streams
+          NATS_URL=nats://localhost:4222 scripts/create_streams.sh
+          # Test publishing to events stream
+          docker exec nats nats --server nats://localhost:4222 pub events.test "hello jetstream"
+          # Verify stream info
+          docker exec nats nats --server nats://localhost:4222 stream info EVENTS
