@@ -44,6 +44,7 @@ prometheus-client==0.19.0
 
 # Testing
 pytest==7.4.3
+pytest-asyncio==0.23.8
 pytest-cov==4.1.0
 freezegun==1.2.2
 
