@@ -14,6 +14,8 @@ jobs:
           POSTGRES_DB: memory
           POSTGRES_USER: memory
           POSTGRES_PASSWORD: memorypass
+        ports:
+          - 5432:5432
         options: >-
           --health-cmd "pg_isready -U memory"
           --health-interval 5s
