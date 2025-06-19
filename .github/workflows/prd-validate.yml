@@ -1,0 +1,16 @@
+name: prd-validate
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "docs/prd/**"
+      - ".github/workflows/prd-validate.yml"
+      - ".github/scripts/validate_prd.py"
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run PRD validator
+        run: .github/scripts/validate_prd.py
