@@ -1,0 +1,19 @@
+name: reviewer-agent
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened]
+jobs:
+  reviewer:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run Reviewer agent
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.number }}
+        working-directory: agents/reviewer
+        run: |
+          pip install PyGithub
+          python -m reviewer.entrypoint
