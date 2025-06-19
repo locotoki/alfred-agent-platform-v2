@@ -1,6 +1,6 @@
 | Status | ID  | File                                | Description                                                                                     |
 |--------|-----|-------------------------------------|-------------------------------------------------------------------------------------------------|
-| [ ]    | 009 | ci-summary.yml                      | Relax ci-summary for docs-only commits (auto-green docs-only PRs)                               |
+| [x]   | 009 | ci-summary.yml                      | Relax ci-summary for docs-only commits (auto-green docs-only PRs)                               |
 | [x]    | 004 | infra/scripts/slack_adapter.sh      | Migrate Slack adapter from ngrok to Cloudflare Tunnel                                           |
 | [x]    | 004 | Helm chart                          | Update Helm chart for Slack adapter migration                                                   |
 | [x]    | 004 | Migration_Docs.md                   | Update docs for Slack adapter migration                                                         |
