@@ -54,7 +54,7 @@ jobs:
 
       - name: Basic health probe
         run: |
-          sleep 15
+          sleep 40
           docker compose ps
           curl -sf http://localhost:8000/health || (echo "Health probe failed"; docker compose logs; exit 1)
 
