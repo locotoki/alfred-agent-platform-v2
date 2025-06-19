@@ -1,0 +1,18 @@
+name: cost-collector
+on:
+  schedule:
+    - cron: '3 0 * * *'   # daily at 00:03 UTC
+  workflow_dispatch:
+jobs:
+  collect:
+    runs-on: self-hosted
+    env:
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      GH_TOKEN: ${{ secrets.ARCHITECT_PAT }}
+      PG_DSN: ${{ secrets.PG_DSN }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Collect costs
+        run: |
+          pip install psycopg2-binary requests
+          python scripts/collect_costs.py
