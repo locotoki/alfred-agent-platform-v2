@@ -1,0 +1,50 @@
+name: compose-validate-and-up
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "docker-compose.yml"
+      - ".github/workflows/ci-compose.yml"
+      - "services/**"
+jobs:
+  compose-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx (installs Docker Compose v2)
+        uses: docker/setup-buildx-action@v3
+        with:
+          install: true
+
+      - name: Cache Docker layers
+        uses: actions/cache@v4
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          restore-keys: ${{ runner.os }}-buildx-
+
+      - name: Validate docker-compose.yml
+        run: docker compose -f docker-compose.yml config
+
+      - name: Compose up (detached) with retry x3
+        run: |
+          set -e
+          for i in 1 2 3; do
+            echo "Attempt $i…"
+            docker compose -f docker-compose.yml up -d && break
+            echo "Compose up failed, retrying in 10 s"
+            docker compose logs
+            sleep 10
+          done
+
+      - name: Basic health probe
+        run: |
+          sleep 15
+          docker compose ps
+          curl -sf http://localhost:8000/health || (echo "Health probe failed"; docker compose logs; exit 1)
+
+      - name: Tear down stack (always)
+        if: always()
+        run: docker compose -f docker-compose.yml down -v
