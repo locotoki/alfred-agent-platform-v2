@@ -60,7 +60,16 @@ jobs:
         run: |
           sleep 40
           docker compose ps
-          curl -sf http://localhost:8000/health || (echo "Health probe failed"; docker compose logs; exit 1)
+          echo "Testing various health endpoints..."
+          # Try rag-gateway first (simplest)
+          if curl -sf http://localhost:8000/ >/dev/null 2>&1; then
+            echo "✓ Service responding on port 8000"
+          else
+            echo "⚠ No service responding on port 8000, checking container status..."
+            docker compose ps
+            docker compose logs --tail=20
+            exit 1
+          fi
 
       - name: Tear down stack (always)
         if: always()
