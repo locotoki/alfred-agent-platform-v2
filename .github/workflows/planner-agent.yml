@@ -11,4 +11,4 @@ jobs:
       - uses: actions/setup-python@v5
         with: {python-version: "3.12"}
       - run: pip install -r agents/planner/requirements.txt pytest nats-py
-      - run: pytest agents/planner/tests
+      - run: cd agents/planner && python -m pytest tests/ --tb=short -v
