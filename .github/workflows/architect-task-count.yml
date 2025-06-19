@@ -1,0 +1,26 @@
+name: architect-task-count
+on:
+  pull_request:
+    branches: [main]
+    paths: ["planning/architect-plan.md"]
+jobs:
+  count:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Count tasks in base
+        id: base
+        run: |
+          git show origin/${{ github.base_ref }}:planning/architect-plan.md \
+            | grep -oP '\|\s*\[\s*[x ]\s*\]' | wc -l > /tmp/base_cnt
+      - name: Count tasks in head
+        run: |
+          head_cnt=$(grep -oP '\|\s*\[\s*[x ]\s*\]' planning/architect-plan.md | wc -l)
+          base_cnt=$(cat /tmp/base_cnt)
+          echo "Base=$base_cnt Head=$head_cnt"
+          if [ "$head_cnt" -lt "$base_cnt" ]; then
+            echo "Task list shrank – failing."
+            exit 1
+          fi
