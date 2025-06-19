@@ -1514,6 +1514,14 @@ services:
     ports: [ "4222:4222" ]
     volumes: [ "nats_data:/nats" ]
 
+  cost-api:
+    build: ./services/cost-api
+    ports: ["8082:8082"]
+    environment:
+      - PG_DSN=${PG_DSN}
+    depends_on:
+      - vector-pg
+
 volumes:
   redis-data:
     name: alfred-redis-data
