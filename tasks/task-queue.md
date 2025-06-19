@@ -20,4 +20,4 @@
 | [x]   | 020 | fastapi_project_setup.md            | Create BizDev service skeleton (FastAPI project `services/bizdev_service`, poetry config, basic health endpoint) |
 | [x]   | 021 | bizdev_db_schema.sql                | Add initial database schema for BizDev service (SQLAlchemy models + Alembic migration for `leads` table) |
 | [x]   | 022 | bizdev_helm_chart                   | Write Helm chart and Kubernetes manifests for BizDev service (values.yaml, deployment, service) |
-| [ ]    | 023 | bizdev_ci.yml                       | Add CI lint + unit-test job for BizDev service (pytest sample test, ruff lint)                  |
+| [x]   | 023 | bizdev_ci.yml                       | Add CI lint + unit-test job for BizDev service (pytest sample test, ruff lint)                  |
