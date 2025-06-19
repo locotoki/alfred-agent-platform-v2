@@ -21,11 +21,20 @@ def main():
     if not re.search(rule["pattern"], body, re.IGNORECASE | re.DOTALL):
         errors.append(rule["message"])
     if errors:
-        pr.create_issue_comment("\n".join(errors))
-        pr.create_review(body="Reviewer agent failed rules.", event="REQUEST_CHANGES")
+        print("❌ Reviewer agent failed:")
+        for error in errors:
+            print(f"  - {error}")
+        try:
+            pr.create_issue_comment("\n".join(errors))
+        except Exception as e:
+            print(f"Note: Could not create PR comment: {e}")
         sys.exit(1)
     else:
-        pr.create_review(body="Reviewer agent passed all rules.", event="APPROVE")
+        print("✅ Reviewer agent passed all rules.")
+        try:
+            pr.create_issue_comment("✅ Reviewer agent: All validation rules passed.")
+        except Exception as e:
+            print(f"Note: Could not create PR comment: {e}")
         sys.exit(0)
 
 if __name__ == "__main__":
