@@ -16,7 +16,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           submodules: recursive
-          token: ${{ github.token }}
+          token: ${{ secrets.ARCHITECT_PAT }}
           persist-credentials: true
       - uses: actions/setup-python@v5
         with:
