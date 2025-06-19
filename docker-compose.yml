@@ -1480,6 +1480,9 @@ services:
       com.docker.compose.group: agents
       com.docker.compose.service: slack-bot
   rag-gateway:
+    build: ./services/rag-gateway
+    ports:
+      - "8000:8000"
     healthcheck:
       test:
         - CMD-SHELL
