@@ -38,7 +38,18 @@ def claim_task(task_id, prd_id, description):
 
 async def main():
     nc = NATS()
-    await nc.connect(os.getenv("NATS_URL", "nats://localhost:4222"))
+    await nc.connect(os.getenv("NATS_URL", "nats://nats:4222"))
+    js = nc.jetstream()
+    
+    # Ensure durable consumer exists on EVENTS stream
+    await js.add_consumer(
+        stream="EVENTS",
+        config={
+            "durable_name": "autoeng",
+            "filter_subject": "task.created",
+            "ack_policy": "explicit"
+        }
+    )
 
     async def handler(msg):
         data = json.loads(msg.data.decode())
@@ -50,9 +61,13 @@ async def main():
         print("Auto-claiming task", task_id)
         claim_task(task_id, prd_id, desc)
 
-    await nc.subscribe("task.created", durable="autoeng", cb=handler)
+    sub = await js.pull_subscribe("task.created", durable="autoeng")
     while True:
-        await asyncio.sleep(60)
+        msgs = await sub.fetch(100, timeout=5)
+        for m in msgs:
+            await handler(m)
+            await m.ack()
+        await asyncio.sleep(10)
 
 
 if __name__ == "__main__":
