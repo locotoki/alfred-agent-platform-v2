@@ -1540,22 +1540,20 @@ volumes:
   qdrant_data:
   pg_data:
   nats_data:
+  runner_data:
+
 networks:
   alfred-network:
 
-#######################################################################
-# Self-hosted GitHub Actions Runner
-#######################################################################
-services:
-  gh-runner:
-    image: my-gh-runner:latest   # build your custom runner image separately
-    environment:
-      GH_REPOSITORY: Digital-Native-Ventures/alfred-agent-platform-v2
-      GH_PAT: ${GH_PAT:?set in .env.runner}
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - runner_data:/runner
-    restart: unless-stopped
-
-volumes:
-  runner_data:
+  #######################################################################
+  # Self-hosted GitHub Actions Runner - commented out for now
+  #######################################################################
+  # gh-runner:
+  #   image: my-gh-runner:latest
+  #   environment:
+  #     GH_REPOSITORY: Digital-Native-Ventures/alfred-agent-platform-v2
+  #     GH_PAT: ${GH_PAT:-}
+  #   volumes:
+  #     - /var/run/docker.sock:/var/run/docker.sock
+  #     - runner_data:/runner
+  #   restart: unless-stopped
