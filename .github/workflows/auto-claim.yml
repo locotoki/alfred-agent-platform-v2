@@ -1,0 +1,21 @@
+name: auto-claim
+on:
+  pull_request:
+    paths: ["agents/auto_eng/**"]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - run: pip install pytest PyGithub nats-py GitPython
+      - name: Run auto-claim tests
+        run: |
+          cd agents/auto_eng
+          python -c "
+          import sys; sys.path.insert(0, '.')
+          import tests.test_filter
+          tests.test_filter.test_auto_mark()
+          print('✅ Auto-claim tests passed')
+          "
