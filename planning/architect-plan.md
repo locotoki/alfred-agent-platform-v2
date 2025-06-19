@@ -45,3 +45,13 @@ Use [ ] for unchecked tasks and [x] for completed ones. -->
 | [ ]    | 038 | docs/automation_workflow.md         | Document PRD workflow                                                                           |
 | [ ]    | 039 | reviewer_middleware.md              | Implement reviewer middleware to enforce PRD-id & task-id in PR description                     |
 | [ ]    | 040 | kpi_monitor.yml                     | Add KPI monitor script to fail if Architect or Task-ticker success < 95%                       |
+
+
+#### Local Runtime Enablement
+- Scaffold services/memory (Qdrant + Postgres) in docker-compose
+- Add NATS message-bus service for agent events
+- Containerise architect, planner, engineer, reviewer agents with router.toml
+- Implement git->embedding ETL hook on post-commit
+- Port CI workflows to self-hosted runner service
+- Create router.toml mapping agents to local vs API LLM endpoints
+- Write plan-files-exist & task-count guards into local runner
