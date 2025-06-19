@@ -1487,28 +1487,8 @@ services:
       interval: 15s
       timeout: 3s
       retries: 5
-volumes:
-  redis-data:
-    name: alfred-redis-data
-  vector-db-data:
-    name: alfred-vector-db-data
-  llm-service-data:
-    name: alfred-llm-service-data
-  db-postgres-data:
-    name: alfred-db-postgres-data
-  db-storage-data:
-    name: alfred-db-storage-data
-  monitoring-metrics-data:
-    name: alfred-monitoring-metrics-data
-  monitoring-dashboard-data:
-    name: alfred-monitoring-dashboard-data
-networks:
-  alfred-network:
 
-#######################################################################
-# Local Runtime Enablement – Memory (Qdrant + Postgres) & Bus (NATS)
-#######################################################################
-services:
+  # Local Runtime Enablement – Memory (Qdrant + Postgres) & Bus (NATS)
   qdrant:
     image: qdrant/qdrant:v1.9.0
     volumes: [ "qdrant_data:/qdrant/storage" ]
@@ -1535,6 +1515,22 @@ services:
     volumes: [ "nats_data:/nats" ]
 
 volumes:
+  redis-data:
+    name: alfred-redis-data
+  vector-db-data:
+    name: alfred-vector-db-data
+  llm-service-data:
+    name: alfred-llm-service-data
+  db-postgres-data:
+    name: alfred-db-postgres-data
+  db-storage-data:
+    name: alfred-db-storage-data
+  monitoring-metrics-data:
+    name: alfred-monitoring-metrics-data
+  monitoring-dashboard-data:
+    name: alfred-monitoring-dashboard-data
   qdrant_data:
   pg_data:
   nats_data:
+networks:
+  alfred-network:
