@@ -45,3 +45,13 @@ Use [ ] for unchecked tasks and [x] for completed ones. -->
 | [ ]    | 038 | docs/automation_workflow.md         | Document PRD workflow                                                                           |
 | [ ]    | 039 | reviewer_middleware.md              | Implement reviewer middleware to enforce PRD-id & task-id in PR description                     |
 | [ ]    | 040 | kpi_monitor.yml                     | Add KPI monitor script to fail if Architect or Task-ticker success < 95%                       |
+
+
+#### Architect Workbench UI
+- Implement ArchitectWorkbench.tsx with markdown editor + chat pane
+- Add backend SSE endpoint /architect/complete that proxies to architect agent container
+- Integrate validate_prd.py via WebWorker for live status in UI
+- Build MemorySidebar component calling /memory/search for similar docs
+- Add "Finalize PRD" action that commits draft to docs/prd/ and opens PR via GitHub API
+- Update automation_workflow.md diagram to include Workbench flow
+- Write Cypress E2E covering PRD creation via Workbench
