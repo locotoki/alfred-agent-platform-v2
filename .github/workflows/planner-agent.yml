@@ -1,0 +1,14 @@
+name: planner-agent
+on:
+  pull_request:
+    paths:
+      - "agents/planner/**"
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - run: pip install -r agents/planner/requirements.txt pytest nats-py
+      - run: cd agents/planner && python -m pytest tests/ --tb=short -v
