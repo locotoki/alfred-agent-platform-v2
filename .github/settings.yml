@@ -8,3 +8,5 @@ pull_request_rules:
       - "isort-check"
       - "prd-validate"
       - "plan-files-exist"
+      - "architect-task-count"
+      - "local-ci-smoke"
