@@ -1504,3 +1504,37 @@ volumes:
     name: alfred-monitoring-dashboard-data
 networks:
   alfred-network:
+
+#######################################################################
+# Local Runtime Enablement – Memory (Qdrant + Postgres) & Bus (NATS)
+#######################################################################
+services:
+  qdrant:
+    image: qdrant/qdrant:v1.9.0
+    volumes: [ "qdrant_data:/qdrant/storage" ]
+    ports: [ "6333:6333" ]
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:6333/readyz"]
+      interval: 10s
+      timeout: 3s
+      retries: 6
+
+  vector-pg:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: memory
+      POSTGRES_USER: memory
+      POSTGRES_PASSWORD: memorypass
+    volumes: [ "pg_data:/var/lib/postgresql/data" ]
+    ports: [ "5432:5432" ]
+
+  nats:
+    image: nats:2.10
+    command: ["-js", "-sd", "/nats"]
+    ports: [ "4222:4222" ]
+    volumes: [ "nats_data:/nats" ]
+
+volumes:
+  qdrant_data:
+  pg_data:
+  nats_data:
