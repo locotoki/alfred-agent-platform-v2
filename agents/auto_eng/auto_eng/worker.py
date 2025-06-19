@@ -8,6 +8,7 @@ import sys
 from github import Github
 from nats.aio.client import Client as NATS
 
+# Configuration
 GH_TOKEN = os.getenv("GITHUB_TOKEN")
 REPO_FULL = os.getenv("GITHUB_REPOSITORY")
 AUTO_MARK = "[auto]"
