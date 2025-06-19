@@ -18,3 +18,8 @@ Use [ ] for unchecked tasks and [x] for completed ones. -->
 
 #### CI / Branch Protection
 - Add kpi_monitor.yml to fail if Architect or Task-ticker success < 95 %
+- Investigate missing services/agent-core path in CI build context
+- Install docker compose CLI in CI runner images
+- Validate docker-compose.yml with `docker compose config` step in CI
+- Add integration test ensuring `docker compose up -d` succeeds
+- Harden CI image caching and retry strategy to reduce flake
