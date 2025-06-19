@@ -1,0 +1,15 @@
+name: prompt-cap
+on:
+  pull_request:
+    paths:
+      - "common/**"
+      - "agents/architect/**"
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - run: pip install pytest
+      - run: python -c "import sys; sys.path.insert(0, '.'); import tests.test_prompt_builder; tests.test_prompt_builder.test_cap(); tests.test_prompt_builder.test_order_preserved(); print('All tests passed!')"
