@@ -10,3 +10,4 @@ pull_request_rules:
       - "plan-files-exist"
       - "architect-task-count"
       - "local-ci-smoke"
+      - "plan-covers-queue"
