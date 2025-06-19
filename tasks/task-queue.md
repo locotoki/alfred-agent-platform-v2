@@ -14,7 +14,7 @@
 | [x]   | 014 | ci-cache.yml                        | Cache Go/Node build dependencies in CI using actions/cache                                      |
 | [x]   | 015 | branch-protection.yml               | Migrate classic branch protection to a single Ruleset (delete legacy rules)                     |
 | [x]   | 016 | architect-sync.py                   | Add duplicate-bullet dedupe logic to architect-sync.py (skip second identical bullet)           |
-| [ ]    | 017 | task-ticker.yml                     | Retry + create GitHub Issue when task-ticker push fails (skip silent drop)                      |
+| [x]   | 017 | task-ticker.yml                     | Retry + create GitHub Issue when task-ticker push fails (skip silent drop)                      |
 | [ ]    | 018 | task-queue_monitor.yml              | Add Slack alert if task-queue has unchecked items but engineer_async idle > 60 min              |
 | [ ]    | 019 | watchdog_workflow.yml               | Add watchdog workflow to alert if architect_generate or engineer_async red > 30 min             |
 | [ ]    | 020 | fastapi_project_setup.md            | Create BizDev service skeleton (FastAPI project `services/bizdev_service`, poetry config, basic health endpoint) |
