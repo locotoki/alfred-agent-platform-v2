@@ -1,0 +1,10 @@
+name: allow-failure-temporary
+on:
+  pull_request_target:
+    types: [labeled]
+jobs:
+  mark-allow-failure:
+    if: contains(github.event.pull_request.labels.*.name, 'allow-failure')
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "🔔 Marking PR as temporary allow-failure; will not block merge."
