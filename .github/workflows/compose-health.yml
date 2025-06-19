@@ -1,0 +1,42 @@
+name: compose-health
+on:
+  pull_request:
+    paths:
+      - "docker-compose.yml"
+      - "services/**"
+      - ".env.example"
+jobs:
+  health:
+    runs-on: ubuntu-latest
+    services:
+      docker:
+        image: docker:25.0-cli
+        options: --privileged
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Docker Compose
+        run: |
+          apk add --no-cache docker-compose
+          docker --version && docker compose version
+
+      - name: Boot core services
+        env:
+          PG_DSN: postgresql://memory:memorypass@vector-pg:5432/memory
+        run: |
+          docker compose up -d --build
+          echo "⏳ Waiting for health checks..."
+          # wait up to 120 s
+          for i in $(seq 1 24); do
+            unhealthy=$(docker compose ps --filter "status=running" --format '{{.Name}} {{.Health}}' | grep -v healthy || true)
+            if [ -z "$unhealthy" ]; then
+              echo "✅ All containers healthy"; break
+            fi
+            sleep 5
+          done
+          if [ -n "$unhealthy" ]; then
+            echo "❌ Unhealthy containers:"; echo "$unhealthy"; exit 1;
+          fi
+
+      - name: Tear down
+        run: docker compose down -v
