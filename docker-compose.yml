@@ -1505,7 +1505,9 @@ services:
       POSTGRES_DB: memory
       POSTGRES_USER: memory
       POSTGRES_PASSWORD: memorypass
-    volumes: [ "pg_data:/var/lib/postgresql/data" ]
+    volumes: 
+      - pg_data:/var/lib/postgresql/data
+      - ./services/vector-pg/init:/docker-entrypoint-initdb.d
     ports: [ "5432:5432" ]
 
   nats:
