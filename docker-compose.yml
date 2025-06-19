@@ -1504,3 +1504,20 @@ volumes:
     name: alfred-monitoring-dashboard-data
 networks:
   alfred-network:
+
+#######################################################################
+# Self-hosted GitHub Actions Runner
+#######################################################################
+services:
+  gh-runner:
+    image: my-gh-runner:latest   # build your custom runner image separately
+    environment:
+      GH_REPOSITORY: Digital-Native-Ventures/alfred-agent-platform-v2
+      GH_PAT: ${GH_PAT:?set in .env.runner}
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - runner_data:/runner
+    restart: unless-stopped
+
+volumes:
+  runner_data:
