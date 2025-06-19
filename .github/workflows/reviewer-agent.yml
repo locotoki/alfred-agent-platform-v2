@@ -13,7 +13,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_REPOSITORY: ${{ github.repository }}
           PR_NUMBER: ${{ github.event.number }}
-          PYTHONPATH: ${{ github.workspace }}/agents
+        working-directory: agents/reviewer
         run: |
           pip install PyGithub
           python -m reviewer.entrypoint
