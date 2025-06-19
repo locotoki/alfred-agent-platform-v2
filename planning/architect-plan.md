@@ -35,3 +35,4 @@ Use [ ] for unchecked tasks and [x] for completed ones. -->
 - Add initial database schema for BizDev service (SQLAlchemy models + Alembic migration for `leads` table)
 - Write Helm chart and Kubernetes manifests for BizDev service (values.yaml, deployment, service)
 - Add CI lint + unit-test job for BizDev service (pytest sample test, ruff lint)
+
