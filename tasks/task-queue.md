@@ -6,5 +6,5 @@
 | [x]   | 035 | branch-protection.yml             | Integrate PRD validation into branch protection                                                           |
 | [x]   | 036 | architect-board                   | Extend Architect-Board with PRD editor pane to create/approve PRDs                                        |
 | [x]   | 037 | reviewer_agent.yml                | Update Reviewer-agent rule-set to enforce PRD reference and task IDs                                      |
-| [ ]    | 038 | docs/automation_workflow.md       | Document PRD workflow                                                                                     |
+| [x]   | 038 | docs/automation_workflow.md       | Document PRD workflow                                                                                     |
 | [ ]    | 039 | reviewer_middleware.md            | Implement reviewer middleware to enforce PRD-id & task-id in PR description                               |
