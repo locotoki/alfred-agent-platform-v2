@@ -7,7 +7,7 @@
 | [x]    | 005 | Slack_Manifest_Update.md            | Update Slack manifest for Cloudflare Tunnel migration                                           |
 | [x]    | 006 | services/bizdev_service             | Scaffold BizDev agent (create service skeleton, initial DB schema, and README stub)             |
 | [x]    | 010 | docker-compose.yml                  | Integrate Qdrant indexer sidecar into docker-compose and Helm charts (health probe, metrics)    |
-| [ ]    | 011 | trivy-alert.yml                     | Add nightly security CVE alert for trivy-image failures (Slack notification)                    |
+| [x]   | 011 | trivy-alert.yml                     | Add nightly security CVE alert for trivy-image failures (Slack notification)                    |
 | [ ]    | 012 | docs/runbook_1.0.9.md               | Publish GA upgrade runbook & v1.0.9 CHANGELOG                                                   |
 | [x]    | 002 | PR #74                              | Enable flake-detector gate enforcement (merge PR #74, set as required status)                   |
 | [ ]    | 013 | pipeline-health.yml                 | Add pipeline-health badge & Slack alert if any core job red > 1 hr                              |
