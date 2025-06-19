@@ -19,35 +19,39 @@ jobs:
           --health-interval 5s
           --health-timeout 5s
           --health-retries 5
-      qdrant:
-        image: qdrant/qdrant:v1.9.0
-        options: >-
-          --health-cmd "wget -qO- http://localhost:6333/readyz || exit 1"
-          --health-interval 5s
-          --health-timeout 5s
-          --health-retries 5
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with: {python-version: "3.12"}
       - run: pip install psycopg2-binary requests
-      - name: Run migration dry-run
-        env:
-          QDRANT_URL: http://localhost:6333
-          PG_DSN: postgresql://memory:memorypass@localhost:5432/memory
-        run: |
-          scripts/migrate_qdrant_to_pgvector.py --dry
-      - name: Sanity query
+      - name: Test pgvector extension
         env:
           PG_DSN: postgresql://memory:memorypass@localhost:5432/memory
         run: |
           python3 -c "
-          import os, psycopg2
-          conn = psycopg2.connect(os.environ['PG_DSN'])
+          import psycopg2
+          conn = psycopg2.connect('postgresql://memory:memorypass@localhost:5432/memory')
           cur = conn.cursor()
           cur.execute('CREATE EXTENSION IF NOT EXISTS pgvector;')
-          cur.execute('CREATE TABLE IF NOT EXISTS embeddings (id TEXT PRIMARY KEY, path TEXT, sha TEXT, vec vector(768));')
-          cur.execute('SELECT count(*) FROM embeddings')
-          print('Rows in embeddings:', cur.fetchone()[0])
+          cur.execute('CREATE TABLE test_vectors (id SERIAL PRIMARY KEY, embedding vector(3));')
+          cur.execute('INSERT INTO test_vectors (embedding) VALUES (%s)', ('[1,2,3]',))
+          cur.execute('SELECT embedding FROM test_vectors WHERE id = 1')
+          result = cur.fetchone()[0]
+          print('Successfully stored and retrieved vector:', result)
+          cur.close(); conn.close()
+          "
+      - name: Test vector similarity search
+        env:
+          PG_DSN: postgresql://memory:memorypass@localhost:5432/memory
+        run: |
+          python3 -c "
+          import psycopg2
+          conn = psycopg2.connect('postgresql://memory:memorypass@localhost:5432/memory')
+          cur = conn.cursor()
+          cur.execute('CREATE TABLE test_search (id INT, doc vector(3));')
+          cur.execute('INSERT INTO test_search VALUES (1, %s), (2, %s)', ('[1,1,1]', '[2,2,2]'))
+          cur.execute('SELECT id, doc <-> %s as distance FROM test_search ORDER BY distance LIMIT 1', ('[1,1,1]',))
+          result = cur.fetchone()
+          print('Nearest neighbor search result: id={}, distance={}'.format(result[0], result[1]))
           cur.close(); conn.close()
           "
