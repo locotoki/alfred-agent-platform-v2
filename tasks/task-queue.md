@@ -12,7 +12,7 @@
 | [x]    | 002 | PR #74                              | Enable flake-detector gate enforcement (merge PR #74, set as required status)                   |
 | [x]   | 013 | pipeline-health.yml                 | Add pipeline-health badge & Slack alert if any core job red > 1 hr                              |
 | [x]   | 014 | ci-cache.yml                        | Cache Go/Node build dependencies in CI using actions/cache                                      |
-| [ ]    | 015 | branch-protection.yml               | Migrate classic branch protection to a single Ruleset (delete legacy rules)                     |
+| [x]   | 015 | branch-protection.yml               | Migrate classic branch protection to a single Ruleset (delete legacy rules)                     |
 | [ ]    | 016 | architect-sync.py                   | Add duplicate-bullet dedupe logic to architect-sync.py (skip second identical bullet)           |
 | [ ]    | 017 | task-ticker.yml                     | Retry + create GitHub Issue when task-ticker push fails (skip silent drop)                      |
 | [ ]    | 018 | task-queue_monitor.yml              | Add Slack alert if task-queue has unchecked items but engineer_async idle > 60 min              |
