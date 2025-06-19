@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     services:
       pg:
-        image: postgres:16-alpine
+        image: pgvector/pgvector:pg16
         env:
           POSTGRES_DB: memory
           POSTGRES_USER: memory
@@ -42,9 +42,11 @@ jobs:
           PG_DSN: postgresql://memory:memorypass@localhost:5432/memory
         run: |
           python - <<'PY'
-import os, psycopg2, numpy as np
+import os, psycopg2
 conn = psycopg2.connect(os.environ["PG_DSN"])
-cur  = conn.cursor()
+cur = conn.cursor()
+cur.execute("CREATE EXTENSION IF NOT EXISTS pgvector;")
+cur.execute("CREATE TABLE IF NOT EXISTS embeddings (id TEXT PRIMARY KEY, path TEXT, sha TEXT, vec vector(768));")
 cur.execute("SELECT count(*) FROM embeddings")
 print("Rows in embeddings:", cur.fetchone()[0])
 cur.close(); conn.close()
