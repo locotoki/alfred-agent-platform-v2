@@ -1,0 +1,19 @@
+name: plan-covers-queue
+on:
+  pull_request:
+    branches: [main]
+    paths: ["planning/architect-plan.md", "task-queue.md"]
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Ensure every queue row exists in plan
+        run:  < /dev/null | 
+          ids_queue=$(grep -oP '\|\s*\[\s*[x ]\s*\]\s*\|\s*\K[0-9]+' task-queue.md | sort -n | uniq)
+          ids_plan=$(grep -oP '\|\s*\[\s*[x ]\s*\]\s*\|\s*\K[0-9]+' planning/architect-plan.md | sort -n | uniq)
+          diff=$(comm -23 <(echo "$ids_queue") <(echo "$ids_plan") || true)
+          if [ -n "$diff" ]; then
+            echo "::error::architect-plan.md is missing IDs from task-queue.md: $diff"
+            exit 1
+          fi
