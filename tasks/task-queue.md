@@ -1,7 +1,7 @@
 | Status | ID  | File                                    | Description                                                                                         |
 |--------|-----|-----------------------------------------|-----------------------------------------------------------------------------------------------------|
 | [x]   | 041 | ArchitectWorkbench.tsx                  | Implement `ArchitectWorkbench.tsx` with markdown editor + chat pane                                 |
-| [ ]    | 042 | backend/sse-endpoint.ts                 | Add backend SSE endpoint `/architect/complete` that proxies to architect agent container            |
+| [x]   | 042 | backend/sse-endpoint.ts                 | Add backend SSE endpoint `/architect/complete` that proxies to architect agent container            |
 | [ ]    | 043 | validate_prd_worker.js                  | Integrate `validate_prd.py` via WebWorker for live status in UI                                     |
 | [ ]    | 044 | MemorySidebar.jsx                       | Build `MemorySidebar` component calling `/memory/search` for similar docs                           |
 | [ ]    | 045 | architect_ui_actions.js                 | Add "Finalize PRD" action that commits draft to `docs/prd/` and opens PR via GitHub API             |
