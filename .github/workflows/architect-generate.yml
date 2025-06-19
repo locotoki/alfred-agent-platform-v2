@@ -2,7 +2,7 @@ name: Architect – Generate Tasks
 
 on:
   push:
-    branches-ignore: [main]
+    branches: [main]
     paths: [ 'planning/**' ]
 
 jobs:
