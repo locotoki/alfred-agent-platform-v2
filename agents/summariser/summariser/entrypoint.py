@@ -11,13 +11,16 @@ from openai import OpenAI
 MAX_CHARS = 12000
 OPENAI_KEY = os.getenv("OPENAI_API_KEY")
 client = OpenAI(api_key=OPENAI_KEY)
-PG_DSN = os.getenv("PG_DSN", "postgresql://memory:memorypass@vector-pg:5432/memory")
+PG_DSN = os.getenv(
+    "PG_DSN", "postgresql://memory:memorypass@vector-pg:5432/memory"
+)
 
 
 def summarise(text):
     prompt = (
         "Summarise the following project events in concise bullet points "
-        "(≤200 tokens, focus on decisions, outcomes, incidents):\n\n" + text[:MAX_CHARS]
+        "(≤200 tokens, focus on decisions, outcomes, incidents):\n\n"
+        + text[:MAX_CHARS]
     )
     response = client.chat.completions.create(
         model="gpt-4o-mini",
@@ -30,10 +33,12 @@ def store_summary(ts, text):
     conn = psycopg2.connect(PG_DSN)
     cur = conn.cursor()
     cur.execute(
-        "CREATE TABLE IF NOT EXISTS summaries (ts TIMESTAMP PRIMARY KEY, text TEXT);"
+        "CREATE TABLE IF NOT EXISTS summaries "
+        "(ts TIMESTAMP PRIMARY KEY, text TEXT);"
     )
     cur.execute(
-        "INSERT INTO summaries (ts, text) VALUES (%s, %s) ON CONFLICT DO NOTHING",
+        "INSERT INTO summaries (ts, text) VALUES (%s, %s) "
+        "ON CONFLICT DO NOTHING",
         (ts, text),
     )
     conn.commit()
@@ -62,7 +67,7 @@ async def consume():
         for m in msgs:
             evt = json.loads(m.data.decode())
             ts = evt["ts"]
-            texts.append(f"{ts} {evt['type']} {evt.get('payload','')}")
+            texts.append(f"{ts} {evt['type']} {evt.get('payload', '')}")
             await m.ack()
         summary = summarise("\n".join(texts))
         store_summary(datetime.datetime.utcnow(), summary)
