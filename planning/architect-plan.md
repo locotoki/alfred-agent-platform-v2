@@ -39,9 +39,9 @@ Use [ ] for unchecked tasks and [x] for completed ones. -->
 | [x]    | 032 | docs/templates/prd_template.md      | Add PRD markdown template                                                                        |
 | [x]    | 033 | .github/scripts/validate_prd.py     | Implement PRD validator script                                                                   |
 | [x]    | 034 | .github/workflows/prd-validate.yml  | Add PRD validation workflow                                                                      |
-| [ ]    | 035 | branch-protection.yml               | Integrate PRD validation into branch protection                                                  |
-| [ ]    | 036 | architect-board                     | Extend Architect-Board with PRD editor pane to create/approve PRDs                               |
-| [ ]    | 037 | reviewer_agent.yml                  | Update Reviewer-agent rule-set to enforce PRD reference and task IDs                             |
-| [ ]    | 038 | docs/automation_workflow.md         | Document PRD workflow                                                                            |
-| [ ]    | 039 | reviewer_middleware.md              | Implement reviewer middleware to enforce PRD-id & task-id in PR description                      |
-| [ ]    | 040 | kpi_monitor.yml                     | Add KPI monitor script to fail if Architect or Task-ticker success < 95%                         |
+| [x]    | 035 | .github/settings.yml                | Integrate PRD validation into branch protection                                                  |
+| [ ]    | 036 | architect-board                     | Extend Architect-Board with PRD editor pane to create/approve PRDs                              |
+| [ ]    | 037 | reviewer_agent.yml                  | Update Reviewer-agent rule-set to enforce PRD reference and task IDs                            |
+| [ ]    | 038 | docs/automation_workflow.md         | Document PRD workflow                                                                           |
+| [ ]    | 039 | reviewer_middleware.md              | Implement reviewer middleware to enforce PRD-id & task-id in PR description                     |
+| [ ]    | 040 | kpi_monitor.yml                     | Add KPI monitor script to fail if Architect or Task-ticker success < 95%                       |

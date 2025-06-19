@@ -1,5 +1,12 @@
 # Task Queue - Alfred Agent Platform v2
 
+## Milestone Progress Checklist
+
+- [x] **Phase 1**: CI Stabilization (Tasks 001-031)
+- [x] **Phase 2**: PRD Infrastructure (Tasks 032-034)  
+- [x] **Phase 3**: Planning & Enforcement Setup (Task 035)
+- [ ] **Phase 3**: Planner PRD + scaffold implementation (Tasks 036-040)
+
 ## Phase History
 
 ### Phase 1: CI Stabilization (COMPLETED)
@@ -53,12 +60,15 @@
 
 ## Current Active Tasks
 
-### Phase 3: Planning (IN PROGRESS)
+### Phase 3: Planning & Enforcement (IN PROGRESS)
 **Status**: 🔄 In Progress  
 **Priority**: High  
+**Focus**: Planner PRD + scaffold implementation
+
+**Tasks Completed**:
+- [x] 035: Integrate PRD validation into branch protection rules (`.github/settings.yml`)
 
 **Pending Tasks**:
-- [ ] 035: Integrate PRD validation into branch protection rules
 - [ ] 036: Extend Architect-Board with PRD editor pane
 - [ ] 037: Update Reviewer-agent rule-set to enforce PRD reference and task IDs
 - [ ] 038: Document PRD workflow (`docs/automation_workflow.md`)

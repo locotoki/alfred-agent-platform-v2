@@ -6,3 +6,5 @@ pull_request_rules:
       - "lint"         # promoted
       - "pytest-core"
       - "isort-check"
+      - "prd-validate"
+      - "plan-files-exist"
