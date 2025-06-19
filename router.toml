@@ -1,0 +1,11 @@
+[architect]
+endpoint = "openai:gpt-4o"
+
+[planner]
+endpoint = "openai:gpt-4o-mini"
+
+[engineer]
+endpoint = "anthropic:claude-3-sonnet"
+
+[reviewer]
+endpoint = "local:gemma-7b-quant"
