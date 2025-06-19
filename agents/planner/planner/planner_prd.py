@@ -9,7 +9,7 @@ def next_id():
 
 def parse_tasks(prd_path: pathlib.Path):
     txt = prd_path.read_text()
-    m = re.search(r"## Acceptance Tasks\n([\\s\\S]+)", txt)
+    m = re.search(r"## Acceptance Tasks\n([\s\S]+)", txt)
     if not m:
         return []
     return [line.strip("- ").strip() for line in m.group(1).splitlines() if line.startswith("- ")]
