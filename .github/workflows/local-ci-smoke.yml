@@ -1,0 +1,10 @@
+name: local-ci-smoke
+on:
+  pull_request:
+    branches: [main]
+    paths: ["docker-compose.yml"]
+jobs:
+  echo:
+    runs-on: self-hosted
+    steps:
+      - run: echo "🎉 Self-hosted runner responding!"
