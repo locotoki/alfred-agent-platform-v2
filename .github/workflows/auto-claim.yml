@@ -9,7 +9,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with: {python-version: "3.12"}
-      - run: pip install pytest
+      - run: pip install pytest PyGithub nats-py GitPython
       - name: Run auto-claim tests
         run: |
           cd agents/auto_eng
