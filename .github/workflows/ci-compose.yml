@@ -28,35 +28,44 @@ jobs:
       - name: Validate docker-compose.yml
         run: docker compose -f docker-compose.yml config
 
-      - name: Create env file
-        run: |
-          cat <<EOF > .env.ci
-          REDIS_PASSWORD=redis-test-password
-          POSTGRES_PASSWORD=postgres-test-password
-          DB_PASSWORD=postgres-test-password
-          DB_JWT_SECRET=test-jwt-secret
-          OPENAI_API_KEY=test-openai-key
-          ALFRED_OPENAI_API_KEY=test-openai-key
-          TELEGRAM_BOT_TOKEN=test-telegram-token
-          SLACK_BOT_TOKEN=test-slack-token
-          SLACK_SIGNING_SECRET=test-slack-secret
-          SLACK_APP_TOKEN=test-slack-app-token
-          ADDITIONAL_REDIRECT_URLS=
-          ALFRED_PROJECT_ID=alfred-agent-platform
-          EOF
-
       - name: Compose up (detached) with retry x3
+        env:
+          REDIS_PASSWORD: redis-test-password
+          POSTGRES_PASSWORD: postgres-test-password
+          DB_PASSWORD: postgres-test-password
+          DB_JWT_SECRET: test-jwt-secret
+          OPENAI_API_KEY: test-openai-key
+          ALFRED_OPENAI_API_KEY: test-openai-key
+          TELEGRAM_BOT_TOKEN: test-telegram-token
+          SLACK_BOT_TOKEN: test-slack-token
+          SLACK_SIGNING_SECRET: test-slack-secret
+          SLACK_APP_TOKEN: test-slack-app-token
+          ADDITIONAL_REDIRECT_URLS: ""
+          ALFRED_PROJECT_ID: alfred-agent-platform
         run: |
           set -e
           for i in 1 2 3; do
             echo "Attempt $i…"
-            docker compose -f docker-compose.yml --env-file .env.ci up -d && break
+            docker compose -f docker-compose.yml up -d && break
             echo "Compose up failed, retrying in 10 s"
             docker compose logs
             sleep 10
           done
 
       - name: Basic health probe
+        env:
+          REDIS_PASSWORD: redis-test-password
+          POSTGRES_PASSWORD: postgres-test-password
+          DB_PASSWORD: postgres-test-password
+          DB_JWT_SECRET: test-jwt-secret
+          OPENAI_API_KEY: test-openai-key
+          ALFRED_OPENAI_API_KEY: test-openai-key
+          TELEGRAM_BOT_TOKEN: test-telegram-token
+          SLACK_BOT_TOKEN: test-slack-token
+          SLACK_SIGNING_SECRET: test-slack-secret
+          SLACK_APP_TOKEN: test-slack-app-token
+          ADDITIONAL_REDIRECT_URLS: ""
+          ALFRED_PROJECT_ID: alfred-agent-platform
         run: |
           sleep 40
           docker compose ps
@@ -73,4 +82,17 @@ jobs:
 
       - name: Tear down stack (always)
         if: always()
+        env:
+          REDIS_PASSWORD: redis-test-password
+          POSTGRES_PASSWORD: postgres-test-password
+          DB_PASSWORD: postgres-test-password
+          DB_JWT_SECRET: test-jwt-secret
+          OPENAI_API_KEY: test-openai-key
+          ALFRED_OPENAI_API_KEY: test-openai-key
+          TELEGRAM_BOT_TOKEN: test-telegram-token
+          SLACK_BOT_TOKEN: test-slack-token
+          SLACK_SIGNING_SECRET: test-slack-secret
+          SLACK_APP_TOKEN: test-slack-app-token
+          ADDITIONAL_REDIRECT_URLS: ""
+          ALFRED_PROJECT_ID: alfred-agent-platform
         run: docker compose -f docker-compose.yml down -v
