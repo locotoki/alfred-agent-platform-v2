@@ -12,3 +12,9 @@ Use [ ] for unchecked tasks and [x] for completed ones. -->
 | [ ]    | 036 | architect-board                   | Extend Architect-Board with PRD editor pane to create/approve PRDs                                        |
 | [ ]    | 037 | reviewer_agent.yml                | Update Reviewer-agent rule-set to enforce PRD reference and task IDs                                      |
 | [ ]    | 038 | docs/automation_workflow.md       | Document PRD workflow                                                                                     |
+
+#### Reviewer Agent
+- Implement reviewer middleware to enforce prd-id & task-id in PR description
+
+#### CI / Branch Protection
+- Add kpi_monitor.yml to fail if Architect or Task-ticker success < 95 %
