@@ -7,4 +7,4 @@
 | [x]   | 028 | reviewer_agent.yml                  | Add Reviewer agent workflow: helm lint and repo-wide conventions; auto-push fixes before CI     |
 | [x]   | 029 | planner_agent.yml                   | Create Planner agent workflow: generate PRD markdown for bullets labelled needs-spec; iterate Q&A; merge when label spec-approved is added |
 | [x]   | 030 | engineer_async_guard.yml            | Update engineer_async guard: skip task until matching spec-approved PRD file exists             |
-| [ ]    | 031 | CONTRIBUTING.md                     | Update CONTRIBUTING.md to document needs-spec / spec-approved labels and new workflows          |
+| [x]   | 031 | CONTRIBUTING.md                     | Update CONTRIBUTING.md to document needs-spec / spec-approved labels and new workflows          |
