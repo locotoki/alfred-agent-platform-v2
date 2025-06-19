@@ -1,7 +1,6 @@
-<!-- ARCHITECT PROMPT: You are an AI architect.  
-Generate a task breakdown from the planning bullets below.  
-Return a markdown table with columns: | Status | ID | File | Description |.  
-Use [ ] for unchecked tasks and [x] for completed ones. -->
+# Complete Task History (001-031)
+
+This file contains the complete task history for tasks 001-031 that were lost due to a sync bug and restored in commit d564a523.
 
 | Status | ID  | File                                | Description                                                                                     |
 |--------|-----|-------------------------------------|-------------------------------------------------------------------------------------------------|
@@ -36,12 +35,3 @@ Use [ ] for unchecked tasks and [x] for completed ones. -->
 | [x]    | 029 | planner_agent.yml                   | Create Planner agent workflow: generate PRD markdown for bullets labelled needs-spec; iterate Q&A; merge when label spec-approved is added |
 | [x]    | 030 | engineer_async_guard.yml            | Update engineer_async guard: skip task until matching spec-approved PRD file exists             |
 | [x]    | 031 | CONTRIBUTING.md                     | Update CONTRIBUTING.md to document needs-spec / spec-approved labels and new workflows          |
-| [x]    | 032 | docs/templates/prd_template.md      | Add PRD markdown template                                                                         |
-| [ ]    | 033 | .github/scripts/validate_prd.py   | Implement PRD validator script                                                                            |
-| [ ]    | 034 | ci-summary.yml                    | Add PRD validation to CI summary fast-pass                                                                |
-| [ ]    | 035 | branch-protection.yml             | Integrate PRD validation into branch protection                                                           |
-| [ ]    | 036 | architect-board                   | Extend Architect-Board with PRD editor pane to create/approve PRDs                                        |
-| [ ]    | 037 | reviewer_agent.yml                | Update Reviewer-agent rule-set to enforce PRD reference and task IDs                                      |
-| [ ]    | 038 | docs/automation_workflow.md       | Document PRD workflow                                                                                     |
-| [ ]    | 039 | reviewer_middleware.md            | Implement reviewer middleware to enforce PRD-id & task-id in PR description                               |
-| [ ]    | 040 | kpi_monitor.yml                   | Add KPI monitor script to fail if Architect or Task-ticker success < 95%                                  |

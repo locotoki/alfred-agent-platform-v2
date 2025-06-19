@@ -1,0 +1,98 @@
+name: compose-validate-and-up
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "docker-compose.yml"
+      - ".github/workflows/ci-compose.yml"
+      - "services/**"
+jobs:
+  compose-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx (installs Docker Compose v2)
+        uses: docker/setup-buildx-action@v3
+        with:
+          install: true
+
+      - name: Cache Docker layers
+        uses: actions/cache@v4
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          restore-keys: ${{ runner.os }}-buildx-
+
+      - name: Validate docker-compose.yml
+        run: docker compose -f docker-compose.yml config
+
+      - name: Compose up (detached) with retry x3
+        env:
+          REDIS_PASSWORD: redis-test-password
+          POSTGRES_PASSWORD: postgres-test-password
+          DB_PASSWORD: postgres-test-password
+          DB_JWT_SECRET: test-jwt-secret
+          OPENAI_API_KEY: test-openai-key
+          ALFRED_OPENAI_API_KEY: test-openai-key
+          TELEGRAM_BOT_TOKEN: test-telegram-token
+          SLACK_BOT_TOKEN: test-slack-token
+          SLACK_SIGNING_SECRET: test-slack-secret
+          SLACK_APP_TOKEN: test-slack-app-token
+          ADDITIONAL_REDIRECT_URLS: ""
+          ALFRED_PROJECT_ID: alfred-agent-platform
+        run: |
+          set -e
+          for i in 1 2 3; do
+            echo "Attempt $i…"
+            docker compose -f docker-compose.yml up -d && break
+            echo "Compose up failed, retrying in 10 s"
+            docker compose logs
+            sleep 10
+          done
+
+      - name: Basic health probe
+        env:
+          REDIS_PASSWORD: redis-test-password
+          POSTGRES_PASSWORD: postgres-test-password
+          DB_PASSWORD: postgres-test-password
+          DB_JWT_SECRET: test-jwt-secret
+          OPENAI_API_KEY: test-openai-key
+          ALFRED_OPENAI_API_KEY: test-openai-key
+          TELEGRAM_BOT_TOKEN: test-telegram-token
+          SLACK_BOT_TOKEN: test-slack-token
+          SLACK_SIGNING_SECRET: test-slack-secret
+          SLACK_APP_TOKEN: test-slack-app-token
+          ADDITIONAL_REDIRECT_URLS: ""
+          ALFRED_PROJECT_ID: alfred-agent-platform
+        run: |
+          sleep 40
+          docker compose ps
+          echo "Testing various health endpoints..."
+          # Try rag-gateway first (simplest)
+          if curl -sf http://localhost:8000/ >/dev/null 2>&1; then
+            echo "✓ Service responding on port 8000"
+          else
+            echo "⚠ No service responding on port 8000, checking container status..."
+            docker compose ps
+            docker compose logs --tail=20
+            exit 1
+          fi
+
+      - name: Tear down stack (always)
+        if: always()
+        env:
+          REDIS_PASSWORD: redis-test-password
+          POSTGRES_PASSWORD: postgres-test-password
+          DB_PASSWORD: postgres-test-password
+          DB_JWT_SECRET: test-jwt-secret
+          OPENAI_API_KEY: test-openai-key
+          ALFRED_OPENAI_API_KEY: test-openai-key
+          TELEGRAM_BOT_TOKEN: test-telegram-token
+          SLACK_BOT_TOKEN: test-slack-token
+          SLACK_SIGNING_SECRET: test-slack-secret
+          SLACK_APP_TOKEN: test-slack-app-token
+          ADDITIONAL_REDIRECT_URLS: ""
+          ALFRED_PROJECT_ID: alfred-agent-platform
+        run: docker compose -f docker-compose.yml down -v
