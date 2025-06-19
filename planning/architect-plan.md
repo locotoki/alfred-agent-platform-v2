@@ -28,3 +28,22 @@ Use [ ] for unchecked tasks and [x] for completed ones. -->
 | [ ]    | 022 | bizdev_helm_chart                   | Write Helm chart and Kubernetes manifests for BizDev service (values.yaml, deployment, service) |
 | [ ]    | 023 | bizdev_ci.yml                       | Add CI lint + unit-test job for BizDev service (pytest sample test, ruff lint)                  |
 ```
+# Architect reliability
+- Broaden architect_generate trigger: run on push to main when planning/** changes
+- Switch architect_generate push step to use ARCHITECT_PAT token
+
+- Add architect_watchdog workflow: open GitHub Issue if planning has unchecked bullets but no successful architect_generate run in >30 min
+
+# Engineer reliability
+- Add pre-flight ruff + pytest step in engineer_async; abort PR creation on failure
+
+# Reviewer & linting
+- Add Reviewer agent workflow: helm lint and repo-wide conventions; auto-push fixes before CI
+
+# Planner / PRD flow
+- Create Planner agent workflow: generate PRD markdown for bullets labelled needs-spec; iterate Q&A; merge when label spec-approved is added
+- Update engineer_async guard: skip task until matching spec-approved PRD file exists
+
+# Docs
+- Update CONTRIBUTING.md to document needs-spec / spec-approved labels and new workflows
+
