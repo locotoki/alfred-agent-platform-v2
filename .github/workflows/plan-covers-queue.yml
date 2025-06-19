@@ -9,7 +9,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Ensure every queue row exists in plan
-        run:  < /dev/null | 
+        run: |
           ids_queue=$(grep -oP '\|\s*\[\s*[x ]\s*\]\s*\|\s*\K[0-9]+' task-queue.md | sort -n | uniq)
           ids_plan=$(grep -oP '\|\s*\[\s*[x ]\s*\]\s*\|\s*\K[0-9]+' planning/architect-plan.md | sort -n | uniq)
           diff=$(comm -23 <(echo "$ids_queue") <(echo "$ids_plan") || true)
