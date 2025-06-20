@@ -15,6 +15,7 @@ import TaxonomySettings from "./pages/TaxonomySettings";
 import YouTubeTest from "./pages/YouTubeTest";
 import YouTubeTestOnly from "./pages/YouTubeTestOnly";
 import GlobalNicheScoutWizard from "./components/wizards/GlobalNicheScoutWizard";
+import { ChatPane } from "./features/chat/ChatPane";
 
 // This stylesheet provides necessary CSS for the application
 import "./index.css";
@@ -36,6 +37,7 @@ const App = () => (
               <Route path="/agents" element={<AgentsListView />} />
               <Route path="/agents/:agentId" element={<AgentDetailView />} />
               <Route path="/reports" element={<ReportsView />} />
+              <Route path="/chat" element={<ChatPane />} />
               <Route path="/taxonomy-settings" element={<TaxonomySettings />} />
               <Route path="/youtube-test" element={<YouTubeTest />} />
               <Route path="/youtube-results" element={<YouTubeTestOnly />} />
