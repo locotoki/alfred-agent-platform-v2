@@ -1,16 +1,22 @@
-import os, asyncio, json, psycopg2, redis, openai
-from fastapi import FastAPI, Request
-from fastapi.responses import StreamingResponse, JSONResponse
+import asyncio
+import json
+import os
+
+import openai
+import psycopg2
+import redis
+from fastapi import Body, FastAPI, Request
+from fastapi.responses import JSONResponse, PlainTextResponse, StreamingResponse
 from nats.aio.client import Client as NATS
-from datetime import datetime
+from typing import Dict, List
 # Simple prompt builder function
 def build_prompt(system_snips, user_query):
     context = "\n".join(system_snips) if system_snips else ""
     return f"Context: {context}\n\nUser Query: {user_query}"
 
-PG_DSN   = os.getenv("PG_DSN")
+PG_DSN = os.getenv("PG_DSN")
 NATS_URL = os.getenv("NATS_URL", "nats://nats:4222")
-REDIS_URL= os.getenv("REDIS_URL", "redis://redis:6379/0")
+REDIS_URL = os.getenv("REDIS_URL", "redis://redis:6379/0")
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 openai.api_key = OPENAI_API_KEY
 
@@ -21,9 +27,9 @@ app = FastAPI()
 def health():
     try:
         psycopg2.connect(PG_DSN).close()
-        return {"status":"ok"}
+        return {"status": "ok"}
     except Exception as e:
-        return JSONResponse(status_code=500, content={"error":str(e)})
+        return JSONResponse(status_code=500, content={"error": str(e)})
 
 # SSE chat completion
 @app.post("/architect/complete")
@@ -35,8 +41,9 @@ async def complete(req: Request):
     async def event_generator():
         resp = openai.ChatCompletion.create(
             model="gpt-4o-mini",
-            messages=[{"role":"system","content":prompt}],
-            stream=True)
+            messages=[{"role": "system", "content": prompt}],
+            stream=True,
+        )
         for chunk in resp:
             yield f"data: {json.dumps(chunk['choices'][0]['delta'])}\n\n"
     return StreamingResponse(event_generator(), media_type="text/event-stream")
@@ -60,8 +67,7 @@ asyncio.create_task(planner_listener())
 # ---------------------------------------------------------------------------
 # Chat Export Endpoint (Markdown)
 # ---------------------------------------------------------------------------
-from fastapi.responses import PlainTextResponse
-from typing import List, Dict
+
 
 def _messages_to_markdown(msgs: List[Dict]) -> str:
     md = ["# Architect Chat Export\n"]
