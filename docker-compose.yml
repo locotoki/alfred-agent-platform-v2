@@ -27,6 +27,19 @@ x-health-check-settings:
   retries: 5
   start_period: 45s
 services:
+  bizdev-api:
+    build: ./services/bizdev-api
+    ports: ["8087:8087"]
+    profiles: ["agents"]
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - NATS_URL=${NATS_URL}
+      - REDIS_URL=${REDIS_URL}
+      - PG_DSN=${PG_DSN}
+    depends_on:
+      - nats
+      - db-postgres
+      - redis
   redis:
     image: redis:7-alpine
     container_name: redis
