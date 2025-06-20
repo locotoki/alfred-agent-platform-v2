@@ -1,0 +1,127 @@
+name: Build and Sign Container Images
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Image tag to build'
+        required: true
+        default: 'latest'
+      services:
+        description: 'Services to build (comma-separated: architect-api,backend-api)'
+        required: true
+        default: 'architect-api,backend-api'
+  push:
+    tags:
+      - 'v*'
+
+env:
+  REGISTRY: ghcr.io
+  REPO_OWNER: digital-native-ventures
+
+jobs:
+  build-and-sign:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+      id-token: write  # Required for keyless signing
+      
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        
+      - name: Log in to Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: Determine tag
+        id: tag
+        run: |
+          if [[ "${{ github.event_name }}" == "push" && "${{ github.ref }}" == refs/tags/* ]]; then
+            echo "tag=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+          else
+            echo "tag=${{ github.event.inputs.tag }}" >> $GITHUB_OUTPUT
+          fi
+          
+      - name: Build and push architect-api
+        if: contains(github.event.inputs.services, 'architect-api') || github.event_name == 'push'
+        uses: docker/build-push-action@v5
+        with:
+          context: ./services/architect-api
+          push: true
+          tags: ${{ env.REGISTRY }}/${{ env.REPO_OWNER }}/architect-api:${{ steps.tag.outputs.tag }}
+          platforms: linux/amd64,linux/arm64
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          
+      - name: Build and push backend-api
+        if: contains(github.event.inputs.services, 'backend-api') || github.event_name == 'push'
+        uses: docker/build-push-action@v5
+        with:
+          context: ./agents/social_intel
+          push: true
+          tags: ${{ env.REGISTRY }}/${{ env.REPO_OWNER }}/backend-api:${{ steps.tag.outputs.tag }}
+          platforms: linux/amd64,linux/arm64
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          
+      # ⬇️ COSIGN SIGNING STEPS ⬇️
+      - name: Install Cosign
+        uses: sigstore/cosign-installer@v3.3.0   # grabs the latest stable binary
+        
+      - name: Sign architect-api image with Cosign (keyless)
+        if: contains(github.event.inputs.services, 'architect-api') || github.event_name == 'push'
+        env:
+          COSIGN_EXPERIMENTAL: "1"               # enables keyless flow
+          IMAGE_REF: ${{ env.REGISTRY }}/${{ env.REPO_OWNER }}/architect-api:${{ steps.tag.outputs.tag }}
+        run: |
+          cosign sign -y "$IMAGE_REF"
+          
+      - name: Verify architect-api signature
+        if: contains(github.event.inputs.services, 'architect-api') || github.event_name == 'push'
+        env:
+          COSIGN_EXPERIMENTAL: "1"
+          IMAGE_REF: ${{ env.REGISTRY }}/${{ env.REPO_OWNER }}/architect-api:${{ steps.tag.outputs.tag }}
+        run: |
+          cosign verify \
+            --certificate-identity "https://github.com/${{ github.repository }}/.github/workflows/build-and-sign.yml@refs/tags/${{ steps.tag.outputs.tag }}" \
+            --certificate-oidc-issuer "https://token.actions.githubusercontent.com" \
+            "$IMAGE_REF"
+            
+      - name: Sign backend-api image with Cosign (keyless)
+        if: contains(github.event.inputs.services, 'backend-api') || github.event_name == 'push'
+        env:
+          COSIGN_EXPERIMENTAL: "1"               # enables keyless flow
+          IMAGE_REF: ${{ env.REGISTRY }}/${{ env.REPO_OWNER }}/backend-api:${{ steps.tag.outputs.tag }}
+        run: |
+          cosign sign -y "$IMAGE_REF"
+          
+      - name: Verify backend-api signature
+        if: contains(github.event.inputs.services, 'backend-api') || github.event_name == 'push'
+        env:
+          COSIGN_EXPERIMENTAL: "1"
+          IMAGE_REF: ${{ env.REGISTRY }}/${{ env.REPO_OWNER }}/backend-api:${{ steps.tag.outputs.tag }}
+        run: |
+          cosign verify \
+            --certificate-identity "https://github.com/${{ github.repository }}/.github/workflows/build-and-sign.yml@refs/tags/${{ steps.tag.outputs.tag }}" \
+            --certificate-oidc-issuer "https://token.actions.githubusercontent.com" \
+            "$IMAGE_REF"
+            
+      - name: Summary
+        run: |
+          echo "✅ Images built, pushed, and signed:"
+          if [[ "${{ contains(github.event.inputs.services, 'architect-api') || github.event_name == 'push' }}" == "true" ]]; then
+            echo "📦 ${{ env.REGISTRY }}/${{ env.REPO_OWNER }}/architect-api:${{ steps.tag.outputs.tag }}"
+          fi
+          if [[ "${{ contains(github.event.inputs.services, 'backend-api') || github.event_name == 'push' }}" == "true" ]]; then
+            echo "📦 ${{ env.REGISTRY }}/${{ env.REPO_OWNER }}/backend-api:${{ steps.tag.outputs.tag }}"
+          fi
+          echo "🔏 All images signed with keyless cosign"
+          echo "✅ Signatures verified successfully"
