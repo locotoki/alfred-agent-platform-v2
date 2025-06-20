@@ -57,8 +57,8 @@ const Sidebar = ({ logoUrl = "/lovable-uploads/4f5a01e8-7502-47aa-9bb4-567065f7d
       icon: Users
     },
     {
-      path: "/messages",
-      label: "Messages & Queues",
+      path: "/chat",
+      label: "Architect Chat",
       icon: MessageSquare
     },
     {

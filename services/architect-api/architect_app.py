@@ -61,7 +61,6 @@ async def validate(prd: dict):
 # Chat Export Endpoint (Markdown)
 # ---------------------------------------------------------------------------
 
-
 def _messages_to_markdown(msgs: List[Dict]) -> str:
     md = ["# Architect Chat Export\n"]
     for m in msgs:
