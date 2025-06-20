@@ -27,6 +27,33 @@ x-health-check-settings:
   retries: 5
   start_period: 45s
 services:
+  architect-api:
+    healthcheck:
+      test: ["CMD", "curl", "-fs", "http://localhost:8083/healthz"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+    build: ./services/architect-api
+
+    ports: ["8083:8083"]
+
+    environment:
+
+      - PG_DSN=${PG_DSN}
+
+      - NATS_URL=${NATS_URL}
+
+      - REDIS_URL=${REDIS_URL}
+
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+
+    depends_on:
+
+      - nats
+
+      - db-postgres
   redis:
     image: redis:7-alpine
     container_name: redis
