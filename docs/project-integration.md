@@ -70,7 +70,7 @@ The following table maps documentation sections to the project phases outlined i
 |--------------|---------------------|--------|-------------------|
 | **Phase 1: Core Infrastructure** | Architecture Documentation | Completed | `/docs/architecture/system-design.md`<br>`/docs/INFRASTRUCTURE_STATUS.md` |
 | **Phase 2: Core Libraries** | Architecture Documentation | Completed | `/docs/SHARED_LIBRARIES.md`<br>`/docs/api/a2a-protocol.md` |
-| **Phase 3: Initial Services** | Agent Documentation | Completed | `/docs/agents/domain/social-intelligence.md`<br>`/docs/agents/legal-compliance-agent.md` |
+| **Phase 3: Initial Services** | Agent Documentation | Completed | `/docs/agents/domain/architect-apiligence.md`<br>`/docs/agents/legal-compliance-agent.md` |
 | **Phase 4: Project Configuration** | Process Documentation | Completed | `/docs/SERVICE_CONTAINERIZATION.md`<br>`/docs/TROUBLESHOOTING.md` |
 | **Phase 5: Documentation & Testing** | Multiple Categories | Completed | `/docs/governance/standards/documentation-standards.md`<br>`/docs/governance/processes/documentation-process.md` |
 | **Current: Financial-Tax Agent** | Agent & Workflow Documentation | In Progress | `/docs/agents/financial-tax-agent.md`<br>`/docs/agents/financial-tax-deployment-checklist.md` |

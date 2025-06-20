@@ -18,8 +18,8 @@
 - **Current State**: Empty logs suggest build or startup failure
 
 ## 4. agent-social
-- **Dockerfile Path**: services/social-intel/Dockerfile
-- **Issue**: Needs investigation - using alfred-agent-platform-v2-social-intel:latest
+- **Dockerfile Path**: services/architect-api/Dockerfile
+- **Issue**: Needs investigation - using alfred-agent-platform-v2-architect-api:latest
 - **Current State**: Empty logs suggest build or startup failure
 
 ## 5. Stub Dockerfiles (not real services)

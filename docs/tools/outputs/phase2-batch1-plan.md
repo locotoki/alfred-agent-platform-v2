@@ -20,7 +20,7 @@ This document outlines the plan for the first batch of document migrations in Ph
 | 2 | System Architecture | Multiple sources | `/docs/architecture/system-architecture.md` | Architecture Team | None |
 | 3 | Agent Core | 5 files | `/docs/architecture/agent-core.md` | Architecture Team | System Architecture |
 | 4 | Infrastructure Overview | Multiple sources | `/docs/operations/infrastructure-overview.md` | Infrastructure Team | None |
-| 5 | Social Intelligence Agent | 12 files | `/docs/agents/social-intelligence-agent.md` | Agent Team | A2A Protocol, Agent Core |
+| 5 | Social Intelligence Agent | 12 files | `/docs/agents/architect-apiligence-agent.md` | Agent Team | A2A Protocol, Agent Core |
 
 ## Source Document Details
 
@@ -85,11 +85,11 @@ This document outlines the plan for the first batch of document migrations in Ph
 ### Social Intelligence Agent
 
 **Source Files:**
-- `/docs/agents/social-intelligence-agent.md` (primary - incomplete)
+- `/docs/agents/architect-apiligence-agent.md` (primary - incomplete)
 - `/docs/staging-area/Social_Intel/Social Intel Agent 1eab4fd21ff0802f84b5eeace69c091e.md` (main documentation)
 - `/docs/staging-area/Social_Intel/Untitled 1eab4fd21ff080db8facf25931bd652e.md` (additional details)
 - `/docs/staging-area/Social_Intel/Social Intel Agent Role for YouTube Content Creati 1eab4fd21ff0806887a6e5319ba6660d.md` (role definition)
-- `/services/social-intelligence/README.md` (implementation details)
+- `/services/architect-apiligence/README.md` (implementation details)
 - Plus 8 additional files with scattered documentation
 
 **Consolidation Approach:**

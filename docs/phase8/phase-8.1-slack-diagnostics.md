@@ -33,7 +33,7 @@ slack:
 Checks the following services:
 - alfred-core
 - mission-control
-- social-intel
+- architect-api
 - model-registry
 - model-router
 
@@ -42,7 +42,7 @@ Response format:
 🏥 Service Health Status
 ✅ alfred-core: healthy
 ✅ mission-control: healthy
-❌ social-intel: Connection refused
+❌ architect-api: Connection refused
 ```
 
 ### Metrics Command

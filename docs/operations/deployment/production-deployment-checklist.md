@@ -134,7 +134,7 @@ This document provides a comprehensive checklist for deploying the Alfred Agent 
   ```bash
   kubectl rollout status deployment/alfred-bot
   kubectl rollout status deployment/mission-control
-  kubectl rollout status deployment/social-intelligence
+  kubectl rollout status deployment/architect-apiligence
   kubectl rollout status deployment/financial-tax
   kubectl rollout status deployment/legal-compliance
   ```

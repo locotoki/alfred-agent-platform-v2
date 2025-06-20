@@ -7,7 +7,7 @@
 ## Document Overview
 
 - **Document Name**: Social Intelligence Agent
-- **Target Location**: `/docs/agents/social-intelligence-agent.md`
+- **Target Location**: `/docs/agents/architect-apiligence-agent.md`
 - **Completion Date**: 2025-05-10
 - **Completed By**: Social Intelligence Team
 
@@ -105,4 +105,4 @@ The following tracking updates have been made:
 
 The successful migration of the Social Intelligence Agent documentation represents a significant milestone in Phase 2 of the documentation migration project. It establishes the standard for agent documentation and provides the first comprehensive view of one of the platform's core agents. This document will serve as a valuable resource for developers, users, and stakeholders working with the Social Intelligence Agent.
 
-The document is now accessible at `/docs/agents/social-intelligence-agent.md` and ready for use.
+The document is now accessible at `/docs/agents/architect-apiligence-agent.md` and ready for use.

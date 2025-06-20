@@ -181,4 +181,4 @@ The documentation team is confident in the readiness to proceed to Phase 2 and r
 | System Architecture | 4 sources | `/docs/architecture/system-architecture.md` | Architecture Team |
 | Agent Core | 5 sources | `/docs/architecture/agent-core.md` | Architecture Team |
 | Infrastructure Overview | 4 sources | `/docs/operations/infrastructure-overview.md` | Infrastructure Team |
-| Social Intelligence Agent | 12 sources | `/docs/agents/social-intelligence-agent.md` | Agent Team |
+| Social Intelligence Agent | 12 sources | `/docs/agents/architect-apiligence-agent.md` | Agent Team |

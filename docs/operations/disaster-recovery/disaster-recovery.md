@@ -170,7 +170,7 @@ Docker images are backed up by pushing to multiple registries:
 
 ```bash
 # Push images to secondary registry
-for service in alfred-bot social-intel legal-compliance financial-tax mission-control; do
+for service in alfred-bot architect-api legal-compliance financial-tax mission-control; do
   docker pull ${PRIMARY_REGISTRY}/alfred-platform/${service}:latest
   docker tag ${PRIMARY_REGISTRY}/alfred-platform/${service}:latest ${SECONDARY_REGISTRY}/alfred-platform/${service}:latest
   docker push ${SECONDARY_REGISTRY}/alfred-platform/${service}:latest
@@ -311,7 +311,7 @@ kubectl apply -f k8s/applications/
 
 ```bash
 # Pull images from backup registry
-for service in alfred-bot social-intel legal-compliance financial-tax mission-control; do
+for service in alfred-bot architect-api legal-compliance financial-tax mission-control; do
   docker pull ${SECONDARY_REGISTRY}/alfred-platform/${service}:latest
   docker tag ${SECONDARY_REGISTRY}/alfred-platform/${service}:latest ${PRIMARY_REGISTRY}/alfred-platform/${service}:latest
   docker push ${PRIMARY_REGISTRY}/alfred-platform/${service}:latest

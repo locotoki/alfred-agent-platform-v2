@@ -205,8 +205,8 @@ This schema is critical for maintaining interoperability between agents regardle
         "service_id": "alfred-bot-service"
       },
       "destination": {
-        "agent_id": "social-intelligence-agent",
-        "service_id": "social-intelligence-service"
+        "agent_id": "architect-apiligence-agent",
+        "service_id": "architect-apiligence-service"
       },
       "reply_to": "a2a.tasks.completed.alfred-bot"
     },
@@ -241,8 +241,8 @@ This schema is critical for maintaining interoperability between agents regardle
     },
     "routing": {
       "source": {
-        "agent_id": "social-intelligence-agent",
-        "service_id": "social-intelligence-service"
+        "agent_id": "architect-apiligence-agent",
+        "service_id": "architect-apiligence-service"
       },
       "destination": {
         "agent_id": "alfred-bot",
@@ -287,8 +287,8 @@ This schema is critical for maintaining interoperability between agents regardle
     },
     "routing": {
       "source": {
-        "agent_id": "social-intelligence-agent",
-        "service_id": "social-intelligence-service"
+        "agent_id": "architect-apiligence-agent",
+        "service_id": "architect-apiligence-service"
       },
       "destination": {
         "agent_id": "alfred-bot",

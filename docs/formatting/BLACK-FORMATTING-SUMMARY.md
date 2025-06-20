@@ -13,7 +13,7 @@ Applied Black formatter version 24.1.1 to Python files across the codebase using
 ### Fixed Files
 The following existing files were fixed or reformatted:
 - `services/model-registry/app/main.py` - Reformatted imports and function definitions
-- `services/social-intel/app/health_check.py` - Fixed indentation and spacing
+- `services/architect-api/app/health_check.py` - Fixed indentation and spacing
 - `services/streamlit-chat/streamlit_chat_ui.py` - Fixed syntax errors (missing newlines between statements)
 
 ### Newly Formatted Files

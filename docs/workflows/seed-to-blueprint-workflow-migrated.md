@@ -5,7 +5,7 @@ author: Documentation Team
 created: 2025-05-10
 last_updated: 2025-05-10
 category: workflow
-tags: [youtube, content-strategy, blueprint, seed, social-intelligence]
+tags: [youtube, content-strategy, blueprint, seed, architect-apiligence]
 version: 1.0.0
 status: stable
 ---
@@ -81,7 +81,7 @@ The workflow follows a client-server architecture:
 ┌─────────────────────┐      ┌──────────────────────────┐      ┌────────────────────┐
 │  Mission Control    │      │  Integration Layer       │      │  Social            │
 │  (Frontend)         │◄────►│  (integrate-with-        │◄────►│  Intelligence      │
-│  - HTML/JS UI       │      │   social-intel.js)       │      │  Agent API         │
+│  - HTML/JS UI       │      │   architect-api.js)       │      │  Agent API         │
 └─────────────────────┘      └──────────────────────────┘      └────────────────────┘
 ```
 
@@ -251,7 +251,7 @@ The workflow's interface follows a three-step wizard pattern:
 
 - [Niche Scout Workflow](./niche-scout-workflow-migrated.md)
 - [YouTube API Configuration](./youtube-api-configuration.md)
-- [Social Intelligence Agent Documentation](../agents/social-intelligence-agent.md)
+- [Social Intelligence Agent Documentation](../agents/architect-apiligence-agent.md)
 
 ## Implementation Notes
 
@@ -287,7 +287,7 @@ Planned enhancements for the workflow include:
 This documentation was migrated from multiple source files as part of the Alfred Agent Platform v2 documentation migration project. Original source files included:
 
 - `/services/mission-control-simplified/public/seed-to-blueprint.html`
-- `/services/mission-control-simplified/integrate-with-social-intel.js`
+- `/services/mission-control-simplified/integrate-with-architect-api.js`
 - `/services/mission-control-simplified/COMPREHENSIVE_WORKFLOW_ANALYSIS.md`
 
 The migration process included consolidating UI, API, and implementation details into a comprehensive workflow document. The documentation structure follows the standardized workflow template format.

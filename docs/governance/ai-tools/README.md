@@ -30,7 +30,7 @@ Claude Desktop is excellent for:
 I'm creating documentation for the Social Intelligence agent in the Alfred Agent Platform.
 Please help me draft this document following the agent template.
 
-The agent documentation should be placed at /docs/agents/domain/social-intelligence.md
+The agent documentation should be placed at /docs/agents/domain/architect-apiligence.md
 
 Here's the template to follow:
 [paste template content]

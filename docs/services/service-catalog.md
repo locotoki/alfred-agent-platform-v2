@@ -57,7 +57,7 @@ The Alfred Agent Platform v2 consists of multiple interconnected services that w
 - `/api/v1/social-monitor` - Social media monitoring endpoint
 
 **Documentation:**
-- `/docs/agents/social-intelligence-agent.md` - Agent documentation
+- `/docs/agents/architect-apiligence-agent.md` - Agent documentation
 - `/docs/workflows/niche-scout-implementation-guide.md` - Niche scout workflow
 
 **Dependencies:**
@@ -333,7 +333,7 @@ The following tables provide the status of documentation migration and consolida
 | Service | Documentation Location | Status | Priority | Related Documents |
 |---------|------------------------|--------|----------|-------------------|
 | Alfred Bot | `/docs/architecture/system-design.md`<br>`/docs/api/a2a-protocol.md` | Complete | Low | `/docs/staging-area/alfred__AI_Assistant/*.md` |
-| Social Intelligence | `/docs/agents/social-intelligence-agent.md`<br>`/docs/workflows/niche-scout-implementation-guide.md` | Complete | Low | `/docs/staging-area/Social_Intel/*.md` |
+| Social Intelligence | `/docs/agents/architect-apiligence-agent.md`<br>`/docs/workflows/niche-scout-implementation-guide.md` | Complete | Low | `/docs/staging-area/Social_Intel/*.md` |
 | Legal Compliance | `/docs/agents/legal-compliance-agent.md` | Complete | Low | `/docs/staging-area/AI_Agent_Platform_v2/AI Agent Platform v2- Security Plan*.md` |
 | Financial-Tax | `/docs/agents/financial-tax-agent.md`<br>`/docs/agents/financial-tax-deployment-checklist.md` | In Progress | High | N/A |
 

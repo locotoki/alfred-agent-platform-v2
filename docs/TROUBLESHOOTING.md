@@ -310,13 +310,13 @@ When `CORE_NO_LLM=true`:
    - Verify `.env.local` contains correct URLs:
      ```
      SOCIAL_INTEL_URL=http://localhost:9000
-     SOCIAL_INTEL_SERVICE_URL=http://social-intel:9000
+     SOCIAL_INTEL_SERVICE_URL=http://architect-api:9000
      ```
 
 2. **Implement fallback mechanisms**:
    ```javascript
    // In youtube-workflows.ts
-   const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || '/api/social-intel';
+   const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || '/api/architect-api';
    const fallbackBaseUrl = '/api/youtube'; // Fallback to local endpoints
 
    async function fetchWithFallback(url, options) {
@@ -333,7 +333,7 @@ When `CORE_NO_LLM=true`:
 3. **Use container networking**:
    - In Docker environment, use service names for direct communication:
      ```
-     SOCIAL_INTEL_SERVICE_URL=http://social-intel:9000
+     SOCIAL_INTEL_SERVICE_URL=http://architect-api:9000
      ```
 
 ## UI Rendering Problems

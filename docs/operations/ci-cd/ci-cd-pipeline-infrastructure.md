@@ -189,7 +189,7 @@ jobs:
       matrix:
         service:
           - alfred-bot
-          - social-intel
+          - architect-api
           - legal-compliance
           - financial-tax
           - mission-control
@@ -682,7 +682,7 @@ module "eks" {
 resource "aws_ecr_repository" "alfred_platform" {
   for_each = toset([
     "alfred-bot",
-    "social-intel",
+    "architect-api",
     "legal-compliance",
     "financial-tax",
     "mission-control"

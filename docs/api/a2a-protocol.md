@@ -277,8 +277,8 @@ Example discovery response:
     "payload": {
       "agents": [
         {
-          "agent_id": "social-intelligence-agent",
-          "service_id": "social-intelligence-service",
+          "agent_id": "architect-apiligence-agent",
+          "service_id": "architect-apiligence-service",
           "supported_intents": ["TREND_ANALYSIS", "SOCIAL_MONITOR", "SENTIMENT_ANALYSIS"],
           "endpoint": "a2a.tasks.create",
           "version": "1.2.0",

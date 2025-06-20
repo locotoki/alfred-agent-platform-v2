@@ -97,7 +97,7 @@ Agents are organized into the following primary categories:
 
 | Agent | Description | Status | Owner | Documentation | Migration Status | Metadata Compliance | Doc Completeness | Priority |
 |-------|-------------|--------|-------|---------------|------------------|---------------------|------------------|----------|
-| Social Intelligence | Social media analysis and content strategy | Active | Domain Team | [Documentation](../domain/social-intelligence.md) | Completed | ✅ | High | P0 |
+| Social Intelligence | Social media analysis and content strategy | Active | Domain Team | [Documentation](../domain/architect-apiligence.md) | Completed | ✅ | High | P0 |
 
 ## Agent Capabilities Details
 

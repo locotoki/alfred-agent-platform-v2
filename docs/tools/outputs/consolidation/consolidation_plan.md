@@ -43,10 +43,10 @@ Files to consolidate:
 
 ### 4. Social Intelligence Documentation
 
-Target location: `/docs/agents/social-intelligence-agent.md`
+Target location: `/docs/agents/architect-apiligence-agent.md`
 
 Files to consolidate:
-- `social-intel-agent.md` - Primary document
+- `architect-api-agent.md` - Primary document
 - Social intelligence workflows
 - YouTube workflow documentation
 

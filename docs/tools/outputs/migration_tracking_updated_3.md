@@ -44,7 +44,7 @@ This document tracks the progress of the Alfred Agent Platform v2 documentation 
 | A2A Protocol | Multiple sources | /docs/api/a2a-protocol.md | Completed | API Team | 2025-05-10 | Comprehensive documentation with examples |
 | System Architecture | Multiple sources | /docs/architecture/system-architecture.md | Completed | Architecture Team | 2025-05-10 | Comprehensive architecture documentation created |
 | Agent Core Framework | Multiple sources | /docs/architecture/agent-core.md | Completed | Architecture Team | 2025-05-10 | Comprehensive agent framework documentation created |
-| Social Intelligence Agent | Multiple sources | /docs/agents/social-intelligence-agent.md | Completed | Documentation Team | 2025-05-10 | Comprehensive agent documentation created |
+| Social Intelligence Agent | Multiple sources | /docs/agents/architect-apiligence-agent.md | Completed | Documentation Team | 2025-05-10 | Comprehensive agent documentation created |
 | Infrastructure Overview | Multiple sources | /docs/infrastructure-crew/overview.md | Completed | Documentation Team | 2025-05-10 | Comprehensive infrastructure documentation created |
 | Agent Implementation Guide | /docs/agents/guides/agent-implementation-guide.md | /docs/agents/guides/agent-implementation-guide-migrated.md | Completed | Documentation Team | 2025-05-10 | Comprehensive agent implementation guide created |
 | Financial-Tax Agent | Multiple sources | /docs/agents/financial-tax-agent-migrated.md | Completed | Documentation Team | 2025-05-10 | Comprehensive agent documentation created |
@@ -62,7 +62,7 @@ This document tracks the progress of the Alfred Agent Platform v2 documentation 
 | Infrastructure Setup | 7 files | Merge into operations/infrastructure-setup.md | Completed | Documentation Team | 2025-05-10 | Merged into comprehensive infrastructure overview |
 | Agent Core | 5 files | Merge into architecture/agent-core.md | Completed | Architecture Team | 2025-05-10 | Comprehensive agent framework documentation |
 | A2A Protocol | 3 files | Merge into api/a2a-protocol.md | Completed | API Team | 2025-05-10 | Created comprehensive protocol documentation |
-| Social Intelligence Agent | 12 files | Merge into agents/social-intelligence-agent.md | Completed | Social Intelligence Team | 2025-05-10 | Comprehensive agent documentation created |
+| Social Intelligence Agent | 12 files | Merge into agents/architect-apiligence-agent.md | Completed | Social Intelligence Team | 2025-05-10 | Comprehensive agent documentation created |
 | Agent Implementation Guide | 2 files | Merge into agents/guides/agent-implementation-guide.md | Completed | Documentation Team | 2025-05-10 | Comprehensive implementation guide created |
 | Financial-Tax Agent | 6 files | Merge into agents/financial-tax-agent.md | Completed | Documentation Team | 2025-05-10 | Comprehensive agent documentation created |
 | Legal Compliance Agent | 8 files | Merge into agents/legal-compliance-agent.md | Not Started | Documentation Team | 2025-06-12 | - |
@@ -102,7 +102,7 @@ This document tracks the progress of the Alfred Agent Platform v2 documentation 
 | A2A Schema | N/A | /docs/schemas/a2a-envelope-schema.json | 2025-05-10 | API Team | Created JSON schema for validation |
 | System Architecture | Multiple sources | /docs/architecture/system-architecture.md | 2025-05-10 | Architecture Team | Comprehensive architecture documentation |
 | Agent Core Framework | Multiple sources | /docs/architecture/agent-core.md | 2025-05-10 | Architecture Team | Comprehensive agent framework documentation |
-| Social Intelligence Agent | Multiple sources | /docs/agents/social-intelligence-agent.md | 2025-05-10 | Social Intelligence Team | Comprehensive agent documentation |
+| Social Intelligence Agent | Multiple sources | /docs/agents/architect-apiligence-agent.md | 2025-05-10 | Social Intelligence Team | Comprehensive agent documentation |
 | Infrastructure Overview | Multiple sources | /docs/infrastructure-crew/overview.md | 2025-05-10 | Documentation Team | Comprehensive infrastructure documentation |
 | Agent Implementation Guide | /docs/agents/guides/agent-implementation-guide.md | /docs/agents/guides/agent-implementation-guide-migrated.md | 2025-05-10 | Documentation Team | Comprehensive agent implementation guide |
 | Financial-Tax Agent | Multiple sources | /docs/agents/financial-tax-agent-migrated.md | 2025-05-10 | Documentation Team | Comprehensive agent documentation |

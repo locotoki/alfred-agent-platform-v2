@@ -1932,7 +1932,7 @@
 | 3 | heading_capitalization | 🟠 warning | Heading should use sentence case (first word capitalized): 1. Overview of Niche-Scout Workflow |
 | 7 | heading_capitalization | 🟠 warning | Heading should use sentence case (first word capitalized): 2. Frontend Configuration Steps |
 | 74 | heading_capitalization | 🟠 warning | Heading should use sentence case (first word capitalized): 3. Update YouTube Service |
-| 115 | heading_capitalization | 🟠 warning | Heading should use sentence case (first word capitalized): 4. Backend Configuration (social-intel service) |
+| 115 | heading_capitalization | 🟠 warning | Heading should use sentence case (first word capitalized): 4. Backend Configuration (architect-api service) |
 | 126 | heading_capitalization | 🟠 warning | Heading should use sentence case (first word capitalized): 5. Complete Flow Documentation |
 | 162 | heading_capitalization | 🟠 warning | Heading should use sentence case (first word capitalized): 6. Testing the Integration |
 | 170 | heading_capitalization | 🟠 warning | Heading should use sentence case (first word capitalized): 7. Troubleshooting |
@@ -1951,8 +1951,8 @@
 | - | potential_duplicate_content | 🔵 info | Potential duplicate content: '2. frontend configuration steps' appears in 2 documents |
 | - | potential_duplicate_content | 🔵 info | Potential duplicate content: 'step 1: add nichescoutwizard to workflowcard' appears in 2 documents |
 | - | potential_duplicate_content | 🔵 info | Potential duplicate content: '3. update youtube service' appears in 2 documents |
-| - | potential_duplicate_content | 🔵 info | Potential duplicate content: '4. backend configuration (social-intel service)' appears in 2 documents |
-| - | potential_duplicate_content | 🔵 info | Potential duplicate content: 'required in social-intel service environment' appears in 2 documents |
+| - | potential_duplicate_content | 🔵 info | Potential duplicate content: '4. backend configuration (architect-api service)' appears in 2 documents |
+| - | potential_duplicate_content | 🔵 info | Potential duplicate content: 'required in architect-api service environment' appears in 2 documents |
 | - | potential_duplicate_content | 🔵 info | Potential duplicate content: '5. complete flow documentation' appears in 2 documents |
 | - | potential_duplicate_content | 🔵 info | Potential duplicate content: 'user flow' appears in 2 documents |
 | - | potential_duplicate_content | 🔵 info | Potential duplicate content: '6. testing the integration' appears in 2 documents |
@@ -3311,7 +3311,7 @@
 | 73 | missing_language_spec | 🟠 warning | Code block is missing language specification |
 | 75 | heading_capitalization | 🟠 warning | Heading should use sentence case (first word capitalized): 3. Update YouTube Service |
 | 114 | missing_language_spec | 🟠 warning | Code block is missing language specification |
-| 116 | heading_capitalization | 🟠 warning | Heading should use sentence case (first word capitalized): 4. Backend Configuration (social-intel service) |
+| 116 | heading_capitalization | 🟠 warning | Heading should use sentence case (first word capitalized): 4. Backend Configuration (architect-api service) |
 | 125 | missing_language_spec | 🟠 warning | Code block is missing language specification |
 | 127 | heading_capitalization | 🟠 warning | Heading should use sentence case (first word capitalized): 5. Complete Flow Documentation |
 | 163 | heading_capitalization | 🟠 warning | Heading should use sentence case (first word capitalized): 6. Testing the Integration |
@@ -3331,8 +3331,8 @@
 | - | potential_duplicate_content | 🔵 info | Potential duplicate content: '2. frontend configuration steps' appears in 2 documents |
 | - | potential_duplicate_content | 🔵 info | Potential duplicate content: 'step 1: add nichescoutwizard to workflowcard' appears in 2 documents |
 | - | potential_duplicate_content | 🔵 info | Potential duplicate content: '3. update youtube service' appears in 2 documents |
-| - | potential_duplicate_content | 🔵 info | Potential duplicate content: '4. backend configuration (social-intel service)' appears in 2 documents |
-| - | potential_duplicate_content | 🔵 info | Potential duplicate content: 'required in social-intel service environment' appears in 2 documents |
+| - | potential_duplicate_content | 🔵 info | Potential duplicate content: '4. backend configuration (architect-api service)' appears in 2 documents |
+| - | potential_duplicate_content | 🔵 info | Potential duplicate content: 'required in architect-api service environment' appears in 2 documents |
 | - | potential_duplicate_content | 🔵 info | Potential duplicate content: '5. complete flow documentation' appears in 2 documents |
 | - | potential_duplicate_content | 🔵 info | Potential duplicate content: 'user flow' appears in 2 documents |
 | - | potential_duplicate_content | 🔵 info | Potential duplicate content: '6. testing the integration' appears in 2 documents |

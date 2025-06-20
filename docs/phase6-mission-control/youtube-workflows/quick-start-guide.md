@@ -18,10 +18,10 @@ The Alfred Agent Platform v2 includes a Social Intelligence Agent with YouTube w
 - `/services/mission-control/src/pages/workflows/seed-to-blueprint/results/[id].tsx`: Results page
 
 ### API Endpoints
-- `/services/mission-control/src/pages/api/social-intel/niche-scout.ts`: Niche Scout API proxy
-- `/services/mission-control/src/pages/api/social-intel/seed-to-blueprint.ts`: Blueprint API proxy
-- `/services/mission-control/src/pages/api/social-intel/workflow-history.ts`: Workflow history API
-- `/services/mission-control/src/pages/api/social-intel/workflow-result/[id].ts`: Results API
+- `/services/mission-control/src/pages/api/architect-api/niche-scout.ts`: Niche Scout API proxy
+- `/services/mission-control/src/pages/api/architect-api/seed-to-blueprint.ts`: Blueprint API proxy
+- `/services/mission-control/src/pages/api/architect-api/workflow-history.ts`: Workflow history API
+- `/services/mission-control/src/pages/api/architect-api/workflow-result/[id].ts`: Results API
 
 ### Services
 - `/services/mission-control/src/services/youtube-workflows.ts`: Core service for YouTube API integration
@@ -40,7 +40,7 @@ The Alfred Agent Platform v2 includes a Social Intelligence Agent with YouTube w
    - The service layer already uses dynamic origin detection:
    ```typescript
    const baseUrl = typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3007';
-   const SOCIAL_INTEL_URL = `${baseUrl}/api/social-intel`;
+   const SOCIAL_INTEL_URL = `${baseUrl}/api/architect-api`;
    ```
 
 3. **Error Handling**
@@ -71,7 +71,7 @@ The Alfred Agent Platform v2 includes a Social Intelligence Agent with YouTube w
 3. **Start the Services**
    ```bash
    # Start the Social Intelligence Agent container if not running
-   docker-compose up -d social-intel
+   docker-compose up -d architect-api
 
    # Start the Mission Control UI
    cd services/mission-control

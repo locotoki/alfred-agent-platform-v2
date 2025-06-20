@@ -47,7 +47,7 @@ The implementation has been tested under various conditions:
 
 ### API Integration
 - `services/mission-control/src/services/youtube-workflows.ts`: Core service
-- `services/mission-control/src/pages/api/social-intel/*.ts`: API endpoints
+- `services/mission-control/src/pages/api/architect-api/*.ts`: API endpoints
 
 ### UI Components
 - `services/mission-control/src/pages/workflows/niche-scout/*.tsx`: Niche Scout UI

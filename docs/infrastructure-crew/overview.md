@@ -43,7 +43,7 @@ All platform services are containerized using Docker and orchestrated with Docke
 | Service | Container Name | Base Image | Internal Port | External Port | Status |
 |---------|---------------|------------|---------------|---------------|--------|
 | Mission Control | mission-control | node:18-alpine | 3000 | 3007 | ✅ Completed |
-| Social Intelligence | social-intel | python:3.11-slim | 9000 | 9000 | ✅ Completed |
+| Social Intelligence | architect-api | python:3.11-slim | 9000 | 9000 | ✅ Completed |
 | Financial-Tax | financial-tax | python:3.11-slim | 9003 | 9003 | ✅ Completed |
 | Legal Compliance | legal-compliance | python:3.11-slim | 9002 | 9002 | ✅ Completed |
 | Alfred Bot | alfred-bot | python:3.11-slim | 8011 | 8011 | ✅ Completed |
@@ -65,7 +65,7 @@ This infrastructure supports the following agents:
 
 | Agent | Role in Infrastructure | Integration Point |
 |-------|------------------------|-------------------|
-| Social Intelligence | Social pattern analysis | Containerized service (social-intel) |
+| Social Intelligence | Social pattern analysis | Containerized service (architect-api) |
 | Legal Compliance | Legal and regulatory checks | Containerized service (legal-compliance) |
 | Financial-Tax | Financial analysis and tax calculations | Containerized service (financial-tax) |
 | Alfred Bot | Core orchestration and user interface | Containerized service (alfred-bot) |
@@ -249,7 +249,7 @@ The platform provides streamlined startup procedures:
    bash services/mission-control/start-container.sh
 
    # Social Intelligence Agent
-   docker-compose up -d social-intel
+   docker-compose up -d architect-api
 
    # Financial-Tax Agent
    docker-compose up -d financial-tax

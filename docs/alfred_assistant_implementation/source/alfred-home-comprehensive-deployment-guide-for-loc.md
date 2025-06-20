@@ -38,7 +38,7 @@ Your local infrastructure, as observed in the Docker Desktop snapshot, is adapte
 
 | Layer | Service / Component | Port(s) | Local Container(s) | Notes |
 | --- | --- | --- | --- | --- |
-| Compute | Docker Containers | Various | `alfred-agent`, `social-intel`, etc. | 1.91% CPU, 1.666GB/30.61GB memory usage. |
+| Compute | Docker Containers | Various | `alfred-agent`, `architect-api`, etc. | 1.91% CPU, 1.666GB/30.61GB memory usage. |
 | Database | Supabase (Postgres) | 5432, 3000 | `supabase-db`, `supabase-rest` | Supports Postgres + pgvector if needed. |
 | Cache/Streams | Redis | 6379 | `redis` | Used for `alfred-ingest` and `alfred-outbox`. |
 | Vector Database | Qdrant (Optional) | 6333 | `qdrant` | Alternative to pgvector for embeddings. |
@@ -449,7 +449,7 @@ Set the webhook URL in Meta’s Business Manager for your WABA.
 
 The broader *Alfred Agent Platform v2* diagram includes components beyond Alfred-Home’s scope (e.g., Slack integration, multiple agents, Pub/Sub). Your local setup supports both:
 
-- **Agents**: Repurpose `social-intel` or `financial-tax` containers for Alfred-Home by loading `skills_home/`.
+- **Agents**: Repurpose `architect-api` or `financial-tax` containers for Alfred-Home by loading `skills_home/`.
 - **Messaging**: Use Redis Streams instead of Pub/Sub Emulator.
 - **Persistence**: Supabase matches the diagram’s PostgresQL setup.
 - **Observability**: Prometheus, Grafana, and Loki align with the diagram.
@@ -478,7 +478,7 @@ The broader *Alfred Agent Platform v2* diagram includes components beyond Alfred
 - **Isolation**: Single-tenant design (`INSTANCE=home`) ensures no data leakage.
 - **Security**: HMAC validation and local secrets management protect the webhook.
 - **Cost-Effective**: Local hosting minimizes costs to €2–4/month (WhatsApp fees).
-- **Scalable**: Your setup can support additional agents (e.g., `social-intel`) if needed.
+- **Scalable**: Your setup can support additional agents (e.g., `architect-api`) if needed.
 
 ---
 

@@ -12,7 +12,7 @@ Based on the docker-release.yml workflow, these images were built and pushed:
 | contact-ingest | ghcr.io/digital-native-ventures/alfred-agent-platform-v2/contact-ingest:v3.0.0 | ❌ Using latest |
 | crm-sync | ghcr.io/digital-native-ventures/alfred-agent-platform-v2/crm-sync:v3.0.0 | ✅ Using test v3.0.1 |
 | slack-app | ghcr.io/digital-native-ventures/alfred-agent-platform-v2/slack-app:v3.0.0 | ❌ Not found |
-| social-intel | ghcr.io/digital-native-ventures/alfred-agent-platform-v2/social-intel:v3.0.0 | ❌ Using local build |
+| architect-api | ghcr.io/digital-native-ventures/alfred-agent-platform-v2/architect-api:v3.0.0 | ❌ Using local build |
 | db-metrics | ghcr.io/digital-native-ventures/alfred-agent-platform-v2/db-metrics:v3.0.0 | ❌ Using latest |
 | slack-adapter | ghcr.io/digital-native-ventures/alfred-agent-platform-v2/slack-adapter:v3.0.0 | ❌ Using local build |
 | mission-control | ghcr.io/digital-native-ventures/alfred-agent-platform-v2/mission-control:v3.0.0 | ❌ Not running |

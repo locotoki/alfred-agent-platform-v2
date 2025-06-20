@@ -19,11 +19,11 @@
 
 The following components will be deleted after SI-243 is resolved:
 
-1. **File**: `/services/mission-control/src/pages/api/social-intel/proxy-helper.ts`
+1. **File**: `/services/mission-control/src/pages/api/architect-api/proxy-helper.ts`
    - `applyLevenshteinTransformation()` function
    - Associated tests in `/tests/unit/proxy-helper.test.ts`
 
-2. **File**: `/services/mission-control-simplified/integrate-with-social-intel.js`
+2. **File**: `/services/mission-control-simplified/integrate-with-architect-api.js`
    - `transformResults()` function at line ~120
    - The related filtering logic in the `/niche-scout` handler
 

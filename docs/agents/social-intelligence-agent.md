@@ -23,12 +23,12 @@ Last consolidated: 2025-05-14
 
 ## Source Documents
 
-- Social_Intel/social-intel-agent-manual-pilot-playbook-phase-1.md
-- Social_Intel/social-intel-agent.md
-- Social_Intel/social-intel-agent-agent-automation-playbook.md
-- Social_Intel/social-intel-agent-role-for-youtube-content-creati.md
-- Social_Intel/social-intel-agent-youtube-research-workflows-thro.md
-- Social_Intel/social-intel-agent-youtube-content-creation-shippi.md
-- Social_Intel/social-intel-agent-try-it-tomorrow-exercises.md
-- Social_Intel/social-intel-agent-for-youtube-content-creation.md
-- Social_Intel/social-intel-agent-researchand-insight-workflows.md
+- Social_Intel/architect-api-agent-manual-pilot-playbook-phase-1.md
+- Social_Intel/architect-api-agent.md
+- Social_Intel/architect-api-agent-agent-automation-playbook.md
+- Social_Intel/architect-api-agent-role-for-youtube-content-creati.md
+- Social_Intel/architect-api-agent-youtube-research-workflows-thro.md
+- Social_Intel/architect-api-agent-youtube-content-creation-shippi.md
+- Social_Intel/architect-api-agent-try-it-tomorrow-exercises.md
+- Social_Intel/architect-api-agent-for-youtube-content-creation.md
+- Social_Intel/architect-api-agent-researchand-insight-workflows.md

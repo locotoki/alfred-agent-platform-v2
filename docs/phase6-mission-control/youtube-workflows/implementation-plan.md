@@ -34,7 +34,7 @@ The official port configuration standards are now documented in `PORT-STANDARD.m
 // services/mission-control/.env.local
 SOCIAL_INTEL_URL=http://localhost:9000
 NEXT_PUBLIC_SERVER_URL=http://localhost:3007
-NEXT_PUBLIC_API_BASE_URL=/api/social-intel
+NEXT_PUBLIC_API_BASE_URL=/api/architect-api
 ```
 
 ```json
@@ -55,7 +55,7 @@ The YouTube workflow service already implements dynamic URL detection:
 // In youtube-workflows.ts
 // This is the correct implementation - do not change
 const baseUrl = typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3007';
-const SOCIAL_INTEL_URL = `${baseUrl}/api/social-intel`;
+const SOCIAL_INTEL_URL = `${baseUrl}/api/architect-api`;
 ```
 
 All API endpoints should follow this pattern for maximum resilience to port changes.
@@ -87,7 +87,7 @@ try {
 // Add connection health check function
 const checkServiceHealth = async () => {
   try {
-    const response = await fetch(`${baseUrl}/api/social-intel/health`, {
+    const response = await fetch(`${baseUrl}/api/architect-api/health`, {
       method: 'GET',
       signal: AbortSignal.timeout(3000)  // 3-second timeout
     });

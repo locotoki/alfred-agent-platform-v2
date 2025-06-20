@@ -15,7 +15,7 @@ This report documents the successful completion of all high-priority documentati
 | A2A Protocol | Multiple sources | /docs/api/a2a-protocol.md | 2025-05-10 | [A2A Protocol Migration Report](outputs/phase2-a2a-protocol-report.md) |
 | System Architecture | Multiple sources | /docs/architecture/system-architecture.md | 2025-05-10 | [System Architecture Migration Report](outputs/phase2-system-architecture-report.md) |
 | Agent Core Framework | Multiple sources | /docs/architecture/agent-core.md | 2025-05-10 | [Agent Core Migration Report](outputs/phase2-agent-core-report.md) |
-| Social Intelligence Agent | Multiple sources | /docs/agents/social-intelligence-agent.md | 2025-05-10 | [Social Intelligence Agent Migration Report](outputs/phase2-social-intelligence-report.md) |
+| Social Intelligence Agent | Multiple sources | /docs/agents/architect-apiligence-agent.md | 2025-05-10 | [Social Intelligence Agent Migration Report](outputs/phase2-architect-apiligence-report.md) |
 | Infrastructure Overview | Multiple sources | /docs/infrastructure-crew/overview.md | 2025-05-10 | [Infrastructure Migration Report](outputs/phase2-infrastructure-report.md) |
 
 ## Migration Metrics
@@ -131,5 +131,5 @@ The successful completion of all high-priority documents in Phase 2 represents a
 - [A2A Protocol Migration Report](outputs/phase2-a2a-protocol-report.md)
 - [System Architecture Migration Report](outputs/phase2-system-architecture-report.md)
 - [Agent Core Migration Report](outputs/phase2-agent-core-report.md)
-- [Social Intelligence Agent Migration Report](outputs/phase2-social-intelligence-report.md)
+- [Social Intelligence Agent Migration Report](outputs/phase2-architect-apiligence-report.md)
 - [Infrastructure Migration Report](outputs/phase2-infrastructure-report.md)

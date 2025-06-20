@@ -70,12 +70,12 @@ All tests are successful:
 
 The following API endpoints have been implemented:
 
-- `/api/social-intel/niche-scout` - Runs the Niche-Scout workflow
-- `/api/social-intel/seed-to-blueprint` - Runs the Seed-to-Blueprint workflow
-- `/api/social-intel/workflow-result/[id]` - Retrieves workflow results
-- `/api/social-intel/workflow-history` - Gets workflow execution history
-- `/api/social-intel/scheduled-workflows` - Gets scheduled workflows
-- `/api/social-intel/schedule-workflow` - Schedules a new workflow
+- `/api/architect-api/niche-scout` - Runs the Niche-Scout workflow
+- `/api/architect-api/seed-to-blueprint` - Runs the Seed-to-Blueprint workflow
+- `/api/architect-api/workflow-result/[id]` - Retrieves workflow results
+- `/api/architect-api/workflow-history` - Gets workflow execution history
+- `/api/architect-api/scheduled-workflows` - Gets scheduled workflows
+- `/api/architect-api/schedule-workflow` - Schedules a new workflow
 
 All endpoints include:
 - Timeout handling to prevent hanging requests

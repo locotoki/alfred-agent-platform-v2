@@ -50,7 +50,7 @@ Added a new job configuration in Prometheus to scrape the service_health metrics
 # New job for service health metrics from v0.4.0 healthcheck binary
 - job_name: 'service_health'
   static_configs:
-    - targets: ['alfred-bot:9091', 'social-intel:9091', 'financial-tax:9091', 'legal-compliance:9091', 'agent-rag:9091', 'agent-atlas:9091']
+    - targets: ['alfred-bot:9091', 'architect-api:9091', 'financial-tax:9091', 'legal-compliance:9091', 'agent-rag:9091', 'agent-atlas:9091']
   metrics_path: '/metrics'
 ```
 
@@ -99,7 +99,7 @@ The following services have been updated with the new healthcheck binary and met
 1. `services/rag-service`
 2. `services/financial-tax`
 3. `services/legal-compliance`
-4. `services/social-intel`
+4. `services/architect-api`
 5. `services/alfred-bot`
 6. `rag-gateway`
 
@@ -115,7 +115,7 @@ cd /home/locotoki/projects/alfred-agent-platform-v2
 Then rebuild and restart the affected services:
 
 ```bash
-docker-compose -f docker-compose-clean.yml build services/rag-service services/financial-tax services/legal-compliance services/social-intel services/alfred-bot rag-gateway
+docker-compose -f docker-compose-clean.yml build services/rag-service services/financial-tax services/legal-compliance services/architect-api services/alfred-bot rag-gateway
 docker-compose -f docker-compose-clean.yml up -d
 ```
 

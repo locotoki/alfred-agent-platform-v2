@@ -43,7 +43,7 @@ The workflows are organized into the following categories:
 | Workflow Name | Description | Status | Owner | Documentation Link | Migration Status | Metadata Compliance | Documentation Completeness | Migration Priority |
 |---------------|-------------|--------|-------|-------------------|------------------|---------------------|---------------------------|-------------------|
 | Niche-Scout | Find trending YouTube niches with growth metrics | Active | Social Intelligence Team | [Niche-Scout Guide](/docs/workflows/niche-scout-implementation-guide.md) | In Progress | ❌ | Medium | P0 |
-| Seed-to-Blueprint | Create YouTube channel strategy from seed video or niche | Active | Social Intelligence Team | [Workflow Documentation](/docs/workflows/by-agent/social-intelligence/seed-to-blueprint.md) | Not Started | ❌ | Low | P1 |
+| Seed-to-Blueprint | Create YouTube channel strategy from seed video or niche | Active | Social Intelligence Team | [Workflow Documentation](/docs/workflows/by-agent/architect-apiligence/seed-to-blueprint.md) | Not Started | ❌ | Low | P1 |
 
 ### Financial-Tax Workflows
 

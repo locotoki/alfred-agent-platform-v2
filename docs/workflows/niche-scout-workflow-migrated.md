@@ -14,7 +14,7 @@ This workflow leverages the Social Intelligence Agent's capabilities to analyze 
 
 | Attribute | Value |
 |-----------|-------|
-| Primary Agent | [Social Intelligence Agent](../../agents/social-intelligence-agent.md) |
+| Primary Agent | [Social Intelligence Agent](../../agents/architect-apiligence-agent.md) |
 | Supporting Agents | None |
 | Projects | YouTube Content Strategy, Market Research |
 | Category | Analysis |
@@ -415,11 +415,11 @@ The Niche Scout workflow combines frontend and backend components:
 ## Related Workflows
 
 - [Seed to Blueprint Workflow](../by-project/content-creation/seed-to-blueprint-workflow.md)
-- [Content Performance Analysis](../by-agent/social-intelligence/content-performance-analysis.md)
-- [Audience Insights Workflow](../by-agent/social-intelligence/audience-insights-workflow.md)
+- [Content Performance Analysis](../by-agent/architect-apiligence/content-performance-analysis.md)
+- [Audience Insights Workflow](../by-agent/architect-apiligence/audience-insights-workflow.md)
 
 ## References
 
 - [YouTube API Documentation](https://developers.google.com/youtube/v3)
-- [Social Intelligence Agent Documentation](../../agents/social-intelligence-agent.md)
+- [Social Intelligence Agent Documentation](../../agents/architect-apiligence-agent.md)
 - [Niche Scout Implementation Guide](./niche-scout-implementation-guide.md)

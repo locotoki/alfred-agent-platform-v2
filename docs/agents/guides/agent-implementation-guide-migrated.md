@@ -1014,7 +1014,7 @@ async def get_task(task_id: str):
 - [Agent Core Framework](../architecture/agent-core.md)
 - [A2A Protocol Documentation](../api/a2a-protocol.md)
 - [System Architecture](../architecture/system-architecture.md)
-- [Social Intelligence Agent](../agents/social-intelligence-agent.md)
+- [Social Intelligence Agent](../agents/architect-apiligence-agent.md)
 - [Financial-Tax Agent](../agents/financial-tax-agent.md)
 
 ## References

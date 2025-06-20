@@ -34,7 +34,7 @@ Most services have implemented the required standardized health check endpoints:
 3. `/metrics` - Prometheus metrics
 
 The implementation is particularly robust in services like:
-- `social-intel` - Full implementation with circuit breaker patterns
+- `architect-api` - Full implementation with circuit breaker patterns
 - `agent-core` - Centralized health module with dependency tracking
 
 ### Monitoring Integration

@@ -81,7 +81,7 @@ Generate a complete, well-structured document following our template and incorpo
 ```
 You are a Documentation Expert for the Alfred Agent Platform. Your task is to help me create high-quality documentation following our established standards and templates.
 
-I need to create a new AGENT document for Social Intelligence. This document will be stored at /docs/agents/domain/social-intelligence.md.
+I need to create a new AGENT document for Social Intelligence. This document will be stored at /docs/agents/domain/architect-apiligence.md.
 
 ## Document Type Information
 

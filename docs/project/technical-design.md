@@ -225,6 +225,6 @@ This design guides the transformation of the Alfred Agent Platform into a modula
 - [Master Plan](./master-plan.md)
 - [System Architecture](../architecture/system-design.md)
 - [API Documentation](../api/a2a-protocol.md)
-- [Social Intelligence Agent](../agents/domain/social-intelligence.md)
+- [Social Intelligence Agent](../agents/domain/architect-apiligence.md)
 - [Legal Compliance Agent](../agents/domain/legal-compliance.md)
 - [Alfred Bot Implementation](../alfred_assistant_implementation/implementation-plan.md)

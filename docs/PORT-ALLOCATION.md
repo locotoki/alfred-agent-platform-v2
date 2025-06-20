@@ -14,7 +14,7 @@ This document lists all network ports used by Alfred Agent Platform services in 
 | slack-adapter | 8083 | HTTP | Slack webhook receiver |
 | slack-mcp-gateway | 8084 | WebSocket | Slack MCP gateway |
 | agent-orchestrator | 8085 | HTTP | Agent orchestration API |
-| social-intel | 8086 | HTTP | Social intelligence API |
+| architect-api | 8086 | HTTP | Social intelligence API |
 | ui-chat | 8501 | HTTP | Streamlit chat UI |
 | mission-control | 3000 | HTTP | Next.js mission control |
 | mission-control-simplified | 3001 | HTTP | Simplified mission control |

@@ -49,7 +49,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Fixed Grafana probe to add environment variable fallback with default to `http://localhost:3005`
-- Standardized health checks for all priority services (model-registry, model-router, redis, alfred-core, social-intel)
+- Standardized health checks for all priority services (model-registry, model-router, redis, alfred-core, architect-api)
 - Added proper entrypoint.sh scripts with secure defaults (set -euo pipefail)
 - Created skeletal alert rules for each standardized service
 - Added lightweight health check smoke test to CI pipeline

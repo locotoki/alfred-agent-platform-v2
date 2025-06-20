@@ -25,7 +25,7 @@ During PR #55 development, the CI lint check failed on ~30 files with various li
 - services/alfred-bot/app/main.py
 - services/financial-tax/app/main.py
 - services/legal-compliance/app/main.py
-- services/social-intel/tests/unit/test_features.py
+- services/architect-api/tests/unit/test_features.py
 - tests/integration/test_exactly_once_processing.py
 
 ## Action Items

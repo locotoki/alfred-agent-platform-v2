@@ -17,7 +17,7 @@ This document provides a comprehensive guide to all environment variables used i
 | `POSTGRES_PASSWORD` | Yes | `postgres` | PostgreSQL container | Password for the PostgreSQL database. **CRITICAL**: Change in production! |
 | `POSTGRES_USER` | Yes | `postgres` | PostgreSQL container | Username for the PostgreSQL database. |
 | `POSTGRES_DB` | Yes | `postgres` | PostgreSQL container | Default database name to create on startup. |
-| `DATABASE_URL` | Yes | `postgresql://postgres:postgres@db-postgres:5432/postgres` | social-intel, rag-service | Primary connection string for PostgreSQL. **CRITICAL**: Required by multiple services including social-intel agent. Connection failures will cause service outages. |
+| `DATABASE_URL` | Yes | `postgresql://postgres:postgres@db-postgres:5432/postgres` | architect-api, rag-service | Primary connection string for PostgreSQL. **CRITICAL**: Required by multiple services including architect-api agent. Connection failures will cause service outages. |
 | `ALFRED_DATABASE_URL` | Yes | Same as `DATABASE_URL` | agent-core, alfred-bot | Alternative connection string with the ALFRED_ prefix for some services. Must match `DATABASE_URL`. |
 | `DB_JWT_SECRET` | Yes | `jwt-secret-for-development-only` | db-api, storage | Secret used to sign JWT tokens for database access. **CRITICAL**: Change in production! |
 | `ANON_KEY` | Yes | *example JWT token* | client applications | JWT token for anonymous database access. Used by frontend applications. |
@@ -38,9 +38,9 @@ This document provides a comprehensive guide to all environment variables used i
 
 | Variable | Required | Default | Used By | Description |
 |----------|----------|---------|---------|-------------|
-| `REDIS_URL` | Yes | `redis://redis:6379` | agent-core, alfred-bot, social-intel | Connection string for Redis cache server. Used for caching, session storage, and rate limiting. |
+| `REDIS_URL` | Yes | `redis://redis:6379` | agent-core, alfred-bot, architect-api | Connection string for Redis cache server. Used for caching, session storage, and rate limiting. |
 | `ALFRED_REDIS_URL` | Yes | Same as `REDIS_URL` | All ALFRED_ prefixed services | Alternative connection string with ALFRED_ prefix. Must match `REDIS_URL`. |
-| `PUBSUB_EMULATOR_HOST` | Yes | `pubsub-emulator:8085` | agent-orchestrator, social-intel | Hostname for the PubSub emulator in dev environments. |
+| `PUBSUB_EMULATOR_HOST` | Yes | `pubsub-emulator:8085` | agent-orchestrator, architect-api | Hostname for the PubSub emulator in dev environments. |
 | `ALFRED_PUBSUB_EMULATOR_HOST` | Yes | Same as `PUBSUB_EMULATOR_HOST` | All ALFRED_ prefixed services | Alternative PubSub host with ALFRED_ prefix. |
 | `GOOGLE_CLOUD_PROJECT` | Yes | `alfred-agent-platform` | PubSub clients | Google Cloud project ID for PubSub topic/subscription naming. |
 | `GOOGLE_APPLICATION_CREDENTIALS` | Yes | `/tmp/empty-credentials.json` | PubSub clients | Path to GCP credentials file. Uses empty credentials with emulator in dev. |
@@ -56,8 +56,8 @@ This document provides a comprehensive guide to all environment variables used i
 | `SLACK_SIGNING_SECRET` | Yes for Slack integration | `placeholder-secret` | alfred-bot | Signing secret for Slack API validation. |
 | `ALFRED_SLACK_BOT_TOKEN` | Yes for Slack integration | Same as `SLACK_BOT_TOKEN` | alfred-bot | Alternative token with ALFRED_ prefix. Must match `SLACK_BOT_TOKEN`. |
 | `ALFRED_SLACK_SIGNING_SECRET` | Yes for Slack integration | Same as `SLACK_SIGNING_SECRET` | alfred-bot | Alternative secret with ALFRED_ prefix. Must match `SLACK_SIGNING_SECRET`. |
-| `YOUTUBE_API_KEY` | Yes for social-intel | `youtube-mock-key-for-development-only` | social-intel | YouTube Data API key. **CRITICAL** for social intelligence workflows. |
-| `ALFRED_YOUTUBE_API_KEY` | Yes for social-intel | Same as `YOUTUBE_API_KEY` | social-intel | Alternative key with ALFRED_ prefix. Must match `YOUTUBE_API_KEY`. |
+| `YOUTUBE_API_KEY` | Yes for architect-api | `youtube-mock-key-for-development-only` | architect-api | YouTube Data API key. **CRITICAL** for social intelligence workflows. |
+| `ALFRED_YOUTUBE_API_KEY` | Yes for architect-api | Same as `YOUTUBE_API_KEY` | architect-api | Alternative key with ALFRED_ prefix. Must match `YOUTUBE_API_KEY`. |
 
 ## SMTP Configuration (Optional)
 
@@ -77,9 +77,9 @@ This document provides a comprehensive guide to all environment variables used i
 | `MODEL_REGISTRY_URL` | Yes | `http://model-registry:8079` | model-router, agent-core | URL for the model registry service. |
 | `ALFRED_MODEL_ROUTER_URL` | Yes | `http://model-router:8080` | All services using LLMs | URL for the model router service that handles LLM requests. |
 | `ALFRED_API_URL` | Yes | `http://agent-core:8011` | Frontend, agent-orchestrator | URL for the agent core API. |
-| `ALFRED_RAG_URL` | Yes | `http://agent-rag:8501` | agent-core, social-intel | URL for the RAG (Retrieval Augmented Generation) service. |
-| `ALFRED_RAG_API_KEY` | Yes | `social-key` | agent-core, social-intel | API key for RAG service authentication. |
-| `ALFRED_RAG_COLLECTION` | Yes | `social-knowledge` | agent-core, social-intel | Default collection for RAG service. |
+| `ALFRED_RAG_URL` | Yes | `http://agent-rag:8501` | agent-core, architect-api | URL for the RAG (Retrieval Augmented Generation) service. |
+| `ALFRED_RAG_API_KEY` | Yes | `social-key` | agent-core, architect-api | API key for RAG service authentication. |
+| `ALFRED_RAG_COLLECTION` | Yes | `social-knowledge` | agent-core, architect-api | Default collection for RAG service. |
 | `NEXT_PUBLIC_SOCIAL_INTEL_URL` | Yes | `http://agent-social:9000` | Frontend | URL for the Social Intelligence service. Frontend-accessible. |
 | `SOCIAL_INTEL_URL` | Yes | `http://agent-social:9000` | agent-orchestrator | URL for the Social Intelligence service. Backend-accessible. |
 | `SOCIAL_INTEL_SERVICE_URL` | Yes | Same as `SOCIAL_INTEL_URL` | agent-orchestrator | Alternative URL for the Social Intelligence service. |
@@ -127,7 +127,7 @@ This document provides a comprehensive guide to all environment variables used i
 ## Troubleshooting Common Issues
 
 ### Missing DATABASE_URL
-If services like social-intel fail with database connection errors, ensure DATABASE_URL is properly set in your environment or in docker-compose.override.yml for that service.
+If services like architect-api fail with database connection errors, ensure DATABASE_URL is properly set in your environment or in docker-compose.override.yml for that service.
 
 ### UI-Chat Restart Loop
 If ui-chat continuously restarts, ensure STREAMLIT_SERVER_HEADLESS=true is set. This prevents Streamlit from trying to open a browser in containerized environments.

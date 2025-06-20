@@ -23,18 +23,18 @@ The following files still have blanket `# type: ignore` comments:
    - `services/alfred-bot/app/main.py`
 
 2. Social Intelligence modules:
-   - `services/social-intel/fix_workflow_endpoints.py`
-   - `services/social-intel/app/metrics_enhanced.py`
-   - `services/social-intel/app/metrics.py`
-   - `services/social-intel/app/blueprint.py`
-   - `services/social-intel/app/workflow_endpoints.py`
-   - `services/social-intel/app/niche_scout.py`
-   - `services/social-intel/app/reports.py`
-   - `services/social-intel/app/health_check.py`
-   - `services/social-intel/app/main.py`
-   - `services/social-intel/app/youtube_api.py`
-   - `services/social-intel/app/simple_reports.py`
-   - `services/social-intel/app/fixed_route.py`
+   - `services/architect-api/fix_workflow_endpoints.py`
+   - `services/architect-api/app/metrics_enhanced.py`
+   - `services/architect-api/app/metrics.py`
+   - `services/architect-api/app/blueprint.py`
+   - `services/architect-api/app/workflow_endpoints.py`
+   - `services/architect-api/app/niche_scout.py`
+   - `services/architect-api/app/reports.py`
+   - `services/architect-api/app/health_check.py`
+   - `services/architect-api/app/main.py`
+   - `services/architect-api/app/youtube_api.py`
+   - `services/architect-api/app/simple_reports.py`
+   - `services/architect-api/app/fixed_route.py`
 
 3. Slack MCP Gateway modules:
    - `services/slack_mcp_gateway/responder.py`

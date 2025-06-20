@@ -28,7 +28,7 @@ The **Operations & Maintenance Guide** provides best practices and procedures fo
 scrape_configs:
   - job_name: 'agents'
     static_configs:
-      - targets: ['alfred-bot:8011', 'social-intel:9000']
+      - targets: ['alfred-bot:8011', 'architect-api:9000']
     metrics_path: '/metrics'
 
 # Example Grafana dashboard (partial)

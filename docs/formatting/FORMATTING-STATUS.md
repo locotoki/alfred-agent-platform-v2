@@ -16,7 +16,7 @@ There are several Python files that still need Black formatting applied:
 
 1. Files in `agents/social_intel/` directory
 2. Files in `libs/observability/` directory
-3. Several Python files in service directories (especially `services/social-intel/` and `services/model-router/`)
+3. Several Python files in service directories (especially `services/architect-api/` and `services/model-router/`)
 4. Some node_modules Python files (these should probably be excluded from formatting)
 
 ## Implementation Issues

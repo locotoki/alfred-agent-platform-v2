@@ -15,7 +15,7 @@ These services have completely empty logs, suggesting they're not starting at al
 1. **agent-atlas** (atlas-worker:latest)
    - Build issue or missing entrypoint
 
-2. **agent-social** (alfred-agent-platform-v2-social-intel:latest)
+2. **agent-social** (alfred-agent-platform-v2-architect-api:latest)
    - Build issue or missing entrypoint
 
 3. **model-router**

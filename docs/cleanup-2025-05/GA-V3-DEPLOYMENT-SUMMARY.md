@@ -24,7 +24,7 @@ These services tried to pull v3.0.0 but images don't exist:
 
 These were built but not currently deployed:
 - alfred-bot
-- social-intel
+- architect-api
 - mission-control
 - pubsub
 - rag-gateway

@@ -36,13 +36,13 @@ npm run dev
 **Solutions**:
 ```bash
 # Check if Social Intelligence Agent container is running
-docker ps | grep social-intel
+docker ps | grep architect-api
 
 # Start the container if not running
-docker-compose up -d social-intel
+docker-compose up -d architect-api
 
 # Check container logs for errors
-docker logs $(docker ps -q --filter name=social-intel)
+docker logs $(docker ps -q --filter name=architect-api)
 ```
 
 ### 3. URL Hardcoding Issues
@@ -78,7 +78,7 @@ cat services/mission-control/.env.local
 ```bash
 echo "SOCIAL_INTEL_URL=http://localhost:9000
 NEXT_PUBLIC_SERVER_URL=http://localhost:3007
-NEXT_PUBLIC_API_BASE_URL=/api/social-intel" > services/mission-control/.env.local
+NEXT_PUBLIC_API_BASE_URL=/api/architect-api" > services/mission-control/.env.local
 ```
 
 ## Validation Steps

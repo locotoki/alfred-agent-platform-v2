@@ -19,7 +19,7 @@ The following source materials were used for this migration:
 | File | Location | Description |
 |------|----------|-------------|
 | seed-to-blueprint.html | `/services/mission-control-simplified/public/seed-to-blueprint.html` | Frontend UI implementation with HTML/CSS/JS |
-| integrate-with-social-intel.js | `/services/mission-control-simplified/integrate-with-social-intel.js` | API integration layer with backend services |
+| integrate-with-architect-api.js | `/services/mission-control-simplified/integrate-with-architect-api.js` | API integration layer with backend services |
 | COMPREHENSIVE_WORKFLOW_ANALYSIS.md | `/services/mission-control-simplified/COMPREHENSIVE_WORKFLOW_ANALYSIS.md` | Technical analysis of workflow implementation |
 
 ## Migration Process

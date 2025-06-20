@@ -62,9 +62,9 @@ For these operations, a **simple API key is sufficient** - no OAuth 2.0 authoriz
    - Replace `your-youtube-api-key` with the actual API key from the Google Cloud Console
 
 2. **Restart the Social Intelligence Agent**:
-   - If the platform is already running, restart the social-intel service:
+   - If the platform is already running, restart the architect-api service:
    ```
-   docker-compose restart social-intel
+   docker-compose restart architect-api
    ```
    - Or restart the entire platform:
    ```
@@ -131,7 +131,7 @@ If you encounter issues with the YouTube API:
 
 3. **Debug Requests**:
    - Set `DEBUG=true` in your environment variables
-   - Check the social-intel service logs: `docker-compose logs -f social-intel`
+   - Check the architect-api service logs: `docker-compose logs -f architect-api`
 
 4. **Testing Mode**:
    - Set `VITE_USE_MOCK_DATA=true` in your frontend `.env` to use mock data during development

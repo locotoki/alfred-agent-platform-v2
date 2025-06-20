@@ -86,7 +86,7 @@ async def health_check() -> dict:
 - Missing `/healthz` endpoint
 
 **Recommended Fix:**
-Update `services/social-intel/app/health_check.py`:
+Update `services/architect-api/app/health_check.py`:
 
 ```python
 @health_router.get("/health")
@@ -194,7 +194,7 @@ services:
 
 1. **High Priority Services**:
    - Start with core infrastructure (Redis, PubSub)
-   - Then fix agent services (agent-core, social-intel)
+   - Then fix agent services (agent-core, architect-api)
 
 2. **Medium Priority Services**:
    - Update UI services (ui-admin, ui-chat)

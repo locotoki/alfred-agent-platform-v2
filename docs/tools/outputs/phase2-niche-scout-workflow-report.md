@@ -17,7 +17,7 @@ The following source documents were used for migration:
 1. `/home/locotoki/projects/alfred-agent-platform-v2/docs/workflows/niche-scout-implementation-guide.md`
 2. `/home/locotoki/projects/alfred-agent-platform-v2/services/agent-orchestrator/src/components/wizards/NicheScoutWizard.tsx`
 3. `/home/locotoki/projects/alfred-agent-platform-v2/services/agent-orchestrator/src/lib/youtube-service.ts`
-4. `/home/locotoki/projects/alfred-agent-platform-v2/services/social-intel/app/niche_scout.py`
+4. `/home/locotoki/projects/alfred-agent-platform-v2/services/architect-api/app/niche_scout.py`
 
 ### Target Document
 

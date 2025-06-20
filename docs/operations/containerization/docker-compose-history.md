@@ -50,13 +50,13 @@ The Mission Control service was initially running directly on the host system, w
      depends_on:
        supabase-db:
          condition: service_healthy
-       social-intel:
+       architect-api:
          condition: service_healthy
      ports:
        - "3007:3000"
      environment:
        - NODE_ENV=${NODE_ENV:-development}
-       - SOCIAL_INTEL_URL=http://social-intel:9000
+       - SOCIAL_INTEL_URL=http://architect-api:9000
        - FINANCIAL_TAX_URL=http://financial-tax:9003
      volumes:
        - ./services/mission-control/public:/app/public

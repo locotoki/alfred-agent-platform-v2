@@ -44,7 +44,7 @@ This document tracks the progress of the Alfred Agent Platform v2 documentation 
 | A2A Protocol | Multiple sources | /docs/api/a2a-protocol.md | Completed | API Team | 2025-05-10 | Comprehensive documentation with examples |
 | Agent Implementation Guide | Multiple sources | /docs/agents/guides/agent-implementation-guide.md | In Progress | Documentation Team | 2025-06-12 | Needs technical review |
 | Financial-Tax Agent | Multiple sources | /docs/agents/financial-tax-agent.md | Not Started | Documentation Team | 2025-06-12 | Current implementation phase |
-| Social Intelligence Agent | Multiple sources | /docs/agents/social-intelligence-agent.md | Not Started | Documentation Team | 2025-06-12 | - |
+| Social Intelligence Agent | Multiple sources | /docs/agents/architect-apiligence-agent.md | Not Started | Documentation Team | 2025-06-12 | - |
 | Legal Compliance Agent | Multiple sources | /docs/agents/legal-compliance-agent.md | Not Started | Documentation Team | 2025-06-12 | - |
 | Niche Scout Workflow | Multiple sources | /docs/workflows/niche-scout-workflow.md | Not Started | Documentation Team | 2025-06-20 | - |
 | Seed to Blueprint Workflow | Multiple sources | /docs/workflows/seed-to-blueprint-workflow.md | Not Started | Documentation Team | 2025-06-20 | - |
@@ -60,7 +60,7 @@ This document tracks the progress of the Alfred Agent Platform v2 documentation 
 | Infrastructure Setup | 7 files | Merge into operations/infrastructure-setup.md | In Progress | Documentation Team | 2025-06-27 | Identified source files, started consolidation plan |
 | Agent Core | 5 files | Merge into architecture/agent-core.md | Completed | Architecture Team | 2025-05-10 | Comprehensive agent framework documentation |
 | A2A Protocol | 3 files | Merge into api/a2a-protocol.md | Completed | API Team | 2025-05-10 | Created comprehensive protocol documentation |
-| Social Intelligence Agent | 12 files | Merge into agents/social-intelligence-agent.md | Completed | Social Intelligence Team | 2025-05-10 | Comprehensive agent documentation created |
+| Social Intelligence Agent | 12 files | Merge into agents/architect-apiligence-agent.md | Completed | Social Intelligence Team | 2025-05-10 | Comprehensive agent documentation created |
 | Legal Compliance Agent | 8 files | Merge into agents/legal-compliance-agent.md | Not Started | Documentation Team | 2025-06-12 | - |
 | Financial-Tax Agent | 6 files | Merge into agents/financial-tax-agent.md | Not Started | Documentation Team | 2025-06-12 | - |
 | Niche Scout Workflow | 9 files | Merge into workflows/niche-scout-workflow.md | Not Started | Documentation Team | 2025-06-20 | - |
@@ -99,7 +99,7 @@ This document tracks the progress of the Alfred Agent Platform v2 documentation 
 | A2A Schema | N/A | /docs/schemas/a2a-envelope-schema.json | 2025-05-10 | API Team | Created JSON schema for validation |
 | System Architecture | Multiple sources | /docs/architecture/system-architecture.md | 2025-05-10 | Architecture Team | Comprehensive architecture documentation |
 | Agent Core Framework | Multiple sources | /docs/architecture/agent-core.md | 2025-05-10 | Architecture Team | Comprehensive agent framework documentation |
-| Social Intelligence Agent | Multiple sources | /docs/agents/social-intelligence-agent.md | 2025-05-10 | Social Intelligence Team | Comprehensive agent documentation |
+| Social Intelligence Agent | Multiple sources | /docs/agents/architect-apiligence-agent.md | 2025-05-10 | Social Intelligence Team | Comprehensive agent documentation |
 | Agent Template | N/A | /docs/templates/agent-template.md | 2025-05-10 | Documentation Team | Created new |
 | Workflow Template | N/A | /docs/templates/workflow-template.md | 2025-05-10 | Documentation Team | Created new |
 | Project Template | N/A | /docs/templates/project-template.md | 2025-05-10 | Documentation Team | Created new |

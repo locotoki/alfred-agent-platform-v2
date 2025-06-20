@@ -4,7 +4,7 @@ This document outlines the plan to containerize the Mission Control service for 
 
 ## Current Status
 
-- Most services in the Alfred Agent Platform are running as Docker containers (social-intel, financial-tax, etc.)
+- Most services in the Alfred Agent Platform are running as Docker containers (architect-api, financial-tax, etc.)
 - The Mission Control service is running directly on the host on port 3007
 - The Mission Control Dockerfile exists but is not being used in the docker-compose.yml file
 
@@ -33,7 +33,7 @@ Create a new service entry for mission-control in docker-compose.yml:
     depends_on:
       supabase-db:
         condition: service_healthy
-      social-intel:
+      architect-api:
         condition: service_healthy
     ports:
       - "3007:3000"
@@ -42,7 +42,7 @@ Create a new service entry for mission-control in docker-compose.yml:
       - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL:-http://localhost:3007}
       - NEXT_PUBLIC_SUPABASE_URL=${NEXT_PUBLIC_SUPABASE_URL:-http://localhost:3000}
       - NEXT_PUBLIC_SUPABASE_ANON_KEY=${ANON_KEY}
-      - SOCIAL_INTEL_URL=http://social-intel:9000
+      - SOCIAL_INTEL_URL=http://architect-api:9000
       - FINANCIAL_TAX_URL=http://financial-tax:9003
       - LEGAL_COMPLIANCE_URL=http://legal-compliance:9002
     volumes:

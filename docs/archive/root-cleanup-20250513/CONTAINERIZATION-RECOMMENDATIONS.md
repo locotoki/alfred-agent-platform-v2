@@ -4,7 +4,7 @@
 
 There is an inconsistency in how the mission-control service is deployed compared to other services in the Alfred Agent Platform:
 
-- Most services (social-intel, financial-tax, etc.) run as Docker containers
+- Most services (architect-api, financial-tax, etc.) run as Docker containers
 - The mission-control service runs directly on the host machine on port 3007
 - This causes port configuration issues and dependency management complexity
 
@@ -46,7 +46,7 @@ To complete the containerization:
 
 3. **Verify the containerized service**:
    - Access http://localhost:3007/workflows
-   - Verify that it can communicate with the social-intel service
+   - Verify that it can communicate with the architect-api service
    - Test both the Niche-Scout and Seed-to-Blueprint workflows
 
 ## Benefits

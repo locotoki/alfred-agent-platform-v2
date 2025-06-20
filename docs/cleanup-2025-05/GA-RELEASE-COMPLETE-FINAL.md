@@ -16,7 +16,7 @@
   - contact-ingest:v3.0.0
   - crm-sync:v3.0.0
   - slack-app:v3.0.0
-  - social-intel:v3.0.0
+  - architect-api:v3.0.0
   - db-metrics:v3.0.0
   - slack-adapter:v3.0.0
   - mission-control:v3.0.0

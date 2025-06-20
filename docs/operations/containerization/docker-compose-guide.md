@@ -43,7 +43,7 @@ docker compose -f docker-compose.yml -f docker-compose.dev.yml --profile dev up 
 docker compose -f docker-compose.yml -f docker-compose.dev.yml --profile dev --profile mocks up -d
 
 # Start only specific services
-docker compose -f docker-compose.yml -f docker-compose.dev.yml --profile dev up -d mission-control social-intel
+docker compose -f docker-compose.yml -f docker-compose.dev.yml --profile dev up -d mission-control architect-api
 ```
 
 ## Personal Developer Customizations
@@ -76,7 +76,7 @@ The `start-platform.sh` script provides a convenient wrapper for Docker Compose 
 ./start-platform.sh -a down -c
 
 # Only specific services
-./start-platform.sh mission-control social-intel
+./start-platform.sh mission-control architect-api
 ```
 
 ## Best Practices

@@ -43,7 +43,7 @@ This document outlines the strategy and implementation plan for migrating UI fun
 - [ ] Migrate visual improvements (gradients, animations)
 - [ ] Port UI enhancements from mission-control
 - [ ] Implement missing workflow features
-- [ ] Create shared API client for social-intel service
+- [ ] Create shared API client for architect-api service
 - [ ] Develop comprehensive style guide
 - [ ] Add responsive layout improvements
 
@@ -108,7 +108,7 @@ This will ensure consistent styling across components and easy theme customizati
 ### API Client
 
 Develop a standardized API client that:
-- Handles communication with social-intel service
+- Handles communication with architect-api service
 - Provides consistent error handling
 - Supports mock data for offline development
 - Includes type definitions for all responses

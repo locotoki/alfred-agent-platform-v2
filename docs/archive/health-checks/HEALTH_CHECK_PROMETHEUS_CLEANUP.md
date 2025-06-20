@@ -6,7 +6,7 @@ This document describes the improvements made to the Prometheus configuration to
 
 The Prometheus configuration had several issues:
 
-1. **Obsolete Container Names**: References to old container names (alfred-bot, financial-tax, legal-compliance, social-intel) that had been renamed or replaced
+1. **Obsolete Container Names**: References to old container names (alfred-bot, financial-tax, legal-compliance, architect-api) that had been renamed or replaced
 2. **Duplicate Entries**: Some services appeared multiple times with different job names
 3. **Inconsistent Naming**: Target names didn't match the actual container names
 4. **Unorganized Structure**: Jobs were not grouped logically by service type
@@ -34,7 +34,7 @@ The following name changes were made to align with current container naming:
 | alfred-bot | agent-core |
 | financial-tax | agent-financial |
 | legal-compliance | agent-legal |
-| social-intel | agent-social |
+| architect-api | agent-social |
 
 ## Current Service Structure
 

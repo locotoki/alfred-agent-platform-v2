@@ -72,7 +72,7 @@ This checklist confirms readiness to begin Phase 2 of the documentation migratio
 | 1 | Project Architecture | `/docs/architecture/system-design.md` | `/docs/architecture/system-design.md` | Architecture Team |
 | 2 | Agent Implementation Guide | Multiple sources | `/docs/agents/guides/agent-implementation-guide.md` | Development Team |
 | 3 | A2A Protocol Documentation | `/services/a2a/README.md` | `/docs/api/a2a-protocol.md` | API Team |
-| 4 | Social Intelligence Agent | Multiple sources | `/docs/agents/social-intelligence-agent.md` | Agent Team |
+| 4 | Social Intelligence Agent | Multiple sources | `/docs/agents/architect-apiligence-agent.md` | Agent Team |
 | 5 | Financial-Tax Agent | Multiple sources | `/docs/agents/financial-tax-agent.md` | Agent Team |
 
 ## Sign-Off

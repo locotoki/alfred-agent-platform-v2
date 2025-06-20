@@ -28,9 +28,9 @@ This guide will help you properly configure your environment variables for the A
 
 The following variables are **critical** and must be set correctly:
 
-- `DATABASE_URL`: Required by multiple services, especially social-intel
+- `DATABASE_URL`: Required by multiple services, especially architect-api
 - `ALFRED_OPENAI_API_KEY`: Required for OpenAI models (if using them)
-- `YOUTUBE_API_KEY`: Required for social-intel service
+- `YOUTUBE_API_KEY`: Required for architect-api service
 - `STREAMLIT_SERVER_HEADLESS`: Must be set to `true` for ui-chat service
 
 ## Environment Configuration By Service
@@ -45,7 +45,7 @@ For the base platform to function, configure:
 
 ### Social Intelligence Agent
 
-For the social-intel service to work properly:
+For the architect-api service to work properly:
 - `DATABASE_URL` must point to a valid PostgreSQL instance
 - `YOUTUBE_API_KEY` must be a valid YouTube Data API key
 - `SOCIAL_INTEL_URL` must be accessible by other services

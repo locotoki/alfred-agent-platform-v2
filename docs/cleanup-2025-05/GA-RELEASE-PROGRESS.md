@@ -12,7 +12,7 @@
 ### 🔄 In Progress
 - **Docker Image Builds**: 6/12 jobs completed
   - Workflow: https://github.com/Digital-Native-Ventures/alfred-agent-platform-v2/actions/runs/15311948087
-  - Building images for: alfred-core, alfred-bot, agent-bizops, contact-ingest, crm-sync, slack-app, social-intel, db-metrics, slack-adapter, mission-control, pubsub, rag-gateway
+  - Building images for: alfred-core, alfred-bot, agent-bizops, contact-ingest, crm-sync, slack-app, architect-api, db-metrics, slack-adapter, mission-control, pubsub, rag-gateway
 
 ### ⏳ Pending
 1. **Docker Images Push**: Waiting for build completion

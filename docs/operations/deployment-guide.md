@@ -509,7 +509,7 @@ The Mission Control service has specific deployment requirements:
    ```
 
 3. Integration with Services:
-   - Connect to Social Intelligence at `http://social-intel:9000`
+   - Connect to Social Intelligence at `http://architect-api:9000`
    - Connect to Financial Tax at `http://financial-tax:9003`
    - Connect to Legal Compliance at `http://legal-compliance:9002`
 

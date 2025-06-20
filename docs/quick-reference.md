@@ -133,7 +133,7 @@
 2. **Follow file structure convention**:
    - Use lowercase filenames with hyphens
    - Place in correct directory based on type
-   - Example: `/docs/agents/domain/social-intelligence.md`
+   - Example: `/docs/agents/domain/architect-apiligence.md`
 
 3. **Create documentation ticket** in issue tracker:
    - Define target audience and document type
@@ -168,7 +168,7 @@
 - Use lowercase letters
 - Use hyphens to separate words
 - Be descriptive but concise
-- Examples: `social-intelligence.md`, `niche-scout.md`
+- Examples: `architect-apiligence.md`, `niche-scout.md`
 
 ### Markdown Formatting
 

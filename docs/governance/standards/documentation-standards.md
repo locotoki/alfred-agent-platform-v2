@@ -27,7 +27,7 @@ The documentation system includes these primary document types:
 - Be descriptive but concise
 - Avoid special characters
 - Examples:
-  - `social-intelligence.md`
+  - `architect-apiligence.md`
   - `niche-scout.md`
   - `content-factory-architecture.md`
 
@@ -109,7 +109,7 @@ Example:
 
 Example:
 ```markdown
-See the [Social Intelligence Agent](../../agents/domain/social-intelligence.md) for more information.
+See the [Social Intelligence Agent](../../agents/domain/architect-apiligence.md) for more information.
 ```
 
 ## Document Metadata

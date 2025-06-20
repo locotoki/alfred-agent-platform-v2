@@ -131,7 +131,7 @@ alfred-agent-platform/
 │   └── financial_tax/
 ├── services/                         # Dockerized microservices
 │   ├── alfred-bot/
-│   ├── social-intel/
+│   ├── architect-api/
 │   ├── legal-compliance/
 │   ├── financial-tax/
 │   └── mission-control/
@@ -183,7 +183,7 @@ git init
 mkdir -p .github/workflows .github/ISSUE_TEMPLATE
 mkdir -p .devcontainer .vscode
 mkdir -p agents/{alfred_bot,social_intel,legal_compliance,financial_tax}
-mkdir -p services/{alfred-bot,social-intel,legal-compliance,financial-tax,mission-control}
+mkdir -p services/{alfred-bot,architect-api,legal-compliance,financial-tax,mission-control}
 mkdir -p libs/{a2a_adapter,agent_core,observability}
 mkdir -p infra/{terraform/{environments/{dev,staging,prod},modules},k8s/{base,overlays},docker/compose}
 mkdir -p migrations/{supabase,alembic/versions}
@@ -1167,7 +1167,7 @@ jobs:
       matrix:
         service:
           - alfred-bot
-          - social-intel
+          - architect-api
           - legal-compliance
           - financial-tax
           - mission-control
@@ -1913,9 +1913,9 @@ scrape_configs:
       - targets: ['alfred-bot:8011']
     metrics_path: '/health/metrics'
 
-  - job_name: 'social-intel'
+  - job_name: 'architect-api'
     static_configs:
-      - targets: ['social-intel:9000']
+      - targets: ['architect-api:9000']
     metrics_path: '/health/metrics'
 
   - job_name: 'supabase'
@@ -1955,7 +1955,7 @@ groups:
           description: Error rate is above 10% for 5 minutes
 
       - alert: AgentDown
-        expr: up{job=~"alfred-bot|social-intel|legal-compliance"} == 0
+        expr: up{job=~"alfred-bot|architect-api|legal-compliance"} == 0
         for
 
 ```
@@ -1980,7 +1980,7 @@ Edit
 
 yaml
       - alert: AgentDown
-        expr: up{job=~"alfred-bot|social-intel|legal-compliance"} == 0
+        expr: up{job=~"alfred-bot|architect-api|legal-compliance"} == 0
         for: 2m
         labels:
           severity: critical

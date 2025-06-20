@@ -112,12 +112,12 @@ export async function runNicheScout(config: {
 }
 ```
 
-## 4. Backend Configuration (social-intel service)
+## 4. Backend Configuration (architect-api service)
 
-Ensure the social-intel service is properly configured with environment variables:
+Ensure the architect-api service is properly configured with environment variables:
 
 ```bash
-# Required in social-intel service environment
+# Required in architect-api service environment
 OPENAI_API_KEY=your_openai_api_key
 YOUTUBE_API_KEY=your_youtube_api_key
 GCP_PROJECT_ID=your_google_project_id
@@ -149,7 +149,7 @@ GCP_PROJECT_ID=your_google_project_id
    - youtube-service sends POST request to /api/youtube/niche-scout endpoint
 
 3. **Backend Processing**:
-   - social-intel service receives request
+   - architect-api service receives request
    - Service uses YouTube API to collect data based on category/subcategory
    - OpenAI API processes the data to identify trends
    - Results are formatted and returned
@@ -162,8 +162,8 @@ GCP_PROJECT_ID=your_google_project_id
 ## 6. Testing the Integration
 
 1. Set `VITE_USE_MOCK_DATA=false` in your .env file
-2. Ensure the social-intel container is running
-3. Check that YouTube API key is configured in social-intel
+2. Ensure the architect-api container is running
+3. Check that YouTube API key is configured in architect-api
 4. Follow the user flow and check network requests
 5. Verify the response matches expected structure
 
@@ -171,6 +171,6 @@ GCP_PROJECT_ID=your_google_project_id
 
 - If data doesn't appear, check browser console for API errors
 - Verify environment variables are correctly set in both frontend and backend
-- Check that social-intel service is running and accessible
+- Check that architect-api service is running and accessible
 - If using Docker, ensure all containers on same network
 - If API calls fail, temporarily set `VITE_USE_MOCK_DATA=true` to test UI flow

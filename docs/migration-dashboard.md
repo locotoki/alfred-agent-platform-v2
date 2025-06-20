@@ -44,7 +44,7 @@ This document tracks the progress of the Alfred Agent Platform v2 documentation 
 | A2A Protocol | /services/a2a/README.md | /docs/api/a2a-protocol.md | Not Started | Documentation Team | 2025-06-20 | - |
 | Agent Implementation Guide | Multiple sources | /docs/agents/guides/agent-implementation-guide.md | In Progress | Documentation Team | 2025-06-12 | Needs technical review |
 | Financial-Tax Agent | Multiple sources | /docs/agents/financial-tax-agent.md | Not Started | Documentation Team | 2025-06-12 | Current implementation phase |
-| Social Intelligence Agent | Multiple sources | /docs/agents/social-intelligence-agent.md | Not Started | Documentation Team | 2025-06-12 | - |
+| Social Intelligence Agent | Multiple sources | /docs/agents/architect-apiligence-agent.md | Not Started | Documentation Team | 2025-06-12 | - |
 | Legal Compliance Agent | Multiple sources | /docs/agents/legal-compliance-agent.md | Not Started | Documentation Team | 2025-06-12 | - |
 | Niche Scout Workflow | Multiple sources | /docs/workflows/niche-scout-workflow.md | Not Started | Documentation Team | 2025-06-20 | - |
 | Seed to Blueprint Workflow | Multiple sources | /docs/workflows/seed-to-blueprint-workflow.md | Not Started | Documentation Team | 2025-06-20 | - |
@@ -60,7 +60,7 @@ This document tracks the progress of the Alfred Agent Platform v2 documentation 
 | Infrastructure Setup | 7 files | Merge into operations/infrastructure-setup.md | In Progress | Documentation Team | 2025-06-27 | Identified source files, started consolidation plan |
 | Agent Core | 5 files | Merge into architecture/agent-core.md | Not Started | Documentation Team | 2025-06-12 | - |
 | A2A Protocol | 3 files | Merge into api/a2a-protocol.md | Not Started | Documentation Team | 2025-06-20 | - |
-| Social Intelligence Agent | 12 files | Merge into agents/social-intelligence-agent.md | Not Started | Documentation Team | 2025-06-12 | - |
+| Social Intelligence Agent | 12 files | Merge into agents/architect-apiligence-agent.md | Not Started | Documentation Team | 2025-06-12 | - |
 | Legal Compliance Agent | 8 files | Merge into agents/legal-compliance-agent.md | Not Started | Documentation Team | 2025-06-12 | - |
 | Financial-Tax Agent | 6 files | Merge into agents/financial-tax-agent.md | Not Started | Documentation Team | 2025-06-12 | - |
 | Niche Scout Workflow | 9 files | Merge into workflows/niche-scout-workflow.md | Not Started | Documentation Team | 2025-06-20 | - |

@@ -20,7 +20,7 @@ docker tag ghcr.io/locotoki/alfred-agent-platform-v2/healthcheck:0.4.0 alfred/he
 The workflow is failing because:
 1. **Base image references inconsistent** - Services use different registries:
    - `ghcr.io/alfred/healthcheck:0.4.0` (db-metrics)
-   - `alfred/healthcheck:0.4.0` (social-intel, pubsub)
+   - `alfred/healthcheck:0.4.0` (architect-api, pubsub)
 2. **Missing files in build context** - Some services expect files not present when building from tag
 3. **Large LLM service image** - 1.71GB download causing timeouts
 

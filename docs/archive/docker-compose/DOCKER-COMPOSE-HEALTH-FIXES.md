@@ -21,7 +21,7 @@ Many services were using a non-existent `healthcheck` binary in their Docker hea
 
 3. **Files Examined (No Changes Needed)**:
    - `docker-compose.dev.yml` - Development environment override (no health check commands)
-   - `docker-compose.override.social-intel.yml` - Social intelligence override (no health check commands)
+   - `docker-compose.override.architect-api.yml` - Social intelligence override (no health check commands)
 
 4. **Affected Services**:
    - Redis

@@ -106,7 +106,7 @@ To test service health monitoring and offline mode:
 1. Start the agent-orchestrator service with the backend running:
    ```
    cd /home/locotoki/projects/alfred-agent-platform-v2
-   docker-compose up -d social-intel redis qdrant
+   docker-compose up -d architect-api redis qdrant
    cd services/agent-orchestrator
    npm run dev
    ```
@@ -118,7 +118,7 @@ To test service health monitoring and offline mode:
 3. Stop the backend services:
    ```
    cd /home/locotoki/projects/alfred-agent-platform-v2
-   docker-compose stop social-intel
+   docker-compose stop architect-api
    ```
 
 4. Reload the page and verify:
@@ -135,7 +135,7 @@ To test service health monitoring and offline mode:
 6. Restart the backend services:
    ```
    cd /home/locotoki/projects/alfred-agent-platform-v2
-   docker-compose start social-intel
+   docker-compose start architect-api
    ```
 
 7. Wait 60 seconds (or reload the page) and verify:

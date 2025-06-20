@@ -23,7 +23,7 @@
 - Start the Social Intelligence Agent container:
   ```bash
   cd /home/locotoki/projects/alfred-agent-platform-v2
-  docker-compose up -d social-intel
+  docker-compose up -d architect-api
   ```
 - If mock data mode is acceptable for testing, no action is needed as the system will automatically fall back to mock data
 
@@ -40,7 +40,7 @@
   ```typescript
   // In youtube-workflows.ts
   const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';
-  const SOCIAL_INTEL_URL = `${baseUrl}/api/social-intel`;
+  const SOCIAL_INTEL_URL = `${baseUrl}/api/architect-api`;
   ```
 
 **Terminal Commands:**
@@ -62,7 +62,7 @@ netstat -tuln | grep -E '3005|9000'
 **Quick Fixes:**
 - Verify Social Intelligence Agent is running:
   ```bash
-  docker ps | grep social-intel
+  docker ps | grep architect-api
   ```
 - Test direct connection to Social Intelligence Agent:
   ```bash
@@ -181,7 +181,7 @@ netstat -tuln | grep -E '3005|9000'
 ps aux | grep "next"
 
 # Check Docker containers
-docker ps | grep -E 'social-intel|mission-control'
+docker ps | grep -E 'architect-api|mission-control'
 
 # View Next.js logs
 tail -f /home/locotoki/projects/alfred-agent-platform-v2/services/mission-control/nohup.out
@@ -193,7 +193,7 @@ tail -f /home/locotoki/projects/alfred-agent-platform-v2/services/mission-contro
 curl -v http://localhost:9000/api/health
 
 # Test Mission Control API proxy
-curl -v http://localhost:3005/api/social-intel/workflow-history
+curl -v http://localhost:3005/api/architect-api/workflow-history
 ```
 
 ### Configuration Verification
@@ -249,10 +249,10 @@ Indicates a request timeout or manual abort.
 
 | Endpoint | Purpose | Expected Response |
 |----------|---------|-------------------|
-| `/api/social-intel/niche-scout` | Run Niche-Scout workflow | `NicheScoutResult` object |
-| `/api/social-intel/seed-to-blueprint` | Run Seed-to-Blueprint workflow | `BlueprintResult` object |
-| `/api/social-intel/workflow-history` | Get history of workflow runs | Array of `WorkflowHistory` |
-| `/api/social-intel/workflow-result/[id]` | Get results for specific workflow | `NicheScoutResult` or `BlueprintResult` |
+| `/api/architect-api/niche-scout` | Run Niche-Scout workflow | `NicheScoutResult` object |
+| `/api/architect-api/seed-to-blueprint` | Run Seed-to-Blueprint workflow | `BlueprintResult` object |
+| `/api/architect-api/workflow-history` | Get history of workflow runs | Array of `WorkflowHistory` |
+| `/api/architect-api/workflow-result/[id]` | Get results for specific workflow | `NicheScoutResult` or `BlueprintResult` |
 
 ## Quick Reset Procedure
 
@@ -261,7 +261,7 @@ If you encounter persistent issues, try this reset sequence:
 1. Restart the Social Intelligence Agent:
    ```bash
    cd /home/locotoki/projects/alfred-agent-platform-v2
-   docker-compose restart social-intel
+   docker-compose restart architect-api
    ```
 
 2. Restart the Mission Control UI:

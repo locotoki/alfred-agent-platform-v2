@@ -121,7 +121,7 @@ The YouTube workflows integration in the Mission Control UI provides a comprehen
    - `workflows/seed-to-blueprint/results/[id].tsx`: Shows comprehensive channel strategy with content pillar recommendations
 
 3. **API Integration**:
-   - Social Intelligence Agent proxy endpoints in `/api/social-intel/`
+   - Social Intelligence Agent proxy endpoints in `/api/architect-api/`
    - Proper error handling and fallbacks for development/testing
    - Support for multiple endpoint configurations
 

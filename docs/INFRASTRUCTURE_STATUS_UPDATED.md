@@ -22,7 +22,7 @@ The Alfred Agent Platform v2 infrastructure is fully operational with all essent
 |---------|------|--------|--------------|-----------|
 | Mission Control | 3007 | ✅ Active | `/api/health` | mission-control |
 | Alfred Bot | 8011 | ✅ Active | `/health/health` | alfred-bot |
-| Social Intelligence | 9000 | ✅ Active | `/health/health` | social-intel |
+| Social Intelligence | 9000 | ✅ Active | `/health/health` | architect-api |
 | Legal Compliance | 9002 | ✅ Active | `/health/health` | legal-compliance |
 | Financial-Tax | 9003 | ✅ Active | `/health/health` | financial-tax |
 | Supabase DB | 5432 | ✅ Active | `pg_isready` | supabase-db |

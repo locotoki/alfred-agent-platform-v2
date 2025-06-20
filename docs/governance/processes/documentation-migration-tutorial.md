@@ -92,7 +92,7 @@ For each document being migrated, follow these steps:
 
 ### Example: Migrating an Agent Document
 
-**Original document (`old-docs/social-intelligence-agent-info.md`):**
+**Original document (`old-docs/architect-apiligence-agent-info.md`):**
 
 ```markdown
 # Social Intelligence Agent
@@ -107,7 +107,7 @@ This document describes the Social Intelligence Agent.
 The API endpoints are...
 ```
 
-**Reformatted document (`docs/agents/domain/social-intelligence.md`):**
+**Reformatted document (`docs/agents/domain/architect-apiligence.md`):**
 
 ```markdown
 # Social Intelligence Agent
@@ -131,8 +131,8 @@ The Social Intelligence Agent analyzes social media content and market trends to
 
 The Social Intelligence Agent supports the following workflows:
 
-- [Niche Scout](../../workflows/by-agent/social-intel/niche-scout.md)
-- [Trend Analysis](../../workflows/by-agent/social-intel/trend-analysis.md)
+- [Niche Scout](../../workflows/by-agent/architect-api/niche-scout.md)
+- [Trend Analysis](../../workflows/by-agent/architect-api/trend-analysis.md)
 
 ## Configuration Options
 
@@ -186,13 +186,13 @@ Once you've reformatted a document, follow these steps to migrate it:
 1. **Save the Document to the Target Location**
    ```bash
    # Example: Migrating a social intelligence agent document
-   cp reformatted-social-intelligence.md docs/agents/domain/social-intelligence.md
+   cp reformatted-architect-apiligence.md docs/agents/domain/architect-apiligence.md
    ```
 
 2. **Validate the Document**
    ```bash
    # Validate a single document
-   python docs/tools/doc_validator.py --single-file docs/agents/domain/social-intelligence.md
+   python docs/tools/doc_validator.py --single-file docs/agents/domain/architect-apiligence.md
    ```
 
 3. **Fix Any Validation Issues**
@@ -201,7 +201,7 @@ Once you've reformatted a document, follow these steps to migrate it:
 
 4. **Commit the Changes**
    ```bash
-   git add docs/agents/domain/social-intelligence.md
+   git add docs/agents/domain/architect-apiligence.md
    git commit -m "Migrate Social Intelligence Agent documentation"
    ```
 
