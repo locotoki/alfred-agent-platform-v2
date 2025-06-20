@@ -1,3 +1,17 @@
+## [1.0.9] – 2025-06-20
+
+### Added
+- **architect-api**: standalone FastAPI service for chat, PRD validation, NATS triggers.
+
+### Changed
+- Workbench proxy now points to `architect-api:8083`.
+- Removed legacy Architect routes from `backend-api`.
+
+### Fixed
+- CI compose-health now checks `architect-api`.
+
+
+**Full diff:** `git diff v1.0.8..v1.0.9`
 ## [v1.0.7] – 2025-06-12
 ### Added
 - Local-dev health fixes for Apple-silicon & WSL 2 (#707)

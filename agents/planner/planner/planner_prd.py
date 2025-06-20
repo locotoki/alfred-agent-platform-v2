@@ -10,9 +10,7 @@ QUEUE_FILE = pathlib.Path("task-queue.md")
 
 
 def next_id():
-    ids = re.findall(
-        r"\|\s*\[\s*[x ]\s*\]\s*\|\s*(\d+)\s*\|", PLAN_FILE.read_text()
-    )
+    ids = re.findall(r"\|\s*\[\s*[x ]\s*\]\s*\|\s*(\d+)\s*\|", PLAN_FILE.read_text())
     return max(map(int, ids or [0])) + 1
 
 
@@ -21,11 +19,7 @@ def parse_tasks(prd_path: pathlib.Path):
     m = re.search(r"## Acceptance Tasks\n([\s\S]+)", txt)
     if not m:
         return []
-    return [
-        line.strip("- ").strip()
-        for line in m.group(1).splitlines()
-        if line.startswith("- ")
-    ]
+    return [line.strip("- ").strip() for line in m.group(1).splitlines() if line.startswith("- ")]
 
 
 def append_tasks(tasks, prd_id):

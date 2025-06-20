@@ -1,6 +1,8 @@
 import asyncio
 import json
 import os
+from datetime import datetime
+from typing import Dict, List
 
 import openai
 import psycopg2
@@ -8,7 +10,6 @@ import redis
 from fastapi import Body, FastAPI, Request
 from fastapi.responses import JSONResponse, PlainTextResponse, StreamingResponse
 from nats.aio.client import Client as NATS
-from typing import Dict, List
 
 # Simple prompt builder function
 def build_prompt(system_snips, user_query):
@@ -91,4 +92,6 @@ async def planner_listener():
     sub = await nc.subscribe("prd.merged")
     async for msg in sub.messages:
         print("Planner trigger", msg.data.decode())
+
+
 asyncio.create_task(planner_listener())
