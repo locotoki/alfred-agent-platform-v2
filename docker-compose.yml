@@ -283,10 +283,7 @@ services:
       com.docker.compose.group: llm
       com.docker.compose.service: model-router
   db-postgres:
-    build:
-      context: ./bootstrap
-      dockerfile: Dockerfile.postgres-hardened
-    image: postgres:15-alpine
+    image: pgvector/pgvector:pg15
     container_name: db-postgres
     ports:
       - 127.0.0.1:5432:5432
@@ -955,12 +952,12 @@ services:
       com.docker.compose.group: agents
       com.docker.compose.service: agent-atlas
       prometheus.metrics.port: '9091'
-  agent-social:
+  backend-api:
     build:
       context: ./agents/social_intel
       dockerfile: Dockerfile
     image: alfred-agent-platform-v2-social-intel:latest
-    container_name: agent-social
+    container_name: backend-api
     ports:
       - 9000:9000
       - 9093:9091
@@ -1009,7 +1006,7 @@ services:
     labels:
       com.docker.compose.project: alfred
       com.docker.compose.group: agents
-      com.docker.compose.service: agent-social
+      com.docker.compose.service: backend-api
       prometheus.metrics.port: '9091'
   agent-bizdev:
     build:
@@ -1074,45 +1071,45 @@ services:
       com.docker.compose.service: vector-ingest
     profiles:
       - extras
-  ui-chat:
-    build:
-      context: ./alfred/ui
-      dockerfile: Dockerfile
-    container_name: ui-chat
-    ports:
-      - 8502:8501
-      - 9098:9091
-    environment:
-      - ALFRED_API_URL=http://agent-core:8011
-      - ALFRED_MODEL_ROUTER_URL=http://model-router:8080
-      - ENABLE_DIRECT_INFERENCE=true
-    volumes:
-      - ./services/streamlit-chat:/app
-    working_dir: /app
-    healthcheck:
-      interval: 30s
-      timeout: 20s
-      retries: 5
-      start_period: 45s
-      test:
-        - CMD
-        - healthcheck
-        - --http
-        - http://localhost:8501/health
-    depends_on:
-      agent-core:
-        condition: service_started
-      model-router:
-        condition: service_started
-    restart: unless-stopped
-    deploy: null
-    networks:
-      - alfred-network
-    labels:
-      com.docker.compose.project: alfred
-      com.docker.compose.group: ui
-      com.docker.compose.service: ui-chat
-      prometheus.metrics.port: '9091'
+# ui-chat:
+#   build:
+#     context: ./alfred/ui
+#     dockerfile: Dockerfile
+#   container_name: ui-chat
+#   ports:
+#     - 8502:8501
+#     - 9098:9091
+#   environment:
+#     - ALFRED_API_URL=http://agent-core:8011
+#     - ALFRED_MODEL_ROUTER_URL=http://model-router:8080
+#     - ENABLE_DIRECT_INFERENCE=true
+#   volumes:
+#     - ./services/streamlit-chat:/app
+#   working_dir: /app
+#   healthcheck:
+#     interval: 30s
+#     timeout: 20s
+#     retries: 5
+#     start_period: 45s
+#     test:
+#       - CMD
+#       - healthcheck
+#       - --http
+#       - http://localhost:8501/health
+#   depends_on:
+#     agent-core:
+#       condition: service_started
+#     model-router:
+#       condition: service_started
+#   restart: unless-stopped
+#   deploy: null
+#   networks:
+#     - alfred-network
+#   labels:
+#     com.docker.compose.project: alfred
+#     com.docker.compose.group: ui
+#     com.docker.compose.service: ui-chat
+#     prometheus.metrics.port: '9091'
   ui-admin:
     build:
       context: ./services/mission-control-simplified
@@ -1125,7 +1122,7 @@ services:
     environment:
       - ALFRED_API_URL=http://agent-core:8011
       - ALFRED_RAG_URL=http://agent-rag:8501
-      - NEXT_PUBLIC_SOCIAL_INTEL_URL=http://agent-social:9000
+      - NEXT_PUBLIC_SOCIAL_INTEL_URL=http://backend-api:9000
       - NODE_ENV=production
       - PORT=3007
     healthcheck:
@@ -1141,7 +1138,7 @@ services:
     depends_on:
       agent-core:
         condition: service_started
-      agent-social:
+      backend-api:
         condition: service_started
     restart: unless-stopped
     deploy: null
@@ -1479,35 +1476,36 @@ services:
       com.docker.compose.project: alfred
       com.docker.compose.group: agents
       com.docker.compose.service: slack-bot
-  rag-gateway:
-    healthcheck:
-      test:
-        - CMD-SHELL
-        - nc -z localhost 8000
-      interval: 15s
-      timeout: 3s
-      retries: 5
+  # rag-gateway: # Commented out - missing build context
+  #   image: atlas-rag-gateway:latest
+  #   healthcheck:
+  #     test:
+  #       - CMD-SHELL
+  #       - nc -z localhost 8000
+  #     interval: 15s
+  #     timeout: 3s
+  #     retries: 5
 
-  # Local Runtime Enablement – Memory (Qdrant + Postgres) & Bus (NATS)
-  qdrant:
-    image: qdrant/qdrant:v1.9.0
-    volumes: [ "qdrant_data:/qdrant/storage" ]
-    ports: [ "6333:6333" ]
-    healthcheck:
-      test: ["CMD", "wget", "-qO-", "http://localhost:6333/readyz"]
-      interval: 10s
-      timeout: 3s
-      retries: 6
+  # Local Runtime Enablement – Memory (pgvector) & Bus (NATS)
+  # qdrant:
+  #   image: qdrant/qdrant:v1.9.0
+  #   volumes: [ "qdrant_data:/qdrant/storage" ]
+  #   ports: [ "6333:6333" ]
+  #   healthcheck:
+  #     test: ["CMD", "wget", "-qO-", "http://localhost:6333/readyz"]
+  #     interval: 10s
+  #     timeout: 3s
+  #     retries: 6
 
-  vector-pg:
-    image: postgres:16-alpine
-    environment:
-      POSTGRES_DB: memory
-      POSTGRES_USER: memory
-      POSTGRES_PASSWORD: memorypass
-    volumes: [ "pg_data:/var/lib/postgresql/data" ]
-    ports: [ "5432:5432" ]
-
+#  vector-pg:
+#    image: postgres:16-alpine
+#    environment:
+#      POSTGRES_DB: memory
+#      POSTGRES_USER: memory
+#      POSTGRES_PASSWORD: memorypass
+#    volumes: [ "pg_data:/var/lib/postgresql/data" ]
+#    ports: [ "5432:5432" ]
+#
   nats:
     image: nats:2.10
     command: ["-js", "-sd", "/nats"]
@@ -1520,7 +1518,7 @@ services:
     environment:
       - PG_DSN=${PG_DSN}
     depends_on:
-      - vector-pg
+      - db-postgres
 
 volumes:
   redis-data:
@@ -1540,22 +1538,20 @@ volumes:
   qdrant_data:
   pg_data:
   nats_data:
+  runner_data:
+
 networks:
   alfred-network:
 
-#######################################################################
-# Self-hosted GitHub Actions Runner
-#######################################################################
-services:
-  gh-runner:
-    image: my-gh-runner:latest   # build your custom runner image separately
-    environment:
-      GH_REPOSITORY: Digital-Native-Ventures/alfred-agent-platform-v2
-      GH_PAT: ${GH_PAT:?set in .env.runner}
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - runner_data:/runner
-    restart: unless-stopped
-
-volumes:
-  runner_data:
+  #######################################################################
+  # Self-hosted GitHub Actions Runner - commented out for now
+  #######################################################################
+  # gh-runner:
+  #   image: my-gh-runner:latest
+  #   environment:
+  #     GH_REPOSITORY: Digital-Native-Ventures/alfred-agent-platform-v2
+  #     GH_PAT: ${GH_PAT:-}
+  #   volumes:
+  #     - /var/run/docker.sock:/var/run/docker.sock
+  #     - runner_data:/runner
+  #   restart: unless-stopped
